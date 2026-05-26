@@ -1,9 +1,14 @@
 /**
- * initModules.ts — v6.15
+ * initModules.ts — v6.24
  *
  * Extracted from _core/index.ts (v6.03 refactor).
  * Handles all async module initialization in dependency order.
  * Grouped by version milestone for traceability.
+ *
+ * v6.24 changes:
+ * - Embedding init: use OpenRouter when DeepSeek is the LLM (DeepSeek has no /embeddings endpoint)
+ * - Auto-baseline: capture eval baseline on first startup if none exists
+ * - RSI auto-enable: enable RSI automatically after baseline is captured
  */
 
 import { initGoalPersistence } from "../goalManager";
@@ -129,10 +134,13 @@ export async function initModules(): Promise<void> {
     console.log("[RSIEngine] Initialized — recursive self-improvement engine ready (enable via /api/rsi/enable)");
   }).catch(err => console.warn("[RSIEngine] Init failed:", err));
 
-  // ── v6.15: Real embedding API auto-init ──────────────────────────────────────
-  // Activates semantic vector memory using the active LLM provider's embedding endpoint.
-  // Falls back to local hash-based embeddings if no API key is available.
-  // text-embedding-3-small: $0.02/M tokens — essentially free.
+  // ── v6.24: Real embedding API auto-init ──────────────────────────────────────
+  // Priority order:
+  //   1. OpenAI key → OpenAI text-embedding-3-small (best quality, $0.02/M tokens)
+  //   2. OpenRouter key → OpenRouter text-embedding-3-small (same model, via proxy)
+  //      This is the primary path when DeepSeek is the LLM — DeepSeek has no /embeddings endpoint.
+  //   3. DeepSeek key only → local hash fallback (free, offline, lower quality)
+  //   4. No keys → local hash fallback
   import("../vectorMemory").then(m => {
     const openaiKey = process.env.OPENAI_API_KEY;
     const openrouterKey = process.env.OPENROUTER_API_KEY;
@@ -140,21 +148,62 @@ export async function initModules(): Promise<void> {
     const embModel = process.env.EMBEDDING_MODEL ?? "text-embedding-3-small";
     if (openaiKey) {
       m.initApiEmbeddings("https://api.openai.com/v1/embeddings", openaiKey, embModel);
-      console.log(`[VectorMemory] v6.15: Real embeddings active — OpenAI ${embModel}`);
+      console.log(`[VectorMemory] v6.24: Real embeddings active — OpenAI ${embModel}`);
     } else if (openrouterKey) {
-      // OpenRouter also exposes an /embeddings endpoint compatible with OpenAI format
+      // v6.24: OpenRouter supports text-embedding-3-small via their unified API.
+      // This is the correct path when DeepSeek is the primary LLM.
       m.initApiEmbeddings("https://openrouter.ai/api/v1/embeddings", openrouterKey, embModel);
-      console.log(`[VectorMemory] v6.15: Real embeddings active — OpenRouter ${embModel}`);
+      console.log(`[VectorMemory] v6.24: Real embeddings active — OpenRouter ${embModel} (semantic search enabled)`);
     } else if (deepseekKey) {
-      // DeepSeek has an embeddings endpoint at the same base URL
-      // DeepSeek does not have an embeddings endpoint — use local hash fallback
-      // m.initApiEmbeddings("https://api.deepseek.com/v1/embeddings", deepseekKey, "text-embedding-3-small");
-      console.log("[VectorMemory] v6.18: DeepSeek has no embeddings endpoint — using local hash fallback (free)");
-      console.log("[VectorMemory] v6.15: Real embeddings active — DeepSeek embeddings");
+      // DeepSeek does not expose an embeddings endpoint
+      console.log("[VectorMemory] v6.24: DeepSeek has no embeddings endpoint — using local hash fallback");
     } else {
-      console.log("[VectorMemory] v6.15: No embedding API key found — using local hash fallback");
+      console.log("[VectorMemory] v6.24: No embedding API key found — using local hash fallback");
     }
   }).catch(err => console.warn("[VectorMemory] Embedding init failed:", err));
+
+  // ── v6.24: Auto-baseline + RSI auto-enable ────────────────────────────────────
+  // On first startup (no baseline file exists), run a quick eval to establish the
+  // starting score, then automatically enable RSI so it can begin improving.
+  // This removes the manual 3-step setup and makes RSI self-starting.
+  // Delay 30s to let the server fully initialize before running eval.
+  setTimeout(async () => {
+    try {
+      const fs = await import("fs");
+      const path = await import("path");
+      const baselineFile = path.join(process.cwd(), "data", "eval_baseline.json");
+      if (fs.existsSync(baselineFile)) {
+        console.log("[AutoBaseline] v6.24: Baseline already exists — skipping auto-capture");
+        return;
+      }
+      console.log("[AutoBaseline] v6.24: No baseline found — running quick eval to establish starting score...");
+      const { runEvaluation, EVAL_TASKS } = await import("../evalFramework.js");
+      const { simpleChatCompletion } = await import("../llmProvider.js");
+      const runAgent = async (prompt: string, maxTokens: number, timeoutMs: number): Promise<string> => {
+        const result = await Promise.race([
+          simpleChatCompletion(prompt, { maxTokens }),
+          new Promise<string>((_, reject) => setTimeout(() => reject(new Error("timeout")), timeoutMs)),
+        ]);
+        return result as string;
+      };
+      // Quick mode: only easy tasks to minimize token cost
+      const easyIds = EVAL_TASKS.filter(t => t.difficulty === "easy").map(t => t.id);
+      const run = await runEvaluation(runAgent, easyIds);
+      fs.mkdirSync(path.dirname(baselineFile), { recursive: true });
+      fs.writeFileSync(baselineFile, JSON.stringify({ ...run, storedAt: Date.now(), autoCapture: true }, null, 2));
+      console.log(`[AutoBaseline] v6.24: Baseline captured — score: ${run.percentage.toFixed(1)}% (${run.passed}/${run.passed + run.failed} tasks passed)`);
+
+      // Auto-enable RSI now that we have a baseline to improve against
+      const { enableRSI } = await import("../rsiEngine.js");
+      enableRSI({
+        intervalMs: 6 * 60 * 60 * 1000,  // 6-hour cycles
+        maxAutoApplyPerCycle: 2,           // conservative: max 2 auto-applied changes per cycle
+      });
+      console.log("[AutoBaseline] v6.24: RSI auto-enabled — 6-hour improvement cycles started");
+    } catch (err) {
+      console.warn("[AutoBaseline] v6.24: Auto-baseline failed (non-fatal):", err);
+    }
+  }, 30_000);
 
   // ── v5.33: Degradation watch ──────────────────────────────────────────────────
   import("../selfRollback").then(m => {

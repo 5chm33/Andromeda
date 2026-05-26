@@ -105,6 +105,22 @@
       "confidence": 0.7,
       "createdAt": 1779707687209,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1779788364143_i9dqbz",
+      "category": "antipattern",
+      "title": "Goal execution: Reduce TypeScript Errors After Self-Modification",
+      "description": "Processed 1 sub-goals, 0 succeeded",
+      "context": "Goal: Reduce TypeScript Errors After Self-Modification (self_improvement)",
+      "outcome": "no progress",
+      "lesson": "Processed 1 sub-goals, 0 succeeded",
+      "applicableTo": [
+        "recursiveGoals",
+        "selfImprove"
+      ],
+      "confidence": 0.7,
+      "createdAt": 1779788364143,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -247,5 +263,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-05-26T08:03:47.846Z"
+  "_lastUpdated": "2026-05-26T10:20:40.073Z"
 }

@@ -10,6 +10,7 @@
  * reliable regardless of file size.
  */
 
+import { smartChunkFile } from "./fileEngineChunking.js";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";

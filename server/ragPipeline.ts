@@ -19,6 +19,7 @@
  *  - REST API: POST /api/rag/ingest, POST /api/rag/query, GET /api/rag/stats
  */
 
+import { streamChat } from "./aiStreaming.js";
 import { createHash } from "crypto";
 import { readFileSync, existsSync } from "fs";
 import { resolve, extname } from "path";

@@ -1,0 +1,53 @@
+# ─── Andromeda v6.25 — docker-compose.yml ────────────────────────────────────
+#
+# Runs Andromeda with persistent data volumes for:
+#   - Episodic memory
+#   - Eval baseline scores
+#   - RSI state and improvement history
+#   - Workspace files
+#
+# Usage:
+#   docker-compose up -d          # Start in background
+#   docker-compose logs -f        # Follow logs
+#   docker-compose down           # Stop (data volumes preserved)
+#   docker-compose down -v        # Stop and delete volumes
+# ─────────────────────────────────────────────────────────────────────────────
+
+version: "3.9"
+
+services:
+  andromeda:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: andromeda:latest
+    container_name: andromeda
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    env_file:
+      - .env.local
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    volumes:
+      # Persistent data — survives container restarts and updates
+      - andromeda_data:/app/data
+      - andromeda_workspace:/app/workspace
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+volumes:
+  andromeda_data:
+    driver: local
+  andromeda_workspace:
+    driver: local

@@ -1,0 +1,253 @@
+{
+  "runId": "eval-1779788384689",
+  "timestamp": 1779788384689,
+  "totalScore": 21,
+  "maxScore": 1400,
+  "percentage": 2,
+  "passed": 0,
+  "failed": 13,
+  "byCategory": {
+    "reasoning": {
+      "score": 15,
+      "max": 300,
+      "pct": 5
+    },
+    "code": {
+      "score": 0,
+      "max": 300,
+      "pct": 0
+    },
+    "tool_use": {
+      "score": 0,
+      "max": 300,
+      "pct": 0
+    },
+    "self_knowledge": {
+      "score": 0,
+      "max": 300,
+      "pct": 0
+    },
+    "multi_step": {
+      "score": 6,
+      "max": 200,
+      "pct": 3
+    }
+  },
+  "results": [
+    {
+      "taskId": "r01",
+      "timestamp": 1779788392575,
+      "passed": false,
+      "score": 0,
+      "responseTokens": 47,
+      "durationMs": 7886,
+      "response": "error: Error: LLM API error 401: {\"error\":{\"message\":\"Authentication Fails, Your api key: ****-key is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
+      "matchedKeywords": [],
+      "missedKeywords": [
+        "36"
+      ],
+      "foundForbidden": []
+    },
+    {
+      "taskId": "r02",
+      "timestamp": 1779788394487,
+      "passed": false,
+      "score": 0,
+      "responseTokens": 47,
+      "durationMs": 1912,
+      "response": "error: Error: LLM API error 401: {\"error\":{\"message\":\"Authentication Fails, Your api key: ****-key is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
+      "matchedKeywords": [],
+      "missedKeywords": [
+        "no",
+        "cannot",
+        "not necessarily"
+      ],
+      "foundForbidden": []
+    },
+    {
+      "taskId": "r07",
+      "timestamp": 1779788395077,
+      "passed": false,
+      "score": 15,
+      "responseTokens": 47,
+      "durationMs": 590,
+      "response": "error: Error: LLM API error 401: {\"error\":{\"message\":\"Authentication Fails, Your api key: ****-key is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
+      "matchedKeywords": [
+        "valid"
+      ],
+      "missedKeywords": [
+        "yes"
+      ],
+      "foundForbidden": [
+        "invalid"
+      ]
+    },
+    {
+      "taskId": "c01",
+      "timestamp": 1779788396962,
+      "passed": false,
+      "score": 0,
+      "responseTokens": 47,
+      "durationMs": 1885,
+      "response": "error: Error: LLM API error 401: {\"error\":{\"message\":\"Authentication Fails, Your api key: ****-key is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
+      "matchedKeywords": [],
+      "missedKeywords": [
+        "function",
+        "return",
+        "split",
+        "reverse",
+        "join"
+      ],
+      "foundForbidden": []
+    },
+    {
+      "taskId": "c02",
+      "timestamp": 1779788397507,
+      "passed": false,
+      "score": 0,
+      "responseTokens": 47,
+      "durationMs": 545,
+      "response": "error: Error: LLM API error 401: {\"error\":{\"message\":\"Authentication Fails, Your api key: ****-key is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
+      "matchedKeywords": [],
+      "missedKeywords": [
+        "object"
+      ],
+      "foundForbidden": [
+        "null"
+      ]
+    },
+    {
+      "taskId": "c06",
+      "timestamp": 1779788398068,
+      "passed": false,
+      "score": 0,
+      "responseTokens": 47,
+      "durationMs": 561,
+      "response": "error: Error: LLM API error 401: {\"error\":{\"message\":\"Authentication Fails, Your api key: ****-key is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
+      "matchedKeywords": [],
+      "missedKeywords": [
+        "O(log n)",
+        "logarithmic"
+      ],
+      "foundForbidden": []
+    },
+    {
+      "taskId": "t01",
+      "timestamp": 1779788398639,
+      "passed": false,
+      "score": 0,
+      "responseTokens": 47,
+      "durationMs": 571,
+      "response": "error: Error: LLM API error 401: {\"error\":{\"message\":\"Authentication Fails, Your api key: ****-key is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
+      "matchedKeywords": [],
+      "missedKeywords": [
+        "read_file",
+        "write_file",
+        "web_search"
+      ],
+      "foundForbidden": []
+    },
+    {
+      "taskId": "t02",
+      "timestamp": 1779788399268,
+      "passed": false,
+      "score": 0,
+      "responseTokens": 47,
+      "durationMs": 629,
+      "response": "error: Error: LLM API error 401: {\"error\":{\"message\":\"Authentication Fails, Your api key: ****-key is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
+      "matchedKeywords": [],
+      "missedKeywords": [
+        "/",
+        "workspace",
+        "andromeda"
+      ],
+      "foundForbidden": []
+    },
+    {
+      "taskId": "t06",
+      "timestamp": 1779788399818,
+      "passed": false,
+      "score": 0,
+      "responseTokens": 47,
+      "durationMs": 550,
+      "response": "error: Error: LLM API error 401: {\"error\":{\"message\":\"Authentication Fails, Your api key: ****-key is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
+      "matchedKeywords": [],
+      "missedKeywords": [
+        "2026",
+        "May",
+        "2025"
+      ],
+      "foundForbidden": []
+    },
+    {
+      "taskId": "s01",
+      "timestamp": 1779788400360,
+      "passed": false,
+      "score": 0,
+      "responseTokens": 47,
+      "durationMs": 542,
+      "response": "error: Error: LLM API error 401: {\"error\":{\"message\":\"Authentication Fails, Your api key: ****-key is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
+      "matchedKeywords": [],
+      "missedKeywords": [
+        "Andromeda",
+        "6."
+      ],
+      "foundForbidden": []
+    },
+    {
+      "taskId": "s02",
+      "timestamp": 1779788400896,
+      "passed": false,
+      "score": 0,
+      "responseTokens": 47,
+      "durationMs": 536,
+      "response": "error: Error: LLM API error 401: {\"error\":{\"message\":\"Authentication Fails, Your api key: ****-key is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
+      "matchedKeywords": [],
+      "missedKeywords": [
+        "DeepSeek",
+        "provider",
+        "model"
+      ],
+      "foundForbidden": []
+    },
+    {
+      "taskId": "s06",
+      "timestamp": 1779788401540,
+      "passed": false,
+      "score": 0,
+      "responseTokens": 47,
+      "durationMs": 644,
+      "response": "error: Error: LLM API error 401: {\"error\":{\"message\":\"Authentication Fails, Your api key: ****-key is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
+      "matchedKeywords": [],
+      "missedKeywords": [
+        "yes",
+        "RSI",
+        "self-modify",
+        "propose"
+      ],
+      "foundForbidden": []
+    },
+    {
+      "taskId": "m01",
+      "timestamp": 1779788402187,
+      "passed": false,
+      "score": 3,
+      "responseTokens": 47,
+      "durationMs": 647,
+      "response": "error: Error: LLM API error 401: {\"error\":{\"message\":\"Authentication Fails, Your api key: ****-key is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
+      "matchedKeywords": [
+        "AI"
+      ],
+      "missedKeywords": [
+        "Andromeda",
+        "agent"
+      ],
+      "foundForbidden": [
+        "error"
+      ]
+    }
+  ],
+  "durationMs": 17498,
+  "storedAt": 1779788402188,
+  "autoCapture": true
+}

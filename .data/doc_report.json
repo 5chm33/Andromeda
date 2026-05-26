@@ -1,7 +1,7 @@
 {
-  "timestamp": 1779762132585,
-  "totalModules": 151,
-  "documentedModules": 84,
+  "timestamp": 1779788400003,
+  "totalModules": 172,
+  "documentedModules": 100,
   "undocumentedExports": [
     {
       "filePath": "server/_core/imageGeneration.ts",
@@ -76,86 +76,134 @@
       "line": 0
     },
     {
-      "filePath": "server/ai.ts",
-      "exportName": "setModel",
-      "exportType": "function",
+      "filePath": "server/agentStateMachine.ts",
+      "exportName": "AgentStateMachine",
+      "exportType": "class",
       "line": 0
     },
     {
-      "filePath": "server/ai.ts",
-      "exportName": "getModel",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/ai.ts",
-      "exportName": "getAvailableModels",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/ai.ts",
+      "filePath": "server/aiPlanning.ts",
       "exportName": "generateSubQueries",
       "exportType": "function",
       "line": 0
     },
     {
-      "filePath": "server/ai.ts",
+      "filePath": "server/aiPlanning.ts",
       "exportName": "generateSuggestions",
       "exportType": "function",
       "line": 0
     },
     {
-      "filePath": "server/ai.ts",
+      "filePath": "server/aiPlanning.ts",
       "exportName": "streamAgentPlan",
       "exportType": "function",
       "line": 0
     },
     {
-      "filePath": "server/ai.ts",
+      "filePath": "server/aiPlanning.ts",
       "exportName": "generateExecutionPlan",
       "exportType": "function",
       "line": 0
     },
     {
-      "filePath": "server/ai.ts",
+      "filePath": "server/aiPlanning.ts",
       "exportName": "todoCreate",
       "exportType": "function",
       "line": 0
     },
     {
-      "filePath": "server/ai.ts",
+      "filePath": "server/aiPlanning.ts",
       "exportName": "todoUpdate",
       "exportType": "function",
       "line": 0
     },
     {
-      "filePath": "server/ai.ts",
+      "filePath": "server/aiPlanning.ts",
       "exportName": "todoList",
       "exportType": "function",
       "line": 0
     },
     {
-      "filePath": "server/ai.ts",
+      "filePath": "server/aiPlanning.ts",
       "exportName": "todoDelete",
       "exportType": "function",
       "line": 0
     },
     {
-      "filePath": "server/ai.ts",
+      "filePath": "server/aiPlanning.ts",
       "exportName": "todoClear",
       "exportType": "function",
       "line": 0
     },
     {
-      "filePath": "server/ai.ts",
+      "filePath": "server/aiPlanning.ts",
       "exportName": "writeAndromedaMemory",
       "exportType": "function",
       "line": 0
     },
     {
-      "filePath": "server/ai.ts",
+      "filePath": "server/aiPlanning.ts",
       "exportName": "readAndromedaMemory",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/aiTokens.ts",
+      "exportName": "getAndromedaMemory",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/aiTokens.ts",
+      "exportName": "getApiUrl",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/aiTokens.ts",
+      "exportName": "getActiveModel",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/aiTokens.ts",
+      "exportName": "resolveProviderOnce",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/aiTokens.ts",
+      "exportName": "getApiKey",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/aiTokens.ts",
+      "exportName": "getProviderHeaders",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/aiTokens.ts",
+      "exportName": "calculateMaxTokens",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/aiTokens.ts",
+      "exportName": "setModel",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/aiTokens.ts",
+      "exportName": "getModel",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/aiTokens.ts",
+      "exportName": "getAvailableModels",
       "exportType": "function",
       "line": 0
     },
@@ -820,19 +868,49 @@
       "line": 0
     },
     {
-      "filePath": "server/fileEngine.ts",
+      "filePath": "server/episodicMemory.ts",
+      "exportName": "getEpisodicStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/evalFramework.ts",
+      "exportName": "scoreResponse",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/evalFramework.ts",
+      "exportName": "getEvalHistory",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/evalFramework.ts",
+      "exportName": "getEvalTrend",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/evalFramework.ts",
+      "exportName": "registerEvalRoutes",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/fileEngineUtils.ts",
       "exportName": "createBudget",
       "exportType": "function",
       "line": 0
     },
     {
-      "filePath": "server/fileEngine.ts",
+      "filePath": "server/fileEngineUtils.ts",
       "exportName": "checkBudget",
       "exportType": "function",
       "line": 0
     },
     {
-      "filePath": "server/fileEngine.ts",
+      "filePath": "server/fileEngineUtils.ts",
       "exportName": "recordUsage",
       "exportType": "function",
       "line": 0
@@ -988,96 +1066,6 @@
       "line": 0
     },
     {
-      "filePath": "server/integrations.ts",
-      "exportName": "scheduleGoalCheckpoint",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/integrations.ts",
-      "exportName": "getGoalSchedules",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/integrations.ts",
-      "exportName": "pauseGoalSchedule",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/integrations.ts",
-      "exportName": "removeGoalSchedule",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/integrations.ts",
-      "exportName": "extractImports",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/integrations.ts",
-      "exportName": "proactiveDepCheck",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/integrations.ts",
-      "exportName": "checkDuplicate",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/integrations.ts",
-      "exportName": "getDedupStats",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/integrations.ts",
-      "exportName": "clearDedupIndex",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/integrations.ts",
-      "exportName": "classifyTaskType",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/integrations.ts",
-      "exportName": "recordTaskMetrics",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/integrations.ts",
-      "exportName": "getTaskBaseline",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/integrations.ts",
-      "exportName": "getAllTaskBaselines",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/integrations.ts",
-      "exportName": "isTaskAnomalous",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/integrations.ts",
-      "exportName": "getIntegrationStatus",
-      "exportType": "function",
-      "line": 0
-    },
-    {
       "filePath": "server/llmProvider.ts",
       "exportName": "getProviderApiKey",
       "exportType": "function",
@@ -1104,6 +1092,12 @@
     {
       "filePath": "server/llmProvider.ts",
       "exportName": "listProviders",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/llmProvider.ts",
+      "exportName": "getBackgroundProvider",
       "exportType": "function",
       "line": 0
     },
@@ -1282,6 +1276,48 @@
       "line": 0
     },
     {
+      "filePath": "server/observability.ts",
+      "exportName": "incrementCounter",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/observability.ts",
+      "exportName": "setGauge",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/observability.ts",
+      "exportName": "recordHistogram",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/observability.ts",
+      "exportName": "getAllMetrics",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/observability.ts",
+      "exportName": "startSpan",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/observability.ts",
+      "exportName": "requestTracingMiddleware",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/observability.ts",
+      "exportName": "registerMetricsRoute",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/persistentContextStore.ts",
       "exportName": "initPersistentContextStore",
       "exportType": "function",
@@ -1296,6 +1332,12 @@
     {
       "filePath": "server/persistentContextStore.ts",
       "exportName": "stopPersistentContextStore",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ragPipeline.ts",
+      "exportName": "registerRagRoutes",
       "exportType": "function",
       "line": 0
     },
@@ -1350,6 +1392,24 @@
     {
       "filePath": "server/recursiveGoals.ts",
       "exportName": "autoExecuteNextGoal",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/routes/evalRoutes.ts",
+      "exportName": "registerEvalRoutes",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/routes/workspaceRoutes.ts",
+      "exportName": "registerWorkspaceRoutes",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/rsiEngine.ts",
+      "exportName": "measureBenchmark",
       "exportType": "function",
       "line": 0
     },
@@ -1966,6 +2026,18 @@
       "line": 0
     },
     {
+      "filePath": "server/taskPlanner.ts",
+      "exportName": "getActivePlan",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/taskPlanner.ts",
+      "exportName": "getAllActivePlans",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/testCoverageAnalyzer.ts",
       "exportName": "runCoverageAnalysis",
       "exportType": "function",
@@ -2228,7 +2300,7 @@
     {
       "filePath": "ARCHITECTURE.md",
       "type": "architecture",
-      "content": "Updated: 151 modules, 370 undocumented exports"
+      "content": "Updated: 172 modules, 382 undocumented exports"
     }
   ],
   "architectureUpdated": true

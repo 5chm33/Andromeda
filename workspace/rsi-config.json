@@ -1,0 +1,9 @@
+{
+  "enabled": true,
+  "intervalMs": 21600000,
+  "maxAutoApplyPerCycle": 2,
+  "requireHumanConfirmAfter": 9,
+  "targetFiles": [],
+  "minConfidenceThreshold": 0.8,
+  "verboseLogging": false
+}

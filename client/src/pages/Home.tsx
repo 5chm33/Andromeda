@@ -234,7 +234,7 @@ export default function Home() {
                 const priority = /server\/(routers|db|ai|search|stream)|client\/src\/(pages|components\/(?!ui))/.test(lower) ? 1
                   : /server\/|client\/src\/(app|main|index|const)/.test(lower) ? 2
                   : /drizzle\/schema|package\.json|vite\.config|tsconfig/.test(lower) ? 3
-                  : /\.test\.|spec\./.test(lower) ? 5
+                  : /\.test\.|spec\./.test(lower) ? 2 // v6.26: Raised from 5→2 so test files are included in self-assessments
                   : 4;
                 promises.push(
                   zipEntry.async("string").then((content) => {
@@ -253,7 +253,7 @@ export default function Home() {
         });
         await Promise.all(promises);
         fileEntries.sort((a, b) => a.priority - b.priority);
-        const TOTAL_CHAR_BUDGET = 2_000_000; // v5.31: Increased — server dynamically manages context window per model
+        const TOTAL_CHAR_BUDGET = 3_500_000; // v6.26: Raised 2MB→3.5MB to fit server source (2.2MB) + test files (0.32MB)
         let totalChars = 0;
         const textContents: string[] = [];
         let skippedCount = 0;

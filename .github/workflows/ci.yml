@@ -27,3 +27,11 @@ jobs:
 
     - name: Build
       run: pnpm run build
+
+    # v6.25: Run full test suite on every push/PR — catches RSI regressions before they ship
+    - name: Test
+      run: pnpm run test
+      env:
+        CI: true
+        # Provide a dummy admin key so auth-protected tests can run in CI
+        ANDROMEDA_ADMIN_KEY: ci-test-key-not-for-production

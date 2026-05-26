@@ -22,6 +22,7 @@
  * - Cooldown period between reloads (prevents thrashing)
  */
 
+import { runMultiPassAnalysis, runMultiPassEdit } from "./fileEngineAnalysis.js";
 import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";

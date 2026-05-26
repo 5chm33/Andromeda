@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { analyzeAndPropose, applyProposal, listProposals, rejectProposal, getAnalyzableFiles } from "../selfImprove.js";
+import { requireAdminAuth } from "../adminAuth.js";
 
 /**
  * registerSelfRoutes — Self-improvement endpoints extracted from streamRouter.ts (v6.02)
@@ -12,7 +13,8 @@ export function registerSelfRoutes(
   sseWrite: (res: any, data: object) => void,
   deps: Record<string, any>
 ) {
-  app.post("/api/self/analyze", heavyLimiter, async (req, res) => {
+  // v6.25: mutation endpoints require admin auth
+  app.post("/api/self/analyze", requireAdminAuth, heavyLimiter, async (req, res) => {
     const { file, area } = req.body as { file: string; area?: string };
     if (!file?.trim()) { res.status(400).json({ error: "file is required" }); return; }
     try {
@@ -23,7 +25,7 @@ export function registerSelfRoutes(
     }
   });
 
-  app.post("/api/self/apply", async (req, res) => {
+  app.post("/api/self/apply", requireAdminAuth, async (req, res) => {
     const { proposalId } = req.body as { proposalId: string };
     if (!proposalId) { res.status(400).json({ error: "proposalId is required" }); return; }
     const result = await applyProposal(proposalId);
@@ -44,7 +46,7 @@ export function registerSelfRoutes(
     res.json({ proposal });
   });
 
-  app.delete("/api/self/proposals/:id", (req, res) => {
+  app.delete("/api/self/proposals/:id", requireAdminAuth, (req, res) => {
     const rejected = rejectProposal(req.params.id);
     res.json({ success: rejected });
   });

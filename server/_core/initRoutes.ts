@@ -142,31 +142,33 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
   });
 
   // ── v5.75: RSI (Recursive Self-Improvement) engine endpoints ──────────────────
+  // v6.25: RSI mutation endpoints require admin auth
+  const { requireAdminAuth } = await import("../adminAuth.js");
   app.get("/api/rsi/status", async (_req, res) => {
     try {
       const { getRSIStatus } = await import("../rsiEngine.js");
       res.json(getRSIStatus());
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });
-  app.post("/api/rsi/enable", async (req, res) => {
+  app.post("/api/rsi/enable", requireAdminAuth, async (req, res) => {
     try {
       const { enableRSI } = await import("../rsiEngine.js");
       res.json(enableRSI(req.body || {}));
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });
-  app.post("/api/rsi/disable", async (_req, res) => {
+  app.post("/api/rsi/disable", requireAdminAuth, async (_req, res) => {
     try {
       const { disableRSI } = await import("../rsiEngine.js");
       res.json(disableRSI());
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });
-  app.post("/api/rsi/trigger", async (_req, res) => {
+  app.post("/api/rsi/trigger", requireAdminAuth, async (_req, res) => {
     try {
       const { triggerRSICycleNow } = await import("../rsiEngine.js");
       res.json(await triggerRSICycleNow());
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });
-  app.post("/api/rsi/confirm", async (_req, res) => {
+  app.post("/api/rsi/confirm", requireAdminAuth, async (_req, res) => {
     try {
       const { confirmContinue } = await import("../rsiEngine.js");
       res.json(confirmContinue());

@@ -22,7 +22,7 @@
       "description": "Optimize LLM calls, caching, and processing to reduce end-to-end response time",
       "rationale": "Faster responses improve user experience and enable more iterations per session",
       "priority": 8,
-      "status": "active",
+      "status": "failed",
       "recursive": false,
       "createdAt": 1779706434298,
       "subGoals": [
@@ -48,7 +48,8 @@
         }
       ],
       "metrics": [],
-      "startedAt": 1779762092446
+      "startedAt": 1779762092446,
+      "outcome": "TTL exceeded (438min > 30min limit)"
     },
     {
       "id": "mgoal_1779706434298_e6xswx",
@@ -85,11 +86,23 @@
       "description": "Improve the proposal generation to produce changes that pass type checking on first attempt",
       "rationale": "Type errors after self-modification waste cycles and reduce confidence in auto-apply",
       "priority": 8,
-      "status": "planned",
+      "status": "active",
       "recursive": true,
       "createdAt": 1779706434298,
-      "subGoals": [],
-      "metrics": []
+      "subGoals": [
+        {
+          "id": "sg_mgoal_1779706434298_n3dvt4_1779788359877_30cy",
+          "parentId": "mgoal_1779706434298_n3dvt4",
+          "title": "Analyze selfImprove.ts for self_improvement improvements",
+          "description": "Improve the proposal generation to produce changes that pass type checking on first attempt — focus on selfImprove.ts",
+          "targetFile": "selfImprove.ts",
+          "estimatedEffort": "medium",
+          "status": "failed",
+          "result": "Background LLM API error 401: {\"error\":{\"message\":\"Authentication Fails, Your api key: ****-key is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}}"
+        }
+      ],
+      "metrics": [],
+      "startedAt": 1779791981282
     },
     {
       "id": "mgoal_1779706434298_iefeyj",
@@ -135,5 +148,5 @@
   ],
   "scans": [],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-05-26T02:21:32.446Z"
+  "_lastUpdated": "2026-05-26T10:39:41.282Z"
 }
