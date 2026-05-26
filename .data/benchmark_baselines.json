@@ -1,0 +1,8 @@
+{
+  "memory_keyword_search": 153.46,
+  "tool_registry_lookup": 0.01,
+  "file_write_10kb": 0.08,
+  "file_read_10kb": 0.02,
+  "context_token_estimation_50msg": 0.1,
+  "json_parse_large_object": 0.1
+}

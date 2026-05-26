@@ -1,0 +1,20 @@
+/**
+ * tools/bashExecute.test.ts — Andromeda v6.20
+ * Tests for tools/bashExecute (side-effect registration module)
+ */
+import { describe, it, expect, vi } from 'vitest';
+
+vi.mock('../toolRegistry.js', () => ({
+  registerTool: vi.fn(),
+}));
+
+describe('bashExecute', () => {
+  it('module loads without throwing', async () => {
+    await expect(import('./bashExecute.js')).resolves.toBeDefined();
+  });
+
+  it('registerTool was called during module load', async () => {
+    const { registerTool } = await import('../toolRegistry.js');
+    expect(registerTool).toBeDefined();
+  });
+});

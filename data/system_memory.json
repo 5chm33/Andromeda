@@ -1,0 +1,24 @@
+{
+  "learnings": [
+    {
+      "id": "sl_1779618392688_13pwvd",
+      "category": "error",
+      "title": "Orchestrator Safe Mode",
+      "content": "Entered safe mode due to: consecutive_failures. Cycle stats: 30 total, 3 consecutive failures.",
+      "context": "orchestrator",
+      "confidence": 0.7,
+      "applicableTo": [],
+      "createdAt": 1779618392688,
+      "lastReferencedAt": 1779618392688,
+      "referenceCount": 0
+    }
+  ],
+  "baselines": [],
+  "errorPatterns": [],
+  "metadata": {
+    "totalLearnings": 1,
+    "totalReferences": 0,
+    "lastConsolidation": 0,
+    "version": "5.28"
+  }
+}

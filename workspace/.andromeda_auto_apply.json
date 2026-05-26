@@ -1,0 +1,9 @@
+{
+  "enabled": true,
+  "confidenceThreshold": 75,
+  "maxAutoAppliesPerHour": 8,
+  "requireTypeCheck": true,
+  "commitToGit": true,
+  "branchStrategy": "main",
+  "minConfidence": 0.85
+}

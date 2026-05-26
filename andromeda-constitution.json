@@ -1,0 +1,161 @@
+{
+  "_comment": "Andromeda AI Constitution v1.0 \u2014 Machine-readable rules checked before every autonomous self-improvement apply.",
+  "_version": "1.2.0",
+  "_updated": "2025-05-23",
+  "identity": {
+    "name": "Andromeda AI",
+    "purpose": "A self-improving AI assistant that helps users with research, coding, writing, and autonomous tasks.",
+    "coreValues": [
+      "helpfulness",
+      "honesty",
+      "safety",
+      "continuous-improvement",
+      "transparency"
+    ]
+  },
+  "autonomousApply": {
+    "enabled": true,
+    "requiresApprovalAboveRiskLevel": "high",
+    "autoApplyRiskLevels": [
+      "low",
+      "medium"
+    ],
+    "confidenceThreshold": 75,
+    "maxAppliesPerHour": 8,
+    "maxAppliesPerDay": 40,
+    "cooldownBetweenAppliesMs": 300000,
+    "requireGitSnapshotBeforeApply": true,
+    "requireTypeCheckBeforeApply": true,
+    "rollbackOnTypeCheckFailure": true,
+    "rollbackOnStartupCrash": true,
+    "rollbackOnLatencyIncrease": 0.2,
+    "rollbackOnErrorRateIncrease": 0.05,
+    "requireSelfReviewBeforeApply": true,
+    "requireBenchmarkCapture": true
+  },
+  "allowedModifications": {
+    "files": [
+      "ai.ts",
+      "grounding.ts",
+      "browser.ts",
+      "workspace.ts",
+      "memory.ts",
+      "multiAgent.ts",
+      "biasDetector.ts",
+      "codeIntel.ts",
+      "streamRouter.ts",
+      "selfImprove.ts",
+      "reactEngine.ts",
+      "llmProvider.ts",
+      "contextManager.ts",
+      "adaptiveRouter.ts",
+      "selfConsistency.ts",
+      "contextBus.ts",
+      "manifest.ts",
+      "search.ts",
+      "tieredContextManager.ts",
+      "selfMonitor.ts",
+      "continuousImprover.ts",
+      "selfHeal.ts",
+      "autoRollback.ts",
+      "selfKnowledgeBase.ts",
+      "llmRouter.ts"
+    ],
+    "categories": [
+      "performance",
+      "reliability",
+      "security",
+      "readability",
+      "feature"
+    ],
+    "maxLinesChangedPerProposal": 100,
+    "maxFilesPerProposal": 1
+  },
+  "forbiddenModifications": {
+    "files": [
+      "_core/index.ts",
+      "auth.ts",
+      "db.ts",
+      "oauth.ts",
+      "andromeda-constitution.json",
+      "safetySupervisor.ts",
+      "twoPhaseCommit.ts",
+      "failurePatternMemory.ts",
+      "identityManifest.ts",
+      "selfTestGenerator.ts"
+    ],
+    "patterns": [
+      "process.env.DEEPSEEK_API_KEY",
+      "process.env.OPENAI_API_KEY",
+      "process.env.OPENROUTER_API_KEY",
+      "API_KEY",
+      "password",
+      "secret",
+      "token",
+      "DROP TABLE",
+      "DELETE FROM",
+      "process.exit",
+      "rm -rf",
+      "rmdir /s"
+    ],
+    "reason": "These files and patterns are critical infrastructure, credentials, or destructive operations that must never be autonomously modified."
+  },
+  "safetyChecks": {
+    "runTypeScriptCheck": true,
+    "runHealthCheck": true,
+    "checkForCredentialLeaks": true,
+    "checkForDestructivePatterns": true,
+    "requireRationaleLength": 20,
+    "blockIfRationaleContains": [
+      "test",
+      "placeholder",
+      "TODO",
+      "FIXME"
+    ]
+  },
+  "memory": {
+    "storeAppliedProposals": true,
+    "storeRejectedProposals": true,
+    "searchPastProposalsBeforeGenerating": true,
+    "maxMemoryEntries": 1000,
+    "avoidRepeatingFailedPatterns": true
+  },
+  "monitoring": {
+    "autoTriggerImprovementOnDegradation": true,
+    "degradationThresholdErrorRate": 0.1,
+    "degradationThresholdLatencyMs": 5000,
+    "healLoopIntervalMs": 60000,
+    "continuousImproverIntervalMs": 3600000
+  },
+  "introspection": {
+    "exposeManifestEndpoint": true,
+    "exposeDiagnosticsEndpoint": true,
+    "exposeIntrospectEndpoint": true,
+    "exposeBootCountEndpoint": true,
+    "includeBootCountInSelfAssessment": true,
+    "includeActiveModulesInSelfAssessment": true
+  },
+  "constitutionEnforcement": {
+    "enabled": true,
+    "checkBeforeEveryApply": true,
+    "invariantRules": [
+      "Never remove or disable the RecursionGuard",
+      "Never remove the anti-hallucination system prompt",
+      "Never disable the twoPhaseCommit pipeline",
+      "Never remove the FORBIDDEN_FILES list",
+      "Never disable the rollback system",
+      "Never remove the constitution enforcement check itself"
+    ],
+    "capabilityBoundaries": [
+      "Self-modification cannot change the model provider routing logic without explicit user approval",
+      "Self-modification cannot reduce error message verbosity",
+      "Self-modification cannot remove diversity or honesty mandates"
+    ],
+    "safetyConstraints": [
+      "All self-modifications must pass self_review before apply",
+      "All self-modifications must pass TypeScript check before apply",
+      "Performance regression > 20% triggers automatic rollback",
+      "Error rate increase > 5% triggers automatic rollback"
+    ]
+  }
+}

@@ -1,0 +1,251 @@
+{
+  "decisions": [
+    {
+      "id": "adr_seed_001",
+      "title": "DeepSeek as Primary LLM Provider",
+      "context": "Need a capable LLM with large context window and competitive pricing",
+      "decision": "Use DeepSeek Chat (131K context) as primary, with configurable fallbacks",
+      "rationale": "Best cost/performance ratio, 131K context window, fast inference, tool support",
+      "alternatives": [
+        "OpenAI GPT-4o (expensive)",
+        "Claude 3.5 (limited availability)",
+        "Local models (quality concerns)"
+      ],
+      "consequences": [
+        "Dependent on DeepSeek API availability",
+        "No native vision support",
+        "Need fallback for outages"
+      ],
+      "status": "accepted",
+      "createdAt": 1779706434210,
+      "updatedAt": 1779706434210,
+      "relatedFiles": [
+        "server/ai.ts",
+        "server/llmProvider.ts"
+      ],
+      "tags": [
+        "llm",
+        "infrastructure",
+        "cost"
+      ]
+    },
+    {
+      "id": "adr_seed_002",
+      "title": "Multi-Pass File Analysis Engine",
+      "context": "Naive file analysis truncated at 80K chars, losing critical context for large codebases",
+      "decision": "Implement index→relevance→fetch→analyze pipeline with auto-continuation",
+      "rationale": "Enables full codebase analysis without artificial limits, uses context window efficiently",
+      "alternatives": [
+        "Simple truncation (loses context)",
+        "Chunked summarization (loses detail)",
+        "RAG-only (misses structure)"
+      ],
+      "consequences": [
+        "Higher token usage per analysis",
+        "More complex code",
+        "Better results for large files"
+      ],
+      "status": "accepted",
+      "createdAt": 1779706434210,
+      "updatedAt": 1779706434210,
+      "relatedFiles": [
+        "server/fileEngine.ts"
+      ],
+      "tags": [
+        "file-analysis",
+        "architecture",
+        "context-window"
+      ]
+    },
+    {
+      "id": "adr_seed_003",
+      "title": "Self-Improvement with Guard Rails",
+      "context": "System needs to modify its own code safely without breaking itself",
+      "decision": "Multi-layer safety: proposal → review → guard → type check → test → rollback",
+      "rationale": "Each layer catches different failure modes; rollback ensures recoverability",
+      "alternatives": [
+        "Direct apply (dangerous)",
+        "Human-only approval (slow)",
+        "Sandbox-only (complex)"
+      ],
+      "consequences": [
+        "Slower self-improvement cycle",
+        "Higher safety",
+        "Can enable auto-apply for high-confidence changes"
+      ],
+      "status": "accepted",
+      "createdAt": 1779706434210,
+      "updatedAt": 1779706434210,
+      "relatedFiles": [
+        "server/selfImprove.ts",
+        "server/selfImproveGuard.ts",
+        "server/autoRollback.ts"
+      ],
+      "tags": [
+        "self-improvement",
+        "safety",
+        "autonomy"
+      ]
+    }
+  ],
+  "issues": [],
+  "learnings": [
+    {
+      "id": "learn_1779707687208_u8jhbv",
+      "category": "antipattern",
+      "title": "Goal execution: Reduce Response Latency",
+      "description": "Processed 2 sub-goals, 0 succeeded",
+      "context": "Goal: Reduce Response Latency (performance)",
+      "outcome": "no progress",
+      "lesson": "Processed 2 sub-goals, 0 succeeded",
+      "applicableTo": [
+        "recursiveGoals",
+        "selfImprove"
+      ],
+      "confidence": 0.7,
+      "createdAt": 1779707687209,
+      "relatedProposalIds": []
+    }
+  ],
+  "capabilities": [
+    {
+      "name": "web_search",
+      "description": "Search the web via Brave/SearXNG",
+      "module": "search.ts",
+      "status": "active",
+      "limitations": [
+        "Rate limited",
+        "No real-time data"
+      ],
+      "dependencies": [
+        "BRAVE_SEARCH_API_KEY or SEARXNG_URL"
+      ],
+      "addedInVersion": "5.0"
+    },
+    {
+      "name": "code_execution",
+      "description": "Execute code in sandboxed environment",
+      "module": "codeRunner.ts",
+      "status": "active",
+      "limitations": [
+        "Timeout limits",
+        "No GPU access"
+      ],
+      "dependencies": [
+        "Docker (optional)"
+      ],
+      "addedInVersion": "5.0"
+    },
+    {
+      "name": "file_analysis",
+      "description": "Multi-pass analysis of ZIP/code files",
+      "module": "fileEngine.ts",
+      "status": "active",
+      "limitations": [
+        "Token budget per pass"
+      ],
+      "dependencies": [
+        "LLM API"
+      ],
+      "addedInVersion": "5.12"
+    },
+    {
+      "name": "self_improvement",
+      "description": "Analyze and modify own source code",
+      "module": "selfImprove.ts",
+      "status": "active",
+      "limitations": [
+        "Requires type check pass",
+        "Rate limited"
+      ],
+      "dependencies": [
+        "TypeScript compiler"
+      ],
+      "addedInVersion": "5.3"
+    },
+    {
+      "name": "hot_reload",
+      "description": "Reload modules without restart",
+      "module": "hotReload.ts",
+      "status": "experimental",
+      "limitations": [
+        "ESM cache busting unreliable",
+        "State may be lost"
+      ],
+      "dependencies": [],
+      "addedInVersion": "5.17"
+    },
+    {
+      "name": "self_healing",
+      "description": "Detect and auto-fix degradation",
+      "module": "selfHeal.ts",
+      "status": "experimental",
+      "limitations": [
+        "Limited to known health checks",
+        "LLM diagnosis may be inaccurate"
+      ],
+      "dependencies": [
+        "LLM API"
+      ],
+      "addedInVersion": "5.17"
+    },
+    {
+      "name": "vector_memory",
+      "description": "Semantic search over stored memories",
+      "module": "vectorMemory.ts",
+      "status": "active",
+      "limitations": [
+        "Embedding quality depends on provider"
+      ],
+      "dependencies": [
+        "Embedding API"
+      ],
+      "addedInVersion": "5.8"
+    },
+    {
+      "name": "multi_agent",
+      "description": "Coordinate multiple AI agents for complex tasks",
+      "module": "multiAgent.ts",
+      "status": "active",
+      "limitations": [
+        "Higher token cost",
+        "Coordination overhead"
+      ],
+      "dependencies": [
+        "LLM API"
+      ],
+      "addedInVersion": "5.5"
+    },
+    {
+      "name": "goal_management",
+      "description": "Create, track, and decompose goals",
+      "module": "goalManager.ts",
+      "status": "active",
+      "limitations": [
+        "No autonomous goal creation yet"
+      ],
+      "dependencies": [
+        "Database"
+      ],
+      "addedInVersion": "5.10"
+    },
+    {
+      "name": "model_optimization",
+      "description": "Auto-select optimal model per task type",
+      "module": "modelRegistry.ts",
+      "status": "experimental",
+      "limitations": [
+        "Needs performance history to be effective"
+      ],
+      "dependencies": [],
+      "addedInVersion": "5.17"
+    },
+    {
+      "name": "test",
+      "description": "test",
+      "status": "active"
+    }
+  ],
+  "_version": "5.17.0",
+  "_lastUpdated": "2026-05-26T08:03:47.846Z"
+}

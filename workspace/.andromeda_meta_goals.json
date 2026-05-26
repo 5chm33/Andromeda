@@ -1,0 +1,139 @@
+{
+  "goals": [
+    {
+      "id": "mgoal_1779706434298_7l9v20",
+      "type": "meta",
+      "title": "Improve the Self-Improvement Pipeline",
+      "description": "Make the self-improvement system faster, safer, and more autonomous",
+      "rationale": "The self-improvement pipeline is the foundation of autonomy. Improving it has compounding returns.",
+      "priority": 10,
+      "status": "completed",
+      "recursive": true,
+      "createdAt": 1779706434298,
+      "subGoals": [],
+      "metrics": [],
+      "completedAt": 1779706478656,
+      "outcome": "All 0 sub-goals completed"
+    },
+    {
+      "id": "mgoal_1779706434298_4e1jk3",
+      "type": "performance",
+      "title": "Reduce Response Latency",
+      "description": "Optimize LLM calls, caching, and processing to reduce end-to-end response time",
+      "rationale": "Faster responses improve user experience and enable more iterations per session",
+      "priority": 8,
+      "status": "active",
+      "recursive": false,
+      "createdAt": 1779706434298,
+      "subGoals": [
+        {
+          "id": "sg_mgoal_1779706434298_4e1jk3_1779707683342_4z2i",
+          "parentId": "mgoal_1779706434298_4e1jk3",
+          "title": "Analyze ai.ts for performance improvements",
+          "description": "Optimize LLM calls, caching, and processing to reduce end-to-end response time — focus on ai.ts",
+          "targetFile": "ai.ts",
+          "estimatedEffort": "medium",
+          "status": "failed",
+          "result": "LLM API error 402: {\"error\":{\"message\":\"Insufficient credits. This account never purchased credits. Make sure your key is on the correct account or org, and if so, purchase more at https://openrouter.ai/settings/credits\",\"code\":402}}"
+        },
+        {
+          "id": "sg_mgoal_1779706434298_4e1jk3_1779707683342_2aq2",
+          "parentId": "mgoal_1779706434298_4e1jk3",
+          "title": "Analyze streamRouter.ts for performance improvements",
+          "description": "Optimize LLM calls, caching, and processing to reduce end-to-end response time — focus on streamRouter.ts",
+          "targetFile": "streamRouter.ts",
+          "estimatedEffort": "medium",
+          "status": "failed",
+          "result": "LLM API error 402: {\"error\":{\"message\":\"Insufficient credits. This account never purchased credits. Make sure your key is on the correct account or org, and if so, purchase more at https://openrouter.ai/settings/credits\",\"code\":402}}"
+        }
+      ],
+      "metrics": [],
+      "startedAt": 1779762092446
+    },
+    {
+      "id": "mgoal_1779706434298_e6xswx",
+      "type": "reliability",
+      "title": "Achieve Zero-Downtime Self-Modification",
+      "description": "Ensure self-improvements can be applied without service interruption",
+      "rationale": "Downtime during self-improvement breaks the autonomous loop",
+      "priority": 9,
+      "status": "completed",
+      "recursive": true,
+      "createdAt": 1779706434298,
+      "subGoals": [],
+      "metrics": [],
+      "completedAt": 1779707488705,
+      "outcome": "All 0 sub-goals completed"
+    },
+    {
+      "id": "mgoal_1779706434298_hz8ow7",
+      "type": "capability",
+      "title": "Expand Tool Coverage",
+      "description": "Add new tools and capabilities based on usage patterns and user needs",
+      "rationale": "More tools = more problems solvable = higher utility",
+      "priority": 7,
+      "status": "planned",
+      "recursive": false,
+      "createdAt": 1779706434298,
+      "subGoals": [],
+      "metrics": []
+    },
+    {
+      "id": "mgoal_1779706434298_n3dvt4",
+      "type": "self_improvement",
+      "title": "Reduce TypeScript Errors After Self-Modification",
+      "description": "Improve the proposal generation to produce changes that pass type checking on first attempt",
+      "rationale": "Type errors after self-modification waste cycles and reduce confidence in auto-apply",
+      "priority": 8,
+      "status": "planned",
+      "recursive": true,
+      "createdAt": 1779706434298,
+      "subGoals": [],
+      "metrics": []
+    },
+    {
+      "id": "mgoal_1779706434298_iefeyj",
+      "type": "reliability",
+      "title": "Improve Test Coverage for Critical Paths",
+      "description": "Generate and maintain tests for all critical system paths",
+      "rationale": "Higher test coverage enables more confident auto-application of changes",
+      "priority": 7,
+      "status": "planned",
+      "recursive": false,
+      "createdAt": 1779706434298,
+      "subGoals": [],
+      "metrics": []
+    },
+    {
+      "id": "mgoal_1779706434298_fngga1",
+      "type": "performance",
+      "title": "Optimize Context Window Utilization",
+      "description": "Ensure maximum useful information per token in LLM context",
+      "rationale": "Better context utilization = better responses with same cost",
+      "priority": 6,
+      "status": "planned",
+      "recursive": false,
+      "createdAt": 1779706434298,
+      "subGoals": [],
+      "metrics": []
+    },
+    {
+      "id": "mgoal_1779706434299_z301dp",
+      "type": "meta",
+      "title": "Improve Goal Decomposition Quality",
+      "description": "Make the goal decomposition system produce more actionable, well-scoped sub-goals",
+      "rationale": "Better decomposition leads to better execution of all other goals",
+      "priority": 9,
+      "status": "completed",
+      "recursive": true,
+      "createdAt": 1779706434299,
+      "subGoals": [],
+      "metrics": [],
+      "completedAt": 1779707613387,
+      "outcome": "All 0 sub-goals completed"
+    }
+  ],
+  "scans": [],
+  "_version": "5.17.0",
+  "_lastUpdated": "2026-05-26T02:21:32.446Z"
+}

@@ -1,0 +1,2235 @@
+{
+  "timestamp": 1779762132585,
+  "totalModules": 151,
+  "documentedModules": 84,
+  "undocumentedExports": [
+    {
+      "filePath": "server/_core/imageGeneration.ts",
+      "exportName": "generateImage",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/_core/initModules.ts",
+      "exportName": "initModules",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/_core/initRoutes.ts",
+      "exportName": "registerCoreRoutes",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/_core/llm.ts",
+      "exportName": "invokeLLM",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/_core/oauth.ts",
+      "exportName": "registerOAuthRoutes",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/_core/vite.ts",
+      "exportName": "setupVite",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/_core/vite.ts",
+      "exportName": "serveStatic",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/adaptivePartitions.ts",
+      "exportName": "recordPartitionOverflow",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/adaptivePartitions.ts",
+      "exportName": "getAdaptivePartitionStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/adaptiveRouter.ts",
+      "exportName": "getRouterStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/agentOrchestrator.ts",
+      "exportName": "getDefaultAgents",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/agentOrchestrator.ts",
+      "exportName": "getAgentRoles",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ai.ts",
+      "exportName": "setModel",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ai.ts",
+      "exportName": "getModel",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ai.ts",
+      "exportName": "getAvailableModels",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ai.ts",
+      "exportName": "generateSubQueries",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ai.ts",
+      "exportName": "generateSuggestions",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ai.ts",
+      "exportName": "streamAgentPlan",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ai.ts",
+      "exportName": "generateExecutionPlan",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ai.ts",
+      "exportName": "todoCreate",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ai.ts",
+      "exportName": "todoUpdate",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ai.ts",
+      "exportName": "todoList",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ai.ts",
+      "exportName": "todoDelete",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ai.ts",
+      "exportName": "todoClear",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ai.ts",
+      "exportName": "writeAndromedaMemory",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ai.ts",
+      "exportName": "readAndromedaMemory",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/andromedaMemoryWriter.ts",
+      "exportName": "generateAndromedaMd",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/autoGoalSuggester.ts",
+      "exportName": "startAutoGoalSuggester",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/autoGoalSuggester.ts",
+      "exportName": "stopAutoGoalSuggester",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/autoGoalSuggester.ts",
+      "exportName": "getSuggestions",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/autoGoalSuggester.ts",
+      "exportName": "triggerSuggestionCycle",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/autoGoalSuggester.ts",
+      "exportName": "getSuggesterStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/autonomousGoalGenerator.ts",
+      "exportName": "getGeneratedGoals",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/autonomousGoalGenerator.ts",
+      "exportName": "approveGoal",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/autonomousGoalGenerator.ts",
+      "exportName": "rejectGoal",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/autonomousGoalGenerator.ts",
+      "exportName": "getGoalGeneratorStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/autonomyOrchestrator.ts",
+      "exportName": "exitSafeMode",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/autonomyOrchestrator.ts",
+      "exportName": "isInSafeMode",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/benchmarkRunner.ts",
+      "exportName": "runBenchmarks",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/benchmarkRunner.ts",
+      "exportName": "startBenchmarkRunner",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/benchmarkRunner.ts",
+      "exportName": "stopBenchmarkRunner",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/benchmarkRunner.ts",
+      "exportName": "getLastBenchmarkReport",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/benchmarkRunner.ts",
+      "exportName": "isRunning",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/browser.ts",
+      "exportName": "browseUrl",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/cache.ts",
+      "exportName": "log",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/cache.ts",
+      "exportName": "getLogLevel",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/cache.ts",
+      "exportName": "setLogLevel",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/cache.ts",
+      "exportName": "getRecentLogs",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/cache.ts",
+      "exportName": "searchCacheKey",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/cache.ts",
+      "exportName": "aiCacheKey",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/cache.ts",
+      "exportName": "browseCacheKey",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/cache.ts",
+      "exportName": "getCachedSearch",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/cache.ts",
+      "exportName": "setCachedSearch",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/cache.ts",
+      "exportName": "getCachedAI",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/cache.ts",
+      "exportName": "setCachedAI",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/cache.ts",
+      "exportName": "getCachedBrowse",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/cache.ts",
+      "exportName": "setCachedBrowse",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/cache.ts",
+      "exportName": "getAllCacheStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/cache.ts",
+      "exportName": "clearAllCaches",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/cache.ts",
+      "exportName": "pruneExpired",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/circuitBreaker.ts",
+      "exportName": "CircuitBreaker",
+      "exportType": "class",
+      "line": 0
+    },
+    {
+      "filePath": "server/circuitBreaker.ts",
+      "exportName": "CircuitOpenError",
+      "exportType": "class",
+      "line": 0
+    },
+    {
+      "filePath": "server/codeQualityMonitor.ts",
+      "exportName": "runQualityAnalysis",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/codeQualityMonitor.ts",
+      "exportName": "startCodeQualityMonitor",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/codeQualityMonitor.ts",
+      "exportName": "stopCodeQualityMonitor",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/codeQualityMonitor.ts",
+      "exportName": "getLastQualityReport",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/codeQualityMonitor.ts",
+      "exportName": "isRunning",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/codeRunner.ts",
+      "exportName": "executeCode",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/codebaseAnalyzer.ts",
+      "exportName": "runFullAnalysis",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/codebaseAnalyzer.ts",
+      "exportName": "startCodebaseAnalyzer",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/codebaseAnalyzer.ts",
+      "exportName": "stopCodebaseAnalyzer",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/codebaseAnalyzer.ts",
+      "exportName": "getLastReport",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/codebaseAnalyzer.ts",
+      "exportName": "getModuleHealth",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/codebaseAnalyzer.ts",
+      "exportName": "isRunning",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/consensusEngine.ts",
+      "exportName": "getConsensus",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/consensusEngine.ts",
+      "exportName": "requiresConsensus",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/consensusEngine.ts",
+      "exportName": "getConsensusStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/consensusEngine.ts",
+      "exportName": "updateConsensusConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/consensusEngine.ts",
+      "exportName": "initConsensusEngine",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/contextAwareness.ts",
+      "exportName": "getContextAwarenessStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/contextBus.ts",
+      "exportName": "createChannel",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/contextBus.ts",
+      "exportName": "listChannels",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/contextBus.ts",
+      "exportName": "deleteChannel",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/contextBus.ts",
+      "exportName": "unsubscribe",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/contextBus.ts",
+      "exportName": "unsubscribeAgent",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/contextBus.ts",
+      "exportName": "query",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/contextBus.ts",
+      "exportName": "getBusStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/contextCompressionDaemon.ts",
+      "exportName": "registerActiveContext",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/contextCompressionDaemon.ts",
+      "exportName": "unregisterActiveContext",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/contextCompressionDaemon.ts",
+      "exportName": "startContextCompressionDaemon",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/contextCompressionDaemon.ts",
+      "exportName": "stopContextCompressionDaemon",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/contextCompressionDaemon.ts",
+      "exportName": "getCompressionStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/contextCompressionDaemon.ts",
+      "exportName": "isRunning",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/contextManager.ts",
+      "exportName": "estimateMessageTokens",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/contextManager.ts",
+      "exportName": "ContextManager",
+      "exportType": "class",
+      "line": 0
+    },
+    {
+      "filePath": "server/continuousImprover.ts",
+      "exportName": "startContinuousImprover",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/continuousImprover.ts",
+      "exportName": "stopContinuousImprover",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/continuousImprover.ts",
+      "exportName": "triggerCycleNow",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/continuousImprover.ts",
+      "exportName": "getImproverStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/continuousImprover.ts",
+      "exportName": "updateImproverConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/db.ts",
+      "exportName": "getDb",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/db.ts",
+      "exportName": "upsertUser",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/db.ts",
+      "exportName": "getUserByOpenId",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/db.ts",
+      "exportName": "saveSearchHistory",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/db.ts",
+      "exportName": "updateSearchAnswer",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/db.ts",
+      "exportName": "getUserSearchHistory",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/db.ts",
+      "exportName": "getSessionSearchHistory",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/db.ts",
+      "exportName": "deleteUserSearchHistory",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/db.ts",
+      "exportName": "deleteSearchHistoryItem",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/db.ts",
+      "exportName": "upsertSuggestion",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/db.ts",
+      "exportName": "getAutocompleteSuggestions",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/dependencyAuditor.ts",
+      "exportName": "runFullAudit",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/dependencyAuditor.ts",
+      "exportName": "startDependencyAuditor",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/dependencyAuditor.ts",
+      "exportName": "stopDependencyAuditor",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/dependencyAuditor.ts",
+      "exportName": "getLastAuditReport",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/dependencyAuditor.ts",
+      "exportName": "isRunning",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/dependencyResolver.ts",
+      "exportName": "parseErrorForDependencies",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/dependencyResolver.ts",
+      "exportName": "scanImportsForDependencies",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/dependencyResolver.ts",
+      "exportName": "diffManifestDependencies",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/dependencyResolver.ts",
+      "exportName": "installDependency",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/dependencyResolver.ts",
+      "exportName": "installBatch",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/dependencyResolver.ts",
+      "exportName": "addPendingRequest",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/dependencyResolver.ts",
+      "exportName": "getPendingRequests",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/dependencyResolver.ts",
+      "exportName": "clearPendingRequests",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/dependencyResolver.ts",
+      "exportName": "autoResolve",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/dependencyResolver.ts",
+      "exportName": "rollbackInstall",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/dependencyResolver.ts",
+      "exportName": "rollbackAll",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/dependencyResolver.ts",
+      "exportName": "getResolverConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/dependencyResolver.ts",
+      "exportName": "setResolverConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/dependencyResolver.ts",
+      "exportName": "getInstallHistory",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/dependencyResolver.ts",
+      "exportName": "getResolverStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/docGenerator.ts",
+      "exportName": "runDocGeneration",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/docGenerator.ts",
+      "exportName": "startDocGenerator",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/docGenerator.ts",
+      "exportName": "stopDocGenerator",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/docGenerator.ts",
+      "exportName": "getLastDocReport",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/docGenerator.ts",
+      "exportName": "isRunning",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/fileEngine.ts",
+      "exportName": "createBudget",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/fileEngine.ts",
+      "exportName": "checkBudget",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/fileEngine.ts",
+      "exportName": "recordUsage",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "getGoal",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "listGoals",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "deleteGoal",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "startGoal",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "pauseGoal",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "resumeGoal",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "cancelGoal",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "completeGoal",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "failGoal",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "completeSubGoal",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "failSubGoal",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "createCheckpoint",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "resolveCheckpoint",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "getPendingCheckpoints",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "addLearning",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "getGoalStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "getGoalEvents",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "addReprioritizationRule",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "removeReprioritizationRule",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "listReprioritizationRules",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "setReprioritizationEnabled",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "isReprioritizationEnabled",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "runReprioritization",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "getReprioritizationHistory",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/goalManager.ts",
+      "exportName": "getReprioritizationStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/integrations.ts",
+      "exportName": "scheduleGoalCheckpoint",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/integrations.ts",
+      "exportName": "getGoalSchedules",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/integrations.ts",
+      "exportName": "pauseGoalSchedule",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/integrations.ts",
+      "exportName": "removeGoalSchedule",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/integrations.ts",
+      "exportName": "extractImports",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/integrations.ts",
+      "exportName": "proactiveDepCheck",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/integrations.ts",
+      "exportName": "checkDuplicate",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/integrations.ts",
+      "exportName": "getDedupStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/integrations.ts",
+      "exportName": "clearDedupIndex",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/integrations.ts",
+      "exportName": "classifyTaskType",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/integrations.ts",
+      "exportName": "recordTaskMetrics",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/integrations.ts",
+      "exportName": "getTaskBaseline",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/integrations.ts",
+      "exportName": "getAllTaskBaselines",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/integrations.ts",
+      "exportName": "isTaskAnomalous",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/integrations.ts",
+      "exportName": "getIntegrationStatus",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/llmProvider.ts",
+      "exportName": "getProviderApiKey",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/llmProvider.ts",
+      "exportName": "switchProvider",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/llmProvider.ts",
+      "exportName": "getActiveProvider",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/llmProvider.ts",
+      "exportName": "setActiveProvider",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/llmProvider.ts",
+      "exportName": "listProviders",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/llmRouter.ts",
+      "exportName": "getRoutingConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/llmRouter.ts",
+      "exportName": "setRoutingConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/llmRouter.ts",
+      "exportName": "classifyTask",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/logger.ts",
+      "exportName": "createLogger",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/manifest.ts",
+      "exportName": "generateManifest",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/mcpClient.ts",
+      "exportName": "addServerConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/mcpClient.ts",
+      "exportName": "removeServerConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/mcpClient.ts",
+      "exportName": "getServerConfigs",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/mcpClient.ts",
+      "exportName": "getConnectionStatus",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/mcpClient.ts",
+      "exportName": "connectServer",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/mcpClient.ts",
+      "exportName": "disconnectServer",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/mcpClient.ts",
+      "exportName": "connectAllEnabled",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/mcpClient.ts",
+      "exportName": "disconnectAll",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/memory.ts",
+      "exportName": "listMemories",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/memory.ts",
+      "exportName": "deleteMemory",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/memory.ts",
+      "exportName": "getMemoryStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/memoryConsolidation.ts",
+      "exportName": "getConsolidationConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/memoryConsolidation.ts",
+      "exportName": "setConsolidationConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/memoryConsolidation.ts",
+      "exportName": "getConsolidationStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/memoryConsolidation.ts",
+      "exportName": "getScoredMemories",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/memoryConsolidation.ts",
+      "exportName": "getMemoryScore",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/memoryConsolidation.ts",
+      "exportName": "startConsolidation",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/memoryConsolidation.ts",
+      "exportName": "stopConsolidation",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/memoryConsolidation.ts",
+      "exportName": "isConsolidationRunning",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/memoryConsolidation.ts",
+      "exportName": "getDedupConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/memoryConsolidation.ts",
+      "exportName": "setDedupConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/memoryConsolidation.ts",
+      "exportName": "getDedupHistory",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/memoryConsolidation.ts",
+      "exportName": "getDedupStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/multiAgent.ts",
+      "exportName": "runTeamAgent",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/persistentContextStore.ts",
+      "exportName": "initPersistentContextStore",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/persistentContextStore.ts",
+      "exportName": "getStoreStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/persistentContextStore.ts",
+      "exportName": "stopPersistentContextStore",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/reactEngine.ts",
+      "exportName": "ReactEngine",
+      "exportType": "class",
+      "line": 0
+    },
+    {
+      "filePath": "server/recursionGuard.ts",
+      "exportName": "canModify",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/recursionGuard.ts",
+      "exportName": "enterRecursion",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/recursionGuard.ts",
+      "exportName": "exitRecursion",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/recursionGuard.ts",
+      "exportName": "resetGuard",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/recursionGuard.ts",
+      "exportName": "getGuardStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/recursionGuard.ts",
+      "exportName": "updateGuardConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/recursionGuard.ts",
+      "exportName": "getGuardConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/recursiveGoals.ts",
+      "exportName": "autoExecuteNextGoal",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/runtimeConfig.ts",
+      "exportName": "onConfigChange",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/sandboxManager.ts",
+      "exportName": "initSandbox",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/sandboxManager.ts",
+      "exportName": "validateSandboxRequest",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/sandboxManager.ts",
+      "exportName": "checkWorkspaceSize",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/sandboxManager.ts",
+      "exportName": "executeSandboxed",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/sandboxManager.ts",
+      "exportName": "getSandboxConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/sandboxManager.ts",
+      "exportName": "updateSandboxConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/sandboxManager.ts",
+      "exportName": "logExecution",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/sandboxManager.ts",
+      "exportName": "getAuditLog",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/scheduler.ts",
+      "exportName": "getTask",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/scheduler.ts",
+      "exportName": "listTasks",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/scheduler.ts",
+      "exportName": "pauseTask",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/scheduler.ts",
+      "exportName": "resumeTask",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/scheduler.ts",
+      "exportName": "cancelTask",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/scheduler.ts",
+      "exportName": "deleteTask",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/scheduler.ts",
+      "exportName": "getTaskExecutions",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/scheduler.ts",
+      "exportName": "triggerTaskNow",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/scheduler.ts",
+      "exportName": "getWebhookSecret",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/scheduler.ts",
+      "exportName": "getSchedulerStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/scheduler.ts",
+      "exportName": "initScheduler",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/search.ts",
+      "exportName": "getCredibility",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/search.ts",
+      "exportName": "extractDomain",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/search.ts",
+      "exportName": "getFavicon",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/search.ts",
+      "exportName": "searchSearXNG",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/security.ts",
+      "exportName": "revokeApiKey",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/security.ts",
+      "exportName": "deleteApiKey",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/security.ts",
+      "exportName": "listApiKeys",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/security.ts",
+      "exportName": "getAuditStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/security.ts",
+      "exportName": "securityMiddleware",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/security.ts",
+      "exportName": "getSecurityConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/security.ts",
+      "exportName": "updateSecurityConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/security.ts",
+      "exportName": "getSecurityStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/self/behavioral_tests.ts",
+      "exportName": "formatBehavioralTestResults",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/self/benchmark_suite.ts",
+      "exportName": "runBenchmarks",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/self/chunked_writer.ts",
+      "exportName": "getSessionStatus",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/self/compilation_pipeline.ts",
+      "exportName": "runSelfCompilation",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/self/compilation_pipeline.ts",
+      "exportName": "formatBuildResults",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/self/dependency_upgrader.ts",
+      "exportName": "scanOutdatedPackages",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/self/refactoring_engine.ts",
+      "exportName": "generateRefactoringProposals",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/self/smoke_test_runner.ts",
+      "exportName": "runSmokeTests",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfConsistency.ts",
+      "exportName": "getConsistencyStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfHeal.ts",
+      "exportName": "initSelfHeal",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfImprove.ts",
+      "exportName": "applyProposal",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfImprove.ts",
+      "exportName": "rejectProposal",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfImprove.ts",
+      "exportName": "listProposals",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfImprove.ts",
+      "exportName": "getAnalyzableFiles",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfImprove.ts",
+      "exportName": "getAutoApplyConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfImprove.ts",
+      "exportName": "setAutoApplyConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfImproveGuard.ts",
+      "exportName": "generateDiffPreview",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfImproveGuard.ts",
+      "exportName": "guardedApply",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfImproveGuard.ts",
+      "exportName": "rollbackToBackup",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfImproveGuard.ts",
+      "exportName": "getGuardConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfImproveGuard.ts",
+      "exportName": "updateGuardConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfImproveGuard.ts",
+      "exportName": "listBackups",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfImproveGuard.ts",
+      "exportName": "getAuditLog",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfImproveGuard.ts",
+      "exportName": "sweepExpiredProposals",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfIntrospect.ts",
+      "exportName": "initSelfIntrospect",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfModify.ts",
+      "exportName": "getModificationStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfModify.ts",
+      "exportName": "setEnabled",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfModify.ts",
+      "exportName": "isEnabled",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfModify.ts",
+      "exportName": "initSelfModify",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfMonitor.ts",
+      "exportName": "getMonitorConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfMonitor.ts",
+      "exportName": "setMonitorConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfMonitor.ts",
+      "exportName": "getHealthReport",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfMonitor.ts",
+      "exportName": "getAlerts",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfMonitor.ts",
+      "exportName": "resolveAlert",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfMonitor.ts",
+      "exportName": "getMetricHistory",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfMonitor.ts",
+      "exportName": "startMonitor",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfMonitor.ts",
+      "exportName": "stopMonitor",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfMonitor.ts",
+      "exportName": "isMonitorRunning",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfMonitor.ts",
+      "exportName": "recordProviderSample",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfMonitor.ts",
+      "exportName": "recalculateBaselines",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfMonitor.ts",
+      "exportName": "getAdaptiveThresholds",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfMonitor.ts",
+      "exportName": "isProviderDegraded",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfMonitor.ts",
+      "exportName": "getAllBaselines",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfMonitor.ts",
+      "exportName": "getAdaptiveConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfMonitor.ts",
+      "exportName": "setAdaptiveConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfMonitor.ts",
+      "exportName": "getAdaptiveStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfReview.ts",
+      "exportName": "reviewCode",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfReview.ts",
+      "exportName": "reviewAndGate",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfReview.ts",
+      "exportName": "getReviewConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfReview.ts",
+      "exportName": "setReviewConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfReview.ts",
+      "exportName": "getReviewStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfReview.ts",
+      "exportName": "getReviewHistory",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfRollback.ts",
+      "exportName": "stopDegradationWatch",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/skillGraph.ts",
+      "exportName": "suggestFix",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/skillGraph.ts",
+      "exportName": "getSkillsForModule",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/skillGraph.ts",
+      "exportName": "getGraphStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/skillGraph.ts",
+      "exportName": "recordAppliedSuggestion",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/skillGraph.ts",
+      "exportName": "propagatePattern",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/skillGraph.ts",
+      "exportName": "decayStalePatterns",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/skillGraph.ts",
+      "exportName": "runLearningPipeline",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/skillGraph.ts",
+      "exportName": "initSkillGraph",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/storage.ts",
+      "exportName": "storageGet",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/streamIntegrityMonitor.ts",
+      "exportName": "getMonitorStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/streamIntegrityMonitor.ts",
+      "exportName": "initStreamIntegrityMonitor",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/streamRouter.ts",
+      "exportName": "registerStreamRoutes",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/taskDecomposer.ts",
+      "exportName": "getDecomposerConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/taskDecomposer.ts",
+      "exportName": "setDecomposerConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/taskDecomposer.ts",
+      "exportName": "getDecomposedQuery",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/taskDecomposer.ts",
+      "exportName": "listDecomposedQueries",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/taskDecomposer.ts",
+      "exportName": "getDecomposerStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/testCoverageAnalyzer.ts",
+      "exportName": "runCoverageAnalysis",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/testCoverageAnalyzer.ts",
+      "exportName": "startTestCoverageAnalyzer",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/testCoverageAnalyzer.ts",
+      "exportName": "stopTestCoverageAnalyzer",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/testCoverageAnalyzer.ts",
+      "exportName": "getLastCoverageReport",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/testCoverageAnalyzer.ts",
+      "exportName": "isRunning",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/testGenerator.ts",
+      "exportName": "generateTests",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/testGenerator.ts",
+      "exportName": "runTest",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/testGenerator.ts",
+      "exportName": "runAllTests",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/testGenerator.ts",
+      "exportName": "analyzeCoverageGaps",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/testGenerator.ts",
+      "exportName": "getTestGenConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/testGenerator.ts",
+      "exportName": "setTestGenConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/testGenerator.ts",
+      "exportName": "getTestGenStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/testGenerator.ts",
+      "exportName": "getGeneratedTests",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/testGenerator.ts",
+      "exportName": "getTestResults",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tieredContextManager.ts",
+      "exportName": "getIsolatedContextStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tieredContextManager.ts",
+      "exportName": "getContextManagerStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tieredContextManager.ts",
+      "exportName": "recordAssembly",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tieredContextManager.ts",
+      "exportName": "recordRecovery",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tokenBudgetManager.ts",
+      "exportName": "estimateTokenCount",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tokenBudgetManager.ts",
+      "exportName": "getBudgetStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tokenBudgetManager.ts",
+      "exportName": "updateConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tokenBudgetManager.ts",
+      "exportName": "getConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tokenBudgetManager.ts",
+      "exportName": "initTokenBudgetManager",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tools/browserAutomation.ts",
+      "exportName": "closeBrowser",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tools/dockerSandbox.ts",
+      "exportName": "checkDockerAvailability",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tools/dockerSandbox.ts",
+      "exportName": "cleanupAllSessions",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tools/selfDiagnoseTools.ts",
+      "exportName": "registerSelfDiagnoseTools",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tools/selfModifyTools.ts",
+      "exportName": "registerSelfModifyTools",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tools/selfTestRunner.ts",
+      "exportName": "runAllTests",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tools/selfTestRunner.ts",
+      "exportName": "runTypeCheck",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tools/selfTestRunner.ts",
+      "exportName": "selfHeal",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tools/selfTestRunner.ts",
+      "exportName": "registerSelfTestTools",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tools/toolRegistry.ts",
+      "exportName": "registerTool",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tools/toolRegistry.ts",
+      "exportName": "getTool",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tools/toolRegistry.ts",
+      "exportName": "getAllTools",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tools/toolRegistry.ts",
+      "exportName": "getToolDefinitions",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tools/toolRegistry.ts",
+      "exportName": "getToolsByCategory",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tools/toolRegistry.ts",
+      "exportName": "listToolNames",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/unifiedKnowledge.ts",
+      "exportName": "getUnifiedKnowledgeStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/vectorMemory.ts",
+      "exportName": "registerEmbeddingProvider",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/vectorMemory.ts",
+      "exportName": "setEmbeddingProvider",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/vectorMemory.ts",
+      "exportName": "getEmbeddingProvider",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/workspace.ts",
+      "exportName": "getWorkspaceDir",
+      "exportType": "function",
+      "line": 0
+    }
+  ],
+  "generatedDocs": [
+    {
+      "filePath": "ARCHITECTURE.md",
+      "type": "architecture",
+      "content": "Updated: 151 modules, 370 undocumented exports"
+    }
+  ],
+  "architectureUpdated": true
+}

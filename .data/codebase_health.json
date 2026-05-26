@@ -1,0 +1,574 @@
+{
+  "timestamp": 1779762092854,
+  "totalFiles": 151,
+  "averageScore": 87,
+  "worstModules": [
+    {
+      "filePath": "server/tools/selfModifyTools.ts",
+      "fileName": "selfModifyTools.ts",
+      "score": 0,
+      "lineCount": 1440,
+      "issues": [
+        {
+          "type": "large_file",
+          "severity": "medium",
+          "message": "File has 1440 lines (max recommended: 500)",
+          "suggestion": "Consider splitting into smaller modules"
+        },
+        {
+          "type": "long_function",
+          "severity": "medium",
+          "line": 78,
+          "message": "Function 'resolveServerPath' is 51 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "high",
+          "line": 172,
+          "message": "Function 'execute' is 184 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "medium",
+          "line": 385,
+          "message": "Function 'execute' is 65 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "medium",
+          "line": 486,
+          "message": "Function 'execute' is 74 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "high",
+          "line": 608,
+          "message": "Function 'execute' is 167 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "high",
+          "line": 843,
+          "message": "Function 'execute' is 218 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "medium",
+          "line": 1095,
+          "message": "Function 'execute' is 64 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "medium",
+          "line": 1201,
+          "message": "Function 'execute' is 97 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'validateProposal' appears to be unused",
+          "suggestion": "Remove unused import 'validateProposal'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'isForbiddenFile' appears to be unused",
+          "suggestion": "Remove unused import 'isForbiddenFile'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'getSupervisorStatus' appears to be unused",
+          "suggestion": "Remove unused import 'getSupervisorStatus'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'checkFailurePattern' appears to be unused",
+          "suggestion": "Remove unused import 'checkFailurePattern'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'recordFailure' appears to be unused",
+          "suggestion": "Remove unused import 'recordFailure'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'getFailureStats' appears to be unused",
+          "suggestion": "Remove unused import 'getFailureStats'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'verifyContinuity' appears to be unused",
+          "suggestion": "Remove unused import 'verifyContinuity'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'getIdentitySummary' appears to be unused",
+          "suggestion": "Remove unused import 'getIdentitySummary'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'IDENTITY' appears to be unused",
+          "suggestion": "Remove unused import 'IDENTITY'"
+        }
+      ],
+      "lastAnalyzed": 1779762092844
+    },
+    {
+      "filePath": "server/tools/selfDiagnoseTools.ts",
+      "fileName": "selfDiagnoseTools.ts",
+      "score": 26,
+      "lineCount": 855,
+      "issues": [
+        {
+          "type": "large_file",
+          "severity": "medium",
+          "message": "File has 855 lines (max recommended: 500)",
+          "suggestion": "Consider splitting into smaller modules"
+        },
+        {
+          "type": "long_function",
+          "severity": "high",
+          "line": 152,
+          "message": "Function 'execute' is 155 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "high",
+          "line": 352,
+          "message": "Function 'execute' is 101 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "high",
+          "line": 501,
+          "message": "Function 'execute' is 184 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "high",
+          "line": 726,
+          "message": "Function 'execute' is 123 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "todo",
+          "severity": "low",
+          "line": 400,
+          "message": "TODO comment: `    // TODO: Implement reproduction of the original bug`,"
+        },
+        {
+          "type": "todo",
+          "severity": "low",
+          "line": 410,
+          "message": "TODO comment: `    // TODO: Import and test ${fn} from '${relativePath}'`,"
+        }
+      ],
+      "lastAnalyzed": 1779762092838
+    },
+    {
+      "filePath": "server/ai.ts",
+      "fileName": "ai.ts",
+      "score": 27,
+      "lineCount": 1680,
+      "issues": [
+        {
+          "type": "large_file",
+          "severity": "medium",
+          "message": "File has 1680 lines (max recommended: 500)",
+          "suggestion": "Consider splitting into smaller modules"
+        },
+        {
+          "type": "long_function",
+          "severity": "medium",
+          "line": 250,
+          "message": "Function 'buildSystemPrompt' is 91 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "medium",
+          "line": 407,
+          "message": "Function 'signatures' is 55 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "medium",
+          "line": 1262,
+          "message": "Function 'generateAgentPlan' is 77 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "high",
+          "line": 1340,
+          "message": "Function 'streamAgentPlan' is 123 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "medium",
+          "line": 1483,
+          "message": "Function 'generateExecutionPlan' is 54 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "any_type",
+          "severity": "high",
+          "message": "20 uses of 'any' type — reduces type safety",
+          "suggestion": "Replace with specific types or 'unknown'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'type ContextMessage' appears to be unused",
+          "suggestion": "Remove unused import 'type ContextMessage'"
+        }
+      ],
+      "lastAnalyzed": 1779762092720
+    },
+    {
+      "filePath": "server/streamRouter.ts",
+      "fileName": "streamRouter.ts",
+      "score": 33,
+      "lineCount": 855,
+      "issues": [
+        {
+          "type": "large_file",
+          "severity": "medium",
+          "message": "File has 855 lines (max recommended: 500)",
+          "suggestion": "Consider splitting into smaller modules"
+        },
+        {
+          "type": "long_function",
+          "severity": "high",
+          "line": 160,
+          "message": "Function 'registerStreamRoutes' is 695 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "any_type",
+          "severity": "medium",
+          "message": "9 uses of 'any' type — reduces type safety",
+          "suggestion": "Replace with specific types or 'unknown'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'getContextWindow' appears to be unused",
+          "suggestion": "Remove unused import 'getContextWindow'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'existsSync' appears to be unused",
+          "suggestion": "Remove unused import 'existsSync'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'pathResolve' appears to be unused",
+          "suggestion": "Remove unused import 'pathResolve'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'basename' appears to be unused",
+          "suggestion": "Remove unused import 'basename'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'fsStat' appears to be unused",
+          "suggestion": "Remove unused import 'fsStat'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'readdir' appears to be unused",
+          "suggestion": "Remove unused import 'readdir'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'fsReadFile' appears to be unused",
+          "suggestion": "Remove unused import 'fsReadFile'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'getMemoryStats' appears to be unused",
+          "suggestion": "Remove unused import 'getMemoryStats'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'listProposals' appears to be unused",
+          "suggestion": "Remove unused import 'listProposals'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'runOrchestration' appears to be unused",
+          "suggestion": "Remove unused import 'runOrchestration'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'getDefaultAgents' appears to be unused",
+          "suggestion": "Remove unused import 'getDefaultAgents'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'getAgentRoles' appears to be unused",
+          "suggestion": "Remove unused import 'getAgentRoles'"
+        }
+      ],
+      "lastAnalyzed": 1779762092819
+    },
+    {
+      "filePath": "server/selfImprove.ts",
+      "fileName": "selfImprove.ts",
+      "score": 39,
+      "lineCount": 954,
+      "issues": [
+        {
+          "type": "large_file",
+          "severity": "medium",
+          "message": "File has 954 lines (max recommended: 500)",
+          "suggestion": "Consider splitting into smaller modules"
+        },
+        {
+          "type": "long_function",
+          "severity": "medium",
+          "line": 88,
+          "message": "Function 'resolveServerFile' is 53 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "high",
+          "line": 375,
+          "message": "Function 'applyProposal' is 198 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "high",
+          "line": 775,
+          "message": "Function 'autoApplyHighConfidence' is 154 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "any_type",
+          "severity": "high",
+          "message": "19 uses of 'any' type — reduces type safety",
+          "suggestion": "Replace with specific types or 'unknown'"
+        }
+      ],
+      "lastAnalyzed": 1779762092800
+    },
+    {
+      "filePath": "server/tools/selfTestRunner.ts",
+      "fileName": "selfTestRunner.ts",
+      "score": 40,
+      "lineCount": 572,
+      "issues": [
+        {
+          "type": "large_file",
+          "severity": "medium",
+          "message": "File has 572 lines (max recommended: 500)",
+          "suggestion": "Consider splitting into smaller modules"
+        },
+        {
+          "type": "long_function",
+          "severity": "medium",
+          "line": 85,
+          "message": "Function 'runTestFile' is 84 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "high",
+          "line": 230,
+          "message": "Function 'selfHeal' is 102 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "medium",
+          "line": 382,
+          "message": "Function 'attemptAutoFix' is 63 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "high",
+          "line": 449,
+          "message": "Function 'registerSelfTestTools' is 123 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'type ToolResult' appears to be unused",
+          "suggestion": "Remove unused import 'type ToolResult'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'type ToolExecutionContext' appears to be unused",
+          "suggestion": "Remove unused import 'type ToolExecutionContext'"
+        }
+      ],
+      "lastAnalyzed": 1779762092846
+    },
+    {
+      "filePath": "server/recursiveGoals.ts",
+      "fileName": "recursiveGoals.ts",
+      "score": 53,
+      "lineCount": 887,
+      "issues": [
+        {
+          "type": "large_file",
+          "severity": "medium",
+          "message": "File has 887 lines (max recommended: 500)",
+          "suggestion": "Consider splitting into smaller modules"
+        },
+        {
+          "type": "long_function",
+          "severity": "medium",
+          "line": 227,
+          "message": "Function 'createMetaGoal' is 71 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "medium",
+          "line": 303,
+          "message": "Function 'scanForImprovementOpportunities' is 58 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "high",
+          "line": 625,
+          "message": "Function 'autoExecuteNextGoal' is 188 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "medium",
+          "line": 818,
+          "message": "Function 'decomposeGoalIntoSubGoals' is 53 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        }
+      ],
+      "lastAnalyzed": 1779762092773
+    },
+    {
+      "filePath": "server/tools/selfAwareness.ts",
+      "fileName": "selfAwareness.ts",
+      "score": 54,
+      "lineCount": 528,
+      "issues": [
+        {
+          "type": "large_file",
+          "severity": "medium",
+          "message": "File has 528 lines (max recommended: 500)",
+          "suggestion": "Consider splitting into smaller modules"
+        },
+        {
+          "type": "long_function",
+          "severity": "high",
+          "line": 44,
+          "message": "Function 'execute' is 131 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "high",
+          "line": 202,
+          "message": "Function 'execute' is 136 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "medium",
+          "line": 360,
+          "message": "Function 'execute' is 51 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        }
+      ],
+      "lastAnalyzed": 1779762092835
+    },
+    {
+      "filePath": "server/routes/systemRoutes.ts",
+      "fileName": "systemRoutes.ts",
+      "score": 56,
+      "lineCount": 731,
+      "issues": [
+        {
+          "type": "large_file",
+          "severity": "medium",
+          "message": "File has 731 lines (max recommended: 500)",
+          "suggestion": "Consider splitting into smaller modules"
+        },
+        {
+          "type": "long_function",
+          "severity": "high",
+          "line": 16,
+          "message": "Function 'registerSystemRoutes' is 715 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "any_type",
+          "severity": "high",
+          "message": "61 uses of 'any' type — reduces type safety",
+          "suggestion": "Replace with specific types or 'unknown'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'listToolNames' appears to be unused",
+          "suggestion": "Remove unused import 'listToolNames'"
+        },
+        {
+          "type": "dead_code",
+          "severity": "low",
+          "message": "Import 'getToolsByCategory' appears to be unused",
+          "suggestion": "Remove unused import 'getToolsByCategory'"
+        }
+      ],
+      "lastAnalyzed": 1779762092785
+    }
+  ],
+  "totalIssues": 223,
+  "issuesByType": {
+    "long_function": 111,
+    "any_type": 31,
+    "missing_type": 2,
+    "dead_code": 37,
+    "large_file": 40,
+    "todo": 2
+  }
+}
