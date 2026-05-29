@@ -26,6 +26,8 @@ import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
 import { storeMemory } from "./memory.js";
+import { createSnapshot, restoreSnapshot } from "./autoRollback.js";
+import { execSync } from "child_process";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -371,19 +373,53 @@ export async function runRSICycle(): Promise<RSICycleResult> {
         .slice(0, rsiConfig.maxAutoApplyPerCycle);
 
       for (const proposal of eligible) {
+        // v6.27: Create snapshot BEFORE applying so we can roll back if tests fail
+        const snapshotId = createSnapshot(
+          [proposal.filePath],
+          `RSI cycle ${cycleId} — proposal ${proposal.id}`
+        );
         try {
           const { applyProposal } = await import("./selfImprove.js");
           const result = await applyProposal(proposal.id);
           if (result.success) {
-            proposalsApplied++;
-            consecutiveAutoApplies++;
-            appliedFiles.push(proposal.filePath);
-            console.log(`[RSIEngine] Applied proposal ${proposal.id} to ${proposal.filePath}`);
+            // v6.27: Run test suite after applying — roll back if any test fails
+            let testsPassed = true;
+            try {
+              console.log(`[RSIEngine] Running test suite to validate proposal ${proposal.id}...`);
+              execSync("pnpm test --run --reporter=verbose 2>&1", {
+                cwd: process.cwd(),
+                timeout: 120_000, // 2 min max
+                stdio: "pipe",
+              });
+              console.log(`[RSIEngine] Tests PASSED — committing proposal ${proposal.id}`);
+            } catch (testErr: any) {
+              testsPassed = false;
+              const testOutput = (testErr.stdout?.toString() || "") + (testErr.stderr?.toString() || "");
+              const failSummary = testOutput.slice(-500); // last 500 chars
+              console.warn(`[RSIEngine] Tests FAILED after applying ${proposal.id} — rolling back`);
+              console.warn(`[RSIEngine] Test failure summary: ${failSummary}`);
+              restoreSnapshot(snapshotId);
+              proposalsRejected++;
+              errors.push(`Proposal ${proposal.id} rolled back: tests failed. ${failSummary.slice(0, 200)}`);
+              storeMemory(
+                `RSI proposal ${proposal.id} ROLLED BACK: test suite failed after apply. File: ${proposal.filePath}`,
+                "fact",
+                ["rsi", "rollback", "test-failure"]
+              );
+            }
+            if (testsPassed) {
+              proposalsApplied++;
+              consecutiveAutoApplies++;
+              appliedFiles.push(proposal.filePath);
+              console.log(`[RSIEngine] Applied + verified proposal ${proposal.id} to ${proposal.filePath}`);
+            }
           } else {
             proposalsRejected++;
             errors.push(`Apply failed for ${proposal.id}: ${result.message}`);
           }
         } catch (e) {
+          // Roll back snapshot on unexpected error
+          restoreSnapshot(snapshotId);
           proposalsRejected++;
           errors.push(`Apply error for ${proposal.id}: ${String(e).slice(0, 200)}`);
         }

@@ -1,3 +1,7 @@
+import { validateBody } from "../routes/validate.js";
+import { 
+  rsiEnableSchema, episodicRecordSchema, planDecomposeSchema 
+} from "../routes/zodSchemas.js";
 /**
  * initRoutes.ts — v6.04
  *
@@ -150,7 +154,7 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
       res.json(getRSIStatus());
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });
-  app.post("/api/rsi/enable", requireAdminAuth, async (req, res) => {
+  app.post("/api/rsi/enable", requireAdminAuth, validateBody(rsiEnableSchema), async (req, res) => {
     try {
       const { enableRSI } = await import("../rsiEngine.js");
       res.json(enableRSI(req.body || {}));
@@ -207,7 +211,7 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
       res.json(getEpisodicStats());
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });
-  app.post("/api/episodic/record", async (req, res) => {
+  app.post("/api/episodic/record", validateBody(episodicRecordSchema), async (req, res) => {
     try {
       const { recordEpisode } = await import("../episodicMemory.js");
       const episode = await recordEpisode(req.body);
@@ -226,7 +230,7 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
   });
 
   // ── v6.19: Task Planner ───────────────────────────────────────────────────────
-  app.post("/api/plan/decompose", async (req, res) => {
+  app.post("/api/plan/decompose", validateBody(planDecomposeSchema), async (req, res) => {
     try {
       const { decomposeTask } = await import("../taskPlanner.js");
       const { goal, context, maxSteps } = req.body;

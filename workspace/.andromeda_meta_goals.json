@@ -73,11 +73,34 @@
       "description": "Add new tools and capabilities based on usage patterns and user needs",
       "rationale": "More tools = more problems solvable = higher utility",
       "priority": 7,
-      "status": "planned",
+      "status": "failed",
       "recursive": false,
       "createdAt": 1779706434298,
-      "subGoals": [],
-      "metrics": []
+      "subGoals": [
+        {
+          "id": "sg_mgoal_1779706434298_hz8ow7_1779841253700_g3ch",
+          "parentId": "mgoal_1779706434298_hz8ow7",
+          "title": "Analyze reactEngine.ts for capability improvements",
+          "description": "Add new tools and capabilities based on usage patterns and user needs — focus on reactEngine.ts",
+          "targetFile": "reactEngine.ts",
+          "estimatedEffort": "medium",
+          "status": "failed",
+          "result": "fetch failed"
+        },
+        {
+          "id": "sg_mgoal_1779706434298_hz8ow7_1779841253700_rco4",
+          "parentId": "mgoal_1779706434298_hz8ow7",
+          "title": "Analyze multiAgent.ts for capability improvements",
+          "description": "Add new tools and capabilities based on usage patterns and user needs — focus on multiAgent.ts",
+          "targetFile": "multiAgent.ts",
+          "estimatedEffort": "medium",
+          "status": "failed",
+          "result": "fetch failed"
+        }
+      ],
+      "metrics": [],
+      "startedAt": 1779842203322,
+      "outcome": "TTL exceeded (1551min > 30min limit)"
     },
     {
       "id": "mgoal_1779706434298_n3dvt4",
@@ -86,7 +109,7 @@
       "description": "Improve the proposal generation to produce changes that pass type checking on first attempt",
       "rationale": "Type errors after self-modification waste cycles and reduce confidence in auto-apply",
       "priority": 8,
-      "status": "active",
+      "status": "failed",
       "recursive": true,
       "createdAt": 1779706434298,
       "subGoals": [
@@ -102,7 +125,8 @@
         }
       ],
       "metrics": [],
-      "startedAt": 1779791981282
+      "startedAt": 1779793781576,
+      "outcome": "TTL exceeded (791min > 30min limit)"
     },
     {
       "id": "mgoal_1779706434298_iefeyj",
@@ -111,11 +135,23 @@
       "description": "Generate and maintain tests for all critical system paths",
       "rationale": "Higher test coverage enables more confident auto-application of changes",
       "priority": 7,
-      "status": "planned",
+      "status": "active",
       "recursive": false,
       "createdAt": 1779706434298,
-      "subGoals": [],
-      "metrics": []
+      "subGoals": [
+        {
+          "id": "sg_mgoal_1779706434298_iefeyj_1779935256973_npr0",
+          "parentId": "mgoal_1779706434298_iefeyj",
+          "title": "Improve ai.ts for: Improve Test Coverage for Critical Paths",
+          "description": "Analyze and improve ai.ts to achieve: Generate and maintain tests for all critical system paths",
+          "targetFile": "ai.ts",
+          "estimatedEffort": "medium",
+          "status": "failed",
+          "result": "Background LLM API error 401: {\"error\":{\"message\":\"Authentication Fails, Your api key: ****-key is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}}"
+        }
+      ],
+      "metrics": [],
+      "startedAt": 1780014345109
     },
     {
       "id": "mgoal_1779706434298_fngga1",
@@ -148,5 +184,5 @@
   ],
   "scans": [],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-05-26T10:39:41.282Z"
+  "_lastUpdated": "2026-05-29T00:25:45.109Z"
 }

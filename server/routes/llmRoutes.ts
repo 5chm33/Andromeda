@@ -1,3 +1,9 @@
+import { validateBody } from "./validate.js";
+import { 
+  planGenerateSchema, vectorStoreSchema, vectorStoreBatchSchema, 
+  vectorSearchSchema, vectorConfigSchema, knowledgeDecisionSchema, 
+  knowledgeIssueSchema, knowledgeLearningSchema 
+} from "./zodSchemas.js";
 import type { Express } from "express";
 import { readFileSync } from "fs";
 import {
@@ -64,7 +70,7 @@ export function registerLLMRoutes(app: Express) {
   });
 
   // ─── Vector Memory ────────────────────────────────────────────────────────
-  app.post("/api/vector/store", async (req, res) => {
+  app.post("/api/vector/store", validateBody(vectorStoreSchema), async (req, res) => {
     try {
       const { id, text } = req.body;
       if (!id || !text) return res.status(400).json({ error: "id and text required" });
@@ -74,7 +80,7 @@ export function registerLLMRoutes(app: Express) {
       res.status(500).json({ error: (err as Error).message });
     }
   });
-  app.post("/api/vector/store-batch", async (req, res) => {
+  app.post("/api/vector/store-batch", validateBody(vectorStoreBatchSchema), async (req, res) => {
     try {
       const { entries } = req.body;
       if (!entries || !Array.isArray(entries)) return res.status(400).json({ error: "entries array required" });
@@ -84,7 +90,7 @@ export function registerLLMRoutes(app: Express) {
       res.status(500).json({ error: (err as Error).message });
     }
   });
-  app.post("/api/vector/search", async (req, res) => {
+  app.post("/api/vector/search", validateBody(vectorSearchSchema), async (req, res) => {
     try {
       const { query, limit, minScore } = req.body;
       if (!query) return res.status(400).json({ error: "query required" });
@@ -94,7 +100,7 @@ export function registerLLMRoutes(app: Express) {
       res.status(500).json({ error: (err as Error).message });
     }
   });
-  app.post("/api/vector/hybrid-search", async (req, res) => {
+  app.post("/api/vector/hybrid-search", validateBody(vectorSearchSchema), async (req, res) => {
     try {
       const { query, limit, minScore } = req.body;
       if (!query) return res.status(400).json({ error: "query required" });
@@ -117,7 +123,7 @@ export function registerLLMRoutes(app: Express) {
     }
   });
   app.get("/api/vector/stats", (req, res) => res.json(vectorStats()));
-  app.post("/api/vector/config", (req, res) => {
+  app.post("/api/vector/config", validateBody(vectorConfigSchema), (req, res) => {
     try {
       const { provider, apiUrl, apiKey, model } = req.body;
       if (provider === "api" && apiUrl && apiKey) {
@@ -202,7 +208,7 @@ export function registerLLMRoutes(app: Express) {
       res.status(500).json({ error: err.message });
     }
   });
-  app.post("/api/knowledge/decisions", async (req, res) => {
+  app.post("/api/knowledge/decisions", validateBody(knowledgeDecisionSchema), async (req, res) => {
     try {
       const { recordDecision } = await import("../selfKnowledgeBase.js");
       const decision = recordDecision(req.body);
@@ -220,7 +226,7 @@ export function registerLLMRoutes(app: Express) {
       res.status(500).json({ error: err.message });
     }
   });
-  app.post("/api/knowledge/issues", async (req, res) => {
+  app.post("/api/knowledge/issues", validateBody(knowledgeIssueSchema), async (req, res) => {
     try {
       const { reportIssue } = await import("../selfKnowledgeBase.js");
       const issue = reportIssue(req.body);
@@ -241,7 +247,7 @@ export function registerLLMRoutes(app: Express) {
       res.status(500).json({ error: err.message });
     }
   });
-  app.post("/api/knowledge/learnings", async (req, res) => {
+  app.post("/api/knowledge/learnings", validateBody(knowledgeLearningSchema), async (req, res) => {
     try {
       const { recordLearning } = await import("../selfKnowledgeBase.js");
       const entry = recordLearning(req.body);
@@ -270,7 +276,7 @@ export function registerLLMRoutes(app: Express) {
   });
 
   // ─── Plan Mode ────────────────────────────────────────────────────────────
-  app.post("/api/plan/generate", heavyLimiter, async (req, res) => {
+  app.post("/api/plan/generate", heavyLimiter, validateBody(planGenerateSchema), async (req, res) => {
     const { goal, model } = req.body as { goal: string; model?: string };
     if (!goal?.trim()) { res.status(400).json({ error: "goal is required" }); return; }
     if (model) setModel(model);

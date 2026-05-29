@@ -1,3 +1,9 @@
+import { validateBody } from "./validate.js";
+import { 
+  goalCreateSchema, subGoalCreateSchema, checkpointCreateSchema, metaGoalCreateSchema,
+  scheduledTaskCreateSchema, busPublishSchema, busSubscribeSchema, busQuerySchema,
+  apiKeyCreateSchema, testGenerateSchema
+} from "./zodSchemas.js";
 import type { Express } from "express";
 import {
   createGoal, getGoal, listGoals, deleteGoal, startGoal, pauseGoal, resumeGoal,
@@ -97,7 +103,7 @@ export function registerAutonomyRoutes(app: Express) {
   });
 
   // ─── v5.5 Tier 3: Security — API Keys, Rate Limiting, Audit ──────────────
-  app.post("/api/security/keys", (req, res) => {
+  app.post("/api/security/keys", validateBody(apiKeyCreateSchema), (req, res) => {
     try {
       const result = createApiKey(req.body);
       res.json({ success: true, key: result.key, plaintext: result.plaintext });
@@ -124,7 +130,7 @@ export function registerAutonomyRoutes(app: Express) {
   app.get("/api/security/stats", (req, res) => res.json(getSecurityStats()));
 
   // ─── v5.5 Autonomy: Goal Manager ──────────────────────────────────────────
-  app.post("/api/goals", (req, res) => {
+  app.post("/api/goals", validateBody(goalCreateSchema), (req, res) => {
     try {
       const goal = createGoal(req.body);
       res.json(goal);
@@ -149,7 +155,7 @@ export function registerAutonomyRoutes(app: Express) {
     const { outcome } = req.body || {};
     res.json({ success: completeGoal(req.params.id, outcome) });
   });
-  app.post("/api/goals/:id/subgoals", (req, res) => {
+  app.post("/api/goals/:id/subgoals", validateBody(subGoalCreateSchema), (req, res) => {
     try {
       const subgoal = addSubGoal(req.params.id, req.body);
       res.json(subgoal);
@@ -161,7 +167,7 @@ export function registerAutonomyRoutes(app: Express) {
   app.post("/api/goals/:id/subgoals/:subId/fail", (req, res) => res.json({ success: failSubGoal(req.params.id, req.params.subId, req.body.reason || "") }));
   app.get("/api/goals/:id/next", (req, res) => res.json({ next: getNextSubGoal(req.params.id) }));
   app.get("/api/goals/:id/parallel", (req, res) => res.json({ parallel: getParallelSubGoals(req.params.id) }));
-  app.post("/api/goals/:id/checkpoint", (req, res) => {
+  app.post("/api/goals/:id/checkpoint", validateBody(checkpointCreateSchema), (req, res) => {
     try {
       const cp = createCheckpoint(req.params.id, req.body);
       res.json(cp);
@@ -314,7 +320,7 @@ export function registerAutonomyRoutes(app: Express) {
   app.get("/api/decompose/stats/overview", (req, res) => res.json(getDecomposerStats()));
 
   // ─── Scheduler ────────────────────────────────────────────────────────────
-  app.post("/api/scheduler/tasks", (req, res) => {
+  app.post("/api/scheduler/tasks", validateBody(scheduledTaskCreateSchema), (req, res) => {
     try {
       const task = createTask(req.body);
       res.json(task);
@@ -378,7 +384,7 @@ export function registerAutonomyRoutes(app: Express) {
   app.get("/api/review/stats", (_req, res) => res.json(getReviewStats()));
 
   // ─── Test Generator ───────────────────────────────────────────────────────
-  app.post("/api/tests/generate", async (req, res) => {
+  app.post("/api/tests/generate", validateBody(testGenerateSchema), async (req, res) => {
     try {
       const { code, filePath, language } = req.body;
       if (!code || !filePath) { res.status(400).json({ error: "code and filePath required" }); return; }
@@ -396,7 +402,7 @@ export function registerAutonomyRoutes(app: Express) {
       res.status(500).json({ error: err.message });
     }
   });
-  app.post("/api/tests/generate-and-run", async (req, res) => {
+  app.post("/api/tests/generate-and-run", validateBody(testGenerateSchema), async (req, res) => {
     try {
       const { code, filePath, language } = req.body;
       if (!code || !filePath) { res.status(400).json({ error: "code and filePath required" }); return; }
@@ -416,19 +422,19 @@ export function registerAutonomyRoutes(app: Express) {
   app.post("/api/bus/channels", (req, res) => res.json(createChannel(req.body.name, req.body.description || "")));
   app.get("/api/bus/channels", (_req, res) => res.json(listChannels()));
   app.delete("/api/bus/channels/:name", (req, res) => res.json({ deleted: deleteChannel(req.params.name) }));
-  app.post("/api/bus/publish", (req, res) => {
+  app.post("/api/bus/publish", validateBody(busPublishSchema), (req, res) => {
     try {
       const entry = publish(req.body);
       res.json(entry);
     } catch (e: any) { res.status(400).json({ error: e.message }); }
   });
-  app.post("/api/bus/subscribe", (req, res) => {
+  app.post("/api/bus/subscribe", validateBody(busSubscribeSchema), (req, res) => {
     const sub = subscribe({ agentId: req.body.agentId, channel: req.body.channel, filter: req.body.filter });
     res.json(sub);
   });
   app.delete("/api/bus/subscribe/:id", (req, res) => res.json({ removed: unsubscribe(req.params.id) }));
   app.delete("/api/bus/agent/:agentId/subscriptions", (req, res) => res.json({ removed: unsubscribeAgent(req.params.agentId) }));
-  app.post("/api/bus/query", (req, res) => {
+  app.post("/api/bus/query", validateBody(busQuerySchema), (req, res) => {
     const results = queryBus(req.body);
     res.json(results.map((e: any) => ({ ...e, readBy: Array.from(e.readBy) })));
   });
@@ -461,7 +467,7 @@ export function registerAutonomyRoutes(app: Express) {
       res.status(500).json({ error: err.message });
     }
   });
-  app.post("/api/meta-goals", async (req, res) => {
+  app.post("/api/meta-goals", validateBody(metaGoalCreateSchema), async (req, res) => {
     try {
       const { createMetaGoal } = await import("../recursiveGoals.js");
       const goal = createMetaGoal(req.body);

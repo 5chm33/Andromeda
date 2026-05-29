@@ -1,3 +1,5 @@
+import { validateBody } from "./validate.js";
+import { selfAnalyzeSchema, selfApplySchema } from "./zodSchemas.js";
 import type { Express } from "express";
 import { analyzeAndPropose, applyProposal, listProposals, rejectProposal, getAnalyzableFiles } from "../selfImprove.js";
 import { requireAdminAuth } from "../adminAuth.js";
@@ -14,7 +16,7 @@ export function registerSelfRoutes(
   deps: Record<string, any>
 ) {
   // v6.25: mutation endpoints require admin auth
-  app.post("/api/self/analyze", requireAdminAuth, heavyLimiter, async (req, res) => {
+  app.post("/api/self/analyze", requireAdminAuth, heavyLimiter, validateBody(selfAnalyzeSchema), async (req, res) => {
     const { file, area } = req.body as { file: string; area?: string };
     if (!file?.trim()) { res.status(400).json({ error: "file is required" }); return; }
     try {
@@ -25,7 +27,7 @@ export function registerSelfRoutes(
     }
   });
 
-  app.post("/api/self/apply", requireAdminAuth, async (req, res) => {
+  app.post("/api/self/apply", requireAdminAuth, validateBody(selfApplySchema), async (req, res) => {
     const { proposalId } = req.body as { proposalId: string };
     if (!proposalId) { res.status(400).json({ error: "proposalId is required" }); return; }
     const result = await applyProposal(proposalId);

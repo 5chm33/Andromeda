@@ -1,5 +1,5 @@
 {
-  "timestamp": 1779788369920,
+  "timestamp": 1780014348348,
   "totalModules": 172,
   "testedModules": 140,
   "untestedModules": 32,
@@ -370,6 +370,7 @@
       "fileName": "aiStreaming.ts",
       "hasTestFile": false,
       "exportedFunctions": [
+        "streamToResponse",
         "streamAIResponse",
         "streamAIResponseWithContext",
         "streamDeepResearch",
@@ -380,6 +381,7 @@
       ],
       "testedFunctions": [],
       "untestedFunctions": [
+        "streamToResponse",
         "streamAIResponse",
         "streamAIResponseWithContext",
         "streamDeepResearch",
@@ -604,18 +606,26 @@
       "fileName": "fileEngineTypes.ts",
       "hasTestFile": false,
       "exportedFunctions": [
+        "getModelContextMaxOutput",
+        "getFileEngineProviderHeaders",
+        "getFileEngineApiUrl",
         "extractSignatures",
         "categorizeFile",
         "compressFile",
+        "MAX_REQUESTED_FILES",
         "TEXT_EXTS",
         "PRIORITY_FILES",
         "LOW_PRIORITY_DIRS"
       ],
       "testedFunctions": [],
       "untestedFunctions": [
+        "getModelContextMaxOutput",
+        "getFileEngineProviderHeaders",
+        "getFileEngineApiUrl",
         "extractSignatures",
         "categorizeFile",
         "compressFile",
+        "MAX_REQUESTED_FILES",
         "TEXT_EXTS",
         "PRIORITY_FILES",
         "LOW_PRIORITY_DIRS"

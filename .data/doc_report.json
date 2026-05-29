@@ -1,6 +1,6 @@
 {
-  "timestamp": 1779788400003,
-  "totalModules": 172,
+  "timestamp": 1780014432444,
+  "totalModules": 174,
   "documentedModules": 100,
   "undocumentedExports": [
     {
@@ -898,6 +898,24 @@
       "line": 0
     },
     {
+      "filePath": "server/fileEngineTypes.ts",
+      "exportName": "getModelContextMaxOutput",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/fileEngineTypes.ts",
+      "exportName": "getFileEngineProviderHeaders",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/fileEngineTypes.ts",
+      "exportName": "getFileEngineApiUrl",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/fileEngineUtils.ts",
       "exportName": "createBudget",
       "exportType": "function",
@@ -1398,6 +1416,12 @@
     {
       "filePath": "server/routes/evalRoutes.ts",
       "exportName": "registerEvalRoutes",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/routes/validate.ts",
+      "exportName": "validateBody",
       "exportType": "function",
       "line": 0
     },
@@ -2300,7 +2324,7 @@
     {
       "filePath": "ARCHITECTURE.md",
       "type": "architecture",
-      "content": "Updated: 172 modules, 382 undocumented exports"
+      "content": "Updated: 174 modules, 386 undocumented exports"
     }
   ],
   "architectureUpdated": true

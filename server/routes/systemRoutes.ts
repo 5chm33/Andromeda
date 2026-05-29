@@ -1,3 +1,7 @@
+import { validateBody } from "./validate.js";
+import { 
+  rollbackCreateSchema, selfModifySchema, selfModifyBatchSchema 
+} from "./zodSchemas.js";
 import type { Express } from "express";
 import { readFileSync } from "fs";
 import { join } from "path";
@@ -234,7 +238,7 @@ export function registerSystemRoutes(app: Express) {
       res.status(500).json({ error: err.message });
     }
   });
-  app.post("/api/rollback/create", async (req, res) => {
+  app.post("/api/rollback/create", validateBody(rollbackCreateSchema), async (req, res) => {
     try {
       const { createRollbackPoint } = await import("../selfRollback.js");
       const { files, label } = req.body || {};
@@ -330,7 +334,7 @@ export function registerSystemRoutes(app: Express) {
   });
 
   // ─── v5.23: Self-Modification API ─────────────────────────────────────────
-  app.post("/api/self-modify", async (req, res) => {
+  app.post("/api/self-modify", validateBody(selfModifySchema), async (req, res) => {
     try {
       const { selfModify } = await import("../selfModify.js");
       const result = await selfModify(req.body);
@@ -339,7 +343,7 @@ export function registerSystemRoutes(app: Express) {
       res.status(500).json({ error: err.message });
     }
   });
-  app.post("/api/self-modify/batch", async (req, res) => {
+  app.post("/api/self-modify/batch", validateBody(selfModifyBatchSchema), async (req, res) => {
     try {
       const { selfModifyBatch } = await import("../selfModify.js");
       const result = await selfModifyBatch(req.body.requests || []);

@@ -1,3 +1,5 @@
+import { validateBody } from "./validate.js";
+import { agentStreamSchema, agentRespondSchema } from "./zodSchemas.js";
 import type { Express } from "express";
 import { streamAgentToSSE } from "../reactEngine.js";
 import { setActiveProvider } from "../llmProvider.js";
@@ -19,7 +21,7 @@ export function registerAgentRoutes(
   // v5.5: ReAct Agent endpoints
   // ═══════════════════════════════════════════════════════════════════════════
 
-  app.post("/api/agent/react/stream", streamLimiter, async (req, res) => {
+  app.post("/api/agent/react/stream", streamLimiter, validateBody(agentStreamSchema), async (req, res) => {
     const { query, maxSteps, sessionId: clientSessionId } = req.body;
     if (!query) { res.status(400).json({ error: "query is required" }); return; }
     setSseHeaders(res);
@@ -53,7 +55,7 @@ export function registerAgentRoutes(
   });
 
   // v5.36: Real human-in-the-loop response — resolves pending Promise in the engine
-  app.post("/api/agent/react/respond", (req, res) => {
+  app.post("/api/agent/react/respond", validateBody(agentRespondSchema), (req, res) => {
     const { sessionId, answer } = req.body;
     if (!sessionId || !answer) { res.status(400).json({ error: "sessionId and answer required" }); return; }
     const engine = activeAgentSessions.get(sessionId);

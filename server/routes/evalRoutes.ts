@@ -12,6 +12,8 @@
  *  GET  /api/rsi/proof       — before/after comparison: baseline vs latest eval
  */
 import type { Router } from "express";
+import { validateBody } from "./validate.js";
+import { evalRunSchema } from "./zodSchemas.js";
 import * as fs from "fs";
 import * as path from "path";
 import { EVAL_TASKS, getEvalHistory, getEvalTrend, runEvaluation } from "../evalFramework.js";
@@ -70,7 +72,7 @@ export function registerEvalRoutes(app: Router): void {
   });
 
   // POST /api/eval/run — run evaluation (optionally specify task IDs or quick mode)
-  app.post("/api/eval/run", async (req, res) => {
+  app.post("/api/eval/run", validateBody(evalRunSchema), async (req, res) => {
     const { taskIds, quick } = req.body as { taskIds?: string[]; quick?: boolean };
     const ids = taskIds ?? (quick ? EVAL_TASKS.filter(t => t.difficulty === "easy").map(t => t.id) : undefined);
     try {
@@ -83,7 +85,7 @@ export function registerEvalRoutes(app: Router): void {
 
   // POST /api/eval/baseline — run eval and store result as the official baseline
   // Call this ONCE before enabling RSI to establish the starting score.
-  app.post("/api/eval/baseline", async (req, res) => {
+  app.post("/api/eval/baseline", validateBody(evalRunSchema), async (req, res) => {
     const { quick } = req.body as { quick?: boolean };
     const ids = quick ? EVAL_TASKS.filter(t => t.difficulty === "easy").map(t => t.id) : undefined;
     try {

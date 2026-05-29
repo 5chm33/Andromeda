@@ -121,6 +121,86 @@
       "confidence": 0.7,
       "createdAt": 1779788364143,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1779841344966_qje30l",
+      "category": "antipattern",
+      "title": "Failure: Fix health check logic inconsistency in recordError",
+      "description": "Failed to apply \"Fix health check logic inconsistency in recordError\" to adaptiveRouter.ts. Reason: Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.. Avoid similar changes.",
+      "context": "self-modify adaptiveRouter.ts reliability",
+      "outcome": "failure: Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.",
+      "lesson": "Avoid for adaptiveRouter.ts: Fix health check logic inconsistency in recordError — causes Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.",
+      "applicableTo": [
+        "adaptiveRouter.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1779841344966,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1779841423233_vynksl",
+      "category": "antipattern",
+      "title": "Goal execution: Expand Tool Coverage",
+      "description": "Processed 2 sub-goals, 0 succeeded",
+      "context": "Goal: Expand Tool Coverage (capability)",
+      "outcome": "no progress",
+      "lesson": "Processed 2 sub-goals, 0 succeeded",
+      "applicableTo": [
+        "recursiveGoals",
+        "selfImprove"
+      ],
+      "confidence": 0.7,
+      "createdAt": 1779841423233,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1779935339925_l54bvz",
+      "category": "antipattern",
+      "title": "Failure: Fix health check logic inconsistency in recordError",
+      "description": "Failed to apply \"Fix health check logic inconsistency in recordError\" to adaptiveRouter.ts. Reason: Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.. Avoid similar changes.",
+      "context": "self-modify adaptiveRouter.ts reliability",
+      "outcome": "failure: Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.",
+      "lesson": "Avoid for adaptiveRouter.ts: Fix health check logic inconsistency in recordError — causes Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.",
+      "applicableTo": [
+        "adaptiveRouter.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1779935339925,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1779935344865_6vt9gh",
+      "category": "antipattern",
+      "title": "Goal execution: Improve Test Coverage for Critical Paths",
+      "description": "Processed 1 sub-goals, 0 succeeded",
+      "context": "Goal: Improve Test Coverage for Critical Paths (reliability)",
+      "outcome": "no progress",
+      "lesson": "Processed 1 sub-goals, 0 succeeded",
+      "applicableTo": [
+        "recursiveGoals",
+        "selfImprove"
+      ],
+      "confidence": 0.7,
+      "createdAt": 1779935344865,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780014439717_v7r8tv",
+      "category": "antipattern",
+      "title": "Failure: Fix health check logic inconsistency in recordError",
+      "description": "Failed to apply \"Fix health check logic inconsistency in recordError\" to adaptiveRouter.ts. Reason: Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.. Avoid similar changes.",
+      "context": "self-modify adaptiveRouter.ts reliability",
+      "outcome": "failure: Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.",
+      "lesson": "Avoid for adaptiveRouter.ts: Fix health check logic inconsistency in recordError — causes Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.",
+      "applicableTo": [
+        "adaptiveRouter.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780014439717,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -263,5 +343,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-05-26T10:20:40.073Z"
+  "_lastUpdated": "2026-05-29T00:28:28.703Z"
 }
