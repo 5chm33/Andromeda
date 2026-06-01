@@ -6,11 +6,11 @@
       "title": "Orchestrator Safe Mode",
       "content": "Entered safe mode due to: consecutive_failures. Cycle stats: 30 total, 3 consecutive failures.",
       "context": "orchestrator",
-      "confidence": 0.7,
+      "confidence": 0.7999999999999999,
       "applicableTo": [],
       "createdAt": 1779618392688,
-      "lastReferencedAt": 1779618392688,
-      "referenceCount": 0
+      "lastReferencedAt": 1780197501099,
+      "referenceCount": 1
     }
   ],
   "baselines": [],
@@ -18,7 +18,7 @@
   "metadata": {
     "totalLearnings": 1,
     "totalReferences": 0,
-    "lastConsolidation": 1779935335476,
+    "lastConsolidation": 1780197349244,
     "version": "5.28"
   }
 }

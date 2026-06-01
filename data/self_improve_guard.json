@@ -49,6 +49,33 @@
       "result": "blocked",
       "details": "Constitution: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'",
       "timestamp": "2026-05-29T00:27:19.716Z"
+    },
+    {
+      "id": "audit_1780102762329_okn4hh",
+      "action": "apply",
+      "proposalId": "prop_1779762103380_ozxr4x",
+      "filename": "adaptiveRouter.ts",
+      "result": "blocked",
+      "details": "Constitution: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'",
+      "timestamp": "2026-05-30T00:59:22.329Z"
+    },
+    {
+      "id": "audit_1780197353063_v6k3rl",
+      "action": "apply",
+      "proposalId": "prop_1779762103380_ozxr4x",
+      "filename": "adaptiveRouter.ts",
+      "result": "blocked",
+      "details": "Constitution: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'",
+      "timestamp": "2026-05-31T03:15:53.063Z"
+    },
+    {
+      "id": "audit_1780280784788_8tksrz",
+      "action": "apply",
+      "proposalId": "prop_1779762103380_ozxr4x",
+      "filename": "adaptiveRouter.ts",
+      "result": "blocked",
+      "details": "Constitution: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'",
+      "timestamp": "2026-06-01T02:26:24.788Z"
     }
   ]
 }

@@ -1,8 +1,8 @@
 {
-  "timestamp": 1780014348348,
-  "totalModules": 172,
+  "timestamp": 1780280660929,
+  "totalModules": 174,
   "testedModules": 140,
-  "untestedModules": 32,
+  "untestedModules": 34,
   "coveragePercent": 40,
   "moduleDetails": [
     {
@@ -684,6 +684,88 @@
       "testedFunctions": [],
       "untestedFunctions": [
         "appRouter"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/routes/validate.ts",
+      "fileName": "validate.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "validateBody"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "validateBody"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/routes/zodSchemas.ts",
+      "fileName": "zodSchemas.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "goalCreateSchema",
+        "subGoalCreateSchema",
+        "checkpointCreateSchema",
+        "metaGoalCreateSchema",
+        "scheduledTaskCreateSchema",
+        "busPublishSchema",
+        "busSubscribeSchema",
+        "busQuerySchema",
+        "apiKeyCreateSchema",
+        "testGenerateSchema",
+        "planGenerateSchema",
+        "vectorStoreSchema",
+        "vectorStoreBatchSchema",
+        "vectorSearchSchema",
+        "vectorConfigSchema",
+        "knowledgeDecisionSchema",
+        "knowledgeIssueSchema",
+        "knowledgeLearningSchema",
+        "agentStreamSchema",
+        "agentRespondSchema",
+        "selfAnalyzeSchema",
+        "selfApplySchema",
+        "evalRunSchema",
+        "rollbackCreateSchema",
+        "selfModifySchema",
+        "selfModifyBatchSchema",
+        "rsiEnableSchema",
+        "episodicRecordSchema",
+        "planDecomposeSchema"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "goalCreateSchema",
+        "subGoalCreateSchema",
+        "checkpointCreateSchema",
+        "metaGoalCreateSchema",
+        "scheduledTaskCreateSchema",
+        "busPublishSchema",
+        "busSubscribeSchema",
+        "busQuerySchema",
+        "apiKeyCreateSchema",
+        "testGenerateSchema",
+        "planGenerateSchema",
+        "vectorStoreSchema",
+        "vectorStoreBatchSchema",
+        "vectorSearchSchema",
+        "vectorConfigSchema",
+        "knowledgeDecisionSchema",
+        "knowledgeIssueSchema",
+        "knowledgeLearningSchema",
+        "agentStreamSchema",
+        "agentRespondSchema",
+        "selfAnalyzeSchema",
+        "selfApplySchema",
+        "evalRunSchema",
+        "rollbackCreateSchema",
+        "selfModifySchema",
+        "selfModifyBatchSchema",
+        "rsiEnableSchema",
+        "episodicRecordSchema",
+        "planDecomposeSchema"
       ],
       "coveragePercent": 0
     },

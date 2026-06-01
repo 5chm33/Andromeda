@@ -201,6 +201,70 @@
       "confidence": 0.9,
       "createdAt": 1780014439717,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780102762330_saq41p",
+      "category": "antipattern",
+      "title": "Failure: Fix health check logic inconsistency in recordError",
+      "description": "Failed to apply \"Fix health check logic inconsistency in recordError\" to adaptiveRouter.ts. Reason: Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.. Avoid similar changes.",
+      "context": "self-modify adaptiveRouter.ts reliability",
+      "outcome": "failure: Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.",
+      "lesson": "Avoid for adaptiveRouter.ts: Fix health check logic inconsistency in recordError — causes Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.",
+      "applicableTo": [
+        "adaptiveRouter.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780102762330,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780102812679_isoqve",
+      "category": "antipattern",
+      "title": "Goal execution: Optimize Context Window Utilization",
+      "description": "Processed 2 sub-goals, 0 succeeded",
+      "context": "Goal: Optimize Context Window Utilization (performance)",
+      "outcome": "no progress",
+      "lesson": "Processed 2 sub-goals, 0 succeeded",
+      "applicableTo": [
+        "recursiveGoals",
+        "selfImprove"
+      ],
+      "confidence": 0.7,
+      "createdAt": 1780102812679,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780197353063_yigy8h",
+      "category": "antipattern",
+      "title": "Failure: Fix health check logic inconsistency in recordError",
+      "description": "Failed to apply \"Fix health check logic inconsistency in recordError\" to adaptiveRouter.ts. Reason: Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.. Avoid similar changes.",
+      "context": "self-modify adaptiveRouter.ts reliability",
+      "outcome": "failure: Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.",
+      "lesson": "Avoid for adaptiveRouter.ts: Fix health check logic inconsistency in recordError — causes Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.",
+      "applicableTo": [
+        "adaptiveRouter.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780197353063,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780280784789_8micie",
+      "category": "antipattern",
+      "title": "Failure: Fix health check logic inconsistency in recordError",
+      "description": "Failed to apply \"Fix health check logic inconsistency in recordError\" to adaptiveRouter.ts. Reason: Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.. Avoid similar changes.",
+      "context": "self-modify adaptiveRouter.ts reliability",
+      "outcome": "failure: Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.",
+      "lesson": "Avoid for adaptiveRouter.ts: Fix health check logic inconsistency in recordError — causes Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.",
+      "applicableTo": [
+        "adaptiveRouter.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780280784789,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -343,5 +407,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-05-29T00:28:28.703Z"
+  "_lastUpdated": "2026-06-01T02:26:24.789Z"
 }

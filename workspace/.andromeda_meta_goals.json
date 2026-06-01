@@ -135,7 +135,7 @@
       "description": "Generate and maintain tests for all critical system paths",
       "rationale": "Higher test coverage enables more confident auto-application of changes",
       "priority": 7,
-      "status": "active",
+      "status": "failed",
       "recursive": false,
       "createdAt": 1779706434298,
       "subGoals": [
@@ -151,7 +151,8 @@
         }
       ],
       "metrics": [],
-      "startedAt": 1780014345109
+      "startedAt": 1780015248103,
+      "outcome": "TTL exceeded (1457min > 30min limit)"
     },
     {
       "id": "mgoal_1779706434298_fngga1",
@@ -160,11 +161,34 @@
       "description": "Ensure maximum useful information per token in LLM context",
       "rationale": "Better context utilization = better responses with same cost",
       "priority": 6,
-      "status": "planned",
+      "status": "failed",
       "recursive": false,
       "createdAt": 1779706434298,
-      "subGoals": [],
-      "metrics": []
+      "subGoals": [
+        {
+          "id": "sg_mgoal_1779706434298_fngga1_1780102669682_mgwr",
+          "parentId": "mgoal_1779706434298_fngga1",
+          "title": "Analyze ai.ts for performance improvements",
+          "description": "Ensure maximum useful information per token in LLM context — focus on ai.ts",
+          "targetFile": "ai.ts",
+          "estimatedEffort": "medium",
+          "status": "failed",
+          "result": "fetch failed"
+        },
+        {
+          "id": "sg_mgoal_1779706434298_fngga1_1780102669682_jixg",
+          "parentId": "mgoal_1779706434298_fngga1",
+          "title": "Analyze streamRouter.ts for performance improvements",
+          "description": "Ensure maximum useful information per token in LLM context — focus on streamRouter.ts",
+          "targetFile": "streamRouter.ts",
+          "estimatedEffort": "medium",
+          "status": "failed",
+          "result": "Background LLM API error 401: {\"error\":{\"message\":\"Authentication Fails, Your api key: ****-key is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}}"
+        }
+      ],
+      "metrics": [],
+      "startedAt": 1780103578180,
+      "outcome": "TTL exceeded (30min > 30min limit)"
     },
     {
       "id": "mgoal_1779706434299_z301dp",
@@ -184,5 +208,5 @@
   ],
   "scans": [],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-05-29T00:25:45.109Z"
+  "_lastUpdated": "2026-06-01T02:24:17.664Z"
 }
