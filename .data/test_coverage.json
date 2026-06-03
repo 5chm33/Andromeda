@@ -1,5 +1,5 @@
 {
-  "timestamp": 1780280660929,
+  "timestamp": 1780450175376,
   "totalModules": 174,
   "testedModules": 140,
   "untestedModules": 34,
@@ -591,13 +591,15 @@
       "exportedFunctions": [
         "extractFunctionBoundaries",
         "smartChunkFile",
-        "buildFileIndex"
+        "buildFileIndex",
+        "foo"
       ],
       "testedFunctions": [],
       "untestedFunctions": [
         "extractFunctionBoundaries",
         "smartChunkFile",
-        "buildFileIndex"
+        "buildFileIndex",
+        "foo"
       ],
       "coveragePercent": 0
     },

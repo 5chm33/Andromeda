@@ -416,6 +416,154 @@ export const EVAL_TASKS: EvalTask[] = [
     forbiddenKeywords: ["cannot", "error"],
     maxTokens: 500, timeoutMs: 30000, scoreWeight: 3,
   },
+
+  // ── v6.29: Browser Automation Tasks (b01–b05) ────────────────────────────────
+  {
+    id: "b01", category: "browser", difficulty: "easy",
+    prompt: "Navigate to https://example.com and return the page title.",
+    expectedKeywords: ["example", "domain"],
+    forbiddenKeywords: ["cannot", "error", "unable"],
+    maxTokens: 200, timeoutMs: 30000, scoreWeight: 1,
+  },
+  {
+    id: "b02", category: "browser", difficulty: "easy",
+    prompt: "What HTTP status code does https://httpbin.org/status/200 return?",
+    expectedKeywords: ["200", "ok"],
+    forbiddenKeywords: ["cannot", "error"],
+    maxTokens: 200, timeoutMs: 30000, scoreWeight: 1,
+  },
+  {
+    id: "b03", category: "browser", difficulty: "medium",
+    prompt: "Fetch the JSON from https://httpbin.org/json and return the slideshow title field.",
+    expectedKeywords: ["slideshow", "title"],
+    forbiddenKeywords: ["cannot", "error", "unable"],
+    maxTokens: 300, timeoutMs: 30000, scoreWeight: 2,
+  },
+  {
+    id: "b04", category: "browser", difficulty: "medium",
+    prompt: "Use the fetch API to GET https://httpbin.org/ip and return the origin IP address field.",
+    expectedKeywords: ["origin", "ip"],
+    forbiddenKeywords: ["cannot", "error"],
+    maxTokens: 300, timeoutMs: 30000, scoreWeight: 2,
+  },
+  {
+    id: "b05", category: "browser", difficulty: "hard",
+    prompt: "Fetch https://httpbin.org/headers and list all HTTP headers that were sent in the request.",
+    expectedKeywords: ["headers", "user-agent"],
+    forbiddenKeywords: ["cannot", "error", "unable"],
+    maxTokens: 500, timeoutMs: 30000, scoreWeight: 3,
+  },
+
+  // ── v6.29: Multi-Step Reasoning Tasks (ms01–ms05) ─────────────────────────────
+  {
+    id: "ms01", category: "multi_step", difficulty: "easy",
+    prompt: "If a train travels at 80 km/h for 2.5 hours, how far does it travel? Show your reasoning step by step.",
+    expectedKeywords: ["200", "km", "step"],
+    forbiddenKeywords: ["cannot", "error"],
+    maxTokens: 300, timeoutMs: 20000, scoreWeight: 1,
+  },
+  {
+    id: "ms02", category: "multi_step", difficulty: "medium",
+    prompt: "A store sells apples for $0.50 each and oranges for $0.75 each. Alice buys 4 apples and 3 oranges. Bob buys 2 apples and 5 oranges. Who spends more and by how much?",
+    expectedKeywords: ["bob", "0.25", "more"],
+    forbiddenKeywords: ["cannot", "error"],
+    maxTokens: 400, timeoutMs: 20000, scoreWeight: 2,
+  },
+  {
+    id: "ms03", category: "multi_step", difficulty: "medium",
+    prompt: "Given a sorted array [1,3,5,7,9,11,13], describe the steps of a binary search for the value 7 and return the index.",
+    expectedKeywords: ["index", "3", "binary", "mid"],
+    forbiddenKeywords: ["cannot", "error"],
+    maxTokens: 400, timeoutMs: 20000, scoreWeight: 2,
+  },
+  {
+    id: "ms04", category: "multi_step", difficulty: "hard",
+    prompt: "A recursive function computes fibonacci(n). Trace the call tree for fibonacci(5) and count the total number of function calls made.",
+    expectedKeywords: ["15", "calls", "fibonacci"],
+    forbiddenKeywords: ["cannot", "error"],
+    maxTokens: 600, timeoutMs: 30000, scoreWeight: 3,
+  },
+  {
+    id: "ms05", category: "multi_step", difficulty: "hard",
+    prompt: "You have 3 jugs: 8L (full), 5L (empty), 3L (empty). Using only pouring between jugs, measure exactly 4L. List each step.",
+    expectedKeywords: ["4", "step", "pour"],
+    forbiddenKeywords: ["cannot", "impossible", "error"],
+    maxTokens: 600, timeoutMs: 30000, scoreWeight: 3,
+  },
+
+  // ── v6.29: Code Generation Tasks (cg01–cg05) ──────────────────────────────────
+  {
+    id: "cg01", category: "code", difficulty: "easy",
+    prompt: "Write a TypeScript function that takes an array of numbers and returns the sum. Include the function signature.",
+    expectedKeywords: ["function", "number", "return", "reduce"],
+    forbiddenKeywords: ["cannot", "error"],
+    maxTokens: 300, timeoutMs: 20000, scoreWeight: 1,
+  },
+  {
+    id: "cg02", category: "code", difficulty: "easy",
+    prompt: "Write a TypeScript function that checks if a string is a palindrome (reads the same forwards and backwards).",
+    expectedKeywords: ["function", "reverse", "return", "string"],
+    forbiddenKeywords: ["cannot", "error"],
+    maxTokens: 300, timeoutMs: 20000, scoreWeight: 1,
+  },
+  {
+    id: "cg03", category: "code", difficulty: "medium",
+    prompt: "Write a TypeScript generic function `groupBy<T>(arr: T[], key: keyof T): Record<string, T[]>` that groups array elements by a key.",
+    expectedKeywords: ["generic", "Record", "keyof", "reduce"],
+    forbiddenKeywords: ["cannot", "error"],
+    maxTokens: 400, timeoutMs: 20000, scoreWeight: 2,
+  },
+  {
+    id: "cg04", category: "code", difficulty: "medium",
+    prompt: "Write a TypeScript async function that retries a failing async operation up to 3 times with exponential backoff (1s, 2s, 4s delays).",
+    expectedKeywords: ["async", "retry", "backoff", "delay"],
+    forbiddenKeywords: ["cannot", "error"],
+    maxTokens: 500, timeoutMs: 20000, scoreWeight: 2,
+  },
+  {
+    id: "cg05", category: "code", difficulty: "hard",
+    prompt: "Implement a TypeScript LRU (Least Recently Used) cache class with get(key) and set(key, value) methods, O(1) time complexity for both.",
+    expectedKeywords: ["class", "Map", "get", "set", "capacity"],
+    forbiddenKeywords: ["cannot", "error"],
+    maxTokens: 700, timeoutMs: 30000, scoreWeight: 3,
+  },
+
+  // ── v6.29: Self-Improvement Awareness Tasks (si01–si05) ──────────────────────
+  {
+    id: "si01", category: "self_knowledge", difficulty: "easy",
+    prompt: "What is the current version of Andromeda as specified in package.json?",
+    expectedKeywords: ["6.", "version"],
+    forbiddenKeywords: ["cannot", "error", "unknown"],
+    maxTokens: 100, timeoutMs: 15000, scoreWeight: 1,
+  },
+  {
+    id: "si02", category: "self_knowledge", difficulty: "easy",
+    prompt: "How many RSI proposals are currently in the pending state?",
+    expectedKeywords: ["proposal", "pending"],
+    forbiddenKeywords: ["cannot", "error"],
+    maxTokens: 200, timeoutMs: 15000, scoreWeight: 1,
+  },
+  {
+    id: "si03", category: "self_knowledge", difficulty: "medium",
+    prompt: "What is the current RSI auto-apply confidence threshold? Is auto-apply enabled?",
+    expectedKeywords: ["threshold", "enabled", "confidence"],
+    forbiddenKeywords: ["cannot", "error", "unknown"],
+    maxTokens: 200, timeoutMs: 15000, scoreWeight: 2,
+  },
+  {
+    id: "si04", category: "self_knowledge", difficulty: "medium",
+    prompt: "List the files that Andromeda is allowed to self-modify (the ANALYZABLE_FILES list).",
+    expectedKeywords: ["selfImprove", "llmProvider", "memory"],
+    forbiddenKeywords: ["cannot", "error"],
+    maxTokens: 300, timeoutMs: 15000, scoreWeight: 2,
+  },
+  {
+    id: "si05", category: "self_knowledge", difficulty: "hard",
+    prompt: "Describe the five RSI fixes introduced in v6.28 (A1 through A5) and explain what problem each one solves.",
+    expectedKeywords: ["dedup", "confidence", "constitution", "file-aware", "env"],
+    forbiddenKeywords: ["cannot", "error", "unknown"],
+    maxTokens: 600, timeoutMs: 30000, scoreWeight: 3,
+  },
 ];
 
 // ─── Scoring ──────────────────────────────────────────────────────────────────

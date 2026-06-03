@@ -36,6 +36,21 @@ const log = createLogger("selfImprove");
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+/**
+ * v6.29: A secondary file change that is part of a multi-file proposal.
+ * When a function signature changes, callers in other files must also be updated.
+ * All secondary changes are applied atomically with the primary change — if any
+ * secondary change fails the entire proposal is rolled back.
+ */
+export type SecondaryFileChange = {
+  targetFile: string;
+  originalSnippet: string;
+  proposedSnippet: string;
+  originalContent: string;
+  proposedContent: string;
+  rationale: string;
+};
+
 export type ImprovementProposal = {
   id: string;
   targetFile: string;
@@ -52,6 +67,8 @@ export type ImprovementProposal = {
   proposedContent: string;
   createdAt: number;
   status: "pending" | "approved" | "rejected" | "applied";
+  /** v6.29: Optional secondary file changes applied atomically with the primary change. */
+  secondaryChanges?: SecondaryFileChange[];
 };
 
 type ProposalStore = {
@@ -593,6 +610,50 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
 
     if (guardResult.success) {
       proposal.status = "applied";
+
+      // v6.29: Apply secondary file changes atomically.
+      // If any secondary change fails, roll back ALL secondary writes and mark
+      // the proposal as rejected so the primary change is also reverted.
+      if (proposal.secondaryChanges && proposal.secondaryChanges.length > 0) {
+        const writtenSecondary: Array<{ path: string; original: string }> = [];
+        let secondaryFailed = false;
+        let secondaryError = "";
+
+        for (const change of proposal.secondaryChanges) {
+          const secPath = resolveServerFile(change.targetFile);
+          if (!secPath) {
+            secondaryFailed = true;
+            secondaryError = `Secondary file not found: ${change.targetFile}`;
+            break;
+          }
+          try {
+            const currentContent = fs.readFileSync(secPath, "utf-8");
+            writtenSecondary.push({ path: secPath, original: currentContent });
+            fs.writeFileSync(secPath, change.proposedContent, "utf-8");
+            log.info(`[v6.29 multi-file] Applied secondary change to ${change.targetFile}`);
+          } catch (secErr) {
+            secondaryFailed = true;
+            secondaryError = `Failed to write ${change.targetFile}: ${(secErr as Error).message}`;
+            break;
+          }
+        }
+
+        if (secondaryFailed) {
+          // Roll back all secondary writes
+          for (const { path: p, original } of writtenSecondary) {
+            try { fs.writeFileSync(p, original, "utf-8"); } catch { /* best effort */ }
+          }
+          // Also roll back the primary change
+          if (proposal.originalContent) {
+            try { fs.writeFileSync(filePath, proposal.originalContent, "utf-8"); } catch { /* best effort */ }
+          }
+          proposal.status = "rejected" as any;
+          (proposal as any)._failReason = `Multi-file rollback: ${secondaryError}`;
+          saveProposals(store);
+          return { success: false, message: `Multi-file apply rolled back: ${secondaryError}` };
+        }
+      }
+
       saveProposals(store);
 
       try {

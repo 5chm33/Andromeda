@@ -958,5 +958,25 @@
     "sources": null,
     "filter": "web",
     "createdAt": "2026-06-01T02:26:09.214Z"
+  },
+  {
+    "id": 1780371885209,
+    "userId": null,
+    "sessionId": null,
+    "query": "test query for vitest",
+    "aiAnswer": "This is a test answer",
+    "sources": null,
+    "filter": "all",
+    "createdAt": "2026-06-02T03:44:46.202Z"
+  },
+  {
+    "id": 1780371885210,
+    "userId": 1,
+    "sessionId": null,
+    "query": "authenticated test query",
+    "aiAnswer": "Authenticated answer",
+    "sources": null,
+    "filter": "web",
+    "createdAt": "2026-06-02T03:44:46.204Z"
   }
 ]

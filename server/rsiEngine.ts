@@ -160,6 +160,67 @@ function appendCycleHistory(result: RSICycleResult): void {
   }
 }
 
+// ── v6.29: RSI Proof History ──────────────────────────────────────────────────
+// Writes a compact before/after score delta record to data/rsi_proof_history.json
+// after every cycle. This gives a human-readable audit trail that proves RSI is
+// improving the system over time.
+
+function getProofHistoryPath(): string {
+  try {
+    const serverDir = path.dirname(fileURLToPath(import.meta.url));
+    const dataDir = path.resolve(serverDir, "..", "data");
+    if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+    return path.join(dataDir, "rsi_proof_history.json");
+  } catch {
+    return path.resolve(process.cwd(), "data", "rsi_proof_history.json");
+  }
+}
+
+function appendProofHistory(result: RSICycleResult): void {
+  try {
+    const p = getProofHistoryPath();
+    let history: any[] = [];
+    if (fs.existsSync(p)) {
+      try { history = JSON.parse(fs.readFileSync(p, "utf8")); } catch { history = []; }
+    }
+    history.push({
+      cycleId: result.cycleId,
+      completedAt: result.completedAt,
+      durationMs: result.durationMs,
+      proposalsApplied: result.proposalsApplied,
+      proposalsRejected: result.proposalsRejected,
+      scoreBefore: result.capabilityScoreBefore,
+      scoreAfter: result.capabilityScoreAfter,
+      scoreDelta: result.scoreImprovement,
+      appliedFiles: result.appliedFiles,
+      benchmarkBefore: result.benchmarkBefore
+        ? {
+            ts: result.benchmarkBefore.typeScriptHealth,
+            pq: result.benchmarkBefore.proposalQuality,
+            tc: result.benchmarkBefore.testCoverage,
+            mr: result.benchmarkBefore.memoryRichness,
+            gc: result.benchmarkBefore.goalCompletion,
+          }
+        : null,
+      benchmarkAfter: result.benchmarkAfter
+        ? {
+            ts: result.benchmarkAfter.typeScriptHealth,
+            pq: result.benchmarkAfter.proposalQuality,
+            tc: result.benchmarkAfter.testCoverage,
+            mr: result.benchmarkAfter.memoryRichness,
+            gc: result.benchmarkAfter.goalCompletion,
+          }
+        : null,
+      errors: result.errors.length > 0 ? result.errors.slice(0, 3) : undefined,
+    });
+    // Keep last 200 entries
+    if (history.length > 200) history = history.slice(-200);
+    fs.writeFileSync(p, JSON.stringify(history, null, 2), "utf8");
+  } catch {
+    // Non-fatal
+  }
+}
+
 function generateCycleId(): string {
   return `rsi-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -537,6 +598,7 @@ export async function runRSICycle(): Promise<RSICycleResult> {
   recentCycles.unshift(result);
   if (recentCycles.length > MAX_RECENT_CYCLES) recentCycles.pop();
   appendCycleHistory(result);
+  appendProofHistory(result); // v6.29: compact before/after delta to data/rsi_proof_history.json
 
   if ((rsiPhase as string) !== "paused" && (rsiPhase as string) !== "error") {
     rsiPhase = "idle";

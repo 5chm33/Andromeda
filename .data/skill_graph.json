@@ -7,7 +7,7 @@
           "pattern": "Model ID ambiguous — it matches multiple models",
           "fix": "Use fully-qualified model IDs (e.g. deepseek/deepseek-chat instead of deepseek-chat)",
           "success": true,
-          "confidence": 0.95,
+          "confidence": 0.35848592240854177,
           "timestamp": 1779758220867,
           "appliedCount": 3
         },
@@ -15,7 +15,7 @@
           "pattern": "ECONNRESET on streaming response",
           "fix": "Add retry logic with exponential backoff for transient network errors",
           "success": true,
-          "confidence": 0.9,
+          "confidence": 0.33961824228177656,
           "timestamp": 1779758220867,
           "appliedCount": 3
         },
@@ -23,7 +23,7 @@
           "pattern": "File lock deadlock — timeout exceeded",
           "fix": "Add timeout to acquireFileLock to prevent permanent deadlocks",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -31,7 +31,7 @@
           "pattern": "Memory leak in accessLog — orphaned entries",
           "fix": "Clean up orphaned accessLog entries during consolidation cycles",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -39,7 +39,7 @@
           "pattern": "Event loop blocked during package install",
           "fix": "Use async exec instead of execSync for package installation",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -47,7 +47,7 @@
           "pattern": "Path traversal attempt — resolved outside root",
           "fix": "Validate resolved path starts with workspace root using path.resolve",
           "success": true,
-          "confidence": 0.49,
+          "confidence": 0.18490326524230055,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -55,7 +55,7 @@
           "pattern": "Partial write corruption on crash",
           "fix": "Write to temp file then atomic rename to prevent corruption",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -63,7 +63,7 @@
           "pattern": "SSE connection dropped — client disconnect",
           "fix": "Implement heartbeat pings and auto-reconnect with backoff",
           "success": true,
-          "confidence": 0.425,
+          "confidence": 0.16037528107750562,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -71,7 +71,7 @@
           "pattern": "Subscription leak — unbounded growth",
           "fix": "Cap MAX_SUBSCRIPTIONS per agent and clean up on disconnect",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -79,7 +79,7 @@
           "pattern": "Heal loop infinite retry — same error recurring",
           "fix": "Add max retry count and circuit breaker for repeated heal failures",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225882,
           "appliedCount": 0
         }
@@ -93,7 +93,7 @@
           "pattern": "File lock deadlock — timeout exceeded",
           "fix": "Add timeout to acquireFileLock to prevent permanent deadlocks",
           "success": true,
-          "confidence": 0.95,
+          "confidence": 0.35848592240854177,
           "timestamp": 1779758220867,
           "appliedCount": 3
         },
@@ -101,7 +101,7 @@
           "pattern": "Model ID ambiguous — it matches multiple models",
           "fix": "Use fully-qualified model IDs (e.g. deepseek/deepseek-chat instead of deepseek-chat)",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225880,
           "appliedCount": 0
         },
@@ -109,7 +109,7 @@
           "pattern": "ECONNRESET on streaming response",
           "fix": "Add retry logic with exponential backoff for transient network errors",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225880,
           "appliedCount": 0
         },
@@ -117,7 +117,7 @@
           "pattern": "Memory leak in accessLog — orphaned entries",
           "fix": "Clean up orphaned accessLog entries during consolidation cycles",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -125,7 +125,7 @@
           "pattern": "Event loop blocked during package install",
           "fix": "Use async exec instead of execSync for package installation",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -133,7 +133,7 @@
           "pattern": "Path traversal attempt — resolved outside root",
           "fix": "Validate resolved path starts with workspace root using path.resolve",
           "success": true,
-          "confidence": 0.49,
+          "confidence": 0.18490326524230055,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -141,7 +141,7 @@
           "pattern": "Partial write corruption on crash",
           "fix": "Write to temp file then atomic rename to prevent corruption",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -149,7 +149,7 @@
           "pattern": "SSE connection dropped — client disconnect",
           "fix": "Implement heartbeat pings and auto-reconnect with backoff",
           "success": true,
-          "confidence": 0.425,
+          "confidence": 0.16037528107750562,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -157,7 +157,7 @@
           "pattern": "Subscription leak — unbounded growth",
           "fix": "Cap MAX_SUBSCRIPTIONS per agent and clean up on disconnect",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -165,7 +165,7 @@
           "pattern": "Heal loop infinite retry — same error recurring",
           "fix": "Add max retry count and circuit breaker for repeated heal failures",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225882,
           "appliedCount": 0
         }
@@ -179,7 +179,7 @@
           "pattern": "Memory leak in accessLog — orphaned entries",
           "fix": "Clean up orphaned accessLog entries during consolidation cycles",
           "success": true,
-          "confidence": 0.9,
+          "confidence": 0.33961824228177656,
           "timestamp": 1779758220867,
           "appliedCount": 3
         },
@@ -187,7 +187,7 @@
           "pattern": "Model ID ambiguous — it matches multiple models",
           "fix": "Use fully-qualified model IDs (e.g. deepseek/deepseek-chat instead of deepseek-chat)",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225880,
           "appliedCount": 0
         },
@@ -195,7 +195,7 @@
           "pattern": "ECONNRESET on streaming response",
           "fix": "Add retry logic with exponential backoff for transient network errors",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225880,
           "appliedCount": 0
         },
@@ -203,7 +203,7 @@
           "pattern": "File lock deadlock — timeout exceeded",
           "fix": "Add timeout to acquireFileLock to prevent permanent deadlocks",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -211,7 +211,7 @@
           "pattern": "Event loop blocked during package install",
           "fix": "Use async exec instead of execSync for package installation",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -219,7 +219,7 @@
           "pattern": "Path traversal attempt — resolved outside root",
           "fix": "Validate resolved path starts with workspace root using path.resolve",
           "success": true,
-          "confidence": 0.49,
+          "confidence": 0.18490326524230055,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -227,7 +227,7 @@
           "pattern": "Partial write corruption on crash",
           "fix": "Write to temp file then atomic rename to prevent corruption",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -235,7 +235,7 @@
           "pattern": "SSE connection dropped — client disconnect",
           "fix": "Implement heartbeat pings and auto-reconnect with backoff",
           "success": true,
-          "confidence": 0.425,
+          "confidence": 0.16037528107750562,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -243,7 +243,7 @@
           "pattern": "Subscription leak — unbounded growth",
           "fix": "Cap MAX_SUBSCRIPTIONS per agent and clean up on disconnect",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -251,7 +251,7 @@
           "pattern": "Heal loop infinite retry — same error recurring",
           "fix": "Add max retry count and circuit breaker for repeated heal failures",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225882,
           "appliedCount": 0
         }
@@ -265,7 +265,7 @@
           "pattern": "Event loop blocked during package install",
           "fix": "Use async exec instead of execSync for package installation",
           "success": true,
-          "confidence": 0.95,
+          "confidence": 0.35848592240854177,
           "timestamp": 1779758220867,
           "appliedCount": 3
         },
@@ -273,7 +273,7 @@
           "pattern": "Model ID ambiguous — it matches multiple models",
           "fix": "Use fully-qualified model IDs (e.g. deepseek/deepseek-chat instead of deepseek-chat)",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225880,
           "appliedCount": 0
         },
@@ -281,7 +281,7 @@
           "pattern": "ECONNRESET on streaming response",
           "fix": "Add retry logic with exponential backoff for transient network errors",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225880,
           "appliedCount": 0
         },
@@ -289,7 +289,7 @@
           "pattern": "File lock deadlock — timeout exceeded",
           "fix": "Add timeout to acquireFileLock to prevent permanent deadlocks",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -297,7 +297,7 @@
           "pattern": "Memory leak in accessLog — orphaned entries",
           "fix": "Clean up orphaned accessLog entries during consolidation cycles",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -305,7 +305,7 @@
           "pattern": "Path traversal attempt — resolved outside root",
           "fix": "Validate resolved path starts with workspace root using path.resolve",
           "success": true,
-          "confidence": 0.49,
+          "confidence": 0.18490326524230055,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -313,7 +313,7 @@
           "pattern": "Partial write corruption on crash",
           "fix": "Write to temp file then atomic rename to prevent corruption",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -321,7 +321,7 @@
           "pattern": "SSE connection dropped — client disconnect",
           "fix": "Implement heartbeat pings and auto-reconnect with backoff",
           "success": true,
-          "confidence": 0.425,
+          "confidence": 0.16037528107750562,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -329,7 +329,7 @@
           "pattern": "Subscription leak — unbounded growth",
           "fix": "Cap MAX_SUBSCRIPTIONS per agent and clean up on disconnect",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -337,7 +337,7 @@
           "pattern": "Heal loop infinite retry — same error recurring",
           "fix": "Add max retry count and circuit breaker for repeated heal failures",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225882,
           "appliedCount": 0
         }
@@ -351,7 +351,7 @@
           "pattern": "Path traversal attempt — resolved outside root",
           "fix": "Validate resolved path starts with workspace root using path.resolve",
           "success": true,
-          "confidence": 0.98,
+          "confidence": 0.3698065304846011,
           "timestamp": 1779758220867,
           "appliedCount": 3
         },
@@ -359,7 +359,7 @@
           "pattern": "Model ID ambiguous — it matches multiple models",
           "fix": "Use fully-qualified model IDs (e.g. deepseek/deepseek-chat instead of deepseek-chat)",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225880,
           "appliedCount": 0
         },
@@ -367,7 +367,7 @@
           "pattern": "ECONNRESET on streaming response",
           "fix": "Add retry logic with exponential backoff for transient network errors",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225880,
           "appliedCount": 0
         },
@@ -375,7 +375,7 @@
           "pattern": "File lock deadlock — timeout exceeded",
           "fix": "Add timeout to acquireFileLock to prevent permanent deadlocks",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -383,7 +383,7 @@
           "pattern": "Memory leak in accessLog — orphaned entries",
           "fix": "Clean up orphaned accessLog entries during consolidation cycles",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -391,7 +391,7 @@
           "pattern": "Event loop blocked during package install",
           "fix": "Use async exec instead of execSync for package installation",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -399,7 +399,7 @@
           "pattern": "Partial write corruption on crash",
           "fix": "Write to temp file then atomic rename to prevent corruption",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -407,7 +407,7 @@
           "pattern": "SSE connection dropped — client disconnect",
           "fix": "Implement heartbeat pings and auto-reconnect with backoff",
           "success": true,
-          "confidence": 0.425,
+          "confidence": 0.16037528107750562,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -415,7 +415,7 @@
           "pattern": "Subscription leak — unbounded growth",
           "fix": "Cap MAX_SUBSCRIPTIONS per agent and clean up on disconnect",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -423,7 +423,7 @@
           "pattern": "Heal loop infinite retry — same error recurring",
           "fix": "Add max retry count and circuit breaker for repeated heal failures",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225882,
           "appliedCount": 0
         }
@@ -437,7 +437,7 @@
           "pattern": "Partial write corruption on crash",
           "fix": "Write to temp file then atomic rename to prevent corruption",
           "success": true,
-          "confidence": 0.95,
+          "confidence": 0.35848592240854177,
           "timestamp": 1779758220867,
           "appliedCount": 3
         },
@@ -445,7 +445,7 @@
           "pattern": "Model ID ambiguous — it matches multiple models",
           "fix": "Use fully-qualified model IDs (e.g. deepseek/deepseek-chat instead of deepseek-chat)",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225880,
           "appliedCount": 0
         },
@@ -453,7 +453,7 @@
           "pattern": "ECONNRESET on streaming response",
           "fix": "Add retry logic with exponential backoff for transient network errors",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225880,
           "appliedCount": 0
         },
@@ -461,7 +461,7 @@
           "pattern": "File lock deadlock — timeout exceeded",
           "fix": "Add timeout to acquireFileLock to prevent permanent deadlocks",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -469,7 +469,7 @@
           "pattern": "Memory leak in accessLog — orphaned entries",
           "fix": "Clean up orphaned accessLog entries during consolidation cycles",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -477,7 +477,7 @@
           "pattern": "Event loop blocked during package install",
           "fix": "Use async exec instead of execSync for package installation",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -485,7 +485,7 @@
           "pattern": "Path traversal attempt — resolved outside root",
           "fix": "Validate resolved path starts with workspace root using path.resolve",
           "success": true,
-          "confidence": 0.49,
+          "confidence": 0.18490326524230055,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -493,7 +493,7 @@
           "pattern": "SSE connection dropped — client disconnect",
           "fix": "Implement heartbeat pings and auto-reconnect with backoff",
           "success": true,
-          "confidence": 0.425,
+          "confidence": 0.16037528107750562,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -501,7 +501,7 @@
           "pattern": "Subscription leak — unbounded growth",
           "fix": "Cap MAX_SUBSCRIPTIONS per agent and clean up on disconnect",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -509,7 +509,7 @@
           "pattern": "Heal loop infinite retry — same error recurring",
           "fix": "Add max retry count and circuit breaker for repeated heal failures",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225882,
           "appliedCount": 0
         }
@@ -523,7 +523,7 @@
           "pattern": "SSE connection dropped — client disconnect",
           "fix": "Implement heartbeat pings and auto-reconnect with backoff",
           "success": true,
-          "confidence": 0.85,
+          "confidence": 0.32075056215501124,
           "timestamp": 1779758220867,
           "appliedCount": 3
         },
@@ -531,7 +531,7 @@
           "pattern": "Model ID ambiguous — it matches multiple models",
           "fix": "Use fully-qualified model IDs (e.g. deepseek/deepseek-chat instead of deepseek-chat)",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225880,
           "appliedCount": 0
         },
@@ -539,7 +539,7 @@
           "pattern": "ECONNRESET on streaming response",
           "fix": "Add retry logic with exponential backoff for transient network errors",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225880,
           "appliedCount": 0
         },
@@ -547,7 +547,7 @@
           "pattern": "File lock deadlock — timeout exceeded",
           "fix": "Add timeout to acquireFileLock to prevent permanent deadlocks",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -555,7 +555,7 @@
           "pattern": "Memory leak in accessLog — orphaned entries",
           "fix": "Clean up orphaned accessLog entries during consolidation cycles",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -563,7 +563,7 @@
           "pattern": "Event loop blocked during package install",
           "fix": "Use async exec instead of execSync for package installation",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -571,7 +571,7 @@
           "pattern": "Path traversal attempt — resolved outside root",
           "fix": "Validate resolved path starts with workspace root using path.resolve",
           "success": true,
-          "confidence": 0.49,
+          "confidence": 0.18490326524230055,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -579,7 +579,7 @@
           "pattern": "Partial write corruption on crash",
           "fix": "Write to temp file then atomic rename to prevent corruption",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -587,7 +587,7 @@
           "pattern": "Subscription leak — unbounded growth",
           "fix": "Cap MAX_SUBSCRIPTIONS per agent and clean up on disconnect",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225882,
           "appliedCount": 0
         },
@@ -595,7 +595,7 @@
           "pattern": "Heal loop infinite retry — same error recurring",
           "fix": "Add max retry count and circuit breaker for repeated heal failures",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225882,
           "appliedCount": 0
         }
@@ -609,7 +609,7 @@
           "pattern": "Subscription leak — unbounded growth",
           "fix": "Cap MAX_SUBSCRIPTIONS per agent and clean up on disconnect",
           "success": true,
-          "confidence": 0.9,
+          "confidence": 0.33961824228177656,
           "timestamp": 1779758220867,
           "appliedCount": 3
         },
@@ -617,7 +617,7 @@
           "pattern": "Model ID ambiguous — it matches multiple models",
           "fix": "Use fully-qualified model IDs (e.g. deepseek/deepseek-chat instead of deepseek-chat)",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225880,
           "appliedCount": 0
         },
@@ -625,7 +625,7 @@
           "pattern": "ECONNRESET on streaming response",
           "fix": "Add retry logic with exponential backoff for transient network errors",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225880,
           "appliedCount": 0
         },
@@ -633,7 +633,7 @@
           "pattern": "File lock deadlock — timeout exceeded",
           "fix": "Add timeout to acquireFileLock to prevent permanent deadlocks",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -641,7 +641,7 @@
           "pattern": "Memory leak in accessLog — orphaned entries",
           "fix": "Clean up orphaned accessLog entries during consolidation cycles",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -649,7 +649,7 @@
           "pattern": "Event loop blocked during package install",
           "fix": "Use async exec instead of execSync for package installation",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -657,7 +657,7 @@
           "pattern": "Path traversal attempt — resolved outside root",
           "fix": "Validate resolved path starts with workspace root using path.resolve",
           "success": true,
-          "confidence": 0.49,
+          "confidence": 0.18490326524230055,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -665,7 +665,7 @@
           "pattern": "Partial write corruption on crash",
           "fix": "Write to temp file then atomic rename to prevent corruption",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -673,7 +673,7 @@
           "pattern": "SSE connection dropped — client disconnect",
           "fix": "Implement heartbeat pings and auto-reconnect with backoff",
           "success": true,
-          "confidence": 0.425,
+          "confidence": 0.16037528107750562,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -681,7 +681,7 @@
           "pattern": "Heal loop infinite retry — same error recurring",
           "fix": "Add max retry count and circuit breaker for repeated heal failures",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225882,
           "appliedCount": 0
         }
@@ -695,7 +695,7 @@
           "pattern": "Heal loop infinite retry — same error recurring",
           "fix": "Add max retry count and circuit breaker for repeated heal failures",
           "success": true,
-          "confidence": 0.9,
+          "confidence": 0.33961824228177656,
           "timestamp": 1779758220867,
           "appliedCount": 3
         },
@@ -703,7 +703,7 @@
           "pattern": "Model ID ambiguous — it matches multiple models",
           "fix": "Use fully-qualified model IDs (e.g. deepseek/deepseek-chat instead of deepseek-chat)",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225880,
           "appliedCount": 0
         },
@@ -711,7 +711,7 @@
           "pattern": "ECONNRESET on streaming response",
           "fix": "Add retry logic with exponential backoff for transient network errors",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225880,
           "appliedCount": 0
         },
@@ -719,7 +719,7 @@
           "pattern": "File lock deadlock — timeout exceeded",
           "fix": "Add timeout to acquireFileLock to prevent permanent deadlocks",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -727,7 +727,7 @@
           "pattern": "Memory leak in accessLog — orphaned entries",
           "fix": "Clean up orphaned accessLog entries during consolidation cycles",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -735,7 +735,7 @@
           "pattern": "Event loop blocked during package install",
           "fix": "Use async exec instead of execSync for package installation",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -743,7 +743,7 @@
           "pattern": "Path traversal attempt — resolved outside root",
           "fix": "Validate resolved path starts with workspace root using path.resolve",
           "success": true,
-          "confidence": 0.49,
+          "confidence": 0.18490326524230055,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -751,7 +751,7 @@
           "pattern": "Partial write corruption on crash",
           "fix": "Write to temp file then atomic rename to prevent corruption",
           "success": true,
-          "confidence": 0.475,
+          "confidence": 0.17924296120427088,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -759,7 +759,7 @@
           "pattern": "SSE connection dropped — client disconnect",
           "fix": "Implement heartbeat pings and auto-reconnect with backoff",
           "success": true,
-          "confidence": 0.425,
+          "confidence": 0.16037528107750562,
           "timestamp": 1779758225881,
           "appliedCount": 0
         },
@@ -767,7 +767,7 @@
           "pattern": "Subscription leak — unbounded growth",
           "fix": "Cap MAX_SUBSCRIPTIONS per agent and clean up on disconnect",
           "success": true,
-          "confidence": 0.45,
+          "confidence": 0.16980912114088828,
           "timestamp": 1779758225882,
           "appliedCount": 0
         }
@@ -777,5 +777,5 @@
   ],
   "totalLearnings": 10,
   "totalApplied": 0,
-  "savedAt": 1780280660618
+  "savedAt": 1780450175178
 }
