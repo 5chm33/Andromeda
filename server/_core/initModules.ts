@@ -14,6 +14,11 @@
 import { initGoalPersistence } from "../goalManager";
 
 export async function initModules(): Promise<void> {
+  // ── v6.30: RSI DB migration (idempotent — creates rsi_proposals/cycles/eval tables) ─
+  import("../rsiDb.js").then(m => m.runRsiDbMigration()).catch(err =>
+    console.warn("[RsiDb] Migration failed (non-fatal):", err)
+  );
+
   // ── v5.35: Foundational modules (order matters) ──────────────────────────────
   import("../runtimeConfig").then(m => m.initRuntimeConfig()).catch(err => console.warn("[RuntimeConfig] Init failed:", err));
   import("../modelRegistry").then(m => m.initModelRegistry()).catch(err => console.warn("[ModelRegistry] Init failed:", err));

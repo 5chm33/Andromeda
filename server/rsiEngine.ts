@@ -443,36 +443,34 @@ export async function runRSICycle(): Promise<RSICycleResult> {
           const { applyProposal } = await import("./selfImprove.js");
           const result = await applyProposal(proposal.id);
           if (result.success) {
-            // v6.27: Run test suite after applying — roll back if any test fails
-            let testsPassed = true;
-            try {
-              console.log(`[RSIEngine] Running test suite to validate proposal ${proposal.id}...`);
-              execSync("pnpm test --run --reporter=verbose 2>&1", {
-                cwd: process.cwd(),
-                timeout: 120_000, // 2 min max
-                stdio: "pipe",
-              });
-              console.log(`[RSIEngine] Tests PASSED — committing proposal ${proposal.id}`);
-            } catch (testErr: any) {
-              testsPassed = false;
-              const testOutput = (testErr.stdout?.toString() || "") + (testErr.stderr?.toString() || "");
-              const failSummary = testOutput.slice(-500); // last 500 chars
-              console.warn(`[RSIEngine] Tests FAILED after applying ${proposal.id} — rolling back`);
-              console.warn(`[RSIEngine] Test failure summary: ${failSummary}`);
-              restoreSnapshot(snapshotId);
-              proposalsRejected++;
-              errors.push(`Proposal ${proposal.id} rolled back: tests failed. ${failSummary.slice(0, 200)}`);
-              storeMemory(
-                `RSI proposal ${proposal.id} ROLLED BACK: test suite failed after apply. File: ${proposal.filePath}`,
-                "fact",
-                ["rsi", "rollback", "test-failure"]
-              );
-            }
-            if (testsPassed) {
+            // v6.30: Use ciPipeline for typecheck + test + build + hot-reload
+            console.log(`[RSIEngine] Running CI pipeline to validate proposal ${proposal.id}...`);
+            const { runCiPipeline } = await import("./ciPipeline.js");
+            const ciResult = await runCiPipeline(proposal.id, snapshotId, {
+              skipBuild: false,
+              skipReload: false,
+            });
+            if (ciResult.success) {
               proposalsApplied++;
               consecutiveAutoApplies++;
               appliedFiles.push(proposal.filePath);
-              console.log(`[RSIEngine] Applied + verified proposal ${proposal.id} to ${proposal.filePath}`);
+              console.log(`[RSIEngine] CI PASSED — proposal ${proposal.id} committed to ${proposal.filePath}`);
+              // v6.30: Mirror to DB
+              const { dbSaveProposal } = await import("./rsiDb.js");
+              dbSaveProposal({ ...proposal, status: "applied" }).catch(() => {});
+            } else {
+              const failSummary = ciResult.stages
+                .filter(s => !s.passed)
+                .map(s => `${s.stage}: ${s.output.slice(0, 200)}`)
+                .join("; ");
+              console.warn(`[RSIEngine] CI FAILED at stage "${ciResult.failedStage}" — ${ciResult.rolledBack ? "rolled back" : "no rollback"}`);
+              proposalsRejected++;
+              errors.push(`Proposal ${proposal.id} rejected by CI (${ciResult.failedStage}): ${failSummary}`);
+              storeMemory(
+                `RSI proposal ${proposal.id} REJECTED by CI pipeline at stage ${ciResult.failedStage}. File: ${proposal.filePath}`,
+                "fact",
+                ["rsi", "ci-failure", ciResult.failedStage ?? "unknown"]
+              );
             }
           } else {
             proposalsRejected++;

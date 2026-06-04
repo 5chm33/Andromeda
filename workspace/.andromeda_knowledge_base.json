@@ -281,6 +281,38 @@
       "confidence": 0.9,
       "createdAt": 1780371680371,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780450302564_4p80os",
+      "category": "antipattern",
+      "title": "Failure: Fix health check logic inconsistency in recordError",
+      "description": "Failed to apply \"Fix health check logic inconsistency in recordError\" to adaptiveRouter.ts. Reason: Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.. Avoid similar changes.",
+      "context": "self-modify adaptiveRouter.ts reliability",
+      "outcome": "failure: Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.",
+      "lesson": "Avoid for adaptiveRouter.ts: Fix health check logic inconsistency in recordError — causes Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.",
+      "applicableTo": [
+        "adaptiveRouter.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780450302564,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780537451049_y0rpsu",
+      "category": "antipattern",
+      "title": "Failure: Fix health check logic inconsistency in recordError",
+      "description": "Failed to apply \"Fix health check logic inconsistency in recordError\" to adaptiveRouter.ts. Reason: Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.. Avoid similar changes.",
+      "context": "self-modify adaptiveRouter.ts reliability",
+      "outcome": "failure: Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.",
+      "lesson": "Avoid for adaptiveRouter.ts: Fix health check logic inconsistency in recordError — causes Constitution blocked: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'.",
+      "applicableTo": [
+        "adaptiveRouter.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780537451049,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -423,5 +455,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-02T03:44:49.654Z"
+  "_lastUpdated": "2026-06-04T01:45:54.561Z"
 }

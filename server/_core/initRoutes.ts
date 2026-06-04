@@ -239,4 +239,67 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
       res.json(plan);
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });
+
+  // -- v6.30: CI Pipeline --
+  app.post("/api/ci/run", async (req, res) => {
+    try {
+      const { runCiPipeline } = await import("../ciPipeline.js");
+      const { proposalId, snapshotId, skipBuild, skipTests, skipTypecheck, skipReload } = req.body ?? {};
+      const result = await runCiPipeline(proposalId, snapshotId, { skipBuild, skipTests, skipTypecheck, skipReload });
+      res.json(result);
+    } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+  });
+  app.get("/api/ci/status", async (_req, res) => {
+    try {
+      const { getCiStatus } = await import("../ciPipeline.js");
+      res.json(getCiStatus());
+    } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+  });
+  app.get("/api/ci/history", async (req, res) => {
+    try {
+      const { getCiHistory } = await import("../ciPipeline.js");
+      const limit = parseInt(String((req.query as any).limit ?? "20"), 10);
+      res.json(getCiHistory(limit));
+    } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+  });
+
+  // -- v6.30: Import Graph --
+  app.get("/api/system/import-graph", async (_req, res) => {
+    try {
+      const { getGraphSummary } = await import("../importGraph.js");
+      res.json(await getGraphSummary());
+    } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+  });
+  app.post("/api/system/import-graph/usages", async (req, res) => {
+    try {
+      const { findSymbolUsages } = await import("../importGraph.js");
+      const { file, symbol } = req.body ?? {};
+      if (!file || !symbol) { res.status(400).json({ error: "file and symbol required" }); return; }
+      const usages = await findSymbolUsages(file, symbol);
+      res.json({ usages });
+    } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+  });
+  app.post("/api/system/import-graph/validate", async (req, res) => {
+    try {
+      const { validateRefactoring } = await import("../importGraph.js");
+      const { changes } = req.body ?? {};
+      if (!changes) { res.status(400).json({ error: "changes array required" }); return; }
+      const validation = await validateRefactoring(changes);
+      res.json(validation);
+    } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+  });
+
+  // -- v6.30: RSI DB + Lock status --
+  app.get("/api/rsi/db/status", async (_req, res) => {
+    try {
+      const { getRsiDbStatus } = await import("../rsiDb.js");
+      res.json(getRsiDbStatus());
+    } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+  });
+  app.get("/api/system/locks", async (_req, res) => {
+    try {
+      const { getLockStatus } = await import("../redisLock.js");
+      res.json(getLockStatus());
+    } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+  });
 }

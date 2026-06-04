@@ -1,50 +1,50 @@
 {
-  "timestamp": 1780371670650,
-  "runDurationMs": 53379,
+  "timestamp": 1780537444320,
+  "runDurationMs": 59536,
   "results": [
     {
       "name": "memory_keyword_search",
       "category": "memory",
-      "durationMs": 53378.27,
-      "timestamp": 1780371670649
+      "durationMs": 59534.77,
+      "timestamp": 1780537444319
     },
     {
       "name": "tool_registry_lookup",
       "category": "tool_latency",
-      "durationMs": 0,
-      "timestamp": 1780371670649
+      "durationMs": 0.01,
+      "timestamp": 1780537444319
     },
     {
       "name": "file_write_10kb",
       "category": "code_execution",
       "durationMs": 0.09,
-      "timestamp": 1780371670649
+      "timestamp": 1780537444319
     },
     {
       "name": "file_read_10kb",
       "category": "code_execution",
       "durationMs": 0.04,
-      "timestamp": 1780371670649
+      "timestamp": 1780537444319
     },
     {
       "name": "context_token_estimation_50msg",
       "category": "startup",
-      "durationMs": 0.02,
-      "timestamp": 1780371670650
+      "durationMs": 0.01,
+      "timestamp": 1780537444320
     },
     {
       "name": "json_parse_large_object",
       "category": "code_execution",
-      "durationMs": 0.17,
-      "timestamp": 1780371670650,
+      "durationMs": 0.13,
+      "timestamp": 1780537444320,
       "metadata": {
-        "sizeBytes": 28922
+        "sizeBytes": 28931
       }
     }
   ],
   "baselines": {
     "memory_keyword_search": 153.46,
-    "tool_registry_lookup": 0,
+    "tool_registry_lookup": 0.01,
     "file_write_10kb": 0.07,
     "file_read_10kb": 0.02,
     "context_token_estimation_50msg": 0.01,
@@ -54,8 +54,8 @@
     {
       "benchmark": "memory_keyword_search",
       "baseline": 153.46,
-      "current": 53378.27,
-      "degradationPercent": 34683,
+      "current": 59534.77,
+      "degradationPercent": 38695,
       "severity": "critical"
     },
     {
@@ -73,19 +73,12 @@
       "severity": "critical"
     },
     {
-      "benchmark": "context_token_estimation_50msg",
-      "baseline": 0.01,
-      "current": 0.02,
-      "degradationPercent": 100,
-      "severity": "critical"
-    },
-    {
       "benchmark": "json_parse_large_object",
       "baseline": 0.1,
-      "current": 0.17,
-      "degradationPercent": 70,
-      "severity": "critical"
+      "current": 0.13,
+      "degradationPercent": 30,
+      "severity": "warning"
     }
   ],
-  "overallScore": 10
+  "overallScore": 40
 }

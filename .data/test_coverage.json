@@ -1,9 +1,9 @@
 {
-  "timestamp": 1780450175376,
-  "totalModules": 174,
+  "timestamp": 1780537317491,
+  "totalModules": 178,
   "testedModules": 140,
-  "untestedModules": 34,
-  "coveragePercent": 40,
+  "untestedModules": 38,
+  "coveragePercent": 39,
   "moduleDetails": [
     {
       "filePath": "server/_core/context.ts",
@@ -510,6 +510,23 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/ciPipeline.ts",
+      "fileName": "ciPipeline.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "runCiPipeline",
+        "getCiStatus",
+        "getCiHistory"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "runCiPipeline",
+        "getCiStatus",
+        "getCiHistory"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/codeIntel.ts",
       "fileName": "codeIntel.ts",
       "hasTestFile": true,
@@ -662,6 +679,31 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/importGraph.ts",
+      "fileName": "importGraph.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "buildImportGraph",
+        "getImporters",
+        "getImportees",
+        "findSymbolUsages",
+        "getTransitiveImporters",
+        "validateRefactoring",
+        "getGraphSummary"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "buildImportGraph",
+        "getImporters",
+        "getImportees",
+        "findSymbolUsages",
+        "getTransitiveImporters",
+        "validateRefactoring",
+        "getGraphSummary"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/multiAgent.ts",
       "fileName": "multiAgent.ts",
       "hasTestFile": true,
@@ -672,6 +714,35 @@
       "testedFunctions": [],
       "untestedFunctions": [
         "runTeamAgent"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/redisLock.ts",
+      "fileName": "redisLock.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "withLock",
+        "withRsiCycleLock",
+        "withSelfHealLock",
+        "withTestPipelineLock",
+        "withContinuousImproverLock",
+        "withDependencyGraphLock",
+        "withAutoGoalLock",
+        "withOrchestratorLock",
+        "getLockStatus"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "withLock",
+        "withRsiCycleLock",
+        "withSelfHealLock",
+        "withTestPipelineLock",
+        "withContinuousImproverLock",
+        "withDependencyGraphLock",
+        "withAutoGoalLock",
+        "withOrchestratorLock",
+        "getLockStatus"
       ],
       "coveragePercent": 0
     },
@@ -768,6 +839,31 @@
         "rsiEnableSchema",
         "episodicRecordSchema",
         "planDecomposeSchema"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/rsiDb.ts",
+      "fileName": "rsiDb.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "dbSaveProposal",
+        "dbLoadProposals",
+        "dbSaveCycle",
+        "dbLoadCycles",
+        "dbSaveEvalRun",
+        "dbLoadEvalHistory",
+        "runRsiDbMigration"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "dbSaveProposal",
+        "dbLoadProposals",
+        "dbSaveCycle",
+        "dbLoadCycles",
+        "dbSaveEvalRun",
+        "dbLoadEvalHistory",
+        "runRsiDbMigration"
       ],
       "coveragePercent": 0
     },

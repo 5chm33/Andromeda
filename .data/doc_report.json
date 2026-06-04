@@ -1,7 +1,7 @@
 {
-  "timestamp": 1780371670715,
-  "totalModules": 174,
-  "documentedModules": 100,
+  "timestamp": 1780537444380,
+  "totalModules": 178,
+  "documentedModules": 102,
   "undocumentedExports": [
     {
       "filePath": "server/_core/imageGeneration.ts",
@@ -408,6 +408,18 @@
     {
       "filePath": "server/cache.ts",
       "exportName": "pruneExpired",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ciPipeline.ts",
+      "exportName": "getCiStatus",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ciPipeline.ts",
+      "exportName": "getCiHistory",
       "exportType": "function",
       "line": 0
     },
@@ -1414,6 +1426,12 @@
       "line": 0
     },
     {
+      "filePath": "server/redisLock.ts",
+      "exportName": "getLockStatus",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/routes/evalRoutes.ts",
       "exportName": "registerEvalRoutes",
       "exportType": "function",
@@ -2324,7 +2342,7 @@
     {
       "filePath": "ARCHITECTURE.md",
       "type": "architecture",
-      "content": "Updated: 174 modules, 386 undocumented exports"
+      "content": "Updated: 178 modules, 389 undocumented exports"
     }
   ],
   "architectureUpdated": true
