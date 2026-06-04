@@ -210,6 +210,17 @@ export async function initModules(): Promise<void> {
     }
   }, 30_000);
 
+  // ── v6.32: Episodic memory consolidation ─────────────────────────────────
+  import("../episodicConsolidation.js").then(m => {
+    m.initEpisodicConsolidation();
+  }).catch(err => console.warn("[EpisodicConsolidate] Init failed (non-fatal):", err));
+
+  // ── v6.32: RSI persistent auto-trigger scheduler ────────────────────────────
+  import("../rsiScheduler.js").then(m => {
+    m.initRsiScheduler();
+    console.log("[RsiScheduler] RSI auto-trigger scheduler initialized");
+  }).catch(err => console.warn("[RsiScheduler] Init failed (non-fatal):", err));
+
   // ── v5.33: Degradation watch ──────────────────────────────────────────────────
   import("../selfRollback").then(m => {
     m.startDegradationWatch();
