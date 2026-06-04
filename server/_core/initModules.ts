@@ -289,4 +289,28 @@ export async function initModules(): Promise<void> {
     m.startDegradationWatch();
     console.log("[Rollback] Degradation watch started");
   }).catch(() => {});
+
+  // ── v7.1: Auto-rebuild (post-improvement zero-touch operation) ───────────────
+  import("../autoRebuild.js").then(m => {
+    m.initAutoRebuild();
+    console.log("[AutoRebuild] Post-improvement auto-rebuild initialized");
+  }).catch(err => console.warn("[AutoRebuild] Init failed (non-fatal):", err));
+
+  // ── v7.1: RLHF collector (human feedback loop) ───────────────────────────────
+  import("../rlhfCollector.js").then(m => {
+    m.initRlhfCollector();
+    console.log("[RLHF] Feedback collector initialized");
+  }).catch(err => console.warn("[RLHF] Init failed (non-fatal):", err));
+
+  // ── v7.1: PR generator (automated pull requests from proposals) ──────────────
+  import("../prGenerator.js").then(m => {
+    m.initPRGenerator();
+    console.log("[PRGenerator] Automated PR generator initialized");
+  }).catch(err => console.warn("[PRGenerator] Init failed (non-fatal):", err));
+
+  // ── v7.1: Knowledge transfer (cross-agent learning) ──────────────────────────
+  import("../knowledgeTransfer.js").then(m => {
+    m.initKnowledgeTransfer();
+    console.log("[KnowledgeTransfer] Cross-agent knowledge transfer initialized");
+  }).catch(err => console.warn("[KnowledgeTransfer] Init failed (non-fatal):", err));
 }

@@ -833,6 +833,12 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         startHealthWatch(proposalId);
       } catch (err) { log.caught("non-fatal", err); }
 
+      // v7.1: Schedule auto-rebuild so the applied change takes effect without manual restart
+      try {
+        const { scheduleRebuild } = await import("./autoRebuild.js");
+        scheduleRebuild(proposalId);
+      } catch (err) { log.caught("non-fatal", err); }
+
       try {
         const { recordSystemLearning } = await import("./systemMemory");
         recordSystemLearning({

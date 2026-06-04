@@ -6,6 +6,7 @@ import { adminRouter } from "../routes/adminRoutes.js";
 import { federatedRouter } from "../routes/federatedRoutes.js";
 import { adaptiveEvalRouter } from "../routes/adaptiveEvalRoutes.js";
 import { v7Router } from "../routes/v7Routes.js";
+import { v71Router } from "../routes/v71Routes.js";
 import { telemetryMiddleware } from "../telemetry.js";
 import { attachRbacContext, auditMiddleware, roleRateLimit } from "../rbac.js";
 /**
@@ -39,6 +40,9 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
 
   // ── v7.0: Watchdog, telemetry, capability manifest, roadmap ────────────────
   app.use("/api/v7", v7Router);
+
+  // ── v7.1: Auto-rebuild, RLHF, PR generator, knowledge transfer ───────────
+  app.use("/api/v71", v71Router);
   app.use(telemetryMiddleware());
 
   // ── Parameterless health check (UptimeRobot, K8s probes) ─────────────────────
