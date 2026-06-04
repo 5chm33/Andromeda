@@ -1,7 +1,7 @@
 /**
- * selfImprove.ts — v6.28
+ * selfImprove.ts — v7.1
  *
- * v6.28 RSI Fixes:
+ * v7.1 RSI Fixes:
  *   A1 — Proposal deduplication: hash(targetFile + title) prevents the same fix
  *        being regenerated every cycle (was 45% of all proposals).
  *   A2 — Confidence scoring: LLM now rates each proposal 0.0–1.0; the
@@ -234,7 +234,7 @@ function getConstitutionConstraints(): { files: string[]; patterns: string[] } {
 
   if (!hasDeepSeek && !hasOpenRouter && !hasAnthropic && !hasKimi) {
     log.warn(
-      "⚠️  [v6.28 A5] No LLM API key found in environment. " +
+      "⚠️  [v7.1] No LLM API key found in environment. " +
       "Set DEEPSEEK_API_KEY, OPENROUTER_API_KEY, ANTHROPIC_API_KEY, or KIMI_API_KEY. " +
       "RSI proposal generation and eval baseline will fail with 401 errors until a key is set."
     );
@@ -244,7 +244,7 @@ function getConstitutionConstraints(): { files: string[]; patterns: string[] } {
     if (hasOpenRouter) active.push("OpenRouter");
     if (hasAnthropic) active.push("Anthropic");
     if (hasKimi) active.push("Kimi");
-    log.info(`[v6.28 A5] LLM keys present: ${active.join(", ")} ✓`);
+    log.info(`[v7.1] LLM keys present: ${active.join(", ")} ✓`);
   }
 })();
 

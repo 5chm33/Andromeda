@@ -40,7 +40,7 @@ export function startDaemons(): void {
   // v5.68: Seed foundational memories on first boot
   try { seedInitialMemoriesIfEmpty(); } catch { /* non-fatal */ }
 
-  // v5.68: Start all SOTA autonomy daemons
+  // v7.1: Start all SOTA autonomy daemons
   try {
     initPersistentContextStore();
     startContextCompressionDaemon();
@@ -55,8 +55,8 @@ export function startDaemons(): void {
     startCapabilityDiscovery();
     // Initialize prompt engineer stats (event-driven, no daemon needed)
     getPromptStats();
-    console.log("[v5.68] All autonomy daemons started successfully");
+    console.log("[v7.1] All autonomy daemons started successfully");
   } catch (daemonErr) {
-    console.warn("[v5.68] Some daemons failed to start:", (daemonErr as Error).message);
+    console.warn("[v7.1] Some daemons failed to start:", (daemonErr as Error).message);
   }
 }

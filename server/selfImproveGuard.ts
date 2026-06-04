@@ -268,8 +268,10 @@ function runSyntaxCheck(filename: string, content: string): { pass: boolean; err
 
   try {
     fs.writeFileSync(tmpFile, content, "utf-8");
-    // Use tsc --noEmit on just this file with skipLibCheck
-    execSync(`npx tsc --noEmit --skipLibCheck --allowImportingTsExtensions "${tmpFile}" 2>&1`, {
+    // Use tsc --noEmit on just this file with skipLibCheck + noResolve so it only
+    // checks syntax without trying to resolve local imports (which would fail
+    // since the file is isolated outside the project tree in tmp_syntax/).
+    execSync(`npx tsc --noEmit --skipLibCheck --noResolve --allowImportingTsExtensions "${tmpFile}" 2>&1`, {
       timeout: 30000,
       encoding: "utf-8",
       cwd: path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".."),
@@ -337,7 +339,19 @@ export async function guardedApply(proposalId: string): Promise<{
       const forbiddenPatterns: string[] = constitution.forbiddenModifications?.patterns || [];
       const matchedPattern = forbiddenPatterns.find((p: string) => (proposal.proposedContent || proposal.proposedSnippet || "").includes(p));
       if (matchedPattern) {
+        // Count how many times this proposal has been blocked by a constitution pattern
+        const store = loadStore();
+        const blockCount = store.audit.filter(
+          a => a.proposalId === proposalId && a.result === "blocked" && a.details?.includes("Constitution")
+        ).length;
         addAudit("apply", "blocked", `Constitution: proposed content contains forbidden pattern '${matchedPattern}'`, proposalId, proposal.targetFile);
+        // Auto-expire proposals that have been constitution-blocked 3+ times — they will never pass
+        if (blockCount >= 2) {
+          rejectProposal(proposalId);
+          addAudit("expire", "success", `Auto-expired: constitution-blocked ${blockCount + 1} times (pattern: '${matchedPattern}')`, proposalId, proposal.targetFile);
+          console.log(`[Guard] Auto-expired proposal ${proposalId} after ${blockCount + 1} constitution blocks`);
+          return { success: false, message: `Proposal auto-expired: constitution-blocked ${blockCount + 1} times for pattern '${matchedPattern}'.` };
+        }
         return { success: false, message: `Constitution blocked: proposed content contains forbidden pattern '${matchedPattern}'.` };
       }
       // Check rationale length
