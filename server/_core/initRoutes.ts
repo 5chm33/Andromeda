@@ -4,6 +4,7 @@ import {
 } from "../routes/zodSchemas.js";
 import { adminRouter } from "../routes/adminRoutes.js";
 import { federatedRouter } from "../routes/federatedRoutes.js";
+import { adaptiveEvalRouter } from "../routes/adaptiveEvalRoutes.js";
 import { attachRbacContext, auditMiddleware, roleRateLimit } from "../rbac.js";
 /**
  * initRoutes.ts — v6.38
@@ -30,6 +31,9 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
 
   // ── v6.39: Federated learning routes (multi-node RSI sync) ────────────────
   app.use("/api/federated", federatedRouter);
+
+  // ── v6.40: Adaptive eval routes (LLM-generated benchmarks) ────────────────
+  app.use("/api/adaptive-eval", adaptiveEvalRouter);
 
   // ── Parameterless health check (UptimeRobot, K8s probes) ─────────────────────
   app.get("/health", (_req, res) => {

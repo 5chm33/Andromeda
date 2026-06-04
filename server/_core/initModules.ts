@@ -41,6 +41,11 @@ export async function initModules(): Promise<void> {
     m.initFederatedLearning();
   }).catch(err => console.warn("[FederatedLearning] Init failed (non-fatal):", err));
 
+  // ── v6.40: Adaptive eval init (LLM-generated benchmarks) ─────────────────
+  import("../adaptiveEval.js").then(m => {
+    m.initAdaptiveEval();
+  }).catch(err => console.warn("[AdaptiveEval] Init failed (non-fatal):", err));
+
   // ── v6.36: Cross-session context persistence — restore context bus state from disk ─
   import("../contextBus.js").then(m => {
     const count = m.loadPersistedBus();
