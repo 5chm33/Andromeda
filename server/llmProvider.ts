@@ -321,9 +321,24 @@ export async function chatCompletion(
     maxTokens?: number;
     signal?: AbortSignal;
     sessionId?: string;  // v5.68: For token budget tracking
+    /** v6.33: Override the active provider for this call only (e.g. "kimi", "deepseek", "anthropic"). */
+    providerId?: string;
   },
 ): Promise<LLMCompletionResult> {
-  const provider = ensureProviderInitialized();
+  // v6.33: Use a temporary provider override if requested, otherwise use the active provider
+  let provider: LLMProviderConfig;
+  if (options?.providerId) {
+    const base = DEFAULT_PROVIDERS[options.providerId];
+    const key = base ? getProviderApiKey(options.providerId) : "";
+    if (base && key) {
+      provider = { ...base, apiKey: key };
+    } else {
+      // Requested provider not available — fall back to active
+      provider = ensureProviderInitialized();
+    }
+  } else {
+    provider = ensureProviderInitialized();
+  }
   const body: Record<string, unknown> = {
     model: provider.model,
     messages,
@@ -854,7 +869,7 @@ export async function backgroundSimpleCompletion(
 
 export async function simpleChatCompletion(
   messages: Array<{ role: string; content: string }>,
-  options?: { maxTokens?: number; temperature?: number; signal?: AbortSignal },
+  options?: { maxTokens?: number; temperature?: number; signal?: AbortSignal; providerId?: string },
 ): Promise<string> {
   const result = await chatCompletion(
     messages as ChatMessage[],
@@ -862,6 +877,7 @@ export async function simpleChatCompletion(
       maxTokens: options?.maxTokens ?? 4000,
       temperature: options?.temperature ?? 0.4,
       signal: options?.signal,
+      providerId: options?.providerId,
     },
   );
   // LLMCompletionResult has { content: string | null, toolCalls, finishReason, usage }

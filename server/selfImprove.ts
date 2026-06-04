@@ -247,43 +247,58 @@ function getConstitutionConstraints(): { files: string[]; patterns: string[] } {
   }
 })();
 
-// ─── Simple Diff Generator ────────────────────────────────────────────────────
+// ─── Unified Diff Generator (v6.33) ──────────────────────────────────────────────
+// Uses the `diff` package (Myers algorithm) for proper unified diffs.
+// Falls back to the simple line-by-line diff if the package is unavailable.
 
 function generateSimpleDiff(original: string, proposed: string, filename: string): string {
-  const origLines = original.split("\n");
-  const propLines = proposed.split("\n");
-  const diff: string[] = [`--- a/${filename}`, `+++ b/${filename}`];
-
-  let i = 0, j = 0;
-  let hunkLines: string[] = [];
-  let hunkStart = -1;
-
-  const flushHunk = () => {
-    if (hunkLines.length > 0) {
-      diff.push(`@@ -${hunkStart + 1} +${hunkStart + 1} @@`);
-      diff.push(...hunkLines);
-      hunkLines = [];
-      hunkStart = -1;
-    }
-  };
-
-  while (i < origLines.length || j < propLines.length) {
-    const orig = origLines[i];
-    const prop = propLines[j];
-    if (orig === prop) {
+  try {
+    // v6.33: Proper Myers unified diff with 3-line context
+    const { createTwoFilesPatch } = require("diff");
+    const patch = createTwoFilesPatch(
+      `a/${filename}`,
+      `b/${filename}`,
+      original,
+      proposed,
+      "",
+      "",
+      { context: 3 }
+    );
+    return patch.trim();
+  } catch {
+    // Fallback: simple line-by-line diff
+    const origLines = original.split("\n");
+    const propLines = proposed.split("\n");
+    const diff: string[] = [`--- a/${filename}`, `+++ b/${filename}`];
+    let i = 0, j = 0;
+    let hunkLines: string[] = [];
+    let hunkStart = -1;
+    const flushHunk = () => {
       if (hunkLines.length > 0) {
-        hunkLines.push(` ${orig ?? ""}`);
-        if (hunkLines.filter(l => !l.startsWith(" ")).length > 0 && hunkLines.length > 6) flushHunk();
+        diff.push(`@@ -${hunkStart + 1} +${hunkStart + 1} @@`);
+        diff.push(...hunkLines);
+        hunkLines = [];
+        hunkStart = -1;
       }
-      i++; j++;
-    } else {
-      if (hunkStart === -1) hunkStart = Math.max(0, i - 3);
-      if (orig !== undefined) { hunkLines.push(`-${orig}`); i++; }
-      if (prop !== undefined) { hunkLines.push(`+${prop}`); j++; }
+    };
+    while (i < origLines.length || j < propLines.length) {
+      const orig = origLines[i];
+      const prop = propLines[j];
+      if (orig === prop) {
+        if (hunkLines.length > 0) {
+          hunkLines.push(` ${orig ?? ""}`);
+          if (hunkLines.filter(l => !l.startsWith(" ")).length > 0 && hunkLines.length > 6) flushHunk();
+        }
+        i++; j++;
+      } else {
+        if (hunkStart === -1) hunkStart = Math.max(0, i - 3);
+        if (orig !== undefined) { hunkLines.push(`-${orig}`); i++; }
+        if (prop !== undefined) { hunkLines.push(`+${prop}`); j++; }
+      }
     }
+    flushHunk();
+    return diff.join("\n");
   }
-  flushHunk();
-  return diff.join("\n");
 }
 
 // ─── AI Analysis ──────────────────────────────────────────────────────────────
@@ -419,7 +434,25 @@ export async function analyzeAndPropose(
   // v6.16: Use cheap background provider (DeepSeek) for analysis cycles.
   // v6.28 A2: Added "confidence" field to the JSON schema so the LLM self-rates
   //           each proposal 0.0–1.0. This makes the confidenceThreshold filter work.
-  const rawContent = await backgroundSimpleCompletion(
+  // v6.33: Multi-model routing — route by proposal area:
+  //   security / architecture → Claude via OpenRouter (best reasoning)
+  //   performance / feature    → Kimi k2.6 (best coding model)
+  //   reliability / readability → DeepSeek (cheap, reliable)
+  function pickProviderForArea(area?: string): string | undefined {
+    if (!area) return undefined; // let backgroundSimpleCompletion use its default
+    const a = area.toLowerCase();
+    if (a.includes("security") || a.includes("architect") || a.includes("design")) {
+      return process.env.OPENROUTER_API_KEY ? "anthropic" : undefined;
+    }
+    if (a.includes("performance") || a.includes("feature") || a.includes("optim")) {
+      return process.env.KIMI_API_KEY ? "kimi" : undefined;
+    }
+    // reliability, readability, general → DeepSeek
+    return process.env.DEEPSEEK_API_KEY ? "deepseek" : undefined;
+  }
+  const { simpleChatCompletion } = await import("./llmProvider.js");
+  const routedProvider = pickProviderForArea(area);
+  const rawContent = await simpleChatCompletion(
     [
       {
         role: "system",
@@ -448,7 +481,7 @@ Do NOT include any forbidden patterns listed above.`,
         content: `Analyze this TypeScript file and propose the single best improvement${area ? ` focusing on: ${area}` : ``}.\n\nFile: ${filename}\n\n\`\`\`typescript\n${contentForAnalysis}\n\`\`\`\n\nReturn ONLY valid JSON.`,
       },
     ],
-    { maxTokens: 2000, temperature: 0.3 },
+    { maxTokens: 2000, temperature: 0.3, providerId: routedProvider },
   );
 
   if (!rawContent) throw new Error("AI returned an empty response");

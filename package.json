@@ -1,6 +1,6 @@
 {
   "name": "andromeda",
-  "version": "6.32.0",
+  "version": "6.33.0",
   "type": "module",
   "license": "MIT",
   "scripts": {
@@ -54,6 +54,7 @@
     "@trpc/client": "^11.6.0",
     "@trpc/react-query": "^11.6.0",
     "@trpc/server": "^11.6.0",
+    "@types/diff": "^8.0.0",
     "axios": "^1.12.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -61,6 +62,7 @@
     "codemirror": "^6.0.1",
     "cookie": "^1.0.2",
     "date-fns": "^4.1.0",
+    "diff": "^9.0.0",
     "dotenv": "^17.2.2",
     "drizzle-orm": "^0.44.5",
     "embla-carousel-react": "^8.6.0",

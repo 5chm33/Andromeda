@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Search from "./pages/Search";
 import History from "./pages/History";
 import Chat from "./pages/Chat";
+import RsiDashboard from "./pages/RsiDashboard";
 
 function Router() {
   return (
@@ -16,6 +17,7 @@ function Router() {
       <Route path={"/search"} component={Search} />
       <Route path={"/history"} component={History} />
       <Route path={"/chat"} component={Chat} />
+      <Route path={"/rsi"} component={RsiDashboard} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

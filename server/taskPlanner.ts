@@ -12,6 +12,7 @@
 
 import { backgroundSimpleCompletion } from "./llmProvider.js";
 import { getEpisodicMemory, recordEpisode } from "./episodicMemory.js";
+import { getConsolidatedLessons } from "./episodicConsolidation.js";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -76,9 +77,29 @@ export async function generatePlan(
     const episodes = await getEpisodicMemory(goal, 3);
     if (episodes.length > 0) {
       episodicContext = "\n\nRelevant past experience:\n" + episodes.map(e =>
-        `- Goal: "${e.goal}" → ${e.outcome}: ${e.summary}`
+        `- Goal: "${e.goal}" \u2192 ${e.outcome}: ${e.summary}`
       ).join("\n");
     }
+  }
+
+  // v6.33: Inject consolidated lessons from episodic memory consolidation
+  let lessonContext = "";
+  try {
+    const lessons = getConsolidatedLessons({ limit: 5 });
+    if (lessons.length > 0) {
+      // Find lessons whose cluster key overlaps with the goal keywords
+      const goalWords = new Set(goal.toLowerCase().split(/\s+/).filter(w => w.length > 3));
+      const relevant = lessons.filter(l =>
+        l.commonTags.some(t => goalWords.has(t.toLowerCase())) ||
+        goalWords.has(l.clusterKey.toLowerCase())
+      ).slice(0, 3);
+      if (relevant.length > 0) {
+        lessonContext = "\n\nConsolidated lessons from past sessions:\n" +
+          relevant.map(l => `- [${l.clusterKey}] ${l.lesson}`).join("\n");
+      }
+    }
+  } catch {
+    // non-fatal — lessons file may not exist yet
   }
 
   const systemPrompt = `You are a task planning engine. Given a goal, decompose it into a minimal ordered list of concrete executable steps.
@@ -108,7 +129,7 @@ Output format:
   ]
 }`;
 
-  const userPrompt = `Goal: ${goal}${context ? `\n\nContext: ${context}` : ""}${episodicContext}`;
+  const userPrompt = `Goal: ${goal}${context ? `\n\nContext: ${context}` : ""}${episodicContext}${lessonContext}`;
 
   let stepsRaw: { id: string; description: string; toolHint?: string; dependsOn: string[] }[] = [];
 
