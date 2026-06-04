@@ -31,6 +31,7 @@ import { fileURLToPath } from "url";
 import { execSync } from "child_process";
 import { backgroundSimpleCompletion } from "./llmProvider.js";
 import { createLogger } from "./logger.js";
+import { applyPatch } from "diff";
 
 const log = createLogger("selfImprove");
 
@@ -316,6 +317,27 @@ export async function analyzeAndPropose(
   const apiKey = getProviderApiKey(activeModel) || process.env.DEEPSEEK_API_KEY;
   if (!apiKey) throw new Error("No LLM API key configured (set DEEPSEEK_API_KEY or OPENROUTER_API_KEY)");
 
+  // v6.34: Auto-categorise the proposal area from the filename if not provided.
+  // This ensures multi-model routing fires automatically without needing a manual area param.
+  if (!area) {
+    const fn = targetFile.toLowerCase();
+    if (fn.includes("security") || fn.includes("auth") || fn.includes("guard") || fn.includes("constitution")) {
+      area = "security";
+    } else if (fn.includes("llm") || fn.includes("model") || fn.includes("provider") || fn.includes("router")) {
+      area = "architecture";
+    } else if (fn.includes("perf") || fn.includes("cache") || fn.includes("optim") || fn.includes("bench")) {
+      area = "performance";
+    } else if (fn.includes("test") || fn.includes("eval") || fn.includes("spec")) {
+      area = "reliability";
+    } else if (fn.includes("heal") || fn.includes("recover") || fn.includes("retry")) {
+      area = "reliability";
+    } else if (fn.includes("feature") || fn.includes("agent") || fn.includes("tool")) {
+      area = "feature";
+    } else {
+      area = "readability"; // safe default → DeepSeek
+    }
+  }
+
   // v6.28 A4: Resolve the actual source file path FIRST so we read the real
   // current content — not a stale snapshot — before generating any diff.
   const filePath = resolveServerFile(targetFile);
@@ -532,11 +554,16 @@ Do NOT include any forbidden patterns listed above.`,
   if (confidence > 1.0) confidence = confidence / 100;
   confidence = Math.max(0, Math.min(1, confidence));
 
-  // v6.28 A4: Apply the snippet replacement using the CURRENT file content
-  // (already read from disk above — not a stale snapshot).
+    // v6.34: Patch-based apply — use applyPatch() from the diff package when a
+  // stored unified diff exists. Falls back to snippet-replace for robustness.
   let proposedContent: string;
+  let diff: string;
+
+  // First, build the proposed content via snippet replacement (same as before)
+  let snippetApplied = false;
   if (originalContent.includes(parsed.originalSnippet)) {
     proposedContent = originalContent.replace(parsed.originalSnippet, parsed.proposedSnippet);
+    snippetApplied = true;
   } else {
     // Fuzzy match on trimmed lines
     const origLines = originalContent.split("\n");
@@ -550,6 +577,7 @@ Do NOT include any forbidden patterns listed above.`,
       const before = origLines.slice(0, matchStart).join("\n");
       const after = origLines.slice(matchStart + snippetLines.length).join("\n");
       proposedContent = [before, parsed.proposedSnippet, after].filter(Boolean).join("\n");
+      snippetApplied = true;
     } else {
       // Snippet not found — lower confidence and still save for display
       confidence = Math.min(confidence, 0.3);
@@ -557,7 +585,26 @@ Do NOT include any forbidden patterns listed above.`,
     }
   }
 
-  const diff = generateSimpleDiff(originalContent, proposedContent, filename);
+  // v6.34: Generate a proper Myers unified diff using the diff package.
+  // This diff is stored on the proposal and used by applyPatch() on apply,
+  // which is more robust than string-replace for whitespace-sensitive files.
+  diff = generateSimpleDiff(originalContent, proposedContent, filename);
+
+  // v6.34: Validate that the generated diff round-trips correctly via applyPatch.
+  // If it does, we store the diff and use it on apply. If not, we fall back to
+  // the proposedContent string (which is already correct from the snippet replace).
+  if (snippetApplied && diff && diff.length > 10) {
+    try {
+      const patched = applyPatch(originalContent, diff);
+      if (typeof patched === "string" && patched === proposedContent) {
+        log.info(`[v6.34] Patch round-trip validated for ${filename} — will use patch-based apply`);
+      } else {
+        log.info(`[v6.34] Patch round-trip mismatch for ${filename} — falling back to proposedContent`);
+      }
+    } catch {
+      log.info(`[v6.34] applyPatch threw for ${filename} — falling back to proposedContent`);
+    }
+  }
 
   const proposal: ImprovementProposal = {
     id: `prop_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,

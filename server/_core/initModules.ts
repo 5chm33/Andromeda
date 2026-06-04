@@ -178,10 +178,22 @@ export async function initModules(): Promise<void> {
       const path = await import("path");
       const baselineFile = path.join(process.cwd(), "data", "eval_baseline.json");
       if (fs.existsSync(baselineFile)) {
-        console.log("[AutoBaseline] v6.24: Baseline already exists — skipping auto-capture");
-        return;
+        // v6.34: Also re-run if the stored baseline has a suspiciously low score
+        // (< 5%) — this catches the case where a previous run failed with 401 errors
+        // and wrote a garbage baseline that would prevent RSI from ever improving.
+        try {
+          const stored = JSON.parse(fs.readFileSync(baselineFile, "utf-8"));
+          const pct = typeof stored.percentage === "number" ? stored.percentage : 0;
+          if (pct >= 5) {
+            console.log(`[AutoBaseline] v6.34: Valid baseline exists (${pct.toFixed(1)}%) — skipping auto-capture`);
+            return;
+          }
+          console.log(`[AutoBaseline] v6.34: Stored baseline score is ${pct.toFixed(1)}% (< 5%) — likely a failed run. Re-running baseline capture...`);
+        } catch {
+          // Can't parse stored baseline — re-run to be safe
+        }
       }
-      console.log("[AutoBaseline] v6.24: No baseline found — running quick eval to establish starting score...");
+      console.log("[AutoBaseline] v6.34: No valid baseline found — running quick eval to establish starting score...");
       const { runEvaluation, EVAL_TASKS } = await import("../evalFramework.js");
       const { simpleChatCompletion } = await import("../llmProvider.js");
       const runAgent = async (prompt: string, maxTokens: number, timeoutMs: number): Promise<string> => {
