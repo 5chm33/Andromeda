@@ -46,6 +46,17 @@ export async function initModules(): Promise<void> {
     m.initAdaptiveEval();
   }).catch(err => console.warn("[AdaptiveEval] Init failed (non-fatal):", err));
 
+  // ── v7.0: Watchdog (self-healing) + Telemetry (performance) ─────────────────
+  import("../watchdog.js").then(m => {
+    m.initWatchdog();
+    console.log("[Watchdog] Self-healing watchdog initialized");
+  }).catch(err => console.warn("[Watchdog] Init failed (non-fatal):", err));
+
+  import("../telemetry.js").then(m => {
+    m.initTelemetry();
+    console.log("[Telemetry] Performance telemetry initialized");
+  }).catch(err => console.warn("[Telemetry] Init failed (non-fatal):", err));
+
   // ── v6.36: Cross-session context persistence — restore context bus state from disk ─
   import("../contextBus.js").then(m => {
     const count = m.loadPersistedBus();

@@ -5,6 +5,8 @@ import {
 import { adminRouter } from "../routes/adminRoutes.js";
 import { federatedRouter } from "../routes/federatedRoutes.js";
 import { adaptiveEvalRouter } from "../routes/adaptiveEvalRoutes.js";
+import { v7Router } from "../routes/v7Routes.js";
+import { telemetryMiddleware } from "../telemetry.js";
 import { attachRbacContext, auditMiddleware, roleRateLimit } from "../rbac.js";
 /**
  * initRoutes.ts — v6.38
@@ -34,6 +36,10 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
 
   // ── v6.40: Adaptive eval routes (LLM-generated benchmarks) ────────────────
   app.use("/api/adaptive-eval", adaptiveEvalRouter);
+
+  // ── v7.0: Watchdog, telemetry, capability manifest, roadmap ────────────────
+  app.use("/api/v7", v7Router);
+  app.use(telemetryMiddleware());
 
   // ── Parameterless health check (UptimeRobot, K8s probes) ─────────────────────
   app.get("/health", (_req, res) => {
