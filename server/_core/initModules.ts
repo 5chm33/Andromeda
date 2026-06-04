@@ -1,5 +1,5 @@
 /**
- * initModules.ts — v6.37
+ * initModules.ts — v6.38
  *
  * Extracted from _core/index.ts (v6.03 refactor).
  * Handles all async module initialization in dependency order.
@@ -25,6 +25,16 @@ export async function initModules(): Promise<void> {
       console.warn("[Postgres] Migration failed (non-fatal):", err)
     );
   }
+
+  // ── v6.38: Tenant manager + audit log init ───────────────────────────────
+  import("../tenantManager.js").then(m => {
+    m.initTenantManager();
+    console.log("[TenantManager] Multi-tenant isolation initialized");
+  }).catch(err => console.warn("[TenantManager] Init failed (non-fatal):", err));
+  import("../auditLog.js").then(m => {
+    m.loadAuditFromDisk(500);
+    console.log("[AuditLog] Audit log initialized");
+  }).catch(err => console.warn("[AuditLog] Init failed (non-fatal):", err));
 
   // ── v6.36: Cross-session context persistence — restore context bus state from disk ─
   import("../contextBus.js").then(m => {

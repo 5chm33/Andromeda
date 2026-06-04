@@ -2,8 +2,10 @@ import { validateBody } from "../routes/validate.js";
 import { 
   rsiEnableSchema, episodicRecordSchema, planDecomposeSchema 
 } from "../routes/zodSchemas.js";
+import { adminRouter } from "../routes/adminRoutes.js";
+import { attachRbacContext, auditMiddleware, roleRateLimit } from "../rbac.js";
 /**
- * initRoutes.ts — v6.04
+ * initRoutes.ts — v6.38
  *
  * Extracted from _core/index.ts (v6.03 refactor).
  * Registers inline API routes that were defined directly in startServer():
@@ -17,6 +19,14 @@ import type { Express } from "express";
 import { readFileSync } from "fs";
 
 export async function registerCoreRoutes(app: Express): Promise<void> {
+  // ── v6.38: RBAC context + audit middleware (applied globally before all routes) ──
+  app.use(attachRbacContext);
+  app.use(auditMiddleware);
+  app.use(roleRateLimit);
+
+  // ── v6.38: Admin routes (RBAC + audit log + tenant management) ──────────────
+  app.use("/api/admin", adminRouter);
+
   // ── Parameterless health check (UptimeRobot, K8s probes) ─────────────────────
   app.get("/health", (_req, res) => {
     // v6.04: Read version from package.json instead of hardcoding

@@ -28,6 +28,7 @@ import { fileURLToPath } from "url";
 import { storeMemory } from "./memory.js";
 import { createSnapshot, restoreSnapshot } from "./autoRollback.js";
 import { execSync } from "child_process";
+import { auditRsiEvent } from "./auditLog.js";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -381,6 +382,7 @@ export async function runRSICycle(): Promise<RSICycleResult> {
   let categoryScoresAfter: Record<string, number> | undefined;
 
   console.log(`[RSIEngine] Starting cycle ${cycleId} (cycle #${cycleCount + 1})`);
+  auditRsiEvent({ action: "cycle_started", cycleId, success: true, details: { cycleNumber: cycleCount + 1 } });
   rsiPhase = "observing";
 
   try {
@@ -624,6 +626,19 @@ export async function runRSICycle(): Promise<RSICycleResult> {
   }
 
   console.log(`[RSIEngine] Cycle ${cycleId} complete in ${result.durationMs}ms. Applied: ${proposalsApplied}, Score: ${capabilityScoreBefore}→${capabilityScoreAfter}`);
+  auditRsiEvent({
+    action: "cycle_completed",
+    cycleId,
+    success: result.errors.length === 0,
+    details: {
+      durationMs: result.durationMs,
+      proposalsApplied,
+      proposalsRejected,
+      scoreBefore: capabilityScoreBefore,
+      scoreAfter: capabilityScoreAfter,
+      scoreDelta: result.scoreImprovement,
+    },
+  });
   return result;
 }
 
