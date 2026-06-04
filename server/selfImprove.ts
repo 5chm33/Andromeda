@@ -439,6 +439,38 @@ export async function analyzeAndPropose(
     // importGraph not available — proceed without it
   }
 
+  // v6.36: Meta-learning — read rsi_proof_history.json and inject category success rates
+  // into the system prompt so the LLM focuses on historically weak categories.
+  let metaLearningContext = "";
+  try {
+    const proofPath = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "data", "rsi_proof_history.json");
+    if (fs.existsSync(proofPath)) {
+      const history: any[] = JSON.parse(fs.readFileSync(proofPath, "utf-8"));
+      const recent = history.slice(-20);
+      const catStats: Record<string, { totalDelta: number; count: number }> = {};
+      for (const entry of recent) {
+        const catBefore = entry.categoryScoresBefore ?? {};
+        const catAfter = entry.categoryScoresAfter ?? {};
+        const allCats = new Set([...Object.keys(catBefore), ...Object.keys(catAfter)]);
+        for (const cat of allCats) {
+          const before = (catBefore as any)[cat] ?? 0;
+          const after = (catAfter as any)[cat] ?? 0;
+          if (!catStats[cat]) catStats[cat] = { totalDelta: 0, count: 0 };
+          catStats[cat].totalDelta += after - before;
+          catStats[cat].count++;
+        }
+      }
+      const catSummary = Object.entries(catStats)
+        .map(([cat, s]) => ({ cat, avgDelta: s.count > 0 ? s.totalDelta / s.count : 0 }))
+        .sort((a, b) => a.avgDelta - b.avgDelta);
+      if (catSummary.length > 0) {
+        const weakest = catSummary.slice(0, 3).map(c => `${c.cat}(${c.avgDelta.toFixed(1)})`).join(", ");
+        const strongest = catSummary.slice(-2).map(c => `${c.cat}(${c.avgDelta.toFixed(1)})`).join(", ");
+        metaLearningContext = `\n\nMETA-LEARNING (last ${recent.length} RSI cycles): Weakest categories: ${weakest}. Strongest: ${strongest}. PRIORITISE improving the weakest categories.`;
+      }
+    }
+  } catch { /* non-fatal */ }
+
   // v6.28 A3: Load constitution constraints and inject into the system prompt.
   // This means the LLM will never propose touching forbidden files or inserting
   // forbidden patterns — so proposals won't be immediately blocked by the guard.
@@ -480,7 +512,7 @@ export async function analyzeAndPropose(
         role: "system",
         content: `You are an expert TypeScript software engineer performing a targeted code improvement.
 You will receive source code and must identify the SINGLE BEST improvement to make.
-${knowledgeContext ? `\nArchitecture decisions and known issues for this file:\n${knowledgeContext}` : ""}${previousAttempts}${constitutionBlock}${importGraphContext}
+${knowledgeContext ? `\nArchitecture decisions and known issues for this file:\n${knowledgeContext}` : ""}${previousAttempts}${metaLearningContext}${constitutionBlock}${importGraphContext}
 
 CRITICAL: Return ONLY a JSON object. No markdown. No explanation outside the JSON.
 The JSON must contain:
@@ -836,6 +868,16 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         });
       } catch (err) { log.caught("non-fatal", err); }
 
+      // v6.36: Constitutional AI expansion — record rejection pattern for learned constraints
+      try {
+        const { recordRejection } = await import("./learnedConstraints.js");
+        // Extract the pattern from the proposed snippet (first 80 chars as a fingerprint)
+        const snippet = (proposal.proposedSnippet || proposal.proposedContent || "").slice(0, 80).trim();
+        if (snippet.length >= 10) {
+          recordRejection(snippet, guardResult.message || "Guard rejected");
+        }
+      } catch { /* non-fatal */ }
+
       return {
         success: false,
         message: guardResult.message || "Guard rejected the proposal (syntax check or test failure)",
@@ -1051,11 +1093,36 @@ export async function autoApplyHighConfidence(): Promise<AutoApplyResult[]> {
   }
 
   const store = loadProposals();
-
+  // v6.36: Meta-learning bias — load weak categories from proof history
+  const weakCategories = new Set<string>();
+  try {
+    const proofPath = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "data", "rsi_proof_history.json");
+    if (fs.existsSync(proofPath)) {
+      const history: any[] = JSON.parse(fs.readFileSync(proofPath, "utf-8"));
+      const recent = history.slice(-10);
+      const catDeltas: Record<string, number[]> = {};
+      for (const entry of recent) {
+        const catBefore = entry.categoryScoresBefore ?? {};
+        const catAfter = entry.categoryScoresAfter ?? {};
+        const allCats = new Set([...Object.keys(catBefore), ...Object.keys(catAfter)]);
+        for (const cat of allCats) {
+          const delta = ((catAfter as any)[cat] ?? 0) - ((catBefore as any)[cat] ?? 0);
+          if (!catDeltas[cat]) catDeltas[cat] = [];
+          catDeltas[cat].push(delta);
+        }
+      }
+      for (const [cat, deltas] of Object.entries(catDeltas)) {
+        const avg = deltas.reduce((s, d) => s + d, 0) / deltas.length;
+        if (avg <= 0) weakCategories.add(cat); // no improvement = weak
+      }
+    }
+  } catch { /* non-fatal */ }
   function scoreProposal(p: ImprovementProposal): number {
     // v6.28 A2: Use LLM confidence when available (0.0–1.0 → 0–100)
     if (typeof p.confidence === "number" && p.confidence > 0) {
-      return Math.round(p.confidence * 100);
+      // v6.36: Boost proposals in weak categories by 10 points
+      const boost = weakCategories.has(p.category) ? 10 : 0;
+      return Math.min(100, Math.round(p.confidence * 100) + boost);
     }
     // Legacy heuristic for proposals generated before v6.28
     let score = 0;

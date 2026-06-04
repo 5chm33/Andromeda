@@ -19,6 +19,12 @@ export async function initModules(): Promise<void> {
     console.warn("[RsiDb] Migration failed (non-fatal):", err)
   );
 
+  // ── v6.36: Cross-session context persistence — restore context bus state from disk ─
+  import("../contextBus.js").then(m => {
+    const count = m.loadPersistedBus();
+    if (count > 0) console.log(`[ContextBus] Restored ${count} context entries from previous session`);
+  }).catch(err => console.warn("[ContextBus] loadPersistedBus failed (non-fatal):", err));
+
   // ── v5.35: Foundational modules (order matters) ──────────────────────────────
   import("../runtimeConfig").then(m => m.initRuntimeConfig()).catch(err => console.warn("[RuntimeConfig] Init failed:", err));
   import("../modelRegistry").then(m => m.initModelRegistry()).catch(err => console.warn("[ModelRegistry] Init failed:", err));

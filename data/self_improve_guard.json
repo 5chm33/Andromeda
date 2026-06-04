@@ -103,6 +103,15 @@
       "result": "blocked",
       "details": "Constitution: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'",
       "timestamp": "2026-06-04T01:44:11.049Z"
+    },
+    {
+      "id": "audit_1780575817976_mhoguh",
+      "action": "apply",
+      "proposalId": "prop_1779762103380_ozxr4x",
+      "filename": "adaptiveRouter.ts",
+      "result": "blocked",
+      "details": "Constitution: proposed content contains forbidden pattern 'process.env.DEEPSEEK_API_KEY'",
+      "timestamp": "2026-06-04T12:23:37.976Z"
     }
   ]
 }

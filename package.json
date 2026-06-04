@@ -1,6 +1,6 @@
 {
   "name": "andromeda",
-  "version": "6.35.0",
+  "version": "6.36.0",
   "type": "module",
   "license": "MIT",
   "scripts": {
@@ -119,15 +119,5 @@
     "vite": "^7.1.7",
     "vite-plugin-manus-runtime": "^0.0.57",
     "vitest": "^2.1.4"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "wouter@3.7.1": "patches/wouter@3.7.1.patch"
-    },
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "@tailwindcss/oxide"
-    ],
-    "overrides": {}
   }
 }

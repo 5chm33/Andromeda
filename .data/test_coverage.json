@@ -1,9 +1,9 @@
 {
-  "timestamp": 1780553348486,
-  "totalModules": 178,
+  "timestamp": 1780575719332,
+  "totalModules": 181,
   "testedModules": 140,
-  "untestedModules": 38,
-  "coveragePercent": 39,
+  "untestedModules": 41,
+  "coveragePercent": 38,
   "moduleDetails": [
     {
       "filePath": "server/_core/context.ts",
@@ -581,6 +581,25 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/episodicConsolidation.ts",
+      "fileName": "episodicConsolidation.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "consolidateEpisodicMemory",
+        "getConsolidatedLessons",
+        "getEpisodicConsolidationStats",
+        "initEpisodicConsolidation"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "consolidateEpisodicMemory",
+        "getConsolidatedLessons",
+        "getEpisodicConsolidationStats",
+        "initEpisodicConsolidation"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/fileEngineAnalysis.ts",
       "fileName": "fileEngineAnalysis.ts",
       "hasTestFile": false,
@@ -689,7 +708,8 @@
         "findSymbolUsages",
         "getTransitiveImporters",
         "validateRefactoring",
-        "getGraphSummary"
+        "getGraphSummary",
+        "getExportedSymbols"
       ],
       "testedFunctions": [],
       "untestedFunctions": [
@@ -699,7 +719,8 @@
         "findSymbolUsages",
         "getTransitiveImporters",
         "validateRefactoring",
-        "getGraphSummary"
+        "getGraphSummary",
+        "getExportedSymbols"
       ],
       "coveragePercent": 0
     },
@@ -868,6 +889,29 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/rsiScheduler.ts",
+      "fileName": "rsiScheduler.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "initRsiScheduler",
+        "getRsiSchedulerStatus",
+        "setRsiScheduleHours",
+        "pauseRsiScheduler",
+        "resumeRsiScheduler",
+        "triggerRsiNow"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "initRsiScheduler",
+        "getRsiSchedulerStatus",
+        "setRsiScheduleHours",
+        "pauseRsiScheduler",
+        "resumeRsiScheduler",
+        "triggerRsiNow"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/storage.ts",
       "fileName": "storage.ts",
       "hasTestFile": true,
@@ -880,6 +924,31 @@
       "untestedFunctions": [
         "storagePut",
         "storageGet"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/toolSynthesis.ts",
+      "fileName": "toolSynthesis.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "generateToolSource",
+        "validateToolSource",
+        "synthesizeTool",
+        "loadSynthesizedTools",
+        "listSynthesizedTools",
+        "deleteSynthesizedTool",
+        "toolDefinition"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "generateToolSource",
+        "validateToolSource",
+        "synthesizeTool",
+        "loadSynthesizedTools",
+        "listSynthesizedTools",
+        "deleteSynthesizedTool",
+        "toolDefinition"
       ],
       "coveragePercent": 0
     },
@@ -1231,6 +1300,39 @@
       "coveragePercent": 20
     },
     {
+      "filePath": "server/taskPlanner.ts",
+      "fileName": "taskPlanner.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/taskPlanner.test.ts",
+      "exportedFunctions": [
+        "getActivePlan",
+        "getAllActivePlans",
+        "generatePlan",
+        "replanOnFailure",
+        "getNextExecutableStep",
+        "completeStep",
+        "failStep",
+        "getPlanSummary",
+        "detectParallelGroups",
+        "dispatchParallelSteps"
+      ],
+      "testedFunctions": [
+        "getActivePlan",
+        "getAllActivePlans"
+      ],
+      "untestedFunctions": [
+        "generatePlan",
+        "replanOnFailure",
+        "getNextExecutableStep",
+        "completeStep",
+        "failStep",
+        "getPlanSummary",
+        "detectParallelGroups",
+        "dispatchParallelSteps"
+      ],
+      "coveragePercent": 20
+    },
+    {
       "filePath": "server/tieredContextManager.ts",
       "fileName": "tieredContextManager.ts",
       "hasTestFile": true,
@@ -1496,35 +1598,6 @@
         "updateGuardConfig",
         "listBackups",
         "sweepExpiredProposals"
-      ],
-      "coveragePercent": 25
-    },
-    {
-      "filePath": "server/taskPlanner.ts",
-      "fileName": "taskPlanner.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/taskPlanner.test.ts",
-      "exportedFunctions": [
-        "getActivePlan",
-        "getAllActivePlans",
-        "generatePlan",
-        "replanOnFailure",
-        "getNextExecutableStep",
-        "completeStep",
-        "failStep",
-        "getPlanSummary"
-      ],
-      "testedFunctions": [
-        "getActivePlan",
-        "getAllActivePlans"
-      ],
-      "untestedFunctions": [
-        "generatePlan",
-        "replanOnFailure",
-        "getNextExecutableStep",
-        "completeStep",
-        "failStep",
-        "getPlanSummary"
       ],
       "coveragePercent": 25
     },

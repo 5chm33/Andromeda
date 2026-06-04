@@ -167,7 +167,16 @@ function validateInline(proposal: SafetyProposal): SafetyValidationResult {
  */
 export async function validateProposal(proposal: SafetyProposal): Promise<SafetyValidationResult> {
   const result = validateInline(proposal);
-
+  // v6.36: Check learned constraints (dynamically grown from past rejections)
+  try {
+    const { checkLearnedConstraints } = await import("./learnedConstraints.js");
+    const violated = checkLearnedConstraints(proposal.proposedContent);
+    if (violated) {
+      result.violations.push(`LEARNED CONSTRAINT: Pattern "${violated.pattern}" is forbidden — ${violated.reason} (rejected ${violated.rejectionCount} times)`);
+      result.passed = false;
+      result.riskLevel = "critical";
+    }
+  } catch { /* learnedConstraints not available — skip */ }
   // Track modification count if this passes
   if (result.passed) {
     modificationCount++;

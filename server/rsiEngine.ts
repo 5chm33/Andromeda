@@ -518,6 +518,13 @@ export async function runRSICycle(): Promise<RSICycleResult> {
           return result as string;
         };
         const evalRun = await runEvaluation(runAgent, easyTaskIds);
+        // v6.36: Unsupervised goal discovery from eval failures
+        try {
+          const { discoverGoalsFromEval } = await import("./evalGoalDiscovery.js");
+          await discoverGoalsFromEval(evalRun);
+        } catch (discErr) {
+          if (rsiConfig.verboseLogging) console.warn("[RSIEngine] Goal discovery failed (non-fatal):", String(discErr).slice(0, 100));
+        }
         // v6.35: capture per-category scores for capability growth tracking
         categoryScoresAfter = {};
         for (const [cat, data] of Object.entries(evalRun.byCategory)) {

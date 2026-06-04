@@ -158,6 +158,17 @@ export function registerSelfRoutes(
     }
   });
 
+  // v6.36: Unsupervised goal discovery history
+  app.get("/api/rsi/discoveries", async (req, res) => {
+    try {
+      const { getRecentDiscoveries } = await import("../evalGoalDiscovery.js");
+      const limit = req.query.limit ? Number(req.query.limit) : 20;
+      res.json({ discoveries: getRecentDiscoveries(limit) });
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
   app.post("/api/memory/episodic/consolidate", requireAdminAuth, async (req, res) => {
     try {
       const { consolidateEpisodicMemory } = await import("../episodicConsolidation.js");
