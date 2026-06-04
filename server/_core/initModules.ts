@@ -233,6 +233,13 @@ export async function initModules(): Promise<void> {
     console.log("[RsiScheduler] RSI auto-trigger scheduler initialized");
   }).catch(err => console.warn("[RsiScheduler] Init failed (non-fatal):", err));
 
+  // ── v6.35: Load previously synthesized tools from disk ──────────────────────
+  import("../toolSynthesis.js").then(m => {
+    m.loadSynthesizedTools()
+      .then(() => console.log("[ToolSynthesis] Synthesized tools reloaded"))
+      .catch((err: unknown) => console.warn("[ToolSynthesis] Load failed (non-fatal):", err));
+  }).catch((err: unknown) => console.warn("[ToolSynthesis] Module load failed (non-fatal):", err));
+
   // ── v5.33: Degradation watch ──────────────────────────────────────────────────
   import("../selfRollback").then(m => {
     m.startDegradationWatch();

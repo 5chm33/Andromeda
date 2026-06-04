@@ -1,13 +1,16 @@
 /**
- * browserTools.ts — v6.18
+ * browserTools.ts — v6.35
  *
  * Registers Playwright-based browser interaction tools with the agent tool registry.
  * Provides navigate, click, type, screenshot, and extract_data tools.
+ *
+ * v6.35: Vision-first click — browser_click now tries vision coordinate click first,
+ * falls back to CSS selector. Added browser_navigate_and_click composite tool.
  */
 import {
   browserNavigate, browserClick, browserType,
   browserScreenshot, browserExtractData, browserEval,
-  closeBrowser, listBrowserSessions,
+  closeBrowser, listBrowserSessions, browserClickVision,
 } from "../browser.js";
 import type { ToolDefinition } from "../toolRegistry.js";
 
@@ -33,25 +36,52 @@ export const browserToolDefinitions: ToolDefinition[] = [
   },
   {
     name: "browser_click",
-    description: "Click an element on the current page using a CSS selector or visible text.",
+    description: "v6.35: Click an element on the current page. Vision-first: takes a screenshot and uses AI to identify the element by its description/selector, then clicks by pixel coordinates. Falls back to CSS selector if vision fails.",
     category: "browser",
     safetyLevel: "medium",
     parameters: {
       type: "object",
       properties: {
-        selector: { type: "string", description: "CSS selector or visible text to click" },
+        selector: { type: "string", description: "Natural language description OR CSS selector of the element to click, e.g. 'the blue Submit button' or '#submit-btn'" },
         session_id: { type: "string", description: "Browser session ID" },
       },
       required: ["selector", "session_id"],
     },
     execute: async (args: { selector: string; session_id: string }) => {
-      // v6.23: Try CSS selector first; if it fails, fall back to vision-based coordinate click
-      const result = await browserClick(args.selector, args.session_id);
-      if (result.success) return { success: true, url: result.url };
-      // CSS selector failed — try vision fallback
+      // v6.35: Vision-first — try vision coordinate click first (works on React/Next.js dynamic class names)
       const visionResult = await browserClickVision(args.selector, args.session_id);
-      if (visionResult.success) return { success: true, url: visionResult.url, method: "vision_fallback" };
-      return { error: `CSS selector failed: ${result.error}. Vision fallback failed: ${visionResult.error}` };
+      if (visionResult.success) return { success: true, url: visionResult.url, method: "vision_primary" };
+      // Vision failed — fall back to CSS selector
+      const result = await browserClick(args.selector, args.session_id);
+      if (result.success) return { success: true, url: result.url, method: "css_fallback" };
+      return { error: `Vision click failed: ${visionResult.error}. CSS fallback also failed: ${result.error}` };
+    },
+  },
+  {
+    name: "browser_navigate_and_click",
+    description: "v6.35: Composite tool — navigate to a URL then immediately click an element using vision. Useful for single-step form submissions and link following.",
+    category: "browser",
+    safetyLevel: "medium",
+    parameters: {
+      type: "object",
+      properties: {
+        url: { type: "string", description: "URL to navigate to" },
+        element_description: { type: "string", description: "Natural language description of the element to click after navigation" },
+        session_id: { type: "string", description: "Browser session ID (optional)" },
+      },
+      required: ["url", "element_description"],
+    },
+    execute: async (args: { url: string; element_description: string; session_id?: string }) => {
+      const navResult = await browserNavigate(args.url, args.session_id);
+      if (!navResult.success) return { error: `Navigation failed: ${navResult.error}` };
+      // Wait briefly for page to settle
+      await new Promise(r => setTimeout(r, 800));
+      const clickResult = await browserClickVision(args.element_description, navResult.sessionId!);
+      if (clickResult.success) return { success: true, navigated_to: navResult.url, clicked: args.element_description, final_url: clickResult.url, method: "vision" };
+      // Vision failed — try CSS
+      const cssResult = await browserClick(args.element_description, navResult.sessionId!);
+      if (cssResult.success) return { success: true, navigated_to: navResult.url, clicked: args.element_description, final_url: cssResult.url, method: "css_fallback" };
+      return { error: `Navigated to ${navResult.url} but click failed. Vision: ${clickResult.error}. CSS: ${cssResult.error}` };
     },
   },
   {
@@ -94,7 +124,7 @@ export const browserToolDefinitions: ToolDefinition[] = [
   },
   {
     name: "browser_click_vision",
-    description: "v6.23: Click an element using AI vision — takes a screenshot, identifies the element by description, and clicks its pixel coordinates. Use this when browser_click fails due to dynamic CSS class names (React/Next.js apps).",
+    description: "Click an element using AI vision — takes a screenshot, identifies the element by natural language description, and clicks its pixel coordinates. Preferred over browser_click for React/Next.js apps with dynamic class names.",
     category: "browser",
     safetyLevel: "medium",
     parameters: {

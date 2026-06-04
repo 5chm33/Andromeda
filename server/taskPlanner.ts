@@ -320,3 +320,110 @@ export function getPlanSummary(plan: TaskPlan): string {
   const failed = plan.steps.filter(s => s.status === "failed").length;
   return `Plan "${plan.goal.slice(0, 60)}..." — ${done}/${total} steps done${failed > 0 ? `, ${failed} failed` : ""}${plan.replanCount > 0 ? `, replanned ${plan.replanCount}x` : ""}`;
 }
+
+// ─── Multi-Agent Parallel Dispatch (v6.35) ────────────────────────────────────
+
+/**
+ * Detect groups of steps that can run in parallel.
+ * A group is a set of pending steps whose dependsOn are all already done,
+ * and none of them depend on each other.
+ */
+export function detectParallelGroups(plan: TaskPlan): PlanStep[][] {
+  const doneIds = new Set(
+    plan.steps.filter(s => s.status === "done" || s.status === "skipped").map(s => s.id)
+  );
+
+  // Collect all currently executable (pending + deps satisfied) steps
+  const executable = plan.steps.filter(s => {
+    if (s.status !== "pending") return false;
+    return s.dependsOn.every(dep => doneIds.has(dep));
+  });
+
+  if (executable.length <= 1) return executable.length === 1 ? [[executable[0]]] : [];
+
+  // Build a set of executable step IDs to detect cross-dependencies
+  const execIds = new Set(executable.map(s => s.id));
+
+  // Group steps that don't depend on each other into parallel batches
+  const groups: PlanStep[][] = [];
+  const assigned = new Set<string>();
+
+  for (const step of executable) {
+    if (assigned.has(step.id)) continue;
+    // Find all steps that can run alongside this one (no cross-deps)
+    const group = [step];
+    assigned.add(step.id);
+    for (const other of executable) {
+      if (assigned.has(other.id)) continue;
+      const crossDep =
+        other.dependsOn.some(d => execIds.has(d) && d !== step.id) ||
+        step.dependsOn.some(d => d === other.id);
+      if (!crossDep) {
+        group.push(other);
+        assigned.add(other.id);
+      }
+    }
+    groups.push(group);
+  }
+
+  return groups;
+}
+
+/**
+ * Dispatch a group of steps to parallel sub-agents using Promise.allSettled.
+ * Each step is executed by calling the provided executor function.
+ * Results are written back into the plan steps.
+ */
+export async function dispatchParallelSteps(
+  plan: TaskPlan,
+  steps: PlanStep[],
+  executor: (step: PlanStep) => Promise<string>,
+): Promise<void> {
+  if (steps.length === 0) return;
+
+  // Mark all as running
+  for (const step of steps) {
+    step.status = "running";
+    plan.updatedAt = Date.now();
+  }
+
+  console.log(
+    `[TaskPlanner] Dispatching ${steps.length} steps in parallel: ${steps.map(s => s.id).join(", ")}`
+  );
+
+  const results = await Promise.allSettled(steps.map(step => executor(step)));
+
+  for (let i = 0; i < steps.length; i++) {
+    const step = steps[i];
+    const result = results[i];
+    if (result.status === "fulfilled") {
+      step.status = "done";
+      step.result = result.value;
+    } else {
+      step.retries++;
+      if (step.retries <= step.maxRetries) {
+        step.status = "pending";
+        console.log(
+          `[TaskPlanner] Parallel step "${step.description}" failed, will retry (${step.retries}/${step.maxRetries})`
+        );
+      } else {
+        step.status = "failed";
+        step.error = String(result.reason);
+        console.error(
+          `[TaskPlanner] Parallel step "${step.description}" failed permanently: ${step.error}`
+        );
+      }
+    }
+    plan.updatedAt = Date.now();
+  }
+
+  // Check if plan is complete
+  if (plan.steps.every(s => s.status === "done" || s.status === "skipped")) {
+    plan.status = "done";
+    recordEpisode({
+      goal: plan.goal,
+      outcome: "success",
+      summary: `Completed via parallel dispatch in ${plan.steps.filter(s => s.status === "done").length} steps`,
+    }).catch(() => {});
+  }
+}

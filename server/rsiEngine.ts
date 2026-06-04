@@ -61,6 +61,9 @@ export type RSICycleResult = {
   // v6.16: Detailed benchmark breakdown for before/after comparison
   benchmarkBefore?: BenchmarkBreakdown;
   benchmarkAfter?: BenchmarkBreakdown;
+  // v6.35: Per-category eval scores for capability growth tracking
+  categoryScoresBefore?: Record<string, number>;
+  categoryScoresAfter?: Record<string, number>;
 };
 
 export type RSIConfig = {
@@ -212,6 +215,8 @@ function appendProofHistory(result: RSICycleResult): void {
           }
         : null,
       errors: result.errors.length > 0 ? result.errors.slice(0, 3) : undefined,
+      categoryScoresBefore: result.categoryScoresBefore,
+      categoryScoresAfter: result.categoryScoresAfter,
     });
     // Keep last 200 entries
     if (history.length > 200) history = history.slice(-200);
@@ -372,6 +377,8 @@ export async function runRSICycle(): Promise<RSICycleResult> {
   let capabilityScoreAfter = 0;
   let benchmarkBefore: BenchmarkBreakdown | undefined;
   let benchmarkAfter: BenchmarkBreakdown | undefined;
+  let categoryScoresBefore: Record<string, number> | undefined;
+  let categoryScoresAfter: Record<string, number> | undefined;
 
   console.log(`[RSIEngine] Starting cycle ${cycleId} (cycle #${cycleCount + 1})`);
   rsiPhase = "observing";
@@ -511,6 +518,11 @@ export async function runRSICycle(): Promise<RSICycleResult> {
           return result as string;
         };
         const evalRun = await runEvaluation(runAgent, easyTaskIds);
+        // v6.35: capture per-category scores for capability growth tracking
+        categoryScoresAfter = {};
+        for (const [cat, data] of Object.entries(evalRun.byCategory)) {
+          categoryScoresAfter[cat] = (data as any).pct;
+        }
         console.log(`[RSIEngine] Eval score after RSI cycle: ${evalRun.percentage.toFixed(1)}% (${evalRun.passed}/${evalRun.passed + evalRun.failed} easy tasks passed)`);
         storeMemory(
           `RSI cycle ${cycleId} eval score: ${evalRun.percentage.toFixed(1)}% (${evalRun.passed}/${evalRun.passed + evalRun.failed} easy tasks passed). Benchmark: ${capabilityScoreBefore}->${capabilityScoreAfter}/100`,
@@ -591,6 +603,8 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     memoryStoredCount,
     benchmarkBefore,  // v6.16: detailed before/after breakdown
     benchmarkAfter,
+    categoryScoresBefore,  // v6.35: per-category capability growth
+    categoryScoresAfter,
   };
 
   recentCycles.unshift(result);

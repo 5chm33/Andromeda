@@ -12,6 +12,7 @@
 import { useEffect, useState } from "react";
 import { ProposalReviewPanel } from "@/components/rsi/ProposalReviewPanel";
 import { EvalTrendChart } from "@/components/rsi/EvalTrendChart";
+import { CapabilityGrowthChart } from "@/components/rsi/CapabilityGrowthChart";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -314,6 +315,18 @@ export default function RsiDashboard() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Capability Growth Chart */}
+        <Card className="bg-slate-900 border-slate-700">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-slate-200">
+              Capability Growth by Category
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <CapabilityGrowthChart />
+          </CardContent>
+        </Card>
 
         {/* Cycle History Table */}
         <Card className="bg-slate-900 border-slate-700">
