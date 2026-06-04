@@ -343,3 +343,25 @@ export async function getGraphSummary(): Promise<{
     mostImported,
   };
 }
+
+/**
+ * v6.31: Get all exported symbol names from a file.
+ * Used by selfImprove.ts to build the import graph context for the LLM prompt
+ * so the generator knows which symbols have callers and can propose secondaryChanges.
+ */
+export async function getExportedSymbols(file: string): Promise<string[]> {
+  const g = await getGraph();
+  const absFile = path.resolve(file);
+  const symbols: string[] = [];
+  for (const key of g.symbolUsages.keys()) {
+    const colonIdx = key.indexOf("::");
+    if (colonIdx === -1) continue;
+    const keyFile = key.slice(0, colonIdx);
+    const symbol = key.slice(colonIdx + 2);
+    if (keyFile === absFile && symbol) {
+      symbols.push(symbol);
+    }
+  }
+  // Deduplicate and sort
+  return [...new Set(symbols)].sort();
+}

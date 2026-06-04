@@ -2,6 +2,7 @@ import { validateBody } from "./validate.js";
 import { selfAnalyzeSchema, selfApplySchema } from "./zodSchemas.js";
 import type { Express } from "express";
 import { analyzeAndPropose, applyProposal, listProposals, rejectProposal, getAnalyzableFiles } from "../selfImprove.js";
+import { dbLoadProposals } from "../rsiDb.js";
 import { requireAdminAuth } from "../adminAuth.js";
 
 /**
@@ -34,11 +35,28 @@ export function registerSelfRoutes(
     res.json(result);
   });
 
-  app.get("/api/self/proposals", (req, res) => {
+  app.get("/api/self/proposals", async (req, res) => {
     const status = req.query.status as string | undefined;
-    const proposals = listProposals(status as any);
-    // Don't send full file contents in list view — too large
-    res.json({ proposals: proposals.map(p => ({ ...p, originalContent: undefined, proposedContent: undefined })) });
+    try {
+      // v6.31: Read from DB when available, fall back to JSON store
+      let proposals = await dbLoadProposals();
+      if (proposals.length === 0) {
+        proposals = listProposals(status as any);
+      } else if (status) {
+        proposals = proposals.filter((p: any) => p.status === status);
+      }
+      // Don't send full file contents in list view — too large
+      res.json({
+        proposals: proposals.map((p: any) => ({ ...p, originalContent: undefined, proposedContent: undefined })),
+        source: "db",
+      });
+    } catch {
+      const proposals = listProposals(status as any);
+      res.json({
+        proposals: proposals.map(p => ({ ...p, originalContent: undefined, proposedContent: undefined })),
+        source: "json",
+      });
+    }
   });
 
   app.get("/api/self/proposals/:id", (req, res) => {

@@ -380,6 +380,28 @@ export async function analyzeAndPropose(
     // Memory search not available
   }
 
+  // v6.31: Build import graph context — find all callers of exported symbols in this file
+  // so the LLM can propose secondary changes that update callers automatically.
+  let importGraphContext = "";
+  try {
+    const { findSymbolUsages, getExportedSymbols } = await import("./importGraph.js");
+    const exportedSymbols = await getExportedSymbols(filePath);
+    if (exportedSymbols.length > 0) {
+      const usageLines: string[] = [];
+      for (const sym of exportedSymbols.slice(0, 5)) { // limit to 5 symbols to keep prompt size manageable
+        const usages = await findSymbolUsages(filePath, sym);
+        if (usages.length > 0) {
+          usageLines.push(`  - ${sym}: used in ${usages.slice(0, 3).map((u: string) => path.basename(u)).join(", ")}${usages.length > 3 ? ` (+${usages.length - 3} more)` : ""}`);
+        }
+      }
+      if (usageLines.length > 0) {
+        importGraphContext = `\n\nIMPORT GRAPH — exported symbols from this file and where they are used:\n${usageLines.join("\n")}\nIf you change a function signature, add secondaryChanges entries for each caller file.`;
+      }
+    }
+  } catch {
+    // importGraph not available — proceed without it
+  }
+
   // v6.28 A3: Load constitution constraints and inject into the system prompt.
   // This means the LLM will never propose touching forbidden files or inserting
   // forbidden patterns — so proposals won't be immediately blocked by the guard.
@@ -403,7 +425,7 @@ export async function analyzeAndPropose(
         role: "system",
         content: `You are an expert TypeScript software engineer performing a targeted code improvement.
 You will receive source code and must identify the SINGLE BEST improvement to make.
-${knowledgeContext ? `\nArchitecture decisions and known issues for this file:\n${knowledgeContext}` : ""}${previousAttempts}${constitutionBlock}
+${knowledgeContext ? `\nArchitecture decisions and known issues for this file:\n${knowledgeContext}` : ""}${previousAttempts}${constitutionBlock}${importGraphContext}
 
 CRITICAL: Return ONLY a JSON object. No markdown. No explanation outside the JSON.
 The JSON must contain:
@@ -414,6 +436,7 @@ The JSON must contain:
 - "confidence": a float 0.0–1.0 representing how confident you are this improvement is correct, safe, and will pass a TypeScript type-check (1.0 = certain, 0.5 = unsure)
 - "originalSnippet": the EXACT lines of code to replace (copy verbatim from the file, max 30 lines)
 - "proposedSnippet": the improved replacement code (same approximate length)
+- "secondaryChanges": (optional) array of {"file": "relative/path.ts", "originalSnippet": "...", "proposedSnippet": "..."} for caller files that must be updated atomically
 
 The originalSnippet MUST be an exact substring of the provided file content.
 Keep both snippets SHORT and focused. Do not rewrite the whole file.

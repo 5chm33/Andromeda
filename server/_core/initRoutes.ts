@@ -180,8 +180,15 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
   });
   app.get("/api/rsi/history", async (_req, res) => {
     try {
+      // v6.31: Read from DB when available, fall back to JSON store
+      const { dbLoadCycles } = await import("../rsiDb.js");
+      const dbCycles = await dbLoadCycles(100);
+      if (dbCycles.length > 0) {
+        res.json({ cycles: dbCycles, source: "db" });
+        return;
+      }
       const { getRSIHistory } = await import("../rsiEngine.js");
-      res.json(getRSIHistory());
+      res.json({ cycles: getRSIHistory(), source: "json" });
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });
 

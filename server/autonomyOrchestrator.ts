@@ -14,6 +14,7 @@
  * exist independently but don't coordinate.
  */
 import { createLogger } from "./logger.js";
+import { withOrchestratorLock } from "./redisLock.js";
 const log = createLogger("autonomyOrchestrator");
 
 // ── Types ───────────────────────────────────────────────────────────────────
@@ -61,7 +62,8 @@ let config: OrchestratorConfig = {
   maxConsecutiveFailures: 5,
 };
 
-let isRunning = false;
+// v6.31: isRunning replaced by withOrchestratorLock() distributed lock
+let _orchActive = false;
 let inSafeMode = false;
 let cycleTimer: ReturnType<typeof setInterval> | null = null;
 let totalCycles = 0;
@@ -442,19 +444,20 @@ export function startOrchestrator(overrides?: Partial<OrchestratorConfig>): void
     console.log("[Orchestrator] Disabled by config. Set AUTONOMY=true to enable.");
     return;
   }
-  if (isRunning) return;
+  if (_orchActive) return;
 
-  isRunning = true;
+  _orchActive = true;
   console.log(`[Orchestrator] Starting — cycle every ${config.cycleIntervalMs}ms`);
 
   // Run first cycle after a short delay
   setTimeout(() => {
-    runCycle().catch(err => console.error("[Orchestrator] First cycle failed:", err));
+    withOrchestratorLock(() => runCycle()).catch(err => console.error("[Orchestrator] First cycle failed:", err));
   }, 5000);
 
+  // v6.31: Each interval tick acquires the distributed lock before running
   cycleTimer = setInterval(() => {
-    if (isRunning) {
-      runCycle().catch(err => console.error("[Orchestrator] Cycle failed:", err));
+    if (_orchActive) {
+      withOrchestratorLock(() => runCycle()).catch(err => console.error("[Orchestrator] Cycle failed:", err));
     }
   }, config.cycleIntervalMs);
 }
@@ -463,7 +466,7 @@ export function startOrchestrator(overrides?: Partial<OrchestratorConfig>): void
  * Stop the orchestrator.
  */
 export function stopOrchestrator(): void {
-  isRunning = false;
+  _orchActive = false;
   if (cycleTimer) {
     clearInterval(cycleTimer);
     cycleTimer = null;
@@ -475,7 +478,7 @@ export function stopOrchestrator(): void {
  * Pause without clearing state.
  */
 export function pause(): void {
-  isRunning = false;
+  _orchActive = false;
   if (cycleTimer) {
     clearInterval(cycleTimer);
     cycleTimer = null;
@@ -487,7 +490,7 @@ export function pause(): void {
  * Resume after pause.
  */
 export function resume(): void {
-  if (isRunning) return;
+  if (_orchActive) return;
   consecutiveFailures = 0;
   startOrchestrator({ ...config, enabled: true });
 }
@@ -496,14 +499,16 @@ export function resume(): void {
  * Manually trigger a single cycle (for testing or on-demand).
  */
 export async function triggerCycle(): Promise<CycleResult> {
-  return runCycle();
+  // v6.31: Acquire lock for manual trigger too
+  const r = await withOrchestratorLock(() => runCycle());
+  return r.result ?? ({} as CycleResult);
 }
 
 /**
  * Get orchestrator configuration.
  */
 export function getOrchestratorConfig(): OrchestratorConfig & { isRunning: boolean } {
-  return { ...config, isRunning };
+  return { ...config, isRunning: _orchActive };
 }
 
 /**
@@ -512,7 +517,7 @@ export function getOrchestratorConfig(): OrchestratorConfig & { isRunning: boole
 export function setOrchestratorConfig(updates: Partial<OrchestratorConfig>): void {
   config = { ...config, ...updates };
   // Restart with new interval if running
-  if (isRunning && updates.cycleIntervalMs) {
+  if (_orchActive && updates.cycleIntervalMs) {
     stopOrchestrator();
     startOrchestrator({ ...config, enabled: true });
   }
@@ -523,7 +528,7 @@ export function setOrchestratorConfig(updates: Partial<OrchestratorConfig>): voi
  */
 export function getOrchestratorStats() {
   return {
-    isRunning,
+    isRunning: _orchActive,
     inSafeMode,
     totalCycles,
     consecutiveFailures,

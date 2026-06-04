@@ -28,6 +28,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { execSync } from "child_process";
 import { createLogger } from "./logger.js";
+import { withSelfHealLock } from "./redisLock.js";
 const log = createLogger("selfHeal");
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -96,9 +97,10 @@ const DEFAULT_CONFIG: SelfHealConfig = {
 
 let config: SelfHealConfig = { ...DEFAULT_CONFIG };
 let healLoopTimer: ReturnType<typeof setInterval> | null = null;
-let isRunning = false;
+// v6.31: isRunning replaced by withSelfHealLock() distributed lock
+let _healLoopActive = false;
 let consecutiveFailures = 0;
-let healCycleInProgress = false; // v5.22: Reentrance guard
+let healCycleInProgress = false; // v5.22: Reentrance guard (kept for intra-process reentrance)
 
 // v5.27: Watchdog timer — detects if the heal loop itself hangs or crashes
 let lastHealCycleCompletedAt = Date.now();
@@ -481,7 +483,7 @@ Respond in JSON format:
  * The main heal cycle — runs periodically.
  */
 async function healCycle(): Promise<void> {
-  if (!config.enabled || !isRunning) return;
+  if (!config.enabled || !_healLoopActive) return;
 
   // v5.27: Watchdog check — detect if previous cycle hung
   const timeSinceLastCompletion = Date.now() - lastHealCycleCompletedAt;
@@ -666,13 +668,18 @@ async function healCycle(): Promise<void> {
  * Start the self-healing background loop.
  */
 export function startHealLoop(): { success: boolean; message: string } {
-  if (isRunning) return { success: false, message: "Heal loop already running" };
+  if (_healLoopActive) return { success: false, message: "Heal loop already running" };
 
   config.enabled = true;
-  isRunning = true;
+  _healLoopActive = true;
   consecutiveFailures = 0;
 
-  healLoopTimer = setInterval(healCycle, config.checkIntervalMs);
+  // v6.31: Each interval tick acquires the distributed lock before running
+  healLoopTimer = setInterval(() => {
+    withSelfHealLock(() => healCycle()).catch(err =>
+      console.warn("[SelfHeal] Cycle skipped (lock busy or error):", (err as Error).message)
+    );
+  }, config.checkIntervalMs);
   console.log(`[SelfHeal] Started. Interval: ${config.checkIntervalMs}ms`);
 
   return { success: true, message: `Heal loop started (interval: ${config.checkIntervalMs}ms)` };
@@ -682,9 +689,9 @@ export function startHealLoop(): { success: boolean; message: string } {
  * Stop the self-healing loop.
  */
 export function stopHealLoop(): { success: boolean; message: string } {
-  if (!isRunning) return { success: false, message: "Heal loop not running" };
+  if (!_healLoopActive) return { success: false, message: "Heal loop not running" };
 
-  isRunning = false;
+  _healLoopActive = false;
   config.enabled = false;
   if (healLoopTimer) {
     clearInterval(healLoopTimer);
@@ -709,12 +716,14 @@ export async function runHealCycleOnce(): Promise<{
   // Temporarily enable for this run
   const wasEnabled = config.enabled;
   config.enabled = true;
-  isRunning = true;
+  _healLoopActive = true;
 
-  await healCycle();
+  await withSelfHealLock(() => healCycle()).catch(err =>
+    console.warn("[SelfHeal] runHealCycleOnce lock error:", (err as Error).message)
+  );
 
   config.enabled = wasEnabled;
-  isRunning = wasEnabled;
+  _healLoopActive = wasEnabled;
 
   const newAttempts = healHistory.slice(beforeHistory);
   const resolvedCount = Array.from(activeEvents.values()).filter(e => e.resolvedAt && e.resolvedAt > Date.now() - 10000).length;
@@ -738,7 +747,7 @@ export function getHealStatus(): {
   circuitBreakerOpen: boolean;
 } {
   return {
-    running: isRunning,
+    running: _healLoopActive,
     config,
     activeEvents: Array.from(activeEvents.values()).filter(e => !e.resolvedAt),
     recentAttempts: healHistory.slice(-20),
@@ -754,9 +763,13 @@ export function setHealConfig(updates: Partial<SelfHealConfig>): SelfHealConfig 
   config = { ...config, ...updates };
 
   // Restart timer if interval changed and loop is running
-  if (updates.checkIntervalMs && isRunning && healLoopTimer) {
+  if (updates.checkIntervalMs && _healLoopActive && healLoopTimer) {
     clearInterval(healLoopTimer);
-    healLoopTimer = setInterval(healCycle, config.checkIntervalMs);
+    healLoopTimer = setInterval(() => {
+      withSelfHealLock(() => healCycle()).catch(err =>
+        console.warn("[SelfHeal] Cycle skipped (lock busy or error):", (err as Error).message)
+      );
+    }, config.checkIntervalMs);
   }
 
   return config;
@@ -767,7 +780,7 @@ export function setHealConfig(updates: Partial<SelfHealConfig>): SelfHealConfig 
  */
 export function resetCircuitBreaker(): { success: boolean; message: string } {
   consecutiveFailures = 0;
-  if (config.enabled && !isRunning) {
+  if (config.enabled && !_healLoopActive) {
     return startHealLoop();
   }
   return { success: true, message: "Circuit breaker reset. Consecutive failures cleared." };

@@ -1,0 +1,105 @@
+# rsi-validate.yml — v6.31
+#
+# Mirrors the 4-stage ciPipeline.ts pipeline as a GitHub Actions workflow.
+# Runs on every push to master/main and on every pull request.
+#
+# Stages:
+#   1. typecheck  — tsc --noEmit (fast, no output files)
+#   2. test       — pnpm test --run (vitest)
+#   3. build      — pnpm run build (vite + tsc emit)
+#   4. smoke      — start server, hit /health, shut down
+#
+# RSI-applied commits are validated here before they can be merged.
+
+name: RSI Validate
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+concurrency:
+  group: rsi-validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: RSI 4-Stage Pipeline
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      # ── Checkout ──────────────────────────────────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ── Node / pnpm setup ─────────────────────────────────────────────────────
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # ── Stage 1: TypeScript type-check ────────────────────────────────────────
+      - name: Stage 1 — TypeScript typecheck
+        run: pnpm exec tsc --noEmit
+        env:
+          NODE_ENV: test
+
+      # ── Stage 2: Test suite ───────────────────────────────────────────────────
+      - name: Stage 2 — Test suite
+        run: pnpm test --run
+        env:
+          NODE_ENV: test
+          # Provide stub keys so tests that check env don't fail
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY || 'test-stub' }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY || 'test-stub' }}
+
+      # ── Stage 3: Build ────────────────────────────────────────────────────────
+      - name: Stage 3 — Build
+        run: pnpm run build
+        env:
+          NODE_ENV: production
+
+      # ── Stage 4: Smoke test ───────────────────────────────────────────────────
+      - name: Stage 4 — Smoke test (start server + /health)
+        run: |
+          node dist/server/index.js &
+          SERVER_PID=$!
+          sleep 5
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/health || echo "000")
+          kill $SERVER_PID 2>/dev/null || true
+          if [ "$STATUS" != "200" ]; then
+            echo "Smoke test FAILED: /health returned HTTP $STATUS"
+            exit 1
+          fi
+          echo "Smoke test PASSED: /health returned HTTP 200"
+        env:
+          NODE_ENV: production
+          PORT: 3000
+          AUTONOMY: "false"
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY || 'test-stub' }}
+
+      # ── Summary ───────────────────────────────────────────────────────────────
+      - name: Pipeline summary
+        if: always()
+        run: |
+          echo "## RSI Validation Pipeline" >> $GITHUB_STEP_SUMMARY
+          echo "| Stage | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| TypeScript typecheck | ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Test suite | ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build | ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Smoke test | ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Commit: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "Branch: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY

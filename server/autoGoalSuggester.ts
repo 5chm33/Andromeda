@@ -1,5 +1,6 @@
 /**
  * Andromeda v5.27 — Autonomous Goal Suggestion Engine
+ * v6.31: Replaced isRunning boolean guard with withAutoGoalLock() distributed lock.
  *
  * Analyzes system logs, error patterns, and performance metrics
  * to proactively suggest improvement goals without user intervention.
@@ -8,7 +9,10 @@
  * - selfMonitor.ts (metrics)
  * - selfKnowledgeBase.ts (known issues)
  * - recursiveGoals.ts (goal creation)
+ * - redisLock.ts (distributed concurrency control)
  */
+
+import { withAutoGoalLock } from "./redisLock.js";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -41,7 +45,8 @@ const DEFAULT_CONFIG: SuggesterConfig = {
 
 let config: SuggesterConfig = { ...DEFAULT_CONFIG };
 let suggesterTimer: ReturnType<typeof setInterval> | null = null;
-let isRunning = false;
+// v6.31: isRunning replaced by withAutoGoalLock() distributed lock
+let _timerActive = false;
 const suggestions: GoalSuggestion[] = [];
 const MAX_SUGGESTIONS = 100;
 
@@ -184,31 +189,39 @@ export function startAutoGoalSuggester(overrides?: Partial<SuggesterConfig>): vo
     console.log("[AutoGoalSuggester] Disabled. Set enabled: true to activate.");
     return;
   }
-  if (isRunning) return;
+  if (_timerActive) return;
 
-  isRunning = true;
-  suggesterTimer = setInterval(runSuggestionCycle, config.intervalMs);
+  // v6.31: Each interval tick acquires the distributed lock before running
+  _timerActive = true;
+  suggesterTimer = setInterval(() => {
+    withAutoGoalLock(() => runSuggestionCycle()).catch(err =>
+      console.warn("[AutoGoalSuggester] Cycle skipped (lock busy or error):", (err as Error).message)
+    );
+  }, config.intervalMs);
   console.log(`[AutoGoalSuggester] Started. Interval: ${config.intervalMs / 1000 / 60}min`);
 }
 
 export function stopAutoGoalSuggester(): void {
   if (suggesterTimer) clearInterval(suggesterTimer);
   suggesterTimer = null;
-  isRunning = false;
+  _timerActive = false;
+  // v6.31: No isRunning flag to clear — lock releases automatically
 }
 
 export function getSuggestions(limit = 20): GoalSuggestion[] {
   return suggestions.slice(-limit);
 }
 
-export function triggerSuggestionCycle(): Promise<GoalSuggestion[]> {
-  return runSuggestionCycle();
+export async function triggerSuggestionCycle(): Promise<GoalSuggestion[]> {
+  // v6.31: Acquire lock for manual trigger too
+  const result = await withAutoGoalLock(() => runSuggestionCycle());
+  return result.result ?? [];
 }
 
 export function getSuggesterStats() {
   return {
     enabled: config.enabled,
-    running: isRunning,
+    running: _timerActive,
     totalSuggestions: suggestions.length,
     intervalMs: config.intervalMs,
   };

@@ -13,6 +13,7 @@
 
 import * as path from "path";
 import { createLogger } from "./logger.js";
+import { withContinuousImproverLock } from "./redisLock.js";
 const log = createLogger("continuousImprover");
 
 // ── Configuration ────────────────────────────────────────────────────────────
@@ -37,7 +38,8 @@ const DEFAULT_CONFIG: ContinuousImproverConfig = {
 
 let config: ContinuousImproverConfig = { ...DEFAULT_CONFIG };
 let cycleTimer: ReturnType<typeof setInterval> | null = null;
-let isRunning = false;
+// v6.31: isRunning replaced by withContinuousImproverLock() distributed lock
+let _timerActive = false;
 let lastCycleAt = 0;
 let totalCycles = 0;
 let totalProposals = 0;
@@ -243,22 +245,29 @@ export function startContinuousImprover(overrides?: Partial<ContinuousImproverCo
     console.log("[ContinuousImprover] Disabled. Set enabled: true to activate.");
     return;
   }
-  if (isRunning) return;
+  if (_timerActive) return;
 
-  isRunning = true;
-  cycleTimer = setInterval(runImprovementCycle, config.intervalMs);
+  // v6.31: Each interval tick acquires the distributed lock before running
+  _timerActive = true;
+  cycleTimer = setInterval(() => {
+    withContinuousImproverLock(() => runImprovementCycle()).catch(err =>
+      console.warn("[ContinuousImprover] Cycle skipped (lock busy or error):", (err as Error).message)
+    );
+  }, config.intervalMs);
   console.log(`[ContinuousImprover] Started. Interval: ${config.intervalMs / 1000 / 60}min, maxApplies: ${config.maxAppliesPerCycle}`);
 }
 
 export function stopContinuousImprover(): void {
   if (cycleTimer) clearInterval(cycleTimer);
   cycleTimer = null;
-  isRunning = false;
+  _timerActive = false;
+  // v6.31: No isRunning flag to clear — lock releases automatically
   console.log("[ContinuousImprover] Stopped.");
 }
 
 export function triggerCycleNow(): Promise<CycleResult> {
-  return runImprovementCycle();
+  // v6.31: Acquire lock for manual trigger too
+  return withContinuousImproverLock(() => runImprovementCycle()).then(r => r.result ?? ({} as CycleResult));
 }
 
 export function getImproverStats(): {
@@ -274,7 +283,7 @@ export function getImproverStats(): {
 } {
   return {
     enabled: config.enabled,
-    running: isRunning,
+    running: _timerActive,
     totalCycles,
     totalProposals,
     totalApplied,
@@ -287,7 +296,7 @@ export function getImproverStats(): {
 
 export function updateImproverConfig(updates: Partial<ContinuousImproverConfig>): void {
   config = { ...config, ...updates };
-  if (isRunning && updates.intervalMs) {
+  if (_timerActive && updates.intervalMs) {
     // Restart with new interval
     stopContinuousImprover();
     startContinuousImprover();
