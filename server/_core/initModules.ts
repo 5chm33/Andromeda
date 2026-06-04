@@ -1,5 +1,5 @@
 /**
- * initModules.ts — v6.24
+ * initModules.ts — v6.37
  *
  * Extracted from _core/index.ts (v6.03 refactor).
  * Handles all async module initialization in dependency order.
@@ -18,6 +18,13 @@ export async function initModules(): Promise<void> {
   import("../rsiDb.js").then(m => m.runRsiDbMigration()).catch(err =>
     console.warn("[RsiDb] Migration failed (non-fatal):", err)
   );
+
+  // ── v6.37: Postgres migration (runs only if POSTGRES_URL is set) ───────────────
+  if (process.env.POSTGRES_URL) {
+    import("../dbPostgres.js").then(m => m.runPgMigrations()).catch(err =>
+      console.warn("[Postgres] Migration failed (non-fatal):", err)
+    );
+  }
 
   // ── v6.36: Cross-session context persistence — restore context bus state from disk ─
   import("../contextBus.js").then(m => {
@@ -204,7 +211,7 @@ export async function initModules(): Promise<void> {
       const { simpleChatCompletion } = await import("../llmProvider.js");
       const runAgent = async (prompt: string, maxTokens: number, timeoutMs: number): Promise<string> => {
         const result = await Promise.race([
-          simpleChatCompletion(prompt, { maxTokens }),
+          simpleChatCompletion([{ role: "user", content: prompt }], { maxTokens }),
           new Promise<string>((_, reject) => setTimeout(() => reject(new Error("timeout")), timeoutMs)),
         ]);
         return result as string;

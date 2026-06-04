@@ -1,4 +1,4 @@
-# ─── Andromeda v6.25 — Dockerfile ────────────────────────────────────────────
+# ─── Andromeda v6.37 — Dockerfile ────────────────────────────────────────────
 #
 # Multi-stage build:
 #   Stage 1 (builder): Install deps, build TypeScript + Vite frontend
@@ -16,7 +16,7 @@
 FROM node:22-alpine AS builder
 
 # Install pnpm
-RUN corepack enable && corepack prepare pnpm@9 --activate
+RUN corepack enable && corepack prepare pnpm@11.3.0 --activate
 
 WORKDIR /app
 
@@ -36,7 +36,7 @@ RUN pnpm run build
 FROM node:22-alpine AS runner
 
 # Install pnpm (needed for production start)
-RUN corepack enable && corepack prepare pnpm@9 --activate
+RUN corepack enable && corepack prepare pnpm@11.3.0 --activate
 
 # Create non-root user for security
 RUN addgroup --system --gid 1001 andromeda && \

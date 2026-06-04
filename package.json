@@ -1,6 +1,6 @@
 {
   "name": "andromeda",
-  "version": "6.36.0",
+  "version": "6.37.0",
   "type": "module",
   "license": "MIT",
   "scripts": {
@@ -64,7 +64,7 @@
     "date-fns": "^4.1.0",
     "diff": "^9.0.0",
     "dotenv": "^17.2.2",
-    "drizzle-orm": "^0.44.5",
+    "drizzle-orm": "^0.45.2",
     "embla-carousel-react": "^8.6.0",
     "express": "^4.21.2",
     "express-rate-limit": "^8.2.1",
@@ -80,6 +80,7 @@
     "next-themes": "^0.4.6",
     "openai": "^6.37.0",
     "playwright-core": "^1.58.2",
+    "postgres": "^3.4.9",
     "react": "^19.2.1",
     "react-day-picker": "^9.11.1",
     "react-dom": "^19.2.1",

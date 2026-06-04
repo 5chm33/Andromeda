@@ -1,0 +1,23 @@
+{
+  "tasks": [
+    {
+      "id": "task_1780577821493_zv4gmc",
+      "name": "andromeda-rsi-auto-trigger",
+      "description": "Auto-trigger RSI improvement cycle every 6 hours",
+      "intervalSeconds": 21600,
+      "action": "rsi-auto-trigger",
+      "actionType": "script",
+      "recurring": true,
+      "maxRuns": 0,
+      "runCount": 0,
+      "status": "scheduled",
+      "createdAt": "2026-06-04T12:57:01.493Z",
+      "tags": [
+        "rsi-auto"
+      ],
+      "storeInMemory": false
+    }
+  ],
+  "executions": [],
+  "webhookSecret": "whsec_mpzi281h_t30a688s"
+}

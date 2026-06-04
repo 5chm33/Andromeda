@@ -1,0 +1,95 @@
+# ─── Andromeda v6.37 — Kubernetes Deployment ──────────────────────────────────
+#
+# Production deployment with:
+#   - 2 replicas (HPA scales to 10)
+#   - Rolling update strategy (zero-downtime)
+#   - Resource limits (512Mi RAM, 500m CPU per pod)
+#   - Liveness + readiness probes on /health
+#   - Secrets via Kubernetes Secret (see secrets.yaml)
+#   - Persistent volume for data/ directory
+#
+# Apply with:
+#   kubectl apply -f k8s/
+#
+# Prerequisites:
+#   kubectl create secret generic andromeda-secrets \
+#     --from-literal=DEEPSEEK_API_KEY=... \
+#     --from-literal=JWT_SECRET=... \
+#     --from-literal=DATABASE_URL=... \
+#     --from-literal=REDIS_URL=... \
+#     --from-literal=POSTGRES_URL=...
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: andromeda
+  namespace: default
+  labels:
+    app: andromeda
+    version: v6.37.0
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: andromeda
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0  # zero-downtime
+  template:
+    metadata:
+      labels:
+        app: andromeda
+        version: v6.37.0
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: andromeda
+          image: ghcr.io/5chm33/andromeda:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+              name: http
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3000"
+            - name: AUTONOMY
+              value: "true"
+            - name: CONTINUOUS_IMPROVE
+              value: "true"
+            - name: AUTO_GOALS
+              value: "true"
+          envFrom:
+            - secretRef:
+                name: andromeda-secrets
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          volumeMounts:
+            - name: andromeda-data
+              mountPath: /app/data
+      volumes:
+        - name: andromeda-data
+          persistentVolumeClaim:
+            claimName: andromeda-data-pvc
