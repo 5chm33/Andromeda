@@ -222,11 +222,15 @@ function getConstitutionConstraints(): { files: string[]; patterns: string[] } {
   return _constitutionForPromptCache;
 }
 
-// ─── v6.28 A5: Env / key validation ──────────────────────────────────────────
-// Called once on module load. Logs a clear warning if no LLM key is available
-// so the "2% baseline from 401 errors" problem is caught immediately.
+// ─── v7.1.3: Env / key validation ────────────────────────────────────────────
+// Deferred to first analyzeAndPropose() call — NOT run at module load time.
+// ESM static imports evaluate before dotenv loads in index.ts, so an IIFE here
+// always sees empty process.env and produces a false 'no LLM key' warning.
 
-(function validateEnvKeys(): void {
+let _envValidated = false;
+function validateEnvKeysOnce(): void {
+  if (_envValidated) return;
+  _envValidated = true;
   const hasDeepSeek = !!process.env.DEEPSEEK_API_KEY;
   const hasOpenRouter = !!process.env.OPENROUTER_API_KEY;
   const hasAnthropic = !!process.env.ANTHROPIC_API_KEY;
@@ -234,7 +238,7 @@ function getConstitutionConstraints(): { files: string[]; patterns: string[] } {
 
   if (!hasDeepSeek && !hasOpenRouter && !hasAnthropic && !hasKimi) {
     log.warn(
-      "⚠️  [v7.1] No LLM API key found in environment. " +
+      "⚠️  [v7.1.3] No LLM API key found in environment. " +
       "Set DEEPSEEK_API_KEY, OPENROUTER_API_KEY, ANTHROPIC_API_KEY, or KIMI_API_KEY. " +
       "RSI proposal generation and eval baseline will fail with 401 errors until a key is set."
     );
@@ -244,9 +248,9 @@ function getConstitutionConstraints(): { files: string[]; patterns: string[] } {
     if (hasOpenRouter) active.push("OpenRouter");
     if (hasAnthropic) active.push("Anthropic");
     if (hasKimi) active.push("Kimi");
-    log.info(`[v7.1] LLM keys present: ${active.join(", ")} ✓`);
+    log.info(`[v7.1.3] LLM keys present: ${active.join(", ")} ✓`);
   }
-})();
+}
 
 // ─── Unified Diff Generator (v6.33) ──────────────────────────────────────────────
 // Uses the `diff` package (Myers algorithm) for proper unified diffs.
@@ -311,6 +315,9 @@ export async function analyzeAndPropose(
   targetFile: string,
   area?: string
 ): Promise<ImprovementProposal | null> {
+  // v7.1.3: Validate env keys on first call (deferred from module load to avoid ESM race)
+  validateEnvKeysOnce();
+
   // v6.15: Use active provider key instead of hardcoded DEEPSEEK_API_KEY
   const { getProviderApiKey } = await import("./llmProvider.js");
   const activeModel = process.env.LLM_MODEL || "deepseek";

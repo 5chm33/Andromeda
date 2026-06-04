@@ -271,7 +271,8 @@ function runSyntaxCheck(filename: string, content: string): { pass: boolean; err
     // Use tsc --noEmit on just this file with skipLibCheck + noResolve so it only
     // checks syntax without trying to resolve local imports (which would fail
     // since the file is isolated outside the project tree in tmp_syntax/).
-    execSync(`npx tsc --noEmit --skipLibCheck --noResolve --allowImportingTsExtensions "${tmpFile}" 2>&1`, {
+    // v7.1.3: removed --allowImportingTsExtensions (requires --moduleResolution bundler, fails on Windows)
+    execSync(`npx tsc --noEmit --skipLibCheck --noResolve "${tmpFile}" 2>&1`, {
       timeout: 30000,
       encoding: "utf-8",
       cwd: path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".."),

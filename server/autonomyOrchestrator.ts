@@ -332,6 +332,8 @@ async function runCycle(): Promise<CycleResult> {
               duration: Date.now() - improveStart,
             });
           }
+          // v7.1.3: Reset circuit breaker on successful analyze/propose run
+          recordSubsystemSuccess("selfImprove");
           actionsRemaining--;
         }
       } catch (err) {
