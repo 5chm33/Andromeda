@@ -80,8 +80,8 @@ const WATCHED_MODULES: ModuleSpec[] = [
     description: "Recursive Self-Improvement engine",
     critical: true,
     healthCheck: async () => {
-      const { getRsiStatus } = await import("./rsiEngine.js");
-      const s = getRsiStatus();
+      const { getRSIStatus } = await import("./rsiEngine.js");
+      const s = getRSIStatus();
       return s !== null && s !== undefined;
     },
   },
@@ -119,8 +119,8 @@ const WATCHED_MODULES: ModuleSpec[] = [
     description: "Unsupervised goal discovery from eval results",
     critical: false,
     healthCheck: async () => {
-      const { getDiscoveries } = await import("./evalGoalDiscovery.js");
-      getDiscoveries();
+      const { getRecentDiscoveries } = await import("./evalGoalDiscovery.js");
+      getRecentDiscoveries();
       return true;
     },
   },
@@ -129,8 +129,8 @@ const WATCHED_MODULES: ModuleSpec[] = [
     description: "Constitutional AI learned constraints",
     critical: false,
     healthCheck: async () => {
-      const { getConstraints } = await import("./learnedConstraints.js");
-      getConstraints();
+      const { getLearnedConstraints } = await import("./learnedConstraints.js");
+      getLearnedConstraints();
       return true;
     },
   },
@@ -184,8 +184,8 @@ const WATCHED_MODULES: ModuleSpec[] = [
     description: "Multi-tenant isolation manager",
     critical: false,
     healthCheck: async () => {
-      const { getTenantStats } = await import("./tenantManager.js");
-      getTenantStats();
+      const { listTenants } = await import("./tenantManager.js");
+      listTenants();
       return true;
     },
     reinit: async () => {
@@ -229,8 +229,8 @@ const WATCHED_MODULES: ModuleSpec[] = [
     description: "Cross-session context bus",
     critical: true,
     healthCheck: async () => {
-      const { getContextBusStats } = await import("./contextBus.js");
-      getContextBusStats();
+      const { getBusStats } = await import("./contextBus.js");
+      getBusStats();
       return true;
     },
   },
@@ -270,8 +270,8 @@ const WATCHED_MODULES: ModuleSpec[] = [
     description: "Performance telemetry collector",
     critical: false,
     healthCheck: async () => {
-      const { getTelemetrySnapshot } = await import("./telemetry.js");
-      getTelemetrySnapshot();
+      const { getTelemetrySummary } = await import("./telemetry.js");
+      getTelemetrySummary();
       return true;
     },
   },

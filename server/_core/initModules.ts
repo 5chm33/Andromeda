@@ -197,17 +197,17 @@ export async function initModules(): Promise<void> {
     const embModel = process.env.EMBEDDING_MODEL ?? "text-embedding-3-small";
     if (openaiKey) {
       m.initApiEmbeddings("https://api.openai.com/v1/embeddings", openaiKey, embModel);
-      console.log(`[VectorMemory] v6.24: Real embeddings active — OpenAI ${embModel}`);
+      console.log(`[VectorMemory] v7.1: Real embeddings active — OpenAI ${embModel}`);
     } else if (openrouterKey) {
-      // v6.24: OpenRouter supports text-embedding-3-small via their unified API.
+      // v7.1: OpenRouter supports text-embedding-3-small via their unified API.
       // This is the correct path when DeepSeek is the primary LLM.
       m.initApiEmbeddings("https://openrouter.ai/api/v1/embeddings", openrouterKey, embModel);
-      console.log(`[VectorMemory] v6.24: Real embeddings active — OpenRouter ${embModel} (semantic search enabled)`);
+      console.log(`[VectorMemory] v7.1: Real embeddings active — OpenRouter ${embModel} (semantic search enabled)`);
     } else if (deepseekKey) {
       // DeepSeek does not expose an embeddings endpoint
-      console.log("[VectorMemory] v6.24: DeepSeek has no embeddings endpoint — using local hash fallback");
+      console.log("[VectorMemory] v7.1: DeepSeek has no embeddings endpoint — using local hash fallback");
     } else {
-      console.log("[VectorMemory] v6.24: No embedding API key found — using local hash fallback");
+      console.log("[VectorMemory] v7.1: No embedding API key found — using local hash fallback");
     }
   }).catch(err => console.warn("[VectorMemory] Embedding init failed:", err));
 
