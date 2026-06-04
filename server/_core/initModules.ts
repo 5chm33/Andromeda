@@ -1,5 +1,5 @@
 /**
- * initModules.ts — v6.39
+ * initModules.ts — v7.0.1
  *
  * Extracted from _core/index.ts (v6.03 refactor).
  * Handles all async module initialization in dependency order.
@@ -229,15 +229,15 @@ export async function initModules(): Promise<void> {
           const stored = JSON.parse(fs.readFileSync(baselineFile, "utf-8"));
           const pct = typeof stored.percentage === "number" ? stored.percentage : 0;
           if (pct >= 5) {
-            console.log(`[AutoBaseline] v6.34: Valid baseline exists (${pct.toFixed(1)}%) — skipping auto-capture`);
+            console.log(`[AutoBaseline] v7.0: Valid baseline exists (${pct.toFixed(1)}%) — skipping auto-capture`);
             return;
           }
-          console.log(`[AutoBaseline] v6.34: Stored baseline score is ${pct.toFixed(1)}% (< 5%) — likely a failed run. Re-running baseline capture...`);
+          console.log(`[AutoBaseline] v7.0: Stored baseline score is ${pct.toFixed(1)}% (< 5%) — likely a failed run. Re-running baseline capture...`);
         } catch {
           // Can't parse stored baseline — re-run to be safe
         }
       }
-      console.log("[AutoBaseline] v6.34: No valid baseline found — running quick eval to establish starting score...");
+      console.log("[AutoBaseline] v7.0: No valid baseline found — running quick eval to establish starting score...");
       const { runEvaluation, EVAL_TASKS } = await import("../evalFramework.js");
       const { simpleChatCompletion } = await import("../llmProvider.js");
       const runAgent = async (prompt: string, maxTokens: number, timeoutMs: number): Promise<string> => {
@@ -252,7 +252,7 @@ export async function initModules(): Promise<void> {
       const run = await runEvaluation(runAgent, easyIds);
       fs.mkdirSync(path.dirname(baselineFile), { recursive: true });
       fs.writeFileSync(baselineFile, JSON.stringify({ ...run, storedAt: Date.now(), autoCapture: true }, null, 2));
-      console.log(`[AutoBaseline] v6.24: Baseline captured — score: ${run.percentage.toFixed(1)}% (${run.passed}/${run.passed + run.failed} tasks passed)`);
+      console.log(`[AutoBaseline] v7.0: Baseline captured — score: ${run.percentage.toFixed(1)}% (${run.passed}/${run.passed + run.failed} tasks passed)`);
 
       // Auto-enable RSI now that we have a baseline to improve against
       const { enableRSI } = await import("../rsiEngine.js");
@@ -260,9 +260,9 @@ export async function initModules(): Promise<void> {
         intervalMs: 6 * 60 * 60 * 1000,  // 6-hour cycles
         maxAutoApplyPerCycle: 2,           // conservative: max 2 auto-applied changes per cycle
       });
-      console.log("[AutoBaseline] v6.24: RSI auto-enabled — 6-hour improvement cycles started");
+      console.log("[AutoBaseline] v7.0: RSI auto-enabled — 6-hour improvement cycles started");
     } catch (err) {
-      console.warn("[AutoBaseline] v6.24: Auto-baseline failed (non-fatal):", err);
+      console.warn("[AutoBaseline] v7.0: Auto-baseline failed (non-fatal):", err);
     }
   }, 30_000);
 

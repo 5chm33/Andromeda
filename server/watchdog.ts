@@ -1,24 +1,24 @@
 /**
- * watchdog.ts — v7.0
+ * watchdog.ts — v7.0.1
  *
  * Self-Healing Watchdog for Andromeda.
  *
- * The watchdog monitors all critical subsystems and automatically attempts
- * recovery when a module enters a degraded or failed state. It is the
- * operational backbone of v7.0's "production-hardened" guarantee.
+ * v7.0.1 FIX: The original watchdog used `await import("../rsiEngine.js")`
+ * style paths for health checks. When running from the dist bundle
+ * (dist/index.js), all modules are compiled into a single file — there are
+ * no separate ../rsiEngine.js files on disk. This caused every module to
+ * report "Cannot find module" and the system to permanently show
+ * "System health: critical", which also caused the orchestrator to fire
+ * emergency healing on every cycle (the "0 actions, 1 errors" pattern).
  *
- * Capabilities:
- *   - Periodic health checks across all registered modules
- *   - Automatic restart/reinit of failed modules (with backoff)
- *   - Circuit-breaker integration: open circuits are flagged for review
- *   - Alerting via audit log when critical modules fail
- *   - Telemetry: uptime, restart counts, MTTR (mean time to recovery)
- *   - Graceful degradation: marks system as "degraded" not "down" on partial failure
- *   - Exposes /api/watchdog/status for ops dashboards
+ * The fix: health checks now use lazy in-process imports (which resolve
+ * correctly from the bundle via esbuild's module system) rather than
+ * filesystem-relative paths. The `importPath` field is removed entirely.
  *
- * Configuration:
- *   WATCHDOG_INTERVAL_MS   — check interval (default: 60s)
- *   WATCHDOG_ENABLED       — "true" to enable (default: true in production)
+ * Additional fixes in v7.0.1:
+ *   - rbac downgraded from critical → non-critical (it's middleware, not runtime)
+ *   - audit action corrected from "server_started" → "module_recovered" / "module_failed"
+ *   - telemetry module added to registry
  */
 
 import { createLogger } from "./logger.js";
@@ -32,29 +32,15 @@ export type ModuleHealth = "healthy" | "degraded" | "failed" | "recovering" | "u
 
 export interface WatchedModule {
   name: string;
-  /** Import path relative to server/ */
-  importPath: string;
-  /** Name of the stats/health function to call */
-  healthFn?: string;
-  /** Name of the init/reinit function to call on recovery */
-  reinitFn?: string;
-  /** Is this module critical? (failure → system degraded) */
+  description: string;
   critical: boolean;
-  /** Current health state */
   health: ModuleHealth;
-  /** Number of consecutive failures */
   failCount: number;
-  /** Total restart attempts */
   restartCount: number;
-  /** Timestamp of last successful check */
   lastHealthyAt: number | null;
-  /** Timestamp of last failure */
   lastFailedAt: number | null;
-  /** Timestamp of last recovery */
   lastRecoveredAt: number | null;
-  /** Mean time to recovery in ms (rolling average) */
   mttrMs: number | null;
-  /** Error message from last failure */
   lastError?: string;
 }
 
@@ -73,33 +59,222 @@ export interface WatchdogStatus {
   modules: WatchedModule[];
 }
 
-// ── Module Registry ────────────────────────────────────────────────────────────
+// ── Module Spec ────────────────────────────────────────────────────────────────
 
-const WATCHED_MODULES: Omit<WatchedModule, "health" | "failCount" | "restartCount" | "lastHealthyAt" | "lastFailedAt" | "lastRecoveredAt" | "mttrMs">[] = [
-  // Core RSI pipeline
-  { name: "rsiEngine",            importPath: "../rsiEngine.js",            healthFn: "getRsiStatus",           reinitFn: undefined,                critical: true  },
-  { name: "selfImprove",          importPath: "../selfImprove.js",           healthFn: "listProposals",          reinitFn: undefined,                critical: true  },
-  { name: "safetySupervisor",     importPath: "../safetySupervisor.js",      healthFn: undefined,                reinitFn: undefined,                critical: true  },
-  { name: "evalFramework",        importPath: "../evalFramework.js",         healthFn: undefined,                reinitFn: undefined,                critical: true  },
-  // v6.36 modules
-  { name: "evalGoalDiscovery",    importPath: "../evalGoalDiscovery.js",     healthFn: "getDiscoveries",         reinitFn: undefined,                critical: false },
-  { name: "learnedConstraints",   importPath: "../learnedConstraints.js",    healthFn: "getConstraints",         reinitFn: undefined,                critical: false },
-  // v6.37 modules
-  { name: "goalDecomposer",       importPath: "../goalDecomposer.js",        healthFn: undefined,                reinitFn: undefined,                critical: false },
-  { name: "dbPostgres",           importPath: "../dbPostgres.js",            healthFn: "getPgStatus",            reinitFn: undefined,                critical: false },
-  // v6.38 modules
-  { name: "auditLog",             importPath: "../auditLog.js",              healthFn: "getAuditStats",          reinitFn: "loadAuditFromDisk",      critical: false },
-  { name: "rbac",                 importPath: "../rbac.js",                  healthFn: undefined,                reinitFn: undefined,                critical: true  },
-  { name: "tenantManager",        importPath: "../tenantManager.js",         healthFn: "getTenantStats",         reinitFn: "initTenantManager",      critical: false },
-  // v6.39 modules
-  { name: "federatedLearning",    importPath: "../federatedLearning.js",     healthFn: "getFederatedStats",      reinitFn: "initFederatedLearning",  critical: false },
-  // v6.40 modules
-  { name: "adaptiveEval",         importPath: "../adaptiveEval.js",          healthFn: "getBenchmarkEvolutionStats", reinitFn: "initAdaptiveEval", critical: false },
-  // Core infrastructure
-  { name: "contextBus",           importPath: "../contextBus.js",            healthFn: "getContextBusStats",     reinitFn: undefined,                critical: true  },
-  { name: "selfModel",            importPath: "../selfModel.js",             healthFn: "getSelfModel",           reinitFn: undefined,                critical: false },
-  { name: "circuitBreaker",       importPath: "../circuitBreaker.js",        healthFn: "getAllCircuitBreakerStats", reinitFn: undefined,             critical: false },
-  { name: "continuousImprover",   importPath: "../continuousImprover.js",    healthFn: "getImproverStats",       reinitFn: undefined,                critical: false },
+interface ModuleSpec {
+  name: string;
+  description: string;
+  critical: boolean;
+  /** Returns true if the module is healthy. Throws on failure. */
+  healthCheck: () => boolean | Promise<boolean>;
+  /** Optional recovery function called on first failure. */
+  reinit?: () => void | Promise<void>;
+}
+
+// All health checks use standard ESM imports which resolve correctly from
+// both the source tree (dev mode) and the bundled dist/index.js (production).
+const WATCHED_MODULES: ModuleSpec[] = [
+  // ── Core RSI pipeline ──────────────────────────────────────────────────────
+  {
+    name: "rsiEngine",
+    description: "Recursive Self-Improvement engine",
+    critical: true,
+    healthCheck: async () => {
+      const { getRsiStatus } = await import("./rsiEngine.js");
+      const s = getRsiStatus();
+      return s !== null && s !== undefined;
+    },
+  },
+  {
+    name: "selfImprove",
+    description: "Self-improvement proposal engine",
+    critical: true,
+    healthCheck: async () => {
+      const { listProposals } = await import("./selfImprove.js");
+      listProposals("pending");
+      return true;
+    },
+  },
+  {
+    name: "safetySupervisor",
+    description: "Safety supervisor / constitution guard",
+    critical: true,
+    healthCheck: async () => {
+      await import("./safetySupervisor.js");
+      return true;
+    },
+  },
+  {
+    name: "evalFramework",
+    description: "Evaluation framework",
+    critical: true,
+    healthCheck: async () => {
+      const { EVAL_TASKS } = await import("./evalFramework.js");
+      return Array.isArray(EVAL_TASKS) && EVAL_TASKS.length > 0;
+    },
+  },
+  // ── v6.36 modules ──────────────────────────────────────────────────────────
+  {
+    name: "evalGoalDiscovery",
+    description: "Unsupervised goal discovery from eval results",
+    critical: false,
+    healthCheck: async () => {
+      const { getDiscoveries } = await import("./evalGoalDiscovery.js");
+      getDiscoveries();
+      return true;
+    },
+  },
+  {
+    name: "learnedConstraints",
+    description: "Constitutional AI learned constraints",
+    critical: false,
+    healthCheck: async () => {
+      const { getConstraints } = await import("./learnedConstraints.js");
+      getConstraints();
+      return true;
+    },
+  },
+  // ── v6.37 modules ──────────────────────────────────────────────────────────
+  {
+    name: "goalDecomposer",
+    description: "Goal decomposition into sub-goals",
+    critical: false,
+    healthCheck: async () => {
+      await import("./goalDecomposer.js");
+      return true;
+    },
+  },
+  {
+    name: "dbPostgres",
+    description: "Postgres database adapter (optional)",
+    critical: false,
+    healthCheck: async () => {
+      const { getPgStatus } = await import("./dbPostgres.js");
+      const s = getPgStatus();
+      // Postgres is optional — if not configured, that's healthy (not an error)
+      return !s.configured || s.connected === true;
+    },
+  },
+  // ── v6.38 modules ──────────────────────────────────────────────────────────
+  {
+    name: "auditLog",
+    description: "Structured audit log",
+    critical: false,
+    healthCheck: async () => {
+      const { getAuditStats } = await import("./auditLog.js");
+      getAuditStats();
+      return true;
+    },
+    reinit: async () => {
+      const { loadAuditFromDisk } = await import("./auditLog.js");
+      loadAuditFromDisk();
+    },
+  },
+  {
+    name: "rbac",
+    description: "Role-based access control middleware",
+    critical: false, // v7.0.1: not critical — RBAC is middleware, not a runtime service
+    healthCheck: async () => {
+      await import("./rbac.js");
+      return true;
+    },
+  },
+  {
+    name: "tenantManager",
+    description: "Multi-tenant isolation manager",
+    critical: false,
+    healthCheck: async () => {
+      const { getTenantStats } = await import("./tenantManager.js");
+      getTenantStats();
+      return true;
+    },
+    reinit: async () => {
+      const { initTenantManager } = await import("./tenantManager.js");
+      initTenantManager();
+    },
+  },
+  // ── v6.39 modules ──────────────────────────────────────────────────────────
+  {
+    name: "federatedLearning",
+    description: "Federated multi-node RSI learning",
+    critical: false,
+    healthCheck: async () => {
+      const { getFederatedStats } = await import("./federatedLearning.js");
+      getFederatedStats();
+      return true;
+    },
+    reinit: async () => {
+      const { initFederatedLearning } = await import("./federatedLearning.js");
+      initFederatedLearning();
+    },
+  },
+  // ── v6.40 modules ──────────────────────────────────────────────────────────
+  {
+    name: "adaptiveEval",
+    description: "Adaptive eval with LLM-generated benchmarks",
+    critical: false,
+    healthCheck: async () => {
+      const { getBenchmarkEvolutionStats } = await import("./adaptiveEval.js");
+      getBenchmarkEvolutionStats();
+      return true;
+    },
+    reinit: async () => {
+      const { initAdaptiveEval } = await import("./adaptiveEval.js");
+      initAdaptiveEval();
+    },
+  },
+  // ── Core infrastructure ────────────────────────────────────────────────────
+  {
+    name: "contextBus",
+    description: "Cross-session context bus",
+    critical: true,
+    healthCheck: async () => {
+      const { getContextBusStats } = await import("./contextBus.js");
+      getContextBusStats();
+      return true;
+    },
+  },
+  {
+    name: "selfModel",
+    description: "Self-model and capability manifest",
+    critical: false,
+    healthCheck: async () => {
+      const { getSelfModel } = await import("./selfModel.js");
+      getSelfModel();
+      return true;
+    },
+  },
+  {
+    name: "circuitBreaker",
+    description: "Circuit breaker for external calls",
+    critical: false,
+    healthCheck: async () => {
+      const { getAllCircuitBreakerStats } = await import("./circuitBreaker.js");
+      getAllCircuitBreakerStats();
+      return true;
+    },
+  },
+  {
+    name: "continuousImprover",
+    description: "Continuous improvement daemon",
+    critical: false,
+    healthCheck: async () => {
+      const { getImproverStats } = await import("./continuousImprover.js");
+      getImproverStats();
+      return true;
+    },
+  },
+  // ── v7.0 modules ───────────────────────────────────────────────────────────
+  {
+    name: "telemetry",
+    description: "Performance telemetry collector",
+    critical: false,
+    healthCheck: async () => {
+      const { getTelemetrySnapshot } = await import("./telemetry.js");
+      getTelemetrySnapshot();
+      return true;
+    },
+  },
 ];
 
 // ── State ──────────────────────────────────────────────────────────────────────
@@ -119,7 +294,9 @@ const ENABLED = process.env.NODE_ENV !== "test" && process.env.WATCHDOG_ENABLED 
 function initModuleStates(): void {
   for (const m of WATCHED_MODULES) {
     moduleStates.set(m.name, {
-      ...m,
+      name: m.name,
+      description: m.description,
+      critical: m.critical,
       health: "unknown",
       failCount: 0,
       restartCount: 0,
@@ -133,36 +310,25 @@ function initModuleStates(): void {
 
 // ── Health Check ───────────────────────────────────────────────────────────────
 
-async function checkModule(state: WatchedModule): Promise<ModuleHealth> {
+async function checkModule(spec: ModuleSpec, state: WatchedModule): Promise<ModuleHealth> {
   try {
-    const mod = await import(state.importPath);
-
-    // If there's a health function, call it to verify the module is operational
-    if (state.healthFn && typeof mod[state.healthFn] === "function") {
-      const result = mod[state.healthFn]();
-      // If the function returns null/undefined, it's still "loaded" — treat as healthy
-      if (result === undefined || result === null) return "healthy";
-    }
-
-    return "healthy";
+    const ok = await spec.healthCheck();
+    return ok ? "healthy" : "failed";
   } catch (err) {
+    state.lastError = (err as Error).message;
     return "failed";
   }
 }
 
-async function attemptRecovery(state: WatchedModule): Promise<boolean> {
-  if (!state.reinitFn) return false;
-
+async function attemptRecovery(spec: ModuleSpec, state: WatchedModule): Promise<boolean> {
+  if (!spec.reinit) return false;
   try {
-    log.info(`[watchdog] Attempting recovery of ${state.name} via ${state.reinitFn}()`);
-    const mod = await import(state.importPath);
-    if (typeof mod[state.reinitFn] === "function") {
-      await mod[state.reinitFn]();
-      return true;
-    }
-    return false;
+    log.info(`[watchdog] Attempting recovery of ${spec.name} via reinit()`);
+    await spec.reinit();
+    return true;
   } catch (err) {
-    log.warn(`[watchdog] Recovery of ${state.name} failed: ${(err as Error).message}`);
+    log.warn(`[watchdog] Recovery of ${spec.name} failed: ${(err as Error).message}`);
+    state.lastError = (err as Error).message;
     return false;
   }
 }
@@ -172,13 +338,16 @@ async function runHealthCheck(): Promise<void> {
   let anyFailed = false;
   let anyCriticalFailed = false;
 
-  for (const [name, state] of moduleStates) {
+  for (const spec of WATCHED_MODULES) {
+    const state = moduleStates.get(spec.name);
+    if (!state) continue;
+
     const prevHealth = state.health;
-    const health = await checkModule(state);
+    const health = await checkModule(spec, state);
 
     if (health === "healthy") {
-      if (prevHealth !== "healthy") {
-        // Recovery detected
+      if (prevHealth !== "healthy" && prevHealth !== "unknown") {
+        // Recovery detected — log and audit
         const failDuration = state.lastFailedAt ? Date.now() - state.lastFailedAt : null;
         state.lastRecoveredAt = Date.now();
         if (failDuration !== null) {
@@ -187,12 +356,12 @@ async function runHealthCheck(): Promise<void> {
             : failDuration;
         }
         state.failCount = 0;
-        log.info(`[watchdog] ${name} recovered (was ${prevHealth})`);
+        log.info(`[watchdog] ${spec.name} recovered (was ${prevHealth})`);
         audit({
           category: "system",
-          action: "server_started",
+          action: "module_recovered",
           actor: "watchdog",
-          resource: name,
+          resource: spec.name,
           success: true,
           severity: "info",
           details: { event: "module_recovered", prevHealth, mttrMs: state.mttrMs },
@@ -204,33 +373,33 @@ async function runHealthCheck(): Promise<void> {
       state.failCount++;
       state.lastFailedAt = Date.now();
       anyFailed = true;
-      if (state.critical) anyCriticalFailed = true;
+      if (spec.critical) anyCriticalFailed = true;
 
       if (state.failCount === 1) {
-        // First failure — attempt recovery
         state.health = "recovering";
-        log.warn(`[watchdog] ${name} failed (attempt ${state.failCount}) — attempting recovery`);
-
-        const recovered = await attemptRecovery(state);
+        log.warn(`[watchdog] ${spec.name} failed (attempt ${state.failCount}) — attempting recovery`);
+        const recovered = await attemptRecovery(spec, state);
         if (recovered) {
           state.health = "healthy";
           state.restartCount++;
           totalRestarts++;
           state.failCount = 0;
-          log.info(`[watchdog] ${name} auto-recovered`);
+          anyFailed = false;
+          if (spec.critical) anyCriticalFailed = false;
+          log.info(`[watchdog] ${spec.name} auto-recovered`);
         } else {
           state.health = "failed";
           audit({
             category: "system",
-            action: "server_started",
+            action: "module_failed",
             actor: "watchdog",
-            resource: name,
+            resource: spec.name,
             success: false,
-            severity: state.critical ? "error" : "warn",
+            severity: spec.critical ? "error" : "warn",
             details: {
               event: "module_failed",
               failCount: state.failCount,
-              critical: state.critical,
+              critical: spec.critical,
               error: state.lastError,
             },
           });
@@ -242,7 +411,7 @@ async function runHealthCheck(): Promise<void> {
       }
     }
 
-    moduleStates.set(name, state);
+    moduleStates.set(spec.name, state);
   }
 
   const overallHealth = anyCriticalFailed ? "critical" : anyFailed ? "degraded" : "healthy";
@@ -267,8 +436,7 @@ export function getWatchdogStatus(): WatchdogStatus {
   const healthy = modules.filter(m => m.health === "healthy").length;
   const degraded = modules.filter(m => m.health === "degraded" || m.health === "recovering").length;
   const failed = modules.filter(m => m.health === "failed" || m.health === "unknown").length;
-
-  const criticalFailed = modules.filter(m => m.critical && (m.health === "failed")).length;
+  const criticalFailed = modules.filter(m => m.critical && m.health === "failed").length;
   const overallHealth: WatchdogStatus["overallHealth"] =
     criticalFailed > 0 ? "critical" : degraded > 0 || failed > 0 ? "degraded" : "healthy";
 
