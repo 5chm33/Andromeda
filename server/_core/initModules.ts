@@ -1,5 +1,5 @@
 /**
- * initModules.ts — v6.38
+ * initModules.ts — v6.39
  *
  * Extracted from _core/index.ts (v6.03 refactor).
  * Handles all async module initialization in dependency order.
@@ -35,6 +35,11 @@ export async function initModules(): Promise<void> {
     m.loadAuditFromDisk(500);
     console.log("[AuditLog] Audit log initialized");
   }).catch(err => console.warn("[AuditLog] Init failed (non-fatal):", err));
+
+  // ── v6.39: Federated learning init (multi-node RSI sync) ─────────────────
+  import("../federatedLearning.js").then(m => {
+    m.initFederatedLearning();
+  }).catch(err => console.warn("[FederatedLearning] Init failed (non-fatal):", err));
 
   // ── v6.36: Cross-session context persistence — restore context bus state from disk ─
   import("../contextBus.js").then(m => {

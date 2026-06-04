@@ -3,6 +3,7 @@ import {
   rsiEnableSchema, episodicRecordSchema, planDecomposeSchema 
 } from "../routes/zodSchemas.js";
 import { adminRouter } from "../routes/adminRoutes.js";
+import { federatedRouter } from "../routes/federatedRoutes.js";
 import { attachRbacContext, auditMiddleware, roleRateLimit } from "../rbac.js";
 /**
  * initRoutes.ts — v6.38
@@ -26,6 +27,9 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
 
   // ── v6.38: Admin routes (RBAC + audit log + tenant management) ──────────────
   app.use("/api/admin", adminRouter);
+
+  // ── v6.39: Federated learning routes (multi-node RSI sync) ────────────────
+  app.use("/api/federated", federatedRouter);
 
   // ── Parameterless health check (UptimeRobot, K8s probes) ─────────────────────
   app.get("/health", (_req, res) => {

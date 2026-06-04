@@ -639,6 +639,8 @@ export async function runRSICycle(): Promise<RSICycleResult> {
       scoreDelta: result.scoreImprovement,
     },
   });
+  // v6.39: Update federated learning with our latest capability score
+  import("./federatedLearning.js").then(m => m.updateLocalScore(capabilityScoreAfter)).catch(() => {});
   return result;
 }
 
