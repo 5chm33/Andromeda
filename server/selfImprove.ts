@@ -1,5 +1,12 @@
 /**
- * selfImprove.ts — v7.1
+ * selfImprove.ts — v7.1.4
+ *
+ * v7.1.4 Fix:
+ *   Provider fallback chain — if the preferred LLM provider returns a 401
+ *   (invalid key) or 402 (insufficient credits), the system now automatically
+ *   retries with the next available provider instead of throwing and tripping
+ *   the circuit breaker. This eliminates the persistent "1 error per cycle"
+ *   pattern when one provider has a billing/auth issue.
  *
  * v7.1 RSI Fixes:
  *   A1 — Proposal deduplication: hash(targetFile + title) prevents the same fix
@@ -499,25 +506,46 @@ export async function analyzeAndPropose(
   //   security / architecture → Claude via OpenRouter (best reasoning)
   //   performance / feature    → Kimi k2.6 (best coding model)
   //   reliability / readability → DeepSeek (cheap, reliable)
-  function pickProviderForArea(area?: string): string | undefined {
-    if (!area) return undefined; // let backgroundSimpleCompletion use its default
-    const a = area.toLowerCase();
-    if (a.includes("security") || a.includes("architect") || a.includes("design")) {
-      return process.env.OPENROUTER_API_KEY ? "anthropic" : undefined;
+  // v7.1.4: Provider fallback chain — if preferred provider returns 401/402 (auth or
+  //         billing error), automatically retry with the next available provider rather
+  //         than throwing and tripping the circuit breaker.
+  function buildProviderFallbackChain(a?: string): string[] {
+    const chain: string[] = [];
+    const hasDeepSeek = !!process.env.DEEPSEEK_API_KEY;
+    const hasKimi = !!process.env.KIMI_API_KEY;
+    const hasOpenRouter = !!process.env.OPENROUTER_API_KEY;
+    if (!a) {
+      // No area — cheapest first
+      if (hasDeepSeek) chain.push("deepseek");
+      if (hasKimi) chain.push("kimi");
+      if (hasOpenRouter) chain.push("anthropic");
+      if (chain.length === 0) chain.push("deepseek"); // last resort
+      return chain;
     }
-    if (a.includes("performance") || a.includes("feature") || a.includes("optim")) {
-      return process.env.KIMI_API_KEY ? "kimi" : undefined;
+    const al = a.toLowerCase();
+    if (al.includes("security") || al.includes("architect") || al.includes("design")) {
+      if (hasOpenRouter) chain.push("anthropic");
+      if (hasDeepSeek) chain.push("deepseek");
+      if (hasKimi) chain.push("kimi");
+    } else if (al.includes("performance") || al.includes("feature") || al.includes("optim")) {
+      if (hasKimi) chain.push("kimi");
+      if (hasDeepSeek) chain.push("deepseek");
+      if (hasOpenRouter) chain.push("anthropic");
+    } else {
+      // reliability, readability, general → DeepSeek first
+      if (hasDeepSeek) chain.push("deepseek");
+      if (hasKimi) chain.push("kimi");
+      if (hasOpenRouter) chain.push("anthropic");
     }
-    // reliability, readability, general → DeepSeek
-    return process.env.DEEPSEEK_API_KEY ? "deepseek" : undefined;
+    if (chain.length === 0) chain.push("deepseek"); // last resort
+    return chain;
   }
   const { simpleChatCompletion } = await import("./llmProvider.js");
-  const routedProvider = pickProviderForArea(area);
-  const rawContent = await simpleChatCompletion(
-    [
-      {
-        role: "system",
-        content: `You are an expert TypeScript software engineer performing a targeted code improvement.
+  const providerChain = buildProviderFallbackChain(area);
+  const llmMessages = [
+    {
+      role: "system",
+      content: `You are an expert TypeScript software engineer performing a targeted code improvement.
 You will receive source code and must identify the SINGLE BEST improvement to make.
 ${knowledgeContext ? `\nArchitecture decisions and known issues for this file:\n${knowledgeContext}` : ""}${previousAttempts}${metaLearningContext}${constitutionBlock}${importGraphContext}
 
@@ -536,16 +564,36 @@ The originalSnippet MUST be an exact substring of the provided file content.
 Keep both snippets SHORT and focused. Do not rewrite the whole file.
 Do NOT repeat previous failed attempts.
 Do NOT include any forbidden patterns listed above.`,
-      },
-      {
-        role: "user",
-        content: `Analyze this TypeScript file and propose the single best improvement${area ? ` focusing on: ${area}` : ``}.\n\nFile: ${filename}\n\n\`\`\`typescript\n${contentForAnalysis}\n\`\`\`\n\nReturn ONLY valid JSON.`,
-      },
-    ],
-    { maxTokens: 2000, temperature: 0.3, providerId: routedProvider },
-  );
-
-  if (!rawContent) throw new Error("AI returned an empty response");
+    },
+    {
+      role: "user",
+      content: `Analyze this TypeScript file and propose the single best improvement${area ? ` focusing on: ${area}` : ``}.\n\nFile: ${filename}\n\n\`\`\`typescript\n${contentForAnalysis}\n\`\`\`\n\nReturn ONLY valid JSON.`,
+    },
+  ];
+  // v7.1.4: Iterate through fallback chain; skip providers that return 401/402
+  let rawContent: string | null = null;
+  let lastProviderError: Error | null = null;
+  for (const pid of providerChain) {
+    try {
+      rawContent = await simpleChatCompletion(llmMessages, { maxTokens: 2000, temperature: 0.3, providerId: pid });
+      if (rawContent) break; // success — stop trying
+    } catch (provErr: any) {
+      const msg: string = provErr?.message ?? "";
+      const isAuthOrBilling = /40[12]/.test(msg) ||
+        /authentication/i.test(msg) ||
+        /insufficient.*credit/i.test(msg) ||
+        /invalid.*key/i.test(msg);
+      if (isAuthOrBilling) {
+        log.warn(`[v7.1.4] Provider '${pid}' returned auth/billing error — trying next. (${msg.slice(0, 100)})`);
+        lastProviderError = provErr;
+        continue;
+      }
+      throw provErr; // non-auth error — propagate immediately
+    }
+  }
+  if (!rawContent) {
+    throw lastProviderError ?? new Error("All LLM providers failed or returned empty responses");
+  }
 
   const jsonStr = rawContent
     .replace(/^```json?\s*/i, "")
