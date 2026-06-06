@@ -272,6 +272,7 @@ async function runCycle(): Promise<CycleResult> {
           recordSubsystemSuccess("goals");
         }
       } catch (err) {
+        console.error(`[Orchestrator] Goal execution error: ${(err as Error).message}`);
         result.errors.push(`Goal execution failed: ${(err as Error).message}`);
         recordSubsystemFailure("goals");
       }
@@ -337,6 +338,7 @@ async function runCycle(): Promise<CycleResult> {
           actionsRemaining--;
         }
       } catch (err) {
+        console.error(`[Orchestrator] Self-improvement error: ${(err as Error).message}`);
         result.errors.push(`Self-improvement failed: ${(err as Error).message}`);
         recordSubsystemFailure("selfImprove");
       }
@@ -396,6 +398,7 @@ async function runCycle(): Promise<CycleResult> {
     }
 
   } catch (err) {
+    console.error(`[Orchestrator] Cycle crashed: ${(err as Error).message}`);
     result.errors.push(`Cycle crashed: ${(err as Error).message}`);
     consecutiveFailures++;
   }
@@ -409,11 +412,12 @@ async function runCycle(): Promise<CycleResult> {
   recordCyclePerformance(result.duration, result.errors.length === 0);
 
   if (result.actions.length > 0 || result.errors.length > 0) {
-    console.log(
+    const cycleSummary =
       `[Orchestrator] Cycle #${totalCycles}: ${result.actions.length} actions, ` +
       `${result.goalsProcessed} goals, ${result.improvementsApplied} improvements, ` +
-      `${result.errors.length} errors (${result.duration}ms)`
-    );
+      `${result.errors.length} errors (${result.duration}ms)` +
+      (result.errors.length > 0 ? ` — ${result.errors.join("; ")}` : "");
+    console.log(cycleSummary);
   }
 
   // v6.01: Auto-store significant events as memories for long-term learning
