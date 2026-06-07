@@ -1660,6 +1660,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/contextManager.ts(15,34): error TS2307: Cannot find module './llmProvider' or its corresponding type declarations.\ndata/tmp_syntax/contextManager.ts(16,32): error TS2307: Cannot find m",
       "timestamp": "2026-06-07T18:46:53.567Z"
+    },
+    {
+      "id": "audit_1780858014674_m37cg4",
+      "action": "apply",
+      "proposalId": "prop_1780853476892_rll284",
+      "filename": "reactEngine.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/reactEngine.ts(328,9): error TS1005: 'try' expected.\ndata/tmp_syntax/reactEngine.ts(361,5): error TS1068: Unexpected token. A constructor, method, accessor, or property was expected.\nd",
+      "timestamp": "2026-06-07T18:46:54.674Z"
     }
   ]
 }
