@@ -571,6 +571,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/selfImprove.ts(34,32): error TS2307: Cannot find module './fileEngineChunking.js' or its corresponding type declarations.\ndata/tmp_syntax/selfImprove.ts(35,16): error TS2307: Cannot fi",
       "timestamp": "2026-06-07T16:46:35.220Z"
+    },
+    {
+      "id": "audit_1780850796429_m5v52n",
+      "action": "apply",
+      "proposalId": "prop_1780850778708_iwqwbl",
+      "filename": "ai.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/ai.ts(3,15): error TS2307: Cannot find module './aiTokens.js' or its corresponding type declarations.\ndata/tmp_syntax/ai.ts(4,15): error TS2307: Cannot find module './aiPrompts.js' or ",
+      "timestamp": "2026-06-07T16:46:36.429Z"
     }
   ]
 }
