@@ -1282,6 +1282,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/browser.ts(9,21): error TS2307: Cannot find module 'fs' or its corresponding type declarations.\ndata/tmp_syntax/browser.ts(10,26): error TS2307: Cannot find module 'playwright-core' or",
       "timestamp": "2026-06-07T18:16:46.171Z"
+    },
+    {
+      "id": "audit_1780856207689_73xdw6",
+      "action": "apply",
+      "proposalId": "prop_1780854382871_08ab5y",
+      "filename": "selfConsistency.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/selfConsistency.ts(24,59): error TS2307: Cannot find module './llmProvider.js' or its corresponding type declarations.\ndata/tmp_syntax/selfConsistency.ts(57,46): error TS2580: Cannot f",
+      "timestamp": "2026-06-07T18:16:47.689Z"
     }
   ]
 }
