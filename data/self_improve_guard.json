@@ -895,6 +895,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/reactEngine.ts(328,9): error TS1005: 'try' expected.\ndata/tmp_syntax/reactEngine.ts(361,5): error TS1068: Unexpected token. A constructor, method, accessor, or property was expected.\nd",
       "timestamp": "2026-06-07T17:44:39.093Z"
+    },
+    {
+      "id": "audit_1780854384537_mdmo9o",
+      "action": "apply",
+      "proposalId": "prop_1780842994142_w9p8wn",
+      "filename": "manifest.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/manifest.ts(14,29): error TS2307: Cannot find module './tools' or its corresponding type declarations.\ndata/tmp_syntax/manifest.ts(15,50): error TS2307: Cannot find module './llmProvid",
+      "timestamp": "2026-06-07T17:46:24.537Z"
     }
   ]
 }
