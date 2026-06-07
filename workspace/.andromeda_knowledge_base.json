@@ -3673,6 +3673,22 @@
       "confidence": 0.9,
       "createdAt": 1780859815805,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780859817390_0gflhi",
+      "category": "antipattern",
+      "title": "Failure: Extract remaining inline routes into separate modules",
+      "description": "Failed to apply \"Extract remaining inline routes into separate modules\" to streamRouter.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify streamRouter.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for streamRouter.ts: Extract remaining inline routes into separate modules — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "streamRouter.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780859817390,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -3815,5 +3831,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T19:16:55.805Z"
+  "_lastUpdated": "2026-06-07T19:16:57.390Z"
 }
