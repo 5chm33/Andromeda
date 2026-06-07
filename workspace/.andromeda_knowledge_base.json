@@ -1289,6 +1289,22 @@
       "confidence": 0.9,
       "createdAt": 1780852583723,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780852585103_ul8pex",
+      "category": "antipattern",
+      "title": "Failure: Add JSDoc re-export comments for clarity",
+      "description": "Failed to apply \"Add JSDoc re-export comments for clarity\" to ai.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify ai.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for ai.ts: Add JSDoc re-export comments for clarity — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "ai.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780852585103,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -1431,5 +1447,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T17:16:23.723Z"
+  "_lastUpdated": "2026-06-07T17:16:25.103Z"
 }
