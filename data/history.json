@@ -1418,5 +1418,25 @@
     "sources": null,
     "filter": "web",
     "createdAt": "2026-06-06T01:18:28.864Z"
+  },
+  {
+    "id": 1780807806060,
+    "userId": null,
+    "sessionId": null,
+    "query": "test query for vitest",
+    "aiAnswer": "This is a test answer",
+    "sources": null,
+    "filter": "all",
+    "createdAt": "2026-06-07T04:50:07.080Z"
+  },
+  {
+    "id": 1780807806061,
+    "userId": 1,
+    "sessionId": null,
+    "query": "authenticated test query",
+    "aiAnswer": "Authenticated answer",
+    "sources": null,
+    "filter": "web",
+    "createdAt": "2026-06-07T04:50:07.081Z"
   }
 ]

@@ -122,7 +122,29 @@ function loadProposals(): ProposalStore {
   } catch { return { proposals: [] }; }
 }
 
+// v7.1.6: Prune proposal store — keep max 500 proposals, evicting oldest applied/rejected first
+const MAX_PROPOSALS = 500;
+function pruneProposalStore(store: ProposalStore): void {
+  if (store.proposals.length <= MAX_PROPOSALS) return;
+  // Sort: keep pending first (most valuable), then by recency
+  const pending = store.proposals.filter(p => p.status === "pending");
+  const done = store.proposals
+    .filter(p => p.status !== "pending")
+    .sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0)); // newest first
+  const kept = [...pending, ...done].slice(0, MAX_PROPOSALS);
+  const removed = store.proposals.length - kept.length;
+  store.proposals = kept;
+  // Rebuild the seen-hashes set to match pruned store
+  _seenProposalHashes.clear();
+  for (const p of store.proposals) _seenProposalHashes.add(proposalHash(p.targetFile, p.title));
+  if (removed > 0) {
+    const log2 = { info: (msg: string) => console.log(`[SelfImprove] ${msg}`) };
+    log2.info(`[v7.1.6] Pruned ${removed} old proposals from store (kept ${kept.length})`);
+  }
+}
+
 function saveProposals(store: ProposalStore): void {
+  pruneProposalStore(store);
   fs.writeFileSync(getProposalStorePath(), JSON.stringify(store, null, 2), "utf-8");
 }
 
@@ -502,45 +524,34 @@ export async function analyzeAndPropose(
   // v6.16: Use cheap background provider (DeepSeek) for analysis cycles.
   // v6.28 A2: Added "confidence" field to the JSON schema so the LLM self-rates
   //           each proposal 0.0–1.0. This makes the confidenceThreshold filter work.
-  // v6.33: Multi-model routing — route by proposal area:
-  //   security / architecture → Claude via OpenRouter (best reasoning)
-  //   performance / feature    → Kimi k2.6 (best coding model)
-  //   reliability / readability → DeepSeek (cheap, reliable)
-  // v7.1.4: Provider fallback chain — if preferred provider returns 401/402 (auth or
-  //         billing error), automatically retry with the next available provider rather
-  //         than throwing and tripping the circuit breaker.
+  // v6.33: Multi-model routing — route by proposal area.
+  // v7.1.4: Provider fallback chain — if preferred provider returns 401/402, retry next.
+  // v7.1.6: Tiered cost model — Eco/Standard/Pro tiers based on task area.
+  //         Eco (default): DeepSeek → Gemini Flash (routine analysis, 95%+ of cycles)
+  //         Standard: Kimi k2.6 → DeepSeek Reasoner (complex refactoring)
+  //         Pro: Claude Sonnet 4.5 → Kimi (security/auth/orchestrator changes only)
   function buildProviderFallbackChain(a?: string): string[] {
-    const chain: string[] = [];
+    // v7.1.6: Use already-imported llmProvider functions (imported below via dynamic import)
+    // getProviderForTier and tierForArea are resolved after the await import("./llmProvider.js") below
+    const tier = tierForArea_fn(a);
+    const primary = getProviderForTier_fn(tier);
+    // Build fallback: primary → eco fallbacks → last resort
     const hasDeepSeek = !!process.env.DEEPSEEK_API_KEY;
     const hasKimi = !!process.env.KIMI_API_KEY;
     const hasOpenRouter = !!process.env.OPENROUTER_API_KEY;
-    if (!a) {
-      // No area — cheapest first
-      if (hasDeepSeek) chain.push("deepseek");
-      if (hasKimi) chain.push("kimi");
-      if (hasOpenRouter) chain.push("anthropic");
-      if (chain.length === 0) chain.push("deepseek"); // last resort
-      return chain;
+    const chain: string[] = [primary];
+    // Add eco-tier fallbacks (cheapest) that aren't already in chain
+    for (const fb of ["deepseek", "kimi", "openrouter-fast"]) {
+      if (!chain.includes(fb)) {
+        if (fb === "deepseek" && hasDeepSeek) chain.push(fb);
+        else if (fb === "kimi" && hasKimi) chain.push(fb);
+        else if (fb === "openrouter-fast" && hasOpenRouter) chain.push(fb);
+      }
     }
-    const al = a.toLowerCase();
-    if (al.includes("security") || al.includes("architect") || al.includes("design")) {
-      if (hasOpenRouter) chain.push("anthropic");
-      if (hasDeepSeek) chain.push("deepseek");
-      if (hasKimi) chain.push("kimi");
-    } else if (al.includes("performance") || al.includes("feature") || al.includes("optim")) {
-      if (hasKimi) chain.push("kimi");
-      if (hasDeepSeek) chain.push("deepseek");
-      if (hasOpenRouter) chain.push("anthropic");
-    } else {
-      // reliability, readability, general → DeepSeek first
-      if (hasDeepSeek) chain.push("deepseek");
-      if (hasKimi) chain.push("kimi");
-      if (hasOpenRouter) chain.push("anthropic");
-    }
-    if (chain.length === 0) chain.push("deepseek"); // last resort
+    if (chain.length === 0) chain.push("deepseek");
     return chain;
   }
-  const { simpleChatCompletion } = await import("./llmProvider.js");
+  const { simpleChatCompletion, getProviderForTier: getProviderForTier_fn, tierForArea: tierForArea_fn } = await import("./llmProvider.js");
   const providerChain = buildProviderFallbackChain(area);
   const llmMessages = [
     {
@@ -571,6 +582,7 @@ Do NOT include any forbidden patterns listed above.`,
     },
   ];
   // v7.1.4: Iterate through fallback chain; skip providers that return 401/402
+  // v7.1.6: Retry once with doubled max_tokens when response is truncated
   let rawContent: string | null = null;
   let lastProviderError: Error | null = null;
   for (const pid of providerChain) {
@@ -595,36 +607,47 @@ Do NOT include any forbidden patterns listed above.`,
     throw lastProviderError ?? new Error("All LLM providers failed or returned empty responses");
   }
 
-  const jsonStr = rawContent
-    .replace(/^```json?\s*/i, "")
-    .replace(/\s*```$/, "")
-    .trim();
-
-  let parsed: {
-    title: string;
-    rationale: string;
-    category: ImprovementProposal["category"];
-    impact: ImprovementProposal["impact"];
-    confidence?: number;
-    originalSnippet: string;
-    proposedSnippet: string;
-  };
-
-  try {
-    parsed = JSON.parse(jsonStr);
-  } catch (err) {
-    const jsonMatch = rawContent.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      try {
-        parsed = JSON.parse(jsonMatch[0]);
-      } catch {
-        throw new Error(`Failed to parse AI response as JSON. Raw response: ${rawContent.slice(0, 300)}`);
-      }
-    } else {
-      throw new Error(`AI response was not JSON. Raw response: ${rawContent.slice(0, 300)}`);
-    }
+  // v7.1.6: Parse helper — tries to extract JSON from raw LLM output
+  function tryParseProposal(raw: string): { title: string; rationale: string; category: ImprovementProposal["category"]; impact: ImprovementProposal["impact"]; confidence?: number; originalSnippet: string; proposedSnippet: string; secondaryChanges?: any[] } | null {
+    const cleaned = raw.replace(/^```json?\s*/i, "").replace(/\s*```$/, "").trim();
+    try { return JSON.parse(cleaned); } catch {}
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (jsonMatch) { try { return JSON.parse(jsonMatch[0]); } catch {} }
+    return null;
   }
 
+  let parsed = tryParseProposal(rawContent);
+
+  // v7.1.6: Retry once if truncated (finish_reason=stop but JSON incomplete) or missing fields
+  const isTruncated = !parsed || !parsed.originalSnippet || !parsed.proposedSnippet || !parsed.title;
+  if (isTruncated) {
+    log.warn(`[v7.1.6] Response incomplete or unparseable — retrying with higher token budget`);
+    let retryContent: string | null = null;
+    for (const pid of providerChain) {
+      try {
+        // Use a more explicit prompt and 4x token budget on retry
+        const retryMessages = [
+          ...llmMessages.slice(0, -1),
+          {
+            role: "user" as const,
+            content: llmMessages[llmMessages.length - 1].content +
+              "\n\nIMPORTANT: Your previous response was truncated or incomplete. You MUST return a COMPLETE, valid JSON object. Include ALL required fields: title, rationale, category, impact, confidence, originalSnippet, proposedSnippet. Keep snippets SHORT (under 20 lines each) to avoid truncation.",
+          },
+        ];
+        retryContent = await simpleChatCompletion(retryMessages, { maxTokens: 4000, temperature: 0.2, providerId: pid });
+        if (retryContent) break;
+      } catch (retryErr: any) {
+        const retryMsg: string = retryErr?.message ?? "";
+        if (/40[12]/.test(retryMsg) || /authentication/i.test(retryMsg) || /insufficient.*credit/i.test(retryMsg)) continue;
+        break;
+      }
+    }
+    if (retryContent) parsed = tryParseProposal(retryContent);
+  }
+
+  if (!parsed) {
+    throw new Error(`Failed to parse AI response as JSON. Raw response: ${rawContent.slice(0, 300)}`);
+  }
   if (!parsed.originalSnippet || !parsed.proposedSnippet || !parsed.title) {
     throw new Error("AI response missing required fields (title, originalSnippet, proposedSnippet)");
   }

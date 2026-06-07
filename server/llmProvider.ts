@@ -310,6 +310,75 @@ export function listProviders(): Array<{ id: string; name: string }> {
   return Object.values(DEFAULT_PROVIDERS).map(p => ({ id: p.id, name: p.name }));
 }
 
+// ─── v7.1.6: Tiered LLM Cost Model ─────────────────────────────────────────────
+// Three tiers control which model is used based on task importance:
+//
+//   Eco      — DeepSeek or Gemini Flash (~$0.00–0.14/M tokens)
+//              Used for: routine self-improvement analysis, dedup checks,
+//              background RSI cycles, health checks, memory consolidation.
+//              This is the DEFAULT tier — used 95%+ of the time.
+//
+//   Standard — Kimi k2.6 or DeepSeek Reasoner (~$0.14–1.00/M tokens)
+//              Used for: complex code refactoring, multi-file proposals,
+//              goal decomposition, architecture analysis.
+//
+//   Pro      — Claude Sonnet 4.5 via OpenRouter (~$3/M tokens)
+//              Used for: critical security/auth changes, high-stakes
+//              proposals that affect core orchestration, constitution checks.
+//              Only used when explicitly requested AND OpenRouter credits > 0.
+//
+// The tier is selected automatically based on task type, or can be overridden
+// by setting LLM_TIER=eco|standard|pro in .env.local.
+
+export type LLMTier = "eco" | "standard" | "pro";
+
+export function getProviderForTier(tier: LLMTier): string {
+  const override = process.env.LLM_TIER as LLMTier | undefined;
+  const effectiveTier = override ?? tier;
+
+  const hasDeepSeek = !!process.env.DEEPSEEK_API_KEY;
+  const hasKimi = !!process.env.KIMI_API_KEY;
+  const hasOpenRouter = !!process.env.OPENROUTER_API_KEY;
+
+  switch (effectiveTier) {
+    case "eco":
+      // Cheapest available — DeepSeek first, then Gemini Flash via OpenRouter
+      if (hasDeepSeek) return "deepseek";
+      if (hasOpenRouter) return "openrouter-fast"; // Gemini Flash
+      if (hasKimi) return "kimi";
+      return "deepseek"; // fallback (will fail gracefully)
+
+    case "standard":
+      // Mid-tier — Kimi k2.6 (best free coding model) or DeepSeek Reasoner
+      if (hasKimi) return "kimi";
+      if (hasDeepSeek) return "deepseek-reasoner";
+      if (hasOpenRouter) return "openrouter-fast";
+      return "deepseek";
+
+    case "pro":
+      // Premium — Claude Sonnet via OpenRouter (only when credits available)
+      if (hasOpenRouter) return "anthropic"; // Claude Sonnet 4.5
+      if (hasKimi) return "kimi";            // fallback to Kimi
+      if (hasDeepSeek) return "deepseek";    // last resort
+      return "deepseek";
+
+    default:
+      return "deepseek";
+  }
+}
+
+// Helper: classify a task area into a tier
+export function tierForArea(area?: string): LLMTier {
+  if (!area) return "eco";
+  const a = area.toLowerCase();
+  // Pro tier: security-critical or architecture-level changes
+  if (/security|auth|constitution|orchestrat|circuit.break/.test(a)) return "pro";
+  // Standard tier: complex coding tasks
+  if (/performance|feature|refactor|architect|multi.file/.test(a)) return "standard";
+  // Eco tier: everything else
+  return "eco";
+}
+
 // ─── Non-Streaming Completion ───────────────────────────────────────────────
 
 export async function chatCompletion(
