@@ -3849,6 +3849,22 @@
       "confidence": 0.9,
       "createdAt": 1780865235125,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780865236519_lvgj5c",
+      "category": "antipattern",
+      "title": "Failure: Remove redundant barrel export comment",
+      "description": "Failed to apply \"Remove redundant barrel export comment\" to ai.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify ai.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for ai.ts: Remove redundant barrel export comment — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "ai.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780865236519,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -3991,5 +4007,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T20:47:15.125Z"
+  "_lastUpdated": "2026-06-07T20:47:16.519Z"
 }
