@@ -1255,6 +1255,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/selfImprove.ts(34,32): error TS2307: Cannot find module './fileEngineChunking.js' or its corresponding type declarations.\ndata/tmp_syntax/selfImprove.ts(35,16): error TS2307: Cannot fi",
       "timestamp": "2026-06-07T18:16:41.616Z"
+    },
+    {
+      "id": "audit_1780856203002_gcds0z",
+      "action": "apply",
+      "proposalId": "prop_1780851614955_zq48rl",
+      "filename": "manifest.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/manifest.ts(14,29): error TS2307: Cannot find module './tools' or its corresponding type declarations.\ndata/tmp_syntax/manifest.ts(15,50): error TS2307: Cannot find module './llmProvid",
+      "timestamp": "2026-06-07T18:16:43.002Z"
     }
   ]
 }
