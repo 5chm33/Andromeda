@@ -142,13 +142,14 @@ const DEFAULT_PROVIDERS: Record<string, Omit<LLMProviderConfig, "apiKey">> = {
     supportsStreaming: true,
   },
   // v5.48: Kimi k2.6 — best-in-class coding model (256K context, vision, tools)
+  // v7.1.8: temperature MUST be 1 — kimi-k2.6 is a reasoning model and rejects any other value
   kimi: {
     id: "kimi",
     name: "Kimi k2.6 (Coding)",
     apiUrl: "https://api.moonshot.ai/v1/chat/completions",
     model: "kimi-k2.6",
     maxTokens: 8192,
-    temperature: 0.6,
+    temperature: 1,
     supportsTools: true,
     supportsVision: true,
     supportsStreaming: true,

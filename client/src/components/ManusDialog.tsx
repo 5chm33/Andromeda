@@ -1,3 +1,4 @@
+// v7.1.8: Renamed from ManusDialog — no more leftover Manus branding
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -9,7 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-interface ManusDialogProps {
+interface AndromedaDialogProps {
   title?: string;
   logo?: string;
   open?: boolean;
@@ -18,14 +19,17 @@ interface ManusDialogProps {
   onClose?: () => void;
 }
 
-export function ManusDialog({
+/** @deprecated Use AndromedaDialog directly */
+export type ManusDialogProps = AndromedaDialogProps;
+
+export function AndromedaDialog({
   title,
   logo,
   open = false,
   onLogin,
   onOpenChange,
   onClose,
-}: ManusDialogProps) {
+}: AndromedaDialogProps) {
   const [internalOpen, setInternalOpen] = useState(open);
 
   useEffect(() => {
@@ -40,7 +44,6 @@ export function ManusDialog({
     } else {
       setInternalOpen(nextOpen);
     }
-
     if (!nextOpen) {
       onClose?.();
     }
@@ -51,39 +54,41 @@ export function ManusDialog({
       open={onOpenChange ? open : internalOpen}
       onOpenChange={handleOpenChange}
     >
-      <DialogContent className="py-5 bg-[#f8f8f7] rounded-[20px] w-[400px] shadow-[0px_4px_11px_0px_rgba(0,0,0,0.08)] border border-[rgba(0,0,0,0.08)] backdrop-blur-2xl p-0 gap-0 text-center">
+      <DialogContent className="py-5 bg-[#0f0f0f] rounded-[20px] w-[400px] shadow-[0px_4px_32px_0px_rgba(0,0,0,0.4)] border border-[rgba(255,255,255,0.08)] backdrop-blur-2xl p-0 gap-0 text-center">
         <div className="flex flex-col items-center gap-2 p-5 pt-12">
           {logo ? (
-            <div className="w-16 h-16 bg-white rounded-xl border border-[rgba(0,0,0,0.08)] flex items-center justify-center">
+            <div className="w-16 h-16 bg-card rounded-xl border border-border/40 flex items-center justify-center">
               <img
                 src={logo}
-                alt="Dialog graphic"
+                alt="Andromeda"
                 className="w-10 h-10 rounded-md"
+                style={{ filter: "invert(1) brightness(0.85)" }}
               />
             </div>
           ) : null}
 
-          {/* Title and subtitle */}
           {title ? (
-            <DialogTitle className="text-xl font-semibold text-[#34322d] leading-[26px] tracking-[-0.44px]">
+            <DialogTitle className="text-xl font-semibold text-foreground leading-[26px] tracking-[-0.44px]">
               {title}
             </DialogTitle>
           ) : null}
-          <DialogDescription className="text-sm text-[#858481] leading-5 tracking-[-0.154px]">
-            Please login with Manus to continue
+          <DialogDescription className="text-sm text-muted-foreground leading-5 tracking-[-0.154px]">
+            Sign in to continue using Andromeda
           </DialogDescription>
         </div>
 
         <DialogFooter className="px-5 py-5">
-          {/* Login button */}
           <Button
             onClick={onLogin}
-            className="w-full h-10 bg-[#1a1a19] hover:bg-[#1a1a19]/90 text-white rounded-[10px] text-sm font-medium leading-5 tracking-[-0.154px]"
+            className="w-full h-10 bg-primary hover:bg-primary/90 text-primary-foreground rounded-[10px] text-sm font-medium leading-5 tracking-[-0.154px]"
           >
-            Login with Manus
+            Sign in to Andromeda
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
+
+/** Backward-compat alias — prefer AndromedaDialog */
+export const ManusDialog = AndromedaDialog;
