@@ -92,6 +92,35 @@ interface ThreadTurn {
   expanded: boolean;
 }
 
+// ─── Cost Tracker Widget (v8.8.0) ───────────────────────────────────────────
+function CostTrackerWidget() {
+  const { data, isLoading } = trpc.usage.stats.useQuery(
+    { sessionId: "global" },
+    { refetchInterval: 30_000, staleTime: 15_000 }
+  );
+  if (isLoading || !data) return null;
+  const { model, totalTokens, estimatedCostUsd, turnCount } = data;
+  const costStr = estimatedCostUsd < 0.001
+    ? "< $0.001"
+    : `$${estimatedCostUsd.toFixed(4)}`;
+  const modelShort = model.replace("deepseek-", "ds-").replace("kimi-", "k-");
+  return (
+    <div className="mx-2 mb-1 px-2.5 py-2 rounded-lg bg-zinc-900/60 border border-zinc-800/50">
+      <div className="flex items-center justify-between mb-1">
+        <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">Session Cost</span>
+        <span className="text-[10px] text-zinc-600">{modelShort}</span>
+      </div>
+      <div className="flex items-end justify-between">
+        <span className="text-sm font-bold text-violet-300">{costStr}</span>
+        <span className="text-[10px] text-zinc-600">{turnCount} turn{turnCount !== 1 ? "s" : ""}</span>
+      </div>
+      <div className="mt-1 text-[10px] text-zinc-600">
+        {totalTokens.toLocaleString()} tokens used
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Search Page ─────────────────────────────────────────────────────────
 export default function Search() {
   const { user, isAuthenticated } = useAuth();
@@ -110,6 +139,9 @@ export default function Search() {
   const initialImageGen = params.get("imageGen") === "1" || initialPanel === "image";
   const initialDeepMode = params.get("deep") === "1";
 
+  // ─────────────────────────────────────────────────────────────────────────────────────────────────
+  // SECTION 1: Core search state
+  // ─────────────────────────────────────────────────────────────────────────────────────────────────
   const [inputValue, setInputValue] = useState("");  // v5.55: start empty so user can type next question immediately
   const [query, setQuery] = useState(initialQuery);
   const [filter, setFilter] = useState<FilterType>("all");
@@ -329,6 +361,9 @@ export default function Search() {
   }, [followUpQuery.data]);
 
   // ─── File handling ────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────────────────────────────────────────────────────────
+  // SECTION 2: File processing (drag-drop, paste, zip editing)
+  // ─────────────────────────────────────────────────────────────────────────────────────────────────
   const processFile = useCallback(async (file: File) => {
     const mimeType = file.type || "application/octet-stream";
     const isImage = mimeType.startsWith("image/");
@@ -605,6 +640,9 @@ export default function Search() {
     }
   }, [saveToHistory, extraFiles, model]);
 
+  // ─────────────────────────────────────────────────────────────────────────────────────────────────
+  // SECTION 3: Search stream handlers (deep research, standard, agent, plan)
+  // ─────────────────────────────────────────────────────────────────────────────────────────────────
   const runDeepResearch = useCallback(async (q: string) => {
     abortRef.current?.abort();
     abortRef.current = new AbortController();
@@ -1006,6 +1044,9 @@ export default function Search() {
     return () => abortRef.current?.abort();
   }, [initialQuery]); // eslint-disable-line
 
+  // ─────────────────────────────────────────────────────────────────────────────────────────────────
+  // SECTION 4: User interaction handlers (submit, follow-up, filter, export)
+  // ─────────────────────────────────────────────────────────────────────────────────────────────────
   const handleNewSearch = (q: string) => {
     if (!q.trim()) return;
     // v5.10: /compact command shortcut
@@ -1601,13 +1642,16 @@ export default function Search() {
             </button>
           ))}
 
-          {/* v5.10: version indicator — no auth required */}
+          {/* v8.8.0: Cost tracker + version indicator */}
           <div className="pt-1 border-t border-zinc-800/40">
+            {leftSidebarOpen && (
+              <CostTrackerWidget />
+            )}
             <div className={`flex items-center gap-2.5 px-2.5 py-2 ${leftSidebarOpen ? "" : "justify-center"}`}>
               <div className="w-6 h-6 rounded-full bg-violet-500/20 flex items-center justify-center flex-shrink-0">
                 <Sparkles className="w-3 h-3 text-violet-400" />
               </div>
-              {leftSidebarOpen && <span className="text-[10px] text-zinc-600">Andromeda v5.61</span>}
+              {leftSidebarOpen && <span className="text-[10px] text-zinc-600">Andromeda v8.8.0</span>}
             </div>
           </div>
         </div>
@@ -2717,7 +2761,11 @@ export default function Search() {
                         </div>
                       )}
 
-                      <div className="prose prose-sm prose-invert max-w-none text-zinc-300 leading-relaxed">
+                      <div
+                        className="prose prose-sm prose-invert max-w-none text-zinc-200 leading-relaxed"
+                        style={{ animation: aiAnswer ? "fadeIn 0.3s ease-out" : undefined }}
+                      >
+                        <style>{`@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }`}</style>
                         <Streamdown>{aiAnswer}</Streamdown>
                         {isStreaming && (
                           <span className="inline-block w-0.5 h-4 bg-violet-400 animate-pulse ml-0.5 align-text-bottom" />

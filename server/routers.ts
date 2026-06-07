@@ -2,6 +2,8 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
+import { getBudgetStats, getSessionDetail } from "./tokenBudgetManager.js";
+import { getActiveModel } from "./aiTokens.js";
 import {
   deleteSearchHistoryItem,
   deleteUserSearchHistory,
@@ -80,6 +82,43 @@ export const appRouter = router({
       .query(async ({ input }) => {
         const suggestions = await generateSuggestions(input.query);
         return { suggestions };
+      }),
+  }),
+
+  // ── Usage / Cost Tracker (v8.8.0) ──────────────────────────────────────────
+  usage: router({
+    stats: publicProcedure
+      .input(z.object({ sessionId: z.string().optional() }))
+      .query(({ input }) => {
+        const sid = input.sessionId || "global";
+        const session = getSessionDetail(sid);
+        const model = getActiveModel();
+        // Approximate cost per 1M tokens (USD)
+        const COST_PER_1M: Record<string, { input: number; output: number }> = {
+          "deepseek-chat":      { input: 0.27,  output: 1.10 },
+          "deepseek-reasoner":  { input: 0.55,  output: 2.19 },
+          "kimi-k2":            { input: 0.60,  output: 2.50 },
+          "kimi-k2.6":          { input: 0.60,  output: 2.50 },
+          "gpt-4o":             { input: 2.50,  output: 10.0 },
+          "gpt-4o-mini":        { input: 0.15,  output: 0.60 },
+          "claude-3-5-sonnet":  { input: 3.00,  output: 15.0 },
+        };
+        const rates = COST_PER_1M[model] ?? { input: 0.50, output: 2.00 };
+        const inputTokens  = session?.inputTokens  ?? 0;
+        const outputTokens = session?.outputTokens ?? 0;
+        const totalTokens  = inputTokens + outputTokens;
+        const estimatedCostUsd =
+          (inputTokens  / 1_000_000) * rates.input +
+          (outputTokens / 1_000_000) * rates.output;
+        return {
+          model,
+          inputTokens,
+          outputTokens,
+          totalTokens,
+          turnCount: session?.turnCount ?? 0,
+          estimatedCostUsd: parseFloat(estimatedCostUsd.toFixed(6)),
+          ratesPerMillion: rates,
+        };
       }),
   }),
 
