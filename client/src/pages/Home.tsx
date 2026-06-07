@@ -41,6 +41,7 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AmbientStatusBar } from "@/components/AmbientStatusBar";
+import { OnboardingModal } from "@/components/OnboardingModal";
 import { ThemeCanvas } from "@/components/ThemeCanvas";
 import { SkinSelector } from "@/components/SkinSelector";
 import { getSavedSkin } from "@/lib/themeEngine";
@@ -471,6 +472,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
+
+      {/* v8.9: First-run onboarding tour */}
+      <OnboardingModal />
 
       {/* ── Animated background canvas ─────────────────────────────────── */}
       <ThemeCanvas skinId={currentSkin} />

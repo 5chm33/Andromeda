@@ -1,6 +1,6 @@
 {
   "name": "andromeda",
-  "version": "8.8.0",
+  "version": "8.9.0",
   "type": "module",
   "license": "MIT",
   "scripts": {
@@ -11,6 +11,7 @@
     "check": "tsc --noEmit",
     "format": "prettier --write .",
     "test": "vitest run",
+    "test:integration": "npx tsx scripts/integration-test.ts",
     "db:push": "drizzle-kit generate && drizzle-kit migrate"
   },
   "dependencies": {

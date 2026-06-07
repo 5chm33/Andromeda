@@ -719,18 +719,37 @@ export default function Search() {
     setIsStreaming(false);
     setIsTruncated(false);
     setContinueMessages([]);
+    // v8.9: Retry once on transient 5xx or network errors
+    let response: Response | null = null;
+    let lastErr: Error | null = null;
+    for (let attempt = 0; attempt <= 1; attempt++) {
+      if (attempt > 0) await new Promise(r => setTimeout(r, 1500));
+      try {
+        response = await fetch("/api/search/stream", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            query: q.trim(),
+            filter: f,
+            model,
+            ...(priorContext && priorContext.length > 0 ? { context: priorContext } : {}),
+          }),
+          signal: abortRef.current?.signal,
+        });
+        if (!response.ok && [500, 502, 503, 429].includes(response.status) && attempt === 0) {
+          lastErr = new Error(`Search failed: ${response.status}`);
+          response = null;
+          continue;
+        }
+        break;
+      } catch (fetchErr: any) {
+        if (fetchErr.name === "AbortError") throw fetchErr;
+        lastErr = fetchErr;
+        if (attempt >= 1) throw lastErr;
+      }
+    }
+    if (!response) throw lastErr || new Error("Search request failed");
     try {
-      const response = await fetch("/api/search/stream", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          query: q.trim(),
-          filter: f,
-          model,
-          ...(priorContext && priorContext.length > 0 ? { context: priorContext } : {}),
-        }),
-        signal: abortRef.current.signal,
-      });
       if (!response.ok) throw new Error(`Search failed: ${response.status}`);
       const reader = response.body?.getReader();
       if (!reader) throw new Error("No response stream");
@@ -795,6 +814,7 @@ export default function Search() {
       }
     }
   }, [saveToHistory, model]);
+  // (end runStandardSearch)
 
   const runAgentPlan = useCallback(async (q: string) => {
     abortRef.current?.abort();
@@ -1004,16 +1024,33 @@ export default function Search() {
 
   const initialAttachedFileRef = useRef<AttachedFile | null>(attachedFile);
 
-  // Keyboard shortcuts
+  // Keyboard shortcuts (v8.9: extended)
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if ((e.ctrlKey && e.key === "e") || (e.key === "`" && !e.ctrlKey && !e.metaKey && !(document.activeElement instanceof HTMLInputElement) && !(document.activeElement instanceof HTMLTextAreaElement))) {
+      const inInput = document.activeElement instanceof HTMLInputElement || document.activeElement instanceof HTMLTextAreaElement;
+      // Ctrl+E / backtick — toggle Code Executor
+      if ((e.ctrlKey && e.key === "e") || (e.key === "`" && !e.ctrlKey && !e.metaKey && !inInput)) {
         e.preventDefault();
         setShowCodeExecutor((v) => !v);
       }
-      if (e.ctrlKey && e.key === "i" && !(document.activeElement instanceof HTMLInputElement) && !(document.activeElement instanceof HTMLTextAreaElement)) {
+      // Ctrl+I — toggle Image Generator
+      if (e.ctrlKey && e.key === "i" && !inInput) {
         e.preventDefault();
         setShowImageGen((v) => !v);
+      }
+      // Ctrl+/ or Ctrl+K — focus search input (v8.9)
+      if (e.ctrlKey && (e.key === "/" || e.key === "k") && !inInput) {
+        e.preventDefault();
+        bottomInputRef.current?.focus();
+      }
+      // Ctrl+B — toggle left sidebar (v8.9)
+      if (e.ctrlKey && e.key === "b" && !inInput) {
+        e.preventDefault();
+        setLeftSidebarOpen((v) => !v);
+      }
+      // Escape — blur focused input without submitting (v8.9)
+      if (e.key === "Escape" && inInput) {
+        (document.activeElement as HTMLElement).blur();
       }
     };
     window.addEventListener("keydown", handler);
@@ -2707,11 +2744,24 @@ export default function Search() {
                     </div>
                   )}
 
-                  {/* Error */}
+                  {/* Error — v8.9: enhanced with retry + network hint */}
                   {error && (
-                    <div className="rounded-xl p-4 bg-red-500/5 border border-red-500/20 text-sm text-red-400">
-                      {error}
-                      <button onClick={() => runSearch(query)} className="ml-3 text-xs text-red-300 underline">Retry</button>
+                    <div className="rounded-xl p-4 bg-red-500/5 border border-red-500/20">
+                      <div className="flex items-start gap-2.5">
+                        <AlertTriangle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-red-400 leading-relaxed">{error}</p>
+                          {(error.includes("fetch") || error.includes("network") || error.includes("Failed to") || error.includes("NetworkError")) && (
+                            <p className="text-xs text-red-500/70 mt-1">Check your network connection and try again.</p>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => { setError(null); runSearch(query); }}
+                          className="flex-shrink-0 px-2.5 py-1 rounded-lg bg-red-500/15 text-red-300 text-xs font-medium hover:bg-red-500/25 transition-colors"
+                        >
+                          Retry
+                        </button>
+                      </div>
                     </div>
                   )}
 
@@ -3121,7 +3171,7 @@ export default function Search() {
               </div>
             </div>
             <p className="text-center text-[10px] text-zinc-700 mt-2">
-              Andromeda v5.61 · Enter to send · Shift+Enter for new line · Ctrl+E for code executor · /compact to compress thread
+              Andromeda v8.9.0 · Enter to send · Shift+Enter for new line · Ctrl+E code executor · Ctrl+K focus · Ctrl+B sidebar · /compact compress thread
             </p>
           </div>
         </div>
