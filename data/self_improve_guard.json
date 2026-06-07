@@ -1156,6 +1156,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/ai.ts(3,15): error TS2307: Cannot find module './aiTokens.js' or its corresponding type declarations.\ndata/tmp_syntax/ai.ts(4,15): error TS2307: Cannot find module './aiPrompts.js' or ",
       "timestamp": "2026-06-07T18:16:24.450Z"
+    },
+    {
+      "id": "audit_1780856186069_zjpxsz",
+      "action": "apply",
+      "proposalId": "prop_1780852213533_wzsw2t",
+      "filename": "memory.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/memory.ts(33,16): error TS2307: Cannot find module 'fs' or its corresponding type declarations.\ndata/tmp_syntax/memory.ts(34,18): error TS2307: Cannot find module 'path' or its corresp",
+      "timestamp": "2026-06-07T18:16:26.069Z"
     }
   ]
 }
