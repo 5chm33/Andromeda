@@ -192,6 +192,10 @@ async function startServer(): Promise<void> {
   });
   process.on("uncaughtException", (err) => {
     console.error("[UNCAUGHT EXCEPTION]", err);
+    // v8.9: Clear crash flag so a non-RSI crash does not trigger a spurious
+    // git rollback on the next boot. The crash flag is only meaningful for
+    // detecting RSI-induced instability, not general runtime errors.
+    try { clearCrashFlag(); } catch {}
     import("../selfMonitor.js").then(m => {
       m.recordMetric("error_rate", 1, `Uncaught exception: ${err.message}`);
     }).catch(() => {});

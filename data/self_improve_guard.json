@@ -625,6 +625,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/memory.ts(33,16): error TS2307: Cannot find module 'fs' or its corresponding type declarations.\ndata/tmp_syntax/memory.ts(34,18): error TS2307: Cannot find module 'path' or its corresp",
       "timestamp": "2026-06-07T17:10:15.041Z"
+    },
+    {
+      "id": "audit_1780852277473_ihxovu",
+      "action": "apply",
+      "proposalId": "prop_1780852276113_nusih2",
+      "filename": "biasDetector.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/biasDetector.ts(15,35): error TS2307: Cannot find module '../drizzle/schema' or its corresponding type declarations.\n",
+      "timestamp": "2026-06-07T17:11:17.473Z"
     }
   ]
 }
