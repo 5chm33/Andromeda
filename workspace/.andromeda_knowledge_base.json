@@ -1401,6 +1401,22 @@
       "confidence": 0.9,
       "createdAt": 1780852593437,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780852594764_xosnrq",
+      "category": "antipattern",
+      "title": "Failure: Remove unused DEEPSEEK_API_KEY check",
+      "description": "Failed to apply \"Remove unused DEEPSEEK_API_KEY check\" to multiAgent.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify multiAgent.ts feature",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for multiAgent.ts: Remove unused DEEPSEEK_API_KEY check — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "multiAgent.ts",
+        "feature"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780852594764,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -1543,5 +1559,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T17:16:33.437Z"
+  "_lastUpdated": "2026-06-07T17:16:34.764Z"
 }
