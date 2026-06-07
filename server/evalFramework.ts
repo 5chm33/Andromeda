@@ -93,17 +93,17 @@ export const EVAL_TASKS: EvalTask[] = [
   },
   {
     id: "r05", category: "reasoning", difficulty: "medium",
-    prompt: "What comes next in the sequence: 2, 6, 12, 20, 30, ?",
+    prompt: "What comes next in the sequence: 2, 6, 12, 20, 30, ? Give the answer first, then explain.",
     expectedKeywords: ["42"],
     forbiddenKeywords: ["36", "40", "44"],
-    maxTokens: 150, timeoutMs: 10000, scoreWeight: 2,
+    maxTokens: 300, timeoutMs: 15000, scoreWeight: 2,
   },
   {
     id: "r06", category: "reasoning", difficulty: "hard",
-    prompt: "Three friends split a restaurant bill. Alice paid 1/3, Bob paid 1/4, Carol paid the rest. If Carol paid $25, what was the total bill?",
+    prompt: "Three friends split a restaurant bill. Alice paid 1/3, Bob paid 1/4, Carol paid the rest. If Carol paid $25, what was the total bill? State the total bill amount first.",
     expectedKeywords: ["60"],
     forbiddenKeywords: ["50", "70", "80"],
-    maxTokens: 300, timeoutMs: 15000, scoreWeight: 2,
+    maxTokens: 400, timeoutMs: 15000, scoreWeight: 2,
   },
   {
     id: "r07", category: "reasoning", difficulty: "easy",
