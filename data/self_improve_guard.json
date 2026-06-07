@@ -166,6 +166,15 @@
       "result": "blocked",
       "details": "Constitution: proposed content contains forbidden pattern 'rm -rf /'",
       "timestamp": "2026-06-07T14:52:54.750Z"
+    },
+    {
+      "id": "audit_1780844114940_xccu2l",
+      "action": "apply",
+      "proposalId": "prop_1780842994142_w9p8wn",
+      "filename": "manifest.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/manifest.ts(14,29): error TS2307: Cannot find module './tools' or its corresponding type declarations.\ndata/tmp_syntax/manifest.ts(15,50): error TS2307: Cannot find module './llmProvid",
+      "timestamp": "2026-06-07T14:55:14.940Z"
     }
   ]
 }
