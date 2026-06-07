@@ -12,9 +12,17 @@ import {
   browserScreenshot, browserExtractData, browserEval,
   closeBrowser, listBrowserSessions, browserClickVision,
 } from "../browser.js";
-import type { ToolDefinition } from "../llmProvider.js";
-
-export const browserToolDefinitions: ToolDefinition[] = [
+// browserTools uses its own extended tool shape (name, description, category, safetyLevel, parameters, execute)
+// This is different from the LLM-facing ToolDefinition (which is { type: "function", function: {...} })
+interface BrowserToolDef {
+  name: string;
+  description: string;
+  category: string;
+  safetyLevel: string;
+  parameters: Record<string, unknown>;
+  execute: (...args: any[]) => Promise<any>;
+}
+export const browserToolDefinitions: BrowserToolDef[] = [
   {
     name: "browser_navigate",
     description: "Navigate a browser session to a URL. Returns page title and URL. Use this before clicking or extracting data.",

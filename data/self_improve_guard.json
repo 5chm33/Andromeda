@@ -607,6 +607,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/manifest.ts(14,29): error TS2307: Cannot find module './tools' or its corresponding type declarations.\ndata/tmp_syntax/manifest.ts(15,50): error TS2307: Cannot find module './llmProvid",
       "timestamp": "2026-06-07T17:00:16.274Z"
+    },
+    {
+      "id": "audit_1780851733989_gg3to0",
+      "action": "apply",
+      "proposalId": "prop_1780851614955_zq48rl",
+      "filename": "manifest.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/manifest.ts(14,29): error TS2307: Cannot find module './tools' or its corresponding type declarations.\ndata/tmp_syntax/manifest.ts(15,50): error TS2307: Cannot find module './llmProvid",
+      "timestamp": "2026-06-07T17:02:13.995Z"
     }
   ]
 }

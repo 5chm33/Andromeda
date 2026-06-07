@@ -1193,6 +1193,22 @@
       "confidence": 0.9,
       "createdAt": 1780851616277,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780851733996_0omktz",
+      "category": "antipattern",
+      "title": "Failure: Fix version string inconsistency in manifest",
+      "description": "Failed to apply \"Fix version string inconsistency in manifest\" to manifest.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify manifest.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for manifest.ts: Fix version string inconsistency in manifest — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "manifest.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780851733996,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -1335,5 +1351,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T17:00:16.277Z"
+  "_lastUpdated": "2026-06-07T17:02:13.996Z"
 }
