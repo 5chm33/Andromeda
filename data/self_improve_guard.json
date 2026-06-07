@@ -1831,6 +1831,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/memory.ts(33,16): error TS2307: Cannot find module 'fs' or its corresponding type declarations.\ndata/tmp_syntax/memory.ts(34,18): error TS2307: Cannot find module 'path' or its corresp",
       "timestamp": "2026-06-07T19:16:27.232Z"
+    },
+    {
+      "id": "audit_1780859788665_und7fs",
+      "action": "apply",
+      "proposalId": "prop_1780842858115_2ixdnh",
+      "filename": "contextManager.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/contextManager.ts(15,34): error TS2307: Cannot find module './llmProvider' or its corresponding type declarations.\ndata/tmp_syntax/contextManager.ts(16,32): error TS2307: Cannot find m",
+      "timestamp": "2026-06-07T19:16:28.665Z"
     }
   ]
 }
