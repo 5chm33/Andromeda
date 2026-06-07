@@ -1,5 +1,9 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import React from "react";
+import { ThemeCanvas } from "@/components/ThemeCanvas";
+import { SkinSelector } from "@/components/SkinSelector";
+import { getSavedSkin } from "@/lib/themeEngine";
+import type { SkinId } from "@/lib/themeEngine";
 import { Button } from "@/components/ui/button";
 import { getLoginUrl } from "@/const";
 import { trpc } from "@/lib/trpc";
@@ -159,6 +163,9 @@ export default function Search() {
 
   // v5.10: /compact context compression
   const [isCompacting, setIsCompacting] = useState(false);
+
+  // Background skin (shared with Home)
+  const [currentSkin, setCurrentSkin] = useState<SkinId>(() => getSavedSkin());
 
   // ─── Agent Mode state ─────────────────────────────────────────────────────
   const [isAgentMode, setIsAgentMode] = useState(initialPanel === "agent");
@@ -1459,6 +1466,11 @@ export default function Search() {
       style={{ background: "#0d0d0d", color: "#e4e4e7" }}
       ref={dropZoneRef}
     >
+      {/* Cinematic background canvas */}
+      <ThemeCanvas skin={currentSkin} />
+      {/* Skin picker */}
+      <SkinSelector currentSkin={currentSkin} onSkinChange={setCurrentSkin} />
+
       {/* Drag overlay */}
       <div className="drag-overlay hidden fixed inset-0 z-[100] bg-violet-500/10 border-2 border-dashed border-violet-500/50 flex items-center justify-center pointer-events-none">
         <div className="text-center">
