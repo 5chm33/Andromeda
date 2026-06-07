@@ -247,6 +247,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/contextBus.ts(16,28): error TS2307: Cannot find module 'crypto' or its corresponding type declarations.\ndata/tmp_syntax/contextBus.ts(17,16): error TS2307: Cannot find module 'fs' or i",
       "timestamp": "2026-06-07T14:55:23.071Z"
+    },
+    {
+      "id": "audit_1780844396837_3mrxov",
+      "action": "apply",
+      "proposalId": "prop_1780844113531_i89n5s",
+      "filename": "ai.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/ai.ts(17,15): error TS2307: Cannot find module './aiTokens.js' or its corresponding type declarations.\ndata/tmp_syntax/ai.ts(19,15): error TS2307: Cannot find module './aiPrompts.js' o",
+      "timestamp": "2026-06-07T14:59:56.837Z"
     }
   ]
 }
