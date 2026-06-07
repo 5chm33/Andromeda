@@ -1858,6 +1858,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/contextBus.ts(16,28): error TS2307: Cannot find module 'crypto' or its corresponding type declarations.\ndata/tmp_syntax/contextBus.ts(17,16): error TS2307: Cannot find module 'fs' or i",
       "timestamp": "2026-06-07T19:16:31.668Z"
+    },
+    {
+      "id": "audit_1780859793192_memz3y",
+      "action": "apply",
+      "proposalId": "prop_1780844908157_qi2cet",
+      "filename": "streamRouter.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/streamRouter.ts(1,32): error TS2307: Cannot find module './aiPlanning.js' or its corresponding type declarations.\ndata/tmp_syntax/streamRouter.ts(3,34): error TS2307: Cannot find modul",
+      "timestamp": "2026-06-07T19:16:33.192Z"
     }
   ]
 }
