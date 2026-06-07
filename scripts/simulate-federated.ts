@@ -1,5 +1,5 @@
 /**
- * simulate-federated.ts — Andromeda v9.2.0
+ * simulate-federated.ts — Andromeda v9.3.0
  *
  * In-process federated learning peer simulation.
  * Exercises the full gossip protocol, proposal exchange, trust scoring,
@@ -18,7 +18,7 @@ const ROOT = path.resolve(__dirname, "..");
 
 // ── Set up env before importing federatedLearning ────────────────────────────
 process.env.FEDERATED_ENABLED = "true";
-process.env.FEDERATED_TOKEN = "sim-test-token-9.2.0";
+process.env.FEDERATED_TOKEN = "sim-test-token-9.3.0";
 process.env.FEDERATED_NODE_ID = "node-primary";
 process.env.FEDERATED_SYNC_INTERVAL_MS = "999999999"; // disable auto-sync
 
@@ -71,7 +71,7 @@ async function main() {
   const peer1 = registerNode({
     nodeId: "node-peer-alpha",
     url: "http://peer-alpha.local:5000",
-    version: "9.2.0",
+    version: "9.3.0",
     capabilityScore: 0.82,
     contributionCount: 5,
   });
@@ -82,7 +82,7 @@ async function main() {
   const peer2 = registerNode({
     nodeId: "node-peer-beta",
     url: "http://peer-beta.local:5000",
-    version: "9.2.0",
+    version: "9.3.0",
     capabilityScore: 0.75,
     contributionCount: 2,
   });
@@ -155,7 +155,7 @@ async function main() {
   const syncPayload = {
     fromNodeId: "node-peer-gamma",
     fromNodeUrl: "http://peer-gamma.local:5000",
-    fromNodeVersion: "9.2.0",
+    fromNodeVersion: "9.3.0",
     capabilityScore: 88, // 0-100 scale
     proposals: [
       {
@@ -191,7 +191,7 @@ async function main() {
     timestamp: Date.now(),
   };
 
-  const syncResult = processSyncPayload(syncPayload, "sim-test-token-9.2.0");
+  const syncResult = processSyncPayload(syncPayload, "sim-test-token-9.3.0");
   assert(syncResult.accepted === true, "Valid sync payload accepted");
   assert(syncResult.proposalsAccepted >= 1, `At least 1 proposal accepted from sync (got ${syncResult.proposalsAccepted})`);
 
@@ -223,7 +223,7 @@ async function main() {
     registerNode({
       nodeId: `node-sim-${i}`,
       url: `http://sim-${i}.local:5000`,
-      version: "9.2.0",
+      version: "9.3.0",
       capabilityScore: capScores[i],
       contributionCount: i + 1,
     });

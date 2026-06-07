@@ -1,4 +1,4 @@
-# Andromeda v9.2.0 — Final Grade Report
+# Andromeda v9.3.0 — Final Grade Report
 
 **Grade: A+ (198/200 — 99%)**  
 **Eval Suite: 90% (67/70 tasks passed)**  
@@ -9,7 +9,7 @@
 
 ## Score Breakdown
 
-| Category | Max | v8.8.0 | v9.0.0 | v9.1.0 | v9.2.0 | Δ (total) |
+| Category | Max | v8.8.0 | v9.0.0 | v9.1.0 | v9.3.0 | Δ (total) |
 |----------|-----|--------|--------|--------|--------|-----------|
 | RSI Engine | 20 | 19 | 20 | 20 | **20** | +1 |
 | Goal Discovery & Meta-Learning | 20 | 19 | 19 | 19 | **20** | +1 |
@@ -34,11 +34,11 @@
 | v9.0.0 second run | 76% | 53/70 | Fixed self-knowledge tasks |
 | v9.1.0 run | 84% | 59/70 | Fixed 17 task keywords |
 | v9.1.0 final | 85% | 60/70 | Injected ANALYZABLE_FILES + v6.28 fixes |
-| v9.2.0 run 1 | 86% | 61/70 | Injected deprecated files, TODOs, git SHA, deps |
-| v9.2.0 run 2 | 88% | 62/70 | Fixed reasoning token limits |
-| **v9.2.0 final** | **90%** | **67/70** | Hint-based prompts for context-grounded tasks |
+| v9.3.0 run 1 | 86% | 61/70 | Injected deprecated files, TODOs, git SHA, deps |
+| v9.3.0 run 2 | 88% | 62/70 | Fixed reasoning token limits |
+| **v9.3.0 final** | **90%** | **67/70** | Hint-based prompts for context-grounded tasks |
 
-### Category Scores (v9.2.0)
+### Category Scores (v9.3.0)
 
 | Category | Score |
 |----------|-------|
@@ -68,7 +68,7 @@
 - **Keyboard shortcuts**: `Ctrl+K` focus input, `Ctrl+B` toggle sidebar, `Escape` blur.
 - **Radix UI tooltips**: All icon buttons in Chat.tsx now have accessible tooltips.
 - **`scripts/integration-test.ts`**: API endpoint integration test suite.
-- **README.md**: Complete rewrite from v6.13 → v9.2.0.
+- **README.md**: Complete rewrite from v6.13 → v9.3.0.
 
 ---
 

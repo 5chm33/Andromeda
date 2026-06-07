@@ -1,5 +1,5 @@
 /**
- * SkinSelector v9.2.0
+ * SkinSelector v9.3.0
  * Floating palette button + modal skin picker.
  * - Animated hover: video preview plays on thumbnail hover
  * - Glow ring on active skin

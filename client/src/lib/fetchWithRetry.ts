@@ -1,5 +1,5 @@
 /**
- * fetchWithRetry.ts — v9.2.0
+ * fetchWithRetry.ts — v9.3.0
  *
  * A drop-in replacement for fetch() that automatically retries on transient
  * server errors (5xx, 429) and network failures with exponential back-off.

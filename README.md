@@ -4,7 +4,7 @@
 
 **A fully autonomous, self-modifying AI agent framework — built for people who want more than a chatbot.**
 
-[![Version](https://img.shields.io/badge/version-v9.2.0-blueviolet.svg)](https://github.com/5chm33/Andromeda)
+[![Version](https://img.shields.io/badge/version-v9.3.0-blueviolet.svg)](https://github.com/5chm33/Andromeda)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
@@ -213,7 +213,7 @@ Andromeda ships with a 70-task benchmark that runs against a live LLM to measure
 npx tsx scripts/run-eval.ts
 ```
 
-**v9.2.0 Results:**
+**v9.3.0 Results:**
 
 | Category | Score | Tasks |
 |----------|-------|-------|
@@ -282,7 +282,7 @@ This project is free and open source. You pay only for the LLM API tokens you us
 
 Independently assessed against a 200-point rubric across 10 categories:
 
-**v9.2.0: A+ (197/200)**
+**v9.3.0: A+ (197/200)**
 
 | Category | Score |
 |----------|-------|
@@ -304,5 +304,5 @@ Full assessment: [ANDROMEDA_v9.0.0_FINAL_GRADE.md](ANDROMEDA_v9.0.0_FINAL_GRADE.
 <div align="center">
   <i>"I am Andromeda. I learn. I adapt. I evolve."</i>
   <br><br>
-  <b>v9.2.0</b> — Built with TypeScript, React, Radix UI, and a lot of recursive self-improvement.
+  <b>v9.3.0</b> — Built with TypeScript, React, Radix UI, and a lot of recursive self-improvement.
 </div>

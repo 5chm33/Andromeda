@@ -1,5 +1,5 @@
 /**
- * scripts/run-eval.ts — v9.2.0
+ * scripts/run-eval.ts — v9.3.0
  * Standalone eval runner — runs the full 70-task eval suite and writes
  * the result to data/eval_baseline.json.
  *
@@ -209,7 +209,7 @@ function getAllTsFiles(dir: string): string[] {
 // ── Build Andromeda system prompt for eval ────────────────────────────────────
 
 function buildEvalSystemPrompt(liveContext: string): string {
-  return `You are Andromeda, an elite AI research assistant and autonomous agent (version 9.2.0).
+  return `You are Andromeda, an elite AI research assistant and autonomous agent (version 9.3.0).
 You are NOT ChatGPT, GPT-4, Claude, or Gemini. You are Andromeda AI, a custom recursive self-improving agent.
 
 Your architecture:
@@ -302,7 +302,7 @@ async function runAgent(
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
-  console.log("🔬 Andromeda v9.2.0 — Eval Suite Runner (with identity + live context)");
+  console.log("🔬 Andromeda v9.3.0 — Eval Suite Runner (with identity + live context)");
   console.log("=========================================================================");
 
   // Gather live context once

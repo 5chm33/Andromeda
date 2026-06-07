@@ -1698,7 +1698,7 @@ export default function Search() {
               <div className="w-6 h-6 rounded-full bg-violet-500/20 flex items-center justify-center flex-shrink-0">
                 <Sparkles className="w-3 h-3 text-violet-400" />
               </div>
-              {leftSidebarOpen && <span className="text-[10px] text-zinc-600">Andromeda v9.2.0</span>}
+              {leftSidebarOpen && <span className="text-[10px] text-zinc-600">Andromeda v9.3.0</span>}
             </div>
           </div>
         </div>
@@ -3181,7 +3181,7 @@ export default function Search() {
               </div>
             </div>
             <p className="text-center text-[10px] text-zinc-700 mt-2">
-              Andromeda v9.2.0 · Enter to send · Shift+Enter for new line · Ctrl+E code executor · Ctrl+K focus · Ctrl+B sidebar · /compact compress thread
+              Andromeda v9.3.0 · Enter to send · Shift+Enter for new line · Ctrl+E code executor · Ctrl+K focus · Ctrl+B sidebar · /compact compress thread
             </p>
           </div>
         </div>
