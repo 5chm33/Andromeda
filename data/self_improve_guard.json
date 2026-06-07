@@ -1057,6 +1057,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/selfConsistency.ts(24,59): error TS2307: Cannot find module './llmProvider.js' or its corresponding type declarations.\ndata/tmp_syntax/selfConsistency.ts(57,46): error TS2580: Cannot f",
       "timestamp": "2026-06-07T17:46:48.813Z"
+    },
+    {
+      "id": "audit_1780854410260_ywf3df",
+      "action": "apply",
+      "proposalId": "prop_1780851257444_y9n7m8",
+      "filename": "contextManager.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/contextManager.ts(15,34): error TS2307: Cannot find module './llmProvider' or its corresponding type declarations.\ndata/tmp_syntax/contextManager.ts(16,32): error TS2307: Cannot find m",
+      "timestamp": "2026-06-07T17:46:50.260Z"
     }
   ]
 }
