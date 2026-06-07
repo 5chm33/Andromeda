@@ -2329,6 +2329,22 @@
       "confidence": 0.9,
       "createdAt": 1780856199889,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780856201617_y1clvl",
+      "category": "antipattern",
+      "title": "Failure: Extract provider fallback chain builder to separate function",
+      "description": "Failed to apply \"Extract provider fallback chain builder to separate function\" to selfImprove.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify selfImprove.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for selfImprove.ts: Extract provider fallback chain builder to separate function — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "selfImprove.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780856201617,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -2471,5 +2487,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T18:16:39.889Z"
+  "_lastUpdated": "2026-06-07T18:16:41.617Z"
 }
