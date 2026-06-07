@@ -2089,6 +2089,22 @@
       "confidence": 0.9,
       "createdAt": 1780854999831,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780855399077_0mz4qh",
+      "category": "antipattern",
+      "title": "Failure: Refactor diff generator for readability",
+      "description": "Failed to apply \"Refactor diff generator for readability\" to codeIntel.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify codeIntel.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for codeIntel.ts: Refactor diff generator for readability — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "codeIntel.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780855399077,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -2231,5 +2247,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T17:56:39.831Z"
+  "_lastUpdated": "2026-06-07T18:03:19.077Z"
 }
