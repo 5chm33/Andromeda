@@ -1,5 +1,5 @@
 @echo off
-title Andromeda AI v8.8.0
+title Andromeda AI v8.9.0
 color 0A
 
 echo.
@@ -130,7 +130,7 @@ start /min "" cmd /c "ping -n 6 127.0.0.1 >nul & start http://localhost:3000"
 :START_SERVER
 echo.
 echo  ============================================================
-echo   Andromeda AI v8.8.0  ^|  http://localhost:3000
+echo   Andromeda AI v8.9.0  ^|  http://localhost:3000
 echo   Press Ctrl+C to stop the server.
 echo  ============================================================
 echo.
