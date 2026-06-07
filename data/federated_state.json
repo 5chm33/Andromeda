@@ -1,0 +1,259 @@
+{
+  "nodeRegistry": {
+    "node-peer-alpha": {
+      "nodeId": "node-peer-alpha",
+      "url": "http://peer-alpha.local:5000",
+      "version": "9.2.0",
+      "capabilityScore": 0.82,
+      "contributionCount": 1,
+      "registeredAt": 1780858998220,
+      "lastSeenAt": 1780858998220,
+      "healthy": true,
+      "trustScore": 0.52
+    },
+    "node-peer-beta": {
+      "nodeId": "node-peer-beta",
+      "url": "http://peer-beta.local:5000",
+      "version": "9.2.0",
+      "capabilityScore": 0.75,
+      "contributionCount": 5,
+      "registeredAt": 1780858998221,
+      "lastSeenAt": 1780858998221,
+      "healthy": true,
+      "trustScore": 0.6000000000000001
+    },
+    "node-peer-gamma": {
+      "nodeId": "node-peer-gamma",
+      "url": "http://peer-gamma.local:5000",
+      "version": "9.2.0",
+      "capabilityScore": 0.88,
+      "contributionCount": 2,
+      "registeredAt": 1780858998223,
+      "lastSeenAt": 1780858998223,
+      "healthy": true,
+      "trustScore": 0.54
+    },
+    "node-sim-0": {
+      "nodeId": "node-sim-0",
+      "url": "http://sim-0.local:5000",
+      "version": "9.2.0",
+      "capabilityScore": 0.82,
+      "contributionCount": 0,
+      "registeredAt": 1780858998224,
+      "lastSeenAt": 1780858998224,
+      "healthy": true,
+      "trustScore": 0.5
+    },
+    "node-sim-1": {
+      "nodeId": "node-sim-1",
+      "url": "http://sim-1.local:5000",
+      "version": "9.2.0",
+      "capabilityScore": 0.75,
+      "contributionCount": 0,
+      "registeredAt": 1780858998225,
+      "lastSeenAt": 1780858998225,
+      "healthy": true,
+      "trustScore": 0.5
+    },
+    "node-sim-2": {
+      "nodeId": "node-sim-2",
+      "url": "http://sim-2.local:5000",
+      "version": "9.2.0",
+      "capabilityScore": 0.88,
+      "contributionCount": 0,
+      "registeredAt": 1780858998225,
+      "lastSeenAt": 1780858998225,
+      "healthy": true,
+      "trustScore": 0.5
+    },
+    "node-sim-3": {
+      "nodeId": "node-sim-3",
+      "url": "http://sim-3.local:5000",
+      "version": "9.2.0",
+      "capabilityScore": 0.91,
+      "contributionCount": 0,
+      "registeredAt": 1780858998225,
+      "lastSeenAt": 1780858998225,
+      "healthy": true,
+      "trustScore": 0.5
+    },
+    "node-sim-4": {
+      "nodeId": "node-sim-4",
+      "url": "http://sim-4.local:5000",
+      "version": "9.2.0",
+      "capabilityScore": 0.7,
+      "contributionCount": 0,
+      "registeredAt": 1780858998225,
+      "lastSeenAt": 1780858998225,
+      "healthy": true,
+      "trustScore": 0.5
+    }
+  },
+  "receivedProposals": {
+    "node-peer-alpha:prop-001": {
+      "proposalId": "node-peer-alpha:prop-001",
+      "sourceNodeId": "node-peer-alpha",
+      "description": "Improve context window utilization by 15% via sliding window chunking",
+      "category": "performance",
+      "confidence": 0.85,
+      "observedDelta": 12.5,
+      "adoptionCount": 3,
+      "adoptedBy": [
+        "node-peer-gamma",
+        "node-peer-delta",
+        "node-peer-epsilon"
+      ],
+      "locallyValidated": false,
+      "locallyApplied": false,
+      "receivedAt": 1780858998222,
+      "tags": [
+        "performance",
+        "context"
+      ]
+    },
+    "node-peer-beta:prop-004": {
+      "proposalId": "node-peer-beta:prop-004",
+      "sourceNodeId": "node-peer-beta",
+      "description": "Improve context window utilization by 15% via sliding window chunking",
+      "category": "performance",
+      "confidence": 0.7799999999999999,
+      "observedDelta": 9,
+      "adoptionCount": 3,
+      "adoptedBy": [
+        "node-peer-gamma",
+        "node-peer-delta",
+        "node-peer-epsilon"
+      ],
+      "locallyValidated": false,
+      "locallyApplied": false,
+      "receivedAt": 1780858998222,
+      "tags": [
+        "performance",
+        "context"
+      ]
+    },
+    "node-peer-beta:prop-005": {
+      "proposalId": "node-peer-beta:prop-005",
+      "sourceNodeId": "node-peer-beta",
+      "description": "Improve context window utilization by 15% via sliding window chunking",
+      "category": "performance",
+      "confidence": 0.7999999999999999,
+      "observedDelta": 10,
+      "adoptionCount": 3,
+      "adoptedBy": [
+        "node-peer-gamma",
+        "node-peer-delta",
+        "node-peer-epsilon"
+      ],
+      "locallyValidated": false,
+      "locallyApplied": false,
+      "receivedAt": 1780858998222,
+      "tags": [
+        "performance",
+        "context"
+      ]
+    },
+    "node-peer-beta:prop-006": {
+      "proposalId": "node-peer-beta:prop-006",
+      "sourceNodeId": "node-peer-beta",
+      "description": "Improve context window utilization by 15% via sliding window chunking",
+      "category": "performance",
+      "confidence": 0.82,
+      "observedDelta": 11,
+      "adoptionCount": 3,
+      "adoptedBy": [
+        "node-peer-gamma",
+        "node-peer-delta",
+        "node-peer-epsilon"
+      ],
+      "locallyValidated": false,
+      "locallyApplied": false,
+      "receivedAt": 1780858998222,
+      "tags": [
+        "performance",
+        "context"
+      ]
+    },
+    "node-peer-beta:prop-007": {
+      "proposalId": "node-peer-beta:prop-007",
+      "sourceNodeId": "node-peer-beta",
+      "description": "Improve context window utilization by 15% via sliding window chunking",
+      "category": "performance",
+      "confidence": 0.84,
+      "observedDelta": 12,
+      "adoptionCount": 3,
+      "adoptedBy": [
+        "node-peer-gamma",
+        "node-peer-delta",
+        "node-peer-epsilon"
+      ],
+      "locallyValidated": false,
+      "locallyApplied": false,
+      "receivedAt": 1780858998222,
+      "tags": [
+        "performance",
+        "context"
+      ]
+    },
+    "node-peer-beta:prop-008": {
+      "proposalId": "node-peer-beta:prop-008",
+      "sourceNodeId": "node-peer-beta",
+      "description": "Improve context window utilization by 15% via sliding window chunking",
+      "category": "performance",
+      "confidence": 0.86,
+      "observedDelta": 13,
+      "adoptionCount": 3,
+      "adoptedBy": [
+        "node-peer-gamma",
+        "node-peer-delta",
+        "node-peer-epsilon"
+      ],
+      "locallyValidated": false,
+      "locallyApplied": false,
+      "receivedAt": 1780858998223,
+      "tags": [
+        "performance",
+        "context"
+      ]
+    },
+    "node-peer-gamma:prop-001": {
+      "proposalId": "node-peer-gamma:prop-001",
+      "sourceNodeId": "node-peer-gamma",
+      "description": "Add adaptive temperature scaling for reasoning tasks",
+      "category": "reasoning",
+      "confidence": 0.91,
+      "observedDelta": 8.3,
+      "adoptionCount": 2,
+      "adoptedBy": [
+        "node-peer-alpha"
+      ],
+      "locallyValidated": false,
+      "locallyApplied": false,
+      "receivedAt": 1780858998223,
+      "tags": [
+        "reasoning",
+        "temperature"
+      ]
+    },
+    "node-peer-gamma:prop-002": {
+      "proposalId": "node-peer-gamma:prop-002",
+      "sourceNodeId": "node-peer-gamma",
+      "description": "Cache frequent web search queries to reduce latency",
+      "category": "performance",
+      "confidence": 0.78,
+      "observedDelta": 15.2,
+      "adoptionCount": 1,
+      "adoptedBy": [],
+      "locallyValidated": false,
+      "locallyApplied": false,
+      "receivedAt": 1780858998224,
+      "tags": [
+        "performance",
+        "cache"
+      ]
+    }
+  },
+  "sharedProposalIds": [],
+  "lastSyncAt": 1780858998224,
+  "savedAt": 1780858998225
+}

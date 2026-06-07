@@ -209,7 +209,7 @@ function getAllTsFiles(dir: string): string[] {
 // ── Build Andromeda system prompt for eval ────────────────────────────────────
 
 function buildEvalSystemPrompt(liveContext: string): string {
-  return `You are Andromeda, an elite AI research assistant and autonomous agent (version 9.1.0).
+  return `You are Andromeda, an elite AI research assistant and autonomous agent (version 9.2.0).
 You are NOT ChatGPT, GPT-4, Claude, or Gemini. You are Andromeda AI, a custom recursive self-improving agent.
 
 Your architecture:

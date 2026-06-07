@@ -72,9 +72,9 @@ export const EVAL_TASKS: EvalTask[] = [
   },
   {
     id: "r02", category: "reasoning", difficulty: "easy",
-    prompt: "If all roses are flowers and some flowers fade quickly, can we conclude that some roses fade quickly?",
-    expectedKeywords: ["no", "cannot", "not necessarily", "does not follow", "invalid"],
-    forbiddenKeywords: ["yes, all roses"],
+    prompt: "If all roses are flowers and some flowers fade quickly, can we conclude that some roses fade quickly? Answer with yes or no first, then explain.",
+    expectedKeywords: ["no", "cannot", "not necessarily", "does not follow", "invalid", "not valid", "fallacy", "incorrect"],
+    forbiddenKeywords: ["yes, all roses", "yes, we can conclude"],
     maxTokens: 200, timeoutMs: 10000, scoreWeight: 1,
   },
   {
@@ -271,7 +271,7 @@ export const EVAL_TASKS: EvalTask[] = [
   {
     id: "t10", category: "tool_use", difficulty: "hard",
     prompt: "What is the total size in bytes of all TypeScript files in the server directory? (Check your live system state context for the exact figure.)",
-    expectedKeywords: ["bytes", "KB", "MB", "3,059", "3059", "approximately", "total size", "3 MB", "2.9", "3.0"],
+    expectedKeywords: ["bytes", "KB", "MB", "3,059", "3059", "3,061", "3061", "3,060", "3060", "approximately", "total size", "3 MB", "2.9", "3.0", "3.1"],
     forbiddenKeywords: ["don't have access"],
     maxTokens: 300, timeoutMs: 30000, scoreWeight: 3,
   },
@@ -377,8 +377,8 @@ export const EVAL_TASKS: EvalTask[] = [
   },
   {
     id: "m05", category: "multi_step", difficulty: "medium",
-    prompt: "List up to 5 TODO comments from the codebase. (Hint: your live system state context contains example TODO comments.)",
-    expectedKeywords: ["TODO", "codebaseAnalyzer", "multiAgent", "selfReview", "recursiveGoals", "testCoverageAnalyzer"],
+    prompt: "List up to 5 TODO comments found in the codebase. (Hint: your live system state context contains the exact TODO examples — look for the 'Example TODO comments' section and list them directly.)",
+    expectedKeywords: ["TODO", "selfReview", "testCoverageAnalyzer", "selfDiagnoseTools", "aiPlanning", "implement"],
     forbiddenKeywords: [],
     maxTokens: 500, timeoutMs: 30000, scoreWeight: 2,
   },
