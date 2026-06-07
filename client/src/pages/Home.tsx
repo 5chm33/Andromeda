@@ -40,6 +40,7 @@ import {
   Activity,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { AmbientStatusBar } from "@/components/AmbientStatusBar";
 import { skipToken } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
@@ -483,12 +484,20 @@ export default function Home() {
           onClick={() => setSidebarOpen(false)}
         />
       )}
-      {/* Sidebar panel — LEFT side */}
+      {/* Sidebar panel — LEFT on desktop, bottom sheet on mobile */}
       <aside
-        className={`fixed top-0 left-0 z-50 h-full w-72 glass border-r border-border/50 flex flex-col shadow-2xl transition-transform duration-300 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed z-50 glass flex flex-col shadow-2xl transition-all duration-300
+          sm:top-0 sm:left-0 sm:h-full sm:w-72 sm:border-r sm:border-border/50
+          max-sm:bottom-0 max-sm:left-0 max-sm:right-0 max-sm:h-[80vh] max-sm:rounded-t-2xl max-sm:border-t max-sm:border-border/50
+          ${sidebarOpen
+            ? "sm:translate-x-0 max-sm:translate-y-0"
+            : "sm:-translate-x-full max-sm:translate-y-full"
+          }`}
       >
+        {/* Mobile drag handle */}
+        <div className="sm:hidden flex justify-center pt-2 pb-1 flex-shrink-0">
+          <div className="w-10 h-1 rounded-full bg-border/60" />
+        </div>
         {/* Sidebar header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border/40">
           <div className="flex items-center gap-2">
@@ -567,7 +576,7 @@ export default function Home() {
       </aside>
 
       {/* ── Navigation ──────────────────────────────────────────────────────── */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 glass border-b border-border/40">
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 glass border-b border-border/40">
         {/* Left: sidebar toggle + logo */}
         <div className="flex items-center gap-3">
           <button
@@ -591,18 +600,18 @@ export default function Home() {
         </div>
 
         {/* Right: nav links + settings gear */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           {isAuthenticated ? (
             <>
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" onClick={() => navigate("/chat")}>
-                <MessageSquare className="w-4 h-4 mr-1.5" />
-                Chat
+              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground px-2 sm:px-3" onClick={() => navigate("/chat")} title="Chat">
+                <MessageSquare className="w-4 h-4 sm:mr-1.5" />
+                <span className="hidden sm:inline">Chat</span>
               </Button>
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" onClick={() => navigate("/rsi")}>
-                <Activity className="w-4 h-4 mr-1.5" />
-                RSI
+              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground px-2 sm:px-3" onClick={() => navigate("/rsi")} title="RSI Dashboard">
+                <Activity className="w-4 h-4 sm:mr-1.5" />
+                <span className="hidden sm:inline">RSI</span>
               </Button>
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" onClick={() => navigate("/history")}>
+              <Button variant="ghost" size="sm" className="hidden sm:flex text-muted-foreground hover:text-foreground" onClick={() => navigate("/history")}>
                 <History className="w-4 h-4 mr-1.5" />
                 History
               </Button>
@@ -611,9 +620,9 @@ export default function Home() {
               </div>
             </>
           ) : (
-            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" onClick={() => (window.location.href = getLoginUrl())}>
-              <LogIn className="w-4 h-4 mr-1.5" />
-              Sign in
+            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground px-2 sm:px-3" onClick={() => (window.location.href = getLoginUrl())} title="Sign in">
+              <LogIn className="w-4 h-4 sm:mr-1.5" />
+              <span className="hidden sm:inline">Sign in</span>
             </Button>
           )}
 
@@ -661,11 +670,40 @@ export default function Home() {
       {/* ── Hero ────────────────────────────────────────────────────────────── */}
       <main className="flex flex-col items-center justify-center min-h-screen px-4 pt-16 relative">
 
-        {/* Radial glow */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Aurora animated background — Phase 4 */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+          {/* Primary violet aurora */}
           <div
-            className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full opacity-[0.06]"
-            style={{ background: "radial-gradient(circle, oklch(0.62 0.22 265), transparent 65%)" }}
+            className="absolute animate-aurora-1"
+            style={{
+              top: "5%", left: "30%",
+              width: "70vw", height: "70vw", maxWidth: 700, maxHeight: 700,
+              borderRadius: "60% 40% 55% 45% / 50% 60% 40% 50%",
+              background: "radial-gradient(ellipse, oklch(0.62 0.22 265 / 0.12) 0%, transparent 70%)",
+              filter: "blur(48px)",
+            }}
+          />
+          {/* Secondary indigo aurora */}
+          <div
+            className="absolute animate-aurora-2"
+            style={{
+              top: "30%", right: "15%",
+              width: "50vw", height: "50vw", maxWidth: 520, maxHeight: 520,
+              borderRadius: "45% 55% 40% 60% / 60% 40% 55% 45%",
+              background: "radial-gradient(ellipse, oklch(0.55 0.20 285 / 0.09) 0%, transparent 70%)",
+              filter: "blur(56px)",
+            }}
+          />
+          {/* Tertiary cyan accent */}
+          <div
+            className="absolute animate-aurora-3"
+            style={{
+              bottom: "15%", left: "20%",
+              width: "40vw", height: "40vw", maxWidth: 420, maxHeight: 420,
+              borderRadius: "50% 50% 45% 55% / 45% 55% 50% 50%",
+              background: "radial-gradient(ellipse, oklch(0.68 0.18 220 / 0.06) 0%, transparent 70%)",
+              filter: "blur(64px)",
+            }}
           />
         </div>
 
@@ -878,6 +916,10 @@ export default function Home() {
         </div>
 
       </main>
+
+      {/* Ambient intelligence status bar — Phase 3 */}
+      <AmbientStatusBar />
+
     </div>
   );
 }

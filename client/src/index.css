@@ -174,6 +174,23 @@
     50% { box-shadow: 0 0 40px oklch(0.62 0.22 265 / 0.4), 0 0 80px oklch(0.62 0.22 265 / 0.1); }
   }
   @keyframes slide-up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes aurora-1 {
+    0%, 100% { transform: translate(0%, 0%) scale(1); opacity: 0.4; }
+    33% { transform: translate(5%, -8%) scale(1.08); opacity: 0.6; }
+    66% { transform: translate(-4%, 5%) scale(0.95); opacity: 0.35; }
+  }
+  @keyframes aurora-2 {
+    0%, 100% { transform: translate(0%, 0%) scale(1); opacity: 0.3; }
+    33% { transform: translate(-6%, 6%) scale(1.1); opacity: 0.5; }
+    66% { transform: translate(7%, -4%) scale(0.92); opacity: 0.25; }
+  }
+  @keyframes aurora-3 {
+    0%, 100% { transform: translate(0%, 0%) scale(1); opacity: 0.2; }
+    50% { transform: translate(3%, -6%) scale(1.05); opacity: 0.35; }
+  }
+  .animate-aurora-1 { animation: aurora-1 18s ease-in-out infinite; }
+  .animate-aurora-2 { animation: aurora-2 24s ease-in-out infinite; }
+  .animate-aurora-3 { animation: aurora-3 30s ease-in-out infinite; }
   @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
   .animate-slide-up { animation: slide-up 0.4s ease forwards; }
   .animate-fade-in { animation: fade-in 0.3s ease forwards; }
