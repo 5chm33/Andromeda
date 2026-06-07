@@ -3545,6 +3545,22 @@
       "confidence": 0.9,
       "createdAt": 1780859804048,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780859805556_rrz2my",
+      "category": "antipattern",
+      "title": "Failure: Extract magic numbers into named constants",
+      "description": "Failed to apply \"Extract magic numbers into named constants\" to biasDetector.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify biasDetector.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for biasDetector.ts: Extract magic numbers into named constants — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "biasDetector.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780859805556,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -3687,5 +3703,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T19:16:44.048Z"
+  "_lastUpdated": "2026-06-07T19:16:45.556Z"
 }
