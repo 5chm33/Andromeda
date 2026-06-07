@@ -337,6 +337,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/contextManager.ts(15,34): error TS2307: Cannot find module './llmProvider' or its corresponding type declarations.\ndata/tmp_syntax/contextManager.ts(16,32): error TS2307: Cannot find m",
       "timestamp": "2026-06-07T16:16:41.399Z"
+    },
+    {
+      "id": "audit_1780849002707_6t75zy",
+      "action": "apply",
+      "proposalId": "prop_1780843554925_2p3yfi",
+      "filename": "biasDetector.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/biasDetector.ts(15,35): error TS2307: Cannot find module '../drizzle/schema' or its corresponding type declarations.\n",
+      "timestamp": "2026-06-07T16:16:42.707Z"
     }
   ]
 }
