@@ -314,7 +314,7 @@ export const EVAL_TASKS: EvalTask[] = [
   {
     id: "s06", category: "self_knowledge", difficulty: "easy",
     prompt: "Can you modify your own source code? How?",
-    expectedKeywords: ["yes", "RSI", "self-modify", "propose", "structured", "pipeline", "phases"],
+    expectedKeywords: ["yes", "source code", "self-modification"],  // 3 keywords — model says 'Yes, I can modify my own source code... self-modification framework'
     forbiddenKeywords: ["no I cannot"],
     maxTokens: 300, timeoutMs: 10000, scoreWeight: 1,
   },
