@@ -801,7 +801,7 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
     const snapshotMsg = `pre-improvement snapshot: before "${(proposal.title || proposalId).replace(/"/g, "'")}" [${new Date().toISOString()}]`;
     try {
       // v7.0.1: Use execFileSync with args array to avoid shell word-splitting on message
-      execSync(`git commit --allow-empty-message -m ${JSON.stringify(snapshotMsg)}`, { cwd, env: gitEnv, encoding: "utf-8", shell: false });
+      execSync(`git commit --allow-empty-message -m ${JSON.stringify(snapshotMsg)}`, { cwd, env: gitEnv, encoding: "utf-8" });
       console.log(`[SelfImprove] Git snapshot: ${snapshotMsg}`);
     } catch (commitErr: any) {
       if (!String(commitErr.stderr || commitErr.message).includes("nothing to commit")) {
@@ -1124,7 +1124,7 @@ function gitCommitSelfImprovement(
 
     // v7.0.1: Use JSON.stringify to safely quote the commit message — avoids shell word-splitting
     const commitMsg = `Andromeda self-improvement: ${path.basename(targetFile)} — ${summary}`;
-    const result = execSync(`git commit -m ${JSON.stringify(commitMsg)}`, { cwd, env: gitEnv, encoding: "utf-8", shell: false });
+    const result = execSync(`git commit -m ${JSON.stringify(commitMsg)}`, { cwd, env: gitEnv, encoding: "utf-8" });
 
     return { success: true, message: result.trim() };
   } catch (err: any) {

@@ -12,7 +12,7 @@ import {
   browserScreenshot, browserExtractData, browserEval,
   closeBrowser, listBrowserSessions, browserClickVision,
 } from "../browser.js";
-import type { ToolDefinition } from "../toolRegistry.js";
+import type { ToolDefinition } from "../llmProvider.js";
 
 export const browserToolDefinitions: ToolDefinition[] = [
   {

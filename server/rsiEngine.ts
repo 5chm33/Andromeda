@@ -320,7 +320,7 @@ export async function measureBenchmark(): Promise<BenchmarkBreakdown> {
   // ── Dimension 4: Memory Richness (0-20) ─────────────────────────────────
   try {
     const { searchMemory } = await import("./memory.js");
-    const memories = searchMemory("", 100, "all");
+    const memories = searchMemory("", 100, undefined);
     const count = Array.isArray(memories) ? memories.length : 0;
     // 100+ memories = 20pts, 50-99 = 15pts, 20-49 = 10pts, 5-19 = 5pts, <5 = 0pts
     if (count >= 100) breakdown.memoryRichness = 20;
@@ -466,7 +466,7 @@ export async function runRSICycle(): Promise<RSICycleResult> {
               console.log(`[RSIEngine] CI PASSED — proposal ${proposal.id} committed to ${proposal.filePath}`);
               // v6.30: Mirror to DB
               const { dbSaveProposal } = await import("./rsiDb.js");
-              dbSaveProposal({ ...proposal, status: "applied" }).catch(() => {});
+              dbSaveProposal({ ...proposal, status: "applied" } as any).catch(() => {});
             } else {
               const failSummary = ciResult.stages
                 .filter(s => !s.passed)
@@ -514,7 +514,7 @@ export async function runRSICycle(): Promise<RSICycleResult> {
         const easyTaskIds = (EVAL_TASKS as any[]).filter((t: any) => t.difficulty === "easy").map((t: any) => t.id);
         const runAgent = async (prompt: string, maxTokens: number, timeoutMs: number): Promise<string> => {
           const result = await Promise.race([
-            simpleChatCompletion(prompt, { maxTokens }),
+            simpleChatCompletion([{ role: "user", content: prompt }], { maxTokens }),
             new Promise<string>((_, reject) => setTimeout(() => reject(new Error("eval timeout")), timeoutMs)),
           ]);
           return result as string;

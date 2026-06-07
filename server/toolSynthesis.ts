@@ -199,7 +199,9 @@ export async function synthesizeTool(
       name: toolDef.name,
       description: toolDef.description,
       category: toolDef.category ?? "agent",
+      safety: (toolDef.safety ?? toolDef.safetyLevel ?? "moderate") as "safe" | "moderate" | "dangerous",
       definition: toolDef,
+      execute: toolDef.execute,
     };
     registerTool(registered);
 
@@ -244,7 +246,9 @@ export async function loadSynthesizedTools(): Promise<void> {
         name: toolDef.name,
         description: toolDef.description,
         category: toolDef.category ?? "agent",
+        safety: (toolDef.safety ?? toolDef.safetyLevel ?? "moderate") as "safe" | "moderate" | "dangerous",
         definition: toolDef,
+        execute: toolDef.execute,
       };
       registerTool(registered);
       loaded++;

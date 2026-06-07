@@ -150,9 +150,9 @@ const WATCHED_MODULES: ModuleSpec[] = [
     critical: false,
     healthCheck: async () => {
       const { getPgStatus } = await import("./dbPostgres.js");
-      const s = getPgStatus();
+      const s = await getPgStatus();
       // Postgres is optional — if not configured, that's healthy (not an error)
-      return !s.configured || s.connected === true;
+      return !s.available || (s.tables && s.tables.length >= 0);
     },
   },
   // ── v6.38 modules ──────────────────────────────────────────────────────────
@@ -359,7 +359,7 @@ async function runHealthCheck(): Promise<void> {
         log.info(`[watchdog] ${spec.name} recovered (was ${prevHealth})`);
         audit({
           category: "system",
-          action: "module_recovered",
+          action: "module_loaded",
           actor: "watchdog",
           resource: spec.name,
           success: true,

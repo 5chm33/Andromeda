@@ -589,6 +589,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/selfImprove.ts(34,32): error TS2307: Cannot find module './fileEngineChunking.js' or its corresponding type declarations.\ndata/tmp_syntax/selfImprove.ts(35,16): error TS2307: Cannot fi",
       "timestamp": "2026-06-07T16:46:37.907Z"
+    },
+    {
+      "id": "audit_1780851259122_s8kb3j",
+      "action": "apply",
+      "proposalId": "prop_1780851257444_y9n7m8",
+      "filename": "contextManager.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/contextManager.ts(15,34): error TS2307: Cannot find module './llmProvider' or its corresponding type declarations.\ndata/tmp_syntax/contextManager.ts(16,32): error TS2307: Cannot find m",
+      "timestamp": "2026-06-07T16:54:19.122Z"
     }
   ]
 }
