@@ -1,41 +1,33 @@
 /**
- * ThemeCanvas v7.8.0
- * Pure crossfade slideshow — 2 AI-generated frames per skin, slow crossfade loop.
- * Zero overlays, zero emoji, zero pasted graphics.
- * The background itself breathes between two cinematic frames.
+ * ThemeCanvas v7.9.0
+ * AI-generated looping video backgrounds.
+ * Each skin has an 8-second MP4 loop playing behind the UI.
+ * Still image shows instantly while video loads (no flash of black).
+ * Skin switching: 600ms crossfade, video restarted from 0.
  */
 
 import { useEffect, useRef, useState } from "react";
 import { SKINS, getSavedSkin, saveSkin, applySkinAccent, type SkinId } from "@/lib/themeEngine";
 
-// ─── Frame definitions ────────────────────────────────────────────────────────
-const SKIN_FRAMES: Record<SkinId, string[]> = {
-  aurora:        ["/skins/aurora.jpg",          "/skins/aurora_2.jpg"],
-  goth:          ["/skins/goth.jpg",            "/skins/goth_2.jpg"],
-  nature:        ["/skins/nature_forest.jpg",   "/skins/nature_forest_2.jpg"],
-  cyberpunk:     ["/skins/cyberpunk.jpg",       "/skins/cyberpunk_2.jpg"],
-  finalfantasy:  ["/skins/finalfantasy.jpg",    "/skins/finalfantasy_2.jpg"],
-  monsters:      ["/skins/monsters.jpg",        "/skins/monsters_2.jpg"],
-  lofi:          ["/skins/lofi.jpg",            "/skins/lofi_2.jpg"],
-  spacestation:  ["/skins/space.jpg",           "/skins/space_2.jpg"],
-  luigismansion: ["/skins/luigis_mansion.jpg",  "/skins/luigis_mansion_2.jpg"],
+// ─── Asset map ────────────────────────────────────────────────────────────────
+interface SkinAssets {
+  poster: string;   // shown instantly while video loads
+  video:  string;   // looping MP4
+}
+
+const SKIN_ASSETS: Record<SkinId, SkinAssets> = {
+  aurora:        { poster: "/skins/aurora.jpg",          video: "/skins/videos/aurora.mp4"        },
+  goth:          { poster: "/skins/goth.jpg",            video: "/skins/videos/goth.mp4"          },
+  nature:        { poster: "/skins/nature_forest.jpg",   video: "/skins/videos/nature.mp4"        },
+  cyberpunk:     { poster: "/skins/cyberpunk.jpg",       video: "/skins/videos/cyberpunk.mp4"     },
+  finalfantasy:  { poster: "/skins/finalfantasy.jpg",    video: "/skins/videos/finalfantasy.mp4"  },
+  monsters:      { poster: "/skins/monsters.jpg",        video: "/skins/videos/monsters.mp4"      },
+  lofi:          { poster: "/skins/lofi.jpg",            video: "/skins/videos/lofi.mp4"          },
+  spacestation:  { poster: "/skins/space.jpg",           video: "/skins/videos/space.mp4"         },
+  luigismansion: { poster: "/skins/luigis_mansion.jpg",  video: "/skins/videos/luigis_mansion.mp4"},
 };
 
-// How long each frame is shown before crossfading to the next (ms)
-const FRAME_HOLD_MS = 9000;
-// How long the crossfade transition takes (ms)
-const FADE_MS = 3000;
-// How long the skin-switch transition takes (ms)
 const SKIN_SWITCH_MS = 600;
-
-// ─── Preload all images on mount ─────────────────────────────────────────────
-function preloadAll() {
-  const allUrls = Object.values(SKIN_FRAMES).flat();
-  allUrls.forEach((url) => {
-    const img = new Image();
-    img.src = url;
-  });
-}
 
 // ─── ThemeCanvas ─────────────────────────────────────────────────────────────
 interface ThemeCanvasProps {
@@ -46,82 +38,47 @@ interface ThemeCanvasProps {
 
 export function ThemeCanvas({ skinId, onSkinChange, className = "" }: ThemeCanvasProps) {
   const [currentSkin, setCurrentSkin] = useState<SkinId>(skinId ?? getSavedSkin());
-  const [frameIndex, setFrameIndex] = useState(0);       // which frame is "active"
-  const [fading, setFading] = useState(false);            // crossfade in progress
-  const [skinVisible, setSkinVisible] = useState(true);   // for skin-switch fade
-  const frameTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const fadeTimer  = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [visible, setVisible] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   // Sync external skinId prop
   useEffect(() => {
     if (skinId && skinId !== currentSkin) {
-      handleSkinSwitch(skinId);
+      switchSkin(skinId);
     }
   }, [skinId]);
 
-  // Preload everything once on mount
-  useEffect(() => {
-    preloadAll();
-  }, []);
-
-  // Apply skin accent color whenever skin changes
+  // Apply accent color on skin change
   useEffect(() => {
     applySkinAccent(currentSkin);
   }, [currentSkin]);
 
-  // Frame crossfade loop
+  // When skin changes, restart video from beginning
   useEffect(() => {
-    const frames = SKIN_FRAMES[currentSkin];
-    if (frames.length < 2) return;
-
-    // Respect reduced motion preference
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    function scheduleNext() {
-      frameTimer.current = setTimeout(() => {
-        // Start fade
-        setFading(true);
-        fadeTimer.current = setTimeout(() => {
-          // Swap frame at midpoint of fade
-          setFrameIndex((prev) => (prev + 1) % frames.length);
-          setFading(false);
-          scheduleNext();
-        }, FADE_MS);
-      }, FRAME_HOLD_MS);
-    }
-
-    scheduleNext();
-
-    return () => {
-      if (frameTimer.current) clearTimeout(frameTimer.current);
-      if (fadeTimer.current)  clearTimeout(fadeTimer.current);
-    };
+    const vid = videoRef.current;
+    if (!vid) return;
+    vid.src = SKIN_ASSETS[currentSkin].video;
+    vid.load();
+    vid.play().catch(() => {
+      // Autoplay blocked — video will play on first user interaction
+    });
   }, [currentSkin]);
 
-  function handleSkinSwitch(id: SkinId) {
+  function switchSkin(id: SkinId) {
     if (id === currentSkin) return;
-    // Clear existing timers
-    if (frameTimer.current) clearTimeout(frameTimer.current);
-    if (fadeTimer.current)  clearTimeout(fadeTimer.current);
-
-    // Fade out, swap, fade in
-    setSkinVisible(false);
+    setVisible(false);
     setTimeout(() => {
       setCurrentSkin(id);
-      setFrameIndex(0);
-      setFading(false);
       saveSkin(id);
       if (onSkinChange) onSkinChange(id);
-      setSkinVisible(true);
+      setVisible(true);
     }, SKIN_SWITCH_MS);
   }
 
-  const frames = SKIN_FRAMES[currentSkin];
+  const assets = SKIN_ASSETS[currentSkin];
   const skinMeta = SKINS.find((s) => s.id === currentSkin)!;
-
-  // Frame A is always the "current" frame; Frame B is the "next" frame
-  const frameA = frames[frameIndex];
-  const frameB = frames[(frameIndex + 1) % frames.length];
+  const reducedMotion = typeof window !== "undefined"
+    && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   return (
     <div
@@ -131,37 +88,45 @@ export function ThemeCanvas({ skinId, onSkinChange, className = "" }: ThemeCanva
         inset: 0,
         zIndex: 0,
         overflow: "hidden",
-        opacity: skinVisible ? 1 : 0,
+        opacity: visible ? 1 : 0,
         transition: `opacity ${SKIN_SWITCH_MS}ms ease-in-out`,
       }}
     >
-      {/* Frame A — always visible underneath */}
+      {/* Still image poster — visible instantly, sits behind the video */}
       <div
         style={{
           position: "absolute",
           inset: 0,
-          backgroundImage: `url(${frameA})`,
+          backgroundImage: `url(${assets.poster})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
       />
 
-      {/* Frame B — fades in on top during crossfade */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage: `url(${frameB})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          opacity: fading ? 1 : 0,
-          transition: fading ? `opacity ${FADE_MS}ms ease-in-out` : "none",
-        }}
-      />
+      {/* Looping video — fades in once loaded, covers the poster */}
+      {!reducedMotion && (
+        <video
+          ref={videoRef}
+          key={currentSkin}
+          src={assets.video}
+          poster={assets.poster}
+          autoPlay
+          loop
+          muted
+          playsInline
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center",
+          }}
+        />
+      )}
 
-      {/* Overlay tint for readability */}
+      {/* Overlay tint for UI readability */}
       <div
         style={{
           position: "absolute",
