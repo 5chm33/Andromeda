@@ -165,6 +165,23 @@ const DEFAULT_PROVIDERS: Record<string, Omit<LLMProviderConfig, "apiKey">> = {
     supportsVision: false,
     supportsStreaming: true,
   },
+  // v7.1.7: Direct Anthropic API — bypasses OpenRouter entirely.
+  // Uses the OpenAI-compatible endpoint so no format changes needed.
+  // Preferred when ANTHROPIC_API_KEY is set and OpenRouter has no credits.
+  "anthropic-direct": {
+    id: "anthropic-direct",
+    name: "Anthropic Claude Sonnet (Direct)",
+    apiUrl: "https://api.anthropic.com/v1/chat/completions",
+    model: "claude-sonnet-4-5",
+    maxTokens: 16000,
+    temperature: 0.5,
+    supportsTools: true,
+    supportsVision: true,
+    supportsStreaming: true,
+    headers: {
+      "anthropic-version": "2023-06-01",
+    },
+  },
   custom: {
     id: "custom",
     name: "Custom Provider",
@@ -276,6 +293,8 @@ export function getProviderApiKey(id: string): string {
     case "openrouter-fast": return process.env.OPENROUTER_API_KEY ?? "";
     // v5.87: anthropic provider routes through OpenRouter (OpenAI-compatible format)
     case "anthropic": return process.env.OPENROUTER_API_KEY ?? process.env.ANTHROPIC_API_KEY ?? "";
+    // v7.1.7: anthropic-direct uses the direct Anthropic API key (no OpenRouter)
+    case "anthropic-direct": return process.env.ANTHROPIC_API_KEY ?? "";
     default: return process.env.DEEPSEEK_API_KEY ?? "";
   }
 }
@@ -356,10 +375,11 @@ export function getProviderForTier(tier: LLMTier): string {
       return "deepseek";
 
     case "pro":
-      // Premium — Claude Sonnet via OpenRouter (only when credits available)
-      if (hasOpenRouter) return "anthropic"; // Claude Sonnet 4.5
-      if (hasKimi) return "kimi";            // fallback to Kimi
-      if (hasDeepSeek) return "deepseek";    // last resort
+      // v7.1.7: Premium — prefer direct Anthropic API key (no OpenRouter dependency)
+      if (process.env.ANTHROPIC_API_KEY) return "anthropic-direct"; // Direct Claude — no OpenRouter needed
+      if (hasOpenRouter) return "anthropic";                         // Claude via OpenRouter (fallback)
+      if (hasKimi) return "kimi";                                    // Kimi as last resort
+      if (hasDeepSeek) return "deepseek";
       return "deepseek";
 
     default:

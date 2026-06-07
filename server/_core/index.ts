@@ -177,6 +177,11 @@ async function startServer(): Promise<void> {
   };
   process.on("SIGTERM", () => shutdown("SIGTERM"));
   process.on("SIGINT", () => shutdown("SIGINT"));
+  // v7.1.7: On Windows, Ctrl+C in a PowerShell/cmd window sometimes kills the
+  // process before SIGINT fires, leaving the crash flag behind and causing a
+  // spurious git rollback on the next boot. beforeExit + exit act as safety nets.
+  process.on("beforeExit", () => { try { clearCrashFlag(); } catch {} });
+  process.on("exit", () => { try { clearCrashFlag(); } catch {} });
 
   // v5.23: Global unhandled error handlers
   process.on("unhandledRejection", (reason) => {

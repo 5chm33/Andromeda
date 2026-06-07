@@ -477,7 +477,27 @@ export function rollbackToBackup(backupId: string): { success: boolean; message:
 
 // ─── Config Management ────────────────────────────────────────────────────────
 
+// v7.1.7: Sync AUTONOMY_REQUIRE_APPROVAL env var to guard config on first call.
+// The stored config defaults to requireApproval:true, but if the user has set
+// AUTONOMY_REQUIRE_APPROVAL=false in .env.local, the guard should respect that
+// without requiring a manual API call to update the config.
+let _envSyncDone = false;
+function syncEnvToConfig(): void {
+  if (_envSyncDone) return;
+  _envSyncDone = true;
+  const envVal = process.env.AUTONOMY_REQUIRE_APPROVAL;
+  if (envVal === undefined) return; // not set — leave stored config as-is
+  const desired = envVal === "false" || envVal === "0" ? false : true;
+  const store = loadStore();
+  if (store.config.requireApproval !== desired) {
+    store.config.requireApproval = desired;
+    saveStore(store);
+    console.log(`[SelfImproveGuard] v7.1.7: Synced AUTONOMY_REQUIRE_APPROVAL=${envVal} from env — guard approval ${desired ? "enabled" : "disabled"}`);
+  }
+}
+
 export function getGuardConfig(): GuardConfig {
+  syncEnvToConfig();
   return { ...loadStore().config };
 }
 
