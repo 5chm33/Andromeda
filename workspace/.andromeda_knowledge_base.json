@@ -505,6 +505,22 @@
       "confidence": 0.9,
       "createdAt": 1780844120397,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780844120429_henyvs",
+      "category": "antipattern",
+      "title": "Failure: Improve readability by consolidating workspace directory logic",
+      "description": "Failed to apply \"Improve readability by consolidating workspace directory logic\" to workspace.ts. Reason: Proposal auto-expired: constitution-blocked 3 times for pattern 'rm -rf /'.. Avoid similar changes.",
+      "context": "self-modify workspace.ts readability",
+      "outcome": "failure: Proposal auto-expired: constitution-blocked 3 times for pattern 'rm -rf /'.",
+      "lesson": "Avoid for workspace.ts: Improve readability by consolidating workspace directory logic — causes Proposal auto-expired: constitution-blocked 3 times for pattern 'rm -rf /'.",
+      "applicableTo": [
+        "workspace.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780844120429,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -647,5 +663,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T14:55:20.397Z"
+  "_lastUpdated": "2026-06-07T14:55:20.429Z"
 }
