@@ -5,7 +5,7 @@
  * All art is drawn with canvas 2D path/bezier/gradient operations.
  * No emoji placeholders — real canvas art with depth and atmosphere.
  */
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { SkinId } from "@/lib/themeEngine";
 
 type Painter = (ctx: CanvasRenderingContext2D, w: number, h: number, t: number) => void;
@@ -230,6 +230,42 @@ function drawCathedralSilhouette(ctx: CanvasRenderingContext2D, w: number, h: nu
   }
   ctx.beginPath(); ctx.arc(rwX, rwY, rwR, 0, Math.PI * 2); ctx.stroke();
   ctx.beginPath(); ctx.arc(rwX, rwY, rwR * 0.5, 0, Math.PI * 2); ctx.stroke();
+
+  // Stained glass lancet windows — left and right towers
+  const glassWindows = [
+    { wx: cx - 115 * sw, wy: base - 310 * sh, ww: 22 * sw, wh: 55 * sh, hue: 200, hue2: 240 },
+    { wx: cx + 93 * sw,  wy: base - 310 * sh, ww: 22 * sw, wh: 55 * sh, hue: 280, hue2: 320 },
+    { wx: cx - 75 * sw,  wy: base - 270 * sh, ww: 18 * sw, wh: 45 * sh, hue: 160, hue2: 200 },
+    { wx: cx + 57 * sw,  wy: base - 270 * sh, ww: 18 * sw, wh: 45 * sh, hue: 340, hue2: 20  },
+  ];
+  ctx.globalCompositeOperation = "screen";
+  for (const gw of glassWindows) {
+    // Window glow
+    const wgrd = ctx.createRadialGradient(gw.wx + gw.ww * 0.5, gw.wy + gw.wh * 0.5, 0, gw.wx + gw.ww * 0.5, gw.wy + gw.wh * 0.5, gw.ww * 2);
+    wgrd.addColorStop(0, `hsla(${gw.hue},90%,65%,0.22)`);
+    wgrd.addColorStop(0.5, `hsla(${gw.hue2},80%,50%,0.10)`);
+    wgrd.addColorStop(1, "transparent");
+    ctx.fillStyle = wgrd;
+    ctx.beginPath(); ctx.arc(gw.wx + gw.ww * 0.5, gw.wy + gw.wh * 0.5, gw.ww * 2, 0, Math.PI * 2); ctx.fill();
+    // Light ray projecting down to ground
+    const rayX = gw.wx + gw.ww * 0.5;
+    const rayY = gw.wy + gw.wh;
+    const raySpread = gw.ww * 3;
+    const rayLen = base - rayY;
+    const rayGrd = ctx.createLinearGradient(rayX, rayY, rayX, base);
+    rayGrd.addColorStop(0, `hsla(${gw.hue},90%,70%,0.12)`);
+    rayGrd.addColorStop(0.6, `hsla(${gw.hue2},80%,60%,0.05)`);
+    rayGrd.addColorStop(1, "transparent");
+    ctx.fillStyle = rayGrd;
+    ctx.beginPath();
+    ctx.moveTo(rayX - gw.ww * 0.5, rayY);
+    ctx.lineTo(rayX + gw.ww * 0.5, rayY);
+    ctx.lineTo(rayX + raySpread, base);
+    ctx.lineTo(rayX - raySpread, base);
+    ctx.closePath(); ctx.fill();
+    void rayLen;
+  }
+  ctx.globalCompositeOperation = "source-over";
 }
 
 function paintGoth(ctx: CanvasRenderingContext2D, w: number, h: number, t: number) {
@@ -570,6 +606,47 @@ function paintCyberpunk(ctx: CanvasRenderingContext2D, w: number, h: number, t: 
     hlGrd.addColorStop(0, `hsla(${car.hue},100%,80%,0.6)`); hlGrd.addColorStop(1, "transparent");
     ctx.fillStyle = hlGrd; ctx.beginPath(); ctx.arc(car.x + car.size + 30, car.y, 40, 0, Math.PI * 2); ctx.fill();
   }
+  // Holographic ANDROMEDA HUD — top-right corner
+  ctx.save();
+  ctx.globalAlpha = 0.55 + 0.15 * Math.sin(t * 1.2);
+  const hudX = w - 220, hudY = 18, hudW = 200, hudH = 110;
+  // HUD panel background
+  ctx.fillStyle = "rgba(0,20,40,0.45)";
+  ctx.strokeStyle = "rgba(0,200,255,0.5)";
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.roundRect(hudX, hudY, hudW, hudH, 4); ctx.fill(); ctx.stroke();
+  // Corner brackets
+  const bk = 10;
+  ctx.strokeStyle = "rgba(0,255,200,0.8)"; ctx.lineWidth = 1.5;
+  [[hudX,hudY],[hudX+hudW,hudY],[hudX,hudY+hudH],[hudX+hudW,hudY+hudH]].forEach(([bx,by],i)=>{
+    const sx=i%2===0?1:-1, sy=i<2?1:-1;
+    ctx.beginPath();ctx.moveTo(bx,by+sy*bk);ctx.lineTo(bx,by);ctx.lineTo(bx+sx*bk,by);ctx.stroke();
+  });
+  // Title
+  ctx.fillStyle = "rgba(0,220,255,0.9)";
+  ctx.font = "bold 11px monospace"; ctx.textAlign = "left"; ctx.textBaseline = "top";
+  ctx.fillText("◈ ANDROMEDA", hudX + 8, hudY + 8);
+  ctx.fillStyle = "rgba(0,180,255,0.5)"; ctx.fillRect(hudX + 8, hudY + 22, hudW - 16, 1);
+  // Data lines
+  const hudLines = [
+    { label: "STATUS",  val: "ONLINE",    hue: 140 },
+    { label: "NEURAL",  val: `${(85+Math.sin(t*0.7)*8).toFixed(1)}%`, hue: 180 },
+    { label: "LATENCY", val: `${(12+Math.sin(t*1.3)*4).toFixed(0)}ms`, hue: 200 },
+    { label: "SYNC",    val: `${(99+Math.sin(t*0.4)*0.9).toFixed(2)}%`, hue: 160 },
+  ];
+  hudLines.forEach((line, i) => {
+    ctx.fillStyle = `hsla(${line.hue},80%,65%,0.6)`;
+    ctx.font = "9px monospace"; ctx.textAlign = "left";
+    ctx.fillText(line.label, hudX + 8, hudY + 30 + i * 17);
+    ctx.fillStyle = `hsla(${line.hue},100%,75%,0.9)`;
+    ctx.textAlign = "right";
+    ctx.fillText(line.val, hudX + hudW - 8, hudY + 30 + i * 17);
+  });
+  // Animated scan bar
+  const scanY = hudY + 28 + ((t * 30) % (hudH - 30));
+  ctx.fillStyle = "rgba(0,200,255,0.06)";
+  ctx.fillRect(hudX + 1, scanY, hudW - 2, 2);
+  ctx.restore();
   // Scanlines
   for (let y = 0; y < h; y += 4) { ctx.fillStyle = "rgba(0,0,0,0.025)"; ctx.fillRect(0, y, w, 1); }
   if (Math.sin(t * 7.3) > 0.97) { ctx.fillStyle = "rgba(0,200,255,0.012)"; ctx.fillRect(0, 0, w, h); }
@@ -729,12 +806,17 @@ function paintFinalFantasy(ctx: CanvasRenderingContext2D, w: number, h: number, 
 // ═══════════════════════════════════════════════════════════════════════════════
 interface MonsterChar { x: number; y: number; vx: number; frame: number; type: string; size: number }
 interface BalloonHouse { x: number; y: number; vy: number; balloonPhase: number }
+interface ConveyorDoor { x: number; hue: number; label: string; lit: boolean; litTimer: number }
 const monsterChars: MonsterChar[] = [];
 const balloonHouses: BalloonHouse[] = [];
+const conveyorDoors: ConveyorDoor[] = [];
 let monstersInit = false;
 
 function initMonsters(cw: number, ch: number) {
-  monsterChars.length = 0; balloonHouses.length = 0;
+  monsterChars.length = 0; balloonHouses.length = 0; conveyorDoors.length = 0;
+  const doorLabels = ["2319","A-113","BnL","AXIOM","NEMO","BRIX","LUXO","DINOCO","PRESTO","REMY"];
+  const doorHues = [200,280,60,340,160,30,120,300,220,180];
+  for(let i=0;i<12;i++){conveyorDoors.push({x:cw*(i/12),hue:doorHues[i%doorHues.length],label:doorLabels[i%doorLabels.length],lit:Math.random()>0.7,litTimer:Math.random()*200});}
   const types = ["sulley","mike","boo","bird","grandpa","sulley","mike","boo","randall","cda"];
   for(let i=0;i<types.length;i++){monsterChars.push({x:-120-i*140,y:ch*0.68+Math.random()*ch*0.06,vx:0.7+Math.random()*0.5,frame:Math.random()*100,type:types[i],size:30+Math.random()*15});}
   for(let i=0;i<2;i++){balloonHouses.push({x:cw*(0.25+i*0.5),y:ch*0.5+i*50,vy:-0.15-Math.random()*0.1,balloonPhase:Math.random()*Math.PI*2});}
@@ -863,6 +945,46 @@ function paintMonsters(ctx: CanvasRenderingContext2D, w: number, h: number, t: n
   for(let ty=h*0.65;ty<h;ty+=24){ctx.beginPath();ctx.moveTo(0,ty);ctx.lineTo(w,ty);ctx.stroke();}
   // Parade
   for(const char of monsterChars){char.x+=char.vx;char.frame+=0.04;if(char.x>w+200){char.x=-200;char.y=h*0.68+Math.random()*h*0.06;}drawMonsterChar(ctx,char,t);}
+  // Door conveyor belt — runs across top of screen
+  const beltY = h * 0.13, beltH = 52, doorW = 32, doorH = 46;
+  // Belt track
+  ctx.fillStyle="rgba(40,50,80,0.7)";ctx.fillRect(0,beltY-4,w,beltH+8);
+  ctx.strokeStyle="rgba(80,100,150,0.5)";ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(0,beltY-4);ctx.lineTo(w,beltY-4);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(0,beltY+beltH+4);ctx.lineTo(w,beltY+beltH+4);ctx.stroke();
+  // Belt links
+  ctx.strokeStyle="rgba(60,80,120,0.4)";ctx.lineWidth=0.5;
+  for(let bx=((t*40)%20);bx<w;bx+=20){ctx.beginPath();ctx.moveTo(bx,beltY-4);ctx.lineTo(bx,beltY+beltH+4);ctx.stroke();}
+  // Doors sliding along belt
+  const beltSpeed = 35;
+  for(const door of conveyorDoors){
+    door.x = ((door.x - beltSpeed * 0.016 + w + doorW) % (w + doorW * 2)) - doorW;
+    door.litTimer++;
+    if(door.litTimer > 180 + Math.random()*120){door.lit=!door.lit;door.litTimer=0;}
+    const dx=door.x, dy=beltY+3;
+    // Door frame
+    ctx.fillStyle=`hsla(${door.hue},30%,18%,0.9)`;
+    ctx.beginPath();ctx.roundRect(dx,dy,doorW,doorH,2);ctx.fill();
+    ctx.strokeStyle=`hsla(${door.hue},60%,40%,0.7)`;ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.roundRect(dx,dy,doorW,doorH,2);ctx.stroke();
+    // Door knob
+    ctx.fillStyle=`hsla(${door.hue},80%,55%,0.8)`;
+    ctx.beginPath();ctx.arc(dx+doorW-6,dy+doorH*0.5,3,0,Math.PI*2);ctx.fill();
+    // Lit indicator
+    if(door.lit){
+      ctx.globalCompositeOperation="screen";
+      const dg=ctx.createRadialGradient(dx+doorW*0.5,dy+doorH*0.5,0,dx+doorW*0.5,dy+doorH*0.5,doorW);
+      dg.addColorStop(0,`hsla(${door.hue},100%,70%,0.25)`);dg.addColorStop(1,"transparent");
+      ctx.fillStyle=dg;ctx.beginPath();ctx.arc(dx+doorW*0.5,dy+doorH*0.5,doorW,0,Math.PI*2);ctx.fill();
+      ctx.globalCompositeOperation="source-over";
+    }
+    // Door label
+    ctx.fillStyle=`hsla(${door.hue},70%,65%,0.7)`;
+    ctx.font="bold 6px monospace";ctx.textAlign="center";ctx.textBaseline="bottom";
+    ctx.fillText(door.label,dx+doorW*0.5,dy+doorH-3);
+  }
+  // Belt chain at front
+  ctx.fillStyle="rgba(20,30,55,0.6)";ctx.fillRect(0,beltY+beltH+4,w,4);
   // Overhead lights
   ctx.globalCompositeOperation="screen";
   const lightHues=[185,300,60,120,240];
@@ -1135,14 +1257,36 @@ interface ThemeCanvasProps {
   skin: SkinId;
 }
 
+// Skins that benefit from OffscreenCanvas (heavy per-frame work)
+const HEAVY_SKINS: Set<SkinId> = new Set(["cyberpunk", "finalfantasy"]);
+
 export function ThemeCanvas({ skin }: ThemeCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  // Cross-fade: track previous skin canvas opacity during transition
+  const [opacity, setOpacity] = useState(0.85);
+  const prevSkinRef = useRef<SkinId | null>(null);
+  const fadeRef = useRef<number | null>(null);
+
+  // Fade-in on skin change
+  useEffect(() => {
+    if (prevSkinRef.current !== null && prevSkinRef.current !== skin) {
+      // Fade out then back in
+      setOpacity(0);
+      if (fadeRef.current) clearTimeout(fadeRef.current);
+      fadeRef.current = window.setTimeout(() => {
+        setOpacity(0.85);
+      }, 80); // brief dip to 0 then CSS transition handles the fade-in
+    }
+    prevSkinRef.current = skin;
+    return () => { if (fadeRef.current) clearTimeout(fadeRef.current); };
+  }, [skin]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+
+    // Respect prefers-reduced-motion
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     // Reset all other skin states when switching
     resetSkinState(skin);
@@ -1159,10 +1303,40 @@ export function ThemeCanvas({ skin }: ThemeCanvasProps) {
 
     const painter = PAINTERS[skin] ?? paintAurora;
 
+    // Use OffscreenCanvas for heavy skins when available
+    const supportsOffscreen = typeof OffscreenCanvas !== "undefined" && HEAVY_SKINS.has(skin);
+
+    if (supportsOffscreen) {
+      const offscreen = canvas.transferControlToOffscreen?.();
+      if (offscreen) {
+        // OffscreenCanvas path — render on worker-like offscreen context
+        const offCtx = offscreen.getContext("2d") as CanvasRenderingContext2D | null;
+        if (offCtx) {
+          const frame = () => {
+            const t = prefersReduced ? 0 : (performance.now() - startTime) / 1000;
+            offscreen.width = window.innerWidth;
+            offscreen.height = window.innerHeight;
+            painter(offCtx, offscreen.width, offscreen.height, t);
+            if (!prefersReduced) animId = requestAnimationFrame(frame);
+          };
+          animId = requestAnimationFrame(frame);
+          return () => {
+            cancelAnimationFrame(animId);
+            window.removeEventListener("resize", resize);
+          };
+        }
+      }
+    }
+
+    // Standard canvas path (all skins, or fallback)
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
     const frame = () => {
-      const t = (performance.now() - startTime) / 1000;
+      const t = prefersReduced ? 0 : (performance.now() - startTime) / 1000;
       painter(ctx, canvas.width, canvas.height, t);
-      animId = requestAnimationFrame(frame);
+      if (!prefersReduced) animId = requestAnimationFrame(frame);
+      else painter(ctx, canvas.width, canvas.height, 2); // static freeze at t=2s
     };
     animId = requestAnimationFrame(frame);
 
@@ -1182,7 +1356,8 @@ export function ThemeCanvas({ skin }: ThemeCanvasProps) {
         height: "100%",
         pointerEvents: "none",
         zIndex: 0,
-        opacity: 0.85,
+        opacity,
+        transition: "opacity 0.6s ease",
       }}
     />
   );
