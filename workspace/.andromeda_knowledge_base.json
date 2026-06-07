@@ -1753,6 +1753,22 @@
       "confidence": 0.9,
       "createdAt": 1780854387141,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780854388487_04dqlv",
+      "category": "antipattern",
+      "title": "Failure: Improve readability of SEED_MEMORIES array formatting",
+      "description": "Failed to apply \"Improve readability of SEED_MEMORIES array formatting\" to memory.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify memory.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for memory.ts: Improve readability of SEED_MEMORIES array formatting — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "memory.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780854388487,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -1895,5 +1911,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T17:46:27.141Z"
+  "_lastUpdated": "2026-06-07T17:46:28.487Z"
 }
