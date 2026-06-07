@@ -3289,6 +3289,22 @@
       "confidence": 0.9,
       "createdAt": 1780859713847,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780859781647_7dqocy",
+      "category": "antipattern",
+      "title": "Failure: Simplify version string to single source of truth",
+      "description": "Failed to apply \"Simplify version string to single source of truth\" to manifest.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify manifest.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for manifest.ts: Simplify version string to single source of truth — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "manifest.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780859781647,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -3431,5 +3447,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T19:15:13.847Z"
+  "_lastUpdated": "2026-06-07T19:16:21.647Z"
 }
