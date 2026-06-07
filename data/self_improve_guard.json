@@ -652,6 +652,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/browser.ts(9,21): error TS2307: Cannot find module 'fs' or its corresponding type declarations.\ndata/tmp_syntax/browser.ts(10,26): error TS2307: Cannot find module 'playwright-core' or",
       "timestamp": "2026-06-07T17:16:19.374Z"
+    },
+    {
+      "id": "audit_1780852583722_9cz4g4",
+      "action": "apply",
+      "proposalId": "prop_1780842994142_w9p8wn",
+      "filename": "manifest.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/manifest.ts(14,29): error TS2307: Cannot find module './tools' or its corresponding type declarations.\ndata/tmp_syntax/manifest.ts(15,50): error TS2307: Cannot find module './llmProvid",
+      "timestamp": "2026-06-07T17:16:23.722Z"
     }
   ]
 }
