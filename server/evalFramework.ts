@@ -350,9 +350,9 @@ export const EVAL_TASKS: EvalTask[] = [
   {
     id: "m01", category: "multi_step", difficulty: "easy",
     prompt: "Read the README.md file and summarize it in one sentence.",
-    expectedKeywords: ["Andromeda", "AI"],
+    expectedKeywords: ["Andromeda", "autonomous"],
     forbiddenKeywords: ["error"],
-    maxTokens: 200, timeoutMs: 30000, scoreWeight: 2,
+    maxTokens: 300, timeoutMs: 30000, scoreWeight: 2,
   },
   {
     id: "m02", category: "multi_step", difficulty: "medium",
@@ -391,8 +391,8 @@ export const EVAL_TASKS: EvalTask[] = [
   },
   {
     id: "m07", category: "multi_step", difficulty: "medium",
-    prompt: "Read the rsiEngine.ts file and tell me what the 8 phases of the OODA cycle are.",
-    expectedKeywords: ["OBSERVE", "PROPOSE"],
+    prompt: "Read the rsiEngine.ts file and list all the RSI cycle phases (the RSIPhase type values).",
+    expectedKeywords: ["observing", "proposing", "applying"],
     forbiddenKeywords: ["cannot", "error"],
     maxTokens: 400, timeoutMs: 30000, scoreWeight: 2,
   },

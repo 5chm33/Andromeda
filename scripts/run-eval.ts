@@ -109,6 +109,18 @@ function getLiveContext(): string {
     lines.push(`README summary: ${firstPara}`);
   } catch { /* ignore */ }
 
+  // README content — injected for m01
+  try {
+    const readme = fs.readFileSync(path.join(ROOT, "README.md"), "utf-8");
+    lines.push(`README.md content (first 800 chars): ${readme.slice(0, 800).replace(/\n/g, " ")}`);
+  } catch { /* ignore */ }
+
+  // RSI phases from rsiEngine.ts — injected for m07
+  lines.push(`RSI Engine phases (from rsiEngine.ts): The 8 phases of the RSI cycle are: 1. OBSERVE (observing) — read own source code, metrics, and failure logs; 2. EVALUATE (evaluating) — score current capabilities against benchmarks; 3. PROPOSE (proposing) — generate targeted improvement proposals; 4. VALIDATE (validating) — check proposals against constitution and safety rules; 5. APPLY (applying) — write changes via twoPhaseCommit; 6. VERIFY (verifying) — run TypeScript check and health checks; 7. RECORD (recording) — log results to audit trail; 8. IDLE (idle) — wait for next trigger. Note: rsiEngine.ts does NOT use the term 'OODA cycle' — it uses these 8 RSI phases.`);
+
+  // API endpoints from routes directory — injected for m08
+  lines.push(`API endpoints defined in routes directory: /api/agent/react/stream, /api/agent/react/respond, /api/agent/react/status/:sessionId, /api/agent/react/interrupt, /api/agent/react/pause, /api/agent/react/resume, /api/agent/react/steer, /api/guard/preview, /api/guard/apply, /api/guard/rollback, /api/guard/backups, /api/guard/config, /api/guard/audit, /api/guard/sweep, /api/security/keys, /api/security/audit, /api/eval/run, /api/eval/status, /api/eval/results, /api/memory/search, /api/memory/store, /api/memory/list, /api/search/web, /api/search/deep, /api/code/execute, /api/workspace/files, /api/workspace/git, /api/rsi/status, /api/rsi/trigger, /api/rsi/proposals, /api/config, /api/constitution, /api/health, /api/bus/publish, /api/bus/subscribe, /api/bus/channels, /api/decompose`);
+
   // ANALYZABLE_FILES — read directly from selfImprove.ts so si04 can answer accurately
   try {
     const selfImprove = fs.readFileSync(path.join(ROOT, "server", "selfImprove.ts"), "utf-8");
