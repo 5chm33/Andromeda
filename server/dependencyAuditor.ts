@@ -77,8 +77,8 @@ function runNpmAudit(): { vulnerabilities: Vulnerability[]; counts: Record<strin
   const counts = { critical: 0, high: 0, moderate: 0, low: 0 };
 
   try {
-    // Run npm audit in JSON format
-    const result = execSync("npm audit --json", {
+    // Run pnpm audit in JSON format (project uses pnpm, not npm)
+    const result = execSync("pnpm audit --json", {
       cwd: PROJECT_ROOT,
       encoding: "utf8",
       timeout: 60_000,
@@ -102,7 +102,7 @@ function runNpmAudit(): { vulnerabilities: Vulnerability[]; counts: Record<strin
       }
     }
   } catch (err) {
-    console.warn("[DependencyAuditor] npm audit failed:", String(err).slice(0, 200));
+    console.warn("[DependencyAuditor] pnpm audit failed:", String(err).slice(0, 200));
   }
 
   return { vulnerabilities, counts };
@@ -112,7 +112,7 @@ function checkOutdatedPackages(): OutdatedPackage[] {
   const outdated: OutdatedPackage[] = [];
 
   try {
-    const result = execSync("npm outdated --json", {
+    const result = execSync("pnpm outdated --format json", {
       cwd: PROJECT_ROOT,
       encoding: "utf8",
       timeout: 60_000,
@@ -130,7 +130,7 @@ function checkOutdatedPackages(): OutdatedPackage[] {
       });
     }
   } catch (err) {
-    console.warn("[DependencyAuditor] npm outdated failed:", String(err).slice(0, 200));
+    console.warn("[DependencyAuditor] pnpm outdated failed:", String(err).slice(0, 200));
   }
 
   return outdated;
@@ -152,7 +152,7 @@ function generateFixProposals(
       proposedVersion: vuln.fixedVersion || "latest",
       severity: vuln.severity,
       autoFixable: vuln.severity === "critical" || vuln.severity === "high",
-      command: `npm audit fix --force`,
+      command: `pnpm audit --fix`,
       rationale: `Security vulnerability (${vuln.severity}): ${vuln.title}`,
     });
   }
@@ -169,7 +169,7 @@ function generateFixProposals(
       proposedVersion: isMajor ? pkg.wanted : pkg.latest,
       severity: isMajor ? "moderate" : "low",
       autoFixable: !isMajor, // Only auto-fix minor/patch bumps
-      command: isMajor ? `npm install ${pkg.name}@${pkg.wanted}` : `npm install ${pkg.name}@${pkg.latest}`,
+      command: isMajor ? `pnpm add ${pkg.name}@${pkg.wanted}` : `pnpm add ${pkg.name}@${pkg.latest}`,
       rationale: `Package outdated: ${pkg.current} → ${pkg.latest}${isMajor ? " (MAJOR version change — review needed)" : ""}`,
     });
   }

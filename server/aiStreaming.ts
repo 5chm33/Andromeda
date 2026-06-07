@@ -411,7 +411,7 @@ export async function streamAIResponse(
   // Post-process: run grounding check and emit confidence metadata
   const grounding = groundAnswer(rawAnswer, sources);
   if (!res.writableEnded) {
-    const chunk = `data: ${JSON.stringify({ type: "grounding", confidence: grounding.confidence, warnings: grounding.warnings, unverifiedCount: grounding.unverifiedClaimCount })}
+    const chunk = `data: ${JSON.stringify({ type: "grounding", confidence: grounding.confidence > 1 ? grounding.confidence / 100 : grounding.confidence, warnings: grounding.warnings, unverifiedCount: grounding.unverifiedClaimCount })}
 
 `;
     res.write(chunk);
@@ -459,7 +459,7 @@ export async function streamAIResponseWithContext(
 
   const grounding = groundAnswer(rawAnswer, sources);
   if (!res.writableEnded) {
-    res.write(`data: ${JSON.stringify({ type: "grounding", confidence: grounding.confidence, warnings: grounding.warnings, unverifiedCount: grounding.unverifiedClaimCount })}
+    res.write(`data: ${JSON.stringify({ type: "grounding", confidence: grounding.confidence > 1 ? grounding.confidence / 100 : grounding.confidence, warnings: grounding.warnings, unverifiedCount: grounding.unverifiedClaimCount })}
 
 `);
   }

@@ -793,6 +793,22 @@
       "confidence": 0.9,
       "createdAt": 1780849008188,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780849009630_cvfado",
+      "category": "antipattern",
+      "title": "Failure: Extract inline routes into separate modules",
+      "description": "Failed to apply \"Extract inline routes into separate modules\" to streamRouter.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify streamRouter.ts architecture",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for streamRouter.ts: Extract inline routes into separate modules — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "streamRouter.ts",
+        "architecture"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780849009630,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -935,5 +951,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T16:16:48.188Z"
+  "_lastUpdated": "2026-06-07T16:16:49.630Z"
 }
