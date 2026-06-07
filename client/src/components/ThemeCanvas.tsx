@@ -1,5 +1,5 @@
 /**
- * ThemeCanvas v9.0.0
+ * ThemeCanvas v9.1.0
  * AI-generated looping video backgrounds with mouse parallax.
  * - Each skin has an 8-second MP4 loop playing behind the UI.
  * - Still image shows instantly while video loads (no flash of black).
