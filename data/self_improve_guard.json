@@ -1552,6 +1552,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/streamRouter.ts(1,32): error TS2307: Cannot find module './aiPlanning.js' or its corresponding type declarations.\ndata/tmp_syntax/streamRouter.ts(3,34): error TS2307: Cannot find modul",
       "timestamp": "2026-06-07T18:46:35.204Z"
+    },
+    {
+      "id": "audit_1780857996599_q2wvj6",
+      "action": "apply",
+      "proposalId": "prop_1780845080206_7brv8q",
+      "filename": "multiAgent.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/multiAgent.ts(185,49): error TS2307: Cannot find module './llmProvider.js' or its corresponding type declarations.\ndata/tmp_syntax/multiAgent.ts(255,9): error TS2339: Property 'write' ",
+      "timestamp": "2026-06-07T18:46:36.599Z"
     }
   ]
 }
