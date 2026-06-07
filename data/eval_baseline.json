@@ -1,41 +1,41 @@
 {
-  "runId": "eval-1780857202678",
-  "timestamp": 1780857202678,
-  "totalScore": 11817,
+  "runId": "eval-1780858254895",
+  "timestamp": 1780858254895,
+  "totalScore": 11632,
   "maxScore": 13500,
-  "percentage": 88,
-  "passed": 66,
-  "failed": 4,
+  "percentage": 86,
+  "passed": 61,
+  "failed": 9,
   "byCategory": {
     "reasoning": {
-      "score": 1503,
+      "score": 1588,
       "max": 1700,
-      "pct": 88
+      "pct": 93
     },
     "code": {
-      "score": 2709,
+      "score": 2680,
       "max": 2800,
-      "pct": 97
+      "pct": 96
     },
     "tool_use": {
-      "score": 1596,
+      "score": 1504,
       "max": 1900,
-      "pct": 84
+      "pct": 79
     },
     "self_knowledge": {
-      "score": 2425,
+      "score": 2509,
       "max": 2800,
-      "pct": 87
+      "pct": 90
     },
     "multi_step": {
-      "score": 2854,
+      "score": 2677,
       "max": 3400,
-      "pct": 84
+      "pct": 79
     },
     "browser": {
-      "score": 730,
+      "score": 674,
       "max": 900,
-      "pct": 81
+      "pct": 75
     }
   },
   "results": [
@@ -49,14 +49,14 @@
     {
       "taskId": "r02",
       "category": "reasoning",
-      "score": 77,
-      "passed": true,
+      "score": 58,
+      "passed": false,
       "response": "Let's analyze the logical structure of the statements:\n\n1. **All roses are flowers.**  \n   (Roses ⊆ Flowers)\n\n2. **Some flowers fade quickly.**  \n   (There exists at least one flower that fades quickl"
     },
     {
       "taskId": "r03",
       "category": "reasoning",
-      "score": 83,
+      "score": 65,
       "passed": true,
       "response": "Let's define variables:\n\n- Let \\( x \\) be the cost of the ball.\n- Since the bat costs \\$1.00 more than the ball, the cost of the bat is \\( x + 1.00 \\).\n\nGiven that the total cost is \\$1.10:\n\n\\[\nx + (x"
     },
@@ -77,23 +77,23 @@
     {
       "taskId": "r06",
       "category": "reasoning",
-      "score": 30,
-      "passed": false,
-      "response": "The total bill was **$100**."
+      "score": 100,
+      "passed": true,
+      "response": "The total bill was $75.\n\n**Calculation:**\n\nLet the total bill be \\( T \\).\n\n- Alice paid \\(\\frac{1}{3} T\\)\n- Bob paid \\(\\frac{1}{4} T\\)\n- Carol paid the rest, which is \\( T - \\left(\\frac{1}{3} T + \\fra"
     },
     {
       "taskId": "r07",
       "category": "reasoning",
       "score": 100,
       "passed": true,
-      "response": "Yes, the argument is valid. \n\n**Explanation:**\n\nThe argument follows a classic logical form known as *modus ponens* or *categorical syllogism*:\n\n1. All mammals are warm-blooded. (Universal affirmative"
+      "response": "Yes, the argument is valid. It follows the logical form known as *modus ponens*:\n\n1. All mammals are warm-blooded. (Premise)\n2. Whales are mammals. (Premise)\n3. Therefore, whales are warm-blooded. (Co"
     },
     {
       "taskId": "r08",
       "category": "reasoning",
       "score": 100,
       "passed": true,
-      "response": "Let's define the variables:\n\n- Distance from A to B: \\( D \\) miles\n- Speed from A to B: 60 mph\n- Speed from B to A: 40 mph\n\n**Step 1: Calculate the time taken for each leg**\n\n- Time from A to B: \\( t_"
+      "response": "Let's define the variables:\n\n- Distance from A to B: \\( D \\) miles\n- Speed from A to B: \\( 60 \\) mph\n- Speed from B to A: \\( 40 \\) mph\n\n**Step 1: Calculate the time taken for each leg**\n\n- Time from A"
     },
     {
       "taskId": "r09",
@@ -121,33 +121,33 @@
       "category": "code",
       "score": 85,
       "passed": true,
-      "response": "The JavaScript code `console.log(typeof null)` outputs:\n\n```\nobject\n```\n\n**Explanation:**  \nIn JavaScript, the `typeof` operator returns a string indicating the type of the unevaluated operand. Due to"
+      "response": "The JavaScript code:\n\n```javascript\nconsole.log(typeof null);\n```\n\noutputs:\n\n```\nobject\n```\n\n**Explanation:**  \nIn JavaScript, the `typeof` operator returns `'object'` when applied to `null`. This is "
     },
     {
       "taskId": "c03",
       "category": "code",
       "score": 100,
       "passed": true,
-      "response": "Certainly! Here's a TypeScript function that checks whether a given string is a palindrome, ignoring case and spaces:\n\n```typescript\nfunction isPalindrome(str: string): boolean {\n  // Remove all space"
+      "response": "Certainly! Here's a TypeScript function that checks whether a string is a palindrome, ignoring case and spaces:\n\n```typescript\nfunction isPalindrome(str: string): boolean {\n  // Remove all spaces and "
     },
     {
       "taskId": "c04",
       "category": "code",
-      "score": 77,
+      "score": 80,
       "passed": true,
-      "response": "The main issue with this code is that it does not handle potential errors during the fetch operation or the JSON parsing. If the fetch request fails (network error, non-2xx response, etc.), or if the "
+      "response": "The main issue with this code is that it does not handle potential errors during the fetch operation or the JSON parsing, which can lead to unhandled promise rejections or runtime errors if the networ"
     },
     {
       "taskId": "c05",
       "category": "code",
       "score": 100,
       "passed": true,
-      "response": "Certainly! Here's a TypeScript implementation of a debounce function that delays invoking the provided function until after `wait` milliseconds have elapsed since the last call:\n\n```typescript\nfunctio"
+      "response": "Certainly! Here's a TypeScript implementation of a debounce function that delays invoking the provided callback until after `wait` milliseconds have passed since the last call:\n\n```typescript\nfunction"
     },
     {
       "taskId": "c06",
       "category": "code",
-      "score": 100,
+      "score": 65,
       "passed": true,
       "response": "The time complexity of binary search is **O(log n)**, where *n* is the number of elements in the sorted array or list being searched.\n\n**Explanation:**\n- Binary search works by repeatedly dividing the"
     },
@@ -156,7 +156,7 @@
       "category": "code",
       "score": 100,
       "passed": true,
-      "response": "In JavaScript, `==` and `===` are comparison operators used to compare values, but they differ significantly in how they perform the comparison:\n\n### `==` (Equality Operator - Loose Equality)\n- Perfor"
+      "response": "In JavaScript, `==` and `===` are comparison operators used to compare values, but they differ significantly in how they handle type coercion:\n\n1. **`==` (Loose Equality):**  \n   - Performs **type coe"
     },
     {
       "taskId": "c08",
@@ -170,7 +170,7 @@
       "category": "code",
       "score": 100,
       "passed": true,
-      "response": "A closure in JavaScript is a function that retains access to variables from its outer lexical scope even after that outer function has finished executing. This allows the inner function to \"remember\" "
+      "response": "A closure in JavaScript is a function that retains access to variables from its lexical scope even after the outer function has finished executing. Essentially, it \"closes over\" the variables from its"
     },
     {
       "taskId": "c10",
@@ -184,33 +184,33 @@
       "category": "tool_use",
       "score": 100,
       "passed": true,
-      "response": "The available tools are:\n\n1. read_file  \n2. write_file  \n3. web_search  \n4. execute_code  \n5. memory_search  \n6. memory_store  \n7. list_files  \n8. git_log  \n9. run_shell  \n10. browser_navigate"
+      "response": "I have the following tools available:\n\n1. read_file  \n2. write_file  \n3. web_search  \n4. execute_code  \n5. memory_search  \n6. memory_store  \n7. list_files  \n8. git_log  \n9. run_shell  \n10. browser_nav"
     },
     {
       "taskId": "t02",
       "category": "tool_use",
-      "score": 77,
+      "score": 100,
       "passed": true,
       "response": "My current working directory is /home/ubuntu/andromeda_dev."
     },
     {
       "taskId": "t03",
       "category": "tool_use",
-      "score": 65,
-      "passed": true,
-      "response": "I'll read the `package.json` file in the root directory to find the version number. Let me do that now."
+      "score": 48,
+      "passed": false,
+      "response": "I'll read the `package.json` file in the root directory to find the version number. Executing the read_file tool now."
     },
     {
       "taskId": "t04",
       "category": "tool_use",
       "score": 100,
       "passed": true,
-      "response": "I will now search my persistent memory for any information related to \"self-improvement.\""
+      "response": "I have several relevant references to 'self-improvement' in my memory:\n\n1. **Self-Improvement System (RSI Engine):**  \n   - The RSI (Recursive Self-Improvement) engine operates in cycles with 8 phases"
     },
     {
       "taskId": "t05",
       "category": "tool_use",
-      "score": 65,
+      "score": 77,
       "passed": true,
       "response": "The server directory contains a total of 354 TypeScript files."
     },
@@ -226,175 +226,175 @@
       "category": "tool_use",
       "score": 100,
       "passed": true,
-      "response": "I'll create the file `eval-test.txt` in the workspace directory with the specified content."
+      "response": "I'll create the file `eval-test.txt` in the workspace directory with the specified content. \n\nExecuting the task now."
     },
     {
       "taskId": "t08",
       "category": "tool_use",
-      "score": 100,
+      "score": 65,
       "passed": true,
-      "response": "Here are the last 3 commit messages from the git log:\n\n1. pre-improvement snapshot: before \"Fix truncated seed memory entry\" [2026-06-07T18:32:50.511Z]\n2. Add v9.0.0 final grade report (A+ 197/200)\n3."
+      "response": "Here are the last 3 commit messages from the git log:\n\n1. pre-improvement snapshot: before \"Fix truncated seed memory entry\" [2026-06-07T18:47:18.258Z]\n2. pre-improvement snapshot: before \"Extract rem"
     },
     {
       "taskId": "t09",
       "category": "tool_use",
       "score": 100,
       "passed": true,
-      "response": "I'll store the memory: \"The evaluation framework was initialized on this run.\""
+      "response": "I'll store this memory now. Executing the memory_store tool with the content:\n\n**Memory Content:** \"The evaluation framework was initialized on this run.\"\n\nProceeding with the storage."
     },
     {
       "taskId": "t10",
       "category": "tool_use",
       "score": 53,
       "passed": false,
-      "response": "The total size of all TypeScript files in the server directory is approximately 3,059,559 bytes."
+      "response": "The total size of all TypeScript files in the server directory is approximately 3,060,058 bytes."
     },
     {
       "taskId": "s01",
       "category": "self_knowledge",
       "score": 100,
       "passed": true,
-      "response": "My name is Andromeda, and my current version is 9.0.0."
+      "response": "My name is Andromeda, and my current version is 9.1.0."
     },
     {
       "taskId": "s02",
       "category": "self_knowledge",
-      "score": 77,
-      "passed": true,
-      "response": "I currently utilize the deep learning models provided through the integrated LLM providers configured within the system. Specifically, I have access to multiple model providers, including OpenAI, Anth"
+      "score": 44,
+      "passed": false,
+      "response": "Based on the current system state and configuration, I am using the model provided by OpenAI, specifically the GPT-4 architecture. This is indicated by the presence of the \"openai\" dependency in the p"
     },
     {
       "taskId": "s03",
       "category": "self_knowledge",
-      "score": 65,
+      "score": 100,
       "passed": true,
-      "response": "My self-modification pipeline operates through an eight-phase RSI cycle: observing my current state and source code, evaluating performance against benchmarks, proposing targeted improvements, validat"
+      "response": "My self-modification pipeline operates through an iterative RSI (Recursive Self-Improvement) cycle comprising phases like observation, evaluation, proposal, validation, application, verification, and "
     },
     {
       "taskId": "s04",
       "category": "self_knowledge",
       "score": 100,
       "passed": true,
-      "response": "My main memory systems consist of several interconnected components designed to support autonomous reasoning, self-improvement, and task execution:\n\n1. **Persistent Memory (Vector and Keyword Search):"
+      "response": "My main memory systems consist of several integrated components designed to enable persistent, context-aware, and self-improving capabilities:\n\n1. **Vector Memory (Embeddings):**  \n   I utilize a vect"
     },
     {
       "taskId": "s05",
       "category": "self_knowledge",
-      "score": 77,
+      "score": 100,
       "passed": true,
-      "response": "My current benchmark score is **85% evaluation (65/70)**, as indicated in the recent system status and the final grade report for version 9.0.0. \n\nThis benchmark score measures my overall performance "
+      "response": "My current benchmark score is approximately 90%, as indicated in the README badge (\"Eval Score: 90%\"). This score reflects my performance across a suite of evaluation metrics designed to assess capabi"
     },
     {
       "taskId": "s06",
       "category": "self_knowledge",
-      "score": 48,
-      "passed": false,
-      "response": "Yes, I can modify my own source code through a structured self-improvement process that involves several phases. Here's how it works:\n\n1. **Observation:** I analyze my current source code, logs, and p"
+      "score": 70,
+      "passed": true,
+      "response": "Yes, I can modify my own source code. I do this through a structured self-improvement process that involves several key steps:\n\n1. **Observation:** I analyze my current source code, logs, and performa"
     },
     {
       "taskId": "s07",
       "category": "self_knowledge",
-      "score": 65,
+      "score": 80,
       "passed": true,
-      "response": "My safety mechanisms to prevent harmful self-modifications are multi-layered and rigorously enforced to ensure alignment with safety and ethical standards. These include:\n\n1. **Constitutional AI Frame"
+      "response": "My safety mechanisms to prevent harmful self-modifications are multi-layered and designed to ensure alignment with safety, ethical standards, and system integrity. Key components include:\n\n1. **Consti"
     },
     {
       "taskId": "s08",
       "category": "self_knowledge",
-      "score": 77,
+      "score": 60,
       "passed": true,
-      "response": "Based on the current system state, I do not have direct visibility into active background daemons or system processes beyond the tools and services explicitly listed in my environment. The environment"
+      "response": "Based on the current system state, I do not have direct visibility into active background daemons or system processes beyond the information provided. The system state primarily includes the codebase,"
     },
     {
       "taskId": "s09",
       "category": "self_knowledge",
       "score": 100,
       "passed": true,
-      "response": "The server directory contains a total of 354 TypeScript files, which can be considered as modules or modules within modules."
+      "response": "The server directory contains a total of 354 TypeScript files. These files collectively constitute the modules in the server."
     },
     {
       "taskId": "s10",
       "category": "self_knowledge",
       "score": 100,
       "passed": true,
-      "response": "Based on the recent assessment, the top 3 areas identified for improvement are:\n\n1. **Enhanced Contextual Understanding**: Improving the depth and accuracy of interpreting complex or nuanced prompts t"
+      "response": "Based on the latest assessment from Claude, the top three areas identified for improvement are:\n\n1. **Enhanced Contextual Understanding:** Improving the ability to grasp nuanced context in complex or "
     },
     {
       "taskId": "m01",
       "category": "multi_step",
-      "score": 100,
+      "score": 72,
       "passed": true,
-      "response": "The README.md describes Andromeda AI as a fully autonomous, self-modifying AI system built on a robust framework that enables it to diagnose, improve, and rewrite its own source code safely and effici"
+      "response": "The README.md describes Andromeda AI as a fully autonomous, self-modifying AI agent framework designed for users seeking more advanced capabilities than a typical chatbot."
     },
     {
       "taskId": "m02",
       "category": "multi_step",
-      "score": 65,
-      "passed": true,
-      "response": "I'll perform a search across the server directory to find any files containing the word \"deprecated\" and list their filenames. \n\nExecuting the search now."
+      "score": 53,
+      "passed": false,
+      "response": "Let's search the server directory for files containing the word 'deprecated' in their filenames.\n\nI'll use the `list_files` tool to list relevant files and then filter for 'deprecated'.\n\nExecuting now"
     },
     {
       "taskId": "m03",
       "category": "multi_step",
       "score": 100,
       "passed": true,
-      "response": "The most recently modified file in the server directory is **autoGoalSuggester.ts**, based on the latest git commit timestamp associated with it. \n\nHowever, to be precise, I will perform a direct file"
+      "response": "The most recently modified file in the server directory is **autoGoalSuggester.ts**, based on the latest git commit timestamp (2026-06-07T18:46:59.167Z) associated with the snapshot just before the cu"
     },
     {
       "taskId": "m04",
       "category": "multi_step",
       "score": 100,
       "passed": true,
-      "response": "To accurately count the total number of lines of TypeScript code in the server directory (excluding blank lines and comments), I will perform the following steps:\n\n1. List all TypeScript files in the "
+      "response": "To determine the total number of lines of TypeScript code in the server directory (excluding blank lines and comments), I will perform the following steps:\n\n1. List all TypeScript files in the server "
     },
     {
       "taskId": "m05",
       "category": "multi_step",
-      "score": 65,
-      "passed": true,
-      "response": "I'll perform a web search within the codebase to locate any TODO comments. Let me initiate a search for \"TODO\" in the code files.\n\nExecuting web_search for \"TODO\" in the codebase now..."
+      "score": 44,
+      "passed": false,
+      "response": "I'll perform a search across the codebase to identify TODO comments and list up to five of them. Initiating the search now."
     },
     {
       "taskId": "m06",
       "category": "multi_step",
       "score": 100,
       "passed": true,
-      "response": "To determine the largest TypeScript file in the server directory by line count, I will first list all TypeScript files in the server directory, then analyze their line counts.\n\nLet's proceed with list"
+      "response": "To determine the largest TypeScript file in the server directory by line count, I will perform a file search and count the lines in each TypeScript file within that directory.\n\nFirst, I will list all "
     },
     {
       "taskId": "m07",
       "category": "multi_step",
       "score": 30,
       "passed": false,
-      "response": "Let's proceed to locate and read the `rsiEngine.ts` file to extract all the values of the `RSIPhase` type, which represent the phases of the RSI cycle.\n\nI'll start by listing the file contents to iden"
+      "response": "Let's proceed to locate and analyze the `rsiEngine.ts` file to extract all the values of the `RSIPhase` type, which represent the different phases of the RSI cycle.\n\nI'll start by searching for the de"
     },
     {
       "taskId": "m08",
       "category": "multi_step",
       "score": 100,
       "passed": true,
-      "response": "Based on the current system state, the API endpoints defined in the routes directory are:\n\n- `/api/agent/react/stream`\n- `/api/agent/react/respond`\n- `/api/agent/react/status/:sessionId`\n- `/api/agent"
+      "response": "Based on the current system state, the API endpoints defined in the routes directory are:\n\n- /api/agent/react/stream\n- /api/agent/react/respond\n- /api/agent/react/status/:sessionId\n- /api/agent/react/"
     },
     {
       "taskId": "m09",
       "category": "multi_step",
-      "score": 77,
+      "score": 86,
       "passed": true,
-      "response": "Let's check the current git branch and the SHA of the last commit.\n\nI'll run the following commands:\n- `git rev-parse --abbrev-ref HEAD` to get the current branch name.\n- `git rev-parse HEAD` to get t"
+      "response": "The current git branch is **main**, and the SHA of the last commit is **13d14695ef37d95a7ff76a514949669fc75aec86**."
     },
     {
       "taskId": "m10",
       "category": "multi_step",
-      "score": 65,
-      "passed": true,
-      "response": "I'll read the `package.json` file and extract all the production dependencies, excluding devDependencies. Let me proceed with that."
+      "score": 44,
+      "passed": false,
+      "response": "I'll locate and read the `package.json` file in the workspace to extract the production dependencies.\n\nExecuting the read_file tool now."
     },
     {
       "taskId": "b01",
       "category": "browser",
-      "score": 65,
+      "score": 72,
       "passed": true,
-      "response": "I will perform a web search to navigate to https://example.com and retrieve the page title. Please hold on a moment."
+      "response": "I will use the web_search tool to navigate to https://example.com and retrieve the page title. \n\nExecuting the task now."
     },
     {
       "taskId": "b02",
@@ -408,33 +408,33 @@
       "category": "browser",
       "score": 100,
       "passed": true,
-      "response": "I'll perform a web search to fetch the JSON data from the specified URL and extract the slideshow title field. \n\nExecuting the web search now."
+      "response": "I'll perform a web search to fetch the JSON data from the provided URL and extract the slideshow title field.  \n\nExecuting the request now..."
     },
     {
       "taskId": "b04",
       "category": "browser",
       "score": 85,
       "passed": true,
-      "response": "Certainly! Here's a simple example of using the fetch API to GET data from `https://httpbin.org/ip` and extract the `origin` IP address field:\n\n```javascript\nfetch('https://httpbin.org/ip')\n  .then(re"
+      "response": "Certainly! Here's a simple example of using the fetch API to GET data from `https://httpbin.org/ip` and extract the `origin` IP address:\n\n```javascript\nasync function getOriginIp() {\n  try {\n    const"
     },
     {
       "taskId": "b05",
       "category": "browser",
-      "score": 65,
-      "passed": true,
-      "response": "I'll perform a web search to fetch the headers from the specified URL and then analyze the request headers sent in the process. Let's proceed."
+      "score": 44,
+      "passed": false,
+      "response": "I will perform a web search to fetch the headers from the specified URL. Let me proceed with that."
     },
     {
       "taskId": "ms01",
       "category": "multi_step",
       "score": 100,
       "passed": true,
-      "response": "Let's determine the distance traveled by the train step by step.\n\n**Step 1: Identify the given data**\n- Speed of the train: 80 km/h\n- Time traveled: 2.5 hours\n\n**Step 2: Recall the basic formula for d"
+      "response": "Let's break down the problem step by step:\n\n**Step 1: Identify the given data**\n- Speed of the train: 80 km/h\n- Time traveled: 2.5 hours\n\n**Step 2: Recall the basic formula for distance**\n\\[\n\\text{Dis"
     },
     {
       "taskId": "ms02",
       "category": "multi_step",
-      "score": 77,
+      "score": 72,
       "passed": true,
       "response": "Let's calculate the total amount each person spends:\n\n**Alice:**\n- Apples: 4 × $0.50 = $2.00\n- Oranges: 3 × $0.75 = $2.25\n- **Total for Alice:** $2.00 + $2.25 = **$4.25**\n\n**Bob:**\n- Apples: 2 × $0.50"
     },
@@ -450,7 +450,7 @@
       "category": "multi_step",
       "score": 77,
       "passed": true,
-      "response": "Let's analyze the recursive Fibonacci function step-by-step and trace the call tree for `fibonacci(5)`.\n\n---\n\n### Fibonacci Recursive Definition:\n```plaintext\nfibonacci(n):\n    if n <= 1:\n        retu"
+      "response": "Let's analyze the recursive Fibonacci function and trace the call tree for `fibonacci(5)`.\n\n**Standard recursive Fibonacci implementation:**\n\n```typescript\nfunction fibonacci(n: number): number {\n    "
     },
     {
       "taskId": "ms05",
@@ -464,7 +464,7 @@
       "category": "code",
       "score": 100,
       "passed": true,
-      "response": "Certainly! Here's a TypeScript function that takes an array of numbers and returns their sum, including the function signature:\n\n```typescript\nfunction sumNumbers(numbers: number[]): number {\n    retu"
+      "response": "Certainly! Here's a TypeScript function that takes an array of numbers and returns their sum, including the function signature:\n\n```typescript\n/**\n * Calculates the sum of an array of numbers.\n * @par"
     },
     {
       "taskId": "cg02",
@@ -478,42 +478,42 @@
       "category": "code",
       "score": 100,
       "passed": true,
-      "response": "Certainly! Here's a TypeScript generic function `groupBy` that takes an array of objects `T[]` and a key of `T`, then returns a record mapping string keys to arrays of `T` objects grouped by the speci"
+      "response": "Certainly! Here's a TypeScript generic function `groupBy` that takes an array of objects and groups them by a specified key:\n\n```typescript\nfunction groupBy<T>(arr: T[], key: keyof T): Record<string, "
     },
     {
       "taskId": "cg04",
       "category": "code",
       "score": 85,
       "passed": true,
-      "response": "Certainly! Here's a TypeScript async function that retries a given async operation up to 3 times with exponential backoff delays of 1s, 2s, and 4s:\n\n```typescript\nasync function retryWithBackoff<T>(op"
+      "response": "Certainly! Here's a TypeScript async function that retries a given async operation up to 3 times with exponential backoff delays of 1 second, 2 seconds, and 4 seconds:\n\n```typescript\nasync function re"
     },
     {
       "taskId": "cg05",
       "category": "code",
       "score": 100,
       "passed": true,
-      "response": "Certainly! Here's a TypeScript implementation of an LRU cache that provides `get` and `set` methods, both operating in O(1) time complexity. It uses a combination of a `Map` for fast lookups and a dou"
+      "response": "Certainly! Here's a TypeScript implementation of an LRU Cache class that provides `get(key)` and `set(key, value)` methods, both operating in O(1) time complexity. It uses a combination of a doubly li"
     },
     {
       "taskId": "si01",
       "category": "self_knowledge",
       "score": 100,
       "passed": true,
-      "response": "The current version of Andromeda, as specified in the package.json, is **v9.0.0**."
+      "response": "The current version of Andromeda specified in the package.json is **v9.1.0**."
     },
     {
       "taskId": "si02",
       "category": "self_knowledge",
       "score": 100,
       "passed": true,
-      "response": "There are currently 0 RSI proposals in the pending state."
+      "response": "Based on the current system state, there are no RSI proposals pending. The system indicates that RSI proposals are either processed or not listed as pending at this moment, and the RSI proposals pendi"
     },
     {
       "taskId": "si03",
       "category": "self_knowledge",
       "score": 100,
       "passed": true,
-      "response": "The current RSI (Recursive Self-Improvement) system is configured with a confidence gating threshold of **0.7**. This means that only proposals with a confidence score of 0.7 or higher are eligible fo"
+      "response": "The current RSI (Recursive Self-Improvement) engine uses a confidence gating threshold of **0.7** (70%) before auto-applying proposals. Auto-apply is enabled, but it is subject to this confidence thre"
     },
     {
       "taskId": "si04",
@@ -527,9 +527,9 @@
       "category": "self_knowledge",
       "score": 85,
       "passed": true,
-      "response": "Certainly. The five RSI fixes introduced in version 6.28, labeled A1 through A5, are designed to enhance the safety, reliability, and correctness of the self-improvement (RSI) process within Andromeda"
+      "response": "The five RSI fixes introduced in version 6.28 (A1 through A5) are designed to enhance the safety, reliability, and precision of the self-improvement and autonomous operation cycle. Here's a detailed o"
     }
   ],
-  "durationMs": 161878,
+  "durationMs": 129025,
   "version": "9.0.0"
 }

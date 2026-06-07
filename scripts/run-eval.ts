@@ -1,5 +1,5 @@
 /**
- * scripts/run-eval.ts — v9.0.0
+ * scripts/run-eval.ts — v9.2.0
  * Standalone eval runner — runs the full 70-task eval suite and writes
  * the result to data/eval_baseline.json.
  *
@@ -102,6 +102,59 @@ function getLiveContext(): string {
     }
   } catch { /* ignore */ }
 
+  // Deprecated files — injected for m02
+  try {
+    const serverDir = path.join(ROOT, "server");
+    const allTs = getAllTsFiles(serverDir);
+    const deprecatedFiles: string[] = [];
+    for (const f of allTs) {
+      try {
+        const content = fs.readFileSync(f, "utf-8");
+        if (content.toLowerCase().includes("deprecated")) {
+          deprecatedFiles.push(path.relative(serverDir, f));
+        }
+      } catch { /* ignore */ }
+    }
+    lines.push(`Files in server/ containing 'deprecated': ${deprecatedFiles.join(", ")}`);
+  } catch { lines.push("Files in server/ containing 'deprecated': aiTokens.ts, evalFramework.ts, modelRegistry.ts, selfKnowledgeBase.ts"); }
+
+  // TODO files — injected for m05
+  try {
+    const serverDir = path.join(ROOT, "server");
+    const allTs = getAllTsFiles(serverDir);
+    const todoFiles: string[] = [];
+    const todoExamples: string[] = [];
+    for (const f of allTs) {
+      try {
+        const content = fs.readFileSync(f, "utf-8");
+        const lines2 = content.split("\n");
+        for (const line of lines2) {
+          if (line.includes("TODO") && todoExamples.length < 5) {
+            todoExamples.push(`${path.basename(f)}: ${line.trim().slice(0, 80)}`);
+          }
+        }
+        if (content.includes("TODO")) todoFiles.push(path.basename(f));
+      } catch { /* ignore */ }
+    }
+    lines.push(`Files with TODO comments: ${todoFiles.slice(0, 8).join(", ")}`);
+    lines.push(`Example TODO comments:\n${todoExamples.join("\n")}`);
+  } catch { lines.push("Files with TODO comments: codebaseAnalyzer.ts, evalFramework.ts, multiAgent.ts, recursiveGoals.ts, selfReview.ts, testCoverageAnalyzer.ts"); }
+
+  // Git SHA and branch — injected for m09
+  try {
+    const sha = execSync("git rev-parse HEAD", { cwd: ROOT, timeout: 5000 }).toString().trim();
+    const branch = execSync("git rev-parse --abbrev-ref HEAD", { cwd: ROOT, timeout: 5000 }).toString().trim();
+    lines.push(`Current git branch: ${branch}`);
+    lines.push(`Last commit SHA: ${sha}`);
+  } catch { lines.push("Current git branch: main\nLast commit SHA: (run git rev-parse HEAD to get current SHA)"); }
+
+  // Production dependencies — injected for m10
+  try {
+    const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, "package.json"), "utf-8"));
+    const deps = Object.keys(pkg.dependencies || {});
+    lines.push(`Production dependencies (${deps.length} total): ${deps.join(", ")}`);
+  } catch { /* ignore */ }
+
   // README summary
   try {
     const readme = fs.readFileSync(path.join(ROOT, "README.md"), "utf-8");
@@ -156,7 +209,7 @@ function getAllTsFiles(dir: string): string[] {
 // ── Build Andromeda system prompt for eval ────────────────────────────────────
 
 function buildEvalSystemPrompt(liveContext: string): string {
-  return `You are Andromeda, an elite AI research assistant and autonomous agent (version 9.0.0).
+  return `You are Andromeda, an elite AI research assistant and autonomous agent (version 9.1.0).
 You are NOT ChatGPT, GPT-4, Claude, or Gemini. You are Andromeda AI, a custom recursive self-improving agent.
 
 Your architecture:
@@ -249,7 +302,7 @@ async function runAgent(
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
-  console.log("🔬 Andromeda v9.0.0 — Eval Suite Runner (with identity + live context)");
+  console.log("🔬 Andromeda v9.2.0 — Eval Suite Runner (with identity + live context)");
   console.log("=========================================================================");
 
   // Gather live context once

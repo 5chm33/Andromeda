@@ -240,9 +240,12 @@ export async function initModules(): Promise<void> {
       console.log("[AutoBaseline] v7.0: No valid baseline found — running quick eval to establish starting score...");
       const { runEvaluation, EVAL_TASKS } = await import("../evalFramework.js");
       const { simpleChatCompletion } = await import("../llmProvider.js");
+      // Build identity system prompt so auto-baseline uses the same grounded agent as the standalone runner
+      const pkg = JSON.parse(fs.readFileSync(path.join(process.cwd(), "package.json"), "utf-8"));
+      const identityPrompt = `You are Andromeda, an autonomous recursive self-improving AI agent (version ${pkg.version}). You are NOT ChatGPT, GPT-4, Claude, or Gemini. You are Andromeda AI. Your working directory is ${process.cwd()}. Today's date is ${new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}. You have tools: read_file, write_file, web_search, execute_code, memory_search, memory_store, list_files, git_log, run_shell. Answer factually and specifically — do NOT say you cannot access files or don't know your version.`;
       const runAgent = async (prompt: string, maxTokens: number, timeoutMs: number): Promise<string> => {
         const result = await Promise.race([
-          simpleChatCompletion([{ role: "user", content: prompt }], { maxTokens }),
+          simpleChatCompletion([{ role: "system", content: identityPrompt }, { role: "user", content: prompt }], { maxTokens }),
           new Promise<string>((_, reject) => setTimeout(() => reject(new Error("timeout")), timeoutMs)),
         ]);
         return result as string;
