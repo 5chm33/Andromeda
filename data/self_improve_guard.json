@@ -1264,6 +1264,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/manifest.ts(14,29): error TS2307: Cannot find module './tools' or its corresponding type declarations.\ndata/tmp_syntax/manifest.ts(15,50): error TS2307: Cannot find module './llmProvid",
       "timestamp": "2026-06-07T18:16:43.002Z"
+    },
+    {
+      "id": "audit_1780856204422_3nnzzw",
+      "action": "apply",
+      "proposalId": "prop_1780852276113_nusih2",
+      "filename": "biasDetector.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/biasDetector.ts(15,35): error TS2307: Cannot find module '../drizzle/schema' or its corresponding type declarations.\n",
+      "timestamp": "2026-06-07T18:16:44.422Z"
     }
   ]
 }
