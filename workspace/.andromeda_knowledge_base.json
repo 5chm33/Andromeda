@@ -3017,6 +3017,22 @@
       "confidence": 0.9,
       "createdAt": 1780858009139,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780858010536_zdrqrg",
+      "category": "antipattern",
+      "title": "Failure: Extract provider query into reusable helper",
+      "description": "Failed to apply \"Extract provider query into reusable helper\" to selfConsistency.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify selfConsistency.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for selfConsistency.ts: Extract provider query into reusable helper — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "selfConsistency.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780858010536,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -3159,5 +3175,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T18:46:49.139Z"
+  "_lastUpdated": "2026-06-07T18:46:50.536Z"
 }
