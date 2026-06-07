@@ -1534,6 +1534,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/biasDetector.ts(15,35): error TS2307: Cannot find module '../drizzle/schema' or its corresponding type declarations.\n",
       "timestamp": "2026-06-07T18:46:32.408Z"
+    },
+    {
+      "id": "audit_1780857993735_hmhu2e",
+      "action": "apply",
+      "proposalId": "prop_1780843676189_c9bqd8",
+      "filename": "contextBus.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/contextBus.ts(16,28): error TS2307: Cannot find module 'crypto' or its corresponding type declarations.\ndata/tmp_syntax/contextBus.ts(17,16): error TS2307: Cannot find module 'fs' or i",
+      "timestamp": "2026-06-07T18:46:33.735Z"
     }
   ]
 }
