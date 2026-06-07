@@ -4201,6 +4201,22 @@
       "confidence": 0.9,
       "createdAt": 1780865266884,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780865268203_alqkmn",
+      "category": "antipattern",
+      "title": "Failure: Simplify diff generator logic for readability",
+      "description": "Failed to apply \"Simplify diff generator logic for readability\" to codeIntel.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify codeIntel.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for codeIntel.ts: Simplify diff generator logic for readability — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "codeIntel.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780865268203,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -4343,5 +4359,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T20:47:46.884Z"
+  "_lastUpdated": "2026-06-07T20:47:48.203Z"
 }
