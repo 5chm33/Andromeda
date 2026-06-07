@@ -2275,7 +2275,7 @@ export default function Search() {
                   {isLoadingSources && !isStreaming && !showProgress && (
                     <div className="flex items-center gap-2 text-sm text-zinc-500">
                       <Loader2 className="w-4 h-4 animate-spin text-violet-400" />
-                      {isDeepMode ? "Running deep research…" : "Searching the web…"}
+                      {isDeepMode ? "Running deep research…" : (filter === "web" || filter === "news" || filter === "academic") ? "Searching the web…" : "Thinking…"}
                     </div>
                   )}
 

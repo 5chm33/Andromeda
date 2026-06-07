@@ -148,6 +148,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/contextBus.ts(16,28): error TS2307: Cannot find module 'crypto' or its corresponding type declarations.\ndata/tmp_syntax/contextBus.ts(17,16): error TS2307: Cannot find module 'fs' or i",
       "timestamp": "2026-06-07T14:47:57.743Z"
+    },
+    {
+      "id": "audit_1780843733715_14szyb",
+      "action": "apply",
+      "proposalId": "prop_1780843733649_76dzqz",
+      "filename": "workspace.ts",
+      "result": "blocked",
+      "details": "Constitution: proposed content contains forbidden pattern 'rm -rf /'",
+      "timestamp": "2026-06-07T14:48:53.715Z"
     }
   ]
 }

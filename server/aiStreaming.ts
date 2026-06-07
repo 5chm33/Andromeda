@@ -15,6 +15,7 @@ import { createLogger } from "./logger.js";
 import { getActiveModel, getApiKey, getApiUrl, getProviderHeaders, resolveProviderOnce, calculateMaxTokens } from "./aiTokens.js";
 import { buildSystemPrompt, buildUserPrompt, buildDeepResearchPrompt } from "./aiPrompts.js";
 import { canFitResponse } from "./tokenBudgetManager.js";  // v8.5.0: fix missing import
+import { assembleContext, recordAssembly, type ContextMessage } from "./tieredContextManager.js";  // v8.7.0: fix 'assembleContext is not defined' on follow-up queries
 const log = createLogger("aiStreaming");
 
 // ─── Core streaming function ──────────────────────────────────────────────────
