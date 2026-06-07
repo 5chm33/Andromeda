@@ -12,6 +12,7 @@ import { getActiveProvider } from "./llmProvider.js";
 import { createLogger } from "./logger.js";
 import { getActiveModel, getApiKey, getApiUrl, getProviderHeaders } from "./aiTokens.js";
 import { buildSystemPrompt } from "./aiPrompts.js";
+import { getContextWindow } from "./modelRegistry.js";
 const log = createLogger("aiPlanning");
 
 // ─── Non-streaming helpers ────────────────────────────────────────────────────

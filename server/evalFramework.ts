@@ -15,6 +15,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
+import { backgroundSimpleCompletion } from "./llmProvider.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const EVAL_DIR = path.resolve(__dirname, "..", "workspace", "evals");
@@ -22,7 +23,7 @@ const RESULTS_FILE = path.join(EVAL_DIR, "eval-history.jsonl");
 
 export interface EvalTask {
   id: string;
-  category: "reasoning" | "code" | "tool_use" | "self_knowledge" | "multi_step";
+  category: "reasoning" | "code" | "tool_use" | "self_knowledge" | "multi_step" | "browser";
   difficulty: "easy" | "medium" | "hard";
   prompt: string;
   expectedKeywords: string[];  // response must contain these
@@ -713,7 +714,13 @@ export function registerEvalRoutes(app: Express): void {
         : categories
           ? EVAL_TASKS.filter(t => categories.includes(t.category))
           : EVAL_TASKS;
-      const run = await runEvaluation(tasks);
+      const taskIds = tasks.map(t => t.id);
+      const runAgent = async (prompt: string, maxTokens: number, _timeoutMs: number): Promise<string> => {
+        return await backgroundSimpleCompletion([
+          { role: "user", content: prompt }
+        ], { maxTokens });
+      };
+      const run = await runEvaluation(runAgent, taskIds);
       res.json(run);
     } catch (e) {
       res.status(500).json({ error: (e as Error).message });

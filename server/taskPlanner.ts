@@ -134,7 +134,10 @@ Output format:
   let stepsRaw: { id: string; description: string; toolHint?: string; dependsOn: string[] }[] = [];
 
   try {
-    const response = await backgroundSimpleCompletion(systemPrompt, userPrompt);
+    const response = await backgroundSimpleCompletion([
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt }
+    ]);
     // Strip markdown code fences if present
     const cleaned = response.replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
     const parsed = JSON.parse(cleaned);
@@ -214,7 +217,10 @@ Avoid the same approach that failed. Be creative about alternative approaches.
 Return ONLY valid JSON in the same format as before.`;
 
   try {
-    const response = await backgroundSimpleCompletion(systemPrompt, remainingGoal);
+    const response = await backgroundSimpleCompletion([
+      { role: "system", content: systemPrompt },
+      { role: "user", content: remainingGoal }
+    ]);
     const cleaned = response.replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
     const parsed = JSON.parse(cleaned);
     const newSteps: PlanStep[] = (parsed.steps ?? []).map((s: any) => ({

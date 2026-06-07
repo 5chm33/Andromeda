@@ -3,6 +3,7 @@
  * Core agent types: AgentEventType, AgentEvent, AgentConfig.
  * Extracted from reactEngine.ts (god-module split).
  */
+import type { ToolResult } from "./tools/toolRegistry.js";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 

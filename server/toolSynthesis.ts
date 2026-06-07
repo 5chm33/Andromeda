@@ -116,7 +116,10 @@ ${exampleUsage ? `\nExample usage: ${exampleUsage}` : ""}
 
 Return ONLY the TypeScript source code.`;
 
-  const source = await backgroundSimpleCompletion(systemPrompt, userPrompt);
+  const source = await backgroundSimpleCompletion([
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userPrompt }
+  ]);
   // Strip markdown fences if present
   return source.replace(/^```typescript\s*/i, "").replace(/^```ts\s*/i, "").replace(/```\s*$/i, "").trim();
 }
@@ -196,7 +199,6 @@ export async function synthesizeTool(
       name: toolDef.name,
       description: toolDef.description,
       category: toolDef.category ?? "agent",
-      safetyLevel: toolDef.safetyLevel ?? "medium",
       definition: toolDef,
     };
     registerTool(registered);
@@ -242,7 +244,6 @@ export async function loadSynthesizedTools(): Promise<void> {
         name: toolDef.name,
         description: toolDef.description,
         category: toolDef.category ?? "agent",
-        safetyLevel: toolDef.safetyLevel ?? "medium",
         definition: toolDef,
       };
       registerTool(registered);

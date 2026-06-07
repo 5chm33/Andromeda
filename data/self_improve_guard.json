@@ -418,6 +418,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/selfImprove.ts(34,32): error TS2307: Cannot find module './fileEngineChunking.js' or its corresponding type declarations.\ndata/tmp_syntax/selfImprove.ts(35,16): error TS2307: Cannot fi",
       "timestamp": "2026-06-07T16:34:17.685Z"
+    },
+    {
+      "id": "audit_1780850118242_2xvbpg",
+      "action": "apply",
+      "proposalId": "prop_1780850116957_yr6tmt",
+      "filename": "grounding.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/grounding.ts(22,35): error TS2307: Cannot find module '../drizzle/schema' or its corresponding type declarations.\n",
+      "timestamp": "2026-06-07T16:35:18.242Z"
     }
   ]
 }
