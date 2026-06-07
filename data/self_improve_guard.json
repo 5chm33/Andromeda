@@ -904,6 +904,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/manifest.ts(14,29): error TS2307: Cannot find module './tools' or its corresponding type declarations.\ndata/tmp_syntax/manifest.ts(15,50): error TS2307: Cannot find module './llmProvid",
       "timestamp": "2026-06-07T17:46:24.537Z"
+    },
+    {
+      "id": "audit_1780854385849_ycatis",
+      "action": "apply",
+      "proposalId": "prop_1780844113531_i89n5s",
+      "filename": "ai.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/ai.ts(17,15): error TS2307: Cannot find module './aiTokens.js' or its corresponding type declarations.\ndata/tmp_syntax/ai.ts(19,15): error TS2307: Cannot find module './aiPrompts.js' o",
+      "timestamp": "2026-06-07T17:46:25.849Z"
     }
   ]
 }
