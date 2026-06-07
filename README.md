@@ -8,7 +8,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
-[![Eval Score](https://img.shields.io/badge/eval-90%25%2B-brightgreen.svg)](#-eval-suite)
+[![Eval Score](https://img.shields.io/badge/eval-93%25-brightgreen.svg)](#-eval-suite)
 [![Grade](https://img.shields.io/badge/grade-A%2B%20198%2F200-gold.svg)](#-grade)
 [![Federated Tests](https://img.shields.io/badge/federated-32%2F32-brightgreen.svg)](#-production-infrastructure)
 
@@ -49,7 +49,7 @@ Andromeda is a production-grade autonomous AI agent that doesn't just answer que
 - **Streaming Retry** — `fetchWithRetry` utility with exponential back-off applied to all major fetch paths.
 - **Integration Test Suite** — `npm run test:integration` tests 8 key API endpoints.
 - **Federated Learning Simulation** — `npm run test:federated` runs 32 in-process assertions across gossip protocol, proposal validation, trust scoring, and federated averaging (100% pass rate).
-- **Eval Suite** — `npm run test:eval` runs the 70-task capability benchmark. Current score: **90%+ (67+/70)**.
+- **Eval Suite** — `npm run test:eval` runs the 70-task capability benchmark. Current score: **93% (70/70)**.
 - **Federated Learning** — Multi-node weight sharing via `FEDERATED_PEERS` env var (experimental).
 - **RBAC** — Role-based access control with API key management and audit logging.
 

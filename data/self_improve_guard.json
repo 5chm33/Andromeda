@@ -2029,6 +2029,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/memory.ts(33,16): error TS2307: Cannot find module 'fs' or its corresponding type declarations.\ndata/tmp_syntax/memory.ts(34,18): error TS2307: Cannot find module 'path' or its corresp",
       "timestamp": "2026-06-07T19:17:00.411Z"
+    },
+    {
+      "id": "audit_1780859953369_jydw9z",
+      "action": "apply",
+      "proposalId": "prop_1780859780097_ubmdix",
+      "filename": "manifest.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/manifest.ts(14,29): error TS2307: Cannot find module './tools' or its corresponding type declarations.\ndata/tmp_syntax/manifest.ts(15,50): error TS2307: Cannot find module './llmProvid",
+      "timestamp": "2026-06-07T19:19:13.369Z"
     }
   ]
 }
