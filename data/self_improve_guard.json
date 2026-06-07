@@ -1084,6 +1084,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/selfConsistency.ts(24,59): error TS2307: Cannot find module './llmProvider.js' or its corresponding type declarations.\ndata/tmp_syntax/selfConsistency.ts(57,46): error TS2580: Cannot f",
       "timestamp": "2026-06-07T17:46:52.994Z"
+    },
+    {
+      "id": "audit_1780854438234_t7q4l0",
+      "action": "apply",
+      "proposalId": "prop_1780854436841_pqmz8c",
+      "filename": "codeIntel.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/codeIntel.ts(20,21): error TS2307: Cannot find module 'fs' or its corresponding type declarations.\ndata/tmp_syntax/codeIntel.ts(21,23): error TS2307: Cannot find module 'path' or its c",
+      "timestamp": "2026-06-07T17:47:18.242Z"
     }
   ]
 }
