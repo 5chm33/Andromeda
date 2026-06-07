@@ -3353,6 +3353,22 @@
       "confidence": 0.9,
       "createdAt": 1780859785791,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780859787234_bsqyvp",
+      "category": "antipattern",
+      "title": "Failure: Fix truncated seed memory entry",
+      "description": "Failed to apply \"Fix truncated seed memory entry\" to memory.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify memory.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for memory.ts: Fix truncated seed memory entry — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "memory.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780859787235,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -3495,5 +3511,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T19:16:25.791Z"
+  "_lastUpdated": "2026-06-07T19:16:27.235Z"
 }
