@@ -78,7 +78,7 @@ Instructions: ${instructions}`;
 
   let plan: EditPlan = { summary: "No changes", edits: [], newFiles: [] };
   try {
-    const response = await backgroundSimpleCompletion(systemPrompt, userPrompt);
+    const response = await backgroundSimpleCompletion([{ role: "system", content: systemPrompt }, { role: "user", content: userPrompt }]);
     const cleaned = response.replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
     plan = JSON.parse(cleaned);
   } catch (err) {

@@ -441,6 +441,13 @@ function generateTemplateBenchmarks(
         forbiddenKeywords: ["skip testing", "no monitoring"],
       },
     ],
+    browser: [
+      {
+        prompt: "Describe the steps to navigate to a webpage, find a search box, and submit a query using browser automation.",
+        expectedKeywords: ["navigate", "find", "click", "type", "submit"],
+        forbiddenKeywords: [],
+      },
+    ],
   };
 
   const pool = templates[category] ?? templates.reasoning;

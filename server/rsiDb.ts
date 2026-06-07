@@ -404,3 +404,13 @@ export async function runRsiDbMigration(): Promise<void> {
     log.warn(`[rsiDb] Migration failed (non-fatal): ${(err as Error).message}`);
   }
 }
+
+/** v8.9: Return DB connectivity status for the /api/rsi/db/status endpoint */
+export function getRsiDbStatus(): { available: boolean; url: string | null; tables: string[] } {
+  const url = process.env.DATABASE_URL ?? process.env.TIDB_URL ?? null;
+  return {
+    available: !!url,
+    url: url ? url.replace(/:[^:@]*@/, ":***@") : null,
+    tables: ["rsi_proposals", "rsi_cycles", "rsi_eval_history"],
+  };
+}

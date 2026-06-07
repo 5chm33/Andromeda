@@ -8,7 +8,7 @@ import { getActiveProvider } from "./llmProvider.js";
 import { createLogger } from "./logger.js";
 import { buildFileIndex } from "./fileEngineChunking.js";
 import type { FileEntry, SSEEmitter } from "./fileEngineTypes.js";
-import { PRIORITY_FILES, TEXT_EXTS, fileEngineTypes, js, getFileEngineApiUrl, getFileEngineProviderHeaders } from "./fileEngineTypes.js";
+import { PRIORITY_FILES, TEXT_EXTS, getFileEngineApiUrl, getFileEngineProviderHeaders } from "./fileEngineTypes.js";
 import { runMultiPassEdit, loadAndCompressFiles } from "./fileEngineAnalysis.js";
 const log = createLogger("fileEngineUtils");
 

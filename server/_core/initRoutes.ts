@@ -267,10 +267,10 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
   // ── v6.19: Task Planner ───────────────────────────────────────────────────────
   app.post("/api/plan/decompose", validateBody(planDecomposeSchema), async (req, res) => {
     try {
-      const { decomposeTask } = await import("../taskPlanner.js");
+      const { generatePlan } = await import("../taskPlanner.js");
       const { goal, context, maxSteps } = req.body;
       if (!goal) { res.status(400).json({ error: "goal required" }); return; }
-      const plan = await decomposeTask(goal, context, maxSteps);
+      const plan = await generatePlan(goal, { context, maxSteps });
       res.json(plan);
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });

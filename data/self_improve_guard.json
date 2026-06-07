@@ -436,6 +436,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/selfImprove.ts(34,32): error TS2307: Cannot find module './fileEngineChunking.js' or its corresponding type declarations.\ndata/tmp_syntax/selfImprove.ts(35,16): error TS2307: Cannot fi",
       "timestamp": "2026-06-07T16:39:16.462Z"
+    },
+    {
+      "id": "audit_1780850478035_www3mi",
+      "action": "apply",
+      "proposalId": "prop_1780850354830_is0zja",
+      "filename": "selfImprove.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/selfImprove.ts(34,32): error TS2307: Cannot find module './fileEngineChunking.js' or its corresponding type declarations.\ndata/tmp_syntax/selfImprove.ts(35,16): error TS2307: Cannot fi",
+      "timestamp": "2026-06-07T16:41:18.035Z"
     }
   ]
 }

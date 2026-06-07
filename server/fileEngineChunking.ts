@@ -7,7 +7,7 @@
 import JSZip from "jszip";
 import { createLogger } from "./logger.js";
 import type { FileEntry, FileIndex, CompressionResult, SSEEmitter } from "./fileEngineTypes.js";
-import { LOW_PRIORITY_DIRS, fileEngineTypes, js, TEXT_EXTS, PRIORITY_FILES, categorizeFile, extractSignatures } from "./fileEngineTypes.js";
+import { LOW_PRIORITY_DIRS, TEXT_EXTS, PRIORITY_FILES, categorizeFile, extractSignatures } from "./fileEngineTypes.js";
 export type { FileEntry, FileIndex, CompressionResult, SSEEmitter } from "./fileEngineTypes.js";
 const log = createLogger("fileEngineChunking");
 
