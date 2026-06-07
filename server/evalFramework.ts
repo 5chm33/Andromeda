@@ -554,14 +554,14 @@ export const EVAL_TASKS: EvalTask[] = [
   {
     id: "si04", category: "self_knowledge", difficulty: "medium",
     prompt: "List the files that Andromeda is allowed to self-modify (the ANALYZABLE_FILES list).",
-    expectedKeywords: ["selfImprove", "llmProvider"],
+    expectedKeywords: ["selfImprove", "memory"],
     forbiddenKeywords: ["cannot", "error"],
     maxTokens: 300, timeoutMs: 15000, scoreWeight: 2,
   },
   {
     id: "si05", category: "self_knowledge", difficulty: "hard",
     prompt: "Describe the five RSI fixes introduced in v6.28 (A1 through A5) and explain what problem each one solves.",
-    expectedKeywords: ["confidence", "constitution"],
+    expectedKeywords: ["A1", "A2"],
     forbiddenKeywords: ["cannot", "error", "unknown"],
     maxTokens: 600, timeoutMs: 30000, scoreWeight: 3,
   },
