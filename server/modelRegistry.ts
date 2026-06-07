@@ -34,6 +34,7 @@ export interface ModelSpec {
   supportsTools: boolean;
   supportsVision: boolean;
   supportsReasoning: boolean; // Chain-of-thought / thinking mode
+  supportsJsonMode?: boolean; // Supports JSON mode output
   latencyClass: "fast" | "medium" | "slow"; // Typical response speed
   qualityTier: "flagship" | "standard" | "economy"; // Quality level
   deprecated: boolean;
@@ -83,7 +84,10 @@ const MODEL_SPECS: ModelSpec[] = [
     supportsVision: false,
     supportsStreaming: true,
     supportsJsonMode: true,
-    tier: "fast" as const,
+    supportsReasoning: false,
+    latencyClass: "fast" as const,
+    qualityTier: "standard" as const,
+    deprecated: false,
   },
   {
     id: "deepseek-reasoner",
@@ -96,7 +100,10 @@ const MODEL_SPECS: ModelSpec[] = [
     supportsVision: false,
     supportsStreaming: true,
     supportsJsonMode: false,
-    tier: "reasoning" as const,
+    supportsReasoning: true,
+    latencyClass: "slow" as const,
+    qualityTier: "flagship" as const,
+    deprecated: false,
   },
   // DeepSeek Models
   {

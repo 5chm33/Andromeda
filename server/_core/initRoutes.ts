@@ -270,7 +270,7 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
       const { generatePlan } = await import("../taskPlanner.js");
       const { goal, context, maxSteps } = req.body;
       if (!goal) { res.status(400).json({ error: "goal required" }); return; }
-      const plan = await generatePlan(goal, { context, maxSteps });
+      const plan = await generatePlan(goal, context ?? "", { maxSteps });
       res.json(plan);
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });

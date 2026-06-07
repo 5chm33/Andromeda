@@ -10,6 +10,7 @@ import { buildFileIndex } from "./fileEngineChunking.js";
 import type { FileEntry, SSEEmitter } from "./fileEngineTypes.js";
 import { PRIORITY_FILES, TEXT_EXTS, getFileEngineApiUrl, getFileEngineProviderHeaders } from "./fileEngineTypes.js";
 import { runMultiPassEdit, loadAndCompressFiles } from "./fileEngineAnalysis.js";
+import JSZip from "jszip";
 const log = createLogger("fileEngineUtils");
 
 // ─── SOTA Improvements (v5.12) ──────────────────────────────────────────────

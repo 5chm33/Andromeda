@@ -56,6 +56,7 @@ export interface VectorSearchResult {
   id: string;
   text: string;
   score: number;            // cosine similarity 0-1
+  metadata?: Record<string, string | number | boolean>;
 }
 
 export interface EmbeddingProvider {

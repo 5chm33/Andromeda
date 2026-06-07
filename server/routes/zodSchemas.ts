@@ -51,7 +51,7 @@ export const busPublishSchema = z.object({
   type: z.enum(["finding", "progress", "artifact", "question", "answer", "handoff", "warning", "decision", "dependency"]),
   title: z.string().min(1),
   content: z.string().min(1),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
   replyTo: z.string().optional(),
   tags: z.array(z.string()).optional()
 });
@@ -82,7 +82,7 @@ export const apiKeyCreateSchema = z.object({
   scopes: z.array(z.enum(["search", "chat", "agent", "memory", "code", "self-improve", "scheduler", "admin", "*"])),
   rateLimit: z.number().optional(),
   expiresAt: z.string().optional(),
-  metadata: z.record(z.string()).optional()
+  metadata: z.record(z.string(), z.string()).optional()
 });
 
 export const testGenerateSchema = z.object({

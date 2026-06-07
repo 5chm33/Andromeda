@@ -309,9 +309,9 @@ export async function measureBenchmark(): Promise<BenchmarkBreakdown> {
   try {
     const { runPipeline } = await import("./selfTestPipeline.js");
     // Run a lightweight test (just type-check, no full test suite)
-    const result = await runPipeline({ typeCheckOnly: true, timeout: 20_000 });
-    if (result.passed) breakdown.testCoverage = 20;
-    else if (result.errors && result.errors.length <= 3) breakdown.testCoverage = 12;
+    const result = await runPipeline({ id: "rsi-typecheck", description: "Type-check only benchmark", changes: [], author: "self-improve", timestamp: Date.now(), priority: "low" });
+    if (result.success) breakdown.testCoverage = 20;
+    else if (result.error && result.error.length <= 200) breakdown.testCoverage = 12;
     else breakdown.testCoverage = 5;
   } catch {
     breakdown.testCoverage = 10;
