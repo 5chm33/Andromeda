@@ -1,7 +1,7 @@
 /**
- * Andromeda ThemeEngine v7.5.0
- * Real AI-generated background images with CSS animation overlays.
- * 9 cinematic skins — no canvas emoji art.
+ * Andromeda ThemeEngine v8.0.0
+ * Real AI-generated background images + video loops.
+ * 10 cinematic skins — no canvas emoji art.
  */
 
 export type SkinId =
@@ -13,7 +13,8 @@ export type SkinId =
   | "monsters"
   | "lofi"
   | "spacestation"
-  | "luigismansion";
+  | "luigismansion"
+  | "stealth";
 
 export interface SkinMeta {
   id: SkinId;
@@ -125,13 +126,24 @@ export const SKINS: SkinMeta[] = [
   {
     id: "luigismansion",
     name: "Luigi's Mansion",
-    description: "Grand haunted foyer with Boos, chandelier, and the Poltergust",
+    description: "Luigi, Gooigi, King Boo and friends in the haunted foyer",
     bgImage: "/skins/luigis_mansion.jpg",
     accent: "oklch(0.65 0.22 145)",
-    overlayColor: "rgba(0,8,5,0.30)",
+    overlayColor: "rgba(0,8,5,0.28)",
     animClass: "skin-luigi",
     previewGradient: "linear-gradient(135deg, #000a05 0%, #001508 50%, #000d05 100%)",
     labelColor: "#4ade80",
+  },
+  {
+    id: "stealth",
+    name: "Stealth",
+    description: "Clean minimal dark mode — pure black with subtle geometry",
+    bgImage: "/skins/stealth.jpg",
+    accent: "oklch(0.65 0.18 255)",
+    overlayColor: "rgba(0,0,0,0.15)",
+    animClass: "skin-stealth",
+    previewGradient: "linear-gradient(135deg, #050505 0%, #0a0a0a 50%, #080808 100%)",
+    labelColor: "#94a3b8",
   },
 ];
 

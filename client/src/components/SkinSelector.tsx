@@ -1,6 +1,6 @@
 /**
  * SkinSelector — floating palette button + modal skin picker
- * Andromeda v7.5.0 — 9 cinematic skins with real image thumbnails
+ * Andromeda v8.0.0 — 10 cinematic skins with real image thumbnails
  */
 import { useEffect, useRef, useState } from "react";
 import { Palette, Check } from "lucide-react";
@@ -72,8 +72,8 @@ export function SkinSelector({ currentSkin, onSkinChange }: SkinSelectorProps) {
             </p>
           </div>
 
-          {/* 3-column grid for 9 skins */}
-          <div className="grid grid-cols-3 gap-2">
+          {/* 5-column grid for 10 skins */}
+          <div className="grid grid-cols-5 gap-2">
             {SKINS.map((skin) => {
               const isActive = skin.id === currentSkin;
               return (

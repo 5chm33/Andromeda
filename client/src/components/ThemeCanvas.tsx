@@ -25,6 +25,7 @@ const SKIN_ASSETS: Record<SkinId, SkinAssets> = {
   lofi:          { poster: "/skins/lofi.jpg",            video: "/skins/videos/lofi.mp4"          },
   spacestation:  { poster: "/skins/space.jpg",           video: "/skins/videos/space.mp4"         },
   luigismansion: { poster: "/skins/luigis_mansion.jpg",  video: "/skins/videos/luigis_mansion.mp4"},
+  stealth:       { poster: "/skins/stealth.jpg",           video: ""                                  },
 };
 
 const SKIN_SWITCH_MS = 600;
@@ -57,7 +58,13 @@ export function ThemeCanvas({ skinId, onSkinChange, className = "" }: ThemeCanva
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
-    vid.src = SKIN_ASSETS[currentSkin].video;
+    const videoSrc = SKIN_ASSETS[currentSkin].video;
+    if (!videoSrc) {
+      vid.pause();
+      vid.removeAttribute("src");
+      return;
+    }
+    vid.src = videoSrc;
     vid.load();
     vid.play().catch(() => {
       // Autoplay blocked — video will play on first user interaction
@@ -105,7 +112,7 @@ export function ThemeCanvas({ skinId, onSkinChange, className = "" }: ThemeCanva
       />
 
       {/* Looping video — fades in once loaded, covers the poster */}
-      {!reducedMotion && (
+      {!reducedMotion && assets.video && (
         <video
           ref={videoRef}
           key={currentSkin}

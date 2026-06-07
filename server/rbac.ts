@@ -291,7 +291,7 @@ export function requireTenant(req: Request, res: Response, next: NextFunction): 
 const rateLimitWindows: Map<string, { count: number; windowStart: number }> = new Map();
 
 const RATE_LIMITS: Record<Role, number> = {
-  guest:    30,    // 30 req/min
+  guest:    120,   // 120 req/min (raised from 30 — page load bursts ~18 static + API calls)
   viewer:   60,    // 60 req/min
   operator: 120,   // 120 req/min
   editor:   240,   // 240 req/min
@@ -299,10 +299,20 @@ const RATE_LIMITS: Record<Role, number> = {
   system:   6000,  // 6000 req/min (service-to-service)
 };
 
+// Static asset extensions that should never be rate-limited
+const STATIC_EXTENSIONS = /\.(jpg|jpeg|png|gif|webp|svg|ico|mp4|webm|ogg|mp3|wav|woff|woff2|ttf|eot|js|css|map|json|txt|html)$/i;
+
 /**
  * Role-aware rate limiter. Limits are per actor per minute.
+ * Static assets (images, videos, fonts, JS, CSS) are exempt.
  */
 export function roleRateLimit(req: Request, res: Response, next: NextFunction): void {
+  // Skip rate limiting for static assets — they are served by Vite/Express static
+  // and a single page load fires dozens of requests for images/videos simultaneously
+  if (STATIC_EXTENSIONS.test(req.path)) {
+    next();
+    return;
+  }
   const actorId = req.actorId ?? req.ip ?? "unknown";
   const role = req.actorRole ?? "guest";
   const limit = RATE_LIMITS[role];
