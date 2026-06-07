@@ -634,6 +634,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/biasDetector.ts(15,35): error TS2307: Cannot find module '../drizzle/schema' or its corresponding type declarations.\n",
       "timestamp": "2026-06-07T17:11:17.473Z"
+    },
+    {
+      "id": "audit_1780852460655_rysoxl",
+      "action": "apply",
+      "proposalId": "prop_1780852459024_ba40s9",
+      "filename": "browser.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/browser.ts(9,21): error TS2307: Cannot find module 'fs' or its corresponding type declarations.\ndata/tmp_syntax/browser.ts(10,26): error TS2307: Cannot find module 'playwright-core' or",
+      "timestamp": "2026-06-07T17:14:20.655Z"
     }
   ]
 }

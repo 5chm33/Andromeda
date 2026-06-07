@@ -15,6 +15,12 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useLocation } from "wouter";
 import { Streamdown } from "streamdown";
 import { toast } from "sonner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const ENGINEER_LOGO =
   "https://d2xsxph8kpxj0f.cloudfront.net/114320538/CXRX5bpbYnFQmGG8voUpbs/andromeda_engineer_d67b9e19.png";
@@ -279,16 +285,22 @@ export default function Chat() {
   };
 
   return (
+    <TooltipProvider delayDuration={400}>
     <div className="flex flex-col h-screen bg-background text-foreground">
       {/* Header */}
       <header className="flex-shrink-0 flex items-center justify-between px-4 py-3 glass border-b border-border/40 z-10">
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate("/")}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => navigate("/")}
+                className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>Back to home</TooltipContent>
+          </Tooltip>
           <div className="w-7 h-7 rounded-lg overflow-hidden border border-border/50 bg-card flex-shrink-0">
             <img
               src={ENGINEER_LOGO}
@@ -305,34 +317,48 @@ export default function Chat() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={toggleModel}
-            title={model === "deepseek-chat" ? "Switch to Reasoner" : "Switch to Chat"}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all border ${
-              model === "deepseek-reasoner"
-                ? "bg-amber-500/15 text-amber-300 border-amber-500/30"
-                : "text-muted-foreground hover:text-foreground hover:bg-accent border-transparent"
-            }`}
-          >
-            <Zap className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">{model === "deepseek-reasoner" ? "Reasoner" : "Chat"}</span>
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={toggleModel}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all border ${
+                  model === "deepseek-reasoner"
+                    ? "bg-amber-500/15 text-amber-300 border-amber-500/30"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent border-transparent"
+                }`}
+              >
+                <Zap className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">{model === "deepseek-reasoner" ? "Reasoner" : "Chat"}</span>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {model === "deepseek-chat" ? "Switch to Reasoner (deeper thinking)" : "Switch to Chat (faster responses)"}
+            </TooltipContent>
+          </Tooltip>
           {messages.length > 0 && (
-            <button
-              onClick={clearChat}
-              className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-              title="Clear conversation"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={clearChat}
+                  className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>Clear conversation</TooltipContent>
+            </Tooltip>
           )}
-          <button
-            onClick={() => navigate("/")}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-            title="New search"
-          >
-            <Plus className="w-4 h-4" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => navigate("/")}
+                className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>New search</TooltipContent>
+          </Tooltip>
         </div>
       </header>
 
@@ -454,22 +480,32 @@ export default function Chat() {
             />
             <div className="absolute right-2 bottom-2 flex items-center gap-1">
               {isLoading ? (
-                <button
-                  onClick={stopStreaming}
-                  className="p-2 rounded-xl bg-destructive/20 text-destructive hover:bg-destructive/30 transition-colors"
-                  title="Stop generation"
-                >
-                  <Square className="w-4 h-4" />
-                </button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={stopStreaming}
+                      className="p-2 rounded-xl bg-destructive/20 text-destructive hover:bg-destructive/30 transition-colors"
+                    >
+                      <Square className="w-4 h-4" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>Stop generation</TooltipContent>
+                </Tooltip>
               ) : (
-                <button
-                  onClick={isAuthenticated ? sendMessage : () => (window.location.href = getLoginUrl())}
-                  disabled={!input.trim() && isAuthenticated}
-                  className="p-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                  title="Send message"
-                >
-                  {isAuthenticated ? <Send className="w-4 h-4" /> : <MessageSquare className="w-4 h-4" />}
-                </button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={isAuthenticated ? sendMessage : () => (window.location.href = getLoginUrl())}
+                      disabled={!input.trim() && isAuthenticated}
+                      className="p-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      {isAuthenticated ? <Send className="w-4 h-4" /> : <MessageSquare className="w-4 h-4" />}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {isAuthenticated ? "Send message (Enter)" : "Sign in to chat"}
+                  </TooltipContent>
+                </Tooltip>
               )}
             </div>
           </div>
@@ -485,5 +521,6 @@ export default function Chat() {
         </div>
       </div>
     </div>
+    </TooltipProvider>
   );
 }
