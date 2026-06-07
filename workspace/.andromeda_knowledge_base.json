@@ -1353,6 +1353,22 @@
       "confidence": 0.9,
       "createdAt": 1780852589146,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780852590547_u71e2y",
+      "category": "antipattern",
+      "title": "Failure: Improve readability of diversity scoring logic",
+      "description": "Failed to apply \"Improve readability of diversity scoring logic\" to biasDetector.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify biasDetector.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for biasDetector.ts: Improve readability of diversity scoring logic — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "biasDetector.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780852590547,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -1495,5 +1511,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T17:16:29.146Z"
+  "_lastUpdated": "2026-06-07T17:16:30.547Z"
 }
