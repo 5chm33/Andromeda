@@ -36,7 +36,8 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ input }) => {
-        const sources = await aggregateSearch(input.query, input.filter);
+        // v8.4.0: getSources is called from the frontend explicitly — Brave is OK here
+        const sources = await aggregateSearch(input.query, input.filter, 12, { useBrave: true });
         await upsertSuggestion(input.query);
         return { sources };
       }),

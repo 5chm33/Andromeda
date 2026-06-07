@@ -121,12 +121,13 @@ async function executeWebSearch(args: Record<string, unknown>, _ctx: ToolExecuti
   }
 
   // ── Cost log ──────────────────────────────────────────────────────────────
-  // v6.15: Track Brave API query count and estimated cost per session.
-  // Brave Search API pricing: $3/1000 queries = $0.003/query.
+  // v8.4.0: Brave is OPT-IN only. Set BRAVE_SEARCH_ENABLED=true in .env.local to enable.
+  // Default: SearXNG (free) → DuckDuckGo (free). Brave (paid) requires explicit opt-in.
+  // This prevents runaway costs ($120/2 days) from agent tool calls.
   const startMs = Date.now();
-  const isBrave = !!process.env.BRAVE_SEARCH_API_KEY;
-  const provider = isBrave ? "Brave" : process.env.SEARXNG_URL ? "SearXNG" : "DuckDuckGo";
-  if (isBrave) {
+  const braveEnabled = process.env.BRAVE_SEARCH_ENABLED === "true" && !!process.env.BRAVE_SEARCH_API_KEY;
+  const provider = braveEnabled ? "Brave" : process.env.SEARXNG_URL ? "SearXNG" : "DuckDuckGo";
+  if (braveEnabled) {
     (global as any).__braveQueryCount = ((global as any).__braveQueryCount ?? 0) + 1;
     const count: number = (global as any).__braveQueryCount;
     const estimatedCost = (count * 0.003).toFixed(3);
@@ -138,11 +139,12 @@ async function executeWebSearch(args: Record<string, unknown>, _ctx: ToolExecuti
   try {
     let results: Array<{ title: string; url: string; snippet: string }> = [];
 
-    if (process.env.BRAVE_SEARCH_API_KEY) {
+    // v8.4.0: Only call Brave when BRAVE_SEARCH_ENABLED=true is set in .env.local
+    if (braveEnabled) {
       results = await searchBrave(query, numResults);
     }
     if (results.length === 0 && process.env.SEARXNG_URL) {
-      console.log("[WebSearch] Brave returned 0 results, trying SearXNG...");
+      if (braveEnabled) console.log("[WebSearch] Brave returned 0 results, trying SearXNG...");
       results = await searchSearxng(query, numResults);
     }
     if (results.length === 0) {

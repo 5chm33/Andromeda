@@ -111,6 +111,8 @@ export function getFavicon(domain: string): string {
 }
 
 // ─── Brave Search API (primary — $5/1000 queries) ────────────────────────────
+// v8.4.0: searchBrave is only called when BRAVE_SEARCH_ENABLED=true OR when explicitly
+// passed { useBrave: true } to aggregateSearch. Never called automatically.
 export async function searchBrave(
   query: string,
   filter = "all",
@@ -249,10 +251,22 @@ export async function searchSearXNG(query: string, filter = "all"): Promise<Sear
 }
 
 // ─── Aggregate: Brave primary + SearXNG supplement ───────────────────────────
+//
+// v8.4.0 COST CONTROL: Brave Search is NEVER called automatically.
+// It is only called when the caller explicitly passes { useBrave: true }.
+// The default path (standard chat queries) uses SearXNG only, which is free.
+// Brave is reserved for:
+//   - User explicitly selects "Web" or "News" filter
+//   - User explicitly clicks "Deep Research"
+//   - Programmatic callers that pass { useBrave: true }
+//
+// This prevents the $120/2-day runaway cost from background daemons,
+// AutoBaseline evals, and conversational queries all hitting Brave.
 export async function aggregateSearch(
   query: string,
   filter = "all",
-  maxResults = 12
+  maxResults = 12,
+  options: { useBrave?: boolean } = {}
 ): Promise<SearchSource[]> {
   // v5.34: Check cache first
   const cacheKey = `${query}:${filter}:${maxResults}`;
@@ -262,9 +276,12 @@ export async function aggregateSearch(
     return cached;
   }
 
-  // Run both in parallel — Brave is primary, SearXNG fills gaps
+  // v8.4.0: Only call Brave when explicitly opted in.
+  // SearXNG is free — use it as the default. Brave is paid — opt-in only.
+  const shouldUseBrave = options.useBrave === true;
+
   const [braveResults, searxResults] = await Promise.allSettled([
-    searchBrave(query, filter, 10),
+    shouldUseBrave ? searchBrave(query, filter, 10) : Promise.resolve([]),
     searchSearXNG(query, filter),
   ]);
 
@@ -273,10 +290,12 @@ export async function aggregateSearch(
 
   // v5.51: DuckDuckGo HTML fallback when both Brave and SearXNG return nothing
   let ddg: SearchSource[] = [];
-  if (brave.length === 0 && searx.length === 0) {
-    const braveErr = braveResults.status === "rejected" ? braveResults.reason : "returned 0 results";
+  // v8.4.0: Only run DDG fallback when SearXNG actually returned nothing AND we expected results.
+  // Skip DDG entirely for conversational queries (they return [] by design, not by failure).
+  if (brave.length === 0 && searx.length === 0 && maxResults > 0) {
+    const braveMsg = shouldUseBrave ? (braveResults.status === "rejected" ? braveResults.reason : "returned 0 results") : "skipped (opt-in only)";
     const searxErr = searxResults.status === "rejected" ? searxResults.reason : "returned 0 results";
-    console.warn("[Search] Primary sources failed — Brave:", braveErr, "| SearXNG:", searxErr, "| Trying DuckDuckGo fallback...");
+    console.warn("[Search] Primary sources failed — Brave:", braveMsg, "| SearXNG:", searxErr, "| Trying DuckDuckGo fallback...");
     try {
       // v5.52: Use DDG JSON API instead of HTML scraping (HTML returns CAPTCHA on server)
       // DDG instant answer API: free, no auth, returns structured JSON
@@ -380,7 +399,7 @@ export async function deepResearchSearch(
   const results = await Promise.allSettled(
     queries.map(async (q) => ({
       query: q,
-      sources: await aggregateSearch(q, "all", 8),
+      sources: await aggregateSearch(q, "all", 8, { useBrave: true }),  // v8.4.0: Brave OK for explicit deep research
     }))
   );
 

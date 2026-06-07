@@ -445,7 +445,8 @@ export async function streamAgentPlan(query: string, res: Response): Promise<voi
       if (step.type === "search") {
         // Dynamic import to avoid circular deps — search module is in same dir
         const { aggregateSearch } = await import("./search");
-        const sources = await aggregateSearch(step.query ?? query);
+        // v8.4.0: Agent plan search steps use SearXNG only (free). Brave is NOT used here.
+        const sources = await aggregateSearch(step.query ?? query, "all", 8, { useBrave: false });
         result = sources
           .slice(0, 6)
           .map((s, idx) => `[${idx + 1}] ${s.title} (${s.domain})\n${s.snippet}`)
