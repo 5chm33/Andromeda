@@ -4025,6 +4025,22 @@
       "confidence": 0.9,
       "createdAt": 1780865251738,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780865253156_spkk4d",
+      "category": "antipattern",
+      "title": "Failure: Improve readability of extractFactualClaims function",
+      "description": "Failed to apply \"Improve readability of extractFactualClaims function\" to grounding.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify grounding.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for grounding.ts: Improve readability of extractFactualClaims function — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "grounding.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780865253156,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -4167,5 +4183,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T20:47:31.738Z"
+  "_lastUpdated": "2026-06-07T20:47:33.156Z"
 }
