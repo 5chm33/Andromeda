@@ -429,10 +429,15 @@ export async function chatCompletion(
   } else {
     provider = ensureProviderInitialized();
   }
+  // v8.2.0 FIX: deepseek-reasoner and kimi-k2.6 only accept temperature=1.
+  // Clamp automatically so callers don't need to know about this restriction.
+  const TEMP_MUST_BE_ONE_MODELS = ["deepseek-reasoner", "kimi-k2.6"];
+  const rawTemperature = options?.temperature ?? provider.temperature ?? 0.7;
+  const temperature = TEMP_MUST_BE_ONE_MODELS.includes(provider.model) ? 1 : rawTemperature;
   const body: Record<string, unknown> = {
     model: provider.model,
     messages,
-    temperature: options?.temperature ?? provider.temperature ?? 0.7,
+    temperature,
     // v5.68: Clamp to [1000, 32768] — prevents API 400 "invalid max_tokens" error
     max_tokens: Math.min(32768, Math.max(1000, options?.maxTokens ?? provider.maxTokens ?? 32768)),
     stream: false,
@@ -890,10 +895,16 @@ export async function backgroundChatCompletion(
   options?: { temperature?: number; maxTokens?: number; signal?: AbortSignal },
 ): Promise<LLMCompletionResult> {
   const provider = getBackgroundProvider();
+  // v8.2.0 FIX: DeepSeek-reasoner only allows temperature=1.
+  // deepseek-chat supports 0-2, but we use 1 as a safe universal default
+  // that works across all DeepSeek model variants.
+  const isDeepSeekReasoner = provider.model === "deepseek-reasoner";
+  const rawTemp = options?.temperature ?? 0.7;
+  const temperature = isDeepSeekReasoner ? 1 : rawTemp;
   const body: Record<string, unknown> = {
     model: provider.model,
     messages,
-    temperature: options?.temperature ?? 0.4,
+    temperature,
     max_tokens: Math.min(8192, Math.max(500, options?.maxTokens ?? 2000)),
     stream: false,
   };

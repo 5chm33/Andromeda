@@ -210,7 +210,8 @@ async function _streamToResponseCore(
           stream: true,
           // v5.68: Clamp to [1000, 32768] — prevents DeepSeek 400 "invalid max_tokens" error
           max_tokens: Math.min(32768, Math.max(1000, options.maxTokens ?? calculateMaxTokens(messages))),
-          temperature: options.temperature ?? 0.5,
+          // v8.2.0 FIX: deepseek-reasoner and kimi-k2.6 only accept temperature=1
+          temperature: ["deepseek-reasoner", "kimi-k2.6"].includes(getActiveModel()) ? 1 : (options.temperature ?? 0.5),
           stream_options: { include_usage: true },
         }),
       });

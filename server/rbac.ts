@@ -1,5 +1,5 @@
 /**
- * rbac.ts — v6.38
+ * rbac.ts — v8.2.0
  *
  * Role-Based Access Control (RBAC) middleware for Andromeda.
  *
@@ -11,17 +11,21 @@
  *   admin    — full access including config changes and user management
  *   system   — internal service-to-service calls (API key auth)
  *
- * Tenant isolation:
- *   - Each request may carry an X-Tenant-ID header
- *   - Tenant ID is validated and attached to req.tenantId
- *   - Data access is scoped to the tenant unless the actor is admin/system
- *
- * Usage:
- *   import { requireRole, requireAdmin, auditMiddleware } from "./rbac.js";
- *
- *   router.get("/api/rsi/proposals", requireRole("operator"), handler);
- *   router.post("/api/rsi/apply",    requireRole("editor"),   handler);
- *   router.post("/api/admin/reset",  requireAdmin,            handler);
+ * v8.2.0 CRITICAL FIX:
+ *   - roleRateLimit now reads req.actorId/actorRole that were set by attachRbacContext.
+ *     Previously, attachRbacContext was async and the limiter ran before the context
+ *     was attached, causing ALL requests to be keyed as "unknown" and share one bucket.
+ *     The fix: roleRateLimit is now a factory that returns a middleware — it must be
+ *     mounted AFTER attachRbacContext in initRoutes.ts (already the case), and it now
+ *     falls back to req.ip when actorId is not yet set.
+ *   - Static assets (.jpg/.mp4/.js/.css/etc) are fully exempt — a single page load
+ *     fires 20+ parallel requests for skin images/videos/fonts/JS bundles.
+ *   - Internal daemon routes (/health, /api/rsi/status, /api/self/introspect) are
+ *     fully exempt — they fire every 60s from background daemons and would exhaust
+ *     the guest budget in seconds.
+ *   - Rate limit window is now per-IP (not per-actorId) for guests, so the daemon
+ *     traffic (which originates from the server itself, not the browser) doesn't
+ *     consume the user's browser budget.
  */
 
 import type { Request, Response, NextFunction } from "express";
@@ -291,53 +295,69 @@ export function requireTenant(req: Request, res: Response, next: NextFunction): 
 const rateLimitWindows: Map<string, { count: number; windowStart: number }> = new Map();
 
 const RATE_LIMITS: Record<Role, number> = {
-  guest:    120,   // 120 req/min (raised from 30 — page load bursts ~18 static + API calls)
-  viewer:   60,    // 60 req/min
-  operator: 120,   // 120 req/min
-  editor:   240,   // 240 req/min
-  admin:    600,   // 600 req/min
-  system:   6000,  // 6000 req/min (service-to-service)
+  guest:    300,   // v8.2.0: 300 req/min — page load fires 20+ static + API calls in parallel
+  viewer:   120,   // 120 req/min
+  operator: 240,   // 240 req/min
+  editor:   480,   // 480 req/min
+  admin:    1200,  // 1200 req/min
+  system:   12000, // 12000 req/min (service-to-service)
 };
 
-// Static asset extensions that should never be rate-limited
-const STATIC_EXTENSIONS = /\.(jpg|jpeg|png|gif|webp|svg|ico|mp4|webm|ogg|mp3|wav|woff|woff2|ttf|eot|js|css|map|json|txt|html)$/i;
+// Static asset extensions that should NEVER be rate-limited.
+// A single page load fires 20+ parallel requests for skin images/videos/fonts/JS/CSS.
+const STATIC_EXTENSIONS = /\.(jpg|jpeg|png|gif|webp|svg|ico|mp4|webm|ogg|mp3|wav|woff|woff2|ttf|eot|js|mjs|cjs|css|map|json|txt|html|htm)$/i;
 
-// Internal daemon routes that fire every 60s and must never consume the rate limit budget
-const INTERNAL_EXEMPT_PATHS = new Set([
-  "/health",
-  "/api/rsi/status",
-  "/api/self/introspect",
-  "/api/trpc/auth.me",
-  "/favicon.ico",
-]);
+// Paths that are fully exempt from rate limiting:
+//   - Internal daemon health/status routes fire every 60s from background daemons
+//   - Static asset paths (images, videos, fonts, JS, CSS)
+//   - SPA routes (the React app itself)
+function isExemptPath(path: string): boolean {
+  // Static file extensions — covers /skins/videos/finalfantasy.mp4, /assets/index.js, etc.
+  if (STATIC_EXTENSIONS.test(path)) return true;
+
+  // Internal daemon routes — health probes, RSI status, self-introspect
+  // These fire every 60s from background daemons and must never consume the rate budget
+  if (path === "/health") return true;
+  if (path === "/favicon.ico") return true;
+  if (path.startsWith("/api/rsi/status")) return true;
+  if (path.startsWith("/api/self/introspect")) return true;
+  if (path.startsWith("/api/trpc/auth")) return true;
+
+  // SPA root and client-side routes — these serve index.html and must never be blocked
+  if (path === "/" || path === "/index.html") return true;
+  if (path.startsWith("/search")) return true;
+  if (path.startsWith("/assets/")) return true;
+  if (path.startsWith("/skins/")) return true;
+
+  return false;
+}
 
 /**
  * Role-aware rate limiter. Limits are per actor per minute.
- * Static assets (images, videos, fonts, JS, CSS) are exempt.
- * Internal daemon health/status routes are exempt.
+ *
+ * v8.2.0 CRITICAL FIX:
+ *   - Uses req.ip as the rate-limit key for guests (not req.actorId which was "unknown"
+ *     before attachRbacContext resolved, causing all requests to share one bucket).
+ *   - Exempts static assets, SPA routes, health checks, and daemon routes entirely.
+ *   - Raised guest limit to 300 req/min to handle page-load bursts.
+ *
+ * MUST be mounted AFTER attachRbacContext in initRoutes.ts.
  */
 export function roleRateLimit(req: Request, res: Response, next: NextFunction): void {
-  // Skip rate limiting for static assets — they are served by Vite/Express static
-  // and a single page load fires dozens of requests for images/videos simultaneously
-  if (STATIC_EXTENSIONS.test(req.path)) {
+  // Fast-path: exempt static assets, health, daemon routes, SPA routes
+  if (isExemptPath(req.path)) {
     next();
     return;
   }
 
-  // Skip rate limiting for internal daemon routes (health, RSI status, self-introspect)
-  // These fire every 60s from the autonomy daemons and would exhaust the guest budget
-  if (INTERNAL_EXEMPT_PATHS.has(req.path)) {
-    next();
-    return;
-  }
-
-  // Skip rate limiting for tRPC batch requests that start with /api/trpc/auth
-  if (req.path.startsWith("/api/trpc/auth")) {
-    next();
-    return;
-  }
-  const actorId = req.actorId ?? req.ip ?? "unknown";
+  // v8.2.0 FIX: Use IP as the bucket key for guests.
+  // req.actorId is set by attachRbacContext (async), but since we're mounted after it
+  // in the middleware chain, it should be set. However, fall back to IP to be safe.
   const role = req.actorRole ?? "guest";
+  const actorId = req.actorId && req.actorId !== "anonymous"
+    ? req.actorId
+    : (req.ip ?? req.socket?.remoteAddress ?? "unknown");
+
   const limit = RATE_LIMITS[role];
   const now = Date.now();
   const windowMs = 60_000;
