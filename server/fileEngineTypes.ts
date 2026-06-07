@@ -42,7 +42,7 @@ const DEEPSEEK_API_URL = process.env.LLM_API_URL || process.env.DEEPSEEK_API_URL
 /** Maximum characters for a single-pass analysis.
  *  v5.27: Now model-aware — uses modelRegistry.getContextWindow() for per-model limits.
  *  Formula: contextWindow * 4 chars/token * 0.75 (reserve 25% for prompts/output) */
-let MAX_CONTEXT_CHARS = 960_000; // fallback
+export let MAX_CONTEXT_CHARS = 960_000; // fallback
 try {
   // v5.29: Using static import
   const activeModel = process.env.LLM_DEFAULT_MODEL || "deepseek-chat";  // v6.17: use short form

@@ -473,7 +473,7 @@ export default function Home() {
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
 
       {/* ── Animated background canvas ─────────────────────────────────── */}
-      <ThemeCanvas skin={currentSkin} />
+      <ThemeCanvas skinId={currentSkin} />
 
       {/* ── Background skin selector (floating palette button) ─────────── */}
       <SkinSelector currentSkin={currentSkin} onSkinChange={setCurrentSkin} />

@@ -81,7 +81,7 @@ import {
 } from "@/components/search";
 import type { DeepResearchProgress, AgentStep, AgentStepResult, AttachedFile } from "@/components/search";
 
-type FilterType = "all" | "web" | "academic";
+type FilterType = "all" | "web" | "academic" | "news";
 type SearchMode = "standard" | "deep";
 
 interface ThreadTurn {
@@ -1508,7 +1508,7 @@ export default function Search() {
       ref={dropZoneRef}
     >
       {/* Cinematic background canvas */}
-      <ThemeCanvas skin={currentSkin} />
+      <ThemeCanvas skinId={currentSkin} />
       {/* Skin picker */}
       <SkinSelector currentSkin={currentSkin} onSkinChange={setCurrentSkin} />
 

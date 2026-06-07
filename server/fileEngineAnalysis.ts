@@ -7,7 +7,7 @@ import JSZip from "jszip";
 import { getActiveProvider } from "./llmProvider.js";
 import { createLogger } from "./logger.js";
 import type { FileEntry, FileIndex, MultiPassResult, SSEEmitter } from "./fileEngineTypes.js";
-import { fileEngineTypes, js, TEXT_EXTS, compressFile, getFileEngineApiUrl, MAX_REQUESTED_FILES, getFileEngineProviderHeaders, getModelContextMaxOutput } from "./fileEngineTypes.js";
+import { fileEngineTypes, js, TEXT_EXTS, compressFile, getFileEngineApiUrl, MAX_REQUESTED_FILES, getFileEngineProviderHeaders, getModelContextMaxOutput, MAX_CONTEXT_CHARS } from "./fileEngineTypes.js";
 import { buildFileIndex, smartChunkFile } from "./fileEngineChunking.js";
 const log = createLogger("fileEngineAnalysis");
 
