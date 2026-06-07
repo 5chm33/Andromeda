@@ -2056,6 +2056,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/codeIntel.ts(20,21): error TS2307: Cannot find module 'fs' or its corresponding type declarations.\ndata/tmp_syntax/codeIntel.ts(21,23): error TS2307: Cannot find module 'path' or its c",
       "timestamp": "2026-06-07T19:30:16.517Z"
+    },
+    {
+      "id": "audit_1780860798841_s7r6e0",
+      "action": "apply",
+      "proposalId": "prop_1780860554353_5fp5qj",
+      "filename": "codeIntel.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/codeIntel.ts(20,21): error TS2307: Cannot find module 'fs' or its corresponding type declarations.\ndata/tmp_syntax/codeIntel.ts(21,23): error TS2307: Cannot find module 'path' or its c",
+      "timestamp": "2026-06-07T19:33:18.841Z"
     }
   ]
 }
