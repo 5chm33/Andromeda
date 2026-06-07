@@ -8,7 +8,7 @@
  * - Crash guard activation
  */
 
-import { existsSync, mkdirSync, writeFileSync, readFileSync, unlinkSync } from "fs";
+import { existsSync, mkdirSync, writeFileSync, readFileSync, unlinkSync, renameSync } from "fs";
 import { join } from "path";
 import { execSync } from "child_process";
 
@@ -53,12 +53,17 @@ export async function runBootIntegrityCheck(): Promise<void> {
       try { unlinkSync(crashFlagPath); } catch { /* ignore */ }
     }
 
-    // Write crash flag — cleared on clean shutdown via SIGTERM/SIGINT handlers
+    // Write crash flag atomically (write to .tmp then rename) to prevent partial
+    // writes that could cause a false rollback on next boot if the process is
+    // killed mid-write.
+    const crashFlagTmp = crashFlagPath + ".tmp";
+    try { unlinkSync(crashFlagTmp); } catch { /* ignore leftover */ }
     writeFileSync(
-      crashFlagPath,
+      crashFlagTmp,
       JSON.stringify({ pid: process.pid, startedAt: new Date().toISOString() }),
       "utf-8"
     );
+    renameSync(crashFlagTmp, crashFlagPath);
 
     const bootCount = existsSync(bootCountPath)
       ? (parseInt(readFileSync(bootCountPath, "utf-8") || "0") + 1)
