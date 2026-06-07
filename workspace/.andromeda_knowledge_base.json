@@ -329,6 +329,22 @@
       "confidence": 0.9,
       "createdAt": 1780575817977,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780842859500_8q5u7u",
+      "category": "antipattern",
+      "title": "Failure: Improve readability of fallbackSummary method",
+      "description": "Failed to apply \"Improve readability of fallbackSummary method\" to contextManager.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify contextManager.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for contextManager.ts: Improve readability of fallbackSummary method — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "contextManager.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780842859500,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -471,5 +487,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T08:22:11.568Z"
+  "_lastUpdated": "2026-06-07T14:34:19.500Z"
 }
