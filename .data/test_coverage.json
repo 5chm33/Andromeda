@@ -1,5 +1,5 @@
 {
-  "timestamp": 1780849503769,
+  "timestamp": 1780856858013,
   "totalModules": 201,
   "testedModules": 140,
   "untestedModules": 61,
@@ -810,6 +810,7 @@
         "extractSignatures",
         "categorizeFile",
         "compressFile",
+        "MAX_CONTEXT_CHARS",
         "MAX_REQUESTED_FILES",
         "TEXT_EXTS",
         "PRIORITY_FILES",
@@ -823,6 +824,7 @@
         "extractSignatures",
         "categorizeFile",
         "compressFile",
+        "MAX_CONTEXT_CHARS",
         "MAX_REQUESTED_FILES",
         "TEXT_EXTS",
         "PRIORITY_FILES",
@@ -1239,7 +1241,8 @@
         "dbLoadCycles",
         "dbSaveEvalRun",
         "dbLoadEvalHistory",
-        "runRsiDbMigration"
+        "runRsiDbMigration",
+        "getRsiDbStatus"
       ],
       "testedFunctions": [],
       "untestedFunctions": [
@@ -1249,7 +1252,8 @@
         "dbLoadCycles",
         "dbSaveEvalRun",
         "dbLoadEvalHistory",
-        "runRsiDbMigration"
+        "runRsiDbMigration",
+        "getRsiDbStatus"
       ],
       "coveragePercent": 0
     },

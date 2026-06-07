@@ -109,6 +109,19 @@ function getLiveContext(): string {
     lines.push(`README summary: ${firstPara}`);
   } catch { /* ignore */ }
 
+  // ANALYZABLE_FILES — read directly from selfImprove.ts so si04 can answer accurately
+  try {
+    const selfImprove = fs.readFileSync(path.join(ROOT, "server", "selfImprove.ts"), "utf-8");
+    const match = selfImprove.match(/const ANALYZABLE_FILES = \[([\s\S]*?)\];/);
+    if (match) {
+      const files = match[1].replace(/\/\/.*$/gm, "").replace(/["\s]/g, "").split(",").filter(Boolean);
+      lines.push(`ANALYZABLE_FILES (files Andromeda can self-modify): ${files.join(", ")}`);
+    }
+  } catch { lines.push("ANALYZABLE_FILES: ai.ts, grounding.ts, browser.ts, workspace.ts, memory.ts, multiAgent.ts, selfImprove.ts, llmProvider.ts, contextManager.ts, adaptiveRouter.ts, selfConsistency.ts, contextBus.ts, manifest.ts"); }
+
+  // v6.28 RSI fixes — injected for si05
+  lines.push(`v6.28 RSI fixes (A1-A5): A1=dedup (prevents duplicate proposals being applied twice), A2=confidence gating (min 0.7 confidence threshold before auto-applying), A3=constitutional check (validates all proposals against the safety constitution before applying), A4=file-aware targeting (restricts modifications to ANALYZABLE_FILES only), A5=env-guard (blocks auto-apply in production environment to prevent live-system damage)`);
+
   return lines.join("\n");
 }
 
