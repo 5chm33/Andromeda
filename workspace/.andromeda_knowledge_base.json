@@ -2281,6 +2281,22 @@
       "confidence": 0.9,
       "createdAt": 1780856195368,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780856196597_gv0p0n",
+      "category": "antipattern",
+      "title": "Failure: Extract duplicate file preloading logic into a helper method",
+      "description": "Failed to apply \"Extract duplicate file preloading logic into a helper method\" to reactEngine.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify reactEngine.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for reactEngine.ts: Extract duplicate file preloading logic into a helper method — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "reactEngine.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780856196597,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -2423,5 +2439,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T18:16:35.368Z"
+  "_lastUpdated": "2026-06-07T18:16:36.597Z"
 }
