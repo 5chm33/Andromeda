@@ -265,6 +265,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/ai.ts(17,15): error TS2307: Cannot find module './aiTokens.js' or its corresponding type declarations.\ndata/tmp_syntax/ai.ts(19,15): error TS2307: Cannot find module './aiPrompts.js' o",
       "timestamp": "2026-06-07T15:04:24.696Z"
+    },
+    {
+      "id": "audit_1780844909658_h4n106",
+      "action": "apply",
+      "proposalId": "prop_1780844908157_qi2cet",
+      "filename": "streamRouter.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/streamRouter.ts(1,32): error TS2307: Cannot find module './aiPlanning.js' or its corresponding type declarations.\ndata/tmp_syntax/streamRouter.ts(3,34): error TS2307: Cannot find modul",
+      "timestamp": "2026-06-07T15:08:29.658Z"
     }
   ]
 }
