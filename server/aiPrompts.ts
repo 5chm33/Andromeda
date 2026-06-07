@@ -3,7 +3,7 @@
  * System prompt builders for standard, deep-research, and file-analysis modes.
  * Extracted from ai.ts (god-module split).
  */
-import type { SearchSource } from "../../drizzle/schema.js";
+import type { SearchSource } from "../drizzle/schema.js";
 import { getGroundingSystemPromptAddendum } from "./grounding.js";
 import { getManifestPrompt } from "./manifest.js";
 import { getAllTools } from "./tools/index.js";

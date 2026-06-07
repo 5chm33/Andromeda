@@ -5,7 +5,7 @@
  */
 // v8.5.0: recordUsage must come from tokenBudgetManager (takes sessionId string), not fileEngineUtils (takes CostBudget object)
 import { recordUsage } from "./tokenBudgetManager.js";
-import type { SearchSource } from "../../drizzle/schema.js";
+import type { SearchSource } from "../drizzle/schema.js";
 import type { Response } from "express";
 import { getActiveProvider } from "./llmProvider.js";
 import { recordRequestOutcome } from "./selfMonitor.js";
