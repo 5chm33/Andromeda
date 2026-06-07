@@ -302,14 +302,37 @@ const RATE_LIMITS: Record<Role, number> = {
 // Static asset extensions that should never be rate-limited
 const STATIC_EXTENSIONS = /\.(jpg|jpeg|png|gif|webp|svg|ico|mp4|webm|ogg|mp3|wav|woff|woff2|ttf|eot|js|css|map|json|txt|html)$/i;
 
+// Internal daemon routes that fire every 60s and must never consume the rate limit budget
+const INTERNAL_EXEMPT_PATHS = new Set([
+  "/health",
+  "/api/rsi/status",
+  "/api/self/introspect",
+  "/api/trpc/auth.me",
+  "/favicon.ico",
+]);
+
 /**
  * Role-aware rate limiter. Limits are per actor per minute.
  * Static assets (images, videos, fonts, JS, CSS) are exempt.
+ * Internal daemon health/status routes are exempt.
  */
 export function roleRateLimit(req: Request, res: Response, next: NextFunction): void {
   // Skip rate limiting for static assets — they are served by Vite/Express static
   // and a single page load fires dozens of requests for images/videos simultaneously
   if (STATIC_EXTENSIONS.test(req.path)) {
+    next();
+    return;
+  }
+
+  // Skip rate limiting for internal daemon routes (health, RSI status, self-introspect)
+  // These fire every 60s from the autonomy daemons and would exhaust the guest budget
+  if (INTERNAL_EXEMPT_PATHS.has(req.path)) {
+    next();
+    return;
+  }
+
+  // Skip rate limiting for tRPC batch requests that start with /api/trpc/auth
+  if (req.path.startsWith("/api/trpc/auth")) {
     next();
     return;
   }
