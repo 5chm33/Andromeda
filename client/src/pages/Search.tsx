@@ -2148,10 +2148,13 @@ export default function Search() {
         style={{
           marginLeft: leftSidebarOpen ? "260px" : "56px",
           marginRight: rightPanelOpen ? "288px" : "0px",
+          position: "relative",
+          zIndex: 1,  // v8.6.0: must be above ThemeCanvas (z-index:0) so answer text is visible
         }}
       >
         {/* ─── CHAT AREA ────────────────────────────────────────────────────── */}
-        <div className="flex-1 overflow-y-auto pb-56">
+        {/* v8.6.0: semi-transparent backdrop so text is readable over the video background */}
+        <div className="flex-1 overflow-y-auto pb-56" style={{ background: "rgba(13,13,13,0.55)" }}>
           {/* v5.38: Agent Mode active banner */}
           {isAgentMode && (
             <div className="sticky top-0 z-20 px-4 py-2 border-b border-cyan-500/20" style={{ background: 'linear-gradient(to right, rgba(6,182,212,0.05), rgba(6,182,212,0.02))' }}>

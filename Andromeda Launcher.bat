@@ -1,10 +1,10 @@
 @echo off
-title Andromeda AI v8.5.0
+title Andromeda AI v8.6.0
 color 0A
 
 echo.
 echo  ============================================================
-echo   Andromeda AI  v8.5.0
+echo   Andromeda AI  v8.6.0
 echo  ============================================================
 echo.
 
@@ -64,7 +64,7 @@ if exist "dist\" (
     echo  [OK] No old dist\ found.
 )
 echo.
-echo  [INFO] Compiling fresh build from source (takes ~30 seconds)...
+echo  [INFO] Compiling fresh build from source v8.6.0 (takes ~30 seconds)...
 where pnpm >nul 2>&1
 if errorlevel 1 (
     call npm install -g pnpm
@@ -81,7 +81,7 @@ if errorlevel 1 (
     exit /b 1
 )
 echo.
-echo  [OK] Build complete — running v8.5.0 source.
+echo  [OK] Build complete — running v8.6.0 source.
 echo.
 
 :: ── Step 6: Clear port 3000 ──────────────────────────────────────────────────
@@ -96,7 +96,7 @@ start /min "" cmd /c "ping -n 6 127.0.0.1 >nul & start http://localhost:3000"
 :START_SERVER
 echo.
 echo  ============================================================
-echo   Andromeda AI v8.5.0  ^|  http://localhost:3000
+echo   Andromeda AI v8.6.0  ^|  http://localhost:3000
 echo   Press Ctrl+C to stop the server.
 echo  ============================================================
 echo.
