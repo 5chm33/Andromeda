@@ -994,6 +994,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/reactEngine.ts(594,17): error TS1005: 'try' expected.\ndata/tmp_syntax/reactEngine.ts(1153,7): error TS1472: 'catch' or 'finally' expected.\ndata/tmp_syntax/reactEngine.ts(1169,7): error",
       "timestamp": "2026-06-07T17:46:38.245Z"
+    },
+    {
+      "id": "audit_1780854399985_v9sibo",
+      "action": "apply",
+      "proposalId": "prop_1780850056197_0syz6e",
+      "filename": "selfImprove.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/selfImprove.ts(34,32): error TS2307: Cannot find module './fileEngineChunking.js' or its corresponding type declarations.\ndata/tmp_syntax/selfImprove.ts(35,16): error TS2307: Cannot fi",
+      "timestamp": "2026-06-07T17:46:39.985Z"
     }
   ]
 }
