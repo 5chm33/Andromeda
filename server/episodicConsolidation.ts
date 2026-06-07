@@ -172,7 +172,10 @@ async function summariseCluster(
     `Be specific and actionable.`;
 
   try {
-    const lesson = await backgroundSimpleCompletion(prompt, "episodic-consolidation");
+    const lesson = await backgroundSimpleCompletion([
+      { role: "system", content: "You are an episodic memory consolidation system. Extract key lessons from agent experiences. Be concise and actionable." },
+      { role: "user", content: prompt }
+    ]);
     return lesson?.trim() ??
       `Cluster "${clusterKey}": ${episodes.length} episodes (${successes} successes, ${failures} failures).`;
   } catch {

@@ -168,10 +168,10 @@ export async function synthesizeLessons(goal: string): Promise<string> {
   const prompt = `Based on these past attempts at "${goal}", summarize in 2-3 sentences what was learned and what to avoid:\n\n${chainText}`;
 
   try {
-    return await backgroundSimpleCompletion(
-      "You are a learning system. Synthesize past experience into actionable lessons. Be concise.",
-      prompt
-    );
+    return await backgroundSimpleCompletion([
+      { role: "system", content: "You are a learning system. Synthesize past experience into actionable lessons. Be concise." },
+      { role: "user", content: prompt }
+    ]);
   } catch {
     return chain.lessonsLearned.join("; ") || "No clear lessons yet.";
   }

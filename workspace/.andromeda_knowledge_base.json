@@ -841,6 +841,22 @@
       "confidence": 0.9,
       "createdAt": 1780849731587,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780850057686_ex4a4s",
+      "category": "antipattern",
+      "title": "Failure: Extract provider chain builder to separate function",
+      "description": "Failed to apply \"Extract provider chain builder to separate function\" to selfImprove.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify selfImprove.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for selfImprove.ts: Extract provider chain builder to separate function — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "selfImprove.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780850057686,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -983,5 +999,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T16:28:51.587Z"
+  "_lastUpdated": "2026-06-07T16:34:17.686Z"
 }

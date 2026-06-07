@@ -232,7 +232,10 @@ Answer the question using ONLY the provided context. If the context doesn't cont
 Always cite which context source you used (e.g., "According to [Context 2]...").
 ${systemContext}`;
 
-  const answer = await backgroundSimpleCompletion(systemPrompt, augmentedPrompt);
+  const answer = await backgroundSimpleCompletion([
+    { role: "system", content: systemPrompt },
+    { role: "user", content: augmentedPrompt }
+  ]);
 
   return {
     answer,
