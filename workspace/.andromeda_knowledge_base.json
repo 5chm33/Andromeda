@@ -3977,6 +3977,22 @@
       "confidence": 0.9,
       "createdAt": 1780865247412,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780865248919_0mwkc1",
+      "category": "antipattern",
+      "title": "Failure: Improve readability of diff generator logic",
+      "description": "Failed to apply \"Improve readability of diff generator logic\" to codeIntel.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify codeIntel.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for codeIntel.ts: Improve readability of diff generator logic — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "codeIntel.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780865248919,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -4119,5 +4135,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T20:47:27.412Z"
+  "_lastUpdated": "2026-06-07T20:47:28.919Z"
 }
