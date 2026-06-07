@@ -524,7 +524,7 @@ export function resetBus(): void {
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const BUS_PERSIST_PATH = path.join(__dirname, "../../data/context_bus.json");
+const BUS_PERSIST_PATH = path.join(__dirname, "../data/context_bus.json");
 
 /**
  * Save the current bus state to disk for cross-session persistence.

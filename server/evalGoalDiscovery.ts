@@ -24,7 +24,7 @@ import { simpleChatCompletion } from "./llmProvider.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const DISCOVERY_PATH = path.join(__dirname, "../../data/eval_goal_discoveries.json");
+const DISCOVERY_PATH = path.join(__dirname, "../data/eval_goal_discoveries.json");
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 

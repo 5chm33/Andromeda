@@ -1,381 +1,535 @@
 {
-  "runId": "eval-1780841534849",
-  "timestamp": 1780841534849,
-  "totalScore": 116,
-  "maxScore": 2100,
-  "percentage": 6,
-  "passed": 0,
-  "failed": 20,
+  "runId": "eval-1780854850549",
+  "timestamp": 1780854850549,
+  "totalScore": 1067,
+  "maxScore": 13500,
+  "percentage": 8,
+  "passed": 1,
+  "failed": 69,
   "byCategory": {
     "reasoning": {
-      "score": 15,
-      "max": 300,
-      "pct": 5
+      "score": 302,
+      "max": 1700,
+      "pct": 18
     },
     "code": {
-      "score": 50,
-      "max": 500,
+      "score": 270,
+      "max": 2800,
       "pct": 10
     },
     "tool_use": {
-      "score": 0,
-      "max": 300,
-      "pct": 0
+      "score": 120,
+      "max": 1900,
+      "pct": 6
     },
     "self_knowledge": {
-      "score": 45,
-      "max": 500,
-      "pct": 9
+      "score": 270,
+      "max": 2800,
+      "pct": 10
     },
     "multi_step": {
-      "score": 6,
-      "max": 300,
-      "pct": 2
+      "score": 105,
+      "max": 3400,
+      "pct": 3
     },
     "browser": {
       "score": 0,
-      "max": 200,
+      "max": 900,
       "pct": 0
     }
   },
   "results": [
     {
       "taskId": "r01",
-      "timestamp": 1780841543644,
+      "category": "reasoning",
+      "score": 15,
       "passed": false,
-      "score": 0,
-      "responseTokens": 57,
-      "durationMs": 8795,
-      "response": "error: Error: LLM API error 400: {\"error\":{\"message\":\"Prompt must contain the word 'json' in some form to use 'response_format' of type 'json_object'.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
-      "matchedKeywords": [],
-      "missedKeywords": [
-        "36"
-      ],
-      "foundForbidden": []
+      "response": "error: Cannot read properties of undefined (reading '0')"
     },
     {
       "taskId": "r02",
-      "timestamp": 1780841546687,
+      "category": "reasoning",
+      "score": 62,
+      "passed": true,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "r03",
+      "category": "reasoning",
+      "score": 15,
       "passed": false,
-      "score": 0,
-      "responseTokens": 57,
-      "durationMs": 3043,
-      "response": "error: Error: LLM API error 400: {\"error\":{\"message\":\"Prompt must contain the word 'json' in some form to use 'response_format' of type 'json_object'.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
-      "matchedKeywords": [],
-      "missedKeywords": [
-        "no",
-        "cannot",
-        "not necessarily"
-      ],
-      "foundForbidden": []
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "r04",
+      "category": "reasoning",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "r05",
+      "category": "reasoning",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "r06",
+      "category": "reasoning",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
     },
     {
       "taskId": "r07",
-      "timestamp": 1780841548125,
-      "passed": false,
+      "category": "reasoning",
       "score": 15,
-      "responseTokens": 57,
-      "durationMs": 1438,
-      "response": "error: Error: LLM API error 400: {\"error\":{\"message\":\"Prompt must contain the word 'json' in some form to use 'response_format' of type 'json_object'.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
-      "matchedKeywords": [
-        "valid"
-      ],
-      "missedKeywords": [
-        "yes"
-      ],
-      "foundForbidden": [
-        "invalid"
-      ]
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "r08",
+      "category": "reasoning",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "r09",
+      "category": "reasoning",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "r10",
+      "category": "reasoning",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
     },
     {
       "taskId": "c01",
-      "timestamp": 1780841549568,
+      "category": "code",
+      "score": 15,
       "passed": false,
-      "score": 0,
-      "responseTokens": 57,
-      "durationMs": 1443,
-      "response": "error: Error: LLM API error 400: {\"error\":{\"message\":\"Prompt must contain the word 'json' in some form to use 'response_format' of type 'json_object'.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
-      "matchedKeywords": [],
-      "missedKeywords": [
-        "function",
-        "return",
-        "split",
-        "reverse",
-        "join"
-      ],
-      "foundForbidden": []
+      "response": "error: Cannot read properties of undefined (reading '0')"
     },
     {
       "taskId": "c02",
-      "timestamp": 1780841550186,
+      "category": "code",
+      "score": 0,
       "passed": false,
-      "score": 50,
-      "responseTokens": 57,
-      "durationMs": 618,
-      "response": "error: Error: LLM API error 400: {\"error\":{\"message\":\"Prompt must contain the word 'json' in some form to use 'response_format' of type 'json_object'.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
-      "matchedKeywords": [
-        "object"
-      ],
-      "missedKeywords": [],
-      "foundForbidden": [
-        "null"
-      ]
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "c03",
+      "category": "code",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "c04",
+      "category": "code",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "c05",
+      "category": "code",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
     },
     {
       "taskId": "c06",
-      "timestamp": 1780841550764,
+      "category": "code",
+      "score": 15,
       "passed": false,
-      "score": 0,
-      "responseTokens": 57,
-      "durationMs": 578,
-      "response": "error: Error: LLM API error 400: {\"error\":{\"message\":\"Prompt must contain the word 'json' in some form to use 'response_format' of type 'json_object'.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
-      "matchedKeywords": [],
-      "missedKeywords": [
-        "O(log n)",
-        "logarithmic"
-      ],
-      "foundForbidden": []
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "c07",
+      "category": "code",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "c08",
+      "category": "code",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "c09",
+      "category": "code",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "c10",
+      "category": "code",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
     },
     {
       "taskId": "t01",
-      "timestamp": 1780841551369,
+      "category": "tool_use",
+      "score": 15,
       "passed": false,
-      "score": 0,
-      "responseTokens": 57,
-      "durationMs": 605,
-      "response": "error: Error: LLM API error 400: {\"error\":{\"message\":\"Prompt must contain the word 'json' in some form to use 'response_format' of type 'json_object'.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
-      "matchedKeywords": [],
-      "missedKeywords": [
-        "read_file",
-        "write_file",
-        "web_search"
-      ],
-      "foundForbidden": []
+      "response": "error: Cannot read properties of undefined (reading '0')"
     },
     {
       "taskId": "t02",
-      "timestamp": 1780841551994,
+      "category": "tool_use",
+      "score": 15,
       "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "t03",
+      "category": "tool_use",
       "score": 0,
-      "responseTokens": 57,
-      "durationMs": 624,
-      "response": "error: Error: LLM API error 400: {\"error\":{\"message\":\"Prompt must contain the word 'json' in some form to use 'response_format' of type 'json_object'.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
-      "matchedKeywords": [],
-      "missedKeywords": [
-        "/",
-        "workspace",
-        "andromeda"
-      ],
-      "foundForbidden": []
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "t04",
+      "category": "tool_use",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "t05",
+      "category": "tool_use",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
     },
     {
       "taskId": "t06",
-      "timestamp": 1780841552687,
+      "category": "tool_use",
+      "score": 15,
       "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "t07",
+      "category": "tool_use",
       "score": 0,
-      "responseTokens": 57,
-      "durationMs": 693,
-      "response": "error: Error: LLM API error 400: {\"error\":{\"message\":\"Prompt must contain the word 'json' in some form to use 'response_format' of type 'json_object'.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
-      "matchedKeywords": [],
-      "missedKeywords": [
-        "2026",
-        "May",
-        "2025"
-      ],
-      "foundForbidden": []
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "t08",
+      "category": "tool_use",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "t09",
+      "category": "tool_use",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "t10",
+      "category": "tool_use",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
     },
     {
       "taskId": "s01",
-      "timestamp": 1780841553266,
+      "category": "self_knowledge",
+      "score": 15,
       "passed": false,
-      "score": 0,
-      "responseTokens": 57,
-      "durationMs": 579,
-      "response": "error: Error: LLM API error 400: {\"error\":{\"message\":\"Prompt must contain the word 'json' in some form to use 'response_format' of type 'json_object'.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
-      "matchedKeywords": [],
-      "missedKeywords": [
-        "Andromeda",
-        "6."
-      ],
-      "foundForbidden": []
+      "response": "error: Cannot read properties of undefined (reading '0')"
     },
     {
       "taskId": "s02",
-      "timestamp": 1780841553910,
+      "category": "self_knowledge",
+      "score": 15,
       "passed": false,
-      "score": 0,
-      "responseTokens": 57,
-      "durationMs": 644,
-      "response": "error: Error: LLM API error 400: {\"error\":{\"message\":\"Prompt must contain the word 'json' in some form to use 'response_format' of type 'json_object'.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
-      "matchedKeywords": [],
-      "missedKeywords": [
-        "DeepSeek",
-        "provider",
-        "model"
-      ],
-      "foundForbidden": []
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "s03",
+      "category": "self_knowledge",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "s04",
+      "category": "self_knowledge",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "s05",
+      "category": "self_knowledge",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
     },
     {
       "taskId": "s06",
-      "timestamp": 1780841554596,
-      "passed": false,
+      "category": "self_knowledge",
       "score": 0,
-      "responseTokens": 57,
-      "durationMs": 686,
-      "response": "error: Error: LLM API error 400: {\"error\":{\"message\":\"Prompt must contain the word 'json' in some form to use 'response_format' of type 'json_object'.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
-      "matchedKeywords": [],
-      "missedKeywords": [
-        "yes",
-        "RSI",
-        "self-modify",
-        "propose"
-      ],
-      "foundForbidden": []
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "s07",
+      "category": "self_knowledge",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "s08",
+      "category": "self_knowledge",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "s09",
+      "category": "self_knowledge",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "s10",
+      "category": "self_knowledge",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
     },
     {
       "taskId": "m01",
-      "timestamp": 1780841555265,
+      "category": "multi_step",
+      "score": 0,
       "passed": false,
-      "score": 3,
-      "responseTokens": 57,
-      "durationMs": 669,
-      "response": "error: Error: LLM API error 400: {\"error\":{\"message\":\"Prompt must contain the word 'json' in some form to use 'response_format' of type 'json_object'.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
-      "matchedKeywords": [
-        "AI"
-      ],
-      "missedKeywords": [
-        "Andromeda",
-        "agent"
-      ],
-      "foundForbidden": [
-        "error"
-      ]
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "m02",
+      "category": "multi_step",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "m03",
+      "category": "multi_step",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "m04",
+      "category": "multi_step",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "m05",
+      "category": "multi_step",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "m06",
+      "category": "multi_step",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "m07",
+      "category": "multi_step",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "m08",
+      "category": "multi_step",
+      "score": 15,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "m09",
+      "category": "multi_step",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "m10",
+      "category": "multi_step",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
     },
     {
       "taskId": "b01",
-      "timestamp": 1780841555883,
-      "passed": false,
+      "category": "browser",
       "score": 0,
-      "responseTokens": 57,
-      "durationMs": 618,
-      "response": "error: Error: LLM API error 400: {\"error\":{\"message\":\"Prompt must contain the word 'json' in some form to use 'response_format' of type 'json_object'.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
-      "matchedKeywords": [],
-      "missedKeywords": [
-        "example",
-        "domain"
-      ],
-      "foundForbidden": [
-        "error"
-      ]
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
     },
     {
       "taskId": "b02",
-      "timestamp": 1780841556530,
-      "passed": false,
+      "category": "browser",
       "score": 0,
-      "responseTokens": 57,
-      "durationMs": 647,
-      "response": "error: Error: LLM API error 400: {\"error\":{\"message\":\"Prompt must contain the word 'json' in some form to use 'response_format' of type 'json_object'.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
-      "matchedKeywords": [],
-      "missedKeywords": [
-        "200",
-        "ok"
-      ],
-      "foundForbidden": [
-        "error"
-      ]
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "b03",
+      "category": "browser",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "b04",
+      "category": "browser",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "b05",
+      "category": "browser",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
     },
     {
       "taskId": "ms01",
-      "timestamp": 1780841557103,
-      "passed": false,
+      "category": "multi_step",
       "score": 0,
-      "responseTokens": 57,
-      "durationMs": 573,
-      "response": "error: Error: LLM API error 400: {\"error\":{\"message\":\"Prompt must contain the word 'json' in some form to use 'response_format' of type 'json_object'.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
-      "matchedKeywords": [],
-      "missedKeywords": [
-        "200",
-        "km",
-        "step"
-      ],
-      "foundForbidden": [
-        "error"
-      ]
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "ms02",
+      "category": "multi_step",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "ms03",
+      "category": "multi_step",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "ms04",
+      "category": "multi_step",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "ms05",
+      "category": "multi_step",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
     },
     {
       "taskId": "cg01",
-      "timestamp": 1780841558594,
-      "passed": false,
+      "category": "code",
       "score": 0,
-      "responseTokens": 57,
-      "durationMs": 1491,
-      "response": "error: Error: LLM API error 400: {\"error\":{\"message\":\"Prompt must contain the word 'json' in some form to use 'response_format' of type 'json_object'.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
-      "matchedKeywords": [],
-      "missedKeywords": [
-        "function",
-        "number",
-        "return",
-        "reduce"
-      ],
-      "foundForbidden": [
-        "error"
-      ]
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
     },
     {
       "taskId": "cg02",
-      "timestamp": 1780841559780,
-      "passed": false,
+      "category": "code",
       "score": 0,
-      "responseTokens": 57,
-      "durationMs": 1186,
-      "response": "error: Error: LLM API error 400: {\"error\":{\"message\":\"Prompt must contain the word 'json' in some form to use 'response_format' of type 'json_object'.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
-      "matchedKeywords": [],
-      "missedKeywords": [
-        "function",
-        "reverse",
-        "return",
-        "string"
-      ],
-      "foundForbidden": [
-        "error"
-      ]
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "cg03",
+      "category": "code",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "cg04",
+      "category": "code",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "cg05",
+      "category": "code",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
     },
     {
       "taskId": "si01",
-      "timestamp": 1780841561225,
+      "category": "self_knowledge",
+      "score": 0,
       "passed": false,
-      "score": 45,
-      "responseTokens": 5,
-      "durationMs": 1445,
-      "response": "{\"version\": \"1.0.0\"}",
-      "matchedKeywords": [
-        "version"
-      ],
-      "missedKeywords": [
-        "6."
-      ],
-      "foundForbidden": []
+      "response": "error: Cannot read properties of undefined (reading '0')"
     },
     {
       "taskId": "si02",
-      "timestamp": 1780841561859,
-      "passed": false,
+      "category": "self_knowledge",
       "score": 0,
-      "responseTokens": 57,
-      "durationMs": 634,
-      "response": "error: Error: LLM API error 400: {\"error\":{\"message\":\"Prompt must contain the word 'json' in some form to use 'response_format' of type 'json_object'.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}",
-      "matchedKeywords": [],
-      "missedKeywords": [
-        "proposal",
-        "pending"
-      ],
-      "foundForbidden": [
-        "error"
-      ]
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "si03",
+      "category": "self_knowledge",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "si04",
+      "category": "self_knowledge",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "taskId": "si05",
+      "category": "self_knowledge",
+      "score": 0,
+      "passed": false,
+      "response": "error: Cannot read properties of undefined (reading '0')"
     }
   ],
-  "durationMs": 27010,
-  "storedAt": 1780841561860,
-  "autoCapture": true
+  "durationMs": 1706,
+  "version": "9.0.0"
 }

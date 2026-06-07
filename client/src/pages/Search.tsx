@@ -1,4 +1,5 @@
 import { useAuth } from "@/_core/hooks/useAuth";
+import { OnboardingModal } from "@/components/OnboardingModal";
 import React from "react";
 import { ThemeCanvas } from "@/components/ThemeCanvas";
 import { SkinSelector } from "@/components/SkinSelector";
@@ -1544,6 +1545,8 @@ export default function Search() {
       style={{ background: "#0d0d0d", color: "#e4e4e7" }}
       ref={dropZoneRef}
     >
+      {/* Onboarding modal — fires on first visit to /search */}
+      <OnboardingModal />
       {/* Cinematic background canvas */}
       <ThemeCanvas skinId={currentSkin} />
       {/* Skin picker */}

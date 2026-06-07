@@ -25,7 +25,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const LEARNED_CONSTRAINTS_PATH = path.join(__dirname, "../../data/learned_constraints.json");
+const LEARNED_CONSTRAINTS_PATH = path.join(__dirname, "../data/learned_constraints.json");
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
