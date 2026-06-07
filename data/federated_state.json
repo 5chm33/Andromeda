@@ -6,8 +6,8 @@
       "version": "9.2.0",
       "capabilityScore": 0.82,
       "contributionCount": 1,
-      "registeredAt": 1780858998220,
-      "lastSeenAt": 1780858998220,
+      "registeredAt": 1780859120556,
+      "lastSeenAt": 1780859120556,
       "healthy": true,
       "trustScore": 0.52
     },
@@ -17,8 +17,8 @@
       "version": "9.2.0",
       "capabilityScore": 0.75,
       "contributionCount": 5,
-      "registeredAt": 1780858998221,
-      "lastSeenAt": 1780858998221,
+      "registeredAt": 1780859120557,
+      "lastSeenAt": 1780859120557,
       "healthy": true,
       "trustScore": 0.6000000000000001
     },
@@ -26,10 +26,10 @@
       "nodeId": "node-peer-gamma",
       "url": "http://peer-gamma.local:5000",
       "version": "9.2.0",
-      "capabilityScore": 0.88,
+      "capabilityScore": 88,
       "contributionCount": 2,
-      "registeredAt": 1780858998223,
-      "lastSeenAt": 1780858998223,
+      "registeredAt": 1780859120561,
+      "lastSeenAt": 1780859120561,
       "healthy": true,
       "trustScore": 0.54
     },
@@ -37,10 +37,10 @@
       "nodeId": "node-sim-0",
       "url": "http://sim-0.local:5000",
       "version": "9.2.0",
-      "capabilityScore": 0.82,
+      "capabilityScore": 82,
       "contributionCount": 0,
-      "registeredAt": 1780858998224,
-      "lastSeenAt": 1780858998224,
+      "registeredAt": 1780859120563,
+      "lastSeenAt": 1780859120563,
       "healthy": true,
       "trustScore": 0.5
     },
@@ -48,10 +48,10 @@
       "nodeId": "node-sim-1",
       "url": "http://sim-1.local:5000",
       "version": "9.2.0",
-      "capabilityScore": 0.75,
+      "capabilityScore": 75,
       "contributionCount": 0,
-      "registeredAt": 1780858998225,
-      "lastSeenAt": 1780858998225,
+      "registeredAt": 1780859120563,
+      "lastSeenAt": 1780859120563,
       "healthy": true,
       "trustScore": 0.5
     },
@@ -59,10 +59,10 @@
       "nodeId": "node-sim-2",
       "url": "http://sim-2.local:5000",
       "version": "9.2.0",
-      "capabilityScore": 0.88,
+      "capabilityScore": 88,
       "contributionCount": 0,
-      "registeredAt": 1780858998225,
-      "lastSeenAt": 1780858998225,
+      "registeredAt": 1780859120563,
+      "lastSeenAt": 1780859120563,
       "healthy": true,
       "trustScore": 0.5
     },
@@ -70,10 +70,10 @@
       "nodeId": "node-sim-3",
       "url": "http://sim-3.local:5000",
       "version": "9.2.0",
-      "capabilityScore": 0.91,
+      "capabilityScore": 91,
       "contributionCount": 0,
-      "registeredAt": 1780858998225,
-      "lastSeenAt": 1780858998225,
+      "registeredAt": 1780859120563,
+      "lastSeenAt": 1780859120563,
       "healthy": true,
       "trustScore": 0.5
     },
@@ -81,10 +81,10 @@
       "nodeId": "node-sim-4",
       "url": "http://sim-4.local:5000",
       "version": "9.2.0",
-      "capabilityScore": 0.7,
+      "capabilityScore": 70,
       "contributionCount": 0,
-      "registeredAt": 1780858998225,
-      "lastSeenAt": 1780858998225,
+      "registeredAt": 1780859120564,
+      "lastSeenAt": 1780859120564,
       "healthy": true,
       "trustScore": 0.5
     }
@@ -105,7 +105,7 @@
       ],
       "locallyValidated": false,
       "locallyApplied": false,
-      "receivedAt": 1780858998222,
+      "receivedAt": 1780859120558,
       "tags": [
         "performance",
         "context"
@@ -126,7 +126,7 @@
       ],
       "locallyValidated": false,
       "locallyApplied": false,
-      "receivedAt": 1780858998222,
+      "receivedAt": 1780859120559,
       "tags": [
         "performance",
         "context"
@@ -147,7 +147,7 @@
       ],
       "locallyValidated": false,
       "locallyApplied": false,
-      "receivedAt": 1780858998222,
+      "receivedAt": 1780859120559,
       "tags": [
         "performance",
         "context"
@@ -168,7 +168,7 @@
       ],
       "locallyValidated": false,
       "locallyApplied": false,
-      "receivedAt": 1780858998222,
+      "receivedAt": 1780859120560,
       "tags": [
         "performance",
         "context"
@@ -189,7 +189,7 @@
       ],
       "locallyValidated": false,
       "locallyApplied": false,
-      "receivedAt": 1780858998222,
+      "receivedAt": 1780859120560,
       "tags": [
         "performance",
         "context"
@@ -210,7 +210,7 @@
       ],
       "locallyValidated": false,
       "locallyApplied": false,
-      "receivedAt": 1780858998223,
+      "receivedAt": 1780859120560,
       "tags": [
         "performance",
         "context"
@@ -229,7 +229,7 @@
       ],
       "locallyValidated": false,
       "locallyApplied": false,
-      "receivedAt": 1780858998223,
+      "receivedAt": 1780859120562,
       "tags": [
         "reasoning",
         "temperature"
@@ -246,7 +246,7 @@
       "adoptedBy": [],
       "locallyValidated": false,
       "locallyApplied": false,
-      "receivedAt": 1780858998224,
+      "receivedAt": 1780859120562,
       "tags": [
         "performance",
         "cache"
@@ -254,6 +254,6 @@
     }
   },
   "sharedProposalIds": [],
-  "lastSyncAt": 1780858998224,
-  "savedAt": 1780858998225
+  "lastSyncAt": 1780859120562,
+  "savedAt": 1780859120564
 }
