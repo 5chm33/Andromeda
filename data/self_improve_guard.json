@@ -1975,6 +1975,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/manifest.ts(14,29): error TS2307: Cannot find module './tools' or its corresponding type declarations.\ndata/tmp_syntax/manifest.ts(15,50): error TS2307: Cannot find module './llmProvid",
       "timestamp": "2026-06-07T19:16:51.568Z"
+    },
+    {
+      "id": "audit_1780859813009_909n95",
+      "action": "apply",
+      "proposalId": "prop_1780851257444_y9n7m8",
+      "filename": "contextManager.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/contextManager.ts(15,34): error TS2307: Cannot find module './llmProvider' or its corresponding type declarations.\ndata/tmp_syntax/contextManager.ts(16,32): error TS2307: Cannot find m",
+      "timestamp": "2026-06-07T19:16:53.009Z"
     }
   ]
 }
