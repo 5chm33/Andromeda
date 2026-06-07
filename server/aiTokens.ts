@@ -9,6 +9,8 @@ import { getContextWindow, getMaxOutputTokens } from "./modelRegistry.js";
 import { allocateTokens, canFitResponse, recordUsage } from "./tokenBudgetManager.js";
 import { assembleContext, recordAssembly, type ContextMessage } from "./tieredContextManager.js";
 import { createLogger } from "./logger.js";
+import * as fs from "fs";
+import * as path from "path";
 const log = createLogger("aiTokens");
 
 // ─── Accurate Token Counting ─────────────────────────────────────────────────

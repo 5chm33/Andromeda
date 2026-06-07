@@ -1,7 +1,7 @@
 {
-  "timestamp": 1780575719587,
+  "timestamp": 1780842324444,
   "overallScore": 58,
-  "totalModules": 181,
+  "totalModules": 201,
   "complexityMetrics": [
     {
       "filePath": "server/_core/context.ts",
@@ -95,7 +95,7 @@
           "name": "startServer",
           "line": 74,
           "complexity": 17,
-          "linesOfCode": 122,
+          "linesOfCode": 127,
           "parameters": 0,
           "nestingDepth": 5
         },
@@ -110,7 +110,7 @@
       ],
       "averageComplexity": 5.5,
       "maxComplexity": 17,
-      "linesOfCode": 198
+      "linesOfCode": 203
     },
     {
       "filePath": "server/_core/initDaemons.ts",
@@ -134,31 +134,31 @@
         {
           "name": "initModules",
           "line": 16,
-          "complexity": 53,
-          "linesOfCode": 233,
+          "complexity": 67,
+          "linesOfCode": 301,
           "parameters": 0,
           "nestingDepth": 6
         }
       ],
-      "averageComplexity": 53,
-      "maxComplexity": 53,
-      "linesOfCode": 249
+      "averageComplexity": 67,
+      "maxComplexity": 67,
+      "linesOfCode": 317
     },
     {
       "filePath": "server/_core/initRoutes.ts",
       "functions": [
         {
           "name": "registerCoreRoutes",
-          "line": 19,
+          "line": 26,
           "complexity": 47,
-          "linesOfCode": 294,
+          "linesOfCode": 315,
           "parameters": 1,
           "nestingDepth": 4
         }
       ],
       "averageComplexity": 47,
       "maxComplexity": 47,
-      "linesOfCode": 313
+      "linesOfCode": 341
     },
     {
       "filePath": "server/_core/initSafety.ts",
@@ -380,6 +380,102 @@
       "averageComplexity": 2,
       "maxComplexity": 2,
       "linesOfCode": 285
+    },
+    {
+      "filePath": "server/adaptiveEval.ts",
+      "functions": [
+        {
+          "name": "ensureDataDir",
+          "line": 132,
+          "complexity": 1,
+          "linesOfCode": 3,
+          "parameters": 0,
+          "nestingDepth": 1
+        },
+        {
+          "name": "loadBenchmarks",
+          "line": 136,
+          "complexity": 3,
+          "linesOfCode": 11,
+          "parameters": 0,
+          "nestingDepth": 3
+        },
+        {
+          "name": "saveBenchmarks",
+          "line": 148,
+          "complexity": 1,
+          "linesOfCode": 4,
+          "parameters": 0,
+          "nestingDepth": 0
+        },
+        {
+          "name": "loadHistory",
+          "line": 153,
+          "complexity": 2,
+          "linesOfCode": 9,
+          "parameters": 0,
+          "nestingDepth": 2
+        },
+        {
+          "name": "saveHistory",
+          "line": 163,
+          "complexity": 2,
+          "linesOfCode": 6,
+          "parameters": 0,
+          "nestingDepth": 0
+        },
+        {
+          "name": "analyzeGaps",
+          "line": 176,
+          "complexity": 19,
+          "linesOfCode": 89,
+          "parameters": 1,
+          "nestingDepth": 3
+        },
+        {
+          "name": "evolveBenchmarks",
+          "line": 481,
+          "complexity": 15,
+          "linesOfCode": 60,
+          "parameters": 1,
+          "nestingDepth": 4
+        },
+        {
+          "name": "getBenchmarkEvolutionStats",
+          "line": 676,
+          "complexity": 8,
+          "linesOfCode": 33,
+          "parameters": 0,
+          "nestingDepth": 2
+        },
+        {
+          "name": "getAdaptiveEvalHistory",
+          "line": 722,
+          "complexity": 1,
+          "linesOfCode": 3,
+          "parameters": 1,
+          "nestingDepth": 0
+        },
+        {
+          "name": "getLatestGapAnalysis",
+          "line": 726,
+          "complexity": 1,
+          "linesOfCode": 3,
+          "parameters": 0,
+          "nestingDepth": 0
+        },
+        {
+          "name": "initAdaptiveEval",
+          "line": 732,
+          "complexity": 1,
+          "linesOfCode": 5,
+          "parameters": 0,
+          "nestingDepth": 1
+        }
+      ],
+      "averageComplexity": 4.9,
+      "maxComplexity": 19,
+      "linesOfCode": 737
     },
     {
       "filePath": "server/adaptivePartitions.ts",
@@ -656,13 +752,13 @@
           "name": "streamAgentPlan",
           "line": 422,
           "complexity": 24,
-          "linesOfCode": 123,
+          "linesOfCode": 124,
           "parameters": 2,
           "nestingDepth": 8
         },
         {
           "name": "generateExecutionPlan",
-          "line": 565,
+          "line": 566,
           "complexity": 7,
           "linesOfCode": 54,
           "parameters": 1,
@@ -670,7 +766,7 @@
         },
         {
           "name": "todoCreate",
-          "line": 701,
+          "line": 702,
           "complexity": 1,
           "linesOfCode": 7,
           "parameters": 2,
@@ -678,7 +774,7 @@
         },
         {
           "name": "todoUpdate",
-          "line": 709,
+          "line": 710,
           "complexity": 2,
           "linesOfCode": 7,
           "parameters": 3,
@@ -686,7 +782,7 @@
         },
         {
           "name": "todoList",
-          "line": 717,
+          "line": 718,
           "complexity": 2,
           "linesOfCode": 9,
           "parameters": 0,
@@ -694,7 +790,7 @@
         },
         {
           "name": "todoDelete",
-          "line": 727,
+          "line": 728,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 1,
@@ -702,7 +798,7 @@
         },
         {
           "name": "todoClear",
-          "line": 731,
+          "line": 732,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 0,
@@ -710,7 +806,7 @@
         },
         {
           "name": "writeAndromedaMemory",
-          "line": 738,
+          "line": 739,
           "complexity": 4,
           "linesOfCode": 13,
           "parameters": 1,
@@ -718,7 +814,7 @@
         },
         {
           "name": "readAndromedaMemory",
-          "line": 752,
+          "line": 753,
           "complexity": 4,
           "linesOfCode": 10,
           "parameters": 0,
@@ -727,7 +823,7 @@
       ],
       "averageComplexity": 6.5,
       "maxComplexity": 24,
-      "linesOfCode": 763
+      "linesOfCode": 764
     },
     {
       "filePath": "server/aiPrompts.ts",
@@ -735,30 +831,30 @@
         {
           "name": "buildSystemPrompt",
           "line": 34,
-          "complexity": 4,
-          "linesOfCode": 91,
+          "complexity": 5,
+          "linesOfCode": 109,
           "parameters": 1,
           "nestingDepth": 2
         },
         {
           "name": "buildUserPrompt",
-          "line": 126,
-          "complexity": 1,
-          "linesOfCode": 13,
+          "line": 144,
+          "complexity": 4,
+          "linesOfCode": 20,
           "parameters": 2,
           "nestingDepth": 1
         }
       ],
-      "averageComplexity": 2.5,
-      "maxComplexity": 4,
-      "linesOfCode": 187
+      "averageComplexity": 4.5,
+      "maxComplexity": 5,
+      "linesOfCode": 214
     },
     {
       "filePath": "server/aiStreaming.ts",
       "functions": [
         {
           "name": "isSyntacticallyIncomplete",
-          "line": 23,
+          "line": 25,
           "complexity": 36,
           "linesOfCode": 54,
           "parameters": 1,
@@ -766,7 +862,7 @@
         },
         {
           "name": "buildContinuationPrompt",
-          "line": 80,
+          "line": 82,
           "complexity": 4,
           "linesOfCode": 12,
           "parameters": 1,
@@ -774,7 +870,7 @@
         },
         {
           "name": "drainWriteQueue",
-          "line": 267,
+          "line": 270,
           "complexity": 8,
           "linesOfCode": 24,
           "parameters": 0,
@@ -783,14 +879,14 @@
       ],
       "averageComplexity": 16,
       "maxComplexity": 36,
-      "linesOfCode": 550
+      "linesOfCode": 557
     },
     {
       "filePath": "server/aiTokens.ts",
       "functions": [
         {
           "name": "getEncoderCached",
-          "line": 22,
+          "line": 24,
           "complexity": 3,
           "linesOfCode": 20,
           "parameters": 1,
@@ -798,7 +894,7 @@
         },
         {
           "name": "countTokens",
-          "line": 43,
+          "line": 45,
           "complexity": 5,
           "linesOfCode": 11,
           "parameters": 2,
@@ -806,7 +902,7 @@
         },
         {
           "name": "getAndromedaMemory",
-          "line": 59,
+          "line": 61,
           "complexity": 6,
           "linesOfCode": 21,
           "parameters": 0,
@@ -814,7 +910,7 @@
         },
         {
           "name": "getApiUrl",
-          "line": 92,
+          "line": 94,
           "complexity": 3,
           "linesOfCode": 3,
           "parameters": 0,
@@ -822,7 +918,7 @@
         },
         {
           "name": "getActiveModel",
-          "line": 96,
+          "line": 98,
           "complexity": 3,
           "linesOfCode": 3,
           "parameters": 0,
@@ -830,7 +926,7 @@
         },
         {
           "name": "resolveProviderOnce",
-          "line": 100,
+          "line": 102,
           "complexity": 1,
           "linesOfCode": 1,
           "parameters": 0,
@@ -838,7 +934,7 @@
         },
         {
           "name": "getApiKey",
-          "line": 103,
+          "line": 105,
           "complexity": 5,
           "linesOfCode": 7,
           "parameters": 0,
@@ -846,7 +942,7 @@
         },
         {
           "name": "getProviderHeaders",
-          "line": 113,
+          "line": 115,
           "complexity": 3,
           "linesOfCode": 7,
           "parameters": 0,
@@ -854,7 +950,7 @@
         },
         {
           "name": "getSafetyBuffer",
-          "line": 125,
+          "line": 127,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 1,
@@ -862,7 +958,7 @@
         },
         {
           "name": "calculateMaxTokens",
-          "line": 129,
+          "line": 131,
           "complexity": 9,
           "linesOfCode": 50,
           "parameters": 2,
@@ -870,7 +966,7 @@
         },
         {
           "name": "setModel",
-          "line": 181,
+          "line": 183,
           "complexity": 6,
           "linesOfCode": 10,
           "parameters": 1,
@@ -878,7 +974,7 @@
         },
         {
           "name": "getModel",
-          "line": 191,
+          "line": 193,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 0,
@@ -886,7 +982,7 @@
         },
         {
           "name": "getAvailableModels",
-          "line": 194,
+          "line": 196,
           "complexity": 5,
           "linesOfCode": 14,
           "parameters": 0,
@@ -895,7 +991,7 @@
       ],
       "averageComplexity": 3.9,
       "maxComplexity": 9,
-      "linesOfCode": 209
+      "linesOfCode": 211
     },
     {
       "filePath": "server/aiZipEdit.ts",
@@ -919,6 +1015,62 @@
       "averageComplexity": 3,
       "maxComplexity": 3,
       "linesOfCode": 414
+    },
+    {
+      "filePath": "server/auditLog.ts",
+      "functions": [
+        {
+          "name": "ensureAuditDir",
+          "line": 103,
+          "complexity": 1,
+          "linesOfCode": 5,
+          "parameters": 0,
+          "nestingDepth": 2
+        },
+        {
+          "name": "generateId",
+          "line": 109,
+          "complexity": 1,
+          "linesOfCode": 3,
+          "parameters": 0,
+          "nestingDepth": 1
+        },
+        {
+          "name": "audit",
+          "line": 118,
+          "complexity": 6,
+          "linesOfCode": 28,
+          "parameters": 2,
+          "nestingDepth": 3
+        },
+        {
+          "name": "getRecentAuditEvents",
+          "line": 248,
+          "complexity": 17,
+          "linesOfCode": 27,
+          "parameters": 1,
+          "nestingDepth": 1
+        },
+        {
+          "name": "getAuditStats",
+          "line": 279,
+          "complexity": 10,
+          "linesOfCode": 32,
+          "parameters": 0,
+          "nestingDepth": 1
+        },
+        {
+          "name": "loadAuditFromDisk",
+          "line": 315,
+          "complexity": 5,
+          "linesOfCode": 26,
+          "parameters": 1,
+          "nestingDepth": 4
+        }
+      ],
+      "averageComplexity": 6.7,
+      "maxComplexity": 17,
+      "linesOfCode": 357
     },
     {
       "filePath": "server/autoGoalSuggester.ts",
@@ -999,6 +1151,102 @@
       "averageComplexity": 4,
       "maxComplexity": 8,
       "linesOfCode": 229
+    },
+    {
+      "filePath": "server/autoRebuild.ts",
+      "functions": [
+        {
+          "name": "getAutoRebuildConfig",
+          "line": 58,
+          "complexity": 1,
+          "linesOfCode": 3,
+          "parameters": 0,
+          "nestingDepth": 1
+        },
+        {
+          "name": "setAutoRebuildConfig",
+          "line": 62,
+          "complexity": 1,
+          "linesOfCode": 4,
+          "parameters": 1,
+          "nestingDepth": 1
+        },
+        {
+          "name": "loadHistory",
+          "line": 90,
+          "complexity": 3,
+          "linesOfCode": 11,
+          "parameters": 0,
+          "nestingDepth": 3
+        },
+        {
+          "name": "saveHistory",
+          "line": 102,
+          "complexity": 3,
+          "linesOfCode": 10,
+          "parameters": 0,
+          "nestingDepth": 2
+        },
+        {
+          "name": "canRebuild",
+          "line": 115,
+          "complexity": 3,
+          "linesOfCode": 8,
+          "parameters": 0,
+          "nestingDepth": 1
+        },
+        {
+          "name": "runRebuild",
+          "line": 126,
+          "complexity": 13,
+          "linesOfCode": 63,
+          "parameters": 1,
+          "nestingDepth": 3
+        },
+        {
+          "name": "triggerHotReload",
+          "line": 201,
+          "complexity": 3,
+          "linesOfCode": 13,
+          "parameters": 0,
+          "nestingDepth": 2
+        },
+        {
+          "name": "scheduleRebuild",
+          "line": 222,
+          "complexity": 6,
+          "linesOfCode": 42,
+          "parameters": 1,
+          "nestingDepth": 3
+        },
+        {
+          "name": "triggerRebuildNow",
+          "line": 267,
+          "complexity": 3,
+          "linesOfCode": 32,
+          "parameters": 1,
+          "nestingDepth": 3
+        },
+        {
+          "name": "getAutoRebuildStatus",
+          "line": 302,
+          "complexity": 2,
+          "linesOfCode": 21,
+          "parameters": 0,
+          "nestingDepth": 1
+        },
+        {
+          "name": "initAutoRebuild",
+          "line": 326,
+          "complexity": 1,
+          "linesOfCode": 4,
+          "parameters": 0,
+          "nestingDepth": 1
+        }
+      ],
+      "averageComplexity": 3.5,
+      "maxComplexity": 13,
+      "linesOfCode": 330
     },
     {
       "filePath": "server/autoRollback.ts",
@@ -1238,14 +1486,14 @@
         {
           "name": "runCycle",
           "line": 175,
-          "complexity": 48,
-          "linesOfCode": 256,
+          "complexity": 49,
+          "linesOfCode": 262,
           "parameters": 0,
           "nestingDepth": 8
         },
         {
           "name": "startOrchestrator",
-          "line": 437,
+          "line": 443,
           "complexity": 8,
           "linesOfCode": 27,
           "parameters": 1,
@@ -1253,7 +1501,7 @@
         },
         {
           "name": "stopOrchestrator",
-          "line": 468,
+          "line": 474,
           "complexity": 2,
           "linesOfCode": 8,
           "parameters": 0,
@@ -1261,7 +1509,7 @@
         },
         {
           "name": "pause",
-          "line": 480,
+          "line": 486,
           "complexity": 2,
           "linesOfCode": 8,
           "parameters": 0,
@@ -1269,7 +1517,7 @@
         },
         {
           "name": "resume",
-          "line": 492,
+          "line": 498,
           "complexity": 2,
           "linesOfCode": 5,
           "parameters": 0,
@@ -1277,7 +1525,7 @@
         },
         {
           "name": "triggerCycle",
-          "line": 501,
+          "line": 507,
           "complexity": 2,
           "linesOfCode": 5,
           "parameters": 0,
@@ -1285,7 +1533,7 @@
         },
         {
           "name": "getOrchestratorConfig",
-          "line": 510,
+          "line": 516,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 0,
@@ -1293,7 +1541,7 @@
         },
         {
           "name": "setOrchestratorConfig",
-          "line": 517,
+          "line": 523,
           "complexity": 3,
           "linesOfCode": 8,
           "parameters": 1,
@@ -1301,7 +1549,7 @@
         },
         {
           "name": "getOrchestratorStats",
-          "line": 529,
+          "line": 535,
           "complexity": 3,
           "linesOfCode": 29,
           "parameters": 0,
@@ -1309,7 +1557,7 @@
         },
         {
           "name": "getCycleHistory",
-          "line": 562,
+          "line": 568,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 1,
@@ -1317,16 +1565,16 @@
         },
         {
           "name": "initOrchestrator",
-          "line": 569,
+          "line": 575,
           "complexity": 5,
           "linesOfCode": 14,
           "parameters": 0,
           "nestingDepth": 1
         }
       ],
-      "averageComplexity": 5.5,
-      "maxComplexity": 48,
-      "linesOfCode": 583
+      "averageComplexity": 5.6,
+      "maxComplexity": 49,
+      "linesOfCode": 589
     },
     {
       "filePath": "server/benchmarkRunner.ts",
@@ -2769,6 +3017,62 @@
       "linesOfCode": 318
     },
     {
+      "filePath": "server/dbPostgres.ts",
+      "functions": [
+        {
+          "name": "createPgDb",
+          "line": 36,
+          "complexity": 4,
+          "linesOfCode": 18,
+          "parameters": 0,
+          "nestingDepth": 2
+        },
+        {
+          "name": "getPgDb",
+          "line": 61,
+          "complexity": 4,
+          "linesOfCode": 19,
+          "parameters": 0,
+          "nestingDepth": 3
+        },
+        {
+          "name": "isPgAvailable",
+          "line": 85,
+          "complexity": 2,
+          "linesOfCode": 5,
+          "parameters": 0,
+          "nestingDepth": 0
+        },
+        {
+          "name": "pgExecute",
+          "line": 95,
+          "complexity": 3,
+          "linesOfCode": 15,
+          "parameters": 2,
+          "nestingDepth": 2
+        },
+        {
+          "name": "runPgMigrations",
+          "line": 116,
+          "complexity": 3,
+          "linesOfCode": 87,
+          "parameters": 0,
+          "nestingDepth": 2
+        },
+        {
+          "name": "getPgStatus",
+          "line": 207,
+          "complexity": 3,
+          "linesOfCode": 33,
+          "parameters": 0,
+          "nestingDepth": 2
+        }
+      ],
+      "averageComplexity": 3.2,
+      "maxComplexity": 4,
+      "linesOfCode": 240
+    },
+    {
       "filePath": "server/dependencyAuditor.ts",
       "functions": [
         {
@@ -3513,6 +3817,54 @@
       "linesOfCode": 734
     },
     {
+      "filePath": "server/evalGoalDiscovery.ts",
+      "functions": [
+        {
+          "name": "loadHistory",
+          "line": 49,
+          "complexity": 2,
+          "linesOfCode": 8,
+          "parameters": 0,
+          "nestingDepth": 2
+        },
+        {
+          "name": "saveHistory",
+          "line": 58,
+          "complexity": 3,
+          "linesOfCode": 9,
+          "parameters": 1,
+          "nestingDepth": 2
+        },
+        {
+          "name": "discoverGoalsFromEval",
+          "line": 74,
+          "complexity": 23,
+          "linesOfCode": 115,
+          "parameters": 1,
+          "nestingDepth": 5
+        },
+        {
+          "name": "getDiscoveryHistory",
+          "line": 193,
+          "complexity": 1,
+          "linesOfCode": 3,
+          "parameters": 0,
+          "nestingDepth": 0
+        },
+        {
+          "name": "getRecentDiscoveries",
+          "line": 200,
+          "complexity": 1,
+          "linesOfCode": 4,
+          "parameters": 1,
+          "nestingDepth": 0
+        }
+      ],
+      "averageComplexity": 6,
+      "maxComplexity": 23,
+      "linesOfCode": 204
+    },
+    {
       "filePath": "server/failurePatternMemory.ts",
       "functions": [
         {
@@ -3583,6 +3935,166 @@
       "averageComplexity": 2.1,
       "maxComplexity": 4,
       "linesOfCode": 266
+    },
+    {
+      "filePath": "server/federatedLearning.ts",
+      "functions": [
+        {
+          "name": "saveFederatedState",
+          "line": 147,
+          "complexity": 2,
+          "linesOfCode": 15,
+          "parameters": 0,
+          "nestingDepth": 2
+        },
+        {
+          "name": "loadFederatedState",
+          "line": 163,
+          "complexity": 10,
+          "linesOfCode": 24,
+          "parameters": 0,
+          "nestingDepth": 4
+        },
+        {
+          "name": "registerNode",
+          "line": 190,
+          "complexity": 8,
+          "linesOfCode": 30,
+          "parameters": 2,
+          "nestingDepth": 2
+        },
+        {
+          "name": "getNode",
+          "line": 221,
+          "complexity": 2,
+          "linesOfCode": 3,
+          "parameters": 1,
+          "nestingDepth": 0
+        },
+        {
+          "name": "listNodes",
+          "line": 225,
+          "complexity": 1,
+          "linesOfCode": 3,
+          "parameters": 0,
+          "nestingDepth": 0
+        },
+        {
+          "name": "markNodeHealthy",
+          "line": 229,
+          "complexity": 3,
+          "linesOfCode": 9,
+          "parameters": 2,
+          "nestingDepth": 1
+        },
+        {
+          "name": "markNodeUnhealthy",
+          "line": 239,
+          "complexity": 2,
+          "linesOfCode": 8,
+          "parameters": 1,
+          "nestingDepth": 2
+        },
+        {
+          "name": "receiveProposal",
+          "line": 250,
+          "complexity": 6,
+          "linesOfCode": 57,
+          "parameters": 1,
+          "nestingDepth": 3
+        },
+        {
+          "name": "markProposalValidated",
+          "line": 322,
+          "complexity": 2,
+          "linesOfCode": 8,
+          "parameters": 2,
+          "nestingDepth": 1
+        },
+        {
+          "name": "markProposalApplied",
+          "line": 331,
+          "complexity": 2,
+          "linesOfCode": 20,
+          "parameters": 1,
+          "nestingDepth": 3
+        },
+        {
+          "name": "computeFederatedAvgScore",
+          "line": 358,
+          "complexity": 3,
+          "linesOfCode": 14,
+          "parameters": 0,
+          "nestingDepth": 1
+        },
+        {
+          "name": "updateLocalScore",
+          "line": 373,
+          "complexity": 1,
+          "linesOfCode": 3,
+          "parameters": 1,
+          "nestingDepth": 0
+        },
+        {
+          "name": "prepareSyncPayload",
+          "line": 447,
+          "complexity": 8,
+          "linesOfCode": 45,
+          "parameters": 1,
+          "nestingDepth": 3
+        },
+        {
+          "name": "syncWithPeer",
+          "line": 495,
+          "complexity": 12,
+          "linesOfCode": 48,
+          "parameters": 1,
+          "nestingDepth": 3
+        },
+        {
+          "name": "runSyncCycle",
+          "line": 544,
+          "complexity": 4,
+          "linesOfCode": 12,
+          "parameters": 0,
+          "nestingDepth": 1
+        },
+        {
+          "name": "scheduleNextSync",
+          "line": 557,
+          "complexity": 3,
+          "linesOfCode": 6,
+          "parameters": 0,
+          "nestingDepth": 1
+        },
+        {
+          "name": "getFederatedStats",
+          "line": 566,
+          "complexity": 1,
+          "linesOfCode": 20,
+          "parameters": 0,
+          "nestingDepth": 1
+        },
+        {
+          "name": "getNodeId",
+          "line": 587,
+          "complexity": 1,
+          "linesOfCode": 3,
+          "parameters": 0,
+          "nestingDepth": 0
+        },
+        {
+          "name": "initFederatedLearning",
+          "line": 593,
+          "complexity": 2,
+          "linesOfCode": 11,
+          "parameters": 0,
+          "nestingDepth": 2
+        }
+      ],
+      "averageComplexity": 3.8,
+      "maxComplexity": 12,
+      "linesOfCode": 604
     },
     {
       "filePath": "server/fileEngine.ts",
@@ -3741,6 +4253,30 @@
       "averageComplexity": 4.3,
       "maxComplexity": 9,
       "linesOfCode": 399
+    },
+    {
+      "filePath": "server/goalDecomposer.ts",
+      "functions": [
+        {
+          "name": "decomposeWithLlm",
+          "line": 40,
+          "complexity": 7,
+          "linesOfCode": 60,
+          "parameters": 1,
+          "nestingDepth": 3
+        },
+        {
+          "name": "isDuplicate",
+          "line": 103,
+          "complexity": 3,
+          "linesOfCode": 8,
+          "parameters": 1,
+          "nestingDepth": 1
+        }
+      ],
+      "averageComplexity": 5,
+      "maxComplexity": 7,
+      "linesOfCode": 189
     },
     {
       "filePath": "server/goalManager.ts",
@@ -4495,11 +5031,171 @@
       "linesOfCode": 368
     },
     {
+      "filePath": "server/knowledgeTransfer.ts",
+      "functions": [
+        {
+          "name": "getInstanceId",
+          "line": 95,
+          "complexity": 3,
+          "linesOfCode": 14,
+          "parameters": 0,
+          "nestingDepth": 2
+        },
+        {
+          "name": "loadPatterns",
+          "line": 118,
+          "complexity": 4,
+          "linesOfCode": 9,
+          "parameters": 0,
+          "nestingDepth": 3
+        },
+        {
+          "name": "savePatterns",
+          "line": 128,
+          "complexity": 3,
+          "linesOfCode": 7,
+          "parameters": 0,
+          "nestingDepth": 2
+        },
+        {
+          "name": "exportKnowledgePackage",
+          "line": 187,
+          "complexity": 7,
+          "linesOfCode": 77,
+          "parameters": 0,
+          "nestingDepth": 3
+        },
+        {
+          "name": "importKnowledgePackage",
+          "line": 267,
+          "complexity": 6,
+          "linesOfCode": 65,
+          "parameters": 1,
+          "nestingDepth": 4
+        },
+        {
+          "name": "getPatternContextForFile",
+          "line": 339,
+          "complexity": 3,
+          "linesOfCode": 18,
+          "parameters": 2,
+          "nestingDepth": 1
+        },
+        {
+          "name": "getKnowledgeTransferStatus",
+          "line": 360,
+          "complexity": 1,
+          "linesOfCode": 15,
+          "parameters": 0,
+          "nestingDepth": 1
+        },
+        {
+          "name": "initKnowledgeTransfer",
+          "line": 378,
+          "complexity": 1,
+          "linesOfCode": 4,
+          "parameters": 0,
+          "nestingDepth": 1
+        }
+      ],
+      "averageComplexity": 3.5,
+      "maxComplexity": 7,
+      "linesOfCode": 382
+    },
+    {
+      "filePath": "server/learnedConstraints.ts",
+      "functions": [
+        {
+          "name": "loadStore",
+          "line": 49,
+          "complexity": 2,
+          "linesOfCode": 8,
+          "parameters": 0,
+          "nestingDepth": 2
+        },
+        {
+          "name": "saveStore",
+          "line": 58,
+          "complexity": 3,
+          "linesOfCode": 10,
+          "parameters": 1,
+          "nestingDepth": 2
+        },
+        {
+          "name": "getStore",
+          "line": 75,
+          "complexity": 3,
+          "linesOfCode": 8,
+          "parameters": 0,
+          "nestingDepth": 1
+        },
+        {
+          "name": "invalidateCache",
+          "line": 84,
+          "complexity": 1,
+          "linesOfCode": 4,
+          "parameters": 0,
+          "nestingDepth": 0
+        },
+        {
+          "name": "recordRejection",
+          "line": 98,
+          "complexity": 7,
+          "linesOfCode": 38,
+          "parameters": 2,
+          "nestingDepth": 3
+        },
+        {
+          "name": "addLearnedConstraint",
+          "line": 141,
+          "complexity": 2,
+          "linesOfCode": 26,
+          "parameters": 2,
+          "nestingDepth": 2
+        },
+        {
+          "name": "getLearnedConstraints",
+          "line": 171,
+          "complexity": 1,
+          "linesOfCode": 3,
+          "parameters": 0,
+          "nestingDepth": 0
+        },
+        {
+          "name": "getAllConstraints",
+          "line": 178,
+          "complexity": 1,
+          "linesOfCode": 3,
+          "parameters": 0,
+          "nestingDepth": 0
+        },
+        {
+          "name": "checkLearnedConstraints",
+          "line": 186,
+          "complexity": 3,
+          "linesOfCode": 16,
+          "parameters": 1,
+          "nestingDepth": 3
+        },
+        {
+          "name": "disableConstraint",
+          "line": 206,
+          "complexity": 2,
+          "linesOfCode": 9,
+          "parameters": 1,
+          "nestingDepth": 0
+        }
+      ],
+      "averageComplexity": 2.5,
+      "maxComplexity": 7,
+      "linesOfCode": 215
+    },
+    {
       "filePath": "server/llmProvider.ts",
       "functions": [
         {
           "name": "ensureProviderInitialized",
-          "line": 226,
+          "line": 244,
           "complexity": 18,
           "linesOfCode": 39,
           "parameters": 0,
@@ -4507,15 +5203,15 @@
         },
         {
           "name": "getProviderApiKey",
-          "line": 267,
-          "complexity": 18,
-          "linesOfCode": 15,
+          "line": 285,
+          "complexity": 20,
+          "linesOfCode": 17,
           "parameters": 1,
           "nestingDepth": 1
         },
         {
           "name": "switchProvider",
-          "line": 284,
+          "line": 304,
           "complexity": 2,
           "linesOfCode": 5,
           "parameters": 1,
@@ -4523,7 +5219,7 @@
         },
         {
           "name": "getActiveProvider",
-          "line": 290,
+          "line": 310,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 0,
@@ -4531,7 +5227,7 @@
         },
         {
           "name": "setActiveProvider",
-          "line": 294,
+          "line": 314,
           "complexity": 3,
           "linesOfCode": 14,
           "parameters": 1,
@@ -4539,15 +5235,31 @@
         },
         {
           "name": "listProviders",
-          "line": 309,
+          "line": 329,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 0,
           "nestingDepth": 1
         },
         {
+          "name": "getProviderForTier",
+          "line": 355,
+          "complexity": 15,
+          "linesOfCode": 35,
+          "parameters": 1,
+          "nestingDepth": 1
+        },
+        {
+          "name": "tierForArea",
+          "line": 392,
+          "complexity": 4,
+          "linesOfCode": 10,
+          "parameters": 1,
+          "nestingDepth": 0
+        },
+        {
           "name": "isIncompleteJson",
-          "line": 403,
+          "line": 498,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 1,
@@ -4555,7 +5267,7 @@
         },
         {
           "name": "isMidCodeBlock",
-          "line": 484,
+          "line": 579,
           "complexity": 2,
           "linesOfCode": 4,
           "parameters": 1,
@@ -4563,7 +5275,7 @@
         },
         {
           "name": "getContinuationPrompt",
-          "line": 488,
+          "line": 583,
           "complexity": 2,
           "linesOfCode": 8,
           "parameters": 1,
@@ -4571,7 +5283,7 @@
         },
         {
           "name": "isIncompleteJsonStream",
-          "line": 682,
+          "line": 777,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 1,
@@ -4579,16 +5291,16 @@
         },
         {
           "name": "getBackgroundProvider",
-          "line": 770,
+          "line": 865,
           "complexity": 3,
           "linesOfCode": 22,
           "parameters": 0,
           "nestingDepth": 2
         }
       ],
-      "averageComplexity": 4.7,
-      "maxComplexity": 18,
-      "linesOfCode": 889
+      "averageComplexity": 5.6,
+      "maxComplexity": 20,
+      "linesOfCode": 990
     },
     {
       "filePath": "server/llmRouter.ts",
@@ -5743,6 +6455,62 @@
       "linesOfCode": 273
     },
     {
+      "filePath": "server/prGenerator.ts",
+      "functions": [
+        {
+          "name": "getConfig",
+          "line": 49,
+          "complexity": 8,
+          "linesOfCode": 11,
+          "parameters": 0,
+          "nestingDepth": 1
+        },
+        {
+          "name": "loadRegistry",
+          "line": 82,
+          "complexity": 3,
+          "linesOfCode": 11,
+          "parameters": 0,
+          "nestingDepth": 3
+        },
+        {
+          "name": "saveRegistry",
+          "line": 94,
+          "complexity": 3,
+          "linesOfCode": 9,
+          "parameters": 0,
+          "nestingDepth": 2
+        },
+        {
+          "name": "syncOpenPRStatus",
+          "line": 299,
+          "complexity": 12,
+          "linesOfCode": 29,
+          "parameters": 0,
+          "nestingDepth": 6
+        },
+        {
+          "name": "getPRGeneratorStatus",
+          "line": 331,
+          "complexity": 1,
+          "linesOfCode": 18,
+          "parameters": 0,
+          "nestingDepth": 1
+        },
+        {
+          "name": "initPRGenerator",
+          "line": 352,
+          "complexity": 4,
+          "linesOfCode": 12,
+          "parameters": 0,
+          "nestingDepth": 2
+        }
+      ],
+      "averageComplexity": 5.2,
+      "maxComplexity": 12,
+      "linesOfCode": 364
+    },
+    {
       "filePath": "server/promptEngineer.ts",
       "functions": [
         {
@@ -5853,6 +6621,94 @@
       "averageComplexity": 7.8,
       "maxComplexity": 14,
       "linesOfCode": 319
+    },
+    {
+      "filePath": "server/rbac.ts",
+      "functions": [
+        {
+          "name": "roleAtLeast",
+          "line": 50,
+          "complexity": 1,
+          "linesOfCode": 3,
+          "parameters": 2,
+          "nestingDepth": 0
+        },
+        {
+          "name": "resolveRole",
+          "line": 83,
+          "complexity": 14,
+          "linesOfCode": 41,
+          "parameters": 1,
+          "nestingDepth": 4
+        },
+        {
+          "name": "resolveTenantId",
+          "line": 131,
+          "complexity": 5,
+          "linesOfCode": 8,
+          "parameters": 1,
+          "nestingDepth": 1
+        },
+        {
+          "name": "attachRbacContext",
+          "line": 146,
+          "complexity": 3,
+          "linesOfCode": 14,
+          "parameters": 3,
+          "nestingDepth": 1
+        },
+        {
+          "name": "requireRole",
+          "line": 164,
+          "complexity": 6,
+          "linesOfCode": 57,
+          "parameters": 1,
+          "nestingDepth": 3
+        },
+        {
+          "name": "auditMiddleware",
+          "line": 240,
+          "complexity": 10,
+          "linesOfCode": 32,
+          "parameters": 3,
+          "nestingDepth": 2
+        },
+        {
+          "name": "requireTenant",
+          "line": 280,
+          "complexity": 2,
+          "linesOfCode": 12,
+          "parameters": 3,
+          "nestingDepth": 2
+        },
+        {
+          "name": "isExemptPath",
+          "line": 314,
+          "complexity": 12,
+          "linesOfCode": 20,
+          "parameters": 1,
+          "nestingDepth": 0
+        },
+        {
+          "name": "roleRateLimit",
+          "line": 346,
+          "complexity": 11,
+          "linesOfCode": 56,
+          "parameters": 3,
+          "nestingDepth": 3
+        },
+        {
+          "name": "getRbacContext",
+          "line": 406,
+          "complexity": 4,
+          "linesOfCode": 7,
+          "parameters": 1,
+          "nestingDepth": 1
+        }
+      ],
+      "averageComplexity": 6.8,
+      "maxComplexity": 14,
+      "linesOfCode": 413
     },
     {
       "filePath": "server/reactEngine.ts",
@@ -6118,11 +6974,137 @@
       "linesOfCode": 203
     },
     {
+      "filePath": "server/rlhfCollector.ts",
+      "functions": [
+        {
+          "name": "ensureDataDir",
+          "line": 78,
+          "complexity": 2,
+          "linesOfCode": 4,
+          "parameters": 0,
+          "nestingDepth": 1
+        },
+        {
+          "name": "appendFeedbackToDisk",
+          "line": 83,
+          "complexity": 2,
+          "linesOfCode": 8,
+          "parameters": 1,
+          "nestingDepth": 1
+        },
+        {
+          "name": "loadFeedbackFromDisk",
+          "line": 92,
+          "complexity": 4,
+          "linesOfCode": 15,
+          "parameters": 1,
+          "nestingDepth": 3
+        },
+        {
+          "name": "saveAggregates",
+          "line": 108,
+          "complexity": 2,
+          "linesOfCode": 9,
+          "parameters": 0,
+          "nestingDepth": 1
+        },
+        {
+          "name": "loadAggregates",
+          "line": 118,
+          "complexity": 4,
+          "linesOfCode": 12,
+          "parameters": 0,
+          "nestingDepth": 2
+        },
+        {
+          "name": "normalizeReward",
+          "line": 133,
+          "complexity": 8,
+          "linesOfCode": 10,
+          "parameters": 3,
+          "nestingDepth": 1
+        },
+        {
+          "name": "recomputeAggregates",
+          "line": 146,
+          "complexity": 7,
+          "linesOfCode": 39,
+          "parameters": 0,
+          "nestingDepth": 2
+        },
+        {
+          "name": "getRlhfContext",
+          "line": 263,
+          "complexity": 7,
+          "linesOfCode": 22,
+          "parameters": 0,
+          "nestingDepth": 3
+        },
+        {
+          "name": "getReplayExamples",
+          "line": 290,
+          "complexity": 1,
+          "linesOfCode": 5,
+          "parameters": 1,
+          "nestingDepth": 0
+        },
+        {
+          "name": "getRlhfAggregates",
+          "line": 299,
+          "complexity": 1,
+          "linesOfCode": 3,
+          "parameters": 0,
+          "nestingDepth": 0
+        },
+        {
+          "name": "getRecentFeedback",
+          "line": 306,
+          "complexity": 1,
+          "linesOfCode": 3,
+          "parameters": 1,
+          "nestingDepth": 0
+        },
+        {
+          "name": "getRlhfStats",
+          "line": 313,
+          "complexity": 2,
+          "linesOfCode": 23,
+          "parameters": 0,
+          "nestingDepth": 2
+        },
+        {
+          "name": "initRlhfCollector",
+          "line": 339,
+          "complexity": 1,
+          "linesOfCode": 6,
+          "parameters": 0,
+          "nestingDepth": 1
+        }
+      ],
+      "averageComplexity": 3.2,
+      "maxComplexity": 8,
+      "linesOfCode": 345
+    },
+    {
       "filePath": "server/routers.ts",
       "functions": [],
       "averageComplexity": 0,
       "maxComplexity": 0,
-      "linesOfCode": 120
+      "linesOfCode": 121
+    },
+    {
+      "filePath": "server/routes/adaptiveEvalRoutes.ts",
+      "functions": [],
+      "averageComplexity": 0,
+      "maxComplexity": 0,
+      "linesOfCode": 181
+    },
+    {
+      "filePath": "server/routes/adminRoutes.ts",
+      "functions": [],
+      "averageComplexity": 0,
+      "maxComplexity": 0,
+      "linesOfCode": 206
     },
     {
       "filePath": "server/routes/agentRoutes.ts",
@@ -6152,7 +7134,7 @@
       "functions": [
         {
           "name": "makeRunAgent",
-          "line": 24,
+          "line": 27,
           "complexity": 1,
           "linesOfCode": 9,
           "parameters": 0,
@@ -6160,7 +7142,7 @@
         },
         {
           "name": "loadBaseline",
-          "line": 34,
+          "line": 37,
           "complexity": 2,
           "linesOfCode": 8,
           "parameters": 0,
@@ -6168,24 +7150,48 @@
         },
         {
           "name": "saveBaseline",
-          "line": 43,
+          "line": 46,
           "complexity": 1,
           "linesOfCode": 4,
           "parameters": 2,
           "nestingDepth": 1
         },
         {
+          "name": "sseWrite",
+          "line": 53,
+          "complexity": 1,
+          "linesOfCode": 3,
+          "parameters": 3,
+          "nestingDepth": 1
+        },
+        {
           "name": "registerEvalRoutes",
-          "line": 48,
-          "complexity": 26,
-          "linesOfCode": 144,
+          "line": 57,
+          "complexity": 46,
+          "linesOfCode": 320,
           "parameters": 1,
           "nestingDepth": 5
         }
       ],
-      "averageComplexity": 7.5,
-      "maxComplexity": 26,
-      "linesOfCode": 192
+      "averageComplexity": 10.2,
+      "maxComplexity": 46,
+      "linesOfCode": 377
+    },
+    {
+      "filePath": "server/routes/federatedRoutes.ts",
+      "functions": [
+        {
+          "name": "validateFederatedToken",
+          "line": 41,
+          "complexity": 5,
+          "linesOfCode": 13,
+          "parameters": 2,
+          "nestingDepth": 2
+        }
+      ],
+      "averageComplexity": 5,
+      "maxComplexity": 5,
+      "linesOfCode": 269
     },
     {
       "filePath": "server/routes/llmRoutes.ts",
@@ -6215,7 +7221,7 @@
       "functions": [],
       "averageComplexity": 0,
       "maxComplexity": 0,
-      "linesOfCode": 173
+      "linesOfCode": 184
     },
     {
       "filePath": "server/routes/systemRoutes.ts",
@@ -6240,6 +7246,20 @@
       "averageComplexity": 76,
       "maxComplexity": 145,
       "linesOfCode": 735
+    },
+    {
+      "filePath": "server/routes/v71Routes.ts",
+      "functions": [],
+      "averageComplexity": 0,
+      "maxComplexity": 0,
+      "linesOfCode": 179
+    },
+    {
+      "filePath": "server/routes/v7Routes.ts",
+      "functions": [],
+      "averageComplexity": 0,
+      "maxComplexity": 0,
+      "linesOfCode": 127
     },
     {
       "filePath": "server/routes/validate.ts",
@@ -6405,7 +7425,7 @@
       "functions": [
         {
           "name": "getWorkspaceDir",
-          "line": 117,
+          "line": 118,
           "complexity": 1,
           "linesOfCode": 8,
           "parameters": 0,
@@ -6413,7 +7433,7 @@
         },
         {
           "name": "getHistoryPath",
-          "line": 126,
+          "line": 127,
           "complexity": 2,
           "linesOfCode": 5,
           "parameters": 0,
@@ -6421,7 +7441,7 @@
         },
         {
           "name": "getConfigPath",
-          "line": 132,
+          "line": 133,
           "complexity": 2,
           "linesOfCode": 5,
           "parameters": 0,
@@ -6429,7 +7449,7 @@
         },
         {
           "name": "loadPersistedConfig",
-          "line": 138,
+          "line": 139,
           "complexity": 2,
           "linesOfCode": 11,
           "parameters": 0,
@@ -6437,7 +7457,7 @@
         },
         {
           "name": "saveConfig",
-          "line": 150,
+          "line": 151,
           "complexity": 1,
           "linesOfCode": 7,
           "parameters": 0,
@@ -6445,7 +7465,7 @@
         },
         {
           "name": "appendCycleHistory",
-          "line": 158,
+          "line": 159,
           "complexity": 1,
           "linesOfCode": 7,
           "parameters": 1,
@@ -6453,7 +7473,7 @@
         },
         {
           "name": "getProofHistoryPath",
-          "line": 171,
+          "line": 172,
           "complexity": 2,
           "linesOfCode": 10,
           "parameters": 0,
@@ -6461,7 +7481,7 @@
         },
         {
           "name": "appendProofHistory",
-          "line": 182,
+          "line": 183,
           "complexity": 6,
           "linesOfCode": 46,
           "parameters": 1,
@@ -6469,7 +7489,7 @@
         },
         {
           "name": "generateCycleId",
-          "line": 229,
+          "line": 230,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 0,
@@ -6477,7 +7497,7 @@
         },
         {
           "name": "measureBenchmark",
-          "line": 256,
+          "line": 257,
           "complexity": 37,
           "linesOfCode": 98,
           "parameters": 0,
@@ -6485,7 +7505,7 @@
         },
         {
           "name": "scoreCapabilities",
-          "line": 355,
+          "line": 356,
           "complexity": 1,
           "linesOfCode": 4,
           "parameters": 0,
@@ -6493,15 +7513,15 @@
         },
         {
           "name": "runRSICycle",
-          "line": 366,
-          "complexity": 36,
-          "linesOfCode": 256,
+          "line": 367,
+          "complexity": 39,
+          "linesOfCode": 279,
           "parameters": 0,
           "nestingDepth": 7
         },
         {
           "name": "d",
-          "line": 544,
+          "line": 553,
           "complexity": 2,
           "linesOfCode": 1,
           "parameters": 2,
@@ -6509,7 +7529,7 @@
         },
         {
           "name": "scheduleNextCycle",
-          "line": 625,
+          "line": 649,
           "complexity": 5,
           "linesOfCode": 19,
           "parameters": 0,
@@ -6517,7 +7537,7 @@
         },
         {
           "name": "initRSIEngine",
-          "line": 650,
+          "line": 674,
           "complexity": 2,
           "linesOfCode": 7,
           "parameters": 0,
@@ -6525,7 +7545,7 @@
         },
         {
           "name": "enableRSI",
-          "line": 661,
+          "line": 685,
           "complexity": 2,
           "linesOfCode": 10,
           "parameters": 1,
@@ -6533,7 +7553,7 @@
         },
         {
           "name": "disableRSI",
-          "line": 675,
+          "line": 699,
           "complexity": 2,
           "linesOfCode": 11,
           "parameters": 0,
@@ -6541,7 +7561,7 @@
         },
         {
           "name": "triggerRSICycleNow",
-          "line": 690,
+          "line": 714,
           "complexity": 5,
           "linesOfCode": 12,
           "parameters": 0,
@@ -6549,7 +7569,7 @@
         },
         {
           "name": "confirmContinue",
-          "line": 706,
+          "line": 730,
           "complexity": 3,
           "linesOfCode": 9,
           "parameters": 0,
@@ -6557,7 +7577,7 @@
         },
         {
           "name": "updateRSIConfig",
-          "line": 719,
+          "line": 743,
           "complexity": 2,
           "linesOfCode": 10,
           "parameters": 1,
@@ -6565,7 +7585,7 @@
         },
         {
           "name": "getRSIStatus",
-          "line": 733,
+          "line": 757,
           "complexity": 1,
           "linesOfCode": 13,
           "parameters": 0,
@@ -6573,16 +7593,16 @@
         },
         {
           "name": "getRSIHistory",
-          "line": 750,
+          "line": 774,
           "complexity": 2,
           "linesOfCode": 14,
           "parameters": 0,
           "nestingDepth": 1
         }
       ],
-      "averageComplexity": 5.4,
-      "maxComplexity": 37,
-      "linesOfCode": 764
+      "averageComplexity": 5.5,
+      "maxComplexity": 39,
+      "linesOfCode": 788
     },
     {
       "filePath": "server/rsiScheduler.ts",
@@ -6790,14 +7810,14 @@
         {
           "name": "validateProposal",
           "line": 168,
-          "complexity": 5,
-          "linesOfCode": 23,
+          "complexity": 6,
+          "linesOfCode": 32,
           "parameters": 1,
           "nestingDepth": 3
         },
         {
           "name": "isForbiddenFile",
-          "line": 196,
+          "line": 205,
           "complexity": 1,
           "linesOfCode": 4,
           "parameters": 1,
@@ -6805,7 +7825,7 @@
         },
         {
           "name": "getSupervisorStatus",
-          "line": 204,
+          "line": 213,
           "complexity": 1,
           "linesOfCode": 19,
           "parameters": 0,
@@ -6813,7 +7833,7 @@
         },
         {
           "name": "resetModificationCounter",
-          "line": 227,
+          "line": 236,
           "complexity": 1,
           "linesOfCode": 4,
           "parameters": 0,
@@ -6821,16 +7841,16 @@
         },
         {
           "name": "verifyConstitutionIntegrity",
-          "line": 238,
+          "line": 247,
           "complexity": 3,
           "linesOfCode": 24,
           "parameters": 1,
           "nestingDepth": 3
         }
       ],
-      "averageComplexity": 4.1,
+      "averageComplexity": 4.3,
       "maxComplexity": 17,
-      "linesOfCode": 262
+      "linesOfCode": 271
     },
     {
       "filePath": "server/sandboxManager.ts",
@@ -7237,7 +8257,7 @@
         },
         {
           "name": "searchSearXNG",
-          "line": 191,
+          "line": 193,
           "complexity": 17,
           "linesOfCode": 59,
           "parameters": 2,
@@ -7246,7 +8266,7 @@
       ],
       "averageComplexity": 4.4,
       "maxComplexity": 17,
-      "linesOfCode": 393
+      "linesOfCode": 412
     },
     {
       "filePath": "server/security.ts",
@@ -7948,7 +8968,7 @@
       "functions": [
         {
           "name": "getServerDir",
-          "line": 310,
+          "line": 328,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 0,
@@ -7956,7 +8976,7 @@
         },
         {
           "name": "generateEventId",
-          "line": 314,
+          "line": 332,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 0,
@@ -7964,7 +8984,7 @@
         },
         {
           "name": "getSeverity",
-          "line": 318,
+          "line": 336,
           "complexity": 4,
           "linesOfCode": 6,
           "parameters": 3,
@@ -7972,7 +8992,7 @@
         },
         {
           "name": "detectDegradation",
-          "line": 330,
+          "line": 348,
           "complexity": 9,
           "linesOfCode": 39,
           "parameters": 0,
@@ -7980,7 +9000,7 @@
         },
         {
           "name": "attemptImmediateRecovery",
-          "line": 373,
+          "line": 391,
           "complexity": 3,
           "linesOfCode": 10,
           "parameters": 1,
@@ -7988,7 +9008,7 @@
         },
         {
           "name": "diagnoseWithLLM",
-          "line": 387,
+          "line": 405,
           "complexity": 19,
           "linesOfCode": 94,
           "parameters": 1,
@@ -7996,7 +9016,7 @@
         },
         {
           "name": "healCycle",
-          "line": 485,
+          "line": 503,
           "complexity": 39,
           "linesOfCode": 179,
           "parameters": 0,
@@ -8004,7 +9024,7 @@
         },
         {
           "name": "startHealLoop",
-          "line": 670,
+          "line": 688,
           "complexity": 3,
           "linesOfCode": 17,
           "parameters": 0,
@@ -8012,7 +9032,7 @@
         },
         {
           "name": "stopHealLoop",
-          "line": 691,
+          "line": 709,
           "complexity": 3,
           "linesOfCode": 13,
           "parameters": 0,
@@ -8020,7 +9040,7 @@
         },
         {
           "name": "runHealCycleOnce",
-          "line": 708,
+          "line": 726,
           "complexity": 3,
           "linesOfCode": 29,
           "parameters": 0,
@@ -8028,7 +9048,7 @@
         },
         {
           "name": "getHealStatus",
-          "line": 741,
+          "line": 759,
           "complexity": 1,
           "linesOfCode": 17,
           "parameters": 0,
@@ -8036,7 +9056,7 @@
         },
         {
           "name": "setHealConfig",
-          "line": 762,
+          "line": 780,
           "complexity": 5,
           "linesOfCode": 15,
           "parameters": 1,
@@ -8044,7 +9064,7 @@
         },
         {
           "name": "resetCircuitBreaker",
-          "line": 781,
+          "line": 799,
           "complexity": 3,
           "linesOfCode": 7,
           "parameters": 0,
@@ -8052,7 +9072,7 @@
         },
         {
           "name": "registerHealthCheck",
-          "line": 792,
+          "line": 810,
           "complexity": 2,
           "linesOfCode": 8,
           "parameters": 1,
@@ -8060,7 +9080,7 @@
         },
         {
           "name": "runAllHealthChecks",
-          "line": 804,
+          "line": 822,
           "complexity": 3,
           "linesOfCode": 12,
           "parameters": 0,
@@ -8068,7 +9088,7 @@
         },
         {
           "name": "recordMetricForTrend",
-          "line": 835,
+          "line": 853,
           "complexity": 9,
           "linesOfCode": 23,
           "parameters": 2,
@@ -8076,7 +9096,7 @@
         },
         {
           "name": "getProactiveAlerts",
-          "line": 863,
+          "line": 881,
           "complexity": 9,
           "linesOfCode": 38,
           "parameters": 0,
@@ -8084,7 +9104,7 @@
         },
         {
           "name": "initSelfHeal",
-          "line": 902,
+          "line": 920,
           "complexity": 6,
           "linesOfCode": 28,
           "parameters": 0,
@@ -8093,14 +9113,14 @@
       ],
       "averageComplexity": 6.8,
       "maxComplexity": 39,
-      "linesOfCode": 933
+      "linesOfCode": 951
     },
     {
       "filePath": "server/selfImprove.ts",
       "functions": [
         {
           "name": "proposalHash",
-          "line": 85,
+          "line": 92,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 2,
@@ -8108,7 +9128,7 @@
         },
         {
           "name": "initSeenHashes",
-          "line": 89,
+          "line": 96,
           "complexity": 3,
           "linesOfCode": 6,
           "parameters": 1,
@@ -8116,7 +9136,7 @@
         },
         {
           "name": "getServerDir",
-          "line": 98,
+          "line": 105,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 0,
@@ -8124,7 +9144,7 @@
         },
         {
           "name": "getProposalStorePath",
-          "line": 102,
+          "line": 109,
           "complexity": 2,
           "linesOfCode": 5,
           "parameters": 0,
@@ -8132,23 +9152,31 @@
         },
         {
           "name": "loadProposals",
-          "line": 108,
+          "line": 115,
           "complexity": 2,
           "linesOfCode": 9,
           "parameters": 0,
           "nestingDepth": 2
         },
         {
+          "name": "pruneProposalStore",
+          "line": 127,
+          "complexity": 6,
+          "linesOfCode": 18,
+          "parameters": 1,
+          "nestingDepth": 3
+        },
+        {
           "name": "saveProposals",
-          "line": 118,
+          "line": 146,
           "complexity": 1,
-          "linesOfCode": 3,
+          "linesOfCode": 4,
           "parameters": 1,
           "nestingDepth": 0
         },
         {
           "name": "resolveServerFile",
-          "line": 144,
+          "line": 173,
           "complexity": 17,
           "linesOfCode": 50,
           "parameters": 1,
@@ -8156,23 +9184,23 @@
         },
         {
           "name": "getConstitutionConstraints",
-          "line": 202,
+          "line": 231,
           "complexity": 8,
           "linesOfCode": 22,
           "parameters": 0,
           "nestingDepth": 4
         },
         {
-          "name": "validateEnvKeys",
-          "line": 229,
-          "complexity": 9,
-          "linesOfCode": 21,
+          "name": "validateEnvKeysOnce",
+          "line": 260,
+          "complexity": 10,
+          "linesOfCode": 23,
           "parameters": 0,
           "nestingDepth": 2
         },
         {
           "name": "generateSimpleDiff",
-          "line": 255,
+          "line": 288,
           "complexity": 12,
           "linesOfCode": 49,
           "parameters": 3,
@@ -8180,31 +9208,39 @@
         },
         {
           "name": "flushHunk",
-          "line": 277,
+          "line": 310,
           "complexity": 2,
           "linesOfCode": 8,
           "parameters": 0,
           "nestingDepth": 2
         },
         {
-          "name": "pickProviderForArea",
-          "line": 463,
-          "complexity": 11,
-          "linesOfCode": 12,
+          "name": "buildProviderFallbackChain",
+          "line": 533,
+          "complexity": 12,
+          "linesOfCode": 21,
           "parameters": 1,
-          "nestingDepth": 1
+          "nestingDepth": 2
+        },
+        {
+          "name": "tryParseProposal",
+          "line": 611,
+          "complexity": 3,
+          "linesOfCode": 7,
+          "parameters": 1,
+          "nestingDepth": 2
         },
         {
           "name": "applyProposal",
-          "line": 637,
-          "complexity": 58,
-          "linesOfCode": 230,
+          "line": 747,
+          "complexity": 63,
+          "linesOfCode": 247,
           "parameters": 1,
           "nestingDepth": 6
         },
         {
           "name": "rejectProposal",
-          "line": 868,
+          "line": 995,
           "complexity": 2,
           "linesOfCode": 8,
           "parameters": 1,
@@ -8212,7 +9248,7 @@
         },
         {
           "name": "listProposals",
-          "line": 877,
+          "line": 1004,
           "complexity": 2,
           "linesOfCode": 7,
           "parameters": 1,
@@ -8220,7 +9256,7 @@
         },
         {
           "name": "getAnalyzableFiles",
-          "line": 885,
+          "line": 1012,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 0,
@@ -8228,7 +9264,7 @@
         },
         {
           "name": "getAutoApplyConfigPath",
-          "line": 915,
+          "line": 1042,
           "complexity": 2,
           "linesOfCode": 5,
           "parameters": 0,
@@ -8236,7 +9272,7 @@
         },
         {
           "name": "getAutoApplyConfig",
-          "line": 921,
+          "line": 1048,
           "complexity": 2,
           "linesOfCode": 10,
           "parameters": 0,
@@ -8244,7 +9280,7 @@
         },
         {
           "name": "setAutoApplyConfig",
-          "line": 932,
+          "line": 1059,
           "complexity": 1,
           "linesOfCode": 8,
           "parameters": 1,
@@ -8252,7 +9288,7 @@
         },
         {
           "name": "canAutoApply",
-          "line": 945,
+          "line": 1072,
           "complexity": 3,
           "linesOfCode": 7,
           "parameters": 1,
@@ -8260,7 +9296,7 @@
         },
         {
           "name": "recordAutoApply",
-          "line": 953,
+          "line": 1080,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 0,
@@ -8268,7 +9304,7 @@
         },
         {
           "name": "runTypeCheck",
-          "line": 1013,
+          "line": 1141,
           "complexity": 8,
           "linesOfCode": 11,
           "parameters": 0,
@@ -8276,32 +9312,32 @@
         },
         {
           "name": "autoApplyHighConfidence",
-          "line": 1045,
-          "complexity": 35,
-          "linesOfCode": 141,
+          "line": 1173,
+          "complexity": 46,
+          "linesOfCode": 166,
           "parameters": 0,
           "nestingDepth": 5
         },
         {
           "name": "scoreProposal",
-          "line": 1055,
-          "complexity": 19,
-          "linesOfCode": 24,
+          "line": 1206,
+          "complexity": 20,
+          "linesOfCode": 26,
           "parameters": 1,
           "nestingDepth": 1
         },
         {
           "name": "getAutoApplyStatus",
-          "line": 1190,
+          "line": 1343,
           "complexity": 3,
           "linesOfCode": 21,
           "parameters": 0,
           "nestingDepth": 1
         }
       ],
-      "averageComplexity": 8.2,
-      "maxComplexity": 58,
-      "linesOfCode": 1211
+      "averageComplexity": 8.7,
+      "maxComplexity": 63,
+      "linesOfCode": 1364
     },
     {
       "filePath": "server/selfImproveGuard.ts",
@@ -8382,13 +9418,13 @@
           "name": "runSyntaxCheck",
           "line": 264,
           "complexity": 6,
-          "linesOfCode": 20,
+          "linesOfCode": 23,
           "parameters": 2,
           "nestingDepth": 2
         },
         {
           "name": "runTests",
-          "line": 287,
+          "line": 290,
           "complexity": 4,
           "linesOfCode": 12,
           "parameters": 0,
@@ -8396,31 +9432,39 @@
         },
         {
           "name": "guardedApply",
-          "line": 302,
-          "complexity": 38,
-          "linesOfCode": 136,
+          "line": 305,
+          "complexity": 42,
+          "linesOfCode": 148,
           "parameters": 1,
-          "nestingDepth": 5
+          "nestingDepth": 6
         },
         {
           "name": "rollbackToBackup",
-          "line": 441,
+          "line": 456,
           "complexity": 5,
           "linesOfCode": 21,
           "parameters": 1,
           "nestingDepth": 3
         },
         {
+          "name": "syncEnvToConfig",
+          "line": 485,
+          "complexity": 7,
+          "linesOfCode": 13,
+          "parameters": 0,
+          "nestingDepth": 2
+        },
+        {
           "name": "getGuardConfig",
-          "line": 465,
+          "line": 499,
           "complexity": 1,
-          "linesOfCode": 3,
+          "linesOfCode": 4,
           "parameters": 0,
           "nestingDepth": 1
         },
         {
           "name": "updateGuardConfig",
-          "line": 469,
+          "line": 504,
           "complexity": 1,
           "linesOfCode": 6,
           "parameters": 1,
@@ -8428,7 +9472,7 @@
         },
         {
           "name": "listBackups",
-          "line": 478,
+          "line": 513,
           "complexity": 2,
           "linesOfCode": 5,
           "parameters": 1,
@@ -8436,7 +9480,7 @@
         },
         {
           "name": "getAuditLog",
-          "line": 484,
+          "line": 519,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 1,
@@ -8444,16 +9488,16 @@
         },
         {
           "name": "sweepExpiredProposals",
-          "line": 490,
+          "line": 525,
           "complexity": 4,
           "linesOfCode": 15,
           "parameters": 0,
           "nestingDepth": 3
         }
       ],
-      "averageComplexity": 4.8,
-      "maxComplexity": 38,
-      "linesOfCode": 505
+      "averageComplexity": 5.2,
+      "maxComplexity": 42,
+      "linesOfCode": 540
     },
     {
       "filePath": "server/selfIntrospect.ts",
@@ -10011,17 +11055,25 @@
           "nestingDepth": 1
         },
         {
+          "name": "shouldRunWebSearch",
+          "line": 176,
+          "complexity": 5,
+          "linesOfCode": 6,
+          "parameters": 2,
+          "nestingDepth": 0
+        },
+        {
           "name": "registerStreamRoutes",
-          "line": 161,
-          "complexity": 145,
-          "linesOfCode": 695,
+          "line": 183,
+          "complexity": 146,
+          "linesOfCode": 702,
           "parameters": 1,
           "nestingDepth": 5
         }
       ],
-      "averageComplexity": 31.6,
-      "maxComplexity": 145,
-      "linesOfCode": 856
+      "averageComplexity": 27.3,
+      "maxComplexity": 146,
+      "linesOfCode": 885
     },
     {
       "filePath": "server/systemMemory.ts",
@@ -10270,6 +11322,254 @@
       "averageComplexity": 4.3,
       "maxComplexity": 12,
       "linesOfCode": 430
+    },
+    {
+      "filePath": "server/telemetry.ts",
+      "functions": [
+        {
+          "name": "recordLatency",
+          "line": 130,
+          "complexity": 2,
+          "linesOfCode": 4,
+          "parameters": 2,
+          "nestingDepth": 1
+        },
+        {
+          "name": "recordRsiCycle",
+          "line": 135,
+          "complexity": 2,
+          "linesOfCode": 4,
+          "parameters": 2,
+          "nestingDepth": 1
+        },
+        {
+          "name": "recordLlmCall",
+          "line": 140,
+          "complexity": 2,
+          "linesOfCode": 4,
+          "parameters": 2,
+          "nestingDepth": 1
+        },
+        {
+          "name": "recordEvalScore",
+          "line": 145,
+          "complexity": 2,
+          "linesOfCode": 4,
+          "parameters": 2,
+          "nestingDepth": 1
+        },
+        {
+          "name": "recordError",
+          "line": 150,
+          "complexity": 2,
+          "linesOfCode": 4,
+          "parameters": 2,
+          "nestingDepth": 1
+        },
+        {
+          "name": "percentiles",
+          "line": 157,
+          "complexity": 2,
+          "linesOfCode": 18,
+          "parameters": 1,
+          "nestingDepth": 2
+        },
+        {
+          "name": "p",
+          "line": 163,
+          "complexity": 1,
+          "linesOfCode": 11,
+          "parameters": 1,
+          "nestingDepth": 0
+        },
+        {
+          "name": "avg",
+          "line": 176,
+          "complexity": 2,
+          "linesOfCode": 4,
+          "parameters": 1,
+          "nestingDepth": 0
+        },
+        {
+          "name": "getTelemetrySummary",
+          "line": 183,
+          "complexity": 16,
+          "linesOfCode": 106,
+          "parameters": 0,
+          "nestingDepth": 2
+        },
+        {
+          "name": "toMb",
+          "line": 251,
+          "complexity": 1,
+          "linesOfCode": 37,
+          "parameters": 1,
+          "nestingDepth": 1
+        },
+        {
+          "name": "getRawSamples",
+          "line": 290,
+          "complexity": 1,
+          "linesOfCode": 9,
+          "parameters": 0,
+          "nestingDepth": 1
+        },
+        {
+          "name": "telemetryMiddleware",
+          "line": 302,
+          "complexity": 1,
+          "linesOfCode": 16,
+          "parameters": 0,
+          "nestingDepth": 3
+        },
+        {
+          "name": "initTelemetry",
+          "line": 321,
+          "complexity": 1,
+          "linesOfCode": 3,
+          "parameters": 0,
+          "nestingDepth": 0
+        }
+      ],
+      "averageComplexity": 2.7,
+      "maxComplexity": 16,
+      "linesOfCode": 324
+    },
+    {
+      "filePath": "server/tenantManager.ts",
+      "functions": [
+        {
+          "name": "todayStr",
+          "line": 97,
+          "complexity": 1,
+          "linesOfCode": 3,
+          "parameters": 0,
+          "nestingDepth": 0
+        },
+        {
+          "name": "getOrCreateUsage",
+          "line": 101,
+          "complexity": 2,
+          "linesOfCode": 10,
+          "parameters": 1,
+          "nestingDepth": 2
+        },
+        {
+          "name": "saveTenants",
+          "line": 114,
+          "complexity": 2,
+          "linesOfCode": 9,
+          "parameters": 0,
+          "nestingDepth": 2
+        },
+        {
+          "name": "loadTenants",
+          "line": 124,
+          "complexity": 17,
+          "linesOfCode": 59,
+          "parameters": 0,
+          "nestingDepth": 6
+        },
+        {
+          "name": "getTenant",
+          "line": 186,
+          "complexity": 2,
+          "linesOfCode": 3,
+          "parameters": 1,
+          "nestingDepth": 0
+        },
+        {
+          "name": "getOrDefaultTenant",
+          "line": 190,
+          "complexity": 2,
+          "linesOfCode": 3,
+          "parameters": 1,
+          "nestingDepth": 0
+        },
+        {
+          "name": "listTenants",
+          "line": 194,
+          "complexity": 1,
+          "linesOfCode": 3,
+          "parameters": 0,
+          "nestingDepth": 0
+        },
+        {
+          "name": "createTenant",
+          "line": 198,
+          "complexity": 1,
+          "linesOfCode": 20,
+          "parameters": 2,
+          "nestingDepth": 2
+        },
+        {
+          "name": "updateTenant",
+          "line": 219,
+          "complexity": 2,
+          "linesOfCode": 17,
+          "parameters": 2,
+          "nestingDepth": 2
+        },
+        {
+          "name": "deleteTenant",
+          "line": 237,
+          "complexity": 3,
+          "linesOfCode": 16,
+          "parameters": 1,
+          "nestingDepth": 2
+        },
+        {
+          "name": "checkQuota",
+          "line": 267,
+          "complexity": 2,
+          "linesOfCode": 37,
+          "parameters": 2,
+          "nestingDepth": 3
+        },
+        {
+          "name": "incrementUsage",
+          "line": 305,
+          "complexity": 2,
+          "linesOfCode": 5,
+          "parameters": 3,
+          "nestingDepth": 0
+        },
+        {
+          "name": "getTenantUsage",
+          "line": 311,
+          "complexity": 1,
+          "linesOfCode": 3,
+          "parameters": 1,
+          "nestingDepth": 0
+        },
+        {
+          "name": "getTenantStatus",
+          "line": 315,
+          "complexity": 5,
+          "linesOfCode": 21,
+          "parameters": 1,
+          "nestingDepth": 2
+        },
+        {
+          "name": "isTenantModuleAllowed",
+          "line": 339,
+          "complexity": 4,
+          "linesOfCode": 6,
+          "parameters": 2,
+          "nestingDepth": 0
+        },
+        {
+          "name": "initTenantManager",
+          "line": 348,
+          "complexity": 1,
+          "linesOfCode": 4,
+          "parameters": 0,
+          "nestingDepth": 1
+        }
+      ],
+      "averageComplexity": 3,
+      "maxComplexity": 17,
+      "linesOfCode": 355
     },
     {
       "filePath": "server/testCoverageAnalyzer.ts",
@@ -11470,15 +12770,15 @@
         {
           "name": "executeWebSearch",
           "line": 106,
-          "complexity": 18,
-          "linesOfCode": 63,
+          "complexity": 20,
+          "linesOfCode": 65,
           "parameters": 3,
           "nestingDepth": 3
         }
       ],
-      "averageComplexity": 12.4,
-      "maxComplexity": 18,
-      "linesOfCode": 193
+      "averageComplexity": 12.8,
+      "maxComplexity": 20,
+      "linesOfCode": 195
     },
     {
       "filePath": "server/transactionLog.ts",
@@ -11945,6 +13245,78 @@
       "linesOfCode": 419
     },
     {
+      "filePath": "server/watchdog.ts",
+      "functions": [
+        {
+          "name": "initModuleStates",
+          "line": 294,
+          "complexity": 2,
+          "linesOfCode": 16,
+          "parameters": 0,
+          "nestingDepth": 2
+        },
+        {
+          "name": "checkModule",
+          "line": 313,
+          "complexity": 3,
+          "linesOfCode": 9,
+          "parameters": 2,
+          "nestingDepth": 1
+        },
+        {
+          "name": "attemptRecovery",
+          "line": 323,
+          "complexity": 3,
+          "linesOfCode": 12,
+          "parameters": 2,
+          "nestingDepth": 2
+        },
+        {
+          "name": "runHealthCheck",
+          "line": 336,
+          "complexity": 19,
+          "linesOfCode": 88,
+          "parameters": 0,
+          "nestingDepth": 6
+        },
+        {
+          "name": "scheduleNextCheck",
+          "line": 425,
+          "complexity": 3,
+          "linesOfCode": 6,
+          "parameters": 0,
+          "nestingDepth": 1
+        },
+        {
+          "name": "getWatchdogStatus",
+          "line": 434,
+          "complexity": 7,
+          "linesOfCode": 24,
+          "parameters": 0,
+          "nestingDepth": 1
+        },
+        {
+          "name": "triggerHealthCheck",
+          "line": 461,
+          "complexity": 1,
+          "linesOfCode": 4,
+          "parameters": 0,
+          "nestingDepth": 0
+        },
+        {
+          "name": "initWatchdog",
+          "line": 468,
+          "complexity": 2,
+          "linesOfCode": 13,
+          "parameters": 0,
+          "nestingDepth": 1
+        }
+      ],
+      "averageComplexity": 5,
+      "maxComplexity": 19,
+      "linesOfCode": 481
+    },
+    {
       "filePath": "server/workspace.ts",
       "functions": [
         {
@@ -12194,6 +13566,13 @@
       "imports": [
         "./routes/validate.ts",
         "./routes/zodSchemas.ts",
+        "./routes/adminRoutes.ts",
+        "./routes/federatedRoutes.ts",
+        "./routes/adaptiveEvalRoutes.ts",
+        "./routes/v7Routes.ts",
+        "./routes/v71Routes.ts",
+        "./telemetry.ts",
+        "./rbac.ts",
         "express",
         "fs"
       ],
@@ -12201,8 +13580,8 @@
         "server/_core/index.ts"
       ],
       "afferentCoupling": 1,
-      "efferentCoupling": 4,
-      "instability": 0.8
+      "efferentCoupling": 11,
+      "instability": 0.92
     },
     {
       "filePath": "server/_core/initSafety.ts",
@@ -12224,6 +13603,7 @@
         "env"
       ],
       "importedBy": [
+        "server/adaptiveEval.ts",
         "server/aiPlanning.ts",
         "server/aiStreaming.ts",
         "server/aiTokens.ts",
@@ -12233,9 +13613,11 @@
         "server/contextManager.ts",
         "server/episodicConsolidation.ts",
         "server/episodicMemory.ts",
+        "server/evalGoalDiscovery.ts",
         "server/fileEngineAnalysis.ts",
         "server/fileEngineTypes.ts",
         "server/fileEngineUtils.ts",
+        "server/goalDecomposer.ts",
         "server/llmRouter.ts",
         "server/manifest.ts",
         "server/memory.ts",
@@ -12256,7 +13638,7 @@
         "server/toolSynthesis.ts",
         "server/tools/toolRegistry.ts"
       ],
-      "afferentCoupling": 31,
+      "afferentCoupling": 34,
       "efferentCoupling": 1,
       "instability": 0.03
     },
@@ -12396,6 +13778,23 @@
       "instability": 1
     },
     {
+      "filePath": "server/adaptiveEval.ts",
+      "imports": [
+        "fs",
+        "path",
+        "logger.ts",
+        "llmProvider.ts",
+        "evalFramework.ts"
+      ],
+      "importedBy": [
+        "server/_core/initRoutes.ts",
+        "server/routes/adaptiveEvalRoutes.ts"
+      ],
+      "afferentCoupling": 2,
+      "efferentCoupling": 5,
+      "instability": 0.71
+    },
+    {
       "filePath": "server/adaptivePartitions.ts",
       "imports": [
         "contextManager"
@@ -12422,11 +13821,12 @@
         "crypto"
       ],
       "importedBy": [
-        "server/routes/selfRoutes.ts"
+        "server/routes/selfRoutes.ts",
+        "server/routes/v71Routes.ts"
       ],
-      "afferentCoupling": 1,
+      "afferentCoupling": 2,
       "efferentCoupling": 2,
-      "instability": 0.67
+      "instability": 0.5
     },
     {
       "filePath": "server/agentOrchestrator.ts",
@@ -12556,7 +13956,7 @@
     {
       "filePath": "server/aiStreaming.ts",
       "imports": [
-        "fileEngineUtils.ts",
+        "tokenBudgetManager.ts",
         "./../drizzle/schema.ts",
         "express",
         "llmProvider.ts",
@@ -12584,7 +13984,9 @@
         "modelRegistry.ts",
         "tokenBudgetManager.ts",
         "tieredContextManager.ts",
-        "logger.ts"
+        "logger.ts",
+        "fs",
+        "path"
       ],
       "importedBy": [
         "server/ai.ts",
@@ -12593,8 +13995,8 @@
         "server/aiStreaming.ts"
       ],
       "afferentCoupling": 4,
-      "efferentCoupling": 6,
-      "instability": 0.6
+      "efferentCoupling": 8,
+      "instability": 0.67
     },
     {
       "filePath": "server/aiZipEdit.ts",
@@ -12622,6 +14024,25 @@
       "instability": 0.67
     },
     {
+      "filePath": "server/auditLog.ts",
+      "imports": [
+        "fs",
+        "path",
+        "logger.ts"
+      ],
+      "importedBy": [
+        "server/federatedLearning.ts",
+        "server/rbac.ts",
+        "server/routes/adminRoutes.ts",
+        "server/rsiEngine.ts",
+        "server/tenantManager.ts",
+        "server/watchdog.ts"
+      ],
+      "afferentCoupling": 6,
+      "efferentCoupling": 3,
+      "instability": 0.33
+    },
+    {
       "filePath": "server/autoGoalSuggester.ts",
       "imports": [
         "redisLock.ts"
@@ -12629,6 +14050,20 @@
       "importedBy": [],
       "afferentCoupling": 0,
       "efferentCoupling": 1,
+      "instability": 1
+    },
+    {
+      "filePath": "server/autoRebuild.ts",
+      "imports": [
+        "child_process",
+        "util",
+        "fs",
+        "path",
+        "logger.ts"
+      ],
+      "importedBy": [],
+      "afferentCoupling": 0,
+      "efferentCoupling": 5,
       "instability": 1
     },
     {
@@ -12899,14 +14334,26 @@
       "importedBy": [
         "server/_core/oauth.ts",
         "server/_core/sdk.ts",
+        "server/dbPostgres.ts",
         "server/goalManager.ts",
         "server/routers.ts",
         "server/selfModel.ts",
         "server/tools/selfAwareness.ts"
       ],
-      "afferentCoupling": 6,
+      "afferentCoupling": 7,
       "efferentCoupling": 7,
-      "instability": 0.54
+      "instability": 0.5
+    },
+    {
+      "filePath": "server/dbPostgres.ts",
+      "imports": [
+        "dbPostgres.ts",
+        "logger.ts"
+      ],
+      "importedBy": [],
+      "afferentCoupling": 0,
+      "efferentCoupling": 2,
+      "instability": 1
     },
     {
       "filePath": "server/dependencyAuditor.ts",
@@ -13000,11 +14447,31 @@
         "express"
       ],
       "importedBy": [
+        "server/adaptiveEval.ts",
+        "server/evalGoalDiscovery.ts",
+        "server/routes/adaptiveEvalRoutes.ts",
         "server/routes/evalRoutes.ts"
       ],
-      "afferentCoupling": 1,
+      "afferentCoupling": 4,
       "efferentCoupling": 4,
-      "instability": 0.8
+      "instability": 0.5
+    },
+    {
+      "filePath": "server/evalGoalDiscovery.ts",
+      "imports": [
+        "fs",
+        "path",
+        "url",
+        "evalFramework.ts",
+        "goalManager.ts",
+        "llmProvider.ts"
+      ],
+      "importedBy": [
+        "server/goalDecomposer.ts"
+      ],
+      "afferentCoupling": 1,
+      "efferentCoupling": 6,
+      "instability": 0.86
     },
     {
       "filePath": "server/failurePatternMemory.ts",
@@ -13023,6 +14490,21 @@
       "instability": 0.67
     },
     {
+      "filePath": "server/federatedLearning.ts",
+      "imports": [
+        "fs",
+        "path",
+        "logger.ts",
+        "auditLog.ts"
+      ],
+      "importedBy": [
+        "server/routes/federatedRoutes.ts"
+      ],
+      "afferentCoupling": 1,
+      "efferentCoupling": 4,
+      "instability": 0.8
+    },
+    {
       "filePath": "server/fileEngine.ts",
       "imports": [
         "fileEngine",
@@ -13032,7 +14514,6 @@
         "fileEngineUtils.ts"
       ],
       "importedBy": [
-        "server/aiStreaming.ts",
         "server/fileEngineAnalysis.ts",
         "server/fileEngineChunking.ts",
         "server/fileEngineUtils.ts",
@@ -13040,9 +14521,9 @@
         "server/selfImprove.ts",
         "server/streamRouter.ts"
       ],
-      "afferentCoupling": 7,
+      "afferentCoupling": 6,
       "efferentCoupling": 5,
-      "instability": 0.42
+      "instability": 0.45
     },
     {
       "filePath": "server/fileEngineAnalysis.ts",
@@ -13106,12 +14587,24 @@
         "fileEngineAnalysis.ts"
       ],
       "importedBy": [
-        "server/aiStreaming.ts",
         "server/fileEngine.ts"
       ],
-      "afferentCoupling": 2,
+      "afferentCoupling": 1,
       "efferentCoupling": 5,
-      "instability": 0.71
+      "instability": 0.83
+    },
+    {
+      "filePath": "server/goalDecomposer.ts",
+      "imports": [
+        "logger.ts",
+        "llmProvider.ts",
+        "evalGoalDiscovery.ts",
+        "recursiveGoals.ts"
+      ],
+      "importedBy": [],
+      "afferentCoupling": 0,
+      "efferentCoupling": 4,
+      "instability": 1
     },
     {
       "filePath": "server/goalManager.ts",
@@ -13121,11 +14614,12 @@
       ],
       "importedBy": [
         "server/_core/initModules.ts",
+        "server/evalGoalDiscovery.ts",
         "server/routes/autonomyRoutes.ts"
       ],
-      "afferentCoupling": 2,
+      "afferentCoupling": 3,
       "efferentCoupling": 2,
-      "instability": 0.5
+      "instability": 0.4
     },
     {
       "filePath": "server/gracefulDegradation.ts",
@@ -13200,11 +14694,36 @@
       "instability": 1
     },
     {
+      "filePath": "server/knowledgeTransfer.ts",
+      "imports": [
+        "fs",
+        "path",
+        "logger.ts"
+      ],
+      "importedBy": [],
+      "afferentCoupling": 0,
+      "efferentCoupling": 3,
+      "instability": 1
+    },
+    {
+      "filePath": "server/learnedConstraints.ts",
+      "imports": [
+        "fs",
+        "path",
+        "url"
+      ],
+      "importedBy": [],
+      "afferentCoupling": 0,
+      "efferentCoupling": 3,
+      "instability": 1
+    },
+    {
       "filePath": "server/llmProvider.ts",
       "imports": [
         "logger.ts"
       ],
       "importedBy": [
+        "server/adaptiveEval.ts",
         "server/aiPlanning.ts",
         "server/aiStreaming.ts",
         "server/aiTokens.ts",
@@ -13214,9 +14733,11 @@
         "server/contextManager.ts",
         "server/episodicConsolidation.ts",
         "server/episodicMemory.ts",
+        "server/evalGoalDiscovery.ts",
         "server/fileEngineAnalysis.ts",
         "server/fileEngineTypes.ts",
         "server/fileEngineUtils.ts",
+        "server/goalDecomposer.ts",
         "server/llmRouter.ts",
         "server/manifest.ts",
         "server/memory.ts",
@@ -13237,7 +14758,7 @@
         "server/toolSynthesis.ts",
         "server/tools/toolRegistry.ts"
       ],
-      "afferentCoupling": 31,
+      "afferentCoupling": 34,
       "efferentCoupling": 1,
       "instability": 0.03
     },
@@ -13261,6 +14782,7 @@
         "path"
       ],
       "importedBy": [
+        "server/adaptiveEval.ts",
         "server/agentSystemPrompt.ts",
         "server/aiMemory.ts",
         "server/aiPlanning.ts",
@@ -13268,28 +14790,40 @@
         "server/aiStreaming.ts",
         "server/aiTokens.ts",
         "server/aiZipEdit.ts",
+        "server/auditLog.ts",
+        "server/autoRebuild.ts",
         "server/autonomyOrchestrator.ts",
         "server/ciPipeline.ts",
         "server/continuousImprover.ts",
+        "server/dbPostgres.ts",
+        "server/federatedLearning.ts",
         "server/fileEngineAnalysis.ts",
         "server/fileEngineChunking.ts",
         "server/fileEngineUtils.ts",
+        "server/goalDecomposer.ts",
         "server/importGraph.ts",
+        "server/knowledgeTransfer.ts",
         "server/llmProvider.ts",
         "server/memory.ts",
+        "server/prGenerator.ts",
         "server/ragPipeline.ts",
+        "server/rbac.ts",
         "server/reactEngine.ts",
         "server/redisLock.ts",
+        "server/rlhfCollector.ts",
         "server/routes/workspaceRoutes.ts",
         "server/rsiDb.ts",
         "server/rsiScheduler.ts",
         "server/safetySupervisor.ts",
         "server/selfHeal.ts",
-        "server/selfImprove.ts"
+        "server/selfImprove.ts",
+        "server/telemetry.ts",
+        "server/tenantManager.ts",
+        "server/watchdog.ts"
       ],
-      "afferentCoupling": 25,
+      "afferentCoupling": 38,
       "efferentCoupling": 2,
-      "instability": 0.07
+      "instability": 0.05
     },
     {
       "filePath": "server/manifest.ts",
@@ -13449,6 +14983,19 @@
       "instability": 0.67
     },
     {
+      "filePath": "server/prGenerator.ts",
+      "imports": [
+        "child_process",
+        "fs",
+        "path",
+        "logger.ts"
+      ],
+      "importedBy": [],
+      "afferentCoupling": 0,
+      "efferentCoupling": 4,
+      "instability": 1
+    },
+    {
       "filePath": "server/promptEngineer.ts",
       "imports": [
         "fs",
@@ -13479,6 +15026,24 @@
       "afferentCoupling": 0,
       "efferentCoupling": 8,
       "instability": 1
+    },
+    {
+      "filePath": "server/rbac.ts",
+      "imports": [
+        "express",
+        "auditLog.ts",
+        "logger.ts"
+      ],
+      "importedBy": [
+        "server/_core/initRoutes.ts",
+        "server/routes/adaptiveEvalRoutes.ts",
+        "server/routes/adminRoutes.ts",
+        "server/routes/federatedRoutes.ts",
+        "server/routes/v7Routes.ts"
+      ],
+      "afferentCoupling": 5,
+      "efferentCoupling": 3,
+      "instability": 0.38
     },
     {
       "filePath": "server/reactEngine.ts",
@@ -13522,11 +15087,12 @@
         "url"
       ],
       "importedBy": [
+        "server/goalDecomposer.ts",
         "server/selfModel.ts"
       ],
-      "afferentCoupling": 1,
+      "afferentCoupling": 2,
       "efferentCoupling": 3,
-      "instability": 0.75
+      "instability": 0.6
     },
     {
       "filePath": "server/redisLock.ts",
@@ -13546,6 +15112,18 @@
       "instability": 0.29
     },
     {
+      "filePath": "server/rlhfCollector.ts",
+      "imports": [
+        "fs",
+        "path",
+        "logger.ts"
+      ],
+      "importedBy": [],
+      "afferentCoupling": 0,
+      "efferentCoupling": 3,
+      "instability": 1
+    },
+    {
       "filePath": "server/routers.ts",
       "imports": [
         "@shared/const",
@@ -13563,6 +15141,36 @@
       "afferentCoupling": 1,
       "efferentCoupling": 8,
       "instability": 0.89
+    },
+    {
+      "filePath": "server/routes/adaptiveEvalRoutes.ts",
+      "imports": [
+        "express",
+        "./adaptiveEval.ts",
+        "./rbac.ts",
+        "./evalFramework.ts"
+      ],
+      "importedBy": [
+        "server/_core/initRoutes.ts"
+      ],
+      "afferentCoupling": 1,
+      "efferentCoupling": 4,
+      "instability": 0.8
+    },
+    {
+      "filePath": "server/routes/adminRoutes.ts",
+      "imports": [
+        "express",
+        "./auditLog.ts",
+        "./tenantManager.ts",
+        "./rbac.ts"
+      ],
+      "importedBy": [
+        "server/_core/initRoutes.ts"
+      ],
+      "afferentCoupling": 1,
+      "efferentCoupling": 4,
+      "instability": 0.8
     },
     {
       "filePath": "server/routes/agentRoutes.ts",
@@ -13621,6 +15229,20 @@
       "afferentCoupling": 0,
       "efferentCoupling": 7,
       "instability": 1
+    },
+    {
+      "filePath": "server/routes/federatedRoutes.ts",
+      "imports": [
+        "express",
+        "./federatedLearning.ts",
+        "./rbac.ts"
+      ],
+      "importedBy": [
+        "server/_core/initRoutes.ts"
+      ],
+      "afferentCoupling": 1,
+      "efferentCoupling": 3,
+      "instability": 0.75
     },
     {
       "filePath": "server/routes/llmRoutes.ts",
@@ -13694,6 +15316,34 @@
       "afferentCoupling": 1,
       "efferentCoupling": 10,
       "instability": 0.91
+    },
+    {
+      "filePath": "server/routes/v71Routes.ts",
+      "imports": [
+        "express",
+        "./adminAuth.ts"
+      ],
+      "importedBy": [
+        "server/_core/initRoutes.ts"
+      ],
+      "afferentCoupling": 1,
+      "efferentCoupling": 2,
+      "instability": 0.67
+    },
+    {
+      "filePath": "server/routes/v7Routes.ts",
+      "imports": [
+        "express",
+        "./watchdog.ts",
+        "./telemetry.ts",
+        "./rbac.ts"
+      ],
+      "importedBy": [
+        "server/_core/initRoutes.ts"
+      ],
+      "afferentCoupling": 1,
+      "efferentCoupling": 4,
+      "instability": 0.8
     },
     {
       "filePath": "server/routes/validate.ts",
@@ -13770,14 +15420,15 @@
         "url",
         "memory.ts",
         "autoRollback.ts",
-        "child_process"
+        "child_process",
+        "auditLog.ts"
       ],
       "importedBy": [
         "server/rsiDb.ts"
       ],
       "afferentCoupling": 1,
-      "efferentCoupling": 6,
-      "instability": 0.86
+      "efferentCoupling": 7,
+      "instability": 0.88
     },
     {
       "filePath": "server/rsiScheduler.ts",
@@ -14390,6 +16041,34 @@
       "instability": 1
     },
     {
+      "filePath": "server/telemetry.ts",
+      "imports": [
+        "logger.ts"
+      ],
+      "importedBy": [
+        "server/_core/initRoutes.ts",
+        "server/routes/v7Routes.ts"
+      ],
+      "afferentCoupling": 2,
+      "efferentCoupling": 1,
+      "instability": 0.33
+    },
+    {
+      "filePath": "server/tenantManager.ts",
+      "imports": [
+        "fs",
+        "path",
+        "logger.ts",
+        "auditLog.ts"
+      ],
+      "importedBy": [
+        "server/routes/adminRoutes.ts"
+      ],
+      "afferentCoupling": 1,
+      "efferentCoupling": 4,
+      "instability": 0.8
+    },
+    {
       "filePath": "server/testCoverageAnalyzer.ts",
       "imports": [
         "fs",
@@ -14438,12 +16117,13 @@
       "filePath": "server/tokenBudgetManager.ts",
       "imports": [],
       "importedBy": [
+        "server/aiStreaming.ts",
         "server/aiTokens.ts",
         "server/selfModel.ts",
         "server/streamIntegrityMonitor.ts",
         "server/tieredContextManager.ts"
       ],
-      "afferentCoupling": 4,
+      "afferentCoupling": 5,
       "efferentCoupling": 0,
       "instability": 0
     },
@@ -14851,6 +16531,20 @@
       "instability": 0.5
     },
     {
+      "filePath": "server/watchdog.ts",
+      "imports": [
+        "server_started",
+        "logger.ts",
+        "auditLog.ts"
+      ],
+      "importedBy": [
+        "server/routes/v7Routes.ts"
+      ],
+      "afferentCoupling": 1,
+      "efferentCoupling": 3,
+      "instability": 0.75
+    },
+    {
       "filePath": "server/workspace.ts",
       "imports": [
         "fs",
@@ -14873,7 +16567,7 @@
   ],
   "refactoringProposals": [
     {
-      "id": "refactor_server/_core/imageGeneration.ts_buildConstrainedPrompt_1780575719585",
+      "id": "refactor_server/_core/imageGeneration.ts_buildConstrainedPrompt_1780842324443",
       "type": "extract_function",
       "filePath": "server/_core/imageGeneration.ts",
       "functionName": "buildConstrainedPrompt",
@@ -14882,7 +16576,7 @@
       "suggestion": "Extract sub-routines from 'buildConstrainedPrompt' to reduce decision paths"
     },
     {
-      "id": "nesting_server/_core/imageGeneration.ts_buildConstrainedPrompt_1780575719585",
+      "id": "nesting_server/_core/imageGeneration.ts_buildConstrainedPrompt_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/_core/imageGeneration.ts",
       "functionName": "buildConstrainedPrompt",
@@ -14891,7 +16585,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/_core/index.ts_startServer_1780575719585",
+      "id": "refactor_server/_core/index.ts_startServer_1780842324443",
       "type": "split_module",
       "filePath": "server/_core/index.ts",
       "functionName": "startServer",
@@ -14900,7 +16594,7 @@
       "suggestion": "Extract sub-routines from 'startServer' to reduce decision paths"
     },
     {
-      "id": "nesting_server/_core/index.ts_startServer_1780575719585",
+      "id": "nesting_server/_core/index.ts_startServer_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/_core/index.ts",
       "functionName": "startServer",
@@ -14909,16 +16603,16 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/_core/initModules.ts_initModules_1780575719585",
+      "id": "refactor_server/_core/initModules.ts_initModules_1780842324443",
       "type": "split_module",
       "filePath": "server/_core/initModules.ts",
       "functionName": "initModules",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 53 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 67 exceeds threshold of 10",
       "suggestion": "Extract sub-routines from 'initModules' to reduce decision paths"
     },
     {
-      "id": "nesting_server/_core/initModules.ts_initModules_1780575719585",
+      "id": "nesting_server/_core/initModules.ts_initModules_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/_core/initModules.ts",
       "functionName": "initModules",
@@ -14927,7 +16621,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/_core/initRoutes.ts_registerCoreRoutes_1780575719585",
+      "id": "refactor_server/_core/initRoutes.ts_registerCoreRoutes_1780842324443",
       "type": "split_module",
       "filePath": "server/_core/initRoutes.ts",
       "functionName": "registerCoreRoutes",
@@ -14936,7 +16630,7 @@
       "suggestion": "Extract sub-routines from 'registerCoreRoutes' to reduce decision paths"
     },
     {
-      "id": "nesting_server/_core/initSafety.ts_runBootIntegrityCheck_1780575719585",
+      "id": "nesting_server/_core/initSafety.ts_runBootIntegrityCheck_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/_core/initSafety.ts",
       "functionName": "runBootIntegrityCheck",
@@ -14945,7 +16639,25 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/adaptiveRouter.ts_selectProvider_1780575719585",
+      "id": "refactor_server/adaptiveEval.ts_analyzeGaps_1780842324443",
+      "type": "split_module",
+      "filePath": "server/adaptiveEval.ts",
+      "functionName": "analyzeGaps",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 19 exceeds threshold of 10",
+      "suggestion": "Extract sub-routines from 'analyzeGaps' to reduce decision paths"
+    },
+    {
+      "id": "refactor_server/adaptiveEval.ts_evolveBenchmarks_1780842324443",
+      "type": "extract_function",
+      "filePath": "server/adaptiveEval.ts",
+      "functionName": "evolveBenchmarks",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 15 exceeds threshold of 10",
+      "suggestion": "Extract sub-routines from 'evolveBenchmarks' to reduce decision paths"
+    },
+    {
+      "id": "refactor_server/adaptiveRouter.ts_selectProvider_1780842324443",
       "type": "split_module",
       "filePath": "server/adaptiveRouter.ts",
       "functionName": "selectProvider",
@@ -14954,7 +16666,7 @@
       "suggestion": "Extract sub-routines from 'selectProvider' to reduce decision paths"
     },
     {
-      "id": "refactor_server/aiPlanning.ts_generateSubQueries_1780575719585",
+      "id": "refactor_server/aiPlanning.ts_generateSubQueries_1780842324443",
       "type": "extract_function",
       "filePath": "server/aiPlanning.ts",
       "functionName": "generateSubQueries",
@@ -14963,7 +16675,7 @@
       "suggestion": "Extract sub-routines from 'generateSubQueries' to reduce decision paths"
     },
     {
-      "id": "nesting_server/aiPlanning.ts_generateSubQueries_1780575719585",
+      "id": "nesting_server/aiPlanning.ts_generateSubQueries_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/aiPlanning.ts",
       "functionName": "generateSubQueries",
@@ -14972,7 +16684,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "nesting_server/aiPlanning.ts_generateSuggestions_1780575719585",
+      "id": "nesting_server/aiPlanning.ts_generateSuggestions_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/aiPlanning.ts",
       "functionName": "generateSuggestions",
@@ -14981,7 +16693,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/aiPlanning.ts_generateAgentPlan_1780575719585",
+      "id": "refactor_server/aiPlanning.ts_generateAgentPlan_1780842324443",
       "type": "extract_function",
       "filePath": "server/aiPlanning.ts",
       "functionName": "generateAgentPlan",
@@ -14990,7 +16702,7 @@
       "suggestion": "Extract sub-routines from 'generateAgentPlan' to reduce decision paths"
     },
     {
-      "id": "refactor_server/aiPlanning.ts_streamAgentPlan_1780575719585",
+      "id": "refactor_server/aiPlanning.ts_streamAgentPlan_1780842324443",
       "type": "split_module",
       "filePath": "server/aiPlanning.ts",
       "functionName": "streamAgentPlan",
@@ -14999,7 +16711,7 @@
       "suggestion": "Extract sub-routines from 'streamAgentPlan' to reduce decision paths"
     },
     {
-      "id": "nesting_server/aiPlanning.ts_streamAgentPlan_1780575719585",
+      "id": "nesting_server/aiPlanning.ts_streamAgentPlan_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/aiPlanning.ts",
       "functionName": "streamAgentPlan",
@@ -15008,7 +16720,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "nesting_server/aiPlanning.ts_generateExecutionPlan_1780575719585",
+      "id": "nesting_server/aiPlanning.ts_generateExecutionPlan_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/aiPlanning.ts",
       "functionName": "generateExecutionPlan",
@@ -15017,7 +16729,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/aiStreaming.ts_isSyntacticallyIncomplete_1780575719585",
+      "id": "refactor_server/aiStreaming.ts_isSyntacticallyIncomplete_1780842324443",
       "type": "split_module",
       "filePath": "server/aiStreaming.ts",
       "functionName": "isSyntacticallyIncomplete",
@@ -15026,7 +16738,7 @@
       "suggestion": "Extract sub-routines from 'isSyntacticallyIncomplete' to reduce decision paths"
     },
     {
-      "id": "nesting_server/aiTokens.ts_getAndromedaMemory_1780575719585",
+      "id": "nesting_server/aiTokens.ts_getAndromedaMemory_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/aiTokens.ts",
       "functionName": "getAndromedaMemory",
@@ -15035,7 +16747,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "nesting_server/andromedaMemoryWriter.ts_generateAndromedaMd_1780575719585",
+      "id": "nesting_server/andromedaMemoryWriter.ts_generateAndromedaMd_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/andromedaMemoryWriter.ts",
       "functionName": "generateAndromedaMd",
@@ -15044,7 +16756,16 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "nesting_server/autoGoalSuggester.ts_analyzeErrorPatterns_1780575719585",
+      "id": "refactor_server/auditLog.ts_getRecentAuditEvents_1780842324443",
+      "type": "split_module",
+      "filePath": "server/auditLog.ts",
+      "functionName": "getRecentAuditEvents",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 17 exceeds threshold of 10",
+      "suggestion": "Extract sub-routines from 'getRecentAuditEvents' to reduce decision paths"
+    },
+    {
+      "id": "nesting_server/autoGoalSuggester.ts_analyzeErrorPatterns_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/autoGoalSuggester.ts",
       "functionName": "analyzeErrorPatterns",
@@ -15053,7 +16774,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "nesting_server/autoGoalSuggester.ts_analyzePerformanceMetrics_1780575719585",
+      "id": "nesting_server/autoGoalSuggester.ts_analyzePerformanceMetrics_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/autoGoalSuggester.ts",
       "functionName": "analyzePerformanceMetrics",
@@ -15062,7 +16783,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "nesting_server/autoGoalSuggester.ts_runSuggestionCycle_1780575719585",
+      "id": "nesting_server/autoGoalSuggester.ts_runSuggestionCycle_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/autoGoalSuggester.ts",
       "functionName": "runSuggestionCycle",
@@ -15071,7 +16792,16 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/autoRollback.ts_buildDependencyMap_1780575719585",
+      "id": "refactor_server/autoRebuild.ts_runRebuild_1780842324443",
+      "type": "extract_function",
+      "filePath": "server/autoRebuild.ts",
+      "functionName": "runRebuild",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 13 exceeds threshold of 10",
+      "suggestion": "Extract sub-routines from 'runRebuild' to reduce decision paths"
+    },
+    {
+      "id": "refactor_server/autoRollback.ts_buildDependencyMap_1780842324443",
       "type": "split_module",
       "filePath": "server/autoRollback.ts",
       "functionName": "buildDependencyMap",
@@ -15080,7 +16810,7 @@
       "suggestion": "Extract sub-routines from 'buildDependencyMap' to reduce decision paths"
     },
     {
-      "id": "nesting_server/autoRollback.ts_buildDependencyMap_1780575719585",
+      "id": "nesting_server/autoRollback.ts_buildDependencyMap_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/autoRollback.ts",
       "functionName": "buildDependencyMap",
@@ -15089,7 +16819,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/autonomousGoalGenerator.ts_analyzeCapabilityGaps_1780575719585",
+      "id": "refactor_server/autonomousGoalGenerator.ts_analyzeCapabilityGaps_1780842324443",
       "type": "extract_function",
       "filePath": "server/autonomousGoalGenerator.ts",
       "functionName": "analyzeCapabilityGaps",
@@ -15098,7 +16828,7 @@
       "suggestion": "Extract sub-routines from 'analyzeCapabilityGaps' to reduce decision paths"
     },
     {
-      "id": "nesting_server/autonomousGoalGenerator.ts_analyzeCapabilityGaps_1780575719585",
+      "id": "nesting_server/autonomousGoalGenerator.ts_analyzeCapabilityGaps_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/autonomousGoalGenerator.ts",
       "functionName": "analyzeCapabilityGaps",
@@ -15107,7 +16837,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/autonomousGoalGenerator.ts_analyzeErrorPatterns_1780575719585",
+      "id": "refactor_server/autonomousGoalGenerator.ts_analyzeErrorPatterns_1780842324443",
       "type": "extract_function",
       "filePath": "server/autonomousGoalGenerator.ts",
       "functionName": "analyzeErrorPatterns",
@@ -15116,7 +16846,7 @@
       "suggestion": "Extract sub-routines from 'analyzeErrorPatterns' to reduce decision paths"
     },
     {
-      "id": "nesting_server/autonomousGoalGenerator.ts_analyzeErrorPatterns_1780575719585",
+      "id": "nesting_server/autonomousGoalGenerator.ts_analyzeErrorPatterns_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/autonomousGoalGenerator.ts",
       "functionName": "analyzeErrorPatterns",
@@ -15125,7 +16855,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "nesting_server/autonomousGoalGenerator.ts_generateImprovementGoals_1780575719585",
+      "id": "nesting_server/autonomousGoalGenerator.ts_generateImprovementGoals_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/autonomousGoalGenerator.ts",
       "functionName": "generateImprovementGoals",
@@ -15134,16 +16864,16 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/autonomyOrchestrator.ts_runCycle_1780575719585",
+      "id": "refactor_server/autonomyOrchestrator.ts_runCycle_1780842324443",
       "type": "split_module",
       "filePath": "server/autonomyOrchestrator.ts",
       "functionName": "runCycle",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 48 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 49 exceeds threshold of 10",
       "suggestion": "Extract sub-routines from 'runCycle' to reduce decision paths"
     },
     {
-      "id": "nesting_server/autonomyOrchestrator.ts_runCycle_1780575719585",
+      "id": "nesting_server/autonomyOrchestrator.ts_runCycle_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/autonomyOrchestrator.ts",
       "functionName": "runCycle",
@@ -15152,7 +16882,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/biasDetector.ts_analyzeDiversity_1780575719585",
+      "id": "refactor_server/biasDetector.ts_analyzeDiversity_1780842324443",
       "type": "extract_function",
       "filePath": "server/biasDetector.ts",
       "functionName": "analyzeDiversity",
@@ -15161,7 +16891,7 @@
       "suggestion": "Extract sub-routines from 'analyzeDiversity' to reduce decision paths"
     },
     {
-      "id": "refactor_server/browser.ts_browseUrl_1780575719585",
+      "id": "refactor_server/browser.ts_browseUrl_1780842324443",
       "type": "split_module",
       "filePath": "server/browser.ts",
       "functionName": "browseUrl",
@@ -15170,7 +16900,7 @@
       "suggestion": "Extract sub-routines from 'browseUrl' to reduce decision paths"
     },
     {
-      "id": "refactor_server/browser.ts_browserExtractData_1780575719585",
+      "id": "refactor_server/browser.ts_browserExtractData_1780842324443",
       "type": "extract_function",
       "filePath": "server/browser.ts",
       "functionName": "browserExtractData",
@@ -15179,7 +16909,7 @@
       "suggestion": "Extract sub-routines from 'browserExtractData' to reduce decision paths"
     },
     {
-      "id": "nesting_server/codeIntel.ts_readPackageJson_1780575719585",
+      "id": "nesting_server/codeIntel.ts_readPackageJson_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/codeIntel.ts",
       "functionName": "readPackageJson",
@@ -15188,7 +16918,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/codeIntel.ts_diagnoseError_1780575719585",
+      "id": "refactor_server/codeIntel.ts_diagnoseError_1780842324443",
       "type": "split_module",
       "filePath": "server/codeIntel.ts",
       "functionName": "diagnoseError",
@@ -15197,7 +16927,7 @@
       "suggestion": "Extract sub-routines from 'diagnoseError' to reduce decision paths"
     },
     {
-      "id": "refactor_server/codeQualityMonitor.ts_extractFunctions_1780575719585",
+      "id": "refactor_server/codeQualityMonitor.ts_extractFunctions_1780842324443",
       "type": "split_module",
       "filePath": "server/codeQualityMonitor.ts",
       "functionName": "extractFunctions",
@@ -15206,7 +16936,7 @@
       "suggestion": "Extract sub-routines from 'extractFunctions' to reduce decision paths"
     },
     {
-      "id": "nesting_server/codeQualityMonitor.ts_extractFunctions_1780575719585",
+      "id": "nesting_server/codeQualityMonitor.ts_extractFunctions_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/codeQualityMonitor.ts",
       "functionName": "extractFunctions",
@@ -15215,7 +16945,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/codeRunner.ts_detectLanguage_1780575719585",
+      "id": "refactor_server/codeRunner.ts_detectLanguage_1780842324443",
       "type": "extract_function",
       "filePath": "server/codeRunner.ts",
       "functionName": "detectLanguage",
@@ -15224,7 +16954,7 @@
       "suggestion": "Extract sub-routines from 'detectLanguage' to reduce decision paths"
     },
     {
-      "id": "refactor_server/codebaseAnalyzer.ts_analyzeFile_1780575719585",
+      "id": "refactor_server/codebaseAnalyzer.ts_analyzeFile_1780842324443",
       "type": "split_module",
       "filePath": "server/codebaseAnalyzer.ts",
       "functionName": "analyzeFile",
@@ -15233,7 +16963,7 @@
       "suggestion": "Extract sub-routines from 'analyzeFile' to reduce decision paths"
     },
     {
-      "id": "nesting_server/codebaseAnalyzer.ts_analyzeFile_1780575719585",
+      "id": "nesting_server/codebaseAnalyzer.ts_analyzeFile_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/codebaseAnalyzer.ts",
       "functionName": "analyzeFile",
@@ -15242,7 +16972,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/consensusEngine.ts_queryModel_1780575719585",
+      "id": "refactor_server/consensusEngine.ts_queryModel_1780842324443",
       "type": "extract_function",
       "filePath": "server/consensusEngine.ts",
       "functionName": "queryModel",
@@ -15251,7 +16981,7 @@
       "suggestion": "Extract sub-routines from 'queryModel' to reduce decision paths"
     },
     {
-      "id": "refactor_server/contextBus.ts_query_1780575719585",
+      "id": "refactor_server/contextBus.ts_query_1780842324443",
       "type": "extract_function",
       "filePath": "server/contextBus.ts",
       "functionName": "query",
@@ -15260,7 +16990,7 @@
       "suggestion": "Extract sub-routines from 'query' to reduce decision paths"
     },
     {
-      "id": "refactor_server/continuousImprover.ts_runImprovementCycle_1780575719585",
+      "id": "refactor_server/continuousImprover.ts_runImprovementCycle_1780842324443",
       "type": "split_module",
       "filePath": "server/continuousImprover.ts",
       "functionName": "runImprovementCycle",
@@ -15269,7 +16999,7 @@
       "suggestion": "Extract sub-routines from 'runImprovementCycle' to reduce decision paths"
     },
     {
-      "id": "nesting_server/continuousImprover.ts_runImprovementCycle_1780575719585",
+      "id": "nesting_server/continuousImprover.ts_runImprovementCycle_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/continuousImprover.ts",
       "functionName": "runImprovementCycle",
@@ -15278,7 +17008,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "nesting_server/db.ts_getDb_1780575719585",
+      "id": "nesting_server/db.ts_getDb_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/db.ts",
       "functionName": "getDb",
@@ -15287,7 +17017,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/db.ts_upsertUser_1780575719585",
+      "id": "refactor_server/db.ts_upsertUser_1780842324443",
       "type": "extract_function",
       "filePath": "server/db.ts",
       "functionName": "upsertUser",
@@ -15296,7 +17026,7 @@
       "suggestion": "Extract sub-routines from 'upsertUser' to reduce decision paths"
     },
     {
-      "id": "refactor_server/dependencyAuditor.ts_runNpmAudit_1780575719585",
+      "id": "refactor_server/dependencyAuditor.ts_runNpmAudit_1780842324443",
       "type": "split_module",
       "filePath": "server/dependencyAuditor.ts",
       "functionName": "runNpmAudit",
@@ -15305,7 +17035,7 @@
       "suggestion": "Extract sub-routines from 'runNpmAudit' to reduce decision paths"
     },
     {
-      "id": "refactor_server/dependencyGraph.ts_analyzeImpact_1780575719585",
+      "id": "refactor_server/dependencyGraph.ts_analyzeImpact_1780842324443",
       "type": "split_module",
       "filePath": "server/dependencyGraph.ts",
       "functionName": "analyzeImpact",
@@ -15314,7 +17044,7 @@
       "suggestion": "Extract sub-routines from 'analyzeImpact' to reduce decision paths"
     },
     {
-      "id": "refactor_server/dependencyResolver.ts_scanImportsForDependencies_1780575719585",
+      "id": "refactor_server/dependencyResolver.ts_scanImportsForDependencies_1780842324443",
       "type": "split_module",
       "filePath": "server/dependencyResolver.ts",
       "functionName": "scanImportsForDependencies",
@@ -15323,7 +17053,7 @@
       "suggestion": "Extract sub-routines from 'scanImportsForDependencies' to reduce decision paths"
     },
     {
-      "id": "nesting_server/dependencyResolver.ts_scanImportsForDependencies_1780575719585",
+      "id": "nesting_server/dependencyResolver.ts_scanImportsForDependencies_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/dependencyResolver.ts",
       "functionName": "scanImportsForDependencies",
@@ -15332,7 +17062,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/dependencyResolver.ts_diffManifestDependencies_1780575719585",
+      "id": "refactor_server/dependencyResolver.ts_diffManifestDependencies_1780842324443",
       "type": "extract_function",
       "filePath": "server/dependencyResolver.ts",
       "functionName": "diffManifestDependencies",
@@ -15341,7 +17071,7 @@
       "suggestion": "Extract sub-routines from 'diffManifestDependencies' to reduce decision paths"
     },
     {
-      "id": "nesting_server/dependencyResolver.ts_diffManifestDependencies_1780575719585",
+      "id": "nesting_server/dependencyResolver.ts_diffManifestDependencies_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/dependencyResolver.ts",
       "functionName": "diffManifestDependencies",
@@ -15350,7 +17080,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "nesting_server/dependencyResolver.ts_installDependency_1780575719585",
+      "id": "nesting_server/dependencyResolver.ts_installDependency_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/dependencyResolver.ts",
       "functionName": "installDependency",
@@ -15359,7 +17089,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/docGenerator.ts_generateArchitectureDoc_1780575719585",
+      "id": "refactor_server/docGenerator.ts_generateArchitectureDoc_1780842324443",
       "type": "extract_function",
       "filePath": "server/docGenerator.ts",
       "functionName": "generateArchitectureDoc",
@@ -15368,7 +17098,7 @@
       "suggestion": "Extract sub-routines from 'generateArchitectureDoc' to reduce decision paths"
     },
     {
-      "id": "refactor_server/docGenerator.ts_runDocGeneration_1780575719585",
+      "id": "refactor_server/docGenerator.ts_runDocGeneration_1780842324443",
       "type": "extract_function",
       "filePath": "server/docGenerator.ts",
       "functionName": "runDocGeneration",
@@ -15377,7 +17107,7 @@
       "suggestion": "Extract sub-routines from 'runDocGeneration' to reduce decision paths"
     },
     {
-      "id": "nesting_server/docGenerator.ts_runDocGeneration_1780575719585",
+      "id": "nesting_server/docGenerator.ts_runDocGeneration_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/docGenerator.ts",
       "functionName": "runDocGeneration",
@@ -15386,7 +17116,34 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/fileEngineChunking.ts_extractChunksAST_1780575719585",
+      "id": "refactor_server/evalGoalDiscovery.ts_discoverGoalsFromEval_1780842324443",
+      "type": "split_module",
+      "filePath": "server/evalGoalDiscovery.ts",
+      "functionName": "discoverGoalsFromEval",
+      "severity": "high",
+      "reason": "Cyclomatic complexity of 23 exceeds threshold of 10",
+      "suggestion": "Extract sub-routines from 'discoverGoalsFromEval' to reduce decision paths"
+    },
+    {
+      "id": "nesting_server/evalGoalDiscovery.ts_discoverGoalsFromEval_1780842324443",
+      "type": "simplify_logic",
+      "filePath": "server/evalGoalDiscovery.ts",
+      "functionName": "discoverGoalsFromEval",
+      "severity": "medium",
+      "reason": "Nesting depth of 5 exceeds threshold of 4",
+      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
+    },
+    {
+      "id": "refactor_server/federatedLearning.ts_syncWithPeer_1780842324443",
+      "type": "extract_function",
+      "filePath": "server/federatedLearning.ts",
+      "functionName": "syncWithPeer",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
+      "suggestion": "Extract sub-routines from 'syncWithPeer' to reduce decision paths"
+    },
+    {
+      "id": "refactor_server/fileEngineChunking.ts_extractChunksAST_1780842324443",
       "type": "split_module",
       "filePath": "server/fileEngineChunking.ts",
       "functionName": "extractChunksAST",
@@ -15395,7 +17152,7 @@
       "suggestion": "Extract sub-routines from 'extractChunksAST' to reduce decision paths"
     },
     {
-      "id": "refactor_server/fileEngineChunking.ts_extractChunksRegex_1780575719585",
+      "id": "refactor_server/fileEngineChunking.ts_extractChunksRegex_1780842324443",
       "type": "split_module",
       "filePath": "server/fileEngineChunking.ts",
       "functionName": "extractChunksRegex",
@@ -15404,7 +17161,7 @@
       "suggestion": "Extract sub-routines from 'extractChunksRegex' to reduce decision paths"
     },
     {
-      "id": "nesting_server/fileEngineChunking.ts_extractChunksRegex_1780575719585",
+      "id": "nesting_server/fileEngineChunking.ts_extractChunksRegex_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/fileEngineChunking.ts",
       "functionName": "extractChunksRegex",
@@ -15413,7 +17170,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/fileEngineChunking.ts_buildFileIndex_1780575719585",
+      "id": "refactor_server/fileEngineChunking.ts_buildFileIndex_1780842324443",
       "type": "extract_function",
       "filePath": "server/fileEngineChunking.ts",
       "functionName": "buildFileIndex",
@@ -15422,7 +17179,7 @@
       "suggestion": "Extract sub-routines from 'buildFileIndex' to reduce decision paths"
     },
     {
-      "id": "refactor_server/fileEngineTypes.ts_compressFile_1780575719585",
+      "id": "refactor_server/fileEngineTypes.ts_compressFile_1780842324443",
       "type": "extract_function",
       "filePath": "server/fileEngineTypes.ts",
       "functionName": "compressFile",
@@ -15431,7 +17188,7 @@
       "suggestion": "Extract sub-routines from 'compressFile' to reduce decision paths"
     },
     {
-      "id": "refactor_server/goalManager.ts_initDefaultRules_1780575719585",
+      "id": "refactor_server/goalManager.ts_initDefaultRules_1780842324443",
       "type": "extract_function",
       "filePath": "server/goalManager.ts",
       "functionName": "initDefaultRules",
@@ -15440,7 +17197,7 @@
       "suggestion": "Extract sub-routines from 'initDefaultRules' to reduce decision paths"
     },
     {
-      "id": "nesting_server/goalManager.ts_runReprioritization_1780575719585",
+      "id": "nesting_server/goalManager.ts_runReprioritization_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/goalManager.ts",
       "functionName": "runReprioritization",
@@ -15449,7 +17206,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/goalManager.ts_persistGoal_1780575719585",
+      "id": "refactor_server/goalManager.ts_persistGoal_1780842324443",
       "type": "split_module",
       "filePath": "server/goalManager.ts",
       "functionName": "persistGoal",
@@ -15458,7 +17215,7 @@
       "suggestion": "Extract sub-routines from 'persistGoal' to reduce decision paths"
     },
     {
-      "id": "refactor_server/goalManager.ts_loadGoalsFromDb_1780575719585",
+      "id": "refactor_server/goalManager.ts_loadGoalsFromDb_1780842324443",
       "type": "split_module",
       "filePath": "server/goalManager.ts",
       "functionName": "loadGoalsFromDb",
@@ -15467,7 +17224,7 @@
       "suggestion": "Extract sub-routines from 'loadGoalsFromDb' to reduce decision paths"
     },
     {
-      "id": "refactor_server/gracefulDegradation.ts_startHealthMonitoring_1780575719585",
+      "id": "refactor_server/gracefulDegradation.ts_startHealthMonitoring_1780842324443",
       "type": "extract_function",
       "filePath": "server/gracefulDegradation.ts",
       "functionName": "startHealthMonitoring",
@@ -15476,7 +17233,7 @@
       "suggestion": "Extract sub-routines from 'startHealthMonitoring' to reduce decision paths"
     },
     {
-      "id": "nesting_server/gracefulDegradation.ts_startHealthMonitoring_1780575719585",
+      "id": "nesting_server/gracefulDegradation.ts_startHealthMonitoring_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/gracefulDegradation.ts",
       "functionName": "startHealthMonitoring",
@@ -15485,7 +17242,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/grounding.ts_extractFactualClaims_1780575719585",
+      "id": "refactor_server/grounding.ts_extractFactualClaims_1780842324443",
       "type": "split_module",
       "filePath": "server/grounding.ts",
       "functionName": "extractFactualClaims",
@@ -15494,7 +17251,7 @@
       "suggestion": "Extract sub-routines from 'extractFactualClaims' to reduce decision paths"
     },
     {
-      "id": "refactor_server/hotReload.ts_hotReloadModule_1780575719585",
+      "id": "refactor_server/hotReload.ts_hotReloadModule_1780842324443",
       "type": "split_module",
       "filePath": "server/hotReload.ts",
       "functionName": "hotReloadModule",
@@ -15503,7 +17260,7 @@
       "suggestion": "Extract sub-routines from 'hotReloadModule' to reduce decision paths"
     },
     {
-      "id": "refactor_server/hotReload.ts_getHotReloadStatus_1780575719585",
+      "id": "refactor_server/hotReload.ts_getHotReloadStatus_1780842324443",
       "type": "extract_function",
       "filePath": "server/hotReload.ts",
       "functionName": "getHotReloadStatus",
@@ -15512,7 +17269,7 @@
       "suggestion": "Extract sub-routines from 'getHotReloadStatus' to reduce decision paths"
     },
     {
-      "id": "refactor_server/identityManifest.ts_verifyContinuity_1780575719585",
+      "id": "refactor_server/identityManifest.ts_verifyContinuity_1780842324443",
       "type": "extract_function",
       "filePath": "server/identityManifest.ts",
       "functionName": "verifyContinuity",
@@ -15521,7 +17278,7 @@
       "suggestion": "Extract sub-routines from 'verifyContinuity' to reduce decision paths"
     },
     {
-      "id": "refactor_server/importGraph.ts_buildImportGraph_1780575719585",
+      "id": "refactor_server/importGraph.ts_buildImportGraph_1780842324443",
       "type": "split_module",
       "filePath": "server/importGraph.ts",
       "functionName": "buildImportGraph",
@@ -15530,7 +17287,7 @@
       "suggestion": "Extract sub-routines from 'buildImportGraph' to reduce decision paths"
     },
     {
-      "id": "nesting_server/importGraph.ts_buildImportGraph_1780575719585",
+      "id": "nesting_server/importGraph.ts_buildImportGraph_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/importGraph.ts",
       "functionName": "buildImportGraph",
@@ -15539,7 +17296,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/llmProvider.ts_ensureProviderInitialized_1780575719585",
+      "id": "refactor_server/llmProvider.ts_ensureProviderInitialized_1780842324443",
       "type": "split_module",
       "filePath": "server/llmProvider.ts",
       "functionName": "ensureProviderInitialized",
@@ -15548,16 +17305,25 @@
       "suggestion": "Extract sub-routines from 'ensureProviderInitialized' to reduce decision paths"
     },
     {
-      "id": "refactor_server/llmProvider.ts_getProviderApiKey_1780575719585",
+      "id": "refactor_server/llmProvider.ts_getProviderApiKey_1780842324443",
       "type": "split_module",
       "filePath": "server/llmProvider.ts",
       "functionName": "getProviderApiKey",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 18 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 20 exceeds threshold of 10",
       "suggestion": "Extract sub-routines from 'getProviderApiKey' to reduce decision paths"
     },
     {
-      "id": "refactor_server/llmRouter.ts_selectProvider_1780575719585",
+      "id": "refactor_server/llmProvider.ts_getProviderForTier_1780842324443",
+      "type": "extract_function",
+      "filePath": "server/llmProvider.ts",
+      "functionName": "getProviderForTier",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 15 exceeds threshold of 10",
+      "suggestion": "Extract sub-routines from 'getProviderForTier' to reduce decision paths"
+    },
+    {
+      "id": "refactor_server/llmRouter.ts_selectProvider_1780842324443",
       "type": "extract_function",
       "filePath": "server/llmRouter.ts",
       "functionName": "selectProvider",
@@ -15566,7 +17332,7 @@
       "suggestion": "Extract sub-routines from 'selectProvider' to reduce decision paths"
     },
     {
-      "id": "refactor_server/mcpClient.ts_connectServer_1780575719585",
+      "id": "refactor_server/mcpClient.ts_connectServer_1780842324443",
       "type": "extract_function",
       "filePath": "server/mcpClient.ts",
       "functionName": "connectServer",
@@ -15575,7 +17341,7 @@
       "suggestion": "Extract sub-routines from 'connectServer' to reduce decision paths"
     },
     {
-      "id": "nesting_server/mcpClient.ts_connectStdio_1780575719585",
+      "id": "nesting_server/mcpClient.ts_connectStdio_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/mcpClient.ts",
       "functionName": "connectStdio",
@@ -15584,7 +17350,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/mcpClient.ts_connectSSE_1780575719585",
+      "id": "refactor_server/mcpClient.ts_connectSSE_1780842324443",
       "type": "split_module",
       "filePath": "server/mcpClient.ts",
       "functionName": "connectSSE",
@@ -15593,7 +17359,7 @@
       "suggestion": "Extract sub-routines from 'connectSSE' to reduce decision paths"
     },
     {
-      "id": "nesting_server/mcpClient.ts_connectSSE_1780575719585",
+      "id": "nesting_server/mcpClient.ts_connectSSE_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/mcpClient.ts",
       "functionName": "connectSSE",
@@ -15602,7 +17368,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/mcpClient.ts_discoverTools_1780575719585",
+      "id": "refactor_server/mcpClient.ts_discoverTools_1780842324443",
       "type": "extract_function",
       "filePath": "server/mcpClient.ts",
       "functionName": "discoverTools",
@@ -15611,7 +17377,7 @@
       "suggestion": "Extract sub-routines from 'discoverTools' to reduce decision paths"
     },
     {
-      "id": "nesting_server/mcpClient.ts_discoverTools_1780575719585",
+      "id": "nesting_server/mcpClient.ts_discoverTools_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/mcpClient.ts",
       "functionName": "discoverTools",
@@ -15620,7 +17386,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/mcpClient.ts_callMCPTool_1780575719585",
+      "id": "refactor_server/mcpClient.ts_callMCPTool_1780842324443",
       "type": "extract_function",
       "filePath": "server/mcpClient.ts",
       "functionName": "callMCPTool",
@@ -15629,7 +17395,7 @@
       "suggestion": "Extract sub-routines from 'callMCPTool' to reduce decision paths"
     },
     {
-      "id": "nesting_server/mcpClient.ts_registerMCPTool_1780575719585",
+      "id": "nesting_server/mcpClient.ts_registerMCPTool_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/mcpClient.ts",
       "functionName": "registerMCPTool",
@@ -15638,7 +17404,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/memoryConsolidation.ts_runConsolidation_1780575719585",
+      "id": "refactor_server/memoryConsolidation.ts_runConsolidation_1780842324443",
       "type": "extract_function",
       "filePath": "server/memoryConsolidation.ts",
       "functionName": "runConsolidation",
@@ -15647,7 +17413,7 @@
       "suggestion": "Extract sub-routines from 'runConsolidation' to reduce decision paths"
     },
     {
-      "id": "refactor_server/memoryConsolidation.ts_runDeduplication_1780575719585",
+      "id": "refactor_server/memoryConsolidation.ts_runDeduplication_1780842324443",
       "type": "split_module",
       "filePath": "server/memoryConsolidation.ts",
       "functionName": "runDeduplication",
@@ -15656,7 +17422,7 @@
       "suggestion": "Extract sub-routines from 'runDeduplication' to reduce decision paths"
     },
     {
-      "id": "refactor_server/memoryForgettingCurve.ts_consolidateRelatedMemories_1780575719585",
+      "id": "refactor_server/memoryForgettingCurve.ts_consolidateRelatedMemories_1780842324443",
       "type": "extract_function",
       "filePath": "server/memoryForgettingCurve.ts",
       "functionName": "consolidateRelatedMemories",
@@ -15665,7 +17431,7 @@
       "suggestion": "Extract sub-routines from 'consolidateRelatedMemories' to reduce decision paths"
     },
     {
-      "id": "refactor_server/multiAgent.ts_runTeamAgent_1780575719585",
+      "id": "refactor_server/multiAgent.ts_runTeamAgent_1780842324443",
       "type": "split_module",
       "filePath": "server/multiAgent.ts",
       "functionName": "runTeamAgent",
@@ -15674,7 +17440,7 @@
       "suggestion": "Extract sub-routines from 'runTeamAgent' to reduce decision paths"
     },
     {
-      "id": "refactor_server/multiAgentImprover.ts_reviewWithAgents_1780575719585",
+      "id": "refactor_server/multiAgentImprover.ts_reviewWithAgents_1780842324443",
       "type": "extract_function",
       "filePath": "server/multiAgentImprover.ts",
       "functionName": "reviewWithAgents",
@@ -15683,7 +17449,7 @@
       "suggestion": "Extract sub-routines from 'reviewWithAgents' to reduce decision paths"
     },
     {
-      "id": "refactor_server/multiAgentImprover.ts_queryAgent_1780575719585",
+      "id": "refactor_server/multiAgentImprover.ts_queryAgent_1780842324443",
       "type": "extract_function",
       "filePath": "server/multiAgentImprover.ts",
       "functionName": "queryAgent",
@@ -15692,7 +17458,7 @@
       "suggestion": "Extract sub-routines from 'queryAgent' to reduce decision paths"
     },
     {
-      "id": "refactor_server/multiAgentImprover.ts_structuralReview_1780575719585",
+      "id": "refactor_server/multiAgentImprover.ts_structuralReview_1780842324443",
       "type": "split_module",
       "filePath": "server/multiAgentImprover.ts",
       "functionName": "structuralReview",
@@ -15701,7 +17467,7 @@
       "suggestion": "Extract sub-routines from 'structuralReview' to reduce decision paths"
     },
     {
-      "id": "nesting_server/persistentContextStore.ts_initPersistentContextStore_1780575719585",
+      "id": "nesting_server/persistentContextStore.ts_initPersistentContextStore_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/persistentContextStore.ts",
       "functionName": "initPersistentContextStore",
@@ -15710,7 +17476,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "nesting_server/persistentContextStore.ts_cleanup_1780575719585",
+      "id": "nesting_server/persistentContextStore.ts_cleanup_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/persistentContextStore.ts",
       "functionName": "cleanup",
@@ -15719,7 +17485,25 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/ragPipeline.ts_chunkDocument_1780575719585",
+      "id": "refactor_server/prGenerator.ts_syncOpenPRStatus_1780842324443",
+      "type": "extract_function",
+      "filePath": "server/prGenerator.ts",
+      "functionName": "syncOpenPRStatus",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
+      "suggestion": "Extract sub-routines from 'syncOpenPRStatus' to reduce decision paths"
+    },
+    {
+      "id": "nesting_server/prGenerator.ts_syncOpenPRStatus_1780842324443",
+      "type": "simplify_logic",
+      "filePath": "server/prGenerator.ts",
+      "functionName": "syncOpenPRStatus",
+      "severity": "medium",
+      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
+    },
+    {
+      "id": "refactor_server/ragPipeline.ts_chunkDocument_1780842324443",
       "type": "extract_function",
       "filePath": "server/ragPipeline.ts",
       "functionName": "chunkDocument",
@@ -15728,7 +17512,7 @@
       "suggestion": "Extract sub-routines from 'chunkDocument' to reduce decision paths"
     },
     {
-      "id": "nesting_server/ragPipeline.ts_chunkDocument_1780575719585",
+      "id": "nesting_server/ragPipeline.ts_chunkDocument_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/ragPipeline.ts",
       "functionName": "chunkDocument",
@@ -15737,7 +17521,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/ragPipeline.ts_registerRagRoutes_1780575719585",
+      "id": "refactor_server/ragPipeline.ts_registerRagRoutes_1780842324443",
       "type": "extract_function",
       "filePath": "server/ragPipeline.ts",
       "functionName": "registerRagRoutes",
@@ -15746,7 +17530,34 @@
       "suggestion": "Extract sub-routines from 'registerRagRoutes' to reduce decision paths"
     },
     {
-      "id": "nesting_server/recursiveGoals.ts_checkMetaMetaGuard_1780575719585",
+      "id": "refactor_server/rbac.ts_resolveRole_1780842324443",
+      "type": "extract_function",
+      "filePath": "server/rbac.ts",
+      "functionName": "resolveRole",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 14 exceeds threshold of 10",
+      "suggestion": "Extract sub-routines from 'resolveRole' to reduce decision paths"
+    },
+    {
+      "id": "refactor_server/rbac.ts_isExemptPath_1780842324443",
+      "type": "extract_function",
+      "filePath": "server/rbac.ts",
+      "functionName": "isExemptPath",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
+      "suggestion": "Extract sub-routines from 'isExemptPath' to reduce decision paths"
+    },
+    {
+      "id": "refactor_server/rbac.ts_roleRateLimit_1780842324443",
+      "type": "extract_function",
+      "filePath": "server/rbac.ts",
+      "functionName": "roleRateLimit",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 11 exceeds threshold of 10",
+      "suggestion": "Extract sub-routines from 'roleRateLimit' to reduce decision paths"
+    },
+    {
+      "id": "nesting_server/recursiveGoals.ts_checkMetaMetaGuard_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/recursiveGoals.ts",
       "functionName": "checkMetaMetaGuard",
@@ -15755,7 +17566,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/recursiveGoals.ts_scanForImprovementOpportunities_1780575719585",
+      "id": "refactor_server/recursiveGoals.ts_scanForImprovementOpportunities_1780842324443",
       "type": "split_module",
       "filePath": "server/recursiveGoals.ts",
       "functionName": "scanForImprovementOpportunities",
@@ -15764,7 +17575,7 @@
       "suggestion": "Extract sub-routines from 'scanForImprovementOpportunities' to reduce decision paths"
     },
     {
-      "id": "refactor_server/recursiveGoals.ts_autoExecuteNextGoal_1780575719585",
+      "id": "refactor_server/recursiveGoals.ts_autoExecuteNextGoal_1780842324443",
       "type": "split_module",
       "filePath": "server/recursiveGoals.ts",
       "functionName": "autoExecuteNextGoal",
@@ -15773,7 +17584,7 @@
       "suggestion": "Extract sub-routines from 'autoExecuteNextGoal' to reduce decision paths"
     },
     {
-      "id": "nesting_server/recursiveGoals.ts_autoExecuteNextGoal_1780575719585",
+      "id": "nesting_server/recursiveGoals.ts_autoExecuteNextGoal_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/recursiveGoals.ts",
       "functionName": "autoExecuteNextGoal",
@@ -15782,7 +17593,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/routes/autonomyRoutes.ts_registerAutonomyRoutes_1780575719585",
+      "id": "refactor_server/routes/autonomyRoutes.ts_registerAutonomyRoutes_1780842324443",
       "type": "split_module",
       "filePath": "server/routes/autonomyRoutes.ts",
       "functionName": "registerAutonomyRoutes",
@@ -15791,16 +17602,16 @@
       "suggestion": "Extract sub-routines from 'registerAutonomyRoutes' to reduce decision paths"
     },
     {
-      "id": "refactor_server/routes/evalRoutes.ts_registerEvalRoutes_1780575719585",
+      "id": "refactor_server/routes/evalRoutes.ts_registerEvalRoutes_1780842324443",
       "type": "split_module",
       "filePath": "server/routes/evalRoutes.ts",
       "functionName": "registerEvalRoutes",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 26 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 46 exceeds threshold of 10",
       "suggestion": "Extract sub-routines from 'registerEvalRoutes' to reduce decision paths"
     },
     {
-      "id": "nesting_server/routes/evalRoutes.ts_registerEvalRoutes_1780575719585",
+      "id": "nesting_server/routes/evalRoutes.ts_registerEvalRoutes_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/routes/evalRoutes.ts",
       "functionName": "registerEvalRoutes",
@@ -15809,7 +17620,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/routes/llmRoutes.ts_registerLLMRoutes_1780575719585",
+      "id": "refactor_server/routes/llmRoutes.ts_registerLLMRoutes_1780842324443",
       "type": "split_module",
       "filePath": "server/routes/llmRoutes.ts",
       "functionName": "registerLLMRoutes",
@@ -15818,7 +17629,7 @@
       "suggestion": "Extract sub-routines from 'registerLLMRoutes' to reduce decision paths"
     },
     {
-      "id": "nesting_server/routes/llmRoutes.ts_registerLLMRoutes_1780575719585",
+      "id": "nesting_server/routes/llmRoutes.ts_registerLLMRoutes_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/routes/llmRoutes.ts",
       "functionName": "registerLLMRoutes",
@@ -15827,7 +17638,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/routes/systemRoutes.ts_registerSystemRoutes_1780575719585",
+      "id": "refactor_server/routes/systemRoutes.ts_registerSystemRoutes_1780842324443",
       "type": "split_module",
       "filePath": "server/routes/systemRoutes.ts",
       "functionName": "registerSystemRoutes",
@@ -15836,7 +17647,7 @@
       "suggestion": "Extract sub-routines from 'registerSystemRoutes' to reduce decision paths"
     },
     {
-      "id": "nesting_server/routes/systemRoutes.ts_registerSystemRoutes_1780575719585",
+      "id": "nesting_server/routes/systemRoutes.ts_registerSystemRoutes_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/routes/systemRoutes.ts",
       "functionName": "registerSystemRoutes",
@@ -15845,7 +17656,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/routes/workspaceRoutes.ts_registerWorkspaceRoutes_1780575719585",
+      "id": "refactor_server/routes/workspaceRoutes.ts_registerWorkspaceRoutes_1780842324443",
       "type": "split_module",
       "filePath": "server/routes/workspaceRoutes.ts",
       "functionName": "registerWorkspaceRoutes",
@@ -15854,7 +17665,7 @@
       "suggestion": "Extract sub-routines from 'registerWorkspaceRoutes' to reduce decision paths"
     },
     {
-      "id": "nesting_server/routes/workspaceRoutes.ts_registerWorkspaceRoutes_1780575719585",
+      "id": "nesting_server/routes/workspaceRoutes.ts_registerWorkspaceRoutes_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/routes/workspaceRoutes.ts",
       "functionName": "registerWorkspaceRoutes",
@@ -15863,7 +17674,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/rsiDb.ts_dbSaveProposal_1780575719585",
+      "id": "refactor_server/rsiDb.ts_dbSaveProposal_1780842324443",
       "type": "split_module",
       "filePath": "server/rsiDb.ts",
       "functionName": "dbSaveProposal",
@@ -15872,7 +17683,7 @@
       "suggestion": "Extract sub-routines from 'dbSaveProposal' to reduce decision paths"
     },
     {
-      "id": "refactor_server/rsiDb.ts_dbSaveCycle_1780575719585",
+      "id": "refactor_server/rsiDb.ts_dbSaveCycle_1780842324443",
       "type": "split_module",
       "filePath": "server/rsiDb.ts",
       "functionName": "dbSaveCycle",
@@ -15881,7 +17692,7 @@
       "suggestion": "Extract sub-routines from 'dbSaveCycle' to reduce decision paths"
     },
     {
-      "id": "refactor_server/rsiDb.ts_dbSaveEvalRun_1780575719585",
+      "id": "refactor_server/rsiDb.ts_dbSaveEvalRun_1780842324443",
       "type": "extract_function",
       "filePath": "server/rsiDb.ts",
       "functionName": "dbSaveEvalRun",
@@ -15890,7 +17701,7 @@
       "suggestion": "Extract sub-routines from 'dbSaveEvalRun' to reduce decision paths"
     },
     {
-      "id": "refactor_server/rsiEngine.ts_measureBenchmark_1780575719585",
+      "id": "refactor_server/rsiEngine.ts_measureBenchmark_1780842324443",
       "type": "split_module",
       "filePath": "server/rsiEngine.ts",
       "functionName": "measureBenchmark",
@@ -15899,16 +17710,16 @@
       "suggestion": "Extract sub-routines from 'measureBenchmark' to reduce decision paths"
     },
     {
-      "id": "refactor_server/rsiEngine.ts_runRSICycle_1780575719585",
+      "id": "refactor_server/rsiEngine.ts_runRSICycle_1780842324443",
       "type": "split_module",
       "filePath": "server/rsiEngine.ts",
       "functionName": "runRSICycle",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 36 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 39 exceeds threshold of 10",
       "suggestion": "Extract sub-routines from 'runRSICycle' to reduce decision paths"
     },
     {
-      "id": "nesting_server/rsiEngine.ts_runRSICycle_1780575719585",
+      "id": "nesting_server/rsiEngine.ts_runRSICycle_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/rsiEngine.ts",
       "functionName": "runRSICycle",
@@ -15917,7 +17728,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/rsiScheduler.ts_getRsiSchedulerStatus_1780575719585",
+      "id": "refactor_server/rsiScheduler.ts_getRsiSchedulerStatus_1780842324443",
       "type": "extract_function",
       "filePath": "server/rsiScheduler.ts",
       "functionName": "getRsiSchedulerStatus",
@@ -15926,7 +17737,7 @@
       "suggestion": "Extract sub-routines from 'getRsiSchedulerStatus' to reduce decision paths"
     },
     {
-      "id": "refactor_server/runtimeConfig.ts_syncConfigToEnv_1780575719585",
+      "id": "refactor_server/runtimeConfig.ts_syncConfigToEnv_1780842324443",
       "type": "extract_function",
       "filePath": "server/runtimeConfig.ts",
       "functionName": "syncConfigToEnv",
@@ -15935,7 +17746,7 @@
       "suggestion": "Extract sub-routines from 'syncConfigToEnv' to reduce decision paths"
     },
     {
-      "id": "refactor_server/safetySupervisor.ts_validateInline_1780575719585",
+      "id": "refactor_server/safetySupervisor.ts_validateInline_1780842324443",
       "type": "split_module",
       "filePath": "server/safetySupervisor.ts",
       "functionName": "validateInline",
@@ -15944,7 +17755,7 @@
       "suggestion": "Extract sub-routines from 'validateInline' to reduce decision paths"
     },
     {
-      "id": "refactor_server/sandboxManager.ts_validateSandboxRequest_1780575719585",
+      "id": "refactor_server/sandboxManager.ts_validateSandboxRequest_1780842324443",
       "type": "split_module",
       "filePath": "server/sandboxManager.ts",
       "functionName": "validateSandboxRequest",
@@ -15953,7 +17764,7 @@
       "suggestion": "Extract sub-routines from 'validateSandboxRequest' to reduce decision paths"
     },
     {
-      "id": "nesting_server/sandboxManager.ts_validateSandboxRequest_1780575719585",
+      "id": "nesting_server/sandboxManager.ts_validateSandboxRequest_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/sandboxManager.ts",
       "functionName": "validateSandboxRequest",
@@ -15962,7 +17773,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/sandboxManager.ts_executeInDocker_1780575719585",
+      "id": "refactor_server/sandboxManager.ts_executeInDocker_1780842324443",
       "type": "extract_function",
       "filePath": "server/sandboxManager.ts",
       "functionName": "executeInDocker",
@@ -15971,7 +17782,7 @@
       "suggestion": "Extract sub-routines from 'executeInDocker' to reduce decision paths"
     },
     {
-      "id": "nesting_server/sandboxManager.ts_executeInDocker_1780575719585",
+      "id": "nesting_server/sandboxManager.ts_executeInDocker_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/sandboxManager.ts",
       "functionName": "executeInDocker",
@@ -15980,7 +17791,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/sandboxVerifier.ts_verifyInLocalSandbox_1780575719585",
+      "id": "refactor_server/sandboxVerifier.ts_verifyInLocalSandbox_1780842324443",
       "type": "split_module",
       "filePath": "server/sandboxVerifier.ts",
       "functionName": "verifyInLocalSandbox",
@@ -15989,7 +17800,7 @@
       "suggestion": "Extract sub-routines from 'verifyInLocalSandbox' to reduce decision paths"
     },
     {
-      "id": "nesting_server/sandboxVerifier.ts_verifyInLocalSandbox_1780575719585",
+      "id": "nesting_server/sandboxVerifier.ts_verifyInLocalSandbox_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/sandboxVerifier.ts",
       "functionName": "verifyInLocalSandbox",
@@ -15998,7 +17809,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/sandboxVerifier.ts_quickValidate_1780575719585",
+      "id": "refactor_server/sandboxVerifier.ts_quickValidate_1780842324443",
       "type": "split_module",
       "filePath": "server/sandboxVerifier.ts",
       "functionName": "quickValidate",
@@ -16007,7 +17818,7 @@
       "suggestion": "Extract sub-routines from 'quickValidate' to reduce decision paths"
     },
     {
-      "id": "refactor_server/scheduler.ts_parseCronField_1780575719585",
+      "id": "refactor_server/scheduler.ts_parseCronField_1780842324443",
       "type": "extract_function",
       "filePath": "server/scheduler.ts",
       "functionName": "parseCronField",
@@ -16016,7 +17827,7 @@
       "suggestion": "Extract sub-routines from 'parseCronField' to reduce decision paths"
     },
     {
-      "id": "refactor_server/scheduler.ts_scheduleNextRun_1780575719585",
+      "id": "refactor_server/scheduler.ts_scheduleNextRun_1780842324443",
       "type": "extract_function",
       "filePath": "server/scheduler.ts",
       "functionName": "scheduleNextRun",
@@ -16025,7 +17836,7 @@
       "suggestion": "Extract sub-routines from 'scheduleNextRun' to reduce decision paths"
     },
     {
-      "id": "refactor_server/scheduler.ts_executeTask_1780575719585",
+      "id": "refactor_server/scheduler.ts_executeTask_1780842324443",
       "type": "split_module",
       "filePath": "server/scheduler.ts",
       "functionName": "executeTask",
@@ -16034,7 +17845,7 @@
       "suggestion": "Extract sub-routines from 'executeTask' to reduce decision paths"
     },
     {
-      "id": "nesting_server/scheduler.ts_executeTask_1780575719585",
+      "id": "nesting_server/scheduler.ts_executeTask_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/scheduler.ts",
       "functionName": "executeTask",
@@ -16043,7 +17854,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/search.ts_searchSearXNG_1780575719585",
+      "id": "refactor_server/search.ts_searchSearXNG_1780842324443",
       "type": "split_module",
       "filePath": "server/search.ts",
       "functionName": "searchSearXNG",
@@ -16052,7 +17863,7 @@
       "suggestion": "Extract sub-routines from 'searchSearXNG' to reduce decision paths"
     },
     {
-      "id": "refactor_server/security.ts_pathToScope_1780575719585",
+      "id": "refactor_server/security.ts_pathToScope_1780842324443",
       "type": "split_module",
       "filePath": "server/security.ts",
       "functionName": "pathToScope",
@@ -16061,7 +17872,7 @@
       "suggestion": "Extract sub-routines from 'pathToScope' to reduce decision paths"
     },
     {
-      "id": "refactor_server/security.ts_securityMiddleware_1780575719585",
+      "id": "refactor_server/security.ts_securityMiddleware_1780842324443",
       "type": "split_module",
       "filePath": "server/security.ts",
       "functionName": "securityMiddleware",
@@ -16070,7 +17881,7 @@
       "suggestion": "Extract sub-routines from 'securityMiddleware' to reduce decision paths"
     },
     {
-      "id": "nesting_server/security.ts_securityMiddleware_1780575719585",
+      "id": "nesting_server/security.ts_securityMiddleware_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/security.ts",
       "functionName": "securityMiddleware",
@@ -16079,7 +17890,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/self/atomic_editor.ts_applyFileEdit_1780575719585",
+      "id": "refactor_server/self/atomic_editor.ts_applyFileEdit_1780842324443",
       "type": "split_module",
       "filePath": "server/self/atomic_editor.ts",
       "functionName": "applyFileEdit",
@@ -16088,7 +17899,7 @@
       "suggestion": "Extract sub-routines from 'applyFileEdit' to reduce decision paths"
     },
     {
-      "id": "refactor_server/self/benchmark_suite.ts_runBenchmarks_1780575719585",
+      "id": "refactor_server/self/benchmark_suite.ts_runBenchmarks_1780842324443",
       "type": "extract_function",
       "filePath": "server/self/benchmark_suite.ts",
       "functionName": "runBenchmarks",
@@ -16097,7 +17908,7 @@
       "suggestion": "Extract sub-routines from 'runBenchmarks' to reduce decision paths"
     },
     {
-      "id": "nesting_server/self/benchmark_suite.ts_runBenchmarks_1780575719585",
+      "id": "nesting_server/self/benchmark_suite.ts_runBenchmarks_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/self/benchmark_suite.ts",
       "functionName": "runBenchmarks",
@@ -16106,7 +17917,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/self/compilation_pipeline.ts_runSelfCompilation_1780575719585",
+      "id": "refactor_server/self/compilation_pipeline.ts_runSelfCompilation_1780842324443",
       "type": "extract_function",
       "filePath": "server/self/compilation_pipeline.ts",
       "functionName": "runSelfCompilation",
@@ -16115,7 +17926,7 @@
       "suggestion": "Extract sub-routines from 'runSelfCompilation' to reduce decision paths"
     },
     {
-      "id": "refactor_server/self/dependency_upgrader.ts_scanOutdatedPackages_1780575719585",
+      "id": "refactor_server/self/dependency_upgrader.ts_scanOutdatedPackages_1780842324443",
       "type": "split_module",
       "filePath": "server/self/dependency_upgrader.ts",
       "functionName": "scanOutdatedPackages",
@@ -16124,7 +17935,7 @@
       "suggestion": "Extract sub-routines from 'scanOutdatedPackages' to reduce decision paths"
     },
     {
-      "id": "refactor_server/self/refactoring_engine.ts_generateRefactoringProposals_1780575719585",
+      "id": "refactor_server/self/refactoring_engine.ts_generateRefactoringProposals_1780842324443",
       "type": "extract_function",
       "filePath": "server/self/refactoring_engine.ts",
       "functionName": "generateRefactoringProposals",
@@ -16133,7 +17944,7 @@
       "suggestion": "Extract sub-routines from 'generateRefactoringProposals' to reduce decision paths"
     },
     {
-      "id": "nesting_server/self/smoke_test_runner.ts_testConfigFiles_1780575719585",
+      "id": "nesting_server/self/smoke_test_runner.ts_testConfigFiles_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/self/smoke_test_runner.ts",
       "functionName": "testConfigFiles",
@@ -16142,7 +17953,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/selfConsistency.ts_checkSelfConsistency_1780575719585",
+      "id": "refactor_server/selfConsistency.ts_checkSelfConsistency_1780842324443",
       "type": "split_module",
       "filePath": "server/selfConsistency.ts",
       "functionName": "checkSelfConsistency",
@@ -16151,7 +17962,7 @@
       "suggestion": "Extract sub-routines from 'checkSelfConsistency' to reduce decision paths"
     },
     {
-      "id": "nesting_server/selfHeal.ts_detectDegradation_1780575719585",
+      "id": "nesting_server/selfHeal.ts_detectDegradation_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/selfHeal.ts",
       "functionName": "detectDegradation",
@@ -16160,7 +17971,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/selfHeal.ts_diagnoseWithLLM_1780575719585",
+      "id": "refactor_server/selfHeal.ts_diagnoseWithLLM_1780842324443",
       "type": "split_module",
       "filePath": "server/selfHeal.ts",
       "functionName": "diagnoseWithLLM",
@@ -16169,7 +17980,7 @@
       "suggestion": "Extract sub-routines from 'diagnoseWithLLM' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfHeal.ts_healCycle_1780575719585",
+      "id": "refactor_server/selfHeal.ts_healCycle_1780842324443",
       "type": "split_module",
       "filePath": "server/selfHeal.ts",
       "functionName": "healCycle",
@@ -16178,7 +17989,7 @@
       "suggestion": "Extract sub-routines from 'healCycle' to reduce decision paths"
     },
     {
-      "id": "nesting_server/selfHeal.ts_healCycle_1780575719585",
+      "id": "nesting_server/selfHeal.ts_healCycle_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/selfHeal.ts",
       "functionName": "healCycle",
@@ -16187,7 +17998,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "nesting_server/selfHeal.ts_getProactiveAlerts_1780575719585",
+      "id": "nesting_server/selfHeal.ts_getProactiveAlerts_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/selfHeal.ts",
       "functionName": "getProactiveAlerts",
@@ -16196,7 +18007,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/selfImprove.ts_resolveServerFile_1780575719585",
+      "id": "refactor_server/selfImprove.ts_resolveServerFile_1780842324443",
       "type": "split_module",
       "filePath": "server/selfImprove.ts",
       "functionName": "resolveServerFile",
@@ -16205,7 +18016,7 @@
       "suggestion": "Extract sub-routines from 'resolveServerFile' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfImprove.ts_generateSimpleDiff_1780575719586",
+      "id": "refactor_server/selfImprove.ts_generateSimpleDiff_1780842324443",
       "type": "extract_function",
       "filePath": "server/selfImprove.ts",
       "functionName": "generateSimpleDiff",
@@ -16214,7 +18025,7 @@
       "suggestion": "Extract sub-routines from 'generateSimpleDiff' to reduce decision paths"
     },
     {
-      "id": "nesting_server/selfImprove.ts_generateSimpleDiff_1780575719586",
+      "id": "nesting_server/selfImprove.ts_generateSimpleDiff_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/selfImprove.ts",
       "functionName": "generateSimpleDiff",
@@ -16223,25 +18034,25 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/selfImprove.ts_pickProviderForArea_1780575719586",
+      "id": "refactor_server/selfImprove.ts_buildProviderFallbackChain_1780842324443",
       "type": "extract_function",
       "filePath": "server/selfImprove.ts",
-      "functionName": "pickProviderForArea",
+      "functionName": "buildProviderFallbackChain",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 11 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'pickProviderForArea' to reduce decision paths"
+      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
+      "suggestion": "Extract sub-routines from 'buildProviderFallbackChain' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfImprove.ts_applyProposal_1780575719586",
+      "id": "refactor_server/selfImprove.ts_applyProposal_1780842324443",
       "type": "split_module",
       "filePath": "server/selfImprove.ts",
       "functionName": "applyProposal",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 58 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 63 exceeds threshold of 10",
       "suggestion": "Extract sub-routines from 'applyProposal' to reduce decision paths"
     },
     {
-      "id": "nesting_server/selfImprove.ts_applyProposal_1780575719586",
+      "id": "nesting_server/selfImprove.ts_applyProposal_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/selfImprove.ts",
       "functionName": "applyProposal",
@@ -16250,16 +18061,16 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/selfImprove.ts_autoApplyHighConfidence_1780575719586",
+      "id": "refactor_server/selfImprove.ts_autoApplyHighConfidence_1780842324443",
       "type": "split_module",
       "filePath": "server/selfImprove.ts",
       "functionName": "autoApplyHighConfidence",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 35 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 46 exceeds threshold of 10",
       "suggestion": "Extract sub-routines from 'autoApplyHighConfidence' to reduce decision paths"
     },
     {
-      "id": "nesting_server/selfImprove.ts_autoApplyHighConfidence_1780575719586",
+      "id": "nesting_server/selfImprove.ts_autoApplyHighConfidence_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/selfImprove.ts",
       "functionName": "autoApplyHighConfidence",
@@ -16268,34 +18079,34 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/selfImprove.ts_scoreProposal_1780575719586",
+      "id": "refactor_server/selfImprove.ts_scoreProposal_1780842324443",
       "type": "split_module",
       "filePath": "server/selfImprove.ts",
       "functionName": "scoreProposal",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 19 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 20 exceeds threshold of 10",
       "suggestion": "Extract sub-routines from 'scoreProposal' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfImproveGuard.ts_guardedApply_1780575719586",
+      "id": "refactor_server/selfImproveGuard.ts_guardedApply_1780842324443",
       "type": "split_module",
       "filePath": "server/selfImproveGuard.ts",
       "functionName": "guardedApply",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 38 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 42 exceeds threshold of 10",
       "suggestion": "Extract sub-routines from 'guardedApply' to reduce decision paths"
     },
     {
-      "id": "nesting_server/selfImproveGuard.ts_guardedApply_1780575719586",
+      "id": "nesting_server/selfImproveGuard.ts_guardedApply_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/selfImproveGuard.ts",
       "functionName": "guardedApply",
       "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 4",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/selfIntrospect.ts_findCircularDeps_1780575719586",
+      "id": "refactor_server/selfIntrospect.ts_findCircularDeps_1780842324443",
       "type": "extract_function",
       "filePath": "server/selfIntrospect.ts",
       "functionName": "findCircularDeps",
@@ -16304,7 +18115,7 @@
       "suggestion": "Extract sub-routines from 'findCircularDeps' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfIntrospect.ts_findOrphanedExports_1780575719586",
+      "id": "refactor_server/selfIntrospect.ts_findOrphanedExports_1780842324443",
       "type": "extract_function",
       "filePath": "server/selfIntrospect.ts",
       "functionName": "findOrphanedExports",
@@ -16313,7 +18124,7 @@
       "suggestion": "Extract sub-routines from 'findOrphanedExports' to reduce decision paths"
     },
     {
-      "id": "nesting_server/selfIntrospect.ts_findOrphanedExports_1780575719586",
+      "id": "nesting_server/selfIntrospect.ts_findOrphanedExports_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/selfIntrospect.ts",
       "functionName": "findOrphanedExports",
@@ -16322,7 +18133,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "nesting_server/selfIntrospect.ts_introspectSelf_1780575719586",
+      "id": "nesting_server/selfIntrospect.ts_introspectSelf_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/selfIntrospect.ts",
       "functionName": "introspectSelf",
@@ -16331,7 +18142,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/selfKnowledgeBase.ts_getImprovementContext_1780575719586",
+      "id": "refactor_server/selfKnowledgeBase.ts_getImprovementContext_1780842324443",
       "type": "extract_function",
       "filePath": "server/selfKnowledgeBase.ts",
       "functionName": "getImprovementContext",
@@ -16340,7 +18151,7 @@
       "suggestion": "Extract sub-routines from 'getImprovementContext' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfModel.ts_validateSelfModel_1780575719586",
+      "id": "refactor_server/selfModel.ts_validateSelfModel_1780842324443",
       "type": "extract_function",
       "filePath": "server/selfModel.ts",
       "functionName": "validateSelfModel",
@@ -16349,7 +18160,7 @@
       "suggestion": "Extract sub-routines from 'validateSelfModel' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfModify.ts_runTests_1780575719586",
+      "id": "refactor_server/selfModify.ts_runTests_1780842324443",
       "type": "extract_function",
       "filePath": "server/selfModify.ts",
       "functionName": "runTests",
@@ -16358,7 +18169,7 @@
       "suggestion": "Extract sub-routines from 'runTests' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfModify.ts_selfModify_1780575719586",
+      "id": "refactor_server/selfModify.ts_selfModify_1780842324443",
       "type": "split_module",
       "filePath": "server/selfModify.ts",
       "functionName": "selfModify",
@@ -16367,7 +18178,7 @@
       "suggestion": "Extract sub-routines from 'selfModify' to reduce decision paths"
     },
     {
-      "id": "nesting_server/selfModify.ts_selfModify_1780575719586",
+      "id": "nesting_server/selfModify.ts_selfModify_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/selfModify.ts",
       "functionName": "selfModify",
@@ -16376,7 +18187,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "nesting_server/selfModify.ts_initSelfModify_1780575719586",
+      "id": "nesting_server/selfModify.ts_initSelfModify_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/selfModify.ts",
       "functionName": "initSelfModify",
@@ -16385,7 +18196,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/selfMonitor.ts_checkThreshold_1780575719586",
+      "id": "refactor_server/selfMonitor.ts_checkThreshold_1780842324443",
       "type": "split_module",
       "filePath": "server/selfMonitor.ts",
       "functionName": "checkThreshold",
@@ -16394,7 +18205,7 @@
       "suggestion": "Extract sub-routines from 'checkThreshold' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfMonitor.ts_recalculateBaselines_1780575719586",
+      "id": "refactor_server/selfMonitor.ts_recalculateBaselines_1780842324443",
       "type": "extract_function",
       "filePath": "server/selfMonitor.ts",
       "functionName": "recalculateBaselines",
@@ -16403,7 +18214,7 @@
       "suggestion": "Extract sub-routines from 'recalculateBaselines' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfReflectionEngine.ts_runReflectionCycle_1780575719586",
+      "id": "refactor_server/selfReflectionEngine.ts_runReflectionCycle_1780842324443",
       "type": "split_module",
       "filePath": "server/selfReflectionEngine.ts",
       "functionName": "runReflectionCycle",
@@ -16412,7 +18223,7 @@
       "suggestion": "Extract sub-routines from 'runReflectionCycle' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfReview.ts_reviewCode_1780575719586",
+      "id": "refactor_server/selfReview.ts_reviewCode_1780842324443",
       "type": "split_module",
       "filePath": "server/selfReview.ts",
       "functionName": "reviewCode",
@@ -16421,7 +18232,7 @@
       "suggestion": "Extract sub-routines from 'reviewCode' to reduce decision paths"
     },
     {
-      "id": "nesting_server/selfReview.ts_reviewCode_1780575719586",
+      "id": "nesting_server/selfReview.ts_reviewCode_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/selfReview.ts",
       "functionName": "reviewCode",
@@ -16430,7 +18241,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/selfReview.ts_checkSyntax_1780575719586",
+      "id": "refactor_server/selfReview.ts_checkSyntax_1780842324443",
       "type": "split_module",
       "filePath": "server/selfReview.ts",
       "functionName": "checkSyntax",
@@ -16439,7 +18250,7 @@
       "suggestion": "Extract sub-routines from 'checkSyntax' to reduce decision paths"
     },
     {
-      "id": "nesting_server/selfRollback.ts_loadPersistedPoints_1780575719586",
+      "id": "nesting_server/selfRollback.ts_loadPersistedPoints_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/selfRollback.ts",
       "functionName": "loadPersistedPoints",
@@ -16448,7 +18259,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/selfTestPipeline.ts_applyChanges_1780575719586",
+      "id": "refactor_server/selfTestPipeline.ts_applyChanges_1780842324443",
       "type": "extract_function",
       "filePath": "server/selfTestPipeline.ts",
       "functionName": "applyChanges",
@@ -16457,7 +18268,7 @@
       "suggestion": "Extract sub-routines from 'applyChanges' to reduce decision paths"
     },
     {
-      "id": "nesting_server/selfTestPipeline.ts_applyChanges_1780575719586",
+      "id": "nesting_server/selfTestPipeline.ts_applyChanges_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/selfTestPipeline.ts",
       "functionName": "applyChanges",
@@ -16466,7 +18277,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/selfTestPipeline.ts_runPipeline_1780575719586",
+      "id": "refactor_server/selfTestPipeline.ts_runPipeline_1780842324443",
       "type": "extract_function",
       "filePath": "server/selfTestPipeline.ts",
       "functionName": "runPipeline",
@@ -16475,7 +18286,7 @@
       "suggestion": "Extract sub-routines from 'runPipeline' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfTestPipeline.ts_validateProposal_1780575719586",
+      "id": "refactor_server/selfTestPipeline.ts_validateProposal_1780842324443",
       "type": "extract_function",
       "filePath": "server/selfTestPipeline.ts",
       "functionName": "validateProposal",
@@ -16484,7 +18295,7 @@
       "suggestion": "Extract sub-routines from 'validateProposal' to reduce decision paths"
     },
     {
-      "id": "refactor_server/streamIntegrityMonitor.ts_checkCompleteness_1780575719586",
+      "id": "refactor_server/streamIntegrityMonitor.ts_checkCompleteness_1780842324443",
       "type": "split_module",
       "filePath": "server/streamIntegrityMonitor.ts",
       "functionName": "checkCompleteness",
@@ -16493,16 +18304,16 @@
       "suggestion": "Extract sub-routines from 'checkCompleteness' to reduce decision paths"
     },
     {
-      "id": "refactor_server/streamRouter.ts_registerStreamRoutes_1780575719586",
+      "id": "refactor_server/streamRouter.ts_registerStreamRoutes_1780842324443",
       "type": "split_module",
       "filePath": "server/streamRouter.ts",
       "functionName": "registerStreamRoutes",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 145 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 146 exceeds threshold of 10",
       "suggestion": "Extract sub-routines from 'registerStreamRoutes' to reduce decision paths"
     },
     {
-      "id": "nesting_server/streamRouter.ts_registerStreamRoutes_1780575719586",
+      "id": "nesting_server/streamRouter.ts_registerStreamRoutes_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/streamRouter.ts",
       "functionName": "registerStreamRoutes",
@@ -16511,7 +18322,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/taskDecomposer.ts_detectSignals_1780575719586",
+      "id": "refactor_server/taskDecomposer.ts_detectSignals_1780842324443",
       "type": "extract_function",
       "filePath": "server/taskDecomposer.ts",
       "functionName": "detectSignals",
@@ -16520,7 +18331,7 @@
       "suggestion": "Extract sub-routines from 'detectSignals' to reduce decision paths"
     },
     {
-      "id": "refactor_server/taskDecomposer.ts_decomposeQuery_1780575719586",
+      "id": "refactor_server/taskDecomposer.ts_decomposeQuery_1780842324443",
       "type": "split_module",
       "filePath": "server/taskDecomposer.ts",
       "functionName": "decomposeQuery",
@@ -16529,7 +18340,7 @@
       "suggestion": "Extract sub-routines from 'decomposeQuery' to reduce decision paths"
     },
     {
-      "id": "nesting_server/taskDecomposer.ts_decomposeQuery_1780575719586",
+      "id": "nesting_server/taskDecomposer.ts_decomposeQuery_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/taskDecomposer.ts",
       "functionName": "decomposeQuery",
@@ -16538,7 +18349,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/taskPlanner.ts_detectParallelGroups_1780575719586",
+      "id": "refactor_server/taskPlanner.ts_detectParallelGroups_1780842324443",
       "type": "extract_function",
       "filePath": "server/taskPlanner.ts",
       "functionName": "detectParallelGroups",
@@ -16547,7 +18358,34 @@
       "suggestion": "Extract sub-routines from 'detectParallelGroups' to reduce decision paths"
     },
     {
-      "id": "nesting_server/testCoverageAnalyzer.ts_runCoverageAnalysis_1780575719586",
+      "id": "refactor_server/telemetry.ts_getTelemetrySummary_1780842324443",
+      "type": "split_module",
+      "filePath": "server/telemetry.ts",
+      "functionName": "getTelemetrySummary",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 16 exceeds threshold of 10",
+      "suggestion": "Extract sub-routines from 'getTelemetrySummary' to reduce decision paths"
+    },
+    {
+      "id": "refactor_server/tenantManager.ts_loadTenants_1780842324443",
+      "type": "split_module",
+      "filePath": "server/tenantManager.ts",
+      "functionName": "loadTenants",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 17 exceeds threshold of 10",
+      "suggestion": "Extract sub-routines from 'loadTenants' to reduce decision paths"
+    },
+    {
+      "id": "nesting_server/tenantManager.ts_loadTenants_1780842324443",
+      "type": "simplify_logic",
+      "filePath": "server/tenantManager.ts",
+      "functionName": "loadTenants",
+      "severity": "medium",
+      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
+    },
+    {
+      "id": "nesting_server/testCoverageAnalyzer.ts_runCoverageAnalysis_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/testCoverageAnalyzer.ts",
       "functionName": "runCoverageAnalysis",
@@ -16556,7 +18394,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/testGenerator.ts_generateTypeScriptTests_1780575719586",
+      "id": "refactor_server/testGenerator.ts_generateTypeScriptTests_1780842324443",
       "type": "split_module",
       "filePath": "server/testGenerator.ts",
       "functionName": "generateTypeScriptTests",
@@ -16565,7 +18403,7 @@
       "suggestion": "Extract sub-routines from 'generateTypeScriptTests' to reduce decision paths"
     },
     {
-      "id": "nesting_server/testGenerator.ts_generateTypeScriptTests_1780575719586",
+      "id": "nesting_server/testGenerator.ts_generateTypeScriptTests_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/testGenerator.ts",
       "functionName": "generateTypeScriptTests",
@@ -16574,7 +18412,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/testGenerator.ts_runTest_1780575719586",
+      "id": "refactor_server/testGenerator.ts_runTest_1780842324443",
       "type": "extract_function",
       "filePath": "server/testGenerator.ts",
       "functionName": "runTest",
@@ -16583,7 +18421,7 @@
       "suggestion": "Extract sub-routines from 'runTest' to reduce decision paths"
     },
     {
-      "id": "refactor_server/testGenerator.ts_generateMockValue_1780575719586",
+      "id": "refactor_server/testGenerator.ts_generateMockValue_1780842324443",
       "type": "extract_function",
       "filePath": "server/testGenerator.ts",
       "functionName": "generateMockValue",
@@ -16592,7 +18430,7 @@
       "suggestion": "Extract sub-routines from 'generateMockValue' to reduce decision paths"
     },
     {
-      "id": "refactor_server/toolSynthesis.ts_loadSynthesizedTools_1780575719586",
+      "id": "refactor_server/toolSynthesis.ts_loadSynthesizedTools_1780842324443",
       "type": "extract_function",
       "filePath": "server/toolSynthesis.ts",
       "functionName": "loadSynthesizedTools",
@@ -16601,7 +18439,7 @@
       "suggestion": "Extract sub-routines from 'loadSynthesizedTools' to reduce decision paths"
     },
     {
-      "id": "refactor_server/tools/fileOps.ts_findInServerDir_1780575719586",
+      "id": "refactor_server/tools/fileOps.ts_findInServerDir_1780842324443",
       "type": "extract_function",
       "filePath": "server/tools/fileOps.ts",
       "functionName": "findInServerDir",
@@ -16610,7 +18448,7 @@
       "suggestion": "Extract sub-routines from 'findInServerDir' to reduce decision paths"
     },
     {
-      "id": "nesting_server/tools/fileOps.ts_findInServerDir_1780575719586",
+      "id": "nesting_server/tools/fileOps.ts_findInServerDir_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/tools/fileOps.ts",
       "functionName": "findInServerDir",
@@ -16619,7 +18457,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/tools/selfDiagnoseTools.ts_findFilesMatchingKeywords_1780575719586",
+      "id": "refactor_server/tools/selfDiagnoseTools.ts_findFilesMatchingKeywords_1780842324443",
       "type": "extract_function",
       "filePath": "server/tools/selfDiagnoseTools.ts",
       "functionName": "findFilesMatchingKeywords",
@@ -16628,7 +18466,7 @@
       "suggestion": "Extract sub-routines from 'findFilesMatchingKeywords' to reduce decision paths"
     },
     {
-      "id": "nesting_server/tools/selfDiagnoseTools.ts_findFilesMatchingKeywords_1780575719586",
+      "id": "nesting_server/tools/selfDiagnoseTools.ts_findFilesMatchingKeywords_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/tools/selfDiagnoseTools.ts",
       "functionName": "findFilesMatchingKeywords",
@@ -16637,7 +18475,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/tools/selfDiagnoseTools.ts_walk_1780575719586",
+      "id": "refactor_server/tools/selfDiagnoseTools.ts_walk_1780842324443",
       "type": "extract_function",
       "filePath": "server/tools/selfDiagnoseTools.ts",
       "functionName": "walk",
@@ -16646,7 +18484,7 @@
       "suggestion": "Extract sub-routines from 'walk' to reduce decision paths"
     },
     {
-      "id": "refactor_server/tools/selfModifyTools.ts_resolveServerPath_1780575719586",
+      "id": "refactor_server/tools/selfModifyTools.ts_resolveServerPath_1780842324443",
       "type": "extract_function",
       "filePath": "server/tools/selfModifyTools.ts",
       "functionName": "resolveServerPath",
@@ -16655,7 +18493,7 @@
       "suggestion": "Extract sub-routines from 'resolveServerPath' to reduce decision paths"
     },
     {
-      "id": "nesting_server/tools/selfTestRunner.ts_discoverTestFiles_1780575719586",
+      "id": "nesting_server/tools/selfTestRunner.ts_discoverTestFiles_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/tools/selfTestRunner.ts",
       "functionName": "discoverTestFiles",
@@ -16664,7 +18502,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/tools/selfTestRunner.ts_runTestFile_1780575719586",
+      "id": "refactor_server/tools/selfTestRunner.ts_runTestFile_1780842324443",
       "type": "split_module",
       "filePath": "server/tools/selfTestRunner.ts",
       "functionName": "runTestFile",
@@ -16673,7 +18511,7 @@
       "suggestion": "Extract sub-routines from 'runTestFile' to reduce decision paths"
     },
     {
-      "id": "nesting_server/tools/selfTestRunner.ts_runTestFile_1780575719586",
+      "id": "nesting_server/tools/selfTestRunner.ts_runTestFile_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/tools/selfTestRunner.ts",
       "functionName": "runTestFile",
@@ -16682,7 +18520,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/tools/selfTestRunner.ts_analyzeFailure_1780575719586",
+      "id": "refactor_server/tools/selfTestRunner.ts_analyzeFailure_1780842324443",
       "type": "split_module",
       "filePath": "server/tools/selfTestRunner.ts",
       "functionName": "analyzeFailure",
@@ -16691,7 +18529,7 @@
       "suggestion": "Extract sub-routines from 'analyzeFailure' to reduce decision paths"
     },
     {
-      "id": "refactor_server/tools/selfTestRunner.ts_attemptAutoFix_1780575719586",
+      "id": "refactor_server/tools/selfTestRunner.ts_attemptAutoFix_1780842324443",
       "type": "extract_function",
       "filePath": "server/tools/selfTestRunner.ts",
       "functionName": "attemptAutoFix",
@@ -16700,7 +18538,7 @@
       "suggestion": "Extract sub-routines from 'attemptAutoFix' to reduce decision paths"
     },
     {
-      "id": "nesting_server/tools/selfTestRunner.ts_attemptAutoFix_1780575719586",
+      "id": "nesting_server/tools/selfTestRunner.ts_attemptAutoFix_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/tools/selfTestRunner.ts",
       "functionName": "attemptAutoFix",
@@ -16709,7 +18547,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/tools/selfTestRunner.ts_registerSelfTestTools_1780575719586",
+      "id": "refactor_server/tools/selfTestRunner.ts_registerSelfTestTools_1780842324443",
       "type": "extract_function",
       "filePath": "server/tools/selfTestRunner.ts",
       "functionName": "registerSelfTestTools",
@@ -16718,7 +18556,7 @@
       "suggestion": "Extract sub-routines from 'registerSelfTestTools' to reduce decision paths"
     },
     {
-      "id": "nesting_server/tools/selfTestRunner.ts_registerSelfTestTools_1780575719586",
+      "id": "nesting_server/tools/selfTestRunner.ts_registerSelfTestTools_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/tools/selfTestRunner.ts",
       "functionName": "registerSelfTestTools",
@@ -16727,7 +18565,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/tools/vision.ts_captureScreenshot_1780575719586",
+      "id": "refactor_server/tools/vision.ts_captureScreenshot_1780842324443",
       "type": "extract_function",
       "filePath": "server/tools/vision.ts",
       "functionName": "captureScreenshot",
@@ -16736,7 +18574,7 @@
       "suggestion": "Extract sub-routines from 'captureScreenshot' to reduce decision paths"
     },
     {
-      "id": "refactor_server/tools/webSearch.ts_searchBrave_1780575719586",
+      "id": "refactor_server/tools/webSearch.ts_searchBrave_1780842324443",
       "type": "extract_function",
       "filePath": "server/tools/webSearch.ts",
       "functionName": "searchBrave",
@@ -16745,7 +18583,7 @@
       "suggestion": "Extract sub-routines from 'searchBrave' to reduce decision paths"
     },
     {
-      "id": "refactor_server/tools/webSearch.ts_searchDDG_1780575719586",
+      "id": "refactor_server/tools/webSearch.ts_searchDDG_1780842324443",
       "type": "split_module",
       "filePath": "server/tools/webSearch.ts",
       "functionName": "searchDDG",
@@ -16754,16 +18592,16 @@
       "suggestion": "Extract sub-routines from 'searchDDG' to reduce decision paths"
     },
     {
-      "id": "refactor_server/tools/webSearch.ts_executeWebSearch_1780575719586",
+      "id": "refactor_server/tools/webSearch.ts_executeWebSearch_1780842324443",
       "type": "split_module",
       "filePath": "server/tools/webSearch.ts",
       "functionName": "executeWebSearch",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 18 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 20 exceeds threshold of 10",
       "suggestion": "Extract sub-routines from 'executeWebSearch' to reduce decision paths"
     },
     {
-      "id": "refactor_server/transactionLog.ts_rollbackTransaction_1780575719586",
+      "id": "refactor_server/transactionLog.ts_rollbackTransaction_1780842324443",
       "type": "extract_function",
       "filePath": "server/transactionLog.ts",
       "functionName": "rollbackTransaction",
@@ -16772,7 +18610,7 @@
       "suggestion": "Extract sub-routines from 'rollbackTransaction' to reduce decision paths"
     },
     {
-      "id": "refactor_server/truncationDetector.ts_detectFileTruncation_1780575719586",
+      "id": "refactor_server/truncationDetector.ts_detectFileTruncation_1780842324443",
       "type": "extract_function",
       "filePath": "server/truncationDetector.ts",
       "functionName": "detectFileTruncation",
@@ -16781,7 +18619,7 @@
       "suggestion": "Extract sub-routines from 'detectFileTruncation' to reduce decision paths"
     },
     {
-      "id": "refactor_server/truncationDetector.ts_detectCodeTruncation_1780575719586",
+      "id": "refactor_server/truncationDetector.ts_detectCodeTruncation_1780842324443",
       "type": "split_module",
       "filePath": "server/truncationDetector.ts",
       "functionName": "detectCodeTruncation",
@@ -16790,7 +18628,7 @@
       "suggestion": "Extract sub-routines from 'detectCodeTruncation' to reduce decision paths"
     },
     {
-      "id": "refactor_server/truncationDetector.ts_detectOutputTruncation_1780575719586",
+      "id": "refactor_server/truncationDetector.ts_detectOutputTruncation_1780842324443",
       "type": "split_module",
       "filePath": "server/truncationDetector.ts",
       "functionName": "detectOutputTruncation",
@@ -16799,7 +18637,7 @@
       "suggestion": "Extract sub-routines from 'detectOutputTruncation' to reduce decision paths"
     },
     {
-      "id": "nesting_server/truncationDetector.ts_detectOutputTruncation_1780575719586",
+      "id": "nesting_server/truncationDetector.ts_detectOutputTruncation_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/truncationDetector.ts",
       "functionName": "detectOutputTruncation",
@@ -16808,7 +18646,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/truncationDetector.ts_repairTruncatedCode_1780575719586",
+      "id": "refactor_server/truncationDetector.ts_repairTruncatedCode_1780842324443",
       "type": "split_module",
       "filePath": "server/truncationDetector.ts",
       "functionName": "repairTruncatedCode",
@@ -16817,7 +18655,7 @@
       "suggestion": "Extract sub-routines from 'repairTruncatedCode' to reduce decision paths"
     },
     {
-      "id": "refactor_server/twoPhaseCommit.ts_twoPhaseCommit_1780575719586",
+      "id": "refactor_server/twoPhaseCommit.ts_twoPhaseCommit_1780842324443",
       "type": "split_module",
       "filePath": "server/twoPhaseCommit.ts",
       "functionName": "twoPhaseCommit",
@@ -16826,7 +18664,7 @@
       "suggestion": "Extract sub-routines from 'twoPhaseCommit' to reduce decision paths"
     },
     {
-      "id": "nesting_server/twoPhaseCommit.ts_twoPhaseCommit_1780575719586",
+      "id": "nesting_server/twoPhaseCommit.ts_twoPhaseCommit_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/twoPhaseCommit.ts",
       "functionName": "twoPhaseCommit",
@@ -16835,7 +18673,7 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/unifiedKnowledge.ts_queryUnifiedKnowledge_1780575719586",
+      "id": "refactor_server/unifiedKnowledge.ts_queryUnifiedKnowledge_1780842324443",
       "type": "split_module",
       "filePath": "server/unifiedKnowledge.ts",
       "functionName": "queryUnifiedKnowledge",
@@ -16844,7 +18682,7 @@
       "suggestion": "Extract sub-routines from 'queryUnifiedKnowledge' to reduce decision paths"
     },
     {
-      "id": "nesting_server/unifiedKnowledge.ts_queryUnifiedKnowledge_1780575719586",
+      "id": "nesting_server/unifiedKnowledge.ts_queryUnifiedKnowledge_1780842324443",
       "type": "simplify_logic",
       "filePath": "server/unifiedKnowledge.ts",
       "functionName": "queryUnifiedKnowledge",
@@ -16853,7 +18691,25 @@
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/workspace.ts_detectLanguage_1780575719586",
+      "id": "refactor_server/watchdog.ts_runHealthCheck_1780842324443",
+      "type": "split_module",
+      "filePath": "server/watchdog.ts",
+      "functionName": "runHealthCheck",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 19 exceeds threshold of 10",
+      "suggestion": "Extract sub-routines from 'runHealthCheck' to reduce decision paths"
+    },
+    {
+      "id": "nesting_server/watchdog.ts_runHealthCheck_1780842324443",
+      "type": "simplify_logic",
+      "filePath": "server/watchdog.ts",
+      "functionName": "runHealthCheck",
+      "severity": "medium",
+      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
+    },
+    {
+      "id": "refactor_server/workspace.ts_detectLanguage_1780842324443",
       "type": "extract_function",
       "filePath": "server/workspace.ts",
       "functionName": "detectLanguage",
@@ -16862,7 +18718,7 @@
       "suggestion": "Extract sub-routines from 'detectLanguage' to reduce decision paths"
     },
     {
-      "id": "coupling_server/_core/index.ts_1780575719586",
+      "id": "coupling_server/_core/index.ts_1780842324443",
       "type": "reduce_coupling",
       "filePath": "server/_core/index.ts",
       "severity": "high",
@@ -16870,7 +18726,7 @@
       "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
     },
     {
-      "id": "coupling_server/_core/initDaemons.ts_1780575719586",
+      "id": "coupling_server/_core/initDaemons.ts_1780842324443",
       "type": "reduce_coupling",
       "filePath": "server/_core/initDaemons.ts",
       "severity": "high",
@@ -16878,7 +18734,15 @@
       "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
     },
     {
-      "id": "coupling_server/_core/sdk.ts_1780575719586",
+      "id": "coupling_server/_core/initRoutes.ts_1780842324443",
+      "type": "reduce_coupling",
+      "filePath": "server/_core/initRoutes.ts",
+      "severity": "medium",
+      "reason": "Module imports from 11 other modules (threshold: 8)",
+      "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
+    },
+    {
+      "id": "coupling_server/_core/sdk.ts_1780842324443",
       "type": "reduce_coupling",
       "filePath": "server/_core/sdk.ts",
       "severity": "medium",
@@ -16886,7 +18750,7 @@
       "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
     },
     {
-      "id": "coupling_server/aiPlanning.ts_1780575719586",
+      "id": "coupling_server/aiPlanning.ts_1780842324443",
       "type": "reduce_coupling",
       "filePath": "server/aiPlanning.ts",
       "severity": "medium",
@@ -16894,7 +18758,7 @@
       "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
     },
     {
-      "id": "coupling_server/aiStreaming.ts_1780575719586",
+      "id": "coupling_server/aiStreaming.ts_1780842324443",
       "type": "reduce_coupling",
       "filePath": "server/aiStreaming.ts",
       "severity": "medium",
@@ -16902,7 +18766,7 @@
       "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
     },
     {
-      "id": "coupling_server/reactEngine.ts_1780575719586",
+      "id": "coupling_server/reactEngine.ts_1780842324443",
       "type": "reduce_coupling",
       "filePath": "server/reactEngine.ts",
       "severity": "medium",
@@ -16910,7 +18774,7 @@
       "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
     },
     {
-      "id": "coupling_server/routes/autonomyRoutes.ts_1780575719586",
+      "id": "coupling_server/routes/autonomyRoutes.ts_1780842324443",
       "type": "reduce_coupling",
       "filePath": "server/routes/autonomyRoutes.ts",
       "severity": "high",
@@ -16918,7 +18782,7 @@
       "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
     },
     {
-      "id": "coupling_server/routes/llmRoutes.ts_1780575719586",
+      "id": "coupling_server/routes/llmRoutes.ts_1780842324443",
       "type": "reduce_coupling",
       "filePath": "server/routes/llmRoutes.ts",
       "severity": "medium",
@@ -16926,7 +18790,7 @@
       "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
     },
     {
-      "id": "coupling_server/routes/systemRoutes.ts_1780575719586",
+      "id": "coupling_server/routes/systemRoutes.ts_1780842324443",
       "type": "reduce_coupling",
       "filePath": "server/routes/systemRoutes.ts",
       "severity": "medium",
@@ -16934,7 +18798,7 @@
       "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
     },
     {
-      "id": "coupling_server/self/index.ts_1780575719586",
+      "id": "coupling_server/self/index.ts_1780842324443",
       "type": "reduce_coupling",
       "filePath": "server/self/index.ts",
       "severity": "medium",
@@ -16942,7 +18806,7 @@
       "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
     },
     {
-      "id": "coupling_server/selfModel.ts_1780575719586",
+      "id": "coupling_server/selfModel.ts_1780842324443",
       "type": "reduce_coupling",
       "filePath": "server/selfModel.ts",
       "severity": "high",
@@ -16950,7 +18814,7 @@
       "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
     },
     {
-      "id": "coupling_server/streamRouter.ts_1780575719586",
+      "id": "coupling_server/streamRouter.ts_1780842324443",
       "type": "reduce_coupling",
       "filePath": "server/streamRouter.ts",
       "severity": "high",
@@ -16958,7 +18822,7 @@
       "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
     },
     {
-      "id": "coupling_server/tools/selfModifyTools.ts_1780575719586",
+      "id": "coupling_server/tools/selfModifyTools.ts_1780842324443",
       "type": "reduce_coupling",
       "filePath": "server/tools/selfModifyTools.ts",
       "severity": "medium",

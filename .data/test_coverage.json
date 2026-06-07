@@ -1,9 +1,9 @@
 {
-  "timestamp": 1780575719332,
-  "totalModules": 181,
+  "timestamp": 1780842319280,
+  "totalModules": 201,
   "testedModules": 140,
-  "untestedModules": 41,
-  "coveragePercent": 38,
+  "untestedModules": 61,
+  "coveragePercent": 34,
   "moduleDetails": [
     {
       "filePath": "server/_core/context.ts",
@@ -270,6 +270,35 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/adaptiveEval.ts",
+      "fileName": "adaptiveEval.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "analyzeGaps",
+        "generateBenchmarks",
+        "evolveBenchmarks",
+        "runAdaptiveEval",
+        "getBenchmarkEvolutionStats",
+        "getAdaptiveBenchmarks",
+        "getAdaptiveEvalHistory",
+        "getLatestGapAnalysis",
+        "initAdaptiveEval"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "analyzeGaps",
+        "generateBenchmarks",
+        "evolveBenchmarks",
+        "runAdaptiveEval",
+        "getBenchmarkEvolutionStats",
+        "getAdaptiveBenchmarks",
+        "getAdaptiveEvalHistory",
+        "getLatestGapAnalysis",
+        "initAdaptiveEval"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/adminAuth.ts",
       "fileName": "adminAuth.ts",
       "hasTestFile": false,
@@ -452,6 +481,56 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/auditLog.ts",
+      "fileName": "auditLog.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "audit",
+        "auditAuthFailure",
+        "auditAccessDenied",
+        "auditRsiEvent",
+        "auditAdminAction",
+        "getRecentAuditEvents",
+        "getAuditStats",
+        "loadAuditFromDisk"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "audit",
+        "auditAuthFailure",
+        "auditAccessDenied",
+        "auditRsiEvent",
+        "auditAdminAction",
+        "getRecentAuditEvents",
+        "getAuditStats",
+        "loadAuditFromDisk"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/autoRebuild.ts",
+      "fileName": "autoRebuild.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "getAutoRebuildConfig",
+        "setAutoRebuildConfig",
+        "scheduleRebuild",
+        "triggerRebuildNow",
+        "getAutoRebuildStatus",
+        "initAutoRebuild"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "getAutoRebuildConfig",
+        "setAutoRebuildConfig",
+        "scheduleRebuild",
+        "triggerRebuildNow",
+        "getAutoRebuildStatus",
+        "initAutoRebuild"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/autoRollback.ts",
       "fileName": "autoRollback.ts",
       "hasTestFile": true,
@@ -581,6 +660,27 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/dbPostgres.ts",
+      "fileName": "dbPostgres.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "getPgDb",
+        "isPgAvailable",
+        "pgExecute",
+        "runPgMigrations",
+        "getPgStatus"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "getPgDb",
+        "isPgAvailable",
+        "pgExecute",
+        "runPgMigrations",
+        "getPgStatus"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/episodicConsolidation.ts",
       "fileName": "episodicConsolidation.ts",
       "hasTestFile": false,
@@ -596,6 +696,66 @@
         "getConsolidatedLessons",
         "getEpisodicConsolidationStats",
         "initEpisodicConsolidation"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/evalGoalDiscovery.ts",
+      "fileName": "evalGoalDiscovery.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "discoverGoalsFromEval",
+        "getDiscoveryHistory",
+        "getRecentDiscoveries"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "discoverGoalsFromEval",
+        "getDiscoveryHistory",
+        "getRecentDiscoveries"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/federatedLearning.ts",
+      "fileName": "federatedLearning.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "registerNode",
+        "getNode",
+        "listNodes",
+        "markNodeHealthy",
+        "markNodeUnhealthy",
+        "receiveProposal",
+        "getReceivedProposals",
+        "markProposalValidated",
+        "markProposalApplied",
+        "computeFederatedAvgScore",
+        "updateLocalScore",
+        "processSyncPayload",
+        "prepareSyncPayload",
+        "getFederatedStats",
+        "getNodeId",
+        "initFederatedLearning"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "registerNode",
+        "getNode",
+        "listNodes",
+        "markNodeHealthy",
+        "markNodeUnhealthy",
+        "receiveProposal",
+        "getReceivedProposals",
+        "markProposalValidated",
+        "markProposalApplied",
+        "computeFederatedAvgScore",
+        "updateLocalScore",
+        "processSyncPayload",
+        "prepareSyncPayload",
+        "getFederatedStats",
+        "getNodeId",
+        "initFederatedLearning"
       ],
       "coveragePercent": 0
     },
@@ -698,6 +858,21 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/goalDecomposer.ts",
+      "fileName": "goalDecomposer.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "decomposeDiscoveries",
+        "decomposeSingleDiscovery"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "decomposeDiscoveries",
+        "decomposeSingleDiscovery"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/importGraph.ts",
       "fileName": "importGraph.ts",
       "hasTestFile": false,
@@ -725,6 +900,52 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/knowledgeTransfer.ts",
+      "fileName": "knowledgeTransfer.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "learnFromAppliedProposal",
+        "exportKnowledgePackage",
+        "importKnowledgePackage",
+        "getPatternContextForFile",
+        "getKnowledgeTransferStatus",
+        "initKnowledgeTransfer"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "learnFromAppliedProposal",
+        "exportKnowledgePackage",
+        "importKnowledgePackage",
+        "getPatternContextForFile",
+        "getKnowledgeTransferStatus",
+        "initKnowledgeTransfer"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/learnedConstraints.ts",
+      "fileName": "learnedConstraints.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "recordRejection",
+        "addLearnedConstraint",
+        "getLearnedConstraints",
+        "getAllConstraints",
+        "checkLearnedConstraints",
+        "disableConstraint"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "recordRejection",
+        "addLearnedConstraint",
+        "getLearnedConstraints",
+        "getAllConstraints",
+        "checkLearnedConstraints",
+        "disableConstraint"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/multiAgent.ts",
       "fileName": "multiAgent.ts",
       "hasTestFile": true,
@@ -735,6 +956,58 @@
       "testedFunctions": [],
       "untestedFunctions": [
         "runTeamAgent"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/prGenerator.ts",
+      "fileName": "prGenerator.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "createPRForBranch",
+        "syncOpenPRStatus",
+        "getPRGeneratorStatus",
+        "initPRGenerator"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "createPRForBranch",
+        "syncOpenPRStatus",
+        "getPRGeneratorStatus",
+        "initPRGenerator"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/rbac.ts",
+      "fileName": "rbac.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "roleAtLeast",
+        "attachRbacContext",
+        "requireRole",
+        "auditMiddleware",
+        "requireTenant",
+        "roleRateLimit",
+        "getRbacContext",
+        "requireAdmin",
+        "requireOperator",
+        "requireEditor",
+        "requireSystem"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "roleAtLeast",
+        "attachRbacContext",
+        "requireRole",
+        "auditMiddleware",
+        "requireTenant",
+        "roleRateLimit",
+        "getRbacContext",
+        "requireAdmin",
+        "requireOperator",
+        "requireEditor",
+        "requireSystem"
       ],
       "coveragePercent": 0
     },
@@ -768,6 +1041,33 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/rlhfCollector.ts",
+      "fileName": "rlhfCollector.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "recordFeedback",
+        "recordImplicitFeedback",
+        "getRlhfContext",
+        "getReplayExamples",
+        "getRlhfAggregates",
+        "getRecentFeedback",
+        "getRlhfStats",
+        "initRlhfCollector"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "recordFeedback",
+        "recordImplicitFeedback",
+        "getRlhfContext",
+        "getReplayExamples",
+        "getRlhfAggregates",
+        "getRecentFeedback",
+        "getRlhfStats",
+        "initRlhfCollector"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/routers.ts",
       "fileName": "routers.ts",
       "hasTestFile": true,
@@ -778,6 +1078,71 @@
       "testedFunctions": [],
       "untestedFunctions": [
         "appRouter"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/routes/adaptiveEvalRoutes.ts",
+      "fileName": "adaptiveEvalRoutes.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "adaptiveEvalRouter"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "adaptiveEvalRouter"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/routes/adminRoutes.ts",
+      "fileName": "adminRoutes.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "adminRouter"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "adminRouter"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/routes/federatedRoutes.ts",
+      "fileName": "federatedRoutes.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "federatedRouter"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "federatedRouter"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/routes/v71Routes.ts",
+      "fileName": "v71Routes.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "v71Router"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "v71Router"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/routes/v7Routes.ts",
+      "fileName": "v7Routes.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "v7Router"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "v7Router"
       ],
       "coveragePercent": 0
     },
@@ -928,6 +1293,70 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/telemetry.ts",
+      "fileName": "telemetry.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "recordLatency",
+        "recordRsiCycle",
+        "recordLlmCall",
+        "recordEvalScore",
+        "recordError",
+        "getTelemetrySummary",
+        "getRawSamples",
+        "telemetryMiddleware",
+        "initTelemetry"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "recordLatency",
+        "recordRsiCycle",
+        "recordLlmCall",
+        "recordEvalScore",
+        "recordError",
+        "getTelemetrySummary",
+        "getRawSamples",
+        "telemetryMiddleware",
+        "initTelemetry"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/tenantManager.ts",
+      "fileName": "tenantManager.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "getTenant",
+        "getOrDefaultTenant",
+        "listTenants",
+        "createTenant",
+        "updateTenant",
+        "deleteTenant",
+        "checkQuota",
+        "incrementUsage",
+        "getTenantUsage",
+        "getTenantStatus",
+        "isTenantModuleAllowed",
+        "initTenantManager"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "getTenant",
+        "getOrDefaultTenant",
+        "listTenants",
+        "createTenant",
+        "updateTenant",
+        "deleteTenant",
+        "checkQuota",
+        "incrementUsage",
+        "getTenantUsage",
+        "getTenantStatus",
+        "isTenantModuleAllowed",
+        "initTenantManager"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/toolSynthesis.ts",
       "fileName": "toolSynthesis.ts",
       "hasTestFile": false,
@@ -949,6 +1378,23 @@
         "listSynthesizedTools",
         "deleteSynthesizedTool",
         "toolDefinition"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/watchdog.ts",
+      "fileName": "watchdog.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "getWatchdogStatus",
+        "triggerHealthCheck",
+        "initWatchdog"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "getWatchdogStatus",
+        "triggerHealthCheck",
+        "initWatchdog"
       ],
       "coveragePercent": 0
     },
@@ -1494,6 +1940,43 @@
       "coveragePercent": 25
     },
     {
+      "filePath": "server/llmProvider.ts",
+      "fileName": "llmProvider.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/llmProvider.test.ts",
+      "exportedFunctions": [
+        "getProviderApiKey",
+        "switchProvider",
+        "getActiveProvider",
+        "setActiveProvider",
+        "listProviders",
+        "getProviderForTier",
+        "tierForArea",
+        "chatCompletion",
+        "getBackgroundProvider",
+        "backgroundChatCompletion",
+        "backgroundSimpleCompletion",
+        "simpleChatCompletion"
+      ],
+      "testedFunctions": [
+        "getActiveProvider",
+        "setActiveProvider",
+        "listProviders"
+      ],
+      "untestedFunctions": [
+        "getProviderApiKey",
+        "switchProvider",
+        "getProviderForTier",
+        "tierForArea",
+        "chatCompletion",
+        "getBackgroundProvider",
+        "backgroundChatCompletion",
+        "backgroundSimpleCompletion",
+        "simpleChatCompletion"
+      ],
+      "coveragePercent": 25
+    },
+    {
       "filePath": "server/mcpClient.ts",
       "fileName": "mcpClient.ts",
       "hasTestFile": true,
@@ -1818,39 +2301,6 @@
         "getFilesByImportance",
         "initDependencyGraph",
         "forceRebuild"
-      ],
-      "coveragePercent": 30
-    },
-    {
-      "filePath": "server/llmProvider.ts",
-      "fileName": "llmProvider.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/llmProvider.test.ts",
-      "exportedFunctions": [
-        "getProviderApiKey",
-        "switchProvider",
-        "getActiveProvider",
-        "setActiveProvider",
-        "listProviders",
-        "chatCompletion",
-        "getBackgroundProvider",
-        "backgroundChatCompletion",
-        "backgroundSimpleCompletion",
-        "simpleChatCompletion"
-      ],
-      "testedFunctions": [
-        "getActiveProvider",
-        "setActiveProvider",
-        "listProviders"
-      ],
-      "untestedFunctions": [
-        "getProviderApiKey",
-        "switchProvider",
-        "chatCompletion",
-        "getBackgroundProvider",
-        "backgroundChatCompletion",
-        "backgroundSimpleCompletion",
-        "simpleChatCompletion"
       ],
       "coveragePercent": 30
     },

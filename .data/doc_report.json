@@ -1,7 +1,7 @@
 {
-  "timestamp": 1780575719416,
-  "totalModules": 181,
-  "documentedModules": 104,
+  "timestamp": 1780842349368,
+  "totalModules": 201,
+  "documentedModules": 114,
   "undocumentedExports": [
     {
       "filePath": "server/_core/imageGeneration.ts",
@@ -42,6 +42,30 @@
     {
       "filePath": "server/_core/vite.ts",
       "exportName": "serveStatic",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/adaptiveEval.ts",
+      "exportName": "getBenchmarkEvolutionStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/adaptiveEval.ts",
+      "exportName": "getAdaptiveEvalHistory",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/adaptiveEval.ts",
+      "exportName": "getLatestGapAnalysis",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/adaptiveEval.ts",
+      "exportName": "initAdaptiveEval",
       "exportType": "function",
       "line": 0
     },
@@ -240,6 +264,36 @@
     {
       "filePath": "server/autoGoalSuggester.ts",
       "exportName": "getSuggesterStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/autoRebuild.ts",
+      "exportName": "getAutoRebuildConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/autoRebuild.ts",
+      "exportName": "setAutoRebuildConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/autoRebuild.ts",
+      "exportName": "triggerRebuildNow",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/autoRebuild.ts",
+      "exportName": "getAutoRebuildStatus",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/autoRebuild.ts",
+      "exportName": "initAutoRebuild",
       "exportType": "function",
       "line": 0
     },
@@ -922,6 +976,78 @@
       "line": 0
     },
     {
+      "filePath": "server/federatedLearning.ts",
+      "exportName": "registerNode",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/federatedLearning.ts",
+      "exportName": "getNode",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/federatedLearning.ts",
+      "exportName": "listNodes",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/federatedLearning.ts",
+      "exportName": "markNodeHealthy",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/federatedLearning.ts",
+      "exportName": "markNodeUnhealthy",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/federatedLearning.ts",
+      "exportName": "receiveProposal",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/federatedLearning.ts",
+      "exportName": "markProposalValidated",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/federatedLearning.ts",
+      "exportName": "markProposalApplied",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/federatedLearning.ts",
+      "exportName": "updateLocalScore",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/federatedLearning.ts",
+      "exportName": "getFederatedStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/federatedLearning.ts",
+      "exportName": "getNodeId",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/federatedLearning.ts",
+      "exportName": "initFederatedLearning",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/fileEngineTypes.ts",
       "exportName": "getModelContextMaxOutput",
       "exportType": "function",
@@ -1108,6 +1234,30 @@
       "line": 0
     },
     {
+      "filePath": "server/knowledgeTransfer.ts",
+      "exportName": "exportKnowledgePackage",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/knowledgeTransfer.ts",
+      "exportName": "importKnowledgePackage",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/knowledgeTransfer.ts",
+      "exportName": "getKnowledgeTransferStatus",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/knowledgeTransfer.ts",
+      "exportName": "initKnowledgeTransfer",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/llmProvider.ts",
       "exportName": "getProviderApiKey",
       "exportType": "function",
@@ -1134,6 +1284,18 @@
     {
       "filePath": "server/llmProvider.ts",
       "exportName": "listProviders",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/llmProvider.ts",
+      "exportName": "getProviderForTier",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/llmProvider.ts",
+      "exportName": "tierForArea",
       "exportType": "function",
       "line": 0
     },
@@ -1378,8 +1540,38 @@
       "line": 0
     },
     {
+      "filePath": "server/prGenerator.ts",
+      "exportName": "syncOpenPRStatus",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/prGenerator.ts",
+      "exportName": "getPRGeneratorStatus",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/prGenerator.ts",
+      "exportName": "initPRGenerator",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/ragPipeline.ts",
       "exportName": "registerRagRoutes",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/rbac.ts",
+      "exportName": "roleAtLeast",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/rbac.ts",
+      "exportName": "getRbacContext",
       "exportType": "function",
       "line": 0
     },
@@ -1440,6 +1632,12 @@
     {
       "filePath": "server/redisLock.ts",
       "exportName": "getLockStatus",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/rlhfCollector.ts",
+      "exportName": "initRlhfCollector",
       "exportType": "function",
       "line": 0
     },
@@ -2092,6 +2290,132 @@
       "line": 0
     },
     {
+      "filePath": "server/telemetry.ts",
+      "exportName": "recordLatency",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/telemetry.ts",
+      "exportName": "recordRsiCycle",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/telemetry.ts",
+      "exportName": "recordLlmCall",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/telemetry.ts",
+      "exportName": "recordEvalScore",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/telemetry.ts",
+      "exportName": "recordError",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/telemetry.ts",
+      "exportName": "getTelemetrySummary",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/telemetry.ts",
+      "exportName": "getRawSamples",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/telemetry.ts",
+      "exportName": "telemetryMiddleware",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/telemetry.ts",
+      "exportName": "initTelemetry",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tenantManager.ts",
+      "exportName": "getTenant",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tenantManager.ts",
+      "exportName": "getOrDefaultTenant",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tenantManager.ts",
+      "exportName": "listTenants",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tenantManager.ts",
+      "exportName": "createTenant",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tenantManager.ts",
+      "exportName": "updateTenant",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tenantManager.ts",
+      "exportName": "deleteTenant",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tenantManager.ts",
+      "exportName": "checkQuota",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tenantManager.ts",
+      "exportName": "incrementUsage",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tenantManager.ts",
+      "exportName": "getTenantUsage",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tenantManager.ts",
+      "exportName": "getTenantStatus",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tenantManager.ts",
+      "exportName": "isTenantModuleAllowed",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/tenantManager.ts",
+      "exportName": "initTenantManager",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/testCoverageAnalyzer.ts",
       "exportName": "runCoverageAnalysis",
       "exportType": "function",
@@ -2344,6 +2668,24 @@
       "line": 0
     },
     {
+      "filePath": "server/watchdog.ts",
+      "exportName": "getWatchdogStatus",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/watchdog.ts",
+      "exportName": "triggerHealthCheck",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/watchdog.ts",
+      "exportName": "initWatchdog",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/workspace.ts",
       "exportName": "getWorkspaceDir",
       "exportType": "function",
@@ -2354,7 +2696,7 @@
     {
       "filePath": "ARCHITECTURE.md",
       "type": "architecture",
-      "content": "Updated: 181 modules, 391 undocumented exports"
+      "content": "Updated: 201 modules, 448 undocumented exports"
     }
   ],
   "architectureUpdated": true

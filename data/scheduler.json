@@ -15,7 +15,8 @@
       "tags": [
         "rsi-auto"
       ],
-      "storeInMemory": false
+      "storeInMemory": false,
+      "nextRunAt": "2026-06-07T20:25:04.086Z"
     }
   ],
   "executions": [],

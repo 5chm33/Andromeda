@@ -1,10 +1,10 @@
 @echo off
-title Andromeda AI v7.1
+title Andromeda AI v8.5.0
 color 0A
 
 echo.
 echo  ============================================================
-echo   Andromeda AI  v7.1
+echo   Andromeda AI  v8.5.0
 echo  ============================================================
 echo.
 
@@ -52,33 +52,37 @@ if not exist "node_modules\" (
     echo.
 )
 
-:: ── Step 5: Build if dist/index.js is missing ────────────────────────────────
-:: This happens when downloading from GitHub (dist/ is in .gitignore).
-:: The zip releases from the developer include dist/ pre-built.
-if not exist "dist\index.js" (
-    echo.
-    echo  [INFO] dist\index.js not found - running build...
-    echo  This only happens once. It will take 1-2 minutes.
-    echo.
-    where pnpm >nul 2>&1
-    if errorlevel 1 (
-        call npm install -g pnpm
-    )
-    call pnpm run build
-    if errorlevel 1 (
-        echo.
-        echo  [ERROR] Build failed. Check the output above for errors.
-        echo  Common fixes:
-        echo    - Make sure Node.js 18+ is installed
-        echo    - Delete node_modules\ and re-run this launcher
-        echo.
-        pause
-        exit /b 1
-    )
-    echo.
-    echo  [OK] Build complete.
-    echo.
+:: ── Step 5: Delete old dist and rebuild fresh ────────────────────────────────
+:: v8.5.0: Always wipe dist\ and rebuild from source on every launch.
+:: This guarantees you are NEVER running stale compiled code from a previous
+:: version — the root cause of the "nothing appearing" bug in v8.3.0/v8.4.0.
+echo  [INFO] Removing old build (dist\)...
+if exist "dist\" (
+    rmdir /s /q "dist\"
+    echo  [OK] Old dist\ deleted.
+) else (
+    echo  [OK] No old dist\ found.
 )
+echo.
+echo  [INFO] Compiling fresh build from source (takes ~30 seconds)...
+where pnpm >nul 2>&1
+if errorlevel 1 (
+    call npm install -g pnpm
+)
+call pnpm run build
+if errorlevel 1 (
+    echo.
+    echo  [ERROR] Build failed. Check the output above for errors.
+    echo  Common fixes:
+    echo    - Make sure Node.js 18+ is installed
+    echo    - Delete node_modules\ and re-run this launcher
+    echo.
+    pause
+    exit /b 1
+)
+echo.
+echo  [OK] Build complete — running v8.5.0 source.
+echo.
 
 :: ── Step 6: Clear port 3000 ──────────────────────────────────────────────────
 for /f "tokens=5" %%a in ('netstat -aon 2^>nul ^| findstr ":3000 "') do (
@@ -92,7 +96,7 @@ start /min "" cmd /c "ping -n 6 127.0.0.1 >nul & start http://localhost:3000"
 :START_SERVER
 echo.
 echo  ============================================================
-echo   Andromeda AI v7.1  ^|  http://localhost:3000
+echo   Andromeda AI v8.5.0  ^|  http://localhost:3000
 echo   Press Ctrl+C to stop the server.
 echo  ============================================================
 echo.

@@ -3,7 +3,8 @@
  * Core SSE streaming engine and public streaming API.
  * Extracted from ai.ts (god-module split).
  */
-import { recordUsage } from "./fileEngineUtils.js";
+// v8.5.0: recordUsage must come from tokenBudgetManager (takes sessionId string), not fileEngineUtils (takes CostBudget object)
+import { recordUsage } from "./tokenBudgetManager.js";
 import type { SearchSource } from "../../drizzle/schema.js";
 import type { Response } from "express";
 import { getActiveProvider } from "./llmProvider.js";
@@ -13,6 +14,7 @@ import { groundAnswer } from "./grounding.js";
 import { createLogger } from "./logger.js";
 import { getActiveModel, getApiKey, getApiUrl, getProviderHeaders, resolveProviderOnce, calculateMaxTokens } from "./aiTokens.js";
 import { buildSystemPrompt, buildUserPrompt, buildDeepResearchPrompt } from "./aiPrompts.js";
+import { canFitResponse } from "./tokenBudgetManager.js";  // v8.5.0: fix missing import
 const log = createLogger("aiStreaming");
 
 // ─── Core streaming function ──────────────────────────────────────────────────
