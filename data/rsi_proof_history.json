@@ -1,0 +1,31 @@
+[
+  {
+    "cycleId": "rsi-1780865049521-ckyhdw",
+    "completedAt": "2026-06-07T20:47:08.791Z",
+    "durationMs": 179271,
+    "proposalsApplied": 0,
+    "proposalsRejected": 28,
+    "scoreBefore": 35,
+    "scoreAfter": 35,
+    "scoreDelta": 0,
+    "appliedFiles": [],
+    "benchmarkBefore": {
+      "ts": 20,
+      "pq": 5,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    },
+    "benchmarkAfter": {
+      "ts": 20,
+      "pq": 5,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    },
+    "errors": [
+      "Apply failed for prop_1780844908157_qi2cet: Syntax check failed — proposal not applied",
+      "Apply failed for prop_1779762103380_ozxr4x: Proposal has expired and was auto-rejected"
+    ]
+  }
+]

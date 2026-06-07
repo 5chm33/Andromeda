@@ -3801,6 +3801,22 @@
       "confidence": 0.9,
       "createdAt": 1780865221281,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780865221392_fnodaa",
+      "category": "antipattern",
+      "title": "Failure: Fix health check logic inconsistency in recordError",
+      "description": "Failed to apply \"Fix health check logic inconsistency in recordError\" to adaptiveRouter.ts. Reason: Proposal has expired and was auto-rejected. Avoid similar changes.",
+      "context": "self-modify adaptiveRouter.ts reliability",
+      "outcome": "failure: Proposal has expired and was auto-rejected",
+      "lesson": "Avoid for adaptiveRouter.ts: Fix health check logic inconsistency in recordError — causes Proposal has expired and was auto-rejected",
+      "applicableTo": [
+        "adaptiveRouter.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780865221392,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -3943,5 +3959,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T20:47:01.281Z"
+  "_lastUpdated": "2026-06-07T20:47:01.392Z"
 }

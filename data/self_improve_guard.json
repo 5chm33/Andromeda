@@ -2074,6 +2074,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/streamRouter.ts(1,32): error TS2307: Cannot find module './aiPlanning.js' or its corresponding type declarations.\ndata/tmp_syntax/streamRouter.ts(3,34): error TS2307: Cannot find modul",
       "timestamp": "2026-06-07T20:47:01.278Z"
+    },
+    {
+      "id": "audit_1780865221390_j4114p",
+      "action": "expire",
+      "proposalId": "prop_1779762103380_ozxr4x",
+      "filename": "adaptiveRouter.ts",
+      "result": "success",
+      "details": "Proposal expired after 306h",
+      "timestamp": "2026-06-07T20:47:01.390Z"
     }
   ]
 }
