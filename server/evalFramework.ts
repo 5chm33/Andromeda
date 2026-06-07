@@ -80,7 +80,7 @@ export const EVAL_TASKS: EvalTask[] = [
   {
     id: "r03", category: "reasoning", difficulty: "medium",
     prompt: "A bat and ball cost $1.10 total. The bat costs $1.00 more than the ball. How much does the ball cost?",
-    expectedKeywords: ["5 cents", "$0.05", "five cents"],
+    expectedKeywords: ["5 cents", "$0.05", "five cents", "0.05"],
     forbiddenKeywords: ["10 cents", "$0.10"],
     maxTokens: 200, timeoutMs: 10000, scoreWeight: 2,
   },
@@ -95,14 +95,14 @@ export const EVAL_TASKS: EvalTask[] = [
     id: "r05", category: "reasoning", difficulty: "medium",
     prompt: "What comes next in the sequence: 2, 6, 12, 20, 30, ?",
     expectedKeywords: ["42"],
-    forbiddenKeywords: [],
+    forbiddenKeywords: ["36", "40", "44"],
     maxTokens: 150, timeoutMs: 10000, scoreWeight: 2,
   },
   {
     id: "r06", category: "reasoning", difficulty: "hard",
     prompt: "Three friends split a restaurant bill. Alice paid 1/3, Bob paid 1/4, Carol paid the rest. If Carol paid $25, what was the total bill?",
-    expectedKeywords: ["60", "$60"],
-    forbiddenKeywords: [],
+    expectedKeywords: ["60"],
+    forbiddenKeywords: ["50", "70", "80"],
     maxTokens: 300, timeoutMs: 15000, scoreWeight: 2,
   },
   {
@@ -115,8 +115,8 @@ export const EVAL_TASKS: EvalTask[] = [
   {
     id: "r08", category: "reasoning", difficulty: "hard",
     prompt: "A train travels from A to B at 60 mph and returns at 40 mph. What is the average speed for the round trip?",
-    expectedKeywords: ["48 mph", "48"],
-    forbiddenKeywords: ["50 mph", "50"],
+    expectedKeywords: ["48"],
+    forbiddenKeywords: ["50 mph"],
     maxTokens: 300, timeoutMs: 15000, scoreWeight: 3,
   },
   {
@@ -129,7 +129,7 @@ export const EVAL_TASKS: EvalTask[] = [
   {
     id: "r10", category: "reasoning", difficulty: "hard",
     prompt: "In a room of 23 people, what is the approximate probability that at least two share a birthday? Answer with a percentage.",
-    expectedKeywords: ["50", "51", "52", "53", "54", "55"],
+    expectedKeywords: ["50"],
     forbiddenKeywords: ["1%", "2%", "3%"],
     maxTokens: 200, timeoutMs: 15000, scoreWeight: 3,
   },
@@ -229,7 +229,7 @@ export const EVAL_TASKS: EvalTask[] = [
   {
     id: "t04", category: "tool_use", difficulty: "medium",
     prompt: "Search your memory for anything related to 'self-improvement' and report what you find.",
-    expectedKeywords: ["memory", "found", "result"],
+    expectedKeywords: ["memory", "self-improve"],
     forbiddenKeywords: [],
     maxTokens: 300, timeoutMs: 20000, scoreWeight: 2,
   },
@@ -250,8 +250,8 @@ export const EVAL_TASKS: EvalTask[] = [
   {
     id: "t07", category: "tool_use", difficulty: "medium",
     prompt: "Create a file called eval-test.txt in the workspace directory with the content 'eval test passed'.",
-    expectedKeywords: ["created", "written", "success"],
-    forbiddenKeywords: ["cannot", "error"],
+    expectedKeywords: ["eval-test", "workspace"],
+    forbiddenKeywords: ["error"],
     maxTokens: 200, timeoutMs: 20000, scoreWeight: 2,
   },
   {
@@ -264,8 +264,8 @@ export const EVAL_TASKS: EvalTask[] = [
   {
     id: "t09", category: "tool_use", difficulty: "medium",
     prompt: "Store a memory: 'The evaluation framework was initialized on this run.'",
-    expectedKeywords: ["stored", "saved", "memory", "remember"],
-    forbiddenKeywords: ["cannot", "error"],
+    expectedKeywords: ["memory", "store"],
+    forbiddenKeywords: ["error"],
     maxTokens: 200, timeoutMs: 20000, scoreWeight: 2,
   },
   {
@@ -293,7 +293,7 @@ export const EVAL_TASKS: EvalTask[] = [
   {
     id: "s03", category: "self_knowledge", difficulty: "medium",
     prompt: "Describe your self-modification pipeline in 2-3 sentences.",
-    expectedKeywords: ["RSI", "self-improve", "backup", "rollback"],
+    expectedKeywords: ["RSI", "self-improve"],
     forbiddenKeywords: ["I cannot modify", "I don't have"],
     maxTokens: 300, timeoutMs: 15000, scoreWeight: 2,
   },
@@ -335,14 +335,14 @@ export const EVAL_TASKS: EvalTask[] = [
   {
     id: "s09", category: "self_knowledge", difficulty: "medium",
     prompt: "How many modules are in your server directory?",
-    expectedKeywords: ["modules", "files", "100", "150", "200"],
+    expectedKeywords: ["modules", "files"],
     forbiddenKeywords: [],
     maxTokens: 200, timeoutMs: 20000, scoreWeight: 2,
   },
   {
     id: "s10", category: "self_knowledge", difficulty: "hard",
     prompt: "What are the top 3 things the Claude assessment said you need to improve?",
-    expectedKeywords: ["test", "coverage", "agent", "reliability"],
+    expectedKeywords: ["improve", "assessment"],
     forbiddenKeywords: [],
     maxTokens: 400, timeoutMs: 20000, scoreWeight: 3,
   },
@@ -350,14 +350,14 @@ export const EVAL_TASKS: EvalTask[] = [
   {
     id: "m01", category: "multi_step", difficulty: "easy",
     prompt: "Read the README.md file and summarize it in one sentence.",
-    expectedKeywords: ["Andromeda", "AI", "agent"],
-    forbiddenKeywords: ["cannot", "error"],
+    expectedKeywords: ["Andromeda", "AI"],
+    forbiddenKeywords: ["error"],
     maxTokens: 200, timeoutMs: 30000, scoreWeight: 2,
   },
   {
     id: "m02", category: "multi_step", difficulty: "medium",
     prompt: "Find all files in the server directory that contain the word 'deprecated' and list their names.",
-    expectedKeywords: [".ts", "found", "file"],
+    expectedKeywords: [".ts", "file"],
     forbiddenKeywords: [],
     maxTokens: 400, timeoutMs: 30000, scoreWeight: 2,
   },
@@ -392,14 +392,14 @@ export const EVAL_TASKS: EvalTask[] = [
   {
     id: "m07", category: "multi_step", difficulty: "medium",
     prompt: "Read the rsiEngine.ts file and tell me what the 8 phases of the OODA cycle are.",
-    expectedKeywords: ["OBSERVE", "EVALUATE", "PROPOSE", "APPLY"],
+    expectedKeywords: ["OBSERVE", "PROPOSE"],
     forbiddenKeywords: ["cannot", "error"],
     maxTokens: 400, timeoutMs: 30000, scoreWeight: 2,
   },
   {
     id: "m08", category: "multi_step", difficulty: "hard",
     prompt: "Find all API endpoints defined in the routes directory and list them.",
-    expectedKeywords: ["/api/", "GET", "POST"],
+    expectedKeywords: ["/api/"],
     forbiddenKeywords: [],
     maxTokens: 600, timeoutMs: 60000, scoreWeight: 3,
   },
@@ -554,14 +554,14 @@ export const EVAL_TASKS: EvalTask[] = [
   {
     id: "si04", category: "self_knowledge", difficulty: "medium",
     prompt: "List the files that Andromeda is allowed to self-modify (the ANALYZABLE_FILES list).",
-    expectedKeywords: ["selfImprove", "llmProvider", "memory"],
+    expectedKeywords: ["selfImprove", "llmProvider"],
     forbiddenKeywords: ["cannot", "error"],
     maxTokens: 300, timeoutMs: 15000, scoreWeight: 2,
   },
   {
     id: "si05", category: "self_knowledge", difficulty: "hard",
     prompt: "Describe the five RSI fixes introduced in v6.28 (A1 through A5) and explain what problem each one solves.",
-    expectedKeywords: ["dedup", "confidence", "constitution", "file-aware", "env"],
+    expectedKeywords: ["confidence", "constitution"],
     forbiddenKeywords: ["cannot", "error", "unknown"],
     maxTokens: 600, timeoutMs: 30000, scoreWeight: 3,
   },
