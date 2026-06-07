@@ -1651,6 +1651,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/multiAgent.ts(185,49): error TS2307: Cannot find module './llmProvider.js' or its corresponding type declarations.\ndata/tmp_syntax/multiAgent.ts(254,9): error TS2339: Property 'write' ",
       "timestamp": "2026-06-07T18:46:52.054Z"
+    },
+    {
+      "id": "audit_1780858013567_40p6uf",
+      "action": "apply",
+      "proposalId": "prop_1780851257444_y9n7m8",
+      "filename": "contextManager.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/contextManager.ts(15,34): error TS2307: Cannot find module './llmProvider' or its corresponding type declarations.\ndata/tmp_syntax/contextManager.ts(16,32): error TS2307: Cannot find m",
+      "timestamp": "2026-06-07T18:46:53.567Z"
     }
   ]
 }
