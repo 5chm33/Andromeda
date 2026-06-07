@@ -222,7 +222,7 @@ export const EVAL_TASKS: EvalTask[] = [
   {
     id: "t03", category: "tool_use", difficulty: "medium",
     prompt: "Read the file package.json in your root directory and tell me the version number.",
-    expectedKeywords: ["8.", "version"],
+    expectedKeywords: ["9.", "version"],
     forbiddenKeywords: ["cannot", "don't have access"],
     maxTokens: 200, timeoutMs: 20000, scoreWeight: 2,
   },
@@ -257,7 +257,7 @@ export const EVAL_TASKS: EvalTask[] = [
   {
     id: "t08", category: "tool_use", difficulty: "hard",
     prompt: "Run a git log command and tell me the last 3 commit messages.",
-    expectedKeywords: ["commit", "v8"],
+    expectedKeywords: ["commit", "v9"],
     forbiddenKeywords: [],
     maxTokens: 400, timeoutMs: 30000, scoreWeight: 3,
   },
@@ -279,7 +279,7 @@ export const EVAL_TASKS: EvalTask[] = [
   {
     id: "s01", category: "self_knowledge", difficulty: "easy",
     prompt: "What is your name and current version?",
-    expectedKeywords: ["Andromeda", "8."],
+    expectedKeywords: ["Andromeda", "9."],
     forbiddenKeywords: ["GPT", "Claude", "Gemini"],
     maxTokens: 100, timeoutMs: 10000, scoreWeight: 1,
   },
@@ -533,7 +533,7 @@ export const EVAL_TASKS: EvalTask[] = [
   {
     id: "si01", category: "self_knowledge", difficulty: "easy",
     prompt: "What is the current version of Andromeda as specified in package.json?",
-    expectedKeywords: ["8.", "version"],
+    expectedKeywords: ["9.", "version"],
     forbiddenKeywords: ["cannot", "error", "unknown"],
     maxTokens: 100, timeoutMs: 15000, scoreWeight: 1,
   },

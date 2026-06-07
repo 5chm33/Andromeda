@@ -27,7 +27,7 @@ async function runAgent(prompt: string, maxTokens: number, timeoutMs: number): P
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const res = await client.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-4.1-nano",
       messages: [{ role: "user", content: prompt }],
       max_tokens: maxTokens,
       temperature: 0.3,

@@ -1,10 +1,10 @@
 @echo off
-title Andromeda AI v8.9.0
+title Andromeda AI v9.0.0
 color 0A
 
 echo.
 echo  ============================================================
-echo   Andromeda AI  v8.8.0
+echo   Andromeda AI  v9.0.0
 echo  ============================================================
 echo.
 
@@ -53,7 +53,7 @@ if not exist "node_modules\" (
 )
 
 :: ── Step 5: Smart rebuild — only rebuild if source version changed ────────────
-:: v8.8.0: Read the current version from package.json and compare to
+:: v9.0.0: Read the current version from package.json and compare to
 :: dist\.version stamp. Only rebuild when they differ (or dist is missing).
 :: This avoids the 30-60s rebuild penalty on every launch when nothing changed.
 where pnpm >nul 2>&1
@@ -130,7 +130,7 @@ start /min "" cmd /c "ping -n 6 127.0.0.1 >nul & start http://localhost:3000"
 :START_SERVER
 echo.
 echo  ============================================================
-echo   Andromeda AI v8.9.0  ^|  http://localhost:3000
+echo   Andromeda AI v9.0.0  ^|  http://localhost:3000
 echo   Press Ctrl+C to stop the server.
 echo  ============================================================
 echo.

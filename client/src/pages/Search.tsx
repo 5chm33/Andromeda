@@ -67,6 +67,7 @@ import { useLocation, useSearch } from "wouter";
 import { toast } from "sonner";
 import JSZip from "jszip";
 import { getRawZip } from "@/lib/zipStore";
+import { fetchWithRetry } from "@/lib/fetchWithRetry";
 import type { SearchSource } from "../../../drizzle/schema";
 // v5.30: Decomposed sub-components
 import {
@@ -569,11 +570,14 @@ export default function Search() {
           ? file.content + extraFiles.map(f => `\n\n--- Additional file: ${f.name} ---\n${f.content}`).join("")
           : file.content;
       }
-      const response = await fetch("/api/analyze/stream", {
+      const response = await fetchWithRetry("/api/analyze/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
         signal: abortRef.current.signal,
+        maxRetries: 2,
+        baseDelayMs: 1000,
+        onRetry: (attempt) => setError(`Analysis failed, retrying (attempt ${attempt})...`),
       });
       if (!response.ok) throw new Error(`Analysis failed: ${response.status}`);
       const reader = response.body?.getReader();
@@ -655,11 +659,14 @@ export default function Search() {
     setIsLoadingSources(true);
     setIsStreaming(false);
     try {
-      const response = await fetch("/api/search/deep", {
+      const response = await fetchWithRetry("/api/search/deep", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: q.trim(), model }),
         signal: abortRef.current.signal,
+        maxRetries: 2,
+        baseDelayMs: 1500,
+        onRetry: (attempt) => setError(`Deep research failed, retrying (attempt ${attempt})...`),
       });
       if (!response.ok) throw new Error(`Deep research failed: ${response.status}`);
       const reader = response.body?.getReader();
@@ -1691,7 +1698,7 @@ export default function Search() {
               <div className="w-6 h-6 rounded-full bg-violet-500/20 flex items-center justify-center flex-shrink-0">
                 <Sparkles className="w-3 h-3 text-violet-400" />
               </div>
-              {leftSidebarOpen && <span className="text-[10px] text-zinc-600">Andromeda v8.8.0</span>}
+              {leftSidebarOpen && <span className="text-[10px] text-zinc-600">Andromeda v9.0.0</span>}
             </div>
           </div>
         </div>
@@ -3107,10 +3114,10 @@ export default function Search() {
                   <div className="flex items-center gap-0.5 bg-zinc-800/60 border border-zinc-700/50 rounded-lg p-0.5">
                     {(["auto", "fast", "coding", "max"] as const).map((tier) => {
                       const labels: Record<string, { label: string; title: string }> = {
-                        auto:   { label: "Auto",   title: "DeepSeek V3 — NOT recommended for self-improvement (hallucinates tool calls)" },
-                        fast:   { label: "Fast",   title: "Gemini 2.5 Flash — fastest responses" },
-                        coding: { label: "Code",   title: "Kimi k2.6 — best for coding & self-improvement (recommended)" },
-                        max:    { label: "Max",    title: "Claude Opus 4.6 — highest quality" },
+                        auto:   { label: "Auto",   title: "Auto — balanced speed & quality (gpt-4o-mini or equivalent)" },
+                        fast:   { label: "Fast",   title: "Fast — lowest latency, best for quick queries (Gemini Flash / gpt-4o-mini)" },
+                        coding: { label: "Code",   title: "Code — best for self-improvement & coding tasks (recommended default)" },
+                        max:    { label: "Max",    title: "Max — highest reasoning quality, slowest & most expensive (GPT-4o / Claude Opus)" },
                       };
                       const isActive = modelTier === tier;
                       return (
@@ -3174,7 +3181,7 @@ export default function Search() {
               </div>
             </div>
             <p className="text-center text-[10px] text-zinc-700 mt-2">
-              Andromeda v8.9.0 · Enter to send · Shift+Enter for new line · Ctrl+E code executor · Ctrl+K focus · Ctrl+B sidebar · /compact compress thread
+              Andromeda v9.0.0 · Enter to send · Shift+Enter for new line · Ctrl+E code executor · Ctrl+K focus · Ctrl+B sidebar · /compact compress thread
             </p>
           </div>
         </div>
