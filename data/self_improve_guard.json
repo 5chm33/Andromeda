@@ -2011,6 +2011,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/streamRouter.ts(1,32): error TS2307: Cannot find module './aiPlanning.js' or its corresponding type declarations.\ndata/tmp_syntax/streamRouter.ts(3,34): error TS2307: Cannot find modul",
       "timestamp": "2026-06-07T19:16:57.388Z"
+    },
+    {
+      "id": "audit_1780859818836_djjjlx",
+      "action": "apply",
+      "proposalId": "prop_1780859780097_ubmdix",
+      "filename": "manifest.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/manifest.ts(14,29): error TS2307: Cannot find module './tools' or its corresponding type declarations.\ndata/tmp_syntax/manifest.ts(15,50): error TS2307: Cannot find module './llmProvid",
+      "timestamp": "2026-06-07T19:16:58.836Z"
     }
   ]
 }
