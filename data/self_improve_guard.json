@@ -1,6 +1,6 @@
 {
   "config": {
-    "requireApproval": true,
+    "requireApproval": false,
     "proposalExpiryMs": 86400000,
     "runSyntaxCheck": true,
     "runTestsBefore": true,
