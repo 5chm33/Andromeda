@@ -41,6 +41,10 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AmbientStatusBar } from "@/components/AmbientStatusBar";
+import { ThemeCanvas } from "@/components/ThemeCanvas";
+import { SkinSelector } from "@/components/SkinSelector";
+import { getSavedSkin } from "@/lib/themeEngine";
+import type { SkinId } from "@/lib/themeEngine";
 import { skipToken } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
@@ -168,6 +172,9 @@ export default function Home() {
   // LEFT sidebar state
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [recentSearches, setRecentSearches] = useState<RecentSearch[]>(() => loadRecentSearches());
+
+  // Background skin
+  const [currentSkin, setCurrentSkin] = useState<SkinId>(() => getSavedSkin());
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -465,6 +472,12 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
 
+      {/* ── Animated background canvas ─────────────────────────────────── */}
+      <ThemeCanvas skin={currentSkin} />
+
+      {/* ── Background skin selector (floating palette button) ─────────── */}
+      <SkinSelector currentSkin={currentSkin} onSkinChange={setCurrentSkin} />
+
       {/* Drag overlay */}
       {isDragging && (
         <div className="fixed inset-0 z-[100] bg-primary/10 border-2 border-dashed border-primary/50 flex items-center justify-center pointer-events-none">
@@ -670,42 +683,7 @@ export default function Home() {
       {/* ── Hero ────────────────────────────────────────────────────────────── */}
       <main className="flex flex-col items-center justify-center min-h-screen px-4 pt-16 relative">
 
-        {/* Aurora animated background — Phase 4 */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-          {/* Primary violet aurora */}
-          <div
-            className="absolute animate-aurora-1"
-            style={{
-              top: "5%", left: "30%",
-              width: "70vw", height: "70vw", maxWidth: 700, maxHeight: 700,
-              borderRadius: "60% 40% 55% 45% / 50% 60% 40% 50%",
-              background: "radial-gradient(ellipse, oklch(0.62 0.22 265 / 0.12) 0%, transparent 70%)",
-              filter: "blur(48px)",
-            }}
-          />
-          {/* Secondary indigo aurora */}
-          <div
-            className="absolute animate-aurora-2"
-            style={{
-              top: "30%", right: "15%",
-              width: "50vw", height: "50vw", maxWidth: 520, maxHeight: 520,
-              borderRadius: "45% 55% 40% 60% / 60% 40% 55% 45%",
-              background: "radial-gradient(ellipse, oklch(0.55 0.20 285 / 0.09) 0%, transparent 70%)",
-              filter: "blur(56px)",
-            }}
-          />
-          {/* Tertiary cyan accent */}
-          <div
-            className="absolute animate-aurora-3"
-            style={{
-              bottom: "15%", left: "20%",
-              width: "40vw", height: "40vw", maxWidth: 420, maxHeight: 420,
-              borderRadius: "50% 50% 45% 55% / 45% 55% 50% 50%",
-              background: "radial-gradient(ellipse, oklch(0.68 0.18 220 / 0.06) 0%, transparent 70%)",
-              filter: "blur(64px)",
-            }}
-          />
-        </div>
+        {/* Background handled by ThemeCanvas — see ThemeCanvas.tsx */}
 
         {/* Engineer bust logo */}
         <div className="relative mb-6 animate-slide-up">

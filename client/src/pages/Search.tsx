@@ -2802,10 +2802,11 @@ export default function Search() {
 
         {/* ─── BOTTOM INPUT BAR ─────────────────────────────────────────────── */}
         <div
-          className="fixed bottom-0 z-30 px-4 pb-4 pt-6"
+          className="fixed bottom-0 z-30 px-2 sm:px-4 pb-safe-bottom pb-4 pt-6"
           style={{
-            left: leftSidebarOpen ? "260px" : "56px",
-            right: rightPanelOpen ? "288px" : "0px",
+            left: window.innerWidth < 640 ? 0 : leftSidebarOpen ? "260px" : "56px",
+            right: window.innerWidth < 640 ? 0 : rightPanelOpen ? "288px" : "0px",
+            paddingBottom: `calc(env(safe-area-inset-bottom, 0px) + 1rem)`,
             background: "linear-gradient(to bottom, transparent 0%, #0d0d0d 24%)",
           }}
         >
@@ -2940,7 +2941,7 @@ export default function Search() {
                   {/* Mode toggle: Deep Research */}
                   <button
                     onClick={handleModeToggle}
-                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    className={`flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
                       isDeepMode
                         ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
                         : "text-zinc-600 hover:text-zinc-300 hover:bg-zinc-800"
@@ -2948,13 +2949,13 @@ export default function Search() {
                     title="Toggle deep research mode"
                   >
                     <FlaskConical className="w-3.5 h-3.5" />
-                    {isDeepMode ? "Deep" : "Deep"}
+                    <span className="hidden sm:inline">{isDeepMode ? "Deep" : "Deep"}</span>
                   </button>
 
                   {/* Agent mode toggle */}
                   <button
                     onClick={() => setIsAgentMode(v => !v)}
-                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    className={`flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
                       isAgentMode
                         ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30"
                         : "text-zinc-600 hover:text-zinc-300 hover:bg-zinc-800"
@@ -2962,13 +2963,13 @@ export default function Search() {
                     title="Toggle agent mode"
                   >
                     <Bot className="w-3.5 h-3.5" />
-                    Agent
+                    <span className="hidden sm:inline">Agent</span>
                   </button>
 
-                  {/* Plan Mode toggle (Claude Code-style) */}
+                  {/* Plan Mode toggle — hidden on mobile */}
                   <button
                     onClick={() => setIsPlanMode(v => !v)}
-                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
                       isPlanMode
                         ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
                         : "text-zinc-600 hover:text-zinc-300 hover:bg-zinc-800"
