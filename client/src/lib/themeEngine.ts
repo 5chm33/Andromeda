@@ -1,7 +1,7 @@
 /**
- * Andromeda ThemeEngine v7.4.0
- * Dynamic background skin registry with persistent selection.
- * 8 cinematic skins with skin-aware accent color theming.
+ * Andromeda ThemeEngine v7.5.0
+ * Real AI-generated background images with CSS animation overlays.
+ * 9 cinematic skins — no canvas emoji art.
  */
 
 export type SkinId =
@@ -12,17 +12,24 @@ export type SkinId =
   | "finalfantasy"
   | "monsters"
   | "lofi"
-  | "spacestation";
+  | "spacestation"
+  | "luigismansion";
 
 export interface SkinMeta {
   id: SkinId;
   name: string;
   description: string;
+  /** Path to the AI-generated background image in /public/skins/ */
+  bgImage: string;
   /** Primary OKLCH accent color for CSS variable injection */
   accent: string;
-  /** Preview gradient shown in the selector tile */
+  /** Overlay tint color (rgba) to darken/tint the image for readability */
+  overlayColor: string;
+  /** CSS animation class applied to the background for motion */
+  animClass: string;
+  /** Tile gradient for the skin selector */
   previewGradient: string;
-  /** Tile label color */
+  /** Label color for the selector tile */
   labelColor: string;
 }
 
@@ -30,66 +37,101 @@ export const SKINS: SkinMeta[] = [
   {
     id: "aurora",
     name: "Aurora",
-    description: "Deep star field with layered aurora curtains, nebula wisps, and shooting stars",
-    accent: "oklch(0.62 0.22 265)",
-    previewGradient: "linear-gradient(135deg, #020008 0%, #06041a 50%, #0a0820 100%)",
-    labelColor: "#a78bfa",
+    description: "Northern lights over a frozen arctic lake with star reflections",
+    bgImage: "/skins/aurora.jpg",
+    accent: "oklch(0.62 0.22 165)",
+    overlayColor: "rgba(2,0,8,0.35)",
+    animClass: "skin-aurora",
+    previewGradient: "linear-gradient(135deg, #020c08 0%, #041510 50%, #030d08 100%)",
+    labelColor: "#6ee7b7",
   },
   {
     id: "goth",
     name: "Goth",
-    description: "Cologne Cathedral silhouette, full moon, flocking bats, and purple ground mist",
+    description: "Cologne Cathedral at night, full moon, bats, and purple mist",
+    bgImage: "/skins/goth.jpg",
     accent: "oklch(0.55 0.18 320)",
+    overlayColor: "rgba(5,0,15,0.40)",
+    animClass: "skin-goth",
     previewGradient: "linear-gradient(135deg, #020005 0%, #0a0015 50%, #080010 100%)",
     labelColor: "#c084fc",
   },
   {
     id: "nature",
-    name: "Jungle",
-    description: "Rope bridge over canyon, waterfall, light shafts, tropical birds, and bioluminescent glow",
+    name: "Forest",
+    description: "Ancient rainforest at golden hour with deer, ferns, and bioluminescent mushrooms",
+    bgImage: "/skins/nature_forest.jpg",
     accent: "oklch(0.65 0.20 145)",
+    overlayColor: "rgba(2,8,2,0.30)",
+    animClass: "skin-nature",
     previewGradient: "linear-gradient(135deg, #020c04 0%, #041508 50%, #030d05 100%)",
     labelColor: "#86efac",
   },
   {
     id: "cyberpunk",
     name: "Cyberpunk",
-    description: "Neon rain city, anime skyline, wet street reflections, flying cars, and neon signs",
+    description: "Blade Runner neon megacity in rain with flying cars and holographic signs",
+    bgImage: "/skins/cyberpunk.jpg",
     accent: "oklch(0.72 0.25 195)",
+    overlayColor: "rgba(2,3,12,0.35)",
+    animClass: "skin-cyberpunk",
     previewGradient: "linear-gradient(135deg, #020308 0%, #05080f 50%, #080c18 100%)",
     labelColor: "#67e8f9",
   },
   {
     id: "finalfantasy",
     name: "Final Fantasy",
-    description: "Cloud, Vivi, Tifa, Moogle, Chocobo, and Bahamut shadow with summon magic circles",
+    description: "Crystal sky islands, ancient airship, chocobo and moogle at twilight",
+    bgImage: "/skins/finalfantasy.jpg",
     accent: "oklch(0.75 0.22 55)",
+    overlayColor: "rgba(4,2,16,0.30)",
+    animClass: "skin-finalfantasy",
     previewGradient: "linear-gradient(135deg, #040210 0%, #080420 50%, #060220 100%)",
     labelColor: "#fde68a",
   },
   {
     id: "monsters",
     name: "Monsters Inc",
-    description: "Sulley, Mike, Boo, Kevin the bird, and grandpa parade with Up balloon house",
+    description: "The Monsters Inc scare floor with Boo's door and Sulley silhouette",
+    bgImage: "/skins/monsters.jpg",
     accent: "oklch(0.68 0.22 240)",
+    overlayColor: "rgba(5,8,20,0.35)",
+    animClass: "skin-monsters",
     previewGradient: "linear-gradient(135deg, #0a0c18 0%, #0c1020 50%, #060810 100%)",
     labelColor: "#93c5fd",
   },
   {
     id: "lofi",
     name: "Lo-Fi Night",
-    description: "Anime girl at window, glowing cat, crescent moon, city skyline, and rain on glass",
+    description: "Anime girl at desk with headphones, sleeping cat, rainy Japanese city outside",
+    bgImage: "/skins/lofi.jpg",
     accent: "oklch(0.70 0.18 30)",
+    overlayColor: "rgba(8,5,15,0.25)",
+    animClass: "skin-lofi",
     previewGradient: "linear-gradient(135deg, #08050f 0%, #0f0a1a 50%, #0a0810 100%)",
     labelColor: "#fca5a5",
   },
   {
     id: "spacestation",
     name: "Space Station",
-    description: "Galaxy viewport, floating objects, purple/teal neon glow, and perspective floor grid",
+    description: "Space station viewport looking out at a nebula with Earth's horizon below",
+    bgImage: "/skins/space.jpg",
     accent: "oklch(0.65 0.25 280)",
+    overlayColor: "rgba(2,0,10,0.30)",
+    animClass: "skin-space",
     previewGradient: "linear-gradient(135deg, #02000a 0%, #05020f 50%, #040210 100%)",
     labelColor: "#c4b5fd",
+  },
+  {
+    id: "luigismansion",
+    name: "Luigi's Mansion",
+    description: "Grand haunted foyer with Boos, chandelier, and the Poltergust",
+    bgImage: "/skins/luigis_mansion.jpg",
+    accent: "oklch(0.65 0.22 145)",
+    overlayColor: "rgba(0,8,5,0.30)",
+    animClass: "skin-luigi",
+    previewGradient: "linear-gradient(135deg, #000a05 0%, #001508 50%, #000d05 100%)",
+    labelColor: "#4ade80",
   },
 ];
 

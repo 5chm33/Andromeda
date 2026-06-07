@@ -606,8 +606,8 @@ export default function Home() {
               <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-primary" />
             )}
           </button>
-          <div className="w-7 h-7 rounded-lg overflow-hidden border border-border/50 bg-card flex-shrink-0">
-            <img src={ENGINEER_LOGO} alt="Andromeda" className="w-full h-full object-cover" style={{ filter: "invert(1) brightness(0.85)" }} />
+          <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0" style={{ boxShadow: "0 0 12px rgba(100,150,255,0.4)" }}>
+            <img src="/andromeda-icon.png" alt="Andromeda" className="w-full h-full object-cover" />
           </div>
           <span className="font-semibold text-base tracking-tight">Andromeda</span>
         </div>
@@ -685,17 +685,18 @@ export default function Home() {
 
         {/* Background handled by ThemeCanvas — see ThemeCanvas.tsx */}
 
-        {/* Engineer bust logo */}
+        {/* Andromeda galaxy icon — hero logo */}
         <div className="relative mb-6 animate-slide-up">
-          <div className="relative w-36 h-36 md:w-48 md:h-48">
-            <div className="absolute inset-0 rounded-full opacity-20 animate-pulse-glow" style={{ background: "radial-gradient(circle, oklch(0.62 0.22 265) 0%, transparent 70%)" }} />
-            <div className="absolute inset-2 rounded-full border border-primary/20" />
-            <div className="absolute inset-4 rounded-full border border-border/30" />
-            <div className="absolute inset-6 rounded-full overflow-hidden border border-border/40 bg-card/50 backdrop-blur-sm">
-              <img src={ENGINEER_LOGO} alt="Andromeda — The Engineer" className="w-full h-full object-cover object-top" style={{ filter: "invert(1) brightness(0.9) contrast(1.1)" }} />
-            </div>
-            <div className="absolute top-3 right-3 w-4 h-4 rounded-full bg-primary/40 border border-primary/60 flex items-center justify-center">
-              <Zap className="w-2 h-2 text-primary" />
+          <div className="relative w-32 h-32 md:w-44 md:h-44">
+            {/* Outer glow ring */}
+            <div className="absolute inset-0 rounded-full animate-pulse-glow" style={{ background: "radial-gradient(circle, rgba(100,150,255,0.25) 0%, transparent 70%)" }} />
+            {/* Rotating orbit ring */}
+            <div className="absolute inset-1 rounded-full border border-primary/20" style={{ animation: "spin 20s linear infinite" }} />
+            {/* Inner ring */}
+            <div className="absolute inset-3 rounded-full border border-primary/10" style={{ animation: "spin 30s linear infinite reverse" }} />
+            {/* Galaxy icon */}
+            <div className="absolute inset-5 rounded-full overflow-hidden" style={{ boxShadow: "0 0 30px rgba(100,150,255,0.3), 0 0 60px rgba(100,150,255,0.1)" }}>
+              <img src="/andromeda-icon.png" alt="Andromeda" className="w-full h-full object-cover" />
             </div>
           </div>
         </div>
@@ -706,9 +707,11 @@ export default function Home() {
             <span className="gradient-text">Andromeda</span>
           </h1>
           <div className="flex items-center justify-center gap-4 my-4">
-            <div className="h-px flex-1 max-w-[80px] bg-gradient-to-r from-transparent to-border/60" />
-            <img src={LINE_DIVIDER} alt="" className="h-5 w-40 object-contain opacity-30" style={{ filter: "invert(1)" }} />
-            <div className="h-px flex-1 max-w-[80px] bg-gradient-to-l from-transparent to-border/60" />
+            <div className="h-px flex-1 max-w-[100px] bg-gradient-to-r from-transparent to-primary/30" />
+            <div className="w-1.5 h-1.5 rounded-full bg-primary/60" />
+            <div className="w-1 h-1 rounded-full bg-primary/40" />
+            <div className="w-1.5 h-1.5 rounded-full bg-primary/60" />
+            <div className="h-px flex-1 max-w-[100px] bg-gradient-to-l from-transparent to-primary/30" />
           </div>
           {/* Typewriter subtitle */}
           <p className="text-base md:text-lg text-muted-foreground max-w-sm mx-auto leading-relaxed min-h-[1.75rem]">
