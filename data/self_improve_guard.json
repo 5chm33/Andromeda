@@ -481,6 +481,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/ai.ts(3,15): error TS2307: Cannot find module './aiTokens.js' or its corresponding type declarations.\ndata/tmp_syntax/ai.ts(4,15): error TS2307: Cannot find module './aiPrompts.js' or ",
       "timestamp": "2026-06-07T16:46:22.444Z"
+    },
+    {
+      "id": "audit_1780850783667_exlyv1",
+      "action": "apply",
+      "proposalId": "prop_1780842858115_2ixdnh",
+      "filename": "contextManager.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/contextManager.ts(15,34): error TS2307: Cannot find module './llmProvider' or its corresponding type declarations.\ndata/tmp_syntax/contextManager.ts(16,32): error TS2307: Cannot find m",
+      "timestamp": "2026-06-07T16:46:23.667Z"
     }
   ]
 }
