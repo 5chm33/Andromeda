@@ -4281,6 +4281,22 @@
       "confidence": 0.9,
       "createdAt": 1780865416539,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780865477330_uu1ec2",
+      "category": "antipattern",
+      "title": "Failure: Refactor extractFactualClaims for readability",
+      "description": "Failed to apply \"Refactor extractFactualClaims for readability\" to grounding.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify grounding.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for grounding.ts: Refactor extractFactualClaims for readability — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "grounding.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780865477330,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -4423,5 +4439,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-07T20:50:16.539Z"
+  "_lastUpdated": "2026-06-07T20:51:17.330Z"
 }
