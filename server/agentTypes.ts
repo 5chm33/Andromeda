@@ -54,21 +54,21 @@ export interface AgentConfig {
   sessionId?: string;  // v5.75: Per-conversation session ID for token budget tracking
 }
 
-interface PendingHumanQuestion {
+export interface PendingHumanQuestion {
   question: string;
   resolve: (answer: string) => void;
 }
 
 // v5.39: Interrupt/Steer types
-interface PendingRedirect {
+export interface PendingRedirect {
   newInstructions: string;
   resolve: () => void;
 }
 
-type AgentState = "running" | "paused" | "interrupted" | "completed";
+export type AgentState = "running" | "paused" | "interrupted" | "completed";
 
 // v5.41: Tool result cache entry
-interface CacheEntry {
+export interface CacheEntry {
   result: ToolResult;
   timestamp: number;
 }

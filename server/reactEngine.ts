@@ -37,11 +37,12 @@ import type { ToolResult, ToolExecutionContext } from "./tools";
 import { getMaxOutputTokens, getContextWindow } from "./modelRegistry";
 import { ContextManager } from "./contextManager";
 import { createLogger } from "./logger.js";
-
-
+const log = createLogger("ReactEngine");
 // ─── Import from sub-modules (local use) ─────────────────────────────────────
 import { AgentStateMachine } from "./agentStateMachine.js";
 import type { AgentState, StateTransition } from "./agentStateMachine.js";
+// Local runtime state (separate from AgentStateMachine uppercase states)
+type RuntimeState = "running" | "paused" | "interrupted" | "completed";
 import type { AgentEventType, AgentEvent, AgentConfig } from "./agentTypes.js";
 import { DEFAULT_SYSTEM_PROMPT } from "./agentSystemPrompt.js";
 // ─── Re-export sub-modules for backward compatibility ─────────────────────────
@@ -79,7 +80,7 @@ export class ReactEngine {
   // v6.18: State machine — now actively used for state tracking
   readonly stateMachine = new AgentStateMachine();
   // v5.39: Interrupt/Steer state
-  private agentState: AgentState = "completed";
+  private agentState: RuntimeState = "completed";
   private pendingRedirect: PendingRedirect | null = null;
   private isPaused = false;
   private pauseResolve: (() => void) | null = null;
@@ -1147,8 +1148,10 @@ export class ReactEngine {
                 const originalTask = typeof userMsg?.content === "string" ? userMsg.content : "unknown task";
                 const replanPrompt = `You are an AI agent that has been trying to complete a task but keeps failing.\n\nOriginal task: ${originalTask}\n\nRecent failures: ${recentFailures}\n\nThe current approach is not working. Generate a COMPLETELY DIFFERENT approach.\nBe specific about which tools to use and in what order. Avoid the same tools/paths that have been failing.\nReply with a concise action plan (3-5 steps).`;
                 const newApproach = await backgroundSimpleCompletion(
-                  "You are a task re-planning expert. When an agent is stuck, you generate a new approach.",
-                  replanPrompt
+                  [
+                    { role: "system", content: "You are a task re-planning expert. When an agent is stuck, you generate a new approach." },
+                    { role: "user", content: replanPrompt }
+                  ]
                 );
                 this.messages.push({
                   role: "user",
@@ -1335,7 +1338,7 @@ export class ReactEngine {
     });
   }
 
-  getState(): AgentState {
+  getState(): RuntimeState {
     return this.agentState;
   }
 
