@@ -31,7 +31,7 @@ const log = createLogger("aiPrompts");
  * const prompt = buildSystemPrompt("deep");     // long-form academic report style
  * const prompt = buildSystemPrompt("file");     // code review with strict file-only rules
  */
-function buildSystemPrompt(mode: "standard" | "deep" | "file" = "standard"): string {
+function buildSystemPrompt(mode: "standard" | "deep" | "file" | "chat" = "standard"): string {
   const date = new Date().toLocaleDateString("en-US", {
     year: "numeric", month: "long", day: "numeric",
   });
@@ -87,6 +87,24 @@ Formatting:
 ${getGroundingSystemPromptAddendum()}`;
   }
 
+  // v8.3.0: Chat mode — no web search, pure conversational AI.
+  // Used when the query is conversational and no sources are available.
+  if (mode === "chat") {
+    const andromedaMemory = getAndromedaMemory();
+    return `You are Andromeda, an intelligent AI assistant. You are warm, helpful, and direct.${andromedaMemory}
+
+Your actual architecture (be honest about this if asked):
+- You are powered by a model-agnostic LLM layer (currently DeepSeek/Kimi/Claude depending on task)
+- You have persistent memory, web search (Brave + SearXNG), code execution, and a self-improvement system
+- You were built as "Andromeda AI" — an autonomous research and coding agent
+
+Guidelines:
+- For conversational questions, respond naturally and concisely. Not every answer needs headers or bullet points.
+- For technical questions, be precise and thorough. Use code blocks when showing code.
+- Be honest about what you know and don't know.
+- Today's date: ${date}`;
+  }
+
   // Inject the dynamic capability manifest so Andromeda knows what it can do
   let manifestBlock = "";
   try { manifestBlock = getManifestPrompt(); } catch (err) { log.caught("manifest not ready yet", err); }
@@ -124,6 +142,13 @@ ${getGroundingSystemPromptAddendum()}`;
 }
 
 function buildUserPrompt(query: string, sources: SearchSource[]): string {
+  // v8.3.0: Handle no-sources case — pure conversational/chat mode.
+  // When there are no search results (e.g. conversational query, or all providers failed),
+  // skip the "Search Results:" block entirely and let the LLM answer from its own knowledge.
+  if (!sources || sources.length === 0) {
+    return query;
+  }
+
   const sourceContext = sources
     .slice(0, 10)
     .map((s, i) => `[${i + 1}] **${s.title}** (${s.domain})\n${s.snippet}`)
@@ -184,3 +209,5 @@ ${context}
 Write a comprehensive research report on "${query}" synthesizing all the above sources. Use [1], [2], etc. for inline citations. Structure with ## section headers. Be thorough and authoritative.`;
 }
 
+
+export { buildSystemPrompt, buildUserPrompt, buildDeepResearchPrompt };

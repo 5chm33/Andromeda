@@ -158,6 +158,56 @@ function sseWrite(res: any, data: object) {
   if (typeof res.flush === "function") res.flush();
 }
 
+// v8.3.0: Intent detection — decide whether a query needs web search or can be answered
+// directly from the LLM's own knowledge. This avoids wasting Brave API credits on
+// conversational questions like "how are you" or "what can you do", and prevents
+// the 12-second timeout when all search providers fail.
+//
+// Returns true if the query should skip web search and go straight to the LLM.
+function isConversationalQuery(query: string): boolean {
+  const q = query.trim().toLowerCase();
+
+  // Very short queries are almost always conversational
+  if (q.length < 15) return true;
+
+  // Greetings and small-talk
+  const conversationalPatterns = [
+    /^(hi|hey|hello|howdy|sup|yo|greetings)/,
+    /^how are you/,
+    /^how('?re| are) (you|things|it going)/,
+    /^what('?s| is) up/,
+    /^(good|nice) (morning|afternoon|evening|day)/,
+    /^(thanks|thank you|thx|ty|cheers|appreciate)/,
+    /^(ok|okay|got it|understood|makes sense|sure|alright|sounds good)/,
+    /^(yes|no|yeah|nope|yep|nah)\b/,
+    /^(who|what) are you/,
+    /^what can you do/,
+    /^(tell me about yourself|introduce yourself)/,
+    /^(help|help me)$/,
+    /^(explain|describe|define|what is|what are|what does|what do|how does|how do|why does|why do|how to|can you|could you|would you|please)/,
+  ];
+
+  for (const pattern of conversationalPatterns) {
+    if (pattern.test(q)) return true;
+  }
+
+  // Queries that clearly need real-time data — always search these
+  const searchRequiredPatterns = [
+    /\b(today|yesterday|this week|this month|this year|right now|currently|latest|recent|news|breaking|live|stock|price|weather|score|result)\b/,
+    /\b(2024|2025|2026)\b/,
+    /\b(who won|who is the|what happened|when did|where is|how much does|how many)\b/,
+  ];
+
+  for (const pattern of searchRequiredPatterns) {
+    if (pattern.test(q)) return false;
+  }
+
+  // Queries under 40 chars that don't contain search-required keywords are likely conversational
+  if (q.length < 40) return true;
+
+  return false;
+}
+
 export function registerStreamRoutes(app: Express) {
   // ─── Standard search stream ──────────────────────────────────────────────
   // v6.02: Shared dependencies for extracted route modules
@@ -176,10 +226,18 @@ export function registerStreamRoutes(app: Express) {
     setSseHeaders(res);
 
     try {
+      // v8.3.0: Skip web search for conversational queries — go straight to LLM.
+      // Only run search when the query actually needs real-time/factual information.
+      const skipSearch = (clientSources && clientSources.length > 0)
+        ? false  // client already provided sources — use them
+        : isConversationalQuery(query.trim());
+
       const sources: SearchSource[] =
         clientSources && clientSources.length > 0
           ? clientSources
-          : await aggregateSearch(query.trim(), filter);
+          : skipSearch
+            ? []  // conversational — no search needed
+            : await aggregateSearch(query.trim(), filter);
 
       // v5.0: Annotate sources with bias profiles and run diversity analysis
       const annotated = annotateSources(sources);

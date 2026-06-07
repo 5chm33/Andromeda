@@ -391,14 +391,18 @@ export async function streamAIResponse(
   res: Response,
   honestyAddendum?: string  // v5.0: optional bias/honesty prompt injection
 ): Promise<string> {
-  const systemPrompt = buildSystemPrompt("standard") + (honestyAddendum ? `\n\n${honestyAddendum}` : "");
+  // v8.3.0: Use a lighter conversational system prompt when there are no search sources.
+  // The standard prompt instructs the LLM to cite [1][2][3] which is confusing with 0 sources.
+  const systemPrompt = sources.length === 0
+    ? buildSystemPrompt("chat") + (honestyAddendum ? `\n\n${honestyAddendum}` : "")
+    : buildSystemPrompt("standard") + (honestyAddendum ? `\n\n${honestyAddendum}` : "");
   const rawAnswer = await streamToResponse(
     [
       { role: "system", content: systemPrompt },
       { role: "user", content: buildUserPrompt(query, sources) },
     ],
     res,
-    { temperature: 0.5 }
+    { temperature: 0.7 }  // v8.3.0: slightly higher temp for conversational warmth
   );
 
   // Post-process: run grounding check and emit confidence metadata
