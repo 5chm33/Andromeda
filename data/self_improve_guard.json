@@ -805,6 +805,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/browser.ts(9,21): error TS2307: Cannot find module 'fs' or its corresponding type declarations.\ndata/tmp_syntax/browser.ts(10,26): error TS2307: Cannot find module 'playwright-core' or",
       "timestamp": "2026-06-07T17:16:45.789Z"
+    },
+    {
+      "id": "audit_1780852607103_bapxvs",
+      "action": "apply",
+      "proposalId": "prop_1780851257444_y9n7m8",
+      "filename": "contextManager.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/contextManager.ts(15,34): error TS2307: Cannot find module './llmProvider' or its corresponding type declarations.\ndata/tmp_syntax/contextManager.ts(16,32): error TS2307: Cannot find m",
+      "timestamp": "2026-06-07T17:16:47.103Z"
     }
   ]
 }
