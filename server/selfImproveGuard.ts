@@ -408,7 +408,26 @@ export async function guardedApply(proposalId: string): Promise<{
     syntaxResult = runSyntaxCheck(proposal.targetFile, proposal.proposedContent, proposal.originalSnippet, proposal.proposedSnippet);
     if (!syntaxResult.pass) {
       addAudit("apply", "failure", `Syntax check failed: ${syntaxResult.errors.slice(0, 200)}`, proposalId, proposal.targetFile);
-      return { success: false, message: "Syntax check failed — proposal not applied", syntaxCheck: syntaxResult };
+      
+      // v9.8.0: Proposal refinement loop — retry with LLM error feedback
+      const refineCount = (proposal as any)._refineCount || 0;
+      if (refineCount < 2) {
+        try {
+          const { refineProposal } = await import("./selfImprove.js") as any;
+          if (typeof refineProposal === "function") {
+            console.log(`[Guard] Syntax check failed for ${proposalId}, initiating refinement loop (${refineCount + 1}/2)`);
+            const refined = await refineProposal(proposal, syntaxResult.errors);
+            if (refined) {
+              addAudit("apply", "failure", `Refined proposal ${proposalId} after syntax error`, proposalId, proposal.targetFile);
+              return { success: false, message: "Syntax check failed — proposal refined and queued for retry", syntaxCheck: syntaxResult };
+            }
+          }
+        } catch (err) {
+          console.warn("[Guard] Refinement loop failed:", (err as Error).message);
+        }
+      }
+      
+      return { success: false, message: "Syntax check failed — proposal not applied (max refinements reached)", syntaxCheck: syntaxResult };
     }
   }
 

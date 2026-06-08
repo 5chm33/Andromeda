@@ -51,20 +51,58 @@ export async function runEvalDrivenTargeting(): Promise<number> {
 
   const targetFiles = new Set<string>();
 
-  // 1. Benchmark degradations
+  // 1. Benchmark degradations (with cross-session baseline persistence)
   try {
     const { getLastBenchmarkReport } = await import("./benchmarkRunner.js");
     const report = getLastBenchmarkReport();
-    if (report && report.degradations.length > 0) {
-      for (const deg of report.degradations) {
-        const category = deg.benchmark.split("_")[0] as string;
-        const files = CATEGORY_FILE_MAP[category] || [];
-        for (const f of files) targetFiles.add(f);
-        log.info(`Benchmark degradation: ${deg.benchmark} ${deg.degradationPercent.toFixed(1)}% → targeting ${files.length} files`);
+    
+    // Load persisted baselines across restarts
+    const baselinePath = path.join(process.cwd(), "data", "eval_baseline.json");
+    let persistedBaselines: Record<string, number> = {};
+    if (fs.existsSync(baselinePath)) {
+      try { persistedBaselines = JSON.parse(fs.readFileSync(baselinePath, "utf-8")); } catch { /* ignore */ }
+    }
+    
+    if (report && report.results.length > 0) {
+      let baselinesUpdated = false;
+      
+      for (const result of report.results) {
+        if (result.durationMs < 0) continue; // skip errors
+        const benchmark = result.name;
+        const current = result.durationMs;
+        const baseline = persistedBaselines[benchmark];
+        
+        if (!baseline) {
+          // First time seeing this benchmark — establish baseline
+          persistedBaselines[benchmark] = current;
+          baselinesUpdated = true;
+        } else {
+          // Compare against persisted baseline
+          const degradationPercent = (current - baseline) / baseline;
+          
+          // Only trigger if degraded by >5%
+          if (degradationPercent > 0.05) {
+            const category = benchmark.split("_")[0] as string;
+            const files = CATEGORY_FILE_MAP[category] || [];
+            for (const f of files) targetFiles.add(f);
+            log.info(`Benchmark degradation vs baseline: ${benchmark} ${Math.round(degradationPercent * 100)}% → targeting ${files.length} files`);
+          }
+          
+          // If it improved, update the baseline to the new better score
+          if (current < baseline) {
+            persistedBaselines[benchmark] = current;
+            baselinesUpdated = true;
+          }
+        }
+      }
+      
+      if (baselinesUpdated) {
+        if (!fs.existsSync(path.dirname(baselinePath))) fs.mkdirSync(path.dirname(baselinePath), { recursive: true });
+        fs.writeFileSync(baselinePath, JSON.stringify(persistedBaselines, null, 2), "utf-8");
       }
     }
   } catch (err: any) {
-    log.warn("Could not read benchmark report:", err.message);
+    log.warn("Could not process benchmark degradations:", err.message);
   }
 
   // 2. Adaptive eval gaps

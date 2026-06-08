@@ -279,8 +279,22 @@ async function runImprovementCycle(): Promise<CycleResult> {
         result.errors.push(`Post-apply TS check failed: ${(tsErr.stderr || tsErr.message || "").toString().slice(0, 200)}`);
         try {
           const { execSync } = await import("child_process");
-          execSync("git checkout -- .", { cwd: process.cwd(), timeout: 10000, stdio: "pipe" });
-          console.log("[ContinuousImprover] Rolled back all changes via git checkout.");
+          // v9.8.0: Fine-grained rollback — only revert the files we actually touched
+          const filesToRollback = new Set<string>();
+          for (const r of autoResults.filter((r: any) => r.applied)) filesToRollback.add(r.targetFile);
+          for (const p of toApply) {
+            // Check if it was applied this cycle
+            const wasApplied = listProposals().find((sp: any) => sp.id === p.id)?.status === "applied";
+            if (wasApplied) filesToRollback.add(p.targetFile);
+          }
+          
+          if (filesToRollback.size > 0) {
+            const filesArg = Array.from(filesToRollback).map(f => `"${f}"`).join(" ");
+            execSync(`git checkout HEAD -- ${filesArg}`, { cwd: process.cwd(), timeout: 10000, stdio: "pipe" });
+            console.log(`[ContinuousImprover] Rolled back specific files: ${Array.from(filesToRollback).join(", ")}`);
+          } else {
+            console.log("[ContinuousImprover] No specific files identified for rollback.");
+          }
           result.proposalsRolledBack += result.proposalsApplied;
           result.proposalsApplied = 0;
         } catch (rollbackErr) {

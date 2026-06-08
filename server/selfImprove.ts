@@ -93,11 +93,50 @@ function proposalHash(targetFile: string, title: string): string {
   return `${path.basename(targetFile)}::${title.toLowerCase().trim()}`;
 }
 
+// v9.8.0: Persist seenHashes and autoApplyHistory across restarts
+function getCacheStorePath(): string {
+  const workspaceDir = path.resolve(getServerDir(), "..", "workspace");
+  if (!fs.existsSync(workspaceDir)) fs.mkdirSync(workspaceDir, { recursive: true });
+  return path.join(workspaceDir, ".andromeda_proposal_cache.json");
+}
+
+function loadCacheStore(): void {
+  try {
+    const p = getCacheStorePath();
+    if (fs.existsSync(p)) {
+      const cache = JSON.parse(fs.readFileSync(p, "utf-8"));
+      if (Array.isArray(cache.seenHashes)) {
+        cache.seenHashes.forEach((h: string) => _seenProposalHashes.add(h));
+      }
+      if (Array.isArray(cache.autoApplyHistory)) {
+        autoApplyHistory.length = 0;
+        cache.autoApplyHistory.forEach((t: number) => autoApplyHistory.push(t));
+      }
+    }
+  } catch (err) {
+    // non-fatal
+  }
+}
+
+function saveCacheStore(): void {
+  try {
+    const cache = {
+      seenHashes: Array.from(_seenProposalHashes),
+      autoApplyHistory: autoApplyHistory
+    };
+    fs.writeFileSync(getCacheStorePath(), JSON.stringify(cache, null, 2), "utf-8");
+  } catch (err) {
+    // non-fatal
+  }
+}
+
 function initSeenHashes(store: ProposalStore): void {
   if (_seenProposalHashes.size > 0) return; // already initialised
+  loadCacheStore(); // Load cross-session cache first
   for (const p of store.proposals) {
     _seenProposalHashes.add(proposalHash(p.targetFile, p.title));
   }
+  saveCacheStore();
 }
 
 // ─── Storage ──────────────────────────────────────────────────────────────────
@@ -146,6 +185,7 @@ function pruneProposalStore(store: ProposalStore): void {
 function saveProposals(store: ProposalStore): void {
   pruneProposalStore(store);
   fs.writeFileSync(getProposalStorePath(), JSON.stringify(store, null, 2), "utf-8");
+  saveCacheStore(); // Save seenHashes whenever proposals are saved
 }
 
 // ─── Allowed Files ────────────────────────────────────────────────────────────
@@ -384,6 +424,21 @@ export async function analyzeAndPropose(
   // v6.28 A4: Read the CURRENT file content from disk (not from any cache).
   const originalContent = fs.readFileSync(filePath, "utf-8");
   const filename = path.basename(filePath);
+
+  // v9.8.0: Constitution pre-filter — skip LLM call entirely if file is forbidden
+  try {
+    const constitutionPath = path.join(getServerDir(), "..", "andromeda-constitution.json");
+    if (fs.existsSync(constitutionPath)) {
+      const constitution = JSON.parse(fs.readFileSync(constitutionPath, "utf-8"));
+      const forbiddenFiles = constitution.forbiddenModifications?.files || [];
+      if (forbiddenFiles.some((f: string) => filename.endsWith(f))) {
+        log.info(`[Pre-filter] Skipping ${filename} — forbidden by constitution`);
+        return null;
+      }
+    }
+  } catch (err) {
+    // non-fatal
+  }
 
   // v6.28 A1: Dedup check — skip if we already have a pending/applied proposal
   // with the same (file, title) hash. Title is unknown until after LLM call, so
@@ -1074,11 +1129,13 @@ function canAutoApply(config: AutoApplyConfig): boolean {
   while (autoApplyHistory.length > 0 && autoApplyHistory[0] < oneHourAgo) {
     autoApplyHistory.shift();
   }
+  saveCacheStore(); // Save pruned history
   return autoApplyHistory.length < config.maxAutoAppliesPerHour;
 }
 
 function recordAutoApply(): void {
   autoApplyHistory.push(Date.now());
+  saveCacheStore();
 }
 
 // ─── GitOps Integration ──────────────────────────────────────────────────────
@@ -1360,4 +1417,87 @@ export function getAutoApplyStatus(): {
     remainingBudget: Math.max(0, config.maxAutoAppliesPerHour - recentApplies),
     pendingHighConfidence,
   };
+}
+
+// ─── v9.8.0: Proposal Refinement Loop ────────────────────────────────────────
+
+export async function refineProposal(
+  proposal: ImprovementProposal,
+  errorFeedback: string
+): Promise<boolean> {
+  try {
+    const { simpleChatCompletion } = await import("./llmProvider.js");
+    const activeModel = process.env.LLM_MODEL || "deepseek";
+    
+    const messages = [
+      {
+        role: "system" as const,
+        content: `You are an expert TypeScript software engineer. Your previous code improvement proposal failed the syntax/type check.
+You must fix the errors and provide a corrected proposal.
+
+CRITICAL: Return ONLY a JSON object. No markdown.
+The JSON must contain:
+- "title": short title (max 10 words)
+- "rationale": explanation of how you fixed the error
+- "category": "${proposal.category}"
+- "impact": "${proposal.impact}"
+- "confidence": a float 0.0-1.0
+- "originalSnippet": the EXACT lines of code to replace (must match original file)
+- "proposedSnippet": the corrected replacement code`
+      },
+      {
+        role: "user" as const,
+        content: `File: ${proposal.targetFile}
+
+Original Snippet:
+\`\`\`typescript
+${proposal.originalSnippet}
+\`\`\`
+
+Your Previous Proposed Snippet:
+\`\`\`typescript
+${proposal.proposedSnippet}
+\`\`\`
+
+Syntax/Type Errors:
+${errorFeedback.slice(0, 1000)}
+
+Return the corrected JSON proposal.`
+      }
+    ];
+
+    const rawContent = await simpleChatCompletion(messages, { maxTokens: 2000, temperature: 0.2 });
+    if (!rawContent) return false;
+
+    const cleaned = rawContent.replace(/^```json?\s*/i, "").replace(/\s*```$/, "").trim();
+    const parsed = JSON.parse(cleaned);
+
+    if (parsed.originalSnippet && parsed.proposedSnippet) {
+      // Update the proposal in place
+      proposal.title = parsed.title || proposal.title;
+      proposal.rationale = parsed.rationale || proposal.rationale;
+      proposal.originalSnippet = parsed.originalSnippet;
+      proposal.proposedSnippet = parsed.proposedSnippet;
+      
+      // Re-apply the snippet to update proposedContent
+      if (proposal.originalContent.includes(proposal.originalSnippet)) {
+        proposal.proposedContent = proposal.originalContent.replace(proposal.originalSnippet, proposal.proposedSnippet);
+      } else {
+        return false; // Snippet mismatch
+      }
+      
+      (proposal as any)._refineCount = ((proposal as any)._refineCount || 0) + 1;
+      
+      const store = loadProposals();
+      const idx = store.proposals.findIndex(p => p.id === proposal.id);
+      if (idx !== -1) {
+        store.proposals[idx] = proposal;
+        saveProposals(store);
+        return true;
+      }
+    }
+  } catch (err) {
+    log.warn(`[Refine] Failed to refine proposal ${proposal.id}:`, (err as Error).message);
+  }
+  return false;
 }
