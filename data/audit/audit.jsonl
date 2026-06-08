@@ -71,3 +71,4 @@
 {"id":"aud-1780897966921-diuues","timestamp":1780897966921,"category":"system","action":"server_started","actor":"system","success":true,"severity":"info","details":{"pid":18476,"nodeVersion":"v22.13.0"}}
 {"id":"aud-1780898276183-70d4re","timestamp":1780898276183,"category":"api","action":"access_granted","actor":"anonymous","resource":"/api/self/proposals","requestId":"c0cce6e4","ip":"::1","userAgent":"curl/8.5.0","method":"GET","path":"/api/self/proposals","tenantId":"default","success":true,"statusCode":200,"severity":"info"}
 {"id":"aud-1780898624457-k9zmmf","timestamp":1780898624457,"category":"system","action":"server_started","actor":"system","success":true,"severity":"info","details":{"pid":19590,"nodeVersion":"v22.13.0"}}
+{"id":"aud-1780899334349-2ozon7","timestamp":1780899334349,"category":"system","action":"server_started","actor":"system","success":true,"severity":"info","details":{"pid":20249,"nodeVersion":"v22.13.0"}}

@@ -2794,6 +2794,15 @@
       "result": "failure",
       "details": "Proposal already processing",
       "timestamp": "2026-06-08T06:08:26.494Z"
+    },
+    {
+      "id": "audit_1780898906645_hfxlpi",
+      "action": "apply",
+      "proposalId": "prop_1780855712980_vykfn7",
+      "filename": "multiAgent.ts",
+      "result": "failure",
+      "details": "Proposal already processing",
+      "timestamp": "2026-06-08T06:08:26.645Z"
     }
   ]
 }

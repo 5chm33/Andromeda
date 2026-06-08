@@ -1,5 +1,5 @@
 {
-  "timestamp": 1780898629644,
+  "timestamp": 1780899339535,
   "totalFiles": 209,
   "averageScore": 88,
   "worstModules": [
@@ -126,7 +126,7 @@
           "suggestion": "Remove unused import 'IDENTITY'"
         }
       ],
-      "lastAnalyzed": 1780898629633
+      "lastAnalyzed": 1780899339525
     },
     {
       "filePath": "server/tools/selfDiagnoseTools.ts",
@@ -181,7 +181,7 @@
           "message": "TODO comment: `    // TODO: Import and test ${fn} from '${relativePath}'`,"
         }
       ],
-      "lastAnalyzed": 1780898629625
+      "lastAnalyzed": 1780899339520
     },
     {
       "filePath": "server/streamRouter.ts",
@@ -281,7 +281,7 @@
           "suggestion": "Remove unused import 'getAgentRoles'"
         }
       ],
-      "lastAnalyzed": 1780898629605
+      "lastAnalyzed": 1780899339499
     },
     {
       "filePath": "server/tools/selfTestRunner.ts",
@@ -336,38 +336,38 @@
           "suggestion": "Remove unused import 'type ToolExecutionContext'"
         }
       ],
-      "lastAnalyzed": 1780898629635
+      "lastAnalyzed": 1780899339527
     },
     {
       "filePath": "server/selfImprove.ts",
       "fileName": "selfImprove.ts",
       "score": 44,
-      "lineCount": 1536,
+      "lineCount": 1549,
       "issues": [
         {
           "type": "large_file",
           "severity": "medium",
-          "message": "File has 1536 lines (max recommended: 500)",
+          "message": "File has 1549 lines (max recommended: 500)",
           "suggestion": "Consider splitting into smaller modules"
         },
         {
           "type": "long_function",
           "severity": "high",
-          "line": 825,
-          "message": "Function 'applyProposal' is 253 lines (max: 50)",
+          "line": 831,
+          "message": "Function 'applyProposal' is 260 lines (max: 50)",
           "suggestion": "Extract helper functions or decompose logic"
         },
         {
           "type": "long_function",
           "severity": "high",
-          "line": 1259,
+          "line": 1272,
           "message": "Function 'autoApplyHighConfidence' is 169 lines (max: 50)",
           "suggestion": "Extract helper functions or decompose logic"
         },
         {
           "type": "any_type",
           "severity": "high",
-          "message": "34 uses of 'any' type — reduces type safety",
+          "message": "39 uses of 'any' type — reduces type safety",
           "suggestion": "Replace with specific types or 'unknown'"
         },
         {
@@ -377,7 +377,7 @@
           "suggestion": "Remove unused import 'backgroundSimpleCompletion'"
         }
       ],
-      "lastAnalyzed": 1780898629583
+      "lastAnalyzed": 1780899339478
     },
     {
       "filePath": "server/aiPlanning.ts",
@@ -425,7 +425,7 @@
           "suggestion": "Remove unused import 'getActiveProvider'"
         }
       ],
-      "lastAnalyzed": 1780898629475
+      "lastAnalyzed": 1780899339370
     },
     {
       "filePath": "server/selfImproveGuard.ts",
@@ -466,7 +466,7 @@
           "suggestion": "Remove unused import 'type ImprovementProposal'"
         }
       ],
-      "lastAnalyzed": 1780898629589
+      "lastAnalyzed": 1780899339480
     },
     {
       "filePath": "server/recursiveGoals.ts",
@@ -509,7 +509,7 @@
           "suggestion": "Extract helper functions or decompose logic"
         }
       ],
-      "lastAnalyzed": 1780898629547
+      "lastAnalyzed": 1780899339442
     },
     {
       "filePath": "server/tools/selfAwareness.ts",
@@ -545,7 +545,7 @@
           "suggestion": "Extract helper functions or decompose logic"
         }
       ],
-      "lastAnalyzed": 1780898629623
+      "lastAnalyzed": 1780899339518
     },
     {
       "filePath": "server/routes/systemRoutes.ts",
@@ -585,7 +585,7 @@
           "suggestion": "Remove unused import 'getToolsByCategory'"
         }
       ],
-      "lastAnalyzed": 1780898629564
+      "lastAnalyzed": 1780899339459
     }
   ],
   "totalIssues": 306,

@@ -134,13 +134,20 @@ export async function runEvalDrivenTargeting(): Promise<number> {
   // 3. Submit targeted proposals
   let submitted = 0;
   try {
-    const { analyzeAndPropose } = await import("./selfImprove.js");
+    const { analyzeAndPropose, getAnalyzableFiles } = await import("./selfImprove.js");
     const serverDir = path.resolve(process.cwd(), "server");
+    // v9.8.5: Pre-check against RSI allowlist to avoid noisy "not in analyzable files" warnings
+    const analyzableSet = new Set(getAnalyzableFiles().map(f => path.basename(f)));
 
     for (const relFile of targetFiles) {
       const absFile = path.join(serverDir, relFile);
       if (!fs.existsSync(absFile)) {
         log.warn(`Target file not found: ${absFile}`);
+        continue;
+      }
+      // v9.8.5: Skip files not in the RSI allowlist silently
+      if (!analyzableSet.has(path.basename(relFile))) {
+        log.info(`Skipping eval target ${relFile} — not in RSI allowlist`);
         continue;
       }
       try {

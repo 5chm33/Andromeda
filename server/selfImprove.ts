@@ -161,24 +161,30 @@ function loadProposals(): ProposalStore {
   } catch { return { proposals: [] }; }
 }
 
-// v9.8.5: One-time startup reset — called ONCE from initSelfImprove(), not on every load.
-let _processingResetDone = false;
+// v9.8.5: Reset stuck 'processing' proposals — called at the start of every apply cycle.
+// A proposal gets stuck in 'processing' if the server was killed mid-apply or the apply failed
+// without cleaning up the status. This runs at the start of each cycle, not just once at startup.
 function resetStuckProcessingProposals(): void {
-  if (_processingResetDone) return;
-  _processingResetDone = true;
   const p = getProposalStorePath();
   if (!fs.existsSync(p)) return;
   try {
     const store = JSON.parse(fs.readFileSync(p, "utf-8")) as ProposalStore;
     let resetCount = 0;
+    const staleThresholdMs = 10 * 60 * 1000; // 10 minutes — any proposal stuck in processing for >10min is stale
+    const now = Date.now();
     for (const proposal of store.proposals) {
       if ((proposal.status as string) === 'processing') {
-        proposal.status = 'pending';
-        resetCount++;
+        // Only reset if it's been processing for more than the stale threshold
+        const processingStartedAt = (proposal as any)._processingStartedAt || 0;
+        if (now - processingStartedAt > staleThresholdMs) {
+          proposal.status = 'pending';
+          delete (proposal as any)._processingStartedAt;
+          resetCount++;
+        }
       }
     }
     if (resetCount > 0) {
-      console.log(`[SelfImprove] Reset ${resetCount} stuck 'processing' proposals back to 'pending' on startup`);
+      console.log(`[SelfImprove] Reset ${resetCount} stale 'processing' proposals back to 'pending'`);
       fs.writeFileSync(p, JSON.stringify(store, null, 2), 'utf-8');
     }
   } catch { /* non-fatal */ }
@@ -830,7 +836,9 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
   if (proposal.status !== "pending") return { success: false, message: `Proposal is already ${proposal.status}` };
 
   // v9.8.5: Mark as processing immediately to prevent concurrent applies
+  // Record the timestamp so resetStuckProcessingProposals() can detect stale processing proposals
   proposal.status = "processing" as any;
+  (proposal as any)._processingStartedAt = Date.now();
   saveProposals(store);
 
   // v5.48: Track retry count to prevent infinite retry loops
@@ -1018,6 +1026,11 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         message: guardResult.message || `Applied successfully via guard. Backup: ${guardResult.backup?.id || "created"}`,
       };
     } else {
+      // v9.8.5: Critical fix — set status to 'rejected' so the proposal never stays stuck in 'processing'
+      proposal.status = "rejected" as any;
+      (proposal as any)._failReason = guardResult.message || "Guard rejected";
+      saveProposals(store);
+
       try {
         const { recordMetric } = await import("./selfMonitor.js");
         recordMetric("self_modify_success", 0, `Rejected: ${proposal.title}`);

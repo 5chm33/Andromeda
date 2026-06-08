@@ -31,7 +31,8 @@
     "codeIntel.ts::simplify diff generator logic for readability",
     "browser.ts::extract ssrf and readability logic into separate modules",
     "grounding.ts::refactor extractfactualclaims for readability",
-    "grounding.ts::fix unbalanced brackets in extractfactualclaims refactor"
+    "grounding.ts::fix unbalanced brackets in extractfactualclaims refactor",
+    "workspace.ts::consolidate workspace directory logic into single function"
   ],
   "autoApplyHistory": [
     1780896575988,
