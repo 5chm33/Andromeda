@@ -63,5 +63,15 @@
     "success": true,
     "durationMs": 228,
     "output": "▲ [WARNING] The glob pattern import(\"./**/*.js\") did not match any files [empty-glob]\n\n    server/hotReload.ts:290:29:\n      290 │     const mod = await import(`./${moduleName}.js`);\n          ╵                              ~~~~~~~~~~~~~~~~~~~~\n\n"
+  },
+  {
+    "id": "rebuild_1780908805201_r52tva",
+    "triggeredAt": "2026-06-08T08:53:25.428Z",
+    "triggeredBy": [
+      "prop_1780907740162_lfxqq2"
+    ],
+    "success": true,
+    "durationMs": 227,
+    "output": "▲ [WARNING] The glob pattern import(\"./**/*.js\") did not match any files [empty-glob]\n\n    server/hotReload.ts:290:29:\n      290 │     const mod = await import(`./${moduleName}.js`);\n          ╵                              ~~~~~~~~~~~~~~~~~~~~\n\n"
   }
 ]
