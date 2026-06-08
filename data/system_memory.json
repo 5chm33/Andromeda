@@ -11,12 +11,26 @@
       "createdAt": 1779618392688,
       "lastReferencedAt": 1780197501099,
       "referenceCount": 1
+    },
+    {
+      "id": "sl_1780896575988_2pxa8a",
+      "category": "modification",
+      "title": "Applied: Simplify version string to single source of truth",
+      "content": "Successfully applied improvement to manifest.ts: Simplify version string to single source of truth",
+      "context": "category: readability, impact: low, confidence: 1.00",
+      "confidence": 0.9,
+      "applicableTo": [
+        "manifest.ts"
+      ],
+      "createdAt": 1780896575988,
+      "lastReferencedAt": 1780896575988,
+      "referenceCount": 0
     }
   ],
   "baselines": [],
   "errorPatterns": [],
   "metadata": {
-    "totalLearnings": 1,
+    "totalLearnings": 2,
     "totalReferences": 0,
     "lastConsolidation": 1780537317493,
     "version": "5.28"

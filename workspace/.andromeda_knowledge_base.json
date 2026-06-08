@@ -4969,6 +4969,22 @@
       "confidence": 0.9,
       "createdAt": 1780895237279,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780896575983_e59iv6",
+      "category": "success",
+      "title": "Success: Simplify version string to single source of truth",
+      "description": "Successfully applied \"Simplify version string to single source of truth\" to manifest.ts (readability). Health: improved.",
+      "context": "self-modify manifest.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for manifest.ts: Simplify version string to single source of truth",
+      "applicableTo": [
+        "manifest.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780896575983,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5111,5 +5127,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T05:07:17.280Z"
+  "_lastUpdated": "2026-06-08T05:29:35.983Z"
 }
