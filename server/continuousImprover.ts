@@ -88,16 +88,63 @@ async function runImprovementCycle(): Promise<CycleResult> {
     // 2. Analyze codebase for improvement targets
     const { listProposals, analyzeAndPropose } = await import("./selfImprove");
 
-    // Generate new proposals by analyzing a random file
+    // Generate new proposals — use eval-driven targeting every other cycle, random otherwise
     try {
       const { getAnalyzableFiles } = await import("./selfImprove");
       const files = getAnalyzableFiles();
       if (files.length > 0) {
-        const randomFile = files[Math.floor(Math.random() * files.length)];
-        await analyzeAndPropose(randomFile);
+        // v7.5 Tier 2 #5: Eval-driven targeting — pick the file most relevant to the weakest eval category
+        let targetFile: string | null = null;
+        let targetArea: string | undefined;
+        if (totalProposals % 2 === 0) {
+          try {
+            const { getEvalDrivenTarget, recordEvalDrivenProposal, getEvalSummary } = await import("./evalDrivenTargeting.js");
+            const evalTarget = getEvalDrivenTarget();
+            if (evalTarget) {
+              targetFile = evalTarget.targetFile;
+              targetArea = evalTarget.area;
+              console.log(`[ContinuousImprover] Eval-driven target: ${targetFile} (${evalTarget.reason}) | ${getEvalSummary()}`);
+            }
+          } catch { /* fall through to random */ }
+        }
+        if (!targetFile) {
+          targetFile = files[Math.floor(Math.random() * files.length)];
+        }
+        const proposal = await analyzeAndPropose(targetFile, targetArea as any);
+        if (proposal) {
+          // Record eval-driven proposal for tracking
+          try {
+            if (targetArea) {
+              const { recordEvalDrivenProposal } = await import("./evalDrivenTargeting.js");
+              recordEvalDrivenProposal({ targetFile: targetFile!, area: targetArea as any, reason: "eval-driven", evalCategory: targetArea, evalPassRate: 0 }, proposal.id);
+            }
+          } catch { /* non-fatal */ }
+        }
       }
     } catch (err) {
       result.errors.push(`Proposal generation failed: ${(err as Error).message}`);
+    }
+
+    // v7.5 Tier 2 #4: Multi-file atomic proposals — run every 3rd cycle to find cross-file improvements
+    try {
+      if (totalProposals % 3 === 0) {
+        const { getAnalyzableFiles } = await import("./selfImprove");
+        const files = getAnalyzableFiles();
+        if (files.length > 0) {
+          const primaryFile = files[Math.floor(Math.random() * files.length)];
+          const { findRelatedFiles, planMultiFileImprovement, submitMultiFileProposal } = await import("./multiFileProposalPlanner.js");
+          const relatedFiles = await findRelatedFiles(primaryFile);
+          if (relatedFiles.length > 0) {
+            const plan = await planMultiFileImprovement(primaryFile, relatedFiles);
+            if (plan && plan.confidence >= 0.65) {
+              await submitMultiFileProposal(plan);
+              console.log(`[ContinuousImprover] Multi-file proposal submitted: "${plan.title}"`);
+            }
+          }
+        }
+      }
+    } catch (err) {
+      result.errors.push(`Multi-file planning failed: ${(err as Error).message}`);
     }
 
     // v5.32: Auto-apply high-confidence proposals from previous cycles

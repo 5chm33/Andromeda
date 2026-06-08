@@ -86,8 +86,41 @@ type ProposalStore = {
 // ─── v6.28 A1: Deduplication hash set ────────────────────────────────────────
 // Keyed by "targetFile::title" — prevents the same fix being regenerated every
 // cycle. Populated from the persisted store on first load; updated on insert.
+// v7.5 Tier 1 #3: Now PERSISTED to workspace/.andromeda_seen_hashes.json so
+// the dedup set survives server restarts and prevents cross-session duplicates.
 
 const _seenProposalHashes = new Set<string>();
+let _seenHashesPersistPath: string | null = null;
+
+function getSeenHashesPath(): string {
+  if (_seenHashesPersistPath) return _seenHashesPersistPath;
+  const workspaceDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "workspace");
+  if (!fs.existsSync(workspaceDir)) fs.mkdirSync(workspaceDir, { recursive: true });
+  _seenHashesPersistPath = path.join(workspaceDir, ".andromeda_seen_hashes.json");
+  return _seenHashesPersistPath;
+}
+
+function loadPersistedHashes(): void {
+  try {
+    const p = getSeenHashesPath();
+    if (fs.existsSync(p)) {
+      const data: string[] = JSON.parse(fs.readFileSync(p, "utf-8"));
+      for (const h of data) _seenProposalHashes.add(h);
+    }
+  } catch { /* ignore corrupt file */ }
+}
+
+function persistSeenHashes(): void {
+  try {
+    const arr = Array.from(_seenProposalHashes);
+    // Cap at 5000 hashes to prevent unbounded growth; keep most recent (last N)
+    const capped = arr.length > 5000 ? arr.slice(-5000) : arr;
+    fs.writeFileSync(getSeenHashesPath(), JSON.stringify(capped), "utf-8");
+  } catch { /* non-fatal */ }
+}
+
+// Load persisted hashes at module init (runs once when the module is first imported)
+loadPersistedHashes();
 
 // ─── v7.2: Re-entry guard — prevents async mutual recursion between applyProposal ↔ guardedApply ──
 // applyProposal calls guardedApply, which calls applyProposal again (inner call).
@@ -435,6 +468,20 @@ export async function analyzeAndPropose(
     // Knowledge base not available — proceed without context
   }
 
+  // v7.5 Tier 1 #1: Inject rejection feedback — tell the LLM what it tried before and why it failed
+  let rejectionFeedbackContext = "";
+  try {
+    const { getRejectionContext, getFileRejectionStats } = await import("./proposalFeedback.js");
+    const stats = getFileRejectionStats(targetFile);
+    if (stats.shouldSkip) {
+      log.info(`[ProposalFeedback] Skipping ${filename} — ${stats.recentRejections} rejections in last 24h (dominant: ${stats.dominantCategory})`);
+      return null;
+    }
+    rejectionFeedbackContext = getRejectionContext(targetFile);
+  } catch {
+    // Feedback module not available — proceed without it
+  }
+
   // v5.25 + v5.53: Check memory for previous attempts on this file
   let previousAttempts = "";
   try {
@@ -568,7 +615,7 @@ export async function analyzeAndPropose(
       role: "system",
       content: `You are an expert TypeScript software engineer performing a targeted code improvement.
 You will receive source code and must identify the SINGLE BEST improvement to make.
-${knowledgeContext ? `\nArchitecture decisions and known issues for this file:\n${knowledgeContext}` : ""}${previousAttempts}${metaLearningContext}${constitutionBlock}${importGraphContext}
+${knowledgeContext ? `\nArchitecture decisions and known issues for this file:\n${knowledgeContext}` : ""}${rejectionFeedbackContext}${previousAttempts}${metaLearningContext}${constitutionBlock}${importGraphContext}
 
 CRITICAL: Return ONLY a JSON object. No markdown. No explanation outside the JSON.
 The JSON must contain:
@@ -577,10 +624,13 @@ The JSON must contain:
 - "category": one of: performance, reliability, security, readability, feature
 - "impact": one of: high, medium, low
 - "confidence": a float 0.0–1.0 representing how confident you are this improvement is correct, safe, and will pass a TypeScript type-check (1.0 = certain, 0.5 = unsure)
-- "originalSnippet": the EXACT lines of code to replace (copy verbatim from the file, max 30 lines)
-- "proposedSnippet": the improved replacement code (same approximate length)
-- "secondaryChanges": (optional) array of {"file": "relative/path.ts", "originalSnippet": "...", "proposedSnippet": "..."} for caller files that must be updated atomically
+- "originalSnippet": the EXACT lines of code to replace (copy verbatim from the file, max 20 lines). This MUST be a verbatim substring of the file — do not paraphrase or reformat.
+- "proposedSnippet": the improved replacement code. MUST be the same approximate length as originalSnippet. Do NOT expand a 3-line snippet into 50 lines.
+- "secondaryChanges": (optional) array of {"targetFile": "filename.ts", "originalSnippet": "...", "proposedSnippet": "..."} for caller files that must be updated atomically when you change a function signature or exported symbol
 
+DIFF DISCIPLINE: Think of originalSnippet/proposedSnippet as a surgical diff patch.
+  GOOD: originalSnippet = 3 lines, proposedSnippet = 3 lines with one improvement
+  BAD: originalSnippet = 3 lines, proposedSnippet = 80 lines (full function rewrite)
 The originalSnippet MUST be an exact substring of the provided file content.
 Keep both snippets SHORT and focused. Do not rewrite the whole file.
 Do NOT repeat previous failed attempts.
@@ -669,6 +719,15 @@ Do NOT include any forbidden patterns listed above.`,
     return null;
   }
 
+  // v7.5 Tier 1 #2: Diff discipline — reject bloated proposals where proposedSnippet
+  // is more than 5x the size of originalSnippet (indicates a full-file rewrite masquerading as a patch)
+  const origLines = parsed.originalSnippet.split("\n").length;
+  const propLines = parsed.proposedSnippet.split("\n").length;
+  if (propLines > origLines * 5 && propLines > 30) {
+    log.warn(`[Tier1#2] Rejected bloated proposal for ${filename}: originalSnippet=${origLines} lines, proposedSnippet=${propLines} lines (ratio ${(propLines/origLines).toFixed(1)}x). Proposals must be surgical diffs.`);
+    return null;
+  }
+
   // v6.28 A2: Normalise confidence to 0.0–1.0 (LLM sometimes returns 0–100)
   let confidence = typeof parsed.confidence === "number" ? parsed.confidence : 0.7;
   if (confidence > 1.0) confidence = confidence / 100;
@@ -743,8 +802,9 @@ Do NOT include any forbidden patterns listed above.`,
     status: "pending",
   };
 
-  // v6.28 A1: Register in dedup hash set before saving
+  // v6.28 A1 + v7.5 Tier 1 #3: Register in dedup hash set and persist across restarts
   _seenProposalHashes.add(hash);
+  persistSeenHashes(); // write to disk so set survives server restart
 
   store.proposals.push(proposal);
   saveProposals(store);
@@ -961,6 +1021,27 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         });
       } catch (err) { log.caught("non-fatal", err); }
 
+      // v7.5 Tier 2 #6: AI Changelog — append human-readable entry to CHANGELOG_AI.md
+      try {
+        const { appendChangelogEntry } = await import("./aiChangelog.js");
+        const secondaryFiles = (proposal.secondaryChanges || []).map((sc: any) => sc.targetFile || sc.file || "").filter(Boolean);
+        appendChangelogEntry(
+          proposalId,
+          proposal.targetFile,
+          proposal.title || proposalId,
+          proposal.rationale || "",
+          proposal.category || "general",
+          proposal.impact || "medium",
+          proposal.confidence ?? 0,
+          proposal.originalSnippet || "",
+          proposal.proposedSnippet || "",
+          secondaryFiles
+        );
+        // v7.5 Tier 1 #1: Clear rejection feedback for this file on successful apply (fresh slate)
+        const { clearFileFeedback } = await import("./proposalFeedback.js");
+        clearFileFeedback(proposal.targetFile);
+      } catch (err) { log.caught("non-fatal", err); }
+
       return {
         success: true,
         message: guardResult.message || `Applied successfully via guard. Backup: ${guardResult.backup?.id || "created"}`,
@@ -993,6 +1074,19 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         if (snippet.length >= 10) {
           recordRejection(snippet, guardResult.message || "Guard rejected");
         }
+      } catch { /* non-fatal */ }
+
+      // v7.5 Tier 1 #1: LLM feedback loop — record rejection with full context for next proposal
+      try {
+        const { recordRejectionFeedback } = await import("./proposalFeedback.js");
+        recordRejectionFeedback(
+          proposalId,
+          proposal.targetFile,
+          proposal.title || proposalId,
+          proposal.originalSnippet || "",
+          proposal.proposedSnippet || "",
+          guardResult.message || "Guard rejected"
+        );
       } catch { /* non-fatal */ }
 
       _applyingProposals.delete(proposalId);

@@ -36,6 +36,8 @@ import { startCapabilityDiscovery } from "../capabilityDiscovery";
 import { getPromptStats } from "../promptEngineer";
 import { generateAndromedaMd } from "../andromedaMemoryWriter";
 import { seedInitialMemoriesIfEmpty } from "../memory";
+import { startKBConsolidationDaemon } from "../knowledgeBaseConsolidation";
+import { startCapabilityBootstrapper } from "../capabilityBootstrapper";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -113,5 +115,17 @@ export function startDaemons(): void {
     catch (e) { console.warn("[initDaemons] capabilityDiscovery failed to start:", (e as Error).message); }
   }, 15 * MIN);
 
-  console.log("[v9.4] All autonomy daemons scheduled (staggered 2-15min to prevent event loop saturation)");
+  // v9.5 Tier 3 #7: KB consolidation daemon — runs weekly, first check after 12h (see knowledgeBaseConsolidation.ts)
+  setTimeout(() => {
+    try { startKBConsolidationDaemon(); }
+    catch (e) { console.warn("[initDaemons] kbConsolidation failed to start:", (e as Error).message); }
+  }, 20 * MIN);
+
+  // v9.5 Tier 3 #8: Capability bootstrapper — processes pending capability gaps every 2h (25min initial delay)
+  setTimeout(() => {
+    try { startCapabilityBootstrapper(); }
+    catch (e) { console.warn("[initDaemons] capabilityBootstrapper failed to start:", (e as Error).message); }
+  }, 25 * MIN);
+
+  console.log("[v9.5] All autonomy daemons scheduled (staggered 2-20min to prevent event loop saturation)");
 }
