@@ -2443,6 +2443,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/contextBus.ts(16,28): error TS2307: Cannot find module 'crypto' or its corresponding type declarations.\ndata/tmp_syntax/contextBus.ts(17,16): error TS2307: Cannot find module 'fs' or i",
       "timestamp": "2026-06-08T00:28:29.225Z"
+    },
+    {
+      "id": "audit_1780878763852_8x7t6t",
+      "action": "apply",
+      "proposalId": "prop_1780878029875_fp6jom",
+      "filename": "contextBus.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/contextBus.ts(16,28): error TS2307: Cannot find module 'crypto' or its corresponding type declarations.\ndata/tmp_syntax/contextBus.ts(17,16): error TS2307: Cannot find module 'fs' or i",
+      "timestamp": "2026-06-08T00:32:43.852Z"
     }
   ]
 }
