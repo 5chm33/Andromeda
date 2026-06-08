@@ -770,7 +770,25 @@ Do NOT include any forbidden patterns listed above.`,
     return null;
   }
 
-  let parsed = tryParseProposal(rawContent);
+  // v9.11.1: Sanitize LLM response before parsing to prevent code injection
+  function sanitizeLLMResponse(raw: string): string {
+    // Strip dangerous patterns that could be injected via crafted LLM responses
+    const dangerous = [
+      /\beval\s*\(/gi,
+      /new\s+Function\s*\(/gi,
+      /process\.exit\s*\(/gi,
+      /require\s*\(['"]child_process['"]/gi,
+      /import\s*\(['"]child_process['"]/gi
+    ];
+    let cleaned = raw;
+    for (const pattern of dangerous) {
+      cleaned = cleaned.replace(pattern, '/* SANITIZED */');
+    }
+    return cleaned;
+  }
+
+  const sanitizedContent = sanitizeLLMResponse(rawContent);
+  let parsed = tryParseProposal(sanitizedContent);
 
   // v7.1.6: Retry once if truncated (finish_reason=stop but JSON incomplete) or missing fields
   const isTruncated = !parsed || !parsed.originalSnippet || !parsed.proposedSnippet || !parsed.title;
@@ -796,7 +814,7 @@ Do NOT include any forbidden patterns listed above.`,
         break;
       }
     }
-    if (retryContent) parsed = tryParseProposal(retryContent);
+    if (retryContent) parsed = tryParseProposal(sanitizeLLMResponse(retryContent));
   }
 
   if (!parsed) {
