@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { Loader2, Send, User, Sparkles } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { Loader2, Send, User, Sparkles, ThumbsUp, ThumbsDown } from "lucide-react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Streamdown } from "streamdown";
 
 /**
@@ -121,6 +121,26 @@ export function AIChatBox({
   suggestedPrompts,
 }: AIChatBoxProps) {
   const [input, setInput] = useState("");
+  // v9.6.0: RLHF thumbs feedback state
+  const [rlhfFeedback, setRlhfFeedback] = useState<Record<number, "up" | "down">>({});
+
+  const sendRlhfFeedback = useCallback(async (messageIndex: number, signal: "up" | "down") => {
+    setRlhfFeedback(prev => ({ ...prev, [messageIndex]: signal }));
+    try {
+      await fetch("/api/rlhf/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messageId: `msg_${messageIndex}_${Date.now()}`,
+          signal,
+          category: "conversation",
+        }),
+      });
+    } catch {
+      // Non-fatal
+    }
+  }, []);
+
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputAreaRef = useRef<HTMLFormElement>(null);
@@ -252,22 +272,49 @@ export function AIChatBox({
                       </div>
                     )}
 
-                    <div
-                      className={cn(
-                        "max-w-[80%] rounded-lg px-4 py-2.5",
-                        message.role === "user"
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-foreground"
-                      )}
-                    >
-                      {message.role === "assistant" ? (
-                        <div className="prose prose-sm dark:prose-invert max-w-none">
-                          <Streamdown>{message.content}</Streamdown>
+                    <div className="flex flex-col gap-1 max-w-[80%]">
+                      <div
+                        className={cn(
+                          "rounded-lg px-4 py-2.5",
+                          message.role === "user"
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-foreground"
+                        )}
+                      >
+                        {message.role === "assistant" ? (
+                          <div className="prose prose-sm dark:prose-invert max-w-none">
+                            <Streamdown>{message.content}</Streamdown>
+                          </div>
+                        ) : (
+                          <p className="whitespace-pre-wrap text-sm">
+                            {message.content}
+                          </p>
+                        )}
+                      </div>
+                      {/* v9.6.0: RLHF thumbs feedback buttons */}
+                      {message.role === "assistant" && (
+                        <div className="flex gap-1 px-1">
+                          <button
+                            onClick={() => sendRlhfFeedback(index, "up")}
+                            title="Good response"
+                            className={cn(
+                              "rounded p-1 text-muted-foreground transition-colors hover:text-green-500",
+                              rlhfFeedback[index] === "up" && "text-green-500"
+                            )}
+                          >
+                            <ThumbsUp className="size-3.5" />
+                          </button>
+                          <button
+                            onClick={() => sendRlhfFeedback(index, "down")}
+                            title="Poor response"
+                            className={cn(
+                              "rounded p-1 text-muted-foreground transition-colors hover:text-red-500",
+                              rlhfFeedback[index] === "down" && "text-red-500"
+                            )}
+                          >
+                            <ThumbsDown className="size-3.5" />
+                          </button>
                         </div>
-                      ) : (
-                        <p className="whitespace-pre-wrap text-sm">
-                          {message.content}
-                        </p>
                       )}
                     </div>
 

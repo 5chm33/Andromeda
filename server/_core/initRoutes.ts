@@ -337,4 +337,69 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
       res.json(getLockStatus());
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });
+
+  // v9.6.0: RLHF feedback endpoint — receives thumbs up/down signals from the UI
+  // and wires them directly into the rlhfCollector proposal quality scorer.
+  // POST /api/rlhf/feedback
+  // Body: { messageId: string, proposalId?: string, signal: "up" | "down", category?: string, comment?: string }
+  app.post("/api/rlhf/feedback", async (req, res) => {
+    try {
+      const { messageId, proposalId, signal, category, comment } = req.body as {
+        messageId?: string;
+        proposalId?: string;
+        signal: "up" | "down";
+        category?: string;
+        comment?: string;
+      };
+
+      if (!signal || (signal !== "up" && signal !== "down")) {
+        return res.status(400).json({ error: "signal must be 'up' or 'down'" });
+      }
+
+      const { recordFeedback } = await import("../rlhfCollector.js");
+
+      // Map thumbs up/down to the FeedbackType enum
+      const feedbackType = signal === "up" ? "accept" : "reject";
+      const targetId = proposalId || messageId || `msg_${Date.now()}`;
+
+      recordFeedback(
+        targetId,
+        "conversation",
+        category || "general",
+        `RLHF ${signal}: ${targetId}`,
+        feedbackType,
+        {
+          rawRating: signal === "up" ? 1.0 : 0.0,
+          comment,
+        }
+      );
+
+      // Also update proposal quality score if a proposalId was provided
+      if (proposalId) {
+        try {
+          const { recordMetric } = await import("../selfMonitor.js");
+          recordMetric(
+            "proposal_quality",
+            signal === "up" ? 1 : 0,
+            `RLHF ${signal === "up" ? "thumbs-up" : "thumbs-down"}: ${proposalId}`
+          );
+        } catch { /* non-fatal */ }
+      }
+
+      res.json({ ok: true, recorded: feedbackType, targetId });
+    } catch (e) {
+      res.status(500).json({ error: (e as Error).message });
+    }
+  });
+
+  // GET /api/rlhf/stats — returns aggregated RLHF reward stats for the dashboard
+  app.get("/api/rlhf/stats", async (_req, res) => {
+    try {
+      const { getRlhfAggregates, getRlhfContext } = await import("../rlhfCollector.js");
+      res.json({
+        rewards: getRlhfAggregates(),
+        context: getRlhfContext(),
+      });
+    } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+  });
 }

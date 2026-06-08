@@ -180,10 +180,11 @@ try {
 `;
     fs.writeFileSync(runnerFile, runner, "utf-8");
 
-    execSync(`node --input-type=module --experimental-vm-modules "${runnerFile}" 2>&1 || node "${runnerFile}"`, {
+    const shellCmd = process.platform === "win32" ? "cmd.exe" : "/bin/sh";
+    execSync(`node "${runnerFile}"`, {
       timeout: 5000,
       stdio: ["ignore", "ignore", "pipe"],
-      shell: process.platform === "win32",
+      shell: shellCmd,
     });
 
     return { valid: true };
