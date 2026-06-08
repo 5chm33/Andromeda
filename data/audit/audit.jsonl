@@ -68,3 +68,4 @@
 {"id":"aud-1780895268923-vzj11t","timestamp":1780895268923,"category":"api","action":"auth_failed","actor":"anonymous","resource":"/api/self/apply","requestId":"59c74bd1","ip":"::1","userAgent":"curl/8.5.0","method":"POST","path":"/api/self/apply","tenantId":"default","success":false,"statusCode":401,"severity":"warn"}
 {"id":"aud-1780896565881-zqk9iq","timestamp":1780896565881,"category":"system","action":"server_started","actor":"system","success":true,"severity":"info","details":{"pid":16761,"nodeVersion":"v22.13.0"}}
 {"id":"aud-1780897513367-onu3nz","timestamp":1780897513367,"category":"system","action":"server_started","actor":"system","success":true,"severity":"info","details":{"pid":17955,"nodeVersion":"v22.13.0"}}
+{"id":"aud-1780897966921-diuues","timestamp":1780897966921,"category":"system","action":"server_started","actor":"system","success":true,"severity":"info","details":{"pid":18476,"nodeVersion":"v22.13.0"}}

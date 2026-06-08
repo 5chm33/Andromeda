@@ -157,6 +157,19 @@ function loadProposals(): ProposalStore {
   try {
     const store = JSON.parse(fs.readFileSync(p, "utf-8")) as ProposalStore;
     initSeenHashes(store); // v6.28 A1: seed dedup set from persisted store
+    // v9.8.5: Reset any proposals stuck in 'processing' back to 'pending' on startup.
+    // A proposal gets stuck in 'processing' if the server was killed mid-apply.
+    let resetCount = 0;
+    for (const proposal of store.proposals) {
+      if ((proposal.status as string) === 'processing') {
+        proposal.status = 'pending';
+        resetCount++;
+      }
+    }
+    if (resetCount > 0) {
+      console.log(`[SelfImprove] Reset ${resetCount} stuck 'processing' proposals back to 'pending' on startup`);
+      fs.writeFileSync(p, JSON.stringify(store, null, 2), 'utf-8');
+    }
     return store;
   } catch { return { proposals: [] }; }
 }
