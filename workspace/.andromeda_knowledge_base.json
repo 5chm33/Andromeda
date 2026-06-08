@@ -4761,6 +4761,22 @@
       "confidence": 0.9,
       "createdAt": 1780884610307,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780884611830_fg9igk",
+      "category": "antipattern",
+      "title": "Failure: Extract SSRF and readability logic into separate modules",
+      "description": "Failed to apply \"Extract SSRF and readability logic into separate modules\" to browser.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify browser.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for browser.ts: Extract SSRF and readability logic into separate modules — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "browser.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780884611830,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -4903,5 +4919,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T02:10:10.307Z"
+  "_lastUpdated": "2026-06-08T02:10:11.830Z"
 }

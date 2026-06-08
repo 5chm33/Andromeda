@@ -2614,6 +2614,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/codeIntel.ts(20,21): error TS2307: Cannot find module 'fs' or its corresponding type declarations.\ndata/tmp_syntax/codeIntel.ts(21,23): error TS2307: Cannot find module 'path' or its c",
       "timestamp": "2026-06-08T02:10:10.304Z"
+    },
+    {
+      "id": "audit_1780884611825_u5g67y",
+      "action": "apply",
+      "proposalId": "prop_1780865414861_wfqgrp",
+      "filename": "browser.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/browser.ts(9,21): error TS2307: Cannot find module 'fs' or its corresponding type declarations.\ndata/tmp_syntax/browser.ts(10,26): error TS2307: Cannot find module 'playwright-core' or",
+      "timestamp": "2026-06-08T02:10:11.825Z"
     }
   ]
 }
