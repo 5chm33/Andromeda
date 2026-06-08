@@ -167,35 +167,48 @@ export function analyzeDiversity(annotatedSources: AnnotatedSource[]): Diversity
     if (source.biasProfile.ownership === "independent" || source.biasProfile.ownership === "nonprofit") independentCount++;
   }
 
+  // Diversity scoring constants
+  const BASE_SCORE = 50;
+  const MAX_SLANT_BONUS = 30;
+  const SLANT_BONUS_PER_UNIQUE = 10;
+  const HOMOGENEITY_PENALTY = 20;
+  const HOMOGENEITY_THRESHOLD = 0.7;
+  const MAX_INDEPENDENT_BONUS = 20;
+  const INDEPENDENT_BONUS_PER_SOURCE = 5;
+  const STATE_AFFILIATED_WARNING_THRESHOLD = 2;
+  const BILLIONAIRE_OWNED_WARNING_THRESHOLD = 3;
+  const MAX_SCORE = 100;
+  const MIN_SCORE = 0;
+
   // Calculate diversity score
   const uniqueSlants = Object.keys(slantDistribution).length;
   const totalKnown = Object.values(slantDistribution).reduce((a, b) => a + b, 0);
-  let score = 50; // Base score
+  let score = BASE_SCORE;
 
   // More unique slants = more diverse
-  score += Math.min(30, uniqueSlants * 10);
+  score += Math.min(MAX_SLANT_BONUS, uniqueSlants * SLANT_BONUS_PER_UNIQUE);
 
   // High concentration of one slant = penalty
   const maxSlantCount = Math.max(...Object.values(slantDistribution).map(v => v ?? 0), 0);
-  if (totalKnown > 0 && maxSlantCount / totalKnown > 0.7) {
-    score -= 20;
+  if (totalKnown > 0 && maxSlantCount / totalKnown > HOMOGENEITY_THRESHOLD) {
+    score -= HOMOGENEITY_PENALTY;
     warnings.push(`Coverage is heavily skewed: ${Math.round((maxSlantCount / totalKnown) * 100)}% of sources share the same political slant.`);
   }
 
   // Presence of independent/nonprofit sources is a positive signal
-  score += Math.min(20, independentCount * 5);
+  score += Math.min(MAX_INDEPENDENT_BONUS, independentCount * INDEPENDENT_BONUS_PER_SOURCE);
 
   // High state-affiliation concentration is a warning
-  if (stateAffiliatedCount > 2) {
+  if (stateAffiliatedCount > STATE_AFFILIATED_WARNING_THRESHOLD) {
     warnings.push(`${stateAffiliatedCount} sources are state-affiliated. Cross-reference with independent sources.`);
   }
 
-  if (billionaireOwnedCount >= 3) {
+  if (billionaireOwnedCount >= BILLIONAIRE_OWNED_WARNING_THRESHOLD) {
     warnings.push(`${billionaireOwnedCount} sources are owned by billionaires or large corporations. Consider seeking independent perspectives.`);
   }
 
   return {
-    score: Math.max(0, Math.min(100, score)),
+    score: Math.max(MIN_SCORE, Math.min(MAX_SCORE, score)),
     geographicDiversity: [], // Populated by domain TLD analysis in a future version
     slantDistribution,
     stateAffiliatedCount,
