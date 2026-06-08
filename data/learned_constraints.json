@@ -107,7 +107,16 @@
       "firstSeenAt": 1780901234546,
       "lastSeenAt": 1780901234546,
       "active": false
+    },
+    {
+      "id": "lc_1780901834669_ti186",
+      "pattern": "// API key is now managed by the LLM provider; no need to check here.\n  const",
+      "reason": "Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780901834669,
+      "lastSeenAt": 1780901834669,
+      "active": false
     }
   ],
-  "lastUpdatedAt": 1780901234546
+  "lastUpdatedAt": 1780901834669
 }

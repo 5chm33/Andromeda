@@ -2920,6 +2920,24 @@
       "result": "failure",
       "details": "Proposal is already processing",
       "timestamp": "2026-06-08T06:47:14.521Z"
+    },
+    {
+      "id": "audit_1780901829616_pkk1t9",
+      "action": "apply",
+      "proposalId": "prop_1780845080206_7brv8q",
+      "filename": "multiAgent.ts",
+      "result": "failure",
+      "details": "Syntax check failed: Unbalanced braces: 1 unclosed {",
+      "timestamp": "2026-06-08T06:57:09.616Z"
+    },
+    {
+      "id": "audit_1780901833857_qa3fq9",
+      "action": "apply",
+      "proposalId": "prop_1780845080206_7brv8q",
+      "filename": "multiAgent.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1780845080206_7brv8q after syntax error",
+      "timestamp": "2026-06-08T06:57:13.857Z"
     }
   ]
 }

@@ -35,7 +35,9 @@
     "workspace.ts::consolidate workspace directory logic into single function",
     "adaptiveRouter.ts::remove redundant env var check in selectprovider",
     "browser.ts::extract ssrf validation into shared helper",
-    "manifest.ts::extract version constant to eliminate duplication"
+    "manifest.ts::extract version constant to eliminate duplication",
+    "llmProvider.ts::extract provider config into separate file",
+    "memory.ts::fix truncated seed memory entry content"
   ],
   "autoApplyHistory": [
     1780896575988,

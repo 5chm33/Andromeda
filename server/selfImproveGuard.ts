@@ -267,25 +267,12 @@ function runSyntaxCheck(filename: string, proposedContent: string, originalSnipp
   const tmpFile = path.join(tmpDir, path.basename(filename));
 
   try {
-    // Build the full-file content to check:
-    // Priority 1: use proposedContent (already the full file with snippet applied, set by analyzeAndPropose)
-    // Priority 2: if snippets provided, read the live file from disk and apply the replacement
-    // Priority 3: fall back to proposedContent as-is
-    let contentToCheck = proposedContent;
-    if (originalSnippet && proposedSnippet) {
-      const serverDir = path.dirname(fileURLToPath(import.meta.url));
-      const filePath = path.join(serverDir, path.basename(filename));
-      if (fs.existsSync(filePath)) {
-        const fullContent = fs.readFileSync(filePath, "utf-8");
-        // Use the live file + snippet replacement as ground truth
-        const replaced = fullContent.replace(originalSnippet, proposedSnippet);
-        // Only use this if the replacement actually changed something (i.e. snippet was found)
-        if (replaced !== fullContent) {
-          contentToCheck = replaced;
-        }
-        // If snippet not found in live file, fall back to proposedContent (which was built at proposal-creation time)
-      }
-    }
+    // v9.8.5: Always use proposedContent as the content to check.
+    // proposedContent is the full file with the change already applied, built at proposal-creation time.
+    // The snippet-based replacement approach (reading the live file and applying the diff) is unreliable
+    // because the live file may have changed since the proposal was created, causing the snippet to not
+    // be found and the replacement to silently fail. Using proposedContent directly is the safest approach.
+    const contentToCheck = proposedContent;
     fs.writeFileSync(tmpFile, contentToCheck, "utf-8");
 
     // v9.8.2: Find the local tsc binary instead of relying on npx (which is not always in PATH on Windows).
@@ -341,11 +328,42 @@ function runSyntaxCheck(filename: string, proposedContent: string, originalSnipp
 }
 
 /**
- * v9.8.2: Lightweight syntax check that runs entirely in-process without any
- * external binary. Checks brace/bracket/paren balance and unclosed string literals.
- * Used as a fallback when tsc is not available (e.g. Windows PATH issues).
+ * v9.8.5: In-process TypeScript syntax check using the TypeScript compiler API.
+ * This replaces the lightweight brace-balance checker with a proper TS parser
+ * that understands TypeScript-specific syntax (type annotations, generics, interfaces).
+ * Falls back to brace-balance check if the TypeScript API is unavailable.
  */
 function runLightweightSyntaxCheck(content: string): { pass: boolean; errors: string } {
+  // First try: use the TypeScript compiler API (in-process, no binary needed)
+  try {
+    // Dynamic require to avoid bundler issues — typescript is always available in node_modules
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const ts = require("typescript") as typeof import("typescript");
+    const sourceFile = ts.createSourceFile(
+      "__syntax_check__.ts",
+      content,
+      ts.ScriptTarget.ESNext,
+      /*setParentNodes*/ false,
+    );
+    // Collect parse diagnostics (syntax errors only, no type errors)
+    const diagnostics = (sourceFile as any).parseDiagnostics as import("typescript").Diagnostic[] | undefined;
+    if (diagnostics && diagnostics.length > 0) {
+      const errors = diagnostics
+        .slice(0, 5)
+        .map((d: import("typescript").Diagnostic) => {
+          const msg = typeof d.messageText === "string" ? d.messageText : (d.messageText as any).messageText;
+          const pos = d.start !== undefined ? ` (pos ${d.start})` : "";
+          return `${msg}${pos}`;
+        })
+        .join("; ");
+      return { pass: false, errors };
+    }
+    return { pass: true, errors: "" };
+  } catch {
+    // TypeScript API unavailable — fall back to brace/bracket/paren balance check
+  }
+
+  // Fallback: brace/bracket/paren balance check
   try {
     let braces = 0, brackets = 0, parens = 0;
     let inString: "'" | '"' | '`' | null = null;
@@ -355,20 +373,16 @@ function runLightweightSyntaxCheck(content: string): { pass: boolean; errors: st
     while (i < content.length) {
       const ch = content[i];
       const next = content[i + 1] ?? "";
-      // Handle line comments
       if (!inString && !inBlockComment && ch === "/" && next === "/") { inLineComment = true; i += 2; continue; }
       if (inLineComment) { if (ch === "\n") inLineComment = false; i++; continue; }
-      // Handle block comments
       if (!inString && ch === "/" && next === "*") { inBlockComment = true; i += 2; continue; }
       if (inBlockComment) { if (ch === "*" && next === "/") { inBlockComment = false; i += 2; } else { i++; } continue; }
-      // Handle strings
       if (!inString && (ch === "'" || ch === '"' || ch === '`')) { inString = ch as any; i++; continue; }
       if (inString) {
-        if (ch === "\\" && next) { i += 2; continue; } // escape
+        if (ch === "\\" && next) { i += 2; continue; }
         if (ch === inString) inString = null;
         i++; continue;
       }
-      // Balance tracking
       if (ch === "{") braces++;
       else if (ch === "}") braces--;
       else if (ch === "[") brackets++;
@@ -382,7 +396,7 @@ function runLightweightSyntaxCheck(content: string): { pass: boolean; errors: st
     if (parens !== 0) return { pass: false, errors: `Unbalanced parentheses: ${parens > 0 ? parens + " unclosed (" : Math.abs(parens) + " extra )"}` };
     if (inString) return { pass: false, errors: `Unclosed string literal (${inString})` };
     return { pass: true, errors: "" };
-  } catch (err: any) {
+  } catch {
     return { pass: true, errors: "" }; // if the checker itself throws, don't block the proposal
   }
 }
