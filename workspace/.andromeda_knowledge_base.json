@@ -4953,6 +4953,22 @@
       "confidence": 0.9,
       "createdAt": 1780895059501,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780895237279_bc8xpg",
+      "category": "antipattern",
+      "title": "Failure: Fix unbalanced brackets in extractFactualClaims refactor",
+      "description": "Failed to apply \"Fix unbalanced brackets in extractFactualClaims refactor\" to grounding.ts. Reason: Syntax check failed — proposal not applied (max refinements reached). Avoid similar changes.",
+      "context": "self-modify grounding.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied (max refinements reached)",
+      "lesson": "Avoid for grounding.ts: Fix unbalanced brackets in extractFactualClaims refactor — causes Syntax check failed — proposal not applied (max refinements reached)",
+      "applicableTo": [
+        "grounding.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780895237279,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5095,5 +5111,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T05:04:19.501Z"
+  "_lastUpdated": "2026-06-08T05:07:17.280Z"
 }
