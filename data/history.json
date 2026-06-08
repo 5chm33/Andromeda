@@ -1518,5 +1518,45 @@
     "sources": null,
     "filter": "web",
     "createdAt": "2026-06-07T08:22:07.647Z"
+  },
+  {
+    "id": 1780902786583,
+    "userId": null,
+    "sessionId": null,
+    "query": "test query for vitest",
+    "aiAnswer": "This is a test answer",
+    "sources": null,
+    "filter": "all",
+    "createdAt": "2026-06-08T07:13:07.046Z"
+  },
+  {
+    "id": 1780902786584,
+    "userId": 1,
+    "sessionId": null,
+    "query": "authenticated test query",
+    "aiAnswer": "Authenticated answer",
+    "sources": null,
+    "filter": "web",
+    "createdAt": "2026-06-08T07:13:07.048Z"
+  },
+  {
+    "id": 1780902807124,
+    "userId": null,
+    "sessionId": null,
+    "query": "test query for vitest",
+    "aiAnswer": "This is a test answer",
+    "sources": null,
+    "filter": "all",
+    "createdAt": "2026-06-08T07:13:27.545Z"
+  },
+  {
+    "id": 1780902807125,
+    "userId": 1,
+    "sessionId": null,
+    "query": "authenticated test query",
+    "aiAnswer": "Authenticated answer",
+    "sources": null,
+    "filter": "web",
+    "createdAt": "2026-06-08T07:13:27.547Z"
   }
 ]

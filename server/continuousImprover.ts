@@ -204,7 +204,10 @@ async function runImprovementCycle(): Promise<CycleResult> {
         const { execSync } = await import("child_process");
         const serverDir = path.resolve(process.cwd());
         console.log(`[ContinuousImprover] Running TypeScript check after ${result.proposalsApplied} applies...`);
-        execSync("npx tsc --noEmit", { cwd: serverDir, timeout: 60000, stdio: "pipe" });
+        // v9.8.5: Use node_modules/.bin/tsc directly — npx is not available in all environments
+        const tscBin = path.resolve(serverDir, "node_modules", ".bin", "tsc");
+        const tscCmd = require("fs").existsSync(tscBin) ? tscBin : "npx tsc";
+        execSync(`${JSON.stringify(tscCmd)} --noEmit`, { cwd: serverDir, timeout: 60000, stdio: "pipe" });
         console.log("[ContinuousImprover] TypeScript check PASSED. Changes are valid.");
 
         // v5.97: Run smoke tests after TypeScript check

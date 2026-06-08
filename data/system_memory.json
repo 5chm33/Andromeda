@@ -123,12 +123,40 @@
       "createdAt": 1780897354809,
       "lastReferencedAt": 1780897354809,
       "referenceCount": 0
+    },
+    {
+      "id": "sl_1780902802395_iykqec",
+      "category": "modification",
+      "title": "Applied: Extract inline routes into separate modules",
+      "content": "Successfully applied improvement to streamRouter.ts: Extract inline routes into separate modules",
+      "context": "category: architecture, impact: high, confidence: 0.95",
+      "confidence": 0.9,
+      "applicableTo": [
+        "streamRouter.ts"
+      ],
+      "createdAt": 1780902802395,
+      "lastReferencedAt": 1780902802395,
+      "referenceCount": 0
+    },
+    {
+      "id": "sl_1780902823181_49yr6c",
+      "category": "modification",
+      "title": "Applied: Extract SSRF and readability logic into separate modules",
+      "content": "Successfully applied improvement to browser.ts: Extract SSRF and readability logic into separate modules",
+      "context": "category: readability, impact: medium, confidence: 0.90",
+      "confidence": 0.9,
+      "applicableTo": [
+        "browser.ts"
+      ],
+      "createdAt": 1780902823181,
+      "lastReferencedAt": 1780902823181,
+      "referenceCount": 0
     }
   ],
   "baselines": [],
   "errorPatterns": [],
   "metadata": {
-    "totalLearnings": 9,
+    "totalLearnings": 11,
     "totalReferences": 0,
     "lastConsolidation": 1780537317493,
     "version": "5.28"

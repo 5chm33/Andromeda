@@ -1,44 +1,44 @@
 {
-  "timestamp": 1780902721668,
-  "runDurationMs": 183,
+  "timestamp": 1780903141622,
+  "runDurationMs": 178,
   "results": [
     {
       "name": "memory_keyword_search",
       "category": "memory",
-      "durationMs": 181.25,
-      "timestamp": 1780902721666
+      "durationMs": 176.36,
+      "timestamp": 1780903141621
     },
     {
       "name": "tool_registry_lookup",
       "category": "tool_latency",
       "durationMs": 0.01,
-      "timestamp": 1780902721666
+      "timestamp": 1780903141621
     },
     {
       "name": "file_write_10kb",
       "category": "code_execution",
-      "durationMs": 0.1,
-      "timestamp": 1780902721667
+      "durationMs": 0.09,
+      "timestamp": 1780903141621
     },
     {
       "name": "file_read_10kb",
       "category": "code_execution",
       "durationMs": 0.03,
-      "timestamp": 1780902721667
+      "timestamp": 1780903141621
     },
     {
       "name": "context_token_estimation_50msg",
       "category": "startup",
-      "durationMs": 0.13,
-      "timestamp": 1780902721667
+      "durationMs": 0.12,
+      "timestamp": 1780903141621
     },
     {
       "name": "json_parse_large_object",
       "category": "code_execution",
-      "durationMs": 0.13,
-      "timestamp": 1780902721668,
+      "durationMs": 0.1,
+      "timestamp": 1780903141622,
       "metadata": {
-        "sizeBytes": 28911
+        "sizeBytes": 28920
       }
     }
   ],
@@ -54,16 +54,16 @@
     {
       "benchmark": "memory_keyword_search",
       "baseline": 145.01,
-      "current": 181.25,
-      "degradationPercent": 25,
+      "current": 176.36,
+      "degradationPercent": 22,
       "severity": "warning"
     },
     {
       "benchmark": "file_write_10kb",
       "baseline": 0.07,
-      "current": 0.1,
-      "degradationPercent": 43,
-      "severity": "critical"
+      "current": 0.09,
+      "degradationPercent": 29,
+      "severity": "warning"
     },
     {
       "benchmark": "file_read_10kb",
@@ -75,17 +75,10 @@
     {
       "benchmark": "context_token_estimation_50msg",
       "baseline": 0.01,
-      "current": 0.13,
-      "degradationPercent": 1200,
-      "severity": "critical"
-    },
-    {
-      "benchmark": "json_parse_large_object",
-      "baseline": 0.09,
-      "current": 0.13,
-      "degradationPercent": 44,
+      "current": 0.12,
+      "degradationPercent": 1100,
       "severity": "critical"
     }
   ],
-  "overallScore": 10
+  "overallScore": 40
 }

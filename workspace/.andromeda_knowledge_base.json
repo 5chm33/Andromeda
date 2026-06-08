@@ -5417,6 +5417,38 @@
       "confidence": 0.9,
       "createdAt": 1780902315600,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780902802388_87tcmv",
+      "category": "success",
+      "title": "Success: Extract inline routes into separate modules",
+      "description": "Successfully applied \"Extract inline routes into separate modules\" to streamRouter.ts (architecture). Health: improved.",
+      "context": "self-modify streamRouter.ts architecture",
+      "outcome": "success",
+      "lesson": "Pattern works for streamRouter.ts: Extract inline routes into separate modules",
+      "applicableTo": [
+        "streamRouter.ts",
+        "architecture"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780902802388,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780902823176_d46njo",
+      "category": "success",
+      "title": "Success: Extract SSRF and readability logic into separate modules",
+      "description": "Successfully applied \"Extract SSRF and readability logic into separate modules\" to browser.ts (readability). Health: improved.",
+      "context": "self-modify browser.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for browser.ts: Extract SSRF and readability logic into separate modules",
+      "applicableTo": [
+        "browser.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780902823176,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5559,5 +5591,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T07:05:15.600Z"
+  "_lastUpdated": "2026-06-08T07:13:43.176Z"
 }

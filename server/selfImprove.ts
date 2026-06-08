@@ -1036,19 +1036,46 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         });
       } catch (err) { log.caught("non-fatal", err); }
 
-      // v9.8.5: Git commit the applied change so it shows up in git log
+      // v9.8.5: TypeScript check BEFORE git commit — prevents committing broken code
+      let tsCheckPassed = true;
       try {
-        const autoConfig = getAutoApplyConfig();
-        if (autoConfig.commitToGit) {
-          const gitResult = gitCommitSelfImprovement(filePath, proposal.title || proposalId, autoConfig.branchStrategy);
-          if (gitResult.success) {
-            console.log(`[SelfImprove] Git committed: ${proposal.title || proposalId}`);
-          } else {
-            console.warn(`[SelfImprove] Git commit failed (non-fatal): ${gitResult.message}`);
-          }
+        const tscBin = path.resolve(getServerDir(), "..", "node_modules", ".bin", "tsc");
+        const tscCmd = fs.existsSync(tscBin) ? tscBin : null;
+        if (tscCmd) {
+          execSync(`"${tscCmd}" --noEmit`, { cwd: path.resolve(getServerDir(), ".."), timeout: 60000, stdio: "pipe" });
+          console.log(`[SelfImprove] TypeScript check PASSED for ${proposal.targetFile}`);
+        } else {
+          console.warn("[SelfImprove] tsc binary not found — skipping pre-commit TypeScript check");
         }
-      } catch (gitErr) {
-        console.warn("[SelfImprove] Git commit unavailable (non-fatal):", (gitErr as Error).message);
+      } catch (tsErr: any) {
+        tsCheckPassed = false;
+        const tsErrMsg = (tsErr.stderr || tsErr.stdout || tsErr.message || "").toString().slice(0, 300);
+        console.warn(`[SelfImprove] TypeScript check FAILED for ${proposal.targetFile} — reverting file. Errors: ${tsErrMsg}`);
+        // Revert the file write to restore the original content
+        if (proposal.originalContent) {
+          try { fs.writeFileSync(filePath, proposal.originalContent, "utf-8"); } catch { /* best effort */ }
+        }
+        proposal.status = "rejected" as any;
+        (proposal as any)._failReason = `TypeScript check failed: ${tsErrMsg}`;
+        saveProposals(store);
+        return { success: false, message: `TypeScript check failed after apply — reverted. Errors: ${tsErrMsg}` };
+      }
+
+      // v9.8.5: Git commit the applied change so it shows up in git log
+      if (tsCheckPassed) {
+        try {
+          const autoConfig = getAutoApplyConfig();
+          if (autoConfig.commitToGit) {
+            const gitResult = gitCommitSelfImprovement(filePath, proposal.title || proposalId, autoConfig.branchStrategy);
+            if (gitResult.success) {
+              console.log(`[SelfImprove] Git committed: ${proposal.title || proposalId}`);
+            } else {
+              console.warn(`[SelfImprove] Git commit failed (non-fatal): ${gitResult.message}`);
+            }
+          }
+        } catch (gitErr) {
+          console.warn("[SelfImprove] Git commit unavailable (non-fatal):", (gitErr as Error).message);
+        }
       }
 
       _applySucceeded = true;

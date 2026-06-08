@@ -2956,6 +2956,42 @@
       "result": "failure",
       "details": "Proposal is already processing",
       "timestamp": "2026-06-08T07:05:15.577Z"
+    },
+    {
+      "id": "audit_1780902802354_w43yyj",
+      "action": "test",
+      "proposalId": "prop_1780844908157_qi2cet",
+      "filename": "streamRouter.ts",
+      "result": "failure",
+      "details": "or: Cannot read properties of undefined (reading 'description')\n ❯ Module.getConsensus server/consensusEngine.ts:152:84\n    150|   // always be biased toward its own output. Consensus only adds value…",
+      "timestamp": "2026-06-08T07:13:22.354Z"
+    },
+    {
+      "id": "audit_1780902802357_yi6t0s",
+      "action": "apply",
+      "proposalId": "prop_1780844908157_qi2cet",
+      "filename": "streamRouter.ts",
+      "result": "success",
+      "details": "Applied proposal: Extract inline routes into separate modules",
+      "timestamp": "2026-06-08T07:13:22.357Z"
+    },
+    {
+      "id": "audit_1780902823147_7rkb4q",
+      "action": "test",
+      "proposalId": "prop_1780865414861_wfqgrp",
+      "filename": "browser.ts",
+      "result": "failure",
+      "details": "r: Cannot read properties of undefined (reading 'description')\n ❯ Module.getConsensus server/consensusEngine.ts:152:84\n    150|   // always be biased toward its own output. Consensus only adds value…\n",
+      "timestamp": "2026-06-08T07:13:43.147Z"
+    },
+    {
+      "id": "audit_1780902823150_umf42t",
+      "action": "apply",
+      "proposalId": "prop_1780865414861_wfqgrp",
+      "filename": "browser.ts",
+      "result": "success",
+      "details": "Applied proposal: Extract SSRF and readability logic into separate modules",
+      "timestamp": "2026-06-08T07:13:43.150Z"
     }
   ]
 }
