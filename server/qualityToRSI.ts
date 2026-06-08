@@ -59,10 +59,19 @@ export async function feedQualityToRSI(): Promise<number> {
     const { analyzeAndPropose } = await import("./selfImprove.js");
     const allowlist = await getAnalyzableFileSet();
     for (const qp of sorted) {
-      // Normalize Windows backslash paths and strip leading "server\" or "server/" prefix
+      // Validate and normalize file paths to prevent path traversal
+      if (!qp.filePath || typeof qp.filePath !== 'string') {
+        log.warn(`Invalid filePath in quality proposal: ${qp.filePath}`);
+        continue;
+      }
       const normalizedPath = qp.filePath
         .replace(/\\/g, "/")
-        .replace(/^server\//, "");
+        .replace(/^server\//, "")
+        .replace(/\.\.\//g, ""); // Remove path traversal attempts
+      if (normalizedPath.startsWith("/") || normalizedPath.includes(":")) {
+        log.warn(`Rejected absolute path in quality proposal: ${qp.filePath}`);
+        continue;
+      }
       const basename = path.basename(normalizedPath);
       // v9.8.2: Skip files not in the selfImprove allowlist to avoid noisy warnings
       if (!allowlist.has(basename)) {
