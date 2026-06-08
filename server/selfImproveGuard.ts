@@ -294,9 +294,24 @@ function runSyntaxCheck(filename: string, proposedContent: string, originalSnipp
     const localTscPaths = [
       path.join(projectRoot, "node_modules", ".bin", "tsc"),
       path.join(projectRoot, "node_modules", ".bin", "tsc.cmd"), // Windows .cmd wrapper
+      path.join(projectRoot, "node_modules", "typescript", "bin", "tsc"), // pnpm direct path
     ];
     const localTsc = localTscPaths.find(p => fs.existsSync(p));
-    const tscCmd = localTsc ? `"${localTsc}"` : "tsc"; // fall back to global tsc if local not found
+    
+    // v9.8.4: Use pnpm exec as the primary fallback if local binary isn't found directly
+    let tscCmd = "pnpm exec tsc";
+    if (localTsc) {
+      if (localTsc.endsWith(".cmd")) {
+        tscCmd = `cmd.exe /c "${localTsc}"`;
+      } else {
+        // For node_modules/typescript/bin/tsc, we need to run it via node
+        if (localTsc.includes("typescript/bin/tsc")) {
+          tscCmd = `node "${localTsc}"`;
+        } else {
+          tscCmd = `"${localTsc}"`;
+        }
+      }
+    }
 
     try {
       execSync(`${tscCmd} --noEmit --skipLibCheck --noResolve "${tmpFile}" 2>&1`, {
