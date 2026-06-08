@@ -18,6 +18,8 @@ on:
     branches: [master, main]
   pull_request:
     branches: [master, main]
+  # Allow this workflow to be called as a reusable workflow from deploy.yml
+  workflow_call:
 
 concurrency:
   group: rsi-validate-${{ github.ref }}

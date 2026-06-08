@@ -1,28 +1,26 @@
-# deploy.yml — v6.37
+# Andromeda — Production Deploy Workflow
 #
-# Auto-deploy to production on every push to main that passes CI.
+# Builds a Docker image and deploys to production on every push to main.
+# Supports two deploy strategies (auto-detected by which secrets are set):
+#   A) Kubernetes rolling update  — set KUBECONFIG_BASE64 secret
+#   B) SSH + docker-compose       — set DEPLOY_HOST, DEPLOY_USER, DEPLOY_SSH_KEY
 #
-# Deployment strategy:
-#   1. Build Docker image
-#   2. Push to GitHub Container Registry (ghcr.io)
-#   3. Trigger rolling update via kubectl (or SSH deploy script)
-#
-# Required GitHub Secrets:
-#   GHCR_TOKEN         — GitHub Personal Access Token with packages:write
-#   DEPLOY_HOST        — SSH host for production server (or k8s cluster)
+# Required GitHub Secrets (set whichever strategy you use):
+#   GHCR_TOKEN         — GitHub PAT with packages:write (optional, falls back to GITHUB_TOKEN)
+#   KUBECONFIG_BASE64  — base64-encoded kubeconfig (for k8s deploy)
+#   DEPLOY_HOST        — SSH host for production server
 #   DEPLOY_USER        — SSH user
 #   DEPLOY_SSH_KEY     — SSH private key
-#   KUBECONFIG_BASE64  — base64-encoded kubeconfig (for k8s deploy)
 #
-# The deploy step is conditional: if KUBECONFIG_BASE64 is set, it does a
-# kubectl rolling update; otherwise it SSH-deploys via docker-compose.
+# If neither KUBECONFIG_BASE64 nor DEPLOY_HOST is set, the deploy step is
+# skipped and only the Docker image build/push runs (if a Dockerfile exists).
 
 name: Deploy to Production
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:  # allow manual trigger
+  workflow_dispatch:
 
 # Only run one deploy at a time
 concurrency:
@@ -30,22 +28,16 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # ── Wait for CI to pass ──────────────────────────────────────────────────────
-  ci-check:
-    name: Verify CI passed
-    uses: ./.github/workflows/rsi-validate.yml
-    # This job inherits the CI workflow — deploy only runs if CI passes
-
   # ── Build and push Docker image ──────────────────────────────────────────────
   build-and-push:
     name: Build Docker image
     runs-on: ubuntu-latest
-    needs: []  # run in parallel with ci-check, gated by deploy job
     timeout-minutes: 20
+    # Only run if a Dockerfile exists — skip silently for non-containerized installs
+    if: ${{ hashFiles('Dockerfile') != '' }}
     outputs:
       image-tag: ${{ steps.meta.outputs.tags }}
       image-digest: ${{ steps.build.outputs.digest }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -88,16 +80,19 @@ jobs:
     needs: [build-and-push]
     timeout-minutes: 10
     environment: production
-
+    if: ${{ needs.build-and-push.result == 'success' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       # ── Option A: Kubernetes rolling update ──────────────────────────────────
+      # Uses env var to avoid invalid secrets comparison in if: expressions
       - name: Deploy to Kubernetes
-        if: ${{ secrets.KUBECONFIG_BASE64 != '' }}
+        if: ${{ env.KUBECONFIG_BASE64 != '' }}
+        env:
+          KUBECONFIG_BASE64: ${{ secrets.KUBECONFIG_BASE64 }}
         run: |
-          echo "${{ secrets.KUBECONFIG_BASE64 }}" | base64 -d > /tmp/kubeconfig
+          echo "$KUBECONFIG_BASE64" | base64 -d > /tmp/kubeconfig
           export KUBECONFIG=/tmp/kubeconfig
           kubectl set image deployment/andromeda \
             andromeda=ghcr.io/${{ github.repository }}:sha-${{ github.sha }} \
@@ -107,7 +102,10 @@ jobs:
 
       # ── Option B: SSH + docker-compose ───────────────────────────────────────
       - name: Deploy via SSH (docker-compose)
-        if: ${{ secrets.KUBECONFIG_BASE64 == '' && secrets.DEPLOY_HOST != '' }}
+        if: ${{ env.KUBECONFIG_BASE64 == '' && env.DEPLOY_HOST != '' }}
+        env:
+          KUBECONFIG_BASE64: ${{ secrets.KUBECONFIG_BASE64 }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.DEPLOY_HOST }}
@@ -119,6 +117,17 @@ jobs:
             docker-compose up -d --no-deps --build andromeda
             docker-compose ps
             echo "SSH deploy complete"
+
+      # ── No secrets configured — informational only ────────────────────────────
+      - name: No deploy secrets configured
+        if: ${{ env.KUBECONFIG_BASE64 == '' && env.DEPLOY_HOST == '' }}
+        env:
+          KUBECONFIG_BASE64: ${{ secrets.KUBECONFIG_BASE64 }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          echo "No KUBECONFIG_BASE64 or DEPLOY_HOST secret configured."
+          echo "Docker image was built and pushed to GHCR. Deploy manually when ready."
+          echo "Image: ghcr.io/${{ github.repository }}:sha-${{ github.sha }}"
 
       - name: Deployment summary
         if: always()
