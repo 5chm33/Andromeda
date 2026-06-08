@@ -5465,6 +5465,22 @@
       "confidence": 0.8,
       "createdAt": 1780903207913,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780903862297_5g5zh5",
+      "category": "success",
+      "title": "Success: Improve fallbackSummary method readability",
+      "description": "Successfully applied \"Improve fallbackSummary method readability\" to contextManager.ts (readability). Health: improved.",
+      "context": "self-modify contextManager.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for contextManager.ts: Improve fallbackSummary method readability",
+      "applicableTo": [
+        "contextManager.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780903862297,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5607,5 +5623,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T07:20:07.913Z"
+  "_lastUpdated": "2026-06-08T07:31:02.297Z"
 }
