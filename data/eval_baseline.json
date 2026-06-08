@@ -534,8 +534,8 @@
   "version": "9.0.0",
   "memory_keyword_search": 139.96,
   "tool_registry_lookup": 0.01,
-  "file_write_10kb": 0.2,
-  "file_read_10kb": 0.05,
-  "context_token_estimation_50msg": 0.32,
-  "json_parse_large_object": 0.19
+  "file_write_10kb": 0.12,
+  "file_read_10kb": 0.04,
+  "context_token_estimation_50msg": 0.23,
+  "json_parse_large_object": 0.11
 }

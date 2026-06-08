@@ -1,5 +1,5 @@
 {
-  "timestamp": 1780905226659,
+  "timestamp": 1780913676247,
   "totalModules": 209,
   "documentedModules": 119,
   "undocumentedExports": [
@@ -1432,6 +1432,12 @@
       "line": 0
     },
     {
+      "filePath": "server/memory.ts",
+      "exportName": "injectMemoryContext",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/memoryConsolidation.ts",
       "exportName": "getConsolidationConfig",
       "exportType": "function",
@@ -2762,7 +2768,7 @@
     {
       "filePath": "ARCHITECTURE.md",
       "type": "architecture",
-      "content": "Updated: 209 modules, 459 undocumented exports"
+      "content": "Updated: 209 modules, 460 undocumented exports"
     }
   ],
   "architectureUpdated": true

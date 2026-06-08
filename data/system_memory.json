@@ -6,11 +6,11 @@
       "title": "Orchestrator Safe Mode",
       "content": "Entered safe mode due to: consecutive_failures. Cycle stats: 30 total, 3 consecutive failures.",
       "context": "orchestrator",
-      "confidence": 0.7999999999999999,
+      "confidence": 0.8999999999999999,
       "applicableTo": [],
       "createdAt": 1779618392688,
-      "lastReferencedAt": 1780197501099,
-      "referenceCount": 1
+      "lastReferencedAt": 1780912559024,
+      "referenceCount": 2
     },
     {
       "id": "sl_1780896575988_2pxa8a",
@@ -221,12 +221,26 @@
       "createdAt": 1780906979976,
       "lastReferencedAt": 1780906979976,
       "referenceCount": 0
+    },
+    {
+      "id": "sl_1780908775199_u4xbxx",
+      "category": "modification",
+      "title": "Applied: Fix diff generator line number tracking",
+      "content": "Successfully applied improvement to codeIntel.ts: Fix diff generator line number tracking",
+      "context": "category: readability, impact: medium, confidence: 0.95",
+      "confidence": 0.9,
+      "applicableTo": [
+        "codeIntel.ts"
+      ],
+      "createdAt": 1780908775199,
+      "lastReferencedAt": 1780908775199,
+      "referenceCount": 0
     }
   ],
   "baselines": [],
   "errorPatterns": [],
   "metadata": {
-    "totalLearnings": 16,
+    "totalLearnings": 17,
     "totalReferences": 0,
     "lastConsolidation": 1780537317493,
     "version": "5.28"

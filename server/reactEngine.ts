@@ -222,14 +222,13 @@ export class ReactEngine {
       ? `\n\n## System Context\nYou are running on **Windows** (${process.arch}). When using bash_execute, commands run via PowerShell. Use Windows-compatible paths (backslashes or forward slashes both work). Python is available as 'python' (not 'python3'). Use 'dir' instead of 'ls', 'type' instead of 'cat', etc. — or use PowerShell equivalents like Get-ChildItem, Get-Content.`
       : `\n\n## System Context\nYou are running on **${process.platform}** (${process.arch}). bash_execute runs commands via bash.`;
 
-    // v5.40: Inject relevant memories from past sessions
+    // v9.10.0: Inject relevant memories using neural vector search (falls back to TF-IDF)
     let memoryContext = "";
     try {
-      const { searchMemory } = await import("./memory");
-      const relevantMemories = searchMemory(userMessage, 5);
-      if (relevantMemories.length > 0) {
-        const memLines = relevantMemories.map(m => `- [${m.entry.type}] ${m.entry.content}`).join("\n");
-        memoryContext = `\n\n## Recalled Memories\nThe following relevant memories were found from previous sessions:\n${memLines}\n\nUse these memories to inform your approach. You can also use \`store_memory\` to save new learnings and \`recall_memory\` to search for more.`;
+      const { injectMemoryContextAsync } = await import("./memory");
+      const injected = await injectMemoryContextAsync(userMessage);
+      if (injected) {
+        memoryContext = `\n\n${injected}\n\nYou can also use \`store_memory\` to save new learnings and \`recall_memory\` to search for more.`;
       }
     } catch (err) { log.caught("memory module not available — skip", err); }
 

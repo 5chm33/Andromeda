@@ -1,5 +1,5 @@
 {
-  "timestamp": 1780905193447,
+  "timestamp": 1780913636839,
   "totalModules": 209,
   "testedModules": 176,
   "untestedModules": 33,
@@ -559,38 +559,6 @@
         "withAutoRollback",
         "buildDependencyMap",
         "safeFileEdit"
-      ],
-      "coveragePercent": 0
-    },
-    {
-      "filePath": "server/browser.ts",
-      "fileName": "browser.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/browser.test.ts",
-      "exportedFunctions": [
-        "browseUrl",
-        "browserNavigate",
-        "browserClick",
-        "browserClickVision",
-        "browserType",
-        "browserScreenshot",
-        "browserExtractData",
-        "browserEval",
-        "closeBrowser",
-        "listBrowserSessions"
-      ],
-      "testedFunctions": [],
-      "untestedFunctions": [
-        "browseUrl",
-        "browserNavigate",
-        "browserClick",
-        "browserClickVision",
-        "browserType",
-        "browserScreenshot",
-        "browserExtractData",
-        "browserEval",
-        "closeBrowser",
-        "listBrowserSessions"
       ],
       "coveragePercent": 0
     },
@@ -3685,6 +3653,37 @@
       "coveragePercent": 50
     },
     {
+      "filePath": "server/memory.ts",
+      "fileName": "memory.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/memory.test.ts",
+      "exportedFunctions": [
+        "storeMemory",
+        "searchMemory",
+        "listMemories",
+        "deleteMemory",
+        "getMemoryStats",
+        "injectMemoryContextAsync",
+        "injectMemoryContext",
+        "autoExtractMemories",
+        "seedInitialMemoriesIfEmpty"
+      ],
+      "testedFunctions": [
+        "listMemories",
+        "deleteMemory",
+        "getMemoryStats",
+        "injectMemoryContext",
+        "seedInitialMemoriesIfEmpty"
+      ],
+      "untestedFunctions": [
+        "storeMemory",
+        "searchMemory",
+        "injectMemoryContextAsync",
+        "autoExtractMemories"
+      ],
+      "coveragePercent": 56
+    },
+    {
       "filePath": "server/contextCompressionDaemon.ts",
       "fileName": "contextCompressionDaemon.ts",
       "hasTestFile": true,
@@ -3940,35 +3939,6 @@
         "validateEditCompleteness"
       ],
       "coveragePercent": 60
-    },
-    {
-      "filePath": "server/memory.ts",
-      "fileName": "memory.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/memory.test.ts",
-      "exportedFunctions": [
-        "storeMemory",
-        "searchMemory",
-        "listMemories",
-        "deleteMemory",
-        "getMemoryStats",
-        "injectMemoryContext",
-        "autoExtractMemories",
-        "seedInitialMemoriesIfEmpty"
-      ],
-      "testedFunctions": [
-        "listMemories",
-        "deleteMemory",
-        "getMemoryStats",
-        "injectMemoryContext",
-        "seedInitialMemoriesIfEmpty"
-      ],
-      "untestedFunctions": [
-        "storeMemory",
-        "searchMemory",
-        "autoExtractMemories"
-      ],
-      "coveragePercent": 63
     },
     {
       "filePath": "server/observability.ts",
@@ -4420,6 +4390,39 @@
         "executeCodeWithWorkspace"
       ],
       "coveragePercent": 89
+    },
+    {
+      "filePath": "server/browser.ts",
+      "fileName": "browser.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/browser.test.ts",
+      "exportedFunctions": [
+        "browseUrl",
+        "browserNavigate",
+        "browserClick",
+        "browserClickVision",
+        "browserType",
+        "browserScreenshot",
+        "browserExtractData",
+        "browserEval",
+        "closeBrowser",
+        "listBrowserSessions"
+      ],
+      "testedFunctions": [
+        "browseUrl",
+        "browserNavigate",
+        "browserClick",
+        "browserType",
+        "browserScreenshot",
+        "browserExtractData",
+        "browserEval",
+        "closeBrowser",
+        "listBrowserSessions"
+      ],
+      "untestedFunctions": [
+        "browserClickVision"
+      ],
+      "coveragePercent": 90
     },
     {
       "filePath": "server/manifest.ts",

@@ -31,7 +31,7 @@ const DEFAULT_CONFIG: ContinuousImproverConfig = {
   enabled: true, // v5.30: Enabled by default — orchestrator coordinates improvement cycles
   intervalMs: 30 * 60 * 1000, // v5.30: 30 minutes — was 6 hours, too slow for active improvement
   maxProposalsPerCycle: 5,
-  maxAppliesPerCycle: 2,
+  maxAppliesPerCycle: 3,  // v9.10.0: increased from 2 → 3 for faster improvement throughput
   autoApplyThreshold: 0.8,
   dryRun: false,
 };

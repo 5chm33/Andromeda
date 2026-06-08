@@ -37,6 +37,22 @@ import { fileURLToPath } from "url";
 import { createLogger } from "./logger.js";
 const log = createLogger("memory");
 
+// v9.10.0: Neural embedding retrieval via vectorMemory.ts
+// Lazy import to avoid circular deps and startup cost.
+// Falls back to TF-IDF if vectorMemory is unavailable.
+let _vectorStore: ((id: string, text: string) => Promise<void>) | null = null;
+let _vectorSearch: ((query: string, limit?: number, minScore?: number) => Promise<Array<{ id: string; text: string; score: number }>>) | null = null;
+
+async function getVectorOps(): Promise<{ store: typeof _vectorStore; search: typeof _vectorSearch }> {
+  if (_vectorStore && _vectorSearch) return { store: _vectorStore, search: _vectorSearch };
+  try {
+    const vm = await import("./vectorMemory.js");
+    _vectorStore = vm.vectorStore;
+    _vectorSearch = vm.vectorSearch;
+  } catch { /* vectorMemory not available — TF-IDF fallback */ }
+  return { store: _vectorStore, search: _vectorSearch };
+}
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export type MemoryType =
@@ -321,6 +337,11 @@ export function storeMemory(
   incrementalVectorUpdate(store, newEntry);
   saveStore(store);
 
+  // v9.10.0: Also store in neural vector index (non-blocking, fire-and-forget)
+  getVectorOps().then(({ store: vStore }) => {
+    if (vStore) vStore(id, content).catch(() => { /* non-fatal */ });
+  }).catch(() => { /* non-fatal */ });
+
   // v5.31: Auto-trigger memory consolidation when store grows large
   try {
     if (store.entries.length > 50 && store.entries.length % 10 === 0) {
@@ -431,6 +452,51 @@ export function getMemoryStats(): object {
  * injectMemoryContext — called before AI responses to inject relevant memories.
  * Returns a formatted string to prepend to the system prompt when memories exist.
  */
+export async function injectMemoryContextAsync(query: string): Promise<string> {
+  if (!query) return "";
+  // v9.10.0: Try neural vector search first (higher quality retrieval)
+  try {
+    const { search: vSearch } = await getVectorOps();
+    if (vSearch) {
+      const vectorResults = await vSearch(query, 5, 0.25);
+      if (vectorResults.length > 0) {
+        const store = loadStore();
+        const entryMap = new Map(store.entries.map(e => [e.id, e]));
+        const sections: Record<string, string[]> = {};
+        for (const { id, text, score } of vectorResults) {
+          if (score < 0.25) continue;
+          const entry = entryMap.get(id);
+          const type = entry?.type ?? "fact";
+          if (!sections[type]) sections[type] = [];
+          sections[type].push(entry?.content ?? text);
+        }
+        if (Object.keys(sections).length > 0) {
+          const typeLabels: Record<string, string> = {
+            preference: "User Preferences & Coding Style",
+            error: "Past Errors & Fixes",
+            project: "Project Context",
+            feedback: "User Feedback",
+            fact: "Known Facts",
+          };
+          const lines = [
+            "## Relevant Memory Context (neural retrieval)",
+            "The following information has been retrieved from long-term memory using semantic similarity.",
+            "",
+          ];
+          for (const [type, contents] of Object.entries(sections)) {
+            lines.push(`### ${typeLabels[type] ?? type}`);
+            for (const content of contents) lines.push(`- ${content}`);
+            lines.push("");
+          }
+          return lines.join("\n");
+        }
+      }
+    }
+  } catch { /* fall through to TF-IDF */ }
+  // Fallback: TF-IDF retrieval
+  return injectMemoryContext(query);
+}
+
 export function injectMemoryContext(query: string): string {
   if (!query) return "";
   const results = searchMemory(query, 5);

@@ -152,5 +152,55 @@
       "mr": 0,
       "gc": 5
     }
+  },
+  {
+    "cycleId": "rsi-1780913644702-whc5vw",
+    "completedAt": "2026-06-08T10:14:36.087Z",
+    "durationMs": 31385,
+    "proposalsApplied": 0,
+    "proposalsRejected": 0,
+    "scoreBefore": 35,
+    "scoreAfter": 35,
+    "scoreDelta": 0,
+    "appliedFiles": [],
+    "benchmarkBefore": {
+      "ts": 15,
+      "pq": 10,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    },
+    "benchmarkAfter": {
+      "ts": 15,
+      "pq": 10,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    }
+  },
+  {
+    "cycleId": "rsi-1780913791763-9mnxux",
+    "completedAt": "2026-06-08T10:16:50.941Z",
+    "durationMs": 19178,
+    "proposalsApplied": 0,
+    "proposalsRejected": 0,
+    "scoreBefore": 35,
+    "scoreAfter": 35,
+    "scoreDelta": 0,
+    "appliedFiles": [],
+    "benchmarkBefore": {
+      "ts": 15,
+      "pq": 10,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    },
+    "benchmarkAfter": {
+      "ts": 15,
+      "pq": 10,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    }
   }
 ]

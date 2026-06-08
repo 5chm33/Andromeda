@@ -244,6 +244,36 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });
 
+  // ── v9.10.0: Git commit log feed (for dashboard) ──────────────────────────────
+  app.get("/api/git/log", async (req, res) => {
+    try {
+      const { execSync } = await import("child_process");
+      const limit = Math.min(parseInt((req.query.limit as string) || "30", 10), 100);
+      const raw = execSync(
+        `git log --format='%H|%s|%an|%ai' -${limit}`,
+        { cwd: process.cwd(), encoding: "utf-8", timeout: 5000 }
+      ).trim();
+      const commits = raw.split("\n").filter(Boolean).map(line => {
+        const parts = line.split("|");
+        return { hash: parts[0]?.slice(0, 8), subject: parts[1], author: parts[2], date: parts[3] };
+      });
+      res.json({ commits });
+    } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+  });
+
+  // ── v9.10.0: Vector memory stats (neural vs TF-IDF) ──────────────────────────
+  app.get("/api/memory/vector-stats", async (_req, res) => {
+    try {
+      const [vmMod, memMod] = await Promise.allSettled([
+        import("../vectorMemory.js"),
+        import("../memory.js"),
+      ]);
+      const vectorStats = vmMod.status === "fulfilled" ? (vmMod.value as any).vectorStats?.() : null;
+      const memStats = memMod.status === "fulfilled" ? (memMod.value as any).getMemoryStats?.() : null;
+      res.json({ vector: vectorStats, memory: memStats, neuralActive: (vectorStats?.entryCount ?? 0) > 0 });
+    } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+  });
+
   // ── v6.19: RAG Pipeline ───────────────────────────────────────────────────────
   try {
     const { registerRagRoutes } = await import("../ragPipeline.js");

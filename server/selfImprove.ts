@@ -218,6 +218,7 @@ function saveProposals(store: ProposalStore): void {
 // ─── Allowed Files ────────────────────────────────────────────────────────────
 
 const ANALYZABLE_FILES = [
+  // ── Application layer ─────────────────────────────────────────────────────
   "ai.ts",
   "grounding.ts",
   "browser.ts",
@@ -227,7 +228,6 @@ const ANALYZABLE_FILES = [
   "biasDetector.ts",
   "codeIntel.ts",
   "streamRouter.ts",
-  "selfImprove.ts",
   "reactEngine.ts",
   "llmProvider.ts",
   "contextManager.ts",
@@ -235,6 +235,17 @@ const ANALYZABLE_FILES = [
   "selfConsistency.ts",
   "contextBus.ts",
   "manifest.ts",
+  // ── v9.10.0: RSI engine itself — true recursive self-improvement ───────────
+  // The guard pipeline (TypeScript check + rollback) prevents runaway self-modification.
+  // The RSI can now improve its own improvement algorithms.
+  "selfImprove.ts",
+  "rsiEngine.ts",
+  "continuousImprover.ts",
+  "selfImproveGuard.ts",
+  "qualityToRSI.ts",
+  "evalDrivenTargeting.ts",
+  "testGenerator.ts",
+  "consensusEngine.ts",
 ];
 
 export function resolveServerFile(filename: string): string | null {
@@ -424,10 +435,18 @@ export async function analyzeAndPropose(
   // This ensures multi-model routing fires automatically without needing a manual area param.
   if (!area) {
     const fn = targetFile.toLowerCase();
-    if (fn.includes("security") || fn.includes("auth") || fn.includes("guard") || fn.includes("constitution")) {
+    // v9.10.0: RSI engine files get "security" tier → Claude (Pro) for self-modification
+    // These files control the improvement pipeline itself — highest stakes, best model.
+    if (fn.includes("selfimprove") || fn.includes("selfimproveguard") ||
+        fn.includes("continuousimprover") || fn.includes("rsiengine") ||
+        fn.includes("qualitytorsi") || fn.includes("evaldriventargeting")) {
+      area = "security"; // → Pro tier → Claude
+    } else if (fn.includes("security") || fn.includes("auth") || fn.includes("guard") || fn.includes("constitution")) {
       area = "security";
     } else if (fn.includes("llm") || fn.includes("model") || fn.includes("provider") || fn.includes("router")) {
       area = "architecture";
+    } else if (fn.includes("consensus") || fn.includes("testgenerator")) {
+      area = "architecture"; // → Standard tier → DeepSeek Reasoner
     } else if (fn.includes("perf") || fn.includes("cache") || fn.includes("optim") || fn.includes("bench")) {
       area = "performance";
     } else if (fn.includes("test") || fn.includes("eval") || fn.includes("spec")) {
@@ -896,23 +915,22 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
     }
   } catch (err) { log.caught("non-fatal", err); }
 
-  // v5.53: Git pre-apply snapshot
+  // v9.10.0: Git pre-apply snapshot — use a lightweight tag instead of a commit
+  // to preserve rollback capability without polluting git log with "pre-improvement snapshot" noise.
+  // Tags are hidden from the default git log view but accessible via `git tag -l 'rsi-snap/*'`.
   try {
     const cwd = path.resolve(getServerDir(), "..");
     const gitEnv = { ...process.env, GIT_AUTHOR_NAME: "Andromeda AI", GIT_AUTHOR_EMAIL: "andromeda@local", GIT_COMMITTER_NAME: "Andromeda AI", GIT_COMMITTER_EMAIL: "andromeda@local" };
-    if (!fs.existsSync(path.join(cwd, ".git"))) {
-      execSync("git init", { cwd, env: gitEnv, encoding: "utf-8" });
-    }
-    execSync("git add -A", { cwd, env: gitEnv, encoding: "utf-8" });
-    const snapshotMsg = `pre-improvement snapshot: before "${(proposal.title || proposalId).replace(/"/g, "'")}" [${new Date().toISOString()}]`;
+    const safeTitle = (proposal.title || proposalId).replace(/[^a-zA-Z0-9_-]/g, "-").slice(0, 40);
+    const tagName = `rsi-snap/${safeTitle}-${Date.now()}`;
     try {
-      // v9.8.5: Remove --allow-empty-message to avoid creating thousands of empty commits if nothing changed
-      execSync(`git commit -m ${JSON.stringify(snapshotMsg)}`, { cwd, env: gitEnv, encoding: "utf-8" });
-      console.log(`[SelfImprove] Git snapshot: ${snapshotMsg}`);
-    } catch (commitErr: any) {
-      const errMsg = String(commitErr.stderr || commitErr.message || commitErr.stdout || "");
-      if (!errMsg.includes("nothing to commit") && !errMsg.includes("clean")) {
-        console.warn("[SelfImprove] Git snapshot warning:", (commitErr as Error).message);
+      execSync(`git tag ${JSON.stringify(tagName)}`, { cwd, env: gitEnv, encoding: "utf-8", stdio: "pipe" });
+      console.log(`[SelfImprove] Git snapshot tag: ${tagName}`);
+    } catch (tagErr: any) {
+      // Non-fatal — tag creation failure should never block the improvement cycle
+      const errMsg = String(tagErr.stderr || tagErr.message || "");
+      if (!errMsg.includes("already exists")) {
+        console.warn("[SelfImprove] Git snapshot tag warning:", errMsg.slice(0, 100));
       }
     }
   } catch (snapErr) {
