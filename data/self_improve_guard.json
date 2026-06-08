@@ -2803,6 +2803,15 @@
       "result": "failure",
       "details": "Proposal already processing",
       "timestamp": "2026-06-08T06:08:26.645Z"
+    },
+    {
+      "id": "audit_1780899626371_zroni3",
+      "action": "apply",
+      "proposalId": "prop_1780899373333_pw4tpk",
+      "filename": "workspace.ts",
+      "result": "failure",
+      "details": "Proposal already processing",
+      "timestamp": "2026-06-08T06:20:26.371Z"
     }
   ]
 }

@@ -1,1 +1,14 @@
-{"constraints":[]}
+{
+  "constraints": [
+    {
+      "id": "lc_1780899626395_sptyj",
+      "pattern": "function safeWorkspacePath(filename: string): string {\n  const wsDir = getWorksp",
+      "reason": "Proposal is already processing",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780899626395,
+      "lastSeenAt": 1780899626395,
+      "active": false
+    }
+  ],
+  "lastUpdatedAt": 1780899626395
+}
