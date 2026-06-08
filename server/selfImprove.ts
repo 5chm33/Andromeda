@@ -89,6 +89,16 @@ type ProposalStore = {
 
 const _seenProposalHashes = new Set<string>();
 
+// ─── v7.2: Re-entry guard — prevents async mutual recursion between applyProposal ↔ guardedApply ──
+// applyProposal calls guardedApply, which calls applyProposal again (inner call).
+// Without this guard, the two async functions form an infinite loop at ~3 iter/sec.
+const _applyingProposals = new Set<string>();
+
+// ─── v7.2: Apply-failure counter — marks proposals rejected after N consecutive failures ──
+// Stored in-memory (not persisted) so it resets on restart, giving proposals a fresh chance.
+const _applyFailCount = new Map<string, number>();
+const MAX_APPLY_FAILURES = 5;
+
 function proposalHash(targetFile: string, title: string): string {
   return `${path.basename(targetFile)}::${title.toLowerCase().trim()}`;
 }
@@ -745,13 +755,29 @@ Do NOT include any forbidden patterns listed above.`,
 }
 
 export async function applyProposal(proposalId: string): Promise<{ success: boolean; message: string }> {
+  // v7.2: Re-entry guard — break async mutual recursion between applyProposal ↔ guardedApply
+  if (_applyingProposals.has(proposalId)) {
+    return { success: false, message: `Re-entry blocked: proposal ${proposalId} is already being applied` };
+  }
+
   const store = loadProposals();
   const proposal = store.proposals.find(p => p.id === proposalId);
 
   if (!proposal) return { success: false, message: "Proposal not found" };
   if (proposal.status !== "pending") return { success: false, message: `Proposal is already ${proposal.status}` };
 
-  // v5.48: Track retry count to prevent infinite retry loops
+  // v7.2: Apply-failure counter — reject proposals that fail MAX_APPLY_FAILURES times in a row
+  const failCount = _applyFailCount.get(proposalId) || 0;
+  if (failCount >= MAX_APPLY_FAILURES) {
+    proposal.status = "rejected" as any;
+    (proposal as any)._failReason = `Max apply failures (${MAX_APPLY_FAILURES}) reached — proposal permanently rejected`;
+    saveProposals(store);
+    _applyFailCount.delete(proposalId);
+    console.warn(`[SelfImprove] Proposal ${proposalId} permanently rejected after ${failCount} consecutive apply failures`);
+    return { success: false, message: `Proposal rejected after ${failCount} consecutive apply failures` };
+  }
+
+  // v5.48: Track retry count to prevent infinite retry loops (guard-exception path)
   const retryCount = (proposal as any)._retryCount || 0;
   if (retryCount >= 3) {
     proposal.status = "rejected" as any;
@@ -804,7 +830,9 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
       execSync(`git commit --allow-empty-message -m ${JSON.stringify(snapshotMsg)}`, { cwd, env: gitEnv, encoding: "utf-8" });
       console.log(`[SelfImprove] Git snapshot: ${snapshotMsg}`);
     } catch (commitErr: any) {
-      if (!String(commitErr.stderr || commitErr.message).includes("nothing to commit")) {
+      const errStr = String(commitErr.stderr || commitErr.message || "");
+      // Suppress expected non-errors: nothing to commit = clean working tree (normal)
+      if (!errStr.includes("nothing to commit") && !errStr.includes("nothing added to commit")) {
         console.warn("[SelfImprove] Git snapshot warning:", (commitErr as Error).message);
       }
     }
@@ -818,11 +846,15 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
     createRollbackPoint([proposal.targetFile], `Before proposal ${proposalId}: ${proposal.title || "self-improvement"}`, "self-improve");
   } catch (err) { log.caught("non-fatal", err); }
 
+  // v7.2: Mark this proposal as in-flight to prevent re-entry from guardedApply's inner applyProposal call
+  _applyingProposals.add(proposalId);
   try {
     const { guardedApply } = await import("./selfImproveGuard");
     const guardResult = await guardedApply(proposalId);
 
     if (guardResult.success) {
+      _applyingProposals.delete(proposalId);
+      _applyFailCount.delete(proposalId); // reset failure counter on success
       proposal.status = "applied";
 
       // v6.29: Apply secondary file changes atomically.
@@ -963,12 +995,17 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         }
       } catch { /* non-fatal */ }
 
+      _applyingProposals.delete(proposalId);
+      // v7.2: Increment failure counter on guard rejection so proposal is eventually retired
+      _applyFailCount.set(proposalId, (_applyFailCount.get(proposalId) || 0) + 1);
       return {
         success: false,
         message: guardResult.message || "Guard rejected the proposal (syntax check or test failure)",
       };
     }
   } catch (guardErr) {
+    _applyingProposals.delete(proposalId);
+    _applyFailCount.set(proposalId, (_applyFailCount.get(proposalId) || 0) + 1);
     (proposal as any)._retryCount = ((proposal as any)._retryCount || 0) + 1;
     if ((proposal as any)._retryCount >= 3) {
       proposal.status = "rejected" as any;
