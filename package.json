@@ -1,6 +1,6 @@
 {
   "name": "andromeda",
-  "version": "9.12.0",
+  "version": "9.13.0",
   "type": "module",
   "license": "MIT",
   "scripts": {
@@ -112,7 +112,7 @@
     "@types/react": "^19.2.1",
     "@types/react-dom": "^19.2.1",
     "@vitejs/plugin-react": "^5.0.4",
-    "@vitest/coverage-v8": "^4.1.8",
+    "@vitest/coverage-v8": "^2.1.9",
     "autoprefixer": "^10.4.20",
     "cross-env": "^10.1.0",
     "drizzle-kit": "^0.31.4",

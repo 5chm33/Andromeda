@@ -9,6 +9,7 @@ import Search from "./pages/Search";
 import History from "./pages/History";
 import Chat from "./pages/Chat";
 import RsiDashboard from "./pages/RsiDashboard";
+import { ProposalNotifier } from "./components/rsi/ProposalNotifier";
 
 function Router() {
   return (
@@ -39,6 +40,7 @@ function App() {
               },
             }}
           />
+          <ProposalNotifier />
           <Router />
         </TooltipProvider>
       </ThemeProvider>
