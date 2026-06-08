@@ -27,5 +27,80 @@
       "Apply failed for prop_1780844908157_qi2cet: Syntax check failed — proposal not applied",
       "Apply failed for prop_1779762103380_ozxr4x: Proposal has expired and was auto-rejected"
     ]
+  },
+  {
+    "cycleId": "rsi-1780904748419-lhn45v",
+    "completedAt": "2026-06-08T07:46:49.960Z",
+    "durationMs": 61541,
+    "proposalsApplied": 0,
+    "proposalsRejected": 0,
+    "scoreBefore": 40,
+    "scoreAfter": 40,
+    "scoreDelta": 0,
+    "appliedFiles": [],
+    "benchmarkBefore": {
+      "ts": 20,
+      "pq": 10,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    },
+    "benchmarkAfter": {
+      "ts": 20,
+      "pq": 10,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    }
+  },
+  {
+    "cycleId": "rsi-1780904810335-bs5iy0",
+    "completedAt": "2026-06-08T07:47:46.419Z",
+    "durationMs": 56084,
+    "proposalsApplied": 0,
+    "proposalsRejected": 0,
+    "scoreBefore": 40,
+    "scoreAfter": 40,
+    "scoreDelta": 0,
+    "appliedFiles": [],
+    "benchmarkBefore": {
+      "ts": 20,
+      "pq": 10,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    },
+    "benchmarkAfter": {
+      "ts": 20,
+      "pq": 10,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    }
+  },
+  {
+    "cycleId": "rsi-1780905165169-903qgw",
+    "completedAt": "2026-06-08T07:53:46.515Z",
+    "durationMs": 61346,
+    "proposalsApplied": 0,
+    "proposalsRejected": 0,
+    "scoreBefore": 40,
+    "scoreAfter": 40,
+    "scoreDelta": 0,
+    "appliedFiles": [],
+    "benchmarkBefore": {
+      "ts": 20,
+      "pq": 10,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    },
+    "benchmarkAfter": {
+      "ts": 20,
+      "pq": 10,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    }
   }
 ]

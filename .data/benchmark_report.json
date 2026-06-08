@@ -1,49 +1,49 @@
 {
-  "timestamp": 1780904134704,
-  "runDurationMs": 170,
+  "timestamp": 1780905226806,
+  "runDurationMs": 143,
   "results": [
     {
       "name": "memory_keyword_search",
       "category": "memory",
-      "durationMs": 168.57,
-      "timestamp": 1780904134703
+      "durationMs": 139.96,
+      "timestamp": 1780905226803
     },
     {
       "name": "tool_registry_lookup",
       "category": "tool_latency",
       "durationMs": 0.01,
-      "timestamp": 1780904134703
+      "timestamp": 1780905226804
     },
     {
       "name": "file_write_10kb",
       "category": "code_execution",
-      "durationMs": 0.09,
-      "timestamp": 1780904134703
+      "durationMs": 0.2,
+      "timestamp": 1780905226804
     },
     {
       "name": "file_read_10kb",
       "category": "code_execution",
-      "durationMs": 0.03,
-      "timestamp": 1780904134703
+      "durationMs": 0.05,
+      "timestamp": 1780905226804
     },
     {
       "name": "context_token_estimation_50msg",
       "category": "startup",
-      "durationMs": 0.14,
-      "timestamp": 1780904134704
+      "durationMs": 0.32,
+      "timestamp": 1780905226805
     },
     {
       "name": "json_parse_large_object",
       "category": "code_execution",
-      "durationMs": 0.11,
-      "timestamp": 1780904134704,
+      "durationMs": 0.19,
+      "timestamp": 1780905226806,
       "metadata": {
-        "sizeBytes": 28930
+        "sizeBytes": 28929
       }
     }
   ],
   "baselines": {
-    "memory_keyword_search": 145.01,
+    "memory_keyword_search": 139.96,
     "tool_registry_lookup": 0.01,
     "file_write_10kb": 0.07,
     "file_read_10kb": 0.02,
@@ -52,40 +52,33 @@
   },
   "degradations": [
     {
-      "benchmark": "memory_keyword_search",
-      "baseline": 145.01,
-      "current": 168.57,
-      "degradationPercent": 16,
-      "severity": "warning"
-    },
-    {
       "benchmark": "file_write_10kb",
       "baseline": 0.07,
-      "current": 0.09,
-      "degradationPercent": 29,
-      "severity": "warning"
+      "current": 0.2,
+      "degradationPercent": 186,
+      "severity": "critical"
     },
     {
       "benchmark": "file_read_10kb",
       "baseline": 0.02,
-      "current": 0.03,
-      "degradationPercent": 50,
+      "current": 0.05,
+      "degradationPercent": 150,
       "severity": "critical"
     },
     {
       "benchmark": "context_token_estimation_50msg",
       "baseline": 0.01,
-      "current": 0.14,
-      "degradationPercent": 1300,
+      "current": 0.32,
+      "degradationPercent": 3100,
       "severity": "critical"
     },
     {
       "benchmark": "json_parse_large_object",
       "baseline": 0.09,
-      "current": 0.11,
-      "degradationPercent": 22,
-      "severity": "warning"
+      "current": 0.19,
+      "degradationPercent": 111,
+      "severity": "critical"
     }
   ],
-  "overallScore": 30
+  "overallScore": 20
 }

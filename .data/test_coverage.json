@@ -1,5 +1,5 @@
 {
-  "timestamp": 1780904089643,
+  "timestamp": 1780905193447,
   "totalModules": 209,
   "testedModules": 176,
   "untestedModules": 33,
@@ -2035,43 +2035,6 @@
         "verifyContinuity",
         "checkPrincipleViolation",
         "IDENTITY"
-      ],
-      "coveragePercent": 25
-    },
-    {
-      "filePath": "server/llmProvider.ts",
-      "fileName": "llmProvider.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/llmProvider.test.ts",
-      "exportedFunctions": [
-        "getProviderApiKey",
-        "switchProvider",
-        "getActiveProvider",
-        "setActiveProvider",
-        "listProviders",
-        "getProviderForTier",
-        "tierForArea",
-        "chatCompletion",
-        "getBackgroundProvider",
-        "backgroundChatCompletion",
-        "backgroundSimpleCompletion",
-        "simpleChatCompletion"
-      ],
-      "testedFunctions": [
-        "getActiveProvider",
-        "setActiveProvider",
-        "listProviders"
-      ],
-      "untestedFunctions": [
-        "getProviderApiKey",
-        "switchProvider",
-        "getProviderForTier",
-        "tierForArea",
-        "chatCompletion",
-        "getBackgroundProvider",
-        "backgroundChatCompletion",
-        "backgroundSimpleCompletion",
-        "simpleChatCompletion"
       ],
       "coveragePercent": 25
     },
@@ -4146,6 +4109,43 @@
       "untestedFunctions": [
         "runEvaluation",
         "registerEvalRoutes"
+      ],
+      "coveragePercent": 67
+    },
+    {
+      "filePath": "server/llmProvider.ts",
+      "fileName": "llmProvider.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/llmProvider.test.ts",
+      "exportedFunctions": [
+        "getProviderApiKey",
+        "switchProvider",
+        "getActiveProvider",
+        "setActiveProvider",
+        "listProviders",
+        "getProviderForTier",
+        "tierForArea",
+        "chatCompletion",
+        "getBackgroundProvider",
+        "backgroundChatCompletion",
+        "backgroundSimpleCompletion",
+        "simpleChatCompletion"
+      ],
+      "testedFunctions": [
+        "getProviderApiKey",
+        "switchProvider",
+        "getActiveProvider",
+        "setActiveProvider",
+        "listProviders",
+        "getProviderForTier",
+        "tierForArea",
+        "getBackgroundProvider"
+      ],
+      "untestedFunctions": [
+        "chatCompletion",
+        "backgroundChatCompletion",
+        "backgroundSimpleCompletion",
+        "simpleChatCompletion"
       ],
       "coveragePercent": 67
     },
