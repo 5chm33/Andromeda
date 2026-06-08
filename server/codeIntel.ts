@@ -377,20 +377,24 @@ export function generateUnifiedDiff(
     `+++ b/${fileName}`,
   ];
 
-  let lineNum = 1;
+  let oldLineNum = 1;
+  let newLineNum = 1;
   for (const change of changes) {
     if (change.added) {
-      diff.push(`@@ -${lineNum} +${lineNum} @@`);
+      diff.push(`@@ -${oldLineNum} +${newLineNum} @@`);
       for (const line of change.value.split("\n")) {
         if (line) diff.push(`+${line}`);
       }
+      newLineNum += change.count;
     } else if (change.removed) {
-      diff.push(`@@ -${lineNum} +${lineNum} @@`);
+      diff.push(`@@ -${oldLineNum} +${newLineNum} @@`);
       for (const line of change.value.split("\n")) {
         if (line) diff.push(`-${line}`);
       }
+      oldLineNum += change.count;
     } else {
-      lineNum += change.count;
+      oldLineNum += change.count;
+      newLineNum += change.count;
     }
   }
 
