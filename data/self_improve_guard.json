@@ -2560,6 +2560,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/multiAgent.ts(185,49): error TS2307: Cannot find module './llmProvider.js' or its corresponding type declarations.\ndata/tmp_syntax/multiAgent.ts(254,9): error TS2339: Property 'write' ",
       "timestamp": "2026-06-08T02:10:01.970Z"
+    },
+    {
+      "id": "audit_1780884603413_g312tc",
+      "action": "apply",
+      "proposalId": "prop_1780859780097_ubmdix",
+      "filename": "manifest.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/manifest.ts(14,29): error TS2307: Cannot find module './tools' or its corresponding type declarations.\ndata/tmp_syntax/manifest.ts(15,50): error TS2307: Cannot find module './llmProvid",
+      "timestamp": "2026-06-08T02:10:03.413Z"
     }
   ]
 }
