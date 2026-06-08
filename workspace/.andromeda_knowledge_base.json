@@ -5321,6 +5321,22 @@
       "confidence": 0.9,
       "createdAt": 1780900706554,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780901016466_nwkruf",
+      "category": "antipattern",
+      "title": "Failure: Extract version constant to eliminate duplication",
+      "description": "Failed to apply \"Extract version constant to eliminate duplication\" to manifest.ts. Reason: Proposal is already processing. Avoid similar changes.",
+      "context": "self-modify manifest.ts readability",
+      "outcome": "failure: Proposal is already processing",
+      "lesson": "Avoid for manifest.ts: Extract version constant to eliminate duplication — causes Proposal is already processing",
+      "applicableTo": [
+        "manifest.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780901016466,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5463,5 +5479,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T06:38:26.554Z"
+  "_lastUpdated": "2026-06-08T06:43:36.466Z"
 }

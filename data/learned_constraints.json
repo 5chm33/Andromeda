@@ -13,10 +13,10 @@
       "id": "lc_1780899626551_2fde3",
       "pattern": "return {\n    version: VERSION,\n    identity: \"Andromeda\",\n    generatedAt: new",
       "reason": "Proposal is already processing",
-      "rejectionCount": 1,
+      "rejectionCount": 2,
       "firstSeenAt": 1780899626551,
-      "lastSeenAt": 1780899626551,
-      "active": false
+      "lastSeenAt": 1780901016469,
+      "active": true
     },
     {
       "id": "lc_1780899973335_tl3mh",
@@ -91,5 +91,5 @@
       "active": false
     }
   ],
-  "lastUpdatedAt": 1780900706556
+  "lastUpdatedAt": 1780901016469
 }
