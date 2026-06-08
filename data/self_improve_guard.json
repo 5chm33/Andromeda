@@ -2371,6 +2371,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/grounding.ts(22,35): error TS2307: Cannot find module '../drizzle/schema' or its corresponding type declarations.\n",
       "timestamp": "2026-06-07T20:56:12.725Z"
+    },
+    {
+      "id": "audit_1780877179693_zs3mi9",
+      "action": "apply",
+      "proposalId": "prop_1780865475705_e6285f",
+      "filename": "grounding.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/grounding.ts(22,35): error TS2307: Cannot find module '../drizzle/schema' or its corresponding type declarations.\n",
+      "timestamp": "2026-06-08T00:06:19.693Z"
     }
   ]
 }

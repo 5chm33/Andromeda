@@ -141,7 +141,15 @@ Focus on capabilities that: (1) combine existing tools in new ways, (2) address 
     const jsonMatch = content.match(/\[[\s\S]*\]/);
     if (!jsonMatch) return;
 
-    const proposals: Omit<CapabilityProposal, "id" | "timestamp" | "status">[] = JSON.parse(jsonMatch[0]);
+    // v9.4.0: Wrap JSON.parse in try/catch — LLM may return malformed JSON
+    // (e.g. trailing commas, unescaped newlines, truncated output)
+    let proposals: Omit<CapabilityProposal, "id" | "timestamp" | "status">[];
+    try {
+      proposals = JSON.parse(jsonMatch[0]);
+    } catch (parseErr) {
+      console.warn("[CapabilityDiscovery] JSON parse failed for LLM response — skipping cycle:", (parseErr as Error).message);
+      return;
+    }
 
     for (const proposal of proposals) {
       const stored = storeCapabilityProposal({ ...proposal, status: "proposed" });
