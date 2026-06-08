@@ -1,5 +1,5 @@
 {
-  "timestamp": 1780895236333,
+  "timestamp": 1780897542142,
   "totalModules": 209,
   "testedModules": 176,
   "untestedModules": 33,
@@ -666,24 +666,6 @@
       "testedFunctions": [],
       "untestedFunctions": [
         "executeCode"
-      ],
-      "coveragePercent": 0
-    },
-    {
-      "filePath": "server/contextManager.ts",
-      "fileName": "contextManager.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/contextManager.test.ts",
-      "exportedFunctions": [
-        "estimateTokens",
-        "estimateMessageTokens",
-        "ContextManager"
-      ],
-      "testedFunctions": [],
-      "untestedFunctions": [
-        "estimateTokens",
-        "estimateMessageTokens",
-        "ContextManager"
       ],
       "coveragePercent": 0
     },
@@ -1881,29 +1863,6 @@
       "coveragePercent": 18
     },
     {
-      "filePath": "server/biasDetector.ts",
-      "fileName": "biasDetector.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/biasDetector.test.ts",
-      "exportedFunctions": [
-        "getKnownBiasProfile",
-        "annotateSources",
-        "analyzeDiversity",
-        "detectCensorshipSignals",
-        "buildHonestyPromptAddendum"
-      ],
-      "testedFunctions": [
-        "getKnownBiasProfile"
-      ],
-      "untestedFunctions": [
-        "annotateSources",
-        "analyzeDiversity",
-        "detectCensorshipSignals",
-        "buildHonestyPromptAddendum"
-      ],
-      "coveragePercent": 20
-    },
-    {
       "filePath": "server/taskPlanner.ts",
       "fileName": "taskPlanner.ts",
       "hasTestFile": true,
@@ -3097,59 +3056,6 @@
       "coveragePercent": 40
     },
     {
-      "filePath": "server/contextBus.ts",
-      "fileName": "contextBus.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/contextBus.test.ts",
-      "exportedFunctions": [
-        "createChannel",
-        "listChannels",
-        "deleteChannel",
-        "publish",
-        "subscribe",
-        "unsubscribe",
-        "unsubscribeAgent",
-        "query",
-        "markRead",
-        "getUnreadCount",
-        "claimWork",
-        "releaseWork",
-        "getActiveClaims",
-        "getContextSummaryForAgent",
-        "getThread",
-        "getBusStats",
-        "resetBus",
-        "persistBus",
-        "loadPersistedBus",
-        "getContextBusStats"
-      ],
-      "testedFunctions": [
-        "createChannel",
-        "listChannels",
-        "deleteChannel",
-        "publish",
-        "subscribe",
-        "unsubscribe",
-        "unsubscribeAgent",
-        "query"
-      ],
-      "untestedFunctions": [
-        "markRead",
-        "getUnreadCount",
-        "claimWork",
-        "releaseWork",
-        "getActiveClaims",
-        "getContextSummaryForAgent",
-        "getThread",
-        "getBusStats",
-        "resetBus",
-        "persistBus",
-        "loadPersistedBus",
-        "getContextBusStats"
-      ],
-      "coveragePercent": 40
-    },
-    {
       "filePath": "server/llmRouter.ts",
       "fileName": "llmRouter.ts",
       "hasTestFile": true,
@@ -3861,6 +3767,29 @@
       "coveragePercent": 60
     },
     {
+      "filePath": "server/biasDetector.ts",
+      "fileName": "biasDetector.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/biasDetector.test.ts",
+      "exportedFunctions": [
+        "getKnownBiasProfile",
+        "annotateSources",
+        "analyzeDiversity",
+        "detectCensorshipSignals",
+        "buildHonestyPromptAddendum"
+      ],
+      "testedFunctions": [
+        "getKnownBiasProfile",
+        "annotateSources",
+        "analyzeDiversity"
+      ],
+      "untestedFunctions": [
+        "detectCensorshipSignals",
+        "buildHonestyPromptAddendum"
+      ],
+      "coveragePercent": 60
+    },
+    {
       "filePath": "server/codeQualityMonitor.ts",
       "fileName": "codeQualityMonitor.ts",
       "hasTestFile": true,
@@ -4045,6 +3974,35 @@
       "coveragePercent": 60
     },
     {
+      "filePath": "server/memory.ts",
+      "fileName": "memory.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/memory.test.ts",
+      "exportedFunctions": [
+        "storeMemory",
+        "searchMemory",
+        "listMemories",
+        "deleteMemory",
+        "getMemoryStats",
+        "injectMemoryContext",
+        "autoExtractMemories",
+        "seedInitialMemoriesIfEmpty"
+      ],
+      "testedFunctions": [
+        "listMemories",
+        "deleteMemory",
+        "getMemoryStats",
+        "injectMemoryContext",
+        "seedInitialMemoriesIfEmpty"
+      ],
+      "untestedFunctions": [
+        "storeMemory",
+        "searchMemory",
+        "autoExtractMemories"
+      ],
+      "coveragePercent": 63
+    },
+    {
       "filePath": "server/observability.ts",
       "fileName": "observability.ts",
       "hasTestFile": true,
@@ -4143,6 +4101,25 @@
       "coveragePercent": 67
     },
     {
+      "filePath": "server/contextManager.ts",
+      "fileName": "contextManager.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/contextManager.test.ts",
+      "exportedFunctions": [
+        "estimateTokens",
+        "estimateMessageTokens",
+        "ContextManager"
+      ],
+      "testedFunctions": [
+        "estimateTokens",
+        "estimateMessageTokens"
+      ],
+      "untestedFunctions": [
+        "ContextManager"
+      ],
+      "coveragePercent": 67
+    },
+    {
       "filePath": "server/evalFramework.ts",
       "fileName": "evalFramework.ts",
       "hasTestFile": true,
@@ -4164,25 +4141,6 @@
       "untestedFunctions": [
         "runEvaluation",
         "registerEvalRoutes"
-      ],
-      "coveragePercent": 67
-    },
-    {
-      "filePath": "server/manifest.ts",
-      "fileName": "manifest.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/manifest.test.ts",
-      "exportedFunctions": [
-        "generateManifest",
-        "getManifestPrompt",
-        "getFullManifest"
-      ],
-      "testedFunctions": [
-        "getManifestPrompt",
-        "getFullManifest"
-      ],
-      "untestedFunctions": [
-        "generateManifest"
       ],
       "coveragePercent": 67
     },
@@ -4250,35 +4208,6 @@
         "getToolsByCategory"
       ],
       "coveragePercent": 71
-    },
-    {
-      "filePath": "server/memory.ts",
-      "fileName": "memory.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/memory.test.ts",
-      "exportedFunctions": [
-        "storeMemory",
-        "searchMemory",
-        "listMemories",
-        "deleteMemory",
-        "getMemoryStats",
-        "injectMemoryContext",
-        "autoExtractMemories",
-        "seedInitialMemoriesIfEmpty"
-      ],
-      "testedFunctions": [
-        "storeMemory",
-        "searchMemory",
-        "listMemories",
-        "deleteMemory",
-        "getMemoryStats",
-        "injectMemoryContext"
-      ],
-      "untestedFunctions": [
-        "autoExtractMemories",
-        "seedInitialMemoriesIfEmpty"
-      ],
-      "coveragePercent": 75
     },
     {
       "filePath": "server/runtimeConfig.ts",
@@ -4377,6 +4306,59 @@
       "coveragePercent": 80
     },
     {
+      "filePath": "server/contextBus.ts",
+      "fileName": "contextBus.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/contextBus.test.ts",
+      "exportedFunctions": [
+        "createChannel",
+        "listChannels",
+        "deleteChannel",
+        "publish",
+        "subscribe",
+        "unsubscribe",
+        "unsubscribeAgent",
+        "query",
+        "markRead",
+        "getUnreadCount",
+        "claimWork",
+        "releaseWork",
+        "getActiveClaims",
+        "getContextSummaryForAgent",
+        "getThread",
+        "getBusStats",
+        "resetBus",
+        "persistBus",
+        "loadPersistedBus",
+        "getContextBusStats"
+      ],
+      "testedFunctions": [
+        "createChannel",
+        "listChannels",
+        "deleteChannel",
+        "unsubscribe",
+        "unsubscribeAgent",
+        "query",
+        "markRead",
+        "getUnreadCount",
+        "claimWork",
+        "releaseWork",
+        "getActiveClaims",
+        "getContextSummaryForAgent",
+        "getThread",
+        "getBusStats",
+        "resetBus",
+        "persistBus",
+        "loadPersistedBus"
+      ],
+      "untestedFunctions": [
+        "publish",
+        "subscribe",
+        "getContextBusStats"
+      ],
+      "coveragePercent": 85
+    },
+    {
       "filePath": "server/memoryForgettingCurve.ts",
       "fileName": "memoryForgettingCurve.ts",
       "hasTestFile": true,
@@ -4433,6 +4415,24 @@
         "executeCodeWithWorkspace"
       ],
       "coveragePercent": 89
+    },
+    {
+      "filePath": "server/manifest.ts",
+      "fileName": "manifest.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/manifest.test.ts",
+      "exportedFunctions": [
+        "generateManifest",
+        "getManifestPrompt",
+        "getFullManifest"
+      ],
+      "testedFunctions": [
+        "generateManifest",
+        "getManifestPrompt",
+        "getFullManifest"
+      ],
+      "untestedFunctions": [],
+      "coveragePercent": 100
     },
     {
       "filePath": "server/routes/agentRoutes.ts",

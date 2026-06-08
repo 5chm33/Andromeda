@@ -109,12 +109,26 @@
       "createdAt": 1780897148286,
       "lastReferencedAt": 1780897148286,
       "referenceCount": 0
+    },
+    {
+      "id": "sl_1780897354809_xrwuvj",
+      "category": "modification",
+      "title": "Applied: Extract eviction logic into a dedicated function",
+      "content": "Successfully applied improvement to contextBus.ts: Extract eviction logic into a dedicated function",
+      "context": "category: readability, impact: medium, confidence: 0.95",
+      "confidence": 0.9,
+      "applicableTo": [
+        "contextBus.ts"
+      ],
+      "createdAt": 1780897354809,
+      "lastReferencedAt": 1780897354809,
+      "referenceCount": 0
     }
   ],
   "baselines": [],
   "errorPatterns": [],
   "metadata": {
-    "totalLearnings": 8,
+    "totalLearnings": 9,
     "totalReferences": 0,
     "lastConsolidation": 1780537317493,
     "version": "5.28"

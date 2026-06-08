@@ -806,6 +806,10 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
   if (!proposal) return { success: false, message: "Proposal not found" };
   if (proposal.status !== "pending") return { success: false, message: `Proposal is already ${proposal.status}` };
 
+  // v9.8.5: Mark as processing immediately to prevent concurrent applies
+  proposal.status = "processing" as any;
+  saveProposals(store);
+
   // v5.48: Track retry count to prevent infinite retry loops
   const retryCount = (proposal as any)._retryCount || 0;
   if (retryCount >= 3) {
@@ -840,7 +844,8 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
   try {
     const { getCrossSessionInsights } = await import("./selfKnowledgeBase");
     const insights = getCrossSessionInsights(proposal.targetFile);
-    if (insights.totalAttempts > 3 && insights.successRate < 0.3) {
+    // v9.8.5: Increase totalAttempts threshold to 10 to avoid noise during initial failures
+    if (insights.totalAttempts > 10 && insights.successRate < 0.3) {
       console.warn(`[SelfImprove] Low success rate (${(insights.successRate * 100).toFixed(0)}%) for ${proposal.targetFile}. Proceeding with caution.`);
     }
   } catch (err) { log.caught("non-fatal", err); }
@@ -855,11 +860,12 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
     execSync("git add -A", { cwd, env: gitEnv, encoding: "utf-8" });
     const snapshotMsg = `pre-improvement snapshot: before "${(proposal.title || proposalId).replace(/"/g, "'")}" [${new Date().toISOString()}]`;
     try {
-      // v7.0.1: Use execFileSync with args array to avoid shell word-splitting on message
-      execSync(`git commit --allow-empty-message -m ${JSON.stringify(snapshotMsg)}`, { cwd, env: gitEnv, encoding: "utf-8" });
+      // v9.8.5: Remove --allow-empty-message to avoid creating thousands of empty commits if nothing changed
+      execSync(`git commit -m ${JSON.stringify(snapshotMsg)}`, { cwd, env: gitEnv, encoding: "utf-8" });
       console.log(`[SelfImprove] Git snapshot: ${snapshotMsg}`);
     } catch (commitErr: any) {
-      if (!String(commitErr.stderr || commitErr.message).includes("nothing to commit")) {
+      const errMsg = String(commitErr.stderr || commitErr.message || commitErr.stdout || "");
+      if (!errMsg.includes("nothing to commit") && !errMsg.includes("clean")) {
         console.warn("[SelfImprove] Git snapshot warning:", (commitErr as Error).message);
       }
     }

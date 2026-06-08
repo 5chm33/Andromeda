@@ -327,7 +327,10 @@ function runSyntaxCheck(filename: string, proposedContent: string, originalSnipp
       // common syntax errors (unmatched braces, unclosed strings) without requiring any binary.
       const isTscMissing = /ENOENT|not recognized|not found|cannot find/i.test(tscOutput);
       if (isTscMissing) {
-        console.warn(`[Guard] tsc binary not found — using lightweight JS syntax fallback for ${filename}`);
+        if (!(global as any)._tscWarningEmitted) {
+          console.warn(`[Guard] tsc binary not found — using lightweight JS syntax fallback`);
+          (global as any)._tscWarningEmitted = true;
+        }
         return runLightweightSyntaxCheck(contentToCheck);
       }
       return { pass: false, errors: tscOutput.slice(0, 1000) };

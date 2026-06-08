@@ -72,16 +72,16 @@ export async function runEvalDrivenTargeting(): Promise<number> {
         const current = result.durationMs;
         const baseline = persistedBaselines[benchmark];
         
-        if (!baseline) {
-          // First time seeing this benchmark — establish baseline
-          persistedBaselines[benchmark] = current;
+        if (!baseline || baseline < 5) {
+          // First time seeing this benchmark, or baseline is too small to yield meaningful percentages — establish baseline
+          persistedBaselines[benchmark] = Math.max(current, 5); // Minimum 5ms baseline to prevent huge % spikes
           baselinesUpdated = true;
         } else {
           // Compare against persisted baseline
           const degradationPercent = (current - baseline) / baseline;
           
-          // Only trigger if degraded by >5%
-          if (degradationPercent > 0.05) {
+          // Only trigger if degraded by >15% (5% is too noisy for small ms values)
+          if (degradationPercent > 0.15) {
             const category = benchmark.split("_")[0] as string;
             const files = CATEGORY_FILE_MAP[category] || [];
             for (const f of files) targetFiles.add(f);

@@ -311,28 +311,13 @@ async function runCycle(): Promise<CycleResult> {
           const randomFile = files[Math.floor(Math.random() * files.length)];
           await analyzeAndPropose(randomFile);
 
-          // Check if any high-confidence proposals can be auto-applied
           const pending = listProposals("pending");
-          const highConfidence = pending.filter((p: any) => p.confidence >= 0.85);
-          if (highConfidence.length > 0) {
-            const applyResult = await applyProposal(highConfidence[0].id);
-            if (applyResult.success) {
-              result.improvementsApplied++;
-              result.actions.push({
-                type: "improve",
-                description: `Auto-applied improvement to ${randomFile}: ${applyResult.message}`,
-                success: true,
-                duration: Date.now() - improveStart,
-              });
-            }
-          } else {
-            result.actions.push({
-              type: "improve",
-              description: `Analyzed ${randomFile} — ${pending.length} proposals pending`,
-              success: true,
-              duration: Date.now() - improveStart,
-            });
-          }
+          result.actions.push({
+            type: "improve",
+            description: `Analyzed ${randomFile} — ${pending.length} proposals pending`,
+            success: true,
+            duration: Date.now() - improveStart,
+          });
           // v7.1.3: Reset circuit breaker on successful analyze/propose run
           recordSubsystemSuccess("selfImprove");
           actionsRemaining--;

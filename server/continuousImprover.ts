@@ -122,21 +122,9 @@ async function runImprovementCycle(): Promise<CycleResult> {
       result.errors.push(`Quality→RSI feed failed: ${(err as Error).message}`);
     }
 
-    // v5.32: Auto-apply high-confidence proposals from previous cycles
-    // v9.7.0: hoisted to outer scope so PR trigger can reference applied results
+    // v9.8.5: Removed autoApplyHighConfidence to centralize all apply logic
+    // in the pending proposals loop below, preventing race conditions.
     let autoResults: any[] = [];
-    try {
-      const { autoApplyHighConfidence } = await import("./selfImprove");
-      autoResults = await autoApplyHighConfidence();
-      const autoApplied = autoResults.filter((r: any) => r.applied);
-      if (autoApplied.length > 0) {
-        result.proposalsApplied += autoApplied.length;
-        totalApplied += autoApplied.length;
-        console.log(`[ContinuousImprover] Auto-applied ${autoApplied.length} high-confidence proposals`);
-      }
-    } catch (err) {
-      result.errors.push(`Auto-apply check failed: ${(err as Error).message}`);
-    }
 
     // 3. Get pending proposals
     const proposals = listProposals().filter((p: any) => p.status === "pending");

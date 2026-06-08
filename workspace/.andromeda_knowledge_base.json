@@ -5081,6 +5081,22 @@
       "confidence": 0.8,
       "createdAt": 1780897148284,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780897354802_nrrb6i",
+      "category": "success",
+      "title": "Success: Extract eviction logic into a dedicated function",
+      "description": "Successfully applied \"Extract eviction logic into a dedicated function\" to contextBus.ts (readability). Health: improved.",
+      "context": "self-modify contextBus.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for contextBus.ts: Extract eviction logic into a dedicated function",
+      "applicableTo": [
+        "contextBus.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780897354802,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5223,5 +5239,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T05:39:08.284Z"
+  "_lastUpdated": "2026-06-08T05:42:34.802Z"
 }
