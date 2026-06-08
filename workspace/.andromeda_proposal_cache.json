@@ -34,7 +34,8 @@
     "grounding.ts::fix unbalanced brackets in extractfactualclaims refactor",
     "workspace.ts::consolidate workspace directory logic into single function",
     "adaptiveRouter.ts::remove redundant env var check in selectprovider",
-    "browser.ts::extract ssrf validation into shared helper"
+    "browser.ts::extract ssrf validation into shared helper",
+    "manifest.ts::extract version constant to eliminate duplication"
   ],
   "autoApplyHistory": [
     1780896575988,

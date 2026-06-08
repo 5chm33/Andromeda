@@ -5305,6 +5305,22 @@
       "confidence": 0.9,
       "createdAt": 1780900704839,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780900706554_8bmvcy",
+      "category": "antipattern",
+      "title": "Failure: Extract provider fallback chain builder to separate function",
+      "description": "Failed to apply \"Extract provider fallback chain builder to separate function\" to selfImprove.ts. Reason: Multi-model consensus rejected this proposal (0% approval). Avoid similar changes.",
+      "context": "self-modify selfImprove.ts readability",
+      "outcome": "failure: Multi-model consensus rejected this proposal (0% approval)",
+      "lesson": "Avoid for selfImprove.ts: Extract provider fallback chain builder to separate function — causes Multi-model consensus rejected this proposal (0% approval)",
+      "applicableTo": [
+        "selfImprove.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780900706554,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5447,5 +5463,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T06:38:24.839Z"
+  "_lastUpdated": "2026-06-08T06:38:26.554Z"
 }

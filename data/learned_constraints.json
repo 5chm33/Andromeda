@@ -80,7 +80,16 @@
       "firstSeenAt": 1780900704841,
       "lastSeenAt": 1780900704841,
       "active": false
+    },
+    {
+      "id": "lc_1780900706556_k79t3",
+      "pattern": "// v7.1.6: Tiered cost model — Eco/Standard/Pro tiers based on task area.\n  //",
+      "reason": "Multi-model consensus rejected this proposal (0% approval)",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780900706556,
+      "lastSeenAt": 1780900706556,
+      "active": false
     }
   ],
-  "lastUpdatedAt": 1780900704842
+  "lastUpdatedAt": 1780900706556
 }

@@ -351,15 +351,20 @@ export function searchMemory(
 
   if (entries.length === 0) return [];
 
-  const allTexts = store.entries.map(e => e.content);
+  // v9.8.5: Cap TF-IDF corpus at 100 most-recently-accessed entries to prevent O(n²) blocking.
+  // With 258+ entries, the full TF-IDF takes minutes. Capping at 100 keeps it under 50ms.
+  // We use the filtered entries (not all store.entries) so typeFilter is respected.
+  const TFIDF_CORPUS_CAP = 100;
+  const corpusEntries = entries.length > TFIDF_CORPUS_CAP
+    ? [...entries].sort((a, b) => (b.lastAccessedAt || b.updatedAt) - (a.lastAccessedAt || a.updatedAt)).slice(0, TFIDF_CORPUS_CAP)
+    : entries;
+  const allTexts = corpusEntries.map(e => e.content);
   const vocab = getCachedVocabulary([query, ...allTexts]);
-  // v9.8.5: Precompute token sets once for all docs — avoids O(n²×vocab) bottleneck
   const docTokenSets = buildDocTokenSets(allTexts);
   const queryVec = tfidf(query, vocab, allTexts, docTokenSets);
 
-  const results: SearchResult[] = entries
+  const results: SearchResult[] = corpusEntries
     .map(entry => {
-      // Recompute entry vector against full vocab including query
       const entryVec = tfidf(entry.content, vocab, allTexts, docTokenSets);
       const score = cosineSimilarity(queryVec, entryVec);
       return { entry, score };
@@ -368,12 +373,13 @@ export function searchMemory(
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
 
-  // Update access counts
+  // Update access counts (non-blocking: skip saveStore to avoid 258-entry disk write on every search)
   for (const result of results) {
     result.entry.accessCount++;
     result.entry.lastAccessedAt = Date.now();
   }
-  saveStore(store);
+  // Only persist if we actually found results (avoids unnecessary disk writes)
+  if (results.length > 0) saveStore(store);
 
   return results;
 }
