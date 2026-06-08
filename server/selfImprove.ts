@@ -855,14 +855,12 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
     execSync("git add -A", { cwd, env: gitEnv, encoding: "utf-8" });
     const snapshotMsg = `pre-improvement snapshot: before "${(proposal.title || proposalId).replace(/"/g, "'")}" [${new Date().toISOString()}]`;
     try {
-      // v9.8.6: Make sure all files are added first, and don't use allow-empty-message which causes issues on some git versions
-      execSync(`git add -A`, { cwd, env: gitEnv, encoding: "utf-8" });
-      execSync(`git commit -m ${JSON.stringify(snapshotMsg)}`, { cwd, env: gitEnv, encoding: "utf-8" });
+      // v7.0.1: Use execFileSync with args array to avoid shell word-splitting on message
+      execSync(`git commit --allow-empty-message -m ${JSON.stringify(snapshotMsg)}`, { cwd, env: gitEnv, encoding: "utf-8" });
       console.log(`[SelfImprove] Git snapshot: ${snapshotMsg}`);
     } catch (commitErr: any) {
-      const errMsg = String(commitErr.stderr || commitErr.stdout || commitErr.message);
-      if (!errMsg.includes("nothing to commit") && !errMsg.includes("working tree clean")) {
-        console.warn("[SelfImprove] Git snapshot warning:", errMsg.slice(0, 200));
+      if (!String(commitErr.stderr || commitErr.message).includes("nothing to commit")) {
+        console.warn("[SelfImprove] Git snapshot warning:", (commitErr as Error).message);
       }
     }
   } catch (snapErr) {
