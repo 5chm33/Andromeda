@@ -41,6 +41,7 @@ import {
   listProposals,
   rejectProposal,
   type ImprovementProposal,
+  type SecondaryFileChange,
 } from "./selfImprove";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -474,6 +475,62 @@ export async function guardedApply(proposalId: string): Promise<{
   } catch (writeErr: any) {
     addAudit("apply", "failure", `File write failed: ${writeErr.message}`, proposalId, proposal.targetFile);
     return { success: false, message: `File write failed: ${writeErr.message}`, syntaxCheck: syntaxResult, backup };
+  }
+
+  // v9.6.0: Apply secondary file changes atomically after primary write succeeds.
+  // If any secondary write fails, roll back ALL secondary writes AND the primary write.
+  if (proposal.secondaryChanges && proposal.secondaryChanges.length > 0) {
+    const writtenSecondary: Array<{ path: string; original: string }> = [];
+    let secondaryFailed = false;
+    let secondaryError = "";
+
+    for (const change of proposal.secondaryChanges as SecondaryFileChange[]) {
+      if (!change.proposedContent) continue; // skip if no content
+      // Resolve secondary file path using same multi-candidate strategy
+      const serverDir = path.dirname(fileURLToPath(import.meta.url));
+      const secCandidates = [
+        path.resolve(serverDir, change.targetFile),
+        path.resolve(serverDir, "..", "server", change.targetFile),
+        path.resolve(process.cwd(), "server", change.targetFile),
+        path.resolve(process.cwd(), change.targetFile),
+      ];
+      const secPath = secCandidates.find(c => fs.existsSync(c)) ||
+                      secCandidates.find(c => fs.existsSync(path.dirname(c))) ||
+                      secCandidates[0];
+      if (!secPath) {
+        secondaryFailed = true;
+        secondaryError = `Cannot resolve secondary file: ${change.targetFile}`;
+        break;
+      }
+      try {
+        const currentContent = fs.existsSync(secPath) ? fs.readFileSync(secPath, "utf-8") : "";
+        writtenSecondary.push({ path: secPath, original: currentContent });
+        const secDir = path.dirname(secPath);
+        if (!fs.existsSync(secDir)) fs.mkdirSync(secDir, { recursive: true });
+        fs.writeFileSync(secPath, change.proposedContent, "utf-8");
+        addAudit("apply", "success", `Applied secondary change to ${change.targetFile}`, proposalId, change.targetFile);
+      } catch (secErr: any) {
+        secondaryFailed = true;
+        secondaryError = `Failed to write secondary file ${change.targetFile}: ${secErr.message}`;
+        break;
+      }
+    }
+
+    if (secondaryFailed) {
+      // Roll back all secondary writes
+      for (const { path: p, original } of writtenSecondary) {
+        try { fs.writeFileSync(p, original, "utf-8"); } catch { /* best effort */ }
+      }
+      // Roll back primary write
+      if (backup) {
+        const backupFilePath = path.join(getBackupDir(), backup.backupPath);
+        if (fs.existsSync(backupFilePath)) {
+          try { fs.copyFileSync(backupFilePath, absoluteFilePath); } catch { /* best effort */ }
+        }
+      }
+      addAudit("apply", "failure", `Multi-file rollback: ${secondaryError}`, proposalId, proposal.targetFile);
+      return { success: false, message: `Multi-file apply rolled back: ${secondaryError}`, syntaxCheck: syntaxResult, backup };
+    }
   }
 
   // Run tests after applying
