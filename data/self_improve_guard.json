@@ -2848,6 +2848,15 @@
       "result": "failure",
       "details": "Proposal already processing",
       "timestamp": "2026-06-08T06:29:54.295Z"
+    },
+    {
+      "id": "audit_1780900194461_qn27xc",
+      "action": "apply",
+      "proposalId": "prop_1780852459024_ba40s9",
+      "filename": "browser.ts",
+      "result": "failure",
+      "details": "Proposal already processing",
+      "timestamp": "2026-06-08T06:29:54.461Z"
     }
   ]
 }

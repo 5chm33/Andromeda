@@ -5241,6 +5241,22 @@
       "confidence": 0.9,
       "createdAt": 1780900194315,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780900194479_z405di",
+      "category": "antipattern",
+      "title": "Failure: Extract SSRF protection into a separate module",
+      "description": "Failed to apply \"Extract SSRF protection into a separate module\" to browser.ts. Reason: Proposal is already processing. Avoid similar changes.",
+      "context": "self-modify browser.ts readability",
+      "outcome": "failure: Proposal is already processing",
+      "lesson": "Avoid for browser.ts: Extract SSRF protection into a separate module — causes Proposal is already processing",
+      "applicableTo": [
+        "browser.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780900194479,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5383,5 +5399,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T06:29:54.315Z"
+  "_lastUpdated": "2026-06-08T06:29:54.479Z"
 }

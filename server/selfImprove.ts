@@ -170,17 +170,15 @@ export function resetStuckProcessingProposals(): void {
   try {
     const store = JSON.parse(fs.readFileSync(p, "utf-8")) as ProposalStore;
     let resetCount = 0;
-    const staleThresholdMs = 10 * 60 * 1000; // 10 minutes — any proposal stuck in processing for >10min is stale
-    const now = Date.now();
+    // v9.8.5: Reset ALL 'processing' proposals unconditionally at the start of each cycle.
+    // Since we apply proposals sequentially (never concurrently), there is no legitimate case
+    // where a proposal should be in 'processing' when a new cycle starts. Any 'processing'
+    // proposal at cycle start is stale from a previous crashed or failed cycle.
     for (const proposal of store.proposals) {
       if ((proposal.status as string) === 'processing') {
-        // Only reset if it's been processing for more than the stale threshold
-        const processingStartedAt = (proposal as any)._processingStartedAt || 0;
-        if (now - processingStartedAt > staleThresholdMs) {
-          proposal.status = 'pending';
-          delete (proposal as any)._processingStartedAt;
-          resetCount++;
-        }
+        proposal.status = 'pending';
+        delete (proposal as any)._processingStartedAt;
+        resetCount++;
       }
     }
     if (resetCount > 0) {
@@ -852,7 +850,13 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
   }
 
   const filePath = resolveServerFile(proposal.targetFile);
-  if (!filePath) return { success: false, message: "Target file no longer accessible" };
+  if (!filePath) {
+    // v9.8.5: Always reset status from 'processing' on early return
+    proposal.status = "rejected" as any;
+    (proposal as any)._failReason = "Target file no longer accessible";
+    saveProposals(store);
+    return { success: false, message: "Target file no longer accessible" };
+  }
 
   // v5.27: Impact analysis before applying changes
   try {
@@ -860,6 +864,10 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
     const impact = analyzeImpact(proposal.targetFile);
     if (impact && impact.riskLevel === "critical" && impact.totalAffectedFiles > 10) {
       console.warn(`[SelfImprove] HIGH-RISK: ${proposal.targetFile} affects ${impact.totalAffectedFiles} files`);
+      // v9.8.5: Always reset status from 'processing' on early return
+      proposal.status = "rejected" as any;
+      (proposal as any)._failReason = `Blocked: high-risk change affects ${impact.totalAffectedFiles} files`;
+      saveProposals(store);
       return {
         success: false,
         message: `Blocked: Change to ${proposal.targetFile} affects ${impact.totalAffectedFiles} files (risk: critical). Reduce scope or split into smaller changes.`,

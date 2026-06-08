@@ -44,7 +44,16 @@
       "firstSeenAt": 1780900194317,
       "lastSeenAt": 1780900194317,
       "active": false
+    },
+    {
+      "id": "lc_1780900194481_qvyp3",
+      "pattern": "import { isPrivateAddress } from \"./ssrfGuard\";",
+      "reason": "Proposal is already processing",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780900194481,
+      "lastSeenAt": 1780900194481,
+      "active": false
     }
   ],
-  "lastUpdatedAt": 1780900194318
+  "lastUpdatedAt": 1780900194481
 }
