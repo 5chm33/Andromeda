@@ -2389,6 +2389,15 @@
       "result": "blocked",
       "details": "Constitution: proposed content contains forbidden pattern 'rm -rf /'",
       "timestamp": "2026-06-08T00:09:28.786Z"
+    },
+    {
+      "id": "audit_1780877547517_gwzcoz",
+      "action": "apply",
+      "proposalId": "prop_1780877368588_0mznnh",
+      "filename": "workspace.ts",
+      "result": "blocked",
+      "details": "Constitution: proposed content contains forbidden pattern 'rm -rf /'",
+      "timestamp": "2026-06-08T00:12:27.517Z"
     }
   ]
 }

@@ -4361,6 +4361,22 @@
       "confidence": 0.9,
       "createdAt": 1780877368792,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780877547519_2uxgzv",
+      "category": "antipattern",
+      "title": "Failure: Consolidate workspace directory logic",
+      "description": "Failed to apply \"Consolidate workspace directory logic\" to workspace.ts. Reason: Constitution blocked: proposed content contains forbidden pattern 'rm -rf /'.. Avoid similar changes.",
+      "context": "self-modify workspace.ts readability",
+      "outcome": "failure: Constitution blocked: proposed content contains forbidden pattern 'rm -rf /'.",
+      "lesson": "Avoid for workspace.ts: Consolidate workspace directory logic — causes Constitution blocked: proposed content contains forbidden pattern 'rm -rf /'.",
+      "applicableTo": [
+        "workspace.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780877547519,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -4503,5 +4519,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T00:09:28.792Z"
+  "_lastUpdated": "2026-06-08T00:12:27.519Z"
 }
