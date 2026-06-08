@@ -5129,6 +5129,22 @@
       "confidence": 0.9,
       "createdAt": 1780897789041,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780898906498_7ws3j5",
+      "category": "antipattern",
+      "title": "Failure: Extract version constant to single source of truth",
+      "description": "Failed to apply \"Extract version constant to single source of truth\" to manifest.ts. Reason: Proposal is already processing. Avoid similar changes.",
+      "context": "self-modify manifest.ts readability",
+      "outcome": "failure: Proposal is already processing",
+      "lesson": "Avoid for manifest.ts: Extract version constant to single source of truth — causes Proposal is already processing",
+      "applicableTo": [
+        "manifest.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780898906498,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5271,5 +5287,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T05:49:49.041Z"
+  "_lastUpdated": "2026-06-08T06:08:26.498Z"
 }

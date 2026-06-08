@@ -13,11 +13,11 @@
       "id": "lc_1780897789044_9fr8f",
       "pattern": "return {\n    version: VERSION,\n    identity: \"Andromeda\",\n    generatedAt: new",
       "reason": "Proposal is already processing",
-      "rejectionCount": 1,
+      "rejectionCount": 2,
       "firstSeenAt": 1780897789044,
-      "lastSeenAt": 1780897789044,
-      "active": false
+      "lastSeenAt": 1780898906501,
+      "active": true
     }
   ],
-  "lastUpdatedAt": 1780897789044
+  "lastUpdatedAt": 1780898906501
 }
