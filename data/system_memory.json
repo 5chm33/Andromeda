@@ -25,12 +25,26 @@
       "createdAt": 1780896575988,
       "lastReferencedAt": 1780896575988,
       "referenceCount": 0
+    },
+    {
+      "id": "sl_1780896749010_98qd6c",
+      "category": "modification",
+      "title": "Applied: Add JSDoc re-export comments for clarity",
+      "content": "Successfully applied improvement to ai.ts: Add JSDoc re-export comments for clarity",
+      "context": "category: readability, impact: low, confidence: 1.00",
+      "confidence": 0.9,
+      "applicableTo": [
+        "ai.ts"
+      ],
+      "createdAt": 1780896749010,
+      "lastReferencedAt": 1780896749010,
+      "referenceCount": 0
     }
   ],
   "baselines": [],
   "errorPatterns": [],
   "metadata": {
-    "totalLearnings": 2,
+    "totalLearnings": 3,
     "totalReferences": 0,
     "lastConsolidation": 1780537317493,
     "version": "5.28"

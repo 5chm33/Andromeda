@@ -34,6 +34,7 @@
     "grounding.ts::fix unbalanced brackets in extractfactualclaims refactor"
   ],
   "autoApplyHistory": [
-    1780896575988
+    1780896575988,
+    1780896749010
   ]
 }
