@@ -110,7 +110,9 @@ export async function initModules(): Promise<void> {
   }).catch(err => console.warn("[SkillGraph] Init failed:", err));
 
   import("../consensusEngine").then(m => {
-    m.initConsensusEngine();
+    // v9.7.0: Lower threshold from 'critical' to 'high' so proposals touching
+    // core files (memory.ts, selfImprove.ts, guardedApply) require consensus
+    m.initConsensusEngine({ requireForRiskLevel: "high" });
   }).catch(err => console.warn("[ConsensusEngine] Init failed:", err));
 
   import("../continuousImprover").then(m => {

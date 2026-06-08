@@ -100,6 +100,28 @@ async function runImprovementCycle(): Promise<CycleResult> {
       result.errors.push(`Proposal generation failed: ${(err as Error).message}`);
     }
 
+    // v9.7.0: Eval-driven targeting — submit proposals for degraded benchmark areas
+    try {
+      const { runEvalDrivenTargeting } = await import("./evalDrivenTargeting.js");
+      const targeted = await runEvalDrivenTargeting();
+      if (targeted > 0) {
+        console.log(`[ContinuousImprover] Eval-driven targeting: ${targeted} targeted proposals submitted`);
+      }
+    } catch (err) {
+      result.errors.push(`Eval-driven targeting failed: ${(err as Error).message}`);
+    }
+
+    // v9.7.0: Quality monitor + JSDoc gaps → RSI proposal queue
+    try {
+      const { runQualityToRSI } = await import("./qualityToRSI.js");
+      const { qualityProposals, docProposals } = await runQualityToRSI();
+      if (qualityProposals + docProposals > 0) {
+        console.log(`[ContinuousImprover] Quality→RSI: ${qualityProposals} quality + ${docProposals} doc proposals submitted`);
+      }
+    } catch (err) {
+      result.errors.push(`Quality→RSI feed failed: ${(err as Error).message}`);
+    }
+
     // v5.32: Auto-apply high-confidence proposals from previous cycles
     // v9.7.0: hoisted to outer scope so PR trigger can reference applied results
     let autoResults: any[] = [];
