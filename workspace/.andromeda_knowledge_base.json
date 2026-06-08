@@ -4553,6 +4553,22 @@
       "confidence": 0.9,
       "createdAt": 1780880617209,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780880970157_594kuo",
+      "category": "antipattern",
+      "title": "Failure: Simplify diff generator with Myers algorithm",
+      "description": "Failed to apply \"Simplify diff generator with Myers algorithm\" to codeIntel.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify codeIntel.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for codeIntel.ts: Simplify diff generator with Myers algorithm — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "codeIntel.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780880970157,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -4695,5 +4711,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T01:03:37.209Z"
+  "_lastUpdated": "2026-06-08T01:09:30.157Z"
 }
