@@ -77,22 +77,24 @@ const MAX_HISTORY = 100;
 /**
  * Query a model via OpenRouter.
  */
-async function queryOpenRouter(
+async function queryProvider(
   prompt: string,
-  model: string = "anthropic/claude-sonnet-4"
+  url: string,
+  apiKey: string,
+  model: string,
+  extraHeaders?: Record<string, string>
 ): Promise<{ content: string; latencyMs: number }> {
-  if (!getOpenRouterKey()) {
-    throw new Error("OPENROUTER_API_KEY not set");
+  if (!apiKey) {
+    throw new Error("API key not set");
   }
 
   const start = Date.now();
-  const response = await fetch(`${OPENROUTER_BASE_URL}/chat/completions`, {
+  const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${getOpenRouterKey()}`,
-      "HTTP-Referer": "https://andromeda.local",
-      "X-Title": "Andromeda Self-Consistency",
+      "Authorization": `Bearer ${apiKey}`,
+      ...extraHeaders,
     },
     body: JSON.stringify({
       model,
@@ -103,7 +105,7 @@ async function queryOpenRouter(
   });
 
   if (!response.ok) {
-    throw new Error(`OpenRouter ${response.status}: ${await response.text()}`);
+    throw new Error(`${url} ${response.status}: ${await response.text()}`);
   }
 
   const data = await response.json() as any;
@@ -113,38 +115,29 @@ async function queryOpenRouter(
   };
 }
 
-/**
- * Query DeepSeek directly.
- */
+async function queryOpenRouter(
+  prompt: string,
+  model: string = "anthropic/claude-sonnet-4"
+): Promise<{ content: string; latencyMs: number }> {
+  return queryProvider(
+    prompt,
+    `${OPENROUTER_BASE_URL}/chat/completions`,
+    getOpenRouterKey(),
+    model,
+    {
+      "HTTP-Referer": "https://andromeda.local",
+      "X-Title": "Andromeda Self-Consistency",
+    }
+  );
+}
+
 async function queryDeepSeek(prompt: string): Promise<{ content: string; latencyMs: number }> {
-  if (!getDeepSeekKey()) {
-    throw new Error("DEEPSEEK_API_KEY not set");
-  }
-
-  const start = Date.now();
-  const response = await fetch(_scGetActiveProvider().apiUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${getDeepSeekKey()}`,
-    },
-    body: JSON.stringify({
-      model: process.env.LLM_DEFAULT_MODEL || "deepseek/deepseek-chat",
-      messages: [{ role: "user", content: prompt }],
-      max_tokens: 1000,
-      temperature: 0.3,
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`DeepSeek ${response.status}: ${await response.text()}`);
-  }
-
-  const data = await response.json() as any;
-  return {
-    content: data.choices?.[0]?.message?.content || "",
-    latencyMs: Date.now() - start,
-  };
+  return queryProvider(
+    prompt,
+    _scGetActiveProvider().apiUrl,
+    getDeepSeekKey(),
+    process.env.LLM_DEFAULT_MODEL || "deepseek/deepseek-chat"
+  );
 }
 
 // ─── Evaluation Parsing ────────────────────────────────────────────────────────

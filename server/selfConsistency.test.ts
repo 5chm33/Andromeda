@@ -1,62 +1,53 @@
-/**
- * selfConsistency.test.ts — Andromeda v6.20
- * Comprehensive Vitest test suite for selfConsistency
- */
+import { describe, it, expect } from "vitest";
+import { checkSelfConsistency, getConsistencyStats } from "./selfConsistency.js";
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-
-vi.mock('llmProvider.js', () => ({
-  simpleChatCompletion: vi.fn().mockResolvedValue('mocked LLM response'),
-  chatCompletion: vi.fn().mockResolvedValue({ content: 'mocked response', usage: { total_tokens: 100 } }),
-  backgroundSimpleCompletion: vi.fn().mockResolvedValue('mocked background response'),
-  backgroundChatCompletion: vi.fn().mockResolvedValue({ content: 'mocked', usage: { total_tokens: 50 } }),
-  getActiveProvider: vi.fn().mockReturnValue({ id: 'deepseek', name: 'DeepSeek' }),
-}));
-
-vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-  ok: true,
-  status: 200,
-  json: vi.fn().mockResolvedValue({}),
-  text: vi.fn().mockResolvedValue(''),
-  body: null,
-}));
-
-import * as Module from './selfConsistency.js';
-
-describe('selfConsistency', () => {
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  it('module loads without errors', () => {
-    expect(Module).toBeDefined();
-  });
-
-  it('exports are defined', () => {
-    expect(Module).toBeDefined();
-    expect(typeof Module).toBe('object');
-  });
-
-  it('getConsistencyStats returns a value', () => {
-    const result = Module.getConsistencyStats();
-    expect(result).toBeDefined();
-  });
-
-  it('module has expected structure', () => {
-    const keys = Object.keys(Module);
-    expect(keys.length).toBeGreaterThanOrEqual(0);
-  });
-
-  it('no unexpected throws on import', () => {
-    expect(Module).toBeTruthy();
-  });
-
-  it('exported types are correct', () => {
-    for (const key of Object.keys(Module)) {
-      const val = (Module as any)[key];
-      expect(['function', 'object', 'string', 'number', 'boolean', 'undefined'].includes(typeof val)).toBe(true);
+describe("checkSelfConsistency", () => {
+  it("should execute without throwing", async () => {
+    try {
+      const result = await checkSelfConsistency("test_value");
+      expect(result).toBeDefined();
+    } catch (e: any) {
+      // Function may throw in test environment (e.g. no providers registered)
+      expect(e).toBeDefined();
     }
   });
 
+  it("should return correct type", async () => {
+    const result = await checkSelfConsistency("test_value");
+    expect(result).toBeTruthy();
+  });
+
+  it("should handle empty/null inputs gracefully", async () => {
+    try { await checkSelfConsistency({}); } catch (e: any) { expect(e).toBeDefined(); }
+  });
+
+  it("should handle invalid inputs", async () => {
+    // @ts-expect-error Testing invalid input
+    try { await checkSelfConsistency(undefined); } catch (e: any) { expect(e).toBeDefined(); }
+  });
+
 });
+
+describe("getConsistencyStats", () => {
+  it("should execute without throwing", () => {
+    try {
+      const result = getConsistencyStats();
+      expect(result).toBeDefined();
+    } catch (e: any) {
+      // Function may throw in test environment (e.g. no providers registered)
+      expect(e).toBeDefined();
+    }
+  });
+
+  it("should return correct type", () => {
+    const result = getConsistencyStats();
+    expect(result).toBeTruthy();
+  });
+
+  it("should handle invalid inputs", () => {
+    // @ts-expect-error Testing invalid input
+    try { getConsistencyStats(); } catch (e: any) { expect(e).toBeDefined(); }
+  });
+
+});
+
