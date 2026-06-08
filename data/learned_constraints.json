@@ -8,7 +8,16 @@
       "firstSeenAt": 1780899626395,
       "lastSeenAt": 1780899626395,
       "active": false
+    },
+    {
+      "id": "lc_1780899626551_2fde3",
+      "pattern": "return {\n    version: VERSION,\n    identity: \"Andromeda\",\n    generatedAt: new",
+      "reason": "Proposal is already processing",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780899626551,
+      "lastSeenAt": 1780899626551,
+      "active": false
     }
   ],
-  "lastUpdatedAt": 1780899626395
+  "lastUpdatedAt": 1780899626551
 }

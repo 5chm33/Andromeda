@@ -32,7 +32,8 @@
     "browser.ts::extract ssrf and readability logic into separate modules",
     "grounding.ts::refactor extractfactualclaims for readability",
     "grounding.ts::fix unbalanced brackets in extractfactualclaims refactor",
-    "workspace.ts::consolidate workspace directory logic into single function"
+    "workspace.ts::consolidate workspace directory logic into single function",
+    "adaptiveRouter.ts::remove redundant env var check in selectprovider"
   ],
   "autoApplyHistory": [
     1780896575988,

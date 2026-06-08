@@ -160,7 +160,14 @@ function buildVocabulary(texts: string[]): string[] {
   return Array.from(vocab).sort();
 }
 
-function tfidf(text: string, vocab: string[], allTexts: string[]): number[] {
+// v9.8.5: Precomputed token sets for IDF calculation — avoids O(n²×vocab) tokenize() calls.
+// Previously: 258 entries × 2000 vocab terms × 258 docs = 134M tokenize() calls per search.
+// Now: 258 entries tokenized once upfront, IDF lookup is O(1) via Set.has().
+function buildDocTokenSets(allTexts: string[]): Set<string>[] {
+  return allTexts.map(t => new Set(tokenize(t)));
+}
+
+function tfidf(text: string, vocab: string[], allTexts: string[], docTokenSets?: Set<string>[]): number[] {
   const tokens = tokenize(text);
   const tf: Record<string, number> = {};
   for (const token of tokens) {
@@ -168,9 +175,11 @@ function tfidf(text: string, vocab: string[], allTexts: string[]): number[] {
   }
 
   const N = allTexts.length + 1;
+  // Use precomputed token sets if available, otherwise fall back to tokenize() per doc
+  const sets = docTokenSets ?? buildDocTokenSets(allTexts);
   return vocab.map(term => {
     const termTf = (tf[term] ?? 0) / Math.max(tokens.length, 1);
-    const docsWithTerm = allTexts.filter(t => tokenize(t).includes(term)).length + 1;
+    const docsWithTerm = sets.filter(s => s.has(term)).length + 1;
     const idf = Math.log(N / docsWithTerm);
     return termTf * idf;
   });
@@ -344,12 +353,14 @@ export function searchMemory(
 
   const allTexts = store.entries.map(e => e.content);
   const vocab = getCachedVocabulary([query, ...allTexts]);
-  const queryVec = tfidf(query, vocab, allTexts);
+  // v9.8.5: Precompute token sets once for all docs — avoids O(n²×vocab) bottleneck
+  const docTokenSets = buildDocTokenSets(allTexts);
+  const queryVec = tfidf(query, vocab, allTexts, docTokenSets);
 
   const results: SearchResult[] = entries
     .map(entry => {
       // Recompute entry vector against full vocab including query
-      const entryVec = tfidf(entry.content, vocab, allTexts.filter(t => t !== entry.content));
+      const entryVec = tfidf(entry.content, vocab, allTexts, docTokenSets);
       const score = cosineSimilarity(queryVec, entryVec);
       return { entry, score };
     })

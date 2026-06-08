@@ -2812,6 +2812,15 @@
       "result": "failure",
       "details": "Proposal already processing",
       "timestamp": "2026-06-08T06:20:26.371Z"
+    },
+    {
+      "id": "audit_1780899626529_z43e55",
+      "action": "apply",
+      "proposalId": "prop_1780859780097_ubmdix",
+      "filename": "manifest.ts",
+      "result": "failure",
+      "details": "Proposal already processing",
+      "timestamp": "2026-06-08T06:20:26.529Z"
     }
   ]
 }
