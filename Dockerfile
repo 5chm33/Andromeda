@@ -1,4 +1,4 @@
-# ─── Andromeda v6.37 — Dockerfile ────────────────────────────────────────────
+# ─── Andromeda v9.14.0 — Dockerfile ─────────────────────────────────────────
 #
 # Multi-stage build:
 #   Stage 1 (builder): Install deps, build TypeScript + Vite frontend
@@ -15,13 +15,14 @@
 # ── Stage 1: Builder ──────────────────────────────────────────────────────────
 FROM node:22-alpine AS builder
 
-# Install pnpm
+# Install pnpm and native build tools (for better-sqlite3)
 RUN corepack enable && corepack prepare pnpm@11.3.0 --activate
+RUN apk add --no-cache python3 make g++
 
 WORKDIR /app
 
 # Copy dependency manifests first (layer cache optimization)
-COPY package.json pnpm-lock.yaml* ./
+COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml ./
 
 # Install all dependencies (including devDependencies for build)
 RUN pnpm install --frozen-lockfile
@@ -35,8 +36,9 @@ RUN pnpm run build
 # ── Stage 2: Runner ───────────────────────────────────────────────────────────
 FROM node:22-alpine AS runner
 
-# Install pnpm (needed for production start)
+# Install pnpm and runtime deps for better-sqlite3
 RUN corepack enable && corepack prepare pnpm@11.3.0 --activate
+RUN apk add --no-cache python3 make g++ git
 
 # Create non-root user for security
 RUN addgroup --system --gid 1001 andromeda && \
@@ -52,8 +54,8 @@ COPY --from=builder --chown=andromeda:andromeda /app/pnpm-lock.yaml* ./
 # Install production dependencies only
 RUN pnpm install --frozen-lockfile --prod
 
-# Create data directory for persistent storage (episodic memory, eval baseline, RSI state)
-RUN mkdir -p /app/data && chown andromeda:andromeda /app/data
+# Create data directories for persistent storage (SQLite, episodic memory, eval baseline, RSI state)
+RUN mkdir -p /app/data /app/.data && chown -R andromeda:andromeda /app/data /app/.data
 
 # Create workspace directory for file operations
 RUN mkdir -p /app/workspace && chown andromeda:andromeda /app/workspace
@@ -73,4 +75,4 @@ ENV NODE_ENV=production \
     PORT=3000
 
 # Start the production server
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/server/index.js"]

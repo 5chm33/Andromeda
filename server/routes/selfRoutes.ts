@@ -180,4 +180,84 @@ export function registerSelfRoutes(
       res.status(500).json({ error: (err as Error).message });
     }
   });
+
+  // ── v9.14: RLHF feedback endpoints ─────────────────────────────────────────
+  app.post("/api/feedback", async (req, res) => {
+    try {
+      const { recordFeedback, recordEval, getFeedbackSummary } = await import("../andromedaDb.js");
+      const { sessionId, messageId, query, response, rating, comment, module: mod } = req.body;
+      if (!sessionId || !messageId || !query || !response || ![1, -1].includes(rating)) {
+        res.status(400).json({ error: "Missing required fields: sessionId, messageId, query, response, rating (1 or -1)" }); return;
+      }
+      const id = recordFeedback({ sessionId, messageId, query, response, rating, comment, module: mod });
+      recordEval({ sessionId, query, response, toolsUsed: [], model: req.body.model });
+      const summary = getFeedbackSummary();
+      res.json({ id, summary });
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  app.get("/api/feedback/summary", async (_req, res) => {
+    try {
+      const { getFeedbackSummary, getLowRatedModules } = await import("../andromedaDb.js");
+      res.json({
+        summary: getFeedbackSummary(),
+        lowRatedModules: getLowRatedModules(10),
+      });
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  // ── v9.14: Parallel RSI endpoints ──────────────────────────────────────────
+  app.get("/api/rsi/parallel/status", async (_req, res) => {
+    try {
+      const { getParallelRsiStatus } = await import("../parallelRsi.js");
+      res.json(getParallelRsiStatus());
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  app.post("/api/rsi/parallel/trigger", requireAdminAuth, async (req, res) => {
+    try {
+      const { runParallelCycle } = await import("../parallelRsi.js");
+      const result = await runParallelCycle(req.body ?? {});
+      res.json(result);
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  // ── v9.14: Benchmark trend endpoint ────────────────────────────────────────
+  app.get("/api/rsi/benchmark/trend", async (req, res) => {
+    try {
+      const { getBenchmarkTrend } = await import("../andromedaDb.js");
+      const limit = req.query.limit ? Number(req.query.limit) : 30;
+      res.json({ trend: getBenchmarkTrend(limit) });
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  // ── v9.14: SSE stream for real-time RSI events ───────────────────────────────
+  // Replaces the 15-second polling in ProposalNotifier.tsx with instant push.
+  // Query params:
+  //   ?since=<timestamp>  — replay events since this Unix timestamp (ms)
+  app.get("/api/rsi/events", (req, res) => {
+    const { registerSseClient } = require("../rsiEventBus.js");
+    const since = req.query.since ? Number(req.query.since) : undefined;
+    registerSseClient(res, since);
+    // Keep connection open — cleanup is handled by the event bus on close
+  });
+
+  app.get("/api/rsi/events/history", (req, res) => {
+    const { getEventHistory, getSseClientCount } = require("../rsiEventBus.js");
+    const limit = req.query.limit ? Number(req.query.limit) : 20;
+    res.json({
+      events: getEventHistory(limit),
+      connectedClients: getSseClientCount(),
+    });
+  });
 }

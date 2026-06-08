@@ -14,6 +14,7 @@
 import * as path from "path";
 import { createLogger } from "./logger.js";
 import { withContinuousImproverLock } from "./redisLock.js";
+import { emitRsiEvent } from "./rsiEventBus.js";
 const log = createLogger("continuousImprover");
 
 // ── Configuration ────────────────────────────────────────────────────────────
@@ -183,10 +184,12 @@ async function runImprovementCycle(): Promise<CycleResult> {
           result.proposalsApplied++;
           totalApplied++;
           console.log(`[ContinuousImprover] Applied: ${proposal.title || proposal.id}`);
+          emitRsiEvent("proposal:applied", { id: proposal.id, title: proposal.title, targetFile: proposal.targetFile, confidence: proposal.confidence });
         } else {
           result.proposalsRolledBack++;
           totalRolledBack++;
           console.warn(`[ContinuousImprover] Rejected: ${proposal.title || proposal.id} — ${applyResult.message}`);
+          emitRsiEvent("proposal:rejected", { id: proposal.id, title: proposal.title, reason: applyResult.message });
         }
       } catch (err) {
         const errMsg = (err as Error).message || String(err);
@@ -314,6 +317,7 @@ async function runImprovementCycle(): Promise<CycleResult> {
   if (cycleHistory.length > MAX_HISTORY) cycleHistory.shift();
 
   console.log(`[ContinuousImprover] Cycle #${totalCycles} complete: ${result.proposalsApplied} applied, ${result.proposalsRolledBack} rolled back (${result.duration}ms)`);
+  emitRsiEvent("cycle:complete", { cycleNumber: totalCycles, proposalsApplied: result.proposalsApplied, proposalsRolledBack: result.proposalsRolledBack, duration: result.duration, errors: result.errors.length });
   return result;
 }
 

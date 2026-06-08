@@ -14,6 +14,16 @@
 import { initGoalPersistence } from "../goalManager";
 
 export async function initModules(): Promise<void> {
+  // ── v9.14: SQLite persistence layer init (replaces JSON flat files) ──────────
+  try {
+    const { getDb, migrateFromJson } = await import("../andromedaDb.js");
+    getDb(); // Initialize the database and create tables
+    migrateFromJson(); // One-time migration from JSON flat files
+    console.log("[AndromedaDb] SQLite persistence layer initialized");
+  } catch (err) {
+    console.warn("[AndromedaDb] Init failed (non-fatal):", err);
+  }
+
   // ── v6.30: RSI DB migration (idempotent — creates rsi_proposals/cycles/eval tables) ─
   import("../rsiDb.js").then(m => m.runRsiDbMigration()).catch(err =>
     console.warn("[RsiDb] Migration failed (non-fatal):", err)

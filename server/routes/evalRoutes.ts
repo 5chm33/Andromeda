@@ -373,4 +373,27 @@ export function registerEvalRoutes(app: Router): void {
       res.status(500).json({ success: false, error: String(err) });
     }
   });
+
+  // ── v9.14: Real eval harness endpoints ───────────────────────────────────────
+  app.post("/api/eval/real/run", async (_req, res) => {
+    try {
+      const { runEvalHarness } = await import("../realEvalHarness.js");
+      const report = await runEvalHarness({ maxReplays: 10 });
+      res.json(report);
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  app.get("/api/eval/real/report", async (_req, res) => {
+    try {
+      const { getLastEvalHarnessReport, isEvalHarnessRunning } = await import("../realEvalHarness.js");
+      res.json({
+        report: getLastEvalHarnessReport(),
+        isRunning: isEvalHarnessRunning(),
+      });
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
 }
