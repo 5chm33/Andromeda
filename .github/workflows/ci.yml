@@ -15,7 +15,7 @@ jobs:
     - name: Install pnpm
       uses: pnpm/action-setup@v4
       with:
-        version: 10
+        version: 9
 
     - name: Use Node.js 22.x
       uses: actions/setup-node@v4
@@ -24,6 +24,9 @@ jobs:
 
     - name: Install dependencies
       run: pnpm install --no-frozen-lockfile
+
+    - name: Install coverage provider
+      run: pnpm add -D @vitest/coverage-v8 --save-dev || true
 
     - name: Build
       run: pnpm run build
@@ -36,10 +39,7 @@ jobs:
         # Provide a dummy admin key so auth-protected tests can run in CI
         ANDROMEDA_ADMIN_KEY: ci-test-key-not-for-production
 
-    # v9.12: Install coverage provider and run coverage (informational — does not block CI)
-    - name: Install coverage provider
-      run: pnpm add -D @vitest/coverage-v8@2.1.9 --no-frozen-lockfile
-
+    # v9.12: Run coverage (informational — does not block CI)
     - name: Coverage
       run: pnpm run test:coverage
       continue-on-error: true
