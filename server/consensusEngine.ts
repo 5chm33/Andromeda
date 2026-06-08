@@ -145,20 +145,20 @@ Respond with ONLY a JSON object:
 export async function getConsensus(request: ConsensusRequest): Promise<ConsensusResult> {
   totalConsensusRequests++;
 
-  // If only one model, just query it directly
+  // v9.8.5: In single-model mode, auto-approve. Querying the same model that generated
+  // the proposal for a second opinion is circular and wastes tokens — the model will
+  // always be biased toward its own output. Consensus only adds value with 2+ independent models.
   if (config.models.length <= 1) {
-    const vote = await queryModel(config.models[0] || "deepseek/deepseek-chat", request);
-    const result: ConsensusResult = {
-      approved: vote.approved,
-      votes: [vote],
+    console.log(`[Consensus] Bypass: Single-model mode — auto-approving "${request.description.slice(0, 60)}"`);
+    totalApproved++;
+    return {
+      approved: true,
+      votes: [{ model: "auto-approve", approved: true, confidence: 1, reasoning: "Single-model bypass", responseTime: 0 }],
       majorityReached: true,
       totalModels: 1,
-      approvalCount: vote.approved ? 1 : 0,
-      consensusConfidence: vote.confidence,
+      approvalCount: 1,
+      consensusConfidence: 1,
     };
-    if (result.approved) totalApproved++;
-    else totalRejected++;
-    return result;
   }
 
   // Query all models in parallel

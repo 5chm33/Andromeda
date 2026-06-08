@@ -5337,6 +5337,22 @@
       "confidence": 0.9,
       "createdAt": 1780901016466,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780901018225_w6r036",
+      "category": "antipattern",
+      "title": "Failure: Extract provider chain builder to separate function",
+      "description": "Failed to apply \"Extract provider chain builder to separate function\" to selfImprove.ts. Reason: Multi-model consensus rejected this proposal (0% approval). Avoid similar changes.",
+      "context": "self-modify selfImprove.ts readability",
+      "outcome": "failure: Multi-model consensus rejected this proposal (0% approval)",
+      "lesson": "Avoid for selfImprove.ts: Extract provider chain builder to separate function — causes Multi-model consensus rejected this proposal (0% approval)",
+      "applicableTo": [
+        "selfImprove.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780901018225,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5479,5 +5495,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T06:43:36.466Z"
+  "_lastUpdated": "2026-06-08T06:43:38.225Z"
 }

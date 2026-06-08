@@ -89,7 +89,16 @@
       "firstSeenAt": 1780900706556,
       "lastSeenAt": 1780900706556,
       "active": false
+    },
+    {
+      "id": "lc_1780901018228_ptg1z",
+      "pattern": "// v7.1.4: Provider fallback chain — if preferred provider returns 401/402, re",
+      "reason": "Multi-model consensus rejected this proposal (0% approval)",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780901018228,
+      "lastSeenAt": 1780901018228,
+      "active": false
     }
   ],
-  "lastUpdatedAt": 1780901016469
+  "lastUpdatedAt": 1780901018229
 }

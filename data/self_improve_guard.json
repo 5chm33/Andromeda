@@ -2902,6 +2902,15 @@
       "result": "failure",
       "details": "Proposal is already processing",
       "timestamp": "2026-06-08T06:43:36.445Z"
+    },
+    {
+      "id": "audit_1780901018201_pzdqmi",
+      "action": "apply",
+      "proposalId": "prop_1780850056197_0syz6e",
+      "filename": "selfImprove.ts",
+      "result": "blocked",
+      "details": "Consensus rejected (0% approval): Error: API error: 400",
+      "timestamp": "2026-06-08T06:43:38.201Z"
     }
   ]
 }
