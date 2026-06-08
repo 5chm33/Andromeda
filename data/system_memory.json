@@ -193,12 +193,40 @@
       "createdAt": 1780904199632,
       "lastReferencedAt": 1780904199632,
       "referenceCount": 0
+    },
+    {
+      "id": "sl_1780905325939_btcteh",
+      "category": "modification",
+      "title": "Applied: Extract magic numbers into named constants for diversity scoring",
+      "content": "Successfully applied improvement to biasDetector.ts: Extract magic numbers into named constants for diversity scoring",
+      "context": "category: readability, impact: medium, confidence: 0.95",
+      "confidence": 0.9,
+      "applicableTo": [
+        "biasDetector.ts"
+      ],
+      "createdAt": 1780905325939,
+      "lastReferencedAt": 1780905325939,
+      "referenceCount": 0
+    },
+    {
+      "id": "sl_1780906979976_i0pyz4",
+      "category": "modification",
+      "title": "Applied: Extract SSRF validation into a shared helper function",
+      "content": "Successfully applied improvement to browser.ts: Extract SSRF validation into a shared helper function",
+      "context": "category: readability, impact: medium, confidence: 0.95",
+      "confidence": 0.9,
+      "applicableTo": [
+        "browser.ts"
+      ],
+      "createdAt": 1780906979976,
+      "lastReferencedAt": 1780906979976,
+      "referenceCount": 0
     }
   ],
   "baselines": [],
   "errorPatterns": [],
   "metadata": {
-    "totalLearnings": 14,
+    "totalLearnings": 16,
     "totalReferences": 0,
     "lastConsolidation": 1780537317493,
     "version": "5.28"

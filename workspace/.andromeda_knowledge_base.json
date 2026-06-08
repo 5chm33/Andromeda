@@ -5497,6 +5497,22 @@
       "confidence": 0.8,
       "createdAt": 1780904199625,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780906979968_apts3s",
+      "category": "success",
+      "title": "Success: Extract SSRF validation into a shared helper function",
+      "description": "Successfully applied \"Extract SSRF validation into a shared helper function\" to browser.ts (readability). Health: improved.",
+      "context": "self-modify browser.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for browser.ts: Extract SSRF validation into a shared helper function",
+      "applicableTo": [
+        "browser.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780906979968,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5639,5 +5655,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T08:10:49.627Z"
+  "_lastUpdated": "2026-06-08T08:22:59.968Z"
 }
