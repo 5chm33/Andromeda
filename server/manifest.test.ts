@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { generateManifest, getManifestPrompt, getFullManifest } from "/home/ubuntu/andromeda_git/server/manifest";
+import { generateManifest, getManifestPrompt, getFullManifest } from "./manifest.js";
 
 describe("generateManifest", () => {
   it("should execute without throwing", () => {

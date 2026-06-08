@@ -189,6 +189,7 @@ export interface ErrorDiagnosis {
  * Works with Node.js, Python, TypeScript compiler, and browser stack traces.
  */
 export function diagnoseError(rawError: string): ErrorDiagnosis {
+  if (!rawError) return { errorType: "unknown", message: "", stackFrames: [], likelyCause: "No error provided", suggestedFix: "Provide an error message or stack trace.", isTypeError: false, isReferenceError: false, isSyntaxError: false };
   const lines = rawError.split("\n").map(l => l.trim()).filter(Boolean);
   const firstLine = lines[0] ?? "";
 

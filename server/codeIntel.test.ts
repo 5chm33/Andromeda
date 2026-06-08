@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { readPackageJson, diagnoseError } from "/home/ubuntu/andromeda_git/server/codeIntel";
+import { readPackageJson, diagnoseError } from "./codeIntel.js";
 
 describe("readPackageJson", () => {
   it("should execute without throwing", () => {

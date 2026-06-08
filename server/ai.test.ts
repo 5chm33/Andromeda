@@ -1,3 +1,7 @@
 import { describe, it, expect } from "vitest";
-import {  } from "/home/ubuntu/andromeda_git/server/ai";
 
+describe("ai module", () => {
+  it("module loads without throwing", async () => {
+    await expect(import("./ai.js")).resolves.toBeDefined();
+  });
+});

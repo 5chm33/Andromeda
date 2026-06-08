@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { estimateTokens, estimateMessageTokens } from "/home/ubuntu/andromeda_git/server/contextManager";
+import { estimateTokens, estimateMessageTokens } from "./contextManager.js";
 
 describe("estimateTokens", () => {
   it("should execute without throwing", () => {

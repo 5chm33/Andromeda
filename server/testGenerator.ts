@@ -233,10 +233,11 @@ function generateTypeScriptTests(functions: FunctionSignature[], filePath: strin
     ? `import { describe, it, expect } from "vitest";`
     : ``;
   
-  const relativePath = filePath.replace(/\.ts$/, "");
+  // v9.9.0: Use relative path so generated tests work in CI (absolute paths break on different machines)
+  const relativePath = "./" + basename(filePath).replace(/\.ts$/, "");
   const funcNames = functions.map(f => f.name).join(", ");
   
-  let code = `${importLine}\nimport { ${funcNames} } from "${relativePath}";\n\n`;
+  let code = `${importLine}\nimport { ${funcNames} } from "${relativePath}.js";\n\n`;
 
   for (const func of functions) {
     code += `describe("${func.name}", () => {\n`;

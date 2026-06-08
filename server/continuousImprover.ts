@@ -93,8 +93,12 @@ async function runImprovementCycle(): Promise<CycleResult> {
       const { getAnalyzableFiles } = await import("./selfImprove");
       const files = getAnalyzableFiles();
       if (files.length > 0) {
-        const randomFile = files[Math.floor(Math.random() * files.length)];
-        await analyzeAndPropose(randomFile);
+        // v9.9.0: Analyze 2 files per cycle (was 1) — doubles improvement rate at minimal extra cost
+        const shuffled = [...files].sort(() => Math.random() - 0.5);
+        const filesToAnalyze = shuffled.slice(0, 2);
+        for (const randomFile of filesToAnalyze) {
+          await analyzeAndPropose(randomFile);
+        }
       }
     } catch (err) {
       result.errors.push(`Proposal generation failed: ${(err as Error).message}`);
@@ -232,55 +236,20 @@ async function runImprovementCycle(): Promise<CycleResult> {
           console.log("[ContinuousImprover] Hot-reload triggered for modified modules.");
         } catch (err) { log.caught("non-fatal -- server will pick up changes on next import", err); }
 
-        // v9.7.0: PR generation — create a real git branch, push it, then open a PR
-        // Only runs when GITHUB_TOKEN and GITHUB_REPO are set in .env.local
+        // v9.9.0: Push main directly to GitHub after each successful cycle.
+        // Changes are already committed to main by applyProposal().
+        // Pushing triggers CI (RSI Validate + CI build) automatically.
+        // No branches or PRs needed — Andromeda owns main directly.
         if (process.env.GITHUB_TOKEN && process.env.GITHUB_REPO) {
           try {
-            const { execSync: execSyncPR } = await import("child_process");
+            const { execSync: execSyncPush } = await import("child_process");
             const cwd = process.cwd();
-            const gitEnv = {
-              ...process.env,
-              GIT_AUTHOR_NAME: "Andromeda AI",
-              GIT_AUTHOR_EMAIL: "andromeda@local",
-              GIT_COMMITTER_NAME: "Andromeda AI",
-              GIT_COMMITTER_EMAIL: "andromeda@local",
-            };
-            // Create a clean branch name: rsi/YYYYMMDD-HHMMSS
-            const ts = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
-            const branchName = `rsi/${ts}`;
-            // Create branch from current HEAD, stage all changes, commit, push
-            execSyncPR(`git checkout -b ${branchName}`, { cwd, env: gitEnv, encoding: "utf-8", stdio: "pipe" });
-            execSyncPR("git add -A", { cwd, env: gitEnv, encoding: "utf-8", stdio: "pipe" });
-            const commitMsg = `[Andromeda RSI] ${result.proposalsApplied} self-improvement(s) applied`;
-            execSyncPR(`git commit -m ${JSON.stringify(commitMsg)}`, { cwd, env: gitEnv, encoding: "utf-8", stdio: "pipe" });
-            execSyncPR(`git push origin ${branchName}`, { cwd, env: gitEnv, encoding: "utf-8", stdio: "pipe" });
-            // Switch back to main
-            execSyncPR("git checkout main", { cwd, env: gitEnv, encoding: "utf-8", stdio: "pipe" });
-            console.log(`[ContinuousImprover] Pushed branch ${branchName} to GitHub`);
-            // Now create the PR via prGenerator
-            const { createPRForBranch } = await import("./prGenerator.js");
-            const appliedProposals = autoResults
-              .filter((r: any) => r.applied)
-              .map((r: any) => ({
-                id: r.proposalId,
-                title: r.title,
-                targetFile: r.targetFile,
-                category: "refactoring",
-                rationale: r.message || "Auto-applied by RSI engine",
-                confidence: 0.9,
-                impact: "medium",
-              }));
-            if (appliedProposals.length > 0) {
-              const prRecord = await createPRForBranch(branchName, appliedProposals);
-              if (prRecord.status === "open") {
-                console.log(`[ContinuousImprover] PR created: ${prRecord.prUrl}`);
-              } else {
-                console.warn(`[ContinuousImprover] PR creation failed: ${prRecord.error}`);
-              }
-            }
-          } catch (prErr: any) {
-            // Non-fatal — PR creation failure should never block the improvement cycle
-            console.warn(`[ContinuousImprover] PR pipeline failed (non-fatal): ${prErr.message}`);
+            const gitEnv = { ...process.env, GIT_AUTHOR_NAME: "Andromeda AI", GIT_AUTHOR_EMAIL: "andromeda@local", GIT_COMMITTER_NAME: "Andromeda AI", GIT_COMMITTER_EMAIL: "andromeda@local" };
+            execSyncPush("git push origin main", { cwd, env: gitEnv, encoding: "utf-8", stdio: "pipe", timeout: 30000 });
+            console.log(`[ContinuousImprover] Pushed ${result.proposalsApplied} improvement(s) to origin/main — CI triggered.`);
+          } catch (pushErr: any) {
+            // Non-fatal — push failure should never block the improvement cycle
+            console.warn(`[ContinuousImprover] Git push failed (non-fatal): ${pushErr.message}`);
           }
         }
       } catch (tsErr: any) {

@@ -312,6 +312,7 @@ export function getActiveProvider(): LLMProviderConfig {
 }
 
 export function setActiveProvider(config: Partial<LLMProviderConfig> & { id: string }): void {
+  if (!config) return;
   const base = DEFAULT_PROVIDERS[config.id] ?? DEFAULT_PROVIDERS.custom;
   // v6.15.3 FIX: Always resolve the API key from the NEW provider's id.
   // Bug: previously fell back to old active provider's key when switching tiers,

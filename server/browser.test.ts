@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { browseUrl, browserNavigate, browserClick, browserType, browserScreenshot, browserExtractData, browserEval, closeBrowser, listBrowserSessions } from "/home/ubuntu/andromeda_git/server/browser";
+import { browseUrl, browserNavigate, browserClick, browserType, browserScreenshot, browserExtractData, browserEval, closeBrowser, listBrowserSessions } from "./browser.js";
 
 describe("browseUrl", () => {
   it("should execute without throwing", async () => {
@@ -171,13 +171,14 @@ describe("browserEval", () => {
 
 describe("closeBrowser", () => {
   it("should execute without throwing", async () => {
-    const result = await closeBrowser();
-    expect(result).toBeDefined();
+    // closeBrowser returns Promise<void> — just verify it resolves without throwing
+    await expect(closeBrowser()).resolves.toBeUndefined();
   });
 
   it("should return correct type", async () => {
+    // closeBrowser returns void (undefined) — that is correct
     const result = await closeBrowser();
-    expect(result).toBeTruthy();
+    expect(result).toBeUndefined();
   });
 
   it("should handle empty/null inputs gracefully", async () => {

@@ -77,6 +77,7 @@ const KNOWN_BIAS_PROFILES: SourceBiasProfile[] = [
  * Looks up a known bias profile for a given domain.
  */
 export function getKnownBiasProfile(domain: string): SourceBiasProfile | null {
+  if (!domain) return null;
   const cleanDomain = domain.replace(/^www\./, "").toLowerCase();
   return KNOWN_BIAS_PROFILES.find(p => p.domain === cleanDomain) ?? null;
 }
@@ -122,6 +123,7 @@ export interface AnnotatedSource extends SearchSource {
  * Annotates a list of search sources with bias profiles and analysis.
  */
 export function annotateSources(sources: SearchSource[]): AnnotatedSource[] {
+  if (!sources) return [];
   return sources.map(source => {
     const profile = getKnownBiasProfile(source.domain ?? "");
     const sensationalismScore = analyzeSensationalism(source.snippet ?? "");
@@ -152,6 +154,7 @@ export interface DiversityReport {
  * A low score indicates the sources are homogeneous and potentially biased.
  */
 export function analyzeDiversity(annotatedSources: AnnotatedSource[]): DiversityReport {
+  if (!annotatedSources) return { score: 0, geographicDiversity: [], slantDistribution: {}, stateAffiliatedCount: 0, billionaireOwnedCount: 0, independentCount: 0, warnings: [] };
   const warnings: string[] = [];
   const slantDistribution: Partial<Record<PoliticalSlant, number>> = {};
   let stateAffiliatedCount = 0;

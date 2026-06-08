@@ -143,6 +143,7 @@ Respond with ONLY a JSON object:
 // ── Public API ───────────────────────────────────────────────────────────────
 
 export async function getConsensus(request: ConsensusRequest): Promise<ConsensusResult> {
+  if (!request) return { approved: false, votes: [], majorityReached: false, totalModels: 0, approvalCount: 0, consensusConfidence: 0 };
   totalConsensusRequests++;
 
   // v9.8.5: In single-model mode, auto-approve. Querying the same model that generated

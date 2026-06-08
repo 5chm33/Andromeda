@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { listMemories, deleteMemory, getMemoryStats, injectMemoryContext, seedInitialMemoriesIfEmpty } from "/home/ubuntu/andromeda_git/server/memory";
+import { listMemories, deleteMemory, getMemoryStats, injectMemoryContext, seedInitialMemoriesIfEmpty } from "./memory.js";
 
 describe("listMemories", () => {
   it("should execute without throwing", () => {
@@ -95,8 +95,8 @@ describe("injectMemoryContext", () => {
 
 describe("seedInitialMemoriesIfEmpty", () => {
   it("should execute without throwing", () => {
-    const result = seedInitialMemoriesIfEmpty();
-    expect(result).toBeDefined();
+    // seedInitialMemoriesIfEmpty returns void
+    expect(() => seedInitialMemoriesIfEmpty()).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {

@@ -27,6 +27,7 @@ export function estimateTokens(text: string): number {
 }
 
 export function estimateMessageTokens(messages: ChatMessage[]): number {
+  if (!messages) return 0;
   let total = 0;
   for (const msg of messages) {
     total += 4; // message overhead (role, separators)

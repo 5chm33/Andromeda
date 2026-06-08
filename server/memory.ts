@@ -432,6 +432,7 @@ export function getMemoryStats(): object {
  * Returns a formatted string to prepend to the system prompt when memories exist.
  */
 export function injectMemoryContext(query: string): string {
+  if (!query) return "";
   const results = searchMemory(query, 5);
   if (results.length === 0) return "";
 

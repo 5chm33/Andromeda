@@ -220,6 +220,30 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });
 
+  // ── v9.9.0: Combined RSI health endpoint (RSI engine + ContinuousImprover at a glance) ──────────
+  app.get("/api/rsi/health", async (_req, res) => {
+    try {
+      const [rsiMod, ciMod, proposalsMod] = await Promise.allSettled([
+        import("../rsiEngine.js"),
+        import("../continuousImprover.js"),
+        import("../selfImprove.js"),
+      ]);
+      const rsiStatus = rsiMod.status === "fulfilled" ? (rsiMod.value as any).getRSIStatus?.() : null;
+      const ciStats = ciMod.status === "fulfilled" ? (ciMod.value as any).getImproverStats?.() : null;
+      const proposals = proposalsMod.status === "fulfilled" ? (proposalsMod.value as any).listProposals?.() ?? [] : [];
+      const byStatus = proposals.reduce((acc: Record<string, number>, p: any) => {
+        acc[p.status] = (acc[p.status] || 0) + 1; return acc;
+      }, {});
+      res.json({
+        ok: true,
+        timestamp: Date.now(),
+        rsi: rsiStatus,
+        continuousImprover: ciStats,
+        proposals: { total: proposals.length, byStatus },
+      });
+    } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+  });
+
   // ── v6.19: RAG Pipeline ───────────────────────────────────────────────────────
   try {
     const { registerRagRoutes } = await import("../ragPipeline.js");

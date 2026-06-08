@@ -11,6 +11,8 @@ vi.mock("./llmProvider.js", () => ({
   backgroundSimpleCompletion: vi.fn(),
   backgroundChatCompletion: vi.fn(),
   getActiveProvider: vi.fn().mockReturnValue({ name: "deepseek", model: "deepseek-chat" }),
+  setActiveProvider: vi.fn(),
+  switchProvider: vi.fn(),
 }));
 
 vi.mock("./memory.js", () => ({

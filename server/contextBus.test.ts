@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { createChannel, listChannels, deleteChannel, unsubscribe, unsubscribeAgent, query, markRead, getUnreadCount, claimWork, releaseWork, getActiveClaims, getContextSummaryForAgent, getThread, getBusStats, resetBus, persistBus, loadPersistedBus } from "/home/ubuntu/andromeda_git/server/contextBus";
+import { createChannel, listChannels, deleteChannel, unsubscribe, unsubscribeAgent, query, markRead, getUnreadCount, claimWork, releaseWork, getActiveClaims, getContextSummaryForAgent, getThread, getBusStats, resetBus, persistBus, loadPersistedBus } from "./contextBus.js";
 
 describe("createChannel", () => {
   it("should execute without throwing", () => {
@@ -119,12 +119,12 @@ describe("unsubscribeAgent", () => {
 
 describe("query", () => {
   it("should execute without throwing", () => {
-    const result = query("test_value");
-    expect(result).toBeDefined();
+    // query expects a ContextQuery object, not a string
+    expect(() => query({ channel: "test" })).not.toThrow();
   });
 
   it("should return correct type", () => {
-    const result = query("test_value");
+    const result = query({ channel: "test" });
     expect(Array.isArray(result)).toBe(true);
   });
 
@@ -191,17 +191,18 @@ describe("getUnreadCount", () => {
 
 describe("claimWork", () => {
   it("should execute without throwing", () => {
-    const result = claimWork("test_agentId", "test_taskDescription", "test_channel", "test_value");
-    expect(result).toBeDefined();
+    // claimWork returns AgentWorkClaim | null — null is valid when no work is available
+    expect(() => claimWork("test_agentId", "test_taskDescription", "test_channel")).not.toThrow();
   });
 
   it("should return correct type", () => {
-    const result = claimWork("test_agentId", "test_taskDescription", "test_channel", "test_value");
-    expect(result).toBeTruthy();
+    const result = claimWork("test_agentId", "test_taskDescription", "test_channel");
+    // null is valid when no work is available in the channel
+    expect(result === null || typeof result === "object").toBe(true);
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => claimWork("", "", "", {})).not.toThrow();
+    expect(() => claimWork("", "", "")).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
@@ -327,8 +328,8 @@ describe("getBusStats", () => {
 
 describe("resetBus", () => {
   it("should execute without throwing", () => {
-    const result = resetBus();
-    expect(result).toBeDefined();
+    // resetBus returns void
+    expect(() => resetBus()).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
@@ -342,8 +343,8 @@ describe("resetBus", () => {
 
 describe("persistBus", () => {
   it("should execute without throwing", () => {
-    const result = persistBus();
-    expect(result).toBeDefined();
+    // persistBus returns void
+    expect(() => persistBus()).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
