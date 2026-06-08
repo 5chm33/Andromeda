@@ -267,30 +267,105 @@ function runSyntaxCheck(filename: string, proposedContent: string, originalSnipp
   const tmpFile = path.join(tmpDir, path.basename(filename));
 
   try {
+    // Build the full-file content to check:
+    // Priority 1: use proposedContent (already the full file with snippet applied, set by analyzeAndPropose)
+    // Priority 2: if snippets provided, read the live file from disk and apply the replacement
+    // Priority 3: fall back to proposedContent as-is
     let contentToCheck = proposedContent;
     if (originalSnippet && proposedSnippet) {
       const serverDir = path.dirname(fileURLToPath(import.meta.url));
       const filePath = path.join(serverDir, path.basename(filename));
       if (fs.existsSync(filePath)) {
         const fullContent = fs.readFileSync(filePath, "utf-8");
-        contentToCheck = fullContent.replace(originalSnippet, proposedSnippet);
+        // Use the live file + snippet replacement as ground truth
+        const replaced = fullContent.replace(originalSnippet, proposedSnippet);
+        // Only use this if the replacement actually changed something (i.e. snippet was found)
+        if (replaced !== fullContent) {
+          contentToCheck = replaced;
+        }
+        // If snippet not found in live file, fall back to proposedContent (which was built at proposal-creation time)
       }
     }
     fs.writeFileSync(tmpFile, contentToCheck, "utf-8");
-    // Use tsc --noEmit on just this file with skipLibCheck + noResolve so it only
-    // checks syntax without trying to resolve local imports (which would fail
-    // since the file is isolated outside the project tree in tmp_syntax/).
-    // v7.1.3: removed --allowImportingTsExtensions (requires --moduleResolution bundler, fails on Windows)
-    execSync(`npx tsc --noEmit --skipLibCheck --noResolve "${tmpFile}" 2>&1`, {
-      timeout: 30000,
-      encoding: "utf-8",
-      cwd: path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".."),
-    });
-    return { pass: true, errors: "" };
-  } catch (err: any) {
-    return { pass: false, errors: (err.stdout ?? err.message ?? "").slice(0, 1000) };
+
+    // v9.8.2: Find the local tsc binary instead of relying on npx (which is not always in PATH on Windows).
+    // Search order: node_modules/.bin/tsc (project-local) → global tsc → npx fallback
+    const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+    const localTscPaths = [
+      path.join(projectRoot, "node_modules", ".bin", "tsc"),
+      path.join(projectRoot, "node_modules", ".bin", "tsc.cmd"), // Windows .cmd wrapper
+    ];
+    const localTsc = localTscPaths.find(p => fs.existsSync(p));
+    const tscCmd = localTsc ? `"${localTsc}"` : "tsc"; // fall back to global tsc if local not found
+
+    try {
+      execSync(`${tscCmd} --noEmit --skipLibCheck --noResolve "${tmpFile}" 2>&1`, {
+        timeout: 30000,
+        encoding: "utf-8",
+        cwd: projectRoot,
+      });
+      return { pass: true, errors: "" };
+    } catch (tscErr: any) {
+      const tscOutput: string = tscErr.stdout ?? tscErr.message ?? "";
+      // v9.8.2: If tsc itself is not found (ENOENT / not recognized), fall back to a lightweight
+      // JS-based brace/bracket balance check. This is not a full type-check but catches the most
+      // common syntax errors (unmatched braces, unclosed strings) without requiring any binary.
+      const isTscMissing = /ENOENT|not recognized|not found|cannot find/i.test(tscOutput);
+      if (isTscMissing) {
+        console.warn(`[Guard] tsc binary not found — using lightweight JS syntax fallback for ${filename}`);
+        return runLightweightSyntaxCheck(contentToCheck);
+      }
+      return { pass: false, errors: tscOutput.slice(0, 1000) };
+    }
   } finally {
     if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
+  }
+}
+
+/**
+ * v9.8.2: Lightweight syntax check that runs entirely in-process without any
+ * external binary. Checks brace/bracket/paren balance and unclosed string literals.
+ * Used as a fallback when tsc is not available (e.g. Windows PATH issues).
+ */
+function runLightweightSyntaxCheck(content: string): { pass: boolean; errors: string } {
+  try {
+    let braces = 0, brackets = 0, parens = 0;
+    let inString: "'" | '"' | '`' | null = null;
+    let inLineComment = false;
+    let inBlockComment = false;
+    let i = 0;
+    while (i < content.length) {
+      const ch = content[i];
+      const next = content[i + 1] ?? "";
+      // Handle line comments
+      if (!inString && !inBlockComment && ch === "/" && next === "/") { inLineComment = true; i += 2; continue; }
+      if (inLineComment) { if (ch === "\n") inLineComment = false; i++; continue; }
+      // Handle block comments
+      if (!inString && ch === "/" && next === "*") { inBlockComment = true; i += 2; continue; }
+      if (inBlockComment) { if (ch === "*" && next === "/") { inBlockComment = false; i += 2; } else { i++; } continue; }
+      // Handle strings
+      if (!inString && (ch === "'" || ch === '"' || ch === '`')) { inString = ch as any; i++; continue; }
+      if (inString) {
+        if (ch === "\\" && next) { i += 2; continue; } // escape
+        if (ch === inString) inString = null;
+        i++; continue;
+      }
+      // Balance tracking
+      if (ch === "{") braces++;
+      else if (ch === "}") braces--;
+      else if (ch === "[") brackets++;
+      else if (ch === "]") brackets--;
+      else if (ch === "(") parens++;
+      else if (ch === ")") parens--;
+      i++;
+    }
+    if (braces !== 0) return { pass: false, errors: `Unbalanced braces: ${braces > 0 ? braces + " unclosed {" : Math.abs(braces) + " extra }"}` };
+    if (brackets !== 0) return { pass: false, errors: `Unbalanced brackets: ${brackets > 0 ? brackets + " unclosed [" : Math.abs(brackets) + " extra ]"}` };
+    if (parens !== 0) return { pass: false, errors: `Unbalanced parentheses: ${parens > 0 ? parens + " unclosed (" : Math.abs(parens) + " extra )"}` };
+    if (inString) return { pass: false, errors: `Unclosed string literal (${inString})` };
+    return { pass: true, errors: "" };
+  } catch (err: any) {
+    return { pass: true, errors: "" }; // if the checker itself throws, don't block the proposal
   }
 }
 

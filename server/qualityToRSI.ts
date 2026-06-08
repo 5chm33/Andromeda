@@ -5,8 +5,33 @@
  */
 
 import { createLogger } from "./logger.js";
+import path from "path";
 
 const log = createLogger("qualityToRSI");
+
+// v9.8.2: Pre-check against the selfImprove allowlist before calling analyzeAndPropose.
+// This eliminates the noisy "File X is not in the list of analyzable files" warnings
+// that appear every cycle when codeQualityMonitor or docGenerator returns files that
+// selfImprove.ts will immediately reject.
+let _analyzableFiles: Set<string> | null = null;
+async function getAnalyzableFileSet(): Promise<Set<string>> {
+  if (_analyzableFiles) return _analyzableFiles;
+  try {
+    const { getAnalyzableFiles } = await import("./selfImprove.js") as any;
+    if (typeof getAnalyzableFiles === "function") {
+      _analyzableFiles = new Set(getAnalyzableFiles().map((f: string) => path.basename(f)));
+      return _analyzableFiles;
+    }
+  } catch { /* fallback below */ }
+  // Fallback: hardcoded list mirrors selfImprove.ts ANALYZABLE_FILES
+  _analyzableFiles = new Set([
+    "ai.ts", "grounding.ts", "browser.ts", "workspace.ts", "memory.ts",
+    "multiAgent.ts", "biasDetector.ts", "codeIntel.ts", "streamRouter.ts",
+    "selfImprove.ts", "reactEngine.ts", "llmProvider.ts", "contextManager.ts",
+    "adaptiveRouter.ts", "selfConsistency.ts", "contextBus.ts", "manifest.ts",
+  ]);
+  return _analyzableFiles;
+}
 
 let _lastQualityFeedAt = 0;
 let _lastDocFeedAt = 0;
@@ -32,11 +57,18 @@ export async function feedQualityToRSI(): Promise<number> {
       .slice(0, MAX_QUALITY_PROPOSALS_PER_RUN);
 
     const { analyzeAndPropose } = await import("./selfImprove.js");
+    const allowlist = await getAnalyzableFileSet();
     for (const qp of sorted) {
       // Normalize Windows backslash paths and strip leading "server\" or "server/" prefix
       const normalizedPath = qp.filePath
         .replace(/\\/g, "/")
         .replace(/^server\//, "");
+      const basename = path.basename(normalizedPath);
+      // v9.8.2: Skip files not in the selfImprove allowlist to avoid noisy warnings
+      if (!allowlist.has(basename)) {
+        log.info(`Skipping quality proposal for ${basename} — not in RSI allowlist`);
+        continue;
+      }
       try {
         await analyzeAndPropose(normalizedPath);
         submitted++;
@@ -73,11 +105,18 @@ export async function feedDocGapsToRSI(): Promise<number> {
       .map(([filePath]) => filePath);
 
     const { analyzeAndPropose } = await import("./selfImprove.js");
+    const allowlist = await getAnalyzableFileSet();
     for (const filePath of topFiles) {
       // Normalize Windows backslash paths and strip leading "server\" or "server/" prefix
       const normalizedPath = filePath
         .replace(/\\/g, "/")
         .replace(/^server\//, "");
+      const basename = path.basename(normalizedPath);
+      // v9.8.2: Skip files not in the selfImprove allowlist to avoid noisy warnings
+      if (!allowlist.has(basename)) {
+        log.info(`Skipping doc proposal for ${basename} — not in RSI allowlist`);
+        continue;
+      }
       try {
         await analyzeAndPropose(normalizedPath);
         submitted++;
