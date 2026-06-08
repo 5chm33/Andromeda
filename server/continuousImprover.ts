@@ -254,7 +254,12 @@ async function runImprovementCycle(): Promise<CycleResult> {
             console.log(`[ContinuousImprover] Pushed ${result.proposalsApplied} improvement(s) to origin/main — CI triggered.`);
           } catch (pushErr: any) {
             // Non-fatal — push failure should never block the improvement cycle
-            const safeMsg = (pushErr.message || "").replace(/ghp_[A-Za-z0-9]+/g, "ghp_***");
+            // Sanitize all potential token patterns from both message and stderr
+            const rawMsg = (pushErr.stderr || pushErr.message || pushErr.toString());
+            const safeMsg = rawMsg
+              .replace(/ghp_[A-Za-z0-9]{36}/g, "ghp_***")
+              .replace(/https:\/\/[^@]+@github\.com/g, "https://***@github.com")
+              .replace(/:[^:]+@github\.com/g, ":***@github.com");
             console.warn(`[ContinuousImprover] Git push failed (non-fatal): ${safeMsg.slice(0, 200)}`);
           }
         }

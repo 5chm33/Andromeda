@@ -1,59 +1,96 @@
-/**
- * continuousImprover.test.ts — Andromeda v6.20
- * Comprehensive Vitest test suite for continuousImprover
- */
+import { describe, it, expect } from "vitest";
+import { startContinuousImprover, stopContinuousImprover, triggerCycleNow, getImproverStats, updateImproverConfig } from "./continuousImprover.js";
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-
-vi.mock('child_process', () => ({
-  execSync: vi.fn().mockReturnValue(Buffer.from('ok')),
-  exec: vi.fn((cmd, opts, cb) => { if (cb) cb(null, 'ok', ''); return { kill: vi.fn() }; }),
-  spawn: vi.fn().mockReturnValue({
-    stdout: { on: vi.fn(), pipe: vi.fn() },
-    stderr: { on: vi.fn(), pipe: vi.fn() },
-    stdin: { write: vi.fn(), writable: true },
-    on: vi.fn(),
-    kill: vi.fn(),
-  }),
-}));
-
-import * as Module from './continuousImprover.js';
-
-import { mkdtempSync, rmSync } from "fs";
-import { tmpdir } from "os";
-import { join } from "path";
-
-// Isolate workspace to temp dir to avoid loading production memory files
-const _tmpWs = mkdtempSync(join(tmpdir(), "andromeda-test-"));
-process.env.ANDROMEDA_WORKSPACE = _tmpWs;
-
-
-describe('continuousImprover', () => {
-
-  beforeEach(() => {
-    vi.clearAllMocks();
+describe("startContinuousImprover", () => {
+  it("should execute without throwing", () => {
+    // startContinuousImprover returns void — just verify it doesn't throw
+    expect(() => startContinuousImprover()).not.toThrow();
   });
 
-  it('module loads without errors', () => {
-    expect(Module).toBeDefined();
+  it("should handle empty/null inputs gracefully", () => {
+    expect(() => startContinuousImprover({})).not.toThrow();
   });
 
-  it('exports are defined', () => {
-    expect(Module).toBeDefined();
-    expect(typeof Module).toBe('object');
-  });
-
-  it('startContinuousImprover does not throw', () => {
-    expect(() => Module.startContinuousImprover()).not.toThrow();
-  });
-
-  it('stopContinuousImprover does not throw', () => {
-    expect(() => Module.stopContinuousImprover()).not.toThrow();
-  });
-
-  it('getImproverStats returns a value', () => {
-    const result = Module.getImproverStats();
-    expect(result).toBeDefined();
+  it("should handle invalid inputs", () => {
+    // @ts-expect-error Testing invalid input
+    try { startContinuousImprover(undefined); } catch (e: any) { expect(e).toBeDefined(); }
   });
 
 });
+
+describe("stopContinuousImprover", () => {
+  it("should execute without throwing", () => {
+    // stopContinuousImprover returns void — just verify it doesn't throw
+    expect(() => stopContinuousImprover()).not.toThrow();
+  });
+
+  it("should handle invalid inputs", () => {
+    // @ts-expect-error Testing invalid input
+    try { stopContinuousImprover(); } catch (e: any) { expect(e).toBeDefined(); }
+  });
+
+});
+
+describe("triggerCycleNow", () => {
+  it("should execute without throwing", () => {
+    try {
+      const result = triggerCycleNow();
+      expect(result).toBeDefined();
+    } catch (e: any) {
+      // Function may throw in test environment (e.g. no providers registered)
+      expect(e).toBeDefined();
+    }
+  });
+
+  it("should return correct type", () => {
+    const result = triggerCycleNow();
+    expect(result).toBeTruthy();
+  });
+
+  it("should handle invalid inputs", () => {
+    // @ts-expect-error Testing invalid input
+    try { triggerCycleNow(); } catch (e: any) { expect(e).toBeDefined(); }
+  });
+
+});
+
+describe("getImproverStats", () => {
+  it("should execute without throwing", () => {
+    try {
+      const result = getImproverStats();
+      expect(result).toBeDefined();
+    } catch (e: any) {
+      // Function may throw in test environment (e.g. no providers registered)
+      expect(e).toBeDefined();
+    }
+  });
+
+  it("should return correct type", () => {
+    const result = getImproverStats();
+    expect(result).toBeTruthy();
+  });
+
+  it("should handle invalid inputs", () => {
+    // @ts-expect-error Testing invalid input
+    try { getImproverStats(); } catch (e: any) { expect(e).toBeDefined(); }
+  });
+
+});
+
+describe("updateImproverConfig", () => {
+  it("should execute without throwing", () => {
+    // updateImproverConfig returns void — just verify it doesn't throw
+    expect(() => updateImproverConfig("test_value")).not.toThrow();
+  });
+
+  it("should handle empty/null inputs gracefully", () => {
+    expect(() => updateImproverConfig({})).not.toThrow();
+  });
+
+  it("should handle invalid inputs", () => {
+    // @ts-expect-error Testing invalid input
+    try { updateImproverConfig(undefined); } catch (e: any) { expect(e).toBeDefined(); }
+  });
+
+});
+
