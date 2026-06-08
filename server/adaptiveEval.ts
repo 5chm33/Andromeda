@@ -737,6 +737,11 @@ export function getLatestGapAnalysis(): GapAnalysis {
 // ── Init ───────────────────────────────────────────────────────────────────────
 
 export function initAdaptiveEval(): void {
+  // v9.6.0: Seed benchmarks before loading so the seed runs if file is empty
+  try {
+    const { seedAdaptiveBenchmarks } = require("./evalSeed.js");
+    seedAdaptiveBenchmarks();
+  } catch { /* non-fatal — seed file may not exist in older builds */ }
   loadBenchmarks();
   loadHistory();
   log.info(`[adaptiveEval] Initialized: ${adaptiveBenchmarks.length} benchmarks, ${evalHistory.length} history runs`);
