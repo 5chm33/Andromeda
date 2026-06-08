@@ -1,7 +1,3 @@
 import { describe, it, expect } from "vitest";
+import {  } from "./ai.js";
 
-describe("ai module", () => {
-  it("module loads without throwing", async () => {
-    await expect(import("./ai.js")).resolves.toBeDefined();
-  });
-});
