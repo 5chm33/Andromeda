@@ -1,9 +1,23 @@
 /**
- * initDaemons.ts — v6.04
+ * initDaemons.ts — v9.4.0
  *
- * Extracted from _core/index.ts (v6.03 refactor).
  * Starts all background analysis and monitoring daemons after the server is listening.
  * Called from within the server.listen() callback.
+ *
+ * v9.4.0: Staggered startup — heavy analysis daemons are delayed by 2-10 minutes
+ * to prevent event loop lag (previously all fired within the first 60 seconds,
+ * causing sustained 2000ms+ event loop stalls detected by SelfHeal).
+ *
+ * Startup schedule (approximate):
+ *   0s   — generateAndromedaMd, seedMemories, initPersistentContextStore, startContextCompressionDaemon
+ *   2min — codebaseAnalyzer (was 5s)
+ *   3min — testCoverageAnalyzer (was 15s)
+ *   4min — codeQualityMonitor (was 20s)
+ *   5min — dependencyAuditor (was 30s)
+ *   6min — benchmarkRunner (was 60s)
+ *   7min — docGenerator (was 45s)
+ *   8min — selfReflectionEngine (was 5min — unchanged)
+ *  15min — capabilityDiscovery (was 15min — unchanged)
  */
 
 import { resolve, dirname } from "path";
@@ -26,37 +40,78 @@ import { seedInitialMemoriesIfEmpty } from "../memory";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+const MIN = 60_000;
+
 /**
  * Start all background daemons. Called after server.listen() succeeds.
+ * Heavy analysis daemons are staggered to avoid event loop saturation at startup.
  */
 export function startDaemons(): void {
-  // v5.75: Generate ANDROMEDA.md — grounds the model in actual file structure
+  // ── Immediate: lightweight init ──────────────────────────────────────────
   try {
     const serverDir = resolve(__dirname, "..");
     const workspaceDir = resolve(__dirname, "../../workspace");
     generateAndromedaMd(serverDir, workspaceDir);
   } catch { /* non-fatal */ }
 
-  // v5.68: Seed foundational memories on first boot
   try { seedInitialMemoriesIfEmpty(); } catch { /* non-fatal */ }
 
-  // v7.1: Start all SOTA autonomy daemons
   try {
     initPersistentContextStore();
     startContextCompressionDaemon();
-    startCodebaseAnalyzer();
-    startDependencyAuditor();
-    startTestCoverageAnalyzer();
-    startBenchmarkRunner();
-    startCodeQualityMonitor();
-    startDocGenerator();
-    startSelfReflectionEngine();
-    startMemoryForgettingCurveDaemon();
-    startCapabilityDiscovery();
     // Initialize prompt engineer stats (event-driven, no daemon needed)
     getPromptStats();
-    console.log("[v7.1] All autonomy daemons started successfully");
-  } catch (daemonErr) {
-    console.warn("[v7.1] Some daemons failed to start:", (daemonErr as Error).message);
+  } catch (err) {
+    console.warn("[initDaemons] Lightweight init failed:", (err as Error).message);
   }
+
+  // ── Staggered: heavy analysis daemons ────────────────────────────────────
+  // Each daemon is given its own try/catch so one failure doesn't block others.
+
+  setTimeout(() => {
+    try { startCodebaseAnalyzer(); }
+    catch (e) { console.warn("[initDaemons] codebaseAnalyzer failed to start:", (e as Error).message); }
+  }, 2 * MIN);
+
+  setTimeout(() => {
+    try { startTestCoverageAnalyzer(); }
+    catch (e) { console.warn("[initDaemons] testCoverageAnalyzer failed to start:", (e as Error).message); }
+  }, 3 * MIN);
+
+  setTimeout(() => {
+    try { startCodeQualityMonitor(); }
+    catch (e) { console.warn("[initDaemons] codeQualityMonitor failed to start:", (e as Error).message); }
+  }, 4 * MIN);
+
+  setTimeout(() => {
+    try { startDependencyAuditor(); }
+    catch (e) { console.warn("[initDaemons] dependencyAuditor failed to start:", (e as Error).message); }
+  }, 5 * MIN);
+
+  setTimeout(() => {
+    try { startBenchmarkRunner(); }
+    catch (e) { console.warn("[initDaemons] benchmarkRunner failed to start:", (e as Error).message); }
+  }, 6 * MIN);
+
+  setTimeout(() => {
+    try { startDocGenerator(); }
+    catch (e) { console.warn("[initDaemons] docGenerator failed to start:", (e as Error).message); }
+  }, 7 * MIN);
+
+  setTimeout(() => {
+    try { startSelfReflectionEngine(); }
+    catch (e) { console.warn("[initDaemons] selfReflectionEngine failed to start:", (e as Error).message); }
+  }, 8 * MIN);
+
+  setTimeout(() => {
+    try { startMemoryForgettingCurveDaemon(); }
+    catch (e) { console.warn("[initDaemons] memoryForgettingCurve failed to start:", (e as Error).message); }
+  }, 10 * MIN);
+
+  setTimeout(() => {
+    try { startCapabilityDiscovery(); }
+    catch (e) { console.warn("[initDaemons] capabilityDiscovery failed to start:", (e as Error).message); }
+  }, 15 * MIN);
+
+  console.log("[v9.4] All autonomy daemons scheduled (staggered 2-15min to prevent event loop saturation)");
 }

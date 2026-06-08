@@ -1,10 +1,15 @@
 @echo off
-title Andromeda AI v9.2.0
+setlocal enabledelayedexpansion
 color 0A
+
+:: ── Read version from package.json FIRST so we can use it everywhere ──────────
+for /f "delims=" %%v in ('node -e "process.stdout.write(require('./package.json').version)"') do set SOURCE_VERSION=%%v
+
+title Andromeda AI v!SOURCE_VERSION!
 
 echo.
 echo  ============================================================
-echo   Andromeda AI  v9.2.0
+echo   Andromeda AI  v!SOURCE_VERSION!
 echo  ============================================================
 echo.
 
@@ -53,39 +58,26 @@ if not exist "node_modules\" (
 )
 
 :: ── Step 5: Smart rebuild — only rebuild if source version changed ────────────
-:: v9.2.0: Read the current version from package.json and compare to
-:: dist\.version stamp. Only rebuild when they differ (or dist is missing).
-:: This avoids the 30-60s rebuild penalty on every launch when nothing changed.
+:: Reads version from package.json and compares to dist\.version stamp.
+:: dist\.version is stored WITHOUT the "v" prefix (e.g. "9.4.0") to avoid
+:: any prefix-mismatch causing unnecessary rebuilds on fresh unzip.
 where pnpm >nul 2>&1
 if errorlevel 1 (
     call npm install -g pnpm
 )
 
-:: Extract version from package.json using node
+:: Re-read version in case node wasn't available at top of script
 for /f "delims=" %%v in ('node -e "process.stdout.write(require('./package.json').version)"') do set SOURCE_VERSION=%%v
 
-:: Check if dist exists and version stamp matches
 set NEEDS_BUILD=1
 if exist "dist\index.js" (
     if exist "dist\.version" (
         for /f "delims=" %%s in ('type "dist\.version"') do set DIST_VERSION=%%s
         if "!DIST_VERSION!"=="!SOURCE_VERSION!" (
             set NEEDS_BUILD=0
-        )
-    )
-)
-
-:: Enable delayed expansion for the variable comparison above
-setlocal enabledelayedexpansion
-set NEEDS_BUILD=1
-if exist "dist\index.js" (
-    if exist "dist\.version" (
-        for /f "delims=" %%s in ('type "dist\.version"') do set DIST_VERSION=%%s
-        if "!DIST_VERSION!"=="v!SOURCE_VERSION!" (
-            set NEEDS_BUILD=0
-            echo  [OK] dist\ is up to date ^(v!SOURCE_VERSION!^) — skipping rebuild.
+            echo  [OK] dist\ is up to date ^(!SOURCE_VERSION!^) — skipping rebuild.
         ) else (
-            echo  [INFO] Version changed: dist=!DIST_VERSION! source=v!SOURCE_VERSION! — rebuilding...
+            echo  [INFO] Version changed: dist=!DIST_VERSION! source=!SOURCE_VERSION! — rebuilding...
             rmdir /s /q "dist\"
         )
     ) else (
@@ -98,7 +90,7 @@ if exist "dist\index.js" (
 
 if "!NEEDS_BUILD!"=="1" (
     echo.
-    echo  [INFO] Compiling fresh build from source v!SOURCE_VERSION! ^(takes ~30 seconds^)...
+    echo  [INFO] Compiling fresh build from source !SOURCE_VERSION! ^(takes ~30 seconds^)...
     call pnpm run build
     if errorlevel 1 (
         echo.
@@ -110,10 +102,10 @@ if "!NEEDS_BUILD!"=="1" (
         pause
         exit /b 1
     )
-    :: Write version stamp so next launch skips rebuild
-    echo v!SOURCE_VERSION!> "dist\.version"
+    :: Write version stamp WITHOUT "v" prefix so fresh-unzip dist matches
+    echo !SOURCE_VERSION!> "dist\.version"
     echo.
-    echo  [OK] Build complete — running v!SOURCE_VERSION! source.
+    echo  [OK] Build complete — running !SOURCE_VERSION! source.
     echo.
 )
 endlocal
@@ -130,7 +122,7 @@ start /min "" cmd /c "ping -n 6 127.0.0.1 >nul & start http://localhost:3000"
 :START_SERVER
 echo.
 echo  ============================================================
-echo   Andromeda AI v9.2.0  ^|  http://localhost:3000
+echo   Andromeda AI  ^|  http://localhost:3000
 echo   Press Ctrl+C to stop the server.
 echo  ============================================================
 echo.

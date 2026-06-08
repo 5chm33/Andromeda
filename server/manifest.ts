@@ -1,6 +1,6 @@
 /**
  * manifest.ts — Self-Manifest & Capability Awareness
- * Andromeda v6.13
+ * Andromeda (version read dynamically from package.json)
  *
  * Generates a structured manifest of Andromeda's capabilities, features,
  * and configuration state. This is injected into the system prompt so the
@@ -11,12 +11,23 @@
  * so it always reflects the actual available features.
  */
 
+import { createRequire } from "module";
 import { getAllTools } from "./tools";
 import { listProviders, getActiveProvider } from "./llmProvider";
 import { getRoutingConfig } from "./llmRouter";
 import { getConnectionStatus } from "./mcpClient";
 import { getMemoryStats } from "./memory";
 import { vectorStats } from "./vectorMemory";
+
+// ─── Version (single source of truth: package.json) ─────────────────────────
+const _require = createRequire(import.meta.url);
+let APP_VERSION = "9.4.0";
+try {
+  const pkg = _require("../../package.json") as { version: string };
+  APP_VERSION = pkg.version;
+} catch {
+  // fallback to hardcoded if package.json not resolvable at runtime
+}
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -361,7 +372,7 @@ export function generateManifest(): SystemManifest {
   });
 
   return {
-    version: "6.15.0",
+    version: APP_VERSION,
     identity: "Andromeda",
     generatedAt: new Date().toISOString(),
     sections: allSections,
@@ -385,7 +396,7 @@ function generatePromptAddendum(
   const lines: string[] = [
     "## Andromeda System Capabilities (Auto-Generated Manifest)",
     "",
-    `You are Andromeda v6.13, running on ${state.activeProvider}.`,
+    `You are Andromeda v${APP_VERSION}, running on ${state.activeProvider}.`,
     `You have ${state.toolCount} tools available, ${state.mcpServers} MCP server(s) connected,`,
     `${state.memoryEntries} memories stored (${state.vectorEntries} with vector embeddings).`,
     `Automatic LLM routing is ${state.routingEnabled ? "ENABLED" : "DISABLED"}.`,

@@ -1,7 +1,7 @@
 {
-  "timestamp": 1780842349368,
+  "timestamp": 1780877006235,
   "totalModules": 201,
-  "documentedModules": 114,
+  "documentedModules": 113,
   "undocumentedExports": [
     {
       "filePath": "server/_core/imageGeneration.ts",
@@ -1660,6 +1660,12 @@
       "line": 0
     },
     {
+      "filePath": "server/rsiDb.ts",
+      "exportName": "getRsiDbStatus",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/rsiEngine.ts",
       "exportName": "measureBenchmark",
       "exportType": "function",
@@ -2696,7 +2702,7 @@
     {
       "filePath": "ARCHITECTURE.md",
       "type": "architecture",
-      "content": "Updated: 201 modules, 448 undocumented exports"
+      "content": "Updated: 201 modules, 449 undocumented exports"
     }
   ],
   "architectureUpdated": true
