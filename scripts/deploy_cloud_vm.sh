@@ -1,5 +1,5 @@
 #!/bin/bash
-# Andromeda v9.10.0 — Cloud VM Deployment Script
+# Andromeda v9.10.2 — Cloud VM Deployment Script
 # Run this once on the cloud VM to set up 24/7 autonomous operation.
 # Prerequisites: Node 22, pnpm, git already installed (done by Manus setup)
 
@@ -12,11 +12,6 @@ LOG_FILE="/var/log/andromeda.log"
 
 echo "=== Andromeda Cloud VM Deployment ==="
 echo "Install dir: $INSTALL_DIR"
-
-# Load nvm
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-nvm use 22 || nvm install 22 && nvm use 22
 
 # Pull latest code
 if [ -d "$INSTALL_DIR/.git" ]; then
@@ -52,7 +47,7 @@ Wants=network-online.target
 Type=simple
 User=ubuntu
 WorkingDirectory=${INSTALL_DIR}
-ExecStart=${NODE_BIN} dist/index.js
+ExecStart=${NODE_BIN} dist/server/index.js
 Restart=always
 RestartSec=10
 StandardOutput=append:${LOG_FILE}
