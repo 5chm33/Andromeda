@@ -403,6 +403,35 @@ export async function guardedApply(proposalId: string): Promise<{
     }
   }
 
+  // v9.7.0: Multi-model consensus check for high-risk proposals
+  // Core files (memory, selfImprove, guard, rollback) require consensus when riskLevel >= 'high'
+  const CORE_FILES = ["memory.ts", "selfImprove.ts", "selfImproveGuard.ts", "selfRollback.ts", "contextBus.ts", "reactEngine.ts"];
+  const isCoreFile = CORE_FILES.some(f => proposal.targetFile.endsWith(f));
+  const proposalRiskLevel = (proposal as any).riskLevel || (isCoreFile ? "high" : "medium");
+  try {
+    const { requiresConsensus, getConsensus } = await import("./consensusEngine.js");
+    if (requiresConsensus(proposalRiskLevel)) {
+      const consensusResult = await getConsensus({
+        type: "modification",
+        description: `Apply RSI proposal: ${proposal.title}`,
+        targetFile: proposal.targetFile,
+        proposedChange: `Rationale: ${proposal.rationale}\nSnippet: ${(proposal.originalSnippet || "").slice(0, 200)}`,
+        riskLevel: proposalRiskLevel as "low" | "medium" | "high" | "critical",
+      });
+      if (!consensusResult.approved) {
+        const approvalPct = ((consensusResult.approvalCount / Math.max(consensusResult.totalModels, 1)) * 100).toFixed(0);
+        const topReason = consensusResult.votes?.[0]?.reasoning?.slice(0, 200) || "no reason given";
+        addAudit("apply", "blocked", `Consensus rejected (${approvalPct}% approval): ${topReason}`, proposalId, proposal.targetFile);
+        return { success: false, message: `Multi-model consensus rejected this proposal (${approvalPct}% approval)` };
+      }
+      const approvalPct = ((consensusResult.approvalCount / Math.max(consensusResult.totalModels, 1)) * 100).toFixed(0);
+      console.log(`[Guard] Consensus approved for ${proposal.targetFile} (${approvalPct}% approval, confidence: ${consensusResult.consensusConfidence.toFixed(2)})`);
+    }
+  } catch (consensusErr) {
+    // Non-fatal — if consensus engine is unavailable, proceed without it
+    console.warn("[Guard] Consensus check unavailable (non-fatal):", (consensusErr as Error).message);
+  }
+
   // Create backup
   const backup = createBackup(proposal.targetFile, proposalId, "pre-apply") ?? undefined;
 

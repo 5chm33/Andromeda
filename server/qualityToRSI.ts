@@ -4,7 +4,7 @@
  * Bridges the code quality monitor and doc generator to the RSI proposal queue.
  */
 
-import { createLogger } from "./_core/logger.js";
+import { createLogger } from "./logger.js";
 
 const log = createLogger("qualityToRSI");
 

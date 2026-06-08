@@ -10,7 +10,7 @@
 
 import path from "path";
 import fs from "fs";
-import { createLogger } from "./_core/logger.js";
+import { createLogger } from "./logger.js";
 
 const log = createLogger("evalDrivenTargeting");
 
