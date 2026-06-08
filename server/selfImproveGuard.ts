@@ -39,7 +39,6 @@ function getConstitution(): Record<string, unknown> | null {
 }
 import {
   listProposals,
-  applyProposal,
   rejectProposal,
   type ImprovementProposal,
 } from "./selfImprove";
@@ -431,11 +430,50 @@ export async function guardedApply(proposalId: string): Promise<{
   // Create backup
   const backup = createBackup(proposal.targetFile, proposalId, "pre-apply") ?? undefined;
 
-  // Apply the proposal
-  const result = await applyProposal(proposalId);
-  if (!result.success) {
-    addAudit("apply", "failure", result.message, proposalId, proposal.targetFile);
-    return { success: false, message: result.message, syntaxCheck: syntaxResult, backup };
+  // v9.5.1: Direct file write — previously called applyProposal() here which caused
+  // an async mutual recursion: applyProposal → guardedApply → applyProposal (re-entry blocked).
+  // The guard's job is safety checks only; the actual write happens here directly.
+  const serverDir = path.dirname(fileURLToPath(import.meta.url));
+  let absoluteFilePath: string | null = null;
+  const basename = path.basename(proposal.targetFile);
+  // Try canonical server/ path first, then fallback candidates
+  const projectRoot = path.resolve(serverDir, "..");
+  const candidates = [
+    path.join(projectRoot, "server", basename),
+    path.join(projectRoot, "server", "tools", basename),
+    path.join(projectRoot, "server", "self", basename),
+    path.join(serverDir, basename),
+    path.join(process.cwd(), "server", basename),
+  ];
+  for (const c of candidates) {
+    try { if (fs.existsSync(c)) { absoluteFilePath = c; break; } } catch { /* skip */ }
+  }
+  if (!absoluteFilePath) {
+    addAudit("apply", "failure", `Cannot resolve path for ${proposal.targetFile}`, proposalId, proposal.targetFile);
+    return { success: false, message: `Cannot resolve file path for '${proposal.targetFile}'`, syntaxCheck: syntaxResult, backup };
+  }
+  if (!proposal.proposedContent) {
+    addAudit("apply", "failure", "Proposal has no proposedContent", proposalId, proposal.targetFile);
+    return { success: false, message: "Proposal has no proposedContent — cannot apply", syntaxCheck: syntaxResult, backup };
+  }
+  try {
+    const dir = path.dirname(absoluteFilePath);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(absoluteFilePath, proposal.proposedContent, "utf-8");
+    // Verify write integrity
+    const written = fs.readFileSync(absoluteFilePath, "utf-8");
+    if (written !== proposal.proposedContent) {
+      // Restore backup on integrity failure
+      if (backup) {
+        const backupFilePath = path.join(getBackupDir(), backup.backupPath);
+        if (fs.existsSync(backupFilePath)) fs.copyFileSync(backupFilePath, absoluteFilePath);
+      }
+      addAudit("apply", "failure", "Write integrity check failed", proposalId, proposal.targetFile);
+      return { success: false, message: "Write integrity check failed — backup restored", syntaxCheck: syntaxResult, backup };
+    }
+  } catch (writeErr: any) {
+    addAudit("apply", "failure", `File write failed: ${writeErr.message}`, proposalId, proposal.targetFile);
+    return { success: false, message: `File write failed: ${writeErr.message}`, syntaxCheck: syntaxResult, backup };
   }
 
   // Run tests after applying
