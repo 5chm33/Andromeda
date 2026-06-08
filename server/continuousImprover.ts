@@ -140,17 +140,22 @@ async function runImprovementCycle(): Promise<CycleResult> {
 
     // 3. Get pending proposals
     const proposals = listProposals().filter((p: any) => p.status === "pending");
+    
+    // In v9.8.1 we only count newly generated proposals in totalProposals, but here
+    // proposals is the entire pending queue. We'll just report the queue size.
     result.proposalsGenerated = proposals.length;
-    totalProposals += proposals.length;
+    // Don't add to totalProposals here, as it double-counts on every cycle
 
     if (config.dryRun) {
-      console.log(`[ContinuousImprover] DRY RUN: ${proposals.length} proposals generated, none applied.`);
+      console.log(`[ContinuousImprover] DRY RUN: ${proposals.length} pending proposals, none applied.`);
       result.duration = Date.now() - start;
       return result;
     }
 
     // 4. Apply top proposals (up to limit) — with truncation check
-    const toApply = proposals.slice(0, config.maxAppliesPerCycle);
+    // v9.8.1: Sort by confidence before slicing, so we try the best ones first
+    const sortedProposals = [...proposals].sort((a: any, b: any) => (b.confidence || 0) - (a.confidence || 0));
+    const toApply = sortedProposals.slice(0, config.maxAppliesPerCycle);
     const { applyProposal } = await import("./selfImprove");
 
     // v5.29: Import stream integrity checker for truncation detection
@@ -339,6 +344,16 @@ export function startContinuousImprover(overrides?: Partial<ContinuousImproverCo
 
   // v6.31: Each interval tick acquires the distributed lock before running
   _timerActive = true;
+  
+  // v9.8.1: Run an initial cycle shortly after startup to process pending proposals
+  setTimeout(() => {
+    if (_timerActive) {
+      withContinuousImproverLock(() => runImprovementCycle()).catch(err =>
+        console.warn("[ContinuousImprover] Initial cycle skipped (lock busy or error):", (err as Error).message)
+      );
+    }
+  }, 15000); // 15 seconds after startup
+  
   cycleTimer = setInterval(() => {
     withContinuousImproverLock(() => runImprovementCycle()).catch(err =>
       console.warn("[ContinuousImprover] Cycle skipped (lock busy or error):", (err as Error).message)

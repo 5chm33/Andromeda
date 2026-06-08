@@ -419,15 +419,40 @@ export async function guardedApply(proposalId: string): Promise<{
             const refined = await refineProposal(proposal, syntaxResult.errors);
             if (refined) {
               addAudit("apply", "failure", `Refined proposal ${proposalId} after syntax error`, proposalId, proposal.targetFile);
-              return { success: false, message: "Syntax check failed — proposal refined and queued for retry", syntaxCheck: syntaxResult };
+              
+              // v9.8.1: Don't return false yet. We need to re-run the syntax check immediately
+              // on the newly refined proposal to see if it fixed the issue.
+              // If it did, we can continue with the apply pipeline.
+              const retrySyntax = runSyntaxCheck(proposal.targetFile, proposal.proposedContent, proposal.originalSnippet, proposal.proposedSnippet);
+              
+              if (retrySyntax.pass) {
+                console.log(`[Guard] Refinement successful for ${proposalId}. Syntax check passed.`);
+                addAudit("apply", "success", `Refinement fixed syntax errors for ${proposalId}`, proposalId, proposal.targetFile);
+                // The syntax check passed, so we can break out of the failure block and continue
+                // the apply process (e.g. consensus check, rollback point creation, etc.)
+                syntaxResult = retrySyntax;
+              } else {
+                console.log(`[Guard] Refinement failed to fix syntax for ${proposalId}. Queued for another try.`);
+                return { success: false, message: "Syntax check failed — proposal refined but still has errors (queued for retry)", syntaxCheck: retrySyntax };
+              }
+            } else {
+              // Refinement failed to generate a valid JSON or snippet
+              return { success: false, message: "Syntax check failed — refinement generation failed", syntaxCheck: syntaxResult };
             }
           }
         } catch (err) {
           console.warn("[Guard] Refinement loop failed:", (err as Error).message);
+          return { success: false, message: "Syntax check failed — refinement threw an error", syntaxCheck: syntaxResult };
         }
+      } else {
+        return { success: false, message: "Syntax check failed — proposal not applied (max refinements reached)", syntaxCheck: syntaxResult };
       }
       
-      return { success: false, message: "Syntax check failed — proposal not applied (max refinements reached)", syntaxCheck: syntaxResult };
+      // If we reach here, it means the refinement loop successfully fixed the syntax error
+      // and we should continue with the rest of the guard pipeline.
+      if (!syntaxResult.pass) {
+         return { success: false, message: "Syntax check failed — proposal not applied", syntaxCheck: syntaxResult };
+      }
     }
   }
 
