@@ -90,6 +90,26 @@ function isPrivateAddress(hostname: string): boolean {
   return PRIVATE_IP_PATTERNS.some(pattern => pattern.test(hostname));
 }
 
+/**
+ * Validates that a URL is safe to browse (not a private/internal address).
+ * Returns an error message if blocked, or null if allowed.
+ */
+function validateUrl(url: string): string | null {
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    return "Invalid URL";
+  }
+  if (!["http:", "https:"].includes(parsed.protocol)) {
+    return "Only HTTP/HTTPS URLs are supported";
+  }
+  if (isPrivateAddress(parsed.hostname)) {
+    return "Access to internal network addresses is blocked (SSRF protection)";
+  }
+  return null;
+}
+
 export async function browseUrl(url: string): Promise<BrowseResult> {
   const start = Date.now();
 
