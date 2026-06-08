@@ -380,20 +380,21 @@ export function generateUnifiedDiff(
 
   let oldLineNum = 1;
   let newLineNum = 1;
+  let hunkPending = false;
   for (const change of changes) {
-    if (change.added) {
-      diff.push(`@@ -${oldLineNum} +${newLineNum} @@`);
-      for (const line of change.value.split("\n")) {
-        if (line) diff.push(`+${line}`);
+    if (change.added || change.removed) {
+      if (!hunkPending) {
+        diff.push(`@@ -${oldLineNum} +${newLineNum} @@`);
+        hunkPending = true;
       }
-      newLineNum += change.count;
-    } else if (change.removed) {
-      diff.push(`@@ -${oldLineNum} +${newLineNum} @@`);
+      const prefix = change.added ? '+' : '-';
       for (const line of change.value.split("\n")) {
-        if (line) diff.push(`-${line}`);
+        if (line) diff.push(`${prefix}${line}`);
       }
-      oldLineNum += change.count;
+      if (change.added) newLineNum += change.count;
+      if (change.removed) oldLineNum += change.count;
     } else {
+      hunkPending = false;
       oldLineNum += change.count;
       newLineNum += change.count;
     }
