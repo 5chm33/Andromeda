@@ -5065,6 +5065,22 @@
       "confidence": 0.8,
       "createdAt": 1780897141966,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780897148284_jh6bvv",
+      "category": "success",
+      "title": "Success: Improve readability of diversity scoring logic",
+      "description": "Successfully applied \"Improve readability of diversity scoring logic\" to biasDetector.ts (readability). Health: improved.",
+      "context": "self-modify biasDetector.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for biasDetector.ts: Improve readability of diversity scoring logic",
+      "applicableTo": [
+        "biasDetector.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780897148284,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5207,5 +5223,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T05:39:01.966Z"
+  "_lastUpdated": "2026-06-08T05:39:08.284Z"
 }

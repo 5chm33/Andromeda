@@ -95,12 +95,26 @@
       "createdAt": 1780897141969,
       "lastReferencedAt": 1780897141969,
       "referenceCount": 0
+    },
+    {
+      "id": "sl_1780897148286_ty2wzw",
+      "category": "modification",
+      "title": "Applied: Improve readability of diversity scoring logic",
+      "content": "Successfully applied improvement to biasDetector.ts: Improve readability of diversity scoring logic",
+      "context": "category: readability, impact: low, confidence: 0.95",
+      "confidence": 0.9,
+      "applicableTo": [
+        "biasDetector.ts"
+      ],
+      "createdAt": 1780897148286,
+      "lastReferencedAt": 1780897148286,
+      "referenceCount": 0
     }
   ],
   "baselines": [],
   "errorPatterns": [],
   "metadata": {
-    "totalLearnings": 7,
+    "totalLearnings": 8,
     "totalReferences": 0,
     "lastConsolidation": 1780537317493,
     "version": "5.28"
