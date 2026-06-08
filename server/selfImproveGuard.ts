@@ -261,13 +261,22 @@ export function generateDiffPreview(proposal: ImprovementProposal): {
 
 // ─── Syntax Check ─────────────────────────────────────────────────────────────
 
-function runSyntaxCheck(filename: string, content: string): { pass: boolean; errors: string } {
+function runSyntaxCheck(filename: string, proposedContent: string, originalSnippet?: string, proposedSnippet?: string): { pass: boolean; errors: string } {
   const tmpDir = path.join(getDataDir(), "tmp_syntax");
   if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
   const tmpFile = path.join(tmpDir, path.basename(filename));
 
   try {
-    fs.writeFileSync(tmpFile, content, "utf-8");
+    let contentToCheck = proposedContent;
+    if (originalSnippet && proposedSnippet) {
+      const serverDir = path.dirname(fileURLToPath(import.meta.url));
+      const filePath = path.join(serverDir, path.basename(filename));
+      if (fs.existsSync(filePath)) {
+        const fullContent = fs.readFileSync(filePath, "utf-8");
+        contentToCheck = fullContent.replace(originalSnippet, proposedSnippet);
+      }
+    }
+    fs.writeFileSync(tmpFile, contentToCheck, "utf-8");
     // Use tsc --noEmit on just this file with skipLibCheck + noResolve so it only
     // checks syntax without trying to resolve local imports (which would fail
     // since the file is isolated outside the project tree in tmp_syntax/).
@@ -396,7 +405,7 @@ export async function guardedApply(proposalId: string): Promise<{
   // Syntax check
   let syntaxResult: { pass: boolean; errors: string } | undefined;
   if (config.runSyntaxCheck) {
-    syntaxResult = runSyntaxCheck(proposal.targetFile, proposal.proposedContent);
+    syntaxResult = runSyntaxCheck(proposal.targetFile, proposal.proposedContent, proposal.originalSnippet, proposal.proposedSnippet);
     if (!syntaxResult.pass) {
       addAudit("apply", "failure", `Syntax check failed: ${syntaxResult.errors.slice(0, 200)}`, proposalId, proposal.targetFile);
       return { success: false, message: "Syntax check failed — proposal not applied", syntaxCheck: syntaxResult };

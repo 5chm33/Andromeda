@@ -187,6 +187,8 @@ async function runImprovementCycle(): Promise<CycleResult> {
       } catch (err) {
         result.errors.push(`Apply failed for ${proposal.id}: ${(err as Error).message}`);
       }
+      // Yield to the event loop to prevent blocking during tight apply loops
+      await new Promise(r => setImmediate(r));
     }
 
     // 5. Post-cycle: validate all changes with TypeScript check + smoke tests + behavioral tests
