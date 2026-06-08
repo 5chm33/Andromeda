@@ -423,10 +423,10 @@ export async function guardedApply(proposalId: string): Promise<{
     return { success: false, message: "Proposal not found" };
   }
 
-  if (proposal.status !== "pending") {
-    addAudit("apply", "failure", `Proposal already ${proposal.status}`, proposalId, proposal.targetFile);
-    return { success: false, message: `Proposal is already ${proposal.status}` };
-  }
+  // v9.8.5: Do NOT check proposal.status here. applyProposal() already checked for 'pending'
+  // and set status to 'processing' before calling guardedApply(). Checking status here would
+  // always see 'processing' and incorrectly reject every proposal.
+  // The status guard lives exclusively in applyProposal().
 
   // v5.53/v5.54: Constitution check — validate against andromeda-constitution.json before applying (cached)
   try {

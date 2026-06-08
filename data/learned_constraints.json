@@ -62,7 +62,16 @@
       "firstSeenAt": 1780900425889,
       "lastSeenAt": 1780900425889,
       "active": false
+    },
+    {
+      "id": "lc_1780900426049_fb2tl",
+      "pattern": "return {\n    version: \"6.13.0\",\n    identity: \"Andromeda\",\n    generatedAt: ne",
+      "reason": "Proposal is already processing",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780900426049,
+      "lastSeenAt": 1780900426049,
+      "active": false
     }
   ],
-  "lastUpdatedAt": 1780900425890
+  "lastUpdatedAt": 1780900426049
 }

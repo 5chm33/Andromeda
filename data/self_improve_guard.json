@@ -2866,6 +2866,15 @@
       "result": "failure",
       "details": "Proposal already processing",
       "timestamp": "2026-06-08T06:33:45.869Z"
+    },
+    {
+      "id": "audit_1780900426025_9313d4",
+      "action": "apply",
+      "proposalId": "prop_1780851614955_zq48rl",
+      "filename": "manifest.ts",
+      "result": "failure",
+      "details": "Proposal already processing",
+      "timestamp": "2026-06-08T06:33:46.025Z"
     }
   ]
 }
