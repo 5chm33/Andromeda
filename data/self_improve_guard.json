@@ -2380,6 +2380,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/grounding.ts(22,35): error TS2307: Cannot find module '../drizzle/schema' or its corresponding type declarations.\n",
       "timestamp": "2026-06-08T00:06:19.693Z"
+    },
+    {
+      "id": "audit_1780877368786_uxeag1",
+      "action": "apply",
+      "proposalId": "prop_1780877368588_0mznnh",
+      "filename": "workspace.ts",
+      "result": "blocked",
+      "details": "Constitution: proposed content contains forbidden pattern 'rm -rf /'",
+      "timestamp": "2026-06-08T00:09:28.786Z"
     }
   ]
 }
