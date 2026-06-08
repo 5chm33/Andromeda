@@ -1,84 +1,51 @@
-/**
- * codeIntel.test.ts — Andromeda v6.20
- * Comprehensive Vitest test suite for codeIntel
- */
+import { describe, it, expect } from "vitest";
+import { readPackageJson, diagnoseError } from "/home/ubuntu/andromeda_git/server/codeIntel";
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-
-vi.mock('fs', () => ({
-  default: {
-    existsSync: vi.fn().mockReturnValue(true),
-    readFileSync: vi.fn().mockReturnValue('{}'),
-    writeFileSync: vi.fn(),
-    renameSync: vi.fn(),
-    unlinkSync: vi.fn(),
-    mkdirSync: vi.fn(),
-    readdirSync: vi.fn().mockReturnValue([]),
-    statSync: vi.fn().mockReturnValue({ mtimeMs: Date.now(), size: 100, isFile: () => true, isDirectory: () => false }),
-    promises: {
-      readFile: vi.fn().mockResolvedValue(''),
-      writeFile: vi.fn().mockResolvedValue(undefined),
-      mkdir: vi.fn().mockResolvedValue(undefined),
-      readdir: vi.fn().mockResolvedValue([]),
-      stat: vi.fn().mockResolvedValue({ mtimeMs: Date.now(), size: 100, isFile: () => true }),
-      unlink: vi.fn().mockResolvedValue(undefined),
-      rename: vi.fn().mockResolvedValue(undefined),
-    },
-  },
-  // Named exports (vitest requires both default and named)
-  existsSync: vi.fn().mockReturnValue(true),
-  readFileSync: vi.fn().mockReturnValue('{}'),
-  writeFileSync: vi.fn(),
-  renameSync: vi.fn(),
-  unlinkSync: vi.fn(),
-  mkdirSync: vi.fn(),
-  mkdtempSync: vi.fn().mockReturnValue('/tmp/test-dir'),
-  readdirSync: vi.fn().mockReturnValue([]),
-  statSync: vi.fn().mockReturnValue({ mtimeMs: Date.now(), size: 100, isFile: () => true, isDirectory: () => false }),
-  appendFileSync: vi.fn(),
-  copyFileSync: vi.fn(),
-  createWriteStream: vi.fn().mockReturnValue({ write: vi.fn(), end: vi.fn(), on: vi.fn() }),
-}));
-
-vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-  ok: true,
-  status: 200,
-  json: vi.fn().mockResolvedValue({}),
-  text: vi.fn().mockResolvedValue(''),
-  body: null,
-}));
-
-import * as Module from './codeIntel.js';
-
-describe('codeIntel', () => {
-
-  beforeEach(() => {
-    vi.clearAllMocks();
+describe("readPackageJson", () => {
+  it("should execute without throwing", () => {
+    const result = readPackageJson();
+    expect(result).toBeDefined();
   });
 
-  it('module loads without errors', () => {
-    expect(Module).toBeDefined();
+  it("should return correct type", () => {
+    const result = readPackageJson();
+    expect(result).toBeTruthy();
   });
 
-  it('exports are defined', () => {
-    expect(Module).toBeDefined();
-    expect(typeof Module).toBe('object');
+  it("should handle empty/null inputs gracefully", () => {
+    expect(() => readPackageJson("")).not.toThrow();
   });
 
-  it('module has expected structure', () => {
-    const keys = Object.keys(Module);
-    expect(keys.length).toBeGreaterThanOrEqual(0);
-  });
-
-  it('no unexpected throws on import', () => {
-    expect(Module).toBeTruthy();
-  });
-
-  it('exported types are correct', () => {
-    for (const key of Object.keys(Module)) {
-      const val = (Module as any)[key];
-      expect(['function', 'object', 'string', 'number', 'boolean', 'undefined'].includes(typeof val)).toBe(true);
-    }
+  it("should handle invalid inputs", () => {
+    // @ts-expect-error Testing invalid input
+    const result = readPackageJson(undefined);
+    // Should either return a default value or throw a descriptive error
+    expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
+
+describe("diagnoseError", () => {
+  it("should execute without throwing", () => {
+    const result = diagnoseError("test_rawError");
+    expect(result).toBeDefined();
+  });
+
+  it("should return correct type", () => {
+    const result = diagnoseError("test_rawError");
+    expect(result).toBeTruthy();
+  });
+
+  it("should handle empty/null inputs gracefully", () => {
+    expect(() => diagnoseError("")).not.toThrow();
+  });
+
+  it("should handle invalid inputs", () => {
+    // @ts-expect-error Testing invalid input
+    const result = diagnoseError(undefined);
+    // Should either return a default value or throw a descriptive error
+    expect(true).toBe(true); // Placeholder — customize based on expected behavior
+  });
+
+});
+

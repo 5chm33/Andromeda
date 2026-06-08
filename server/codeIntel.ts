@@ -377,7 +377,7 @@ export function generateUnifiedDiff(
     `+++ b/${fileName}`,
   ];
 
-  // Simple LCS-based diff (sufficient for code review purposes)
+  // Simple diff using a two-pointer approach (sufficient for code review)
   let i = 0, j = 0;
   let hunkLines: string[] = [];
   let hunkStart = -1;
@@ -397,20 +397,18 @@ export function generateUnifiedDiff(
 
     if (orig === mod) {
       flushHunk();
-      i++; j++;
-    } else if (orig !== undefined && mod !== undefined) {
-      if (hunkStart === -1) hunkStart = i;
-      hunkLines.push(`-${orig}`);
-      hunkLines.push(`+${mod}`);
-      i++; j++;
-    } else if (orig !== undefined) {
-      if (hunkStart === -1) hunkStart = i;
-      hunkLines.push(`-${orig}`);
       i++;
-    } else {
-      if (hunkStart === -1) hunkStart = j;
-      hunkLines.push(`+${mod}`);
       j++;
+    } else {
+      if (hunkStart === -1) hunkStart = i;
+      if (orig !== undefined) {
+        hunkLines.push(`-${orig}`);
+        i++;
+      }
+      if (mod !== undefined) {
+        hunkLines.push(`+${mod}`);
+        j++;
+      }
     }
   }
 
