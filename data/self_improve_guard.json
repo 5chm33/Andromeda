@@ -2650,6 +2650,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/browser.ts(9,21): error TS2307: Cannot find module 'fs' or its corresponding type declarations.\ndata/tmp_syntax/browser.ts(10,26): error TS2307: Cannot find module 'playwright-core' or",
       "timestamp": "2026-06-08T02:10:16.078Z"
+    },
+    {
+      "id": "audit_1780884752594_jtq9mm",
+      "action": "apply",
+      "proposalId": "prop_1780865475705_e6285f",
+      "filename": "grounding.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/grounding.ts(22,35): error TS2307: Cannot find module '../drizzle/schema' or its corresponding type declarations.\n",
+      "timestamp": "2026-06-08T02:12:32.594Z"
     }
   ]
 }
