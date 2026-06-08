@@ -2821,6 +2821,15 @@
       "result": "failure",
       "details": "Proposal already processing",
       "timestamp": "2026-06-08T06:20:26.529Z"
+    },
+    {
+      "id": "audit_1780899973313_rgi684",
+      "action": "apply",
+      "proposalId": "prop_1780899972968_eazd8x",
+      "filename": "adaptiveRouter.ts",
+      "result": "failure",
+      "details": "Proposal already processing",
+      "timestamp": "2026-06-08T06:26:13.313Z"
     }
   ]
 }

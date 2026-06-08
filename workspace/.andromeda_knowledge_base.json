@@ -5193,6 +5193,22 @@
       "confidence": 0.9,
       "createdAt": 1780899626546,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780899973333_3m1ghi",
+      "category": "antipattern",
+      "title": "Failure: Remove redundant env var check in selectProvider",
+      "description": "Failed to apply \"Remove redundant env var check in selectProvider\" to adaptiveRouter.ts. Reason: Proposal is already processing. Avoid similar changes.",
+      "context": "self-modify adaptiveRouter.ts reliability",
+      "outcome": "failure: Proposal is already processing",
+      "lesson": "Avoid for adaptiveRouter.ts: Remove redundant env var check in selectProvider — causes Proposal is already processing",
+      "applicableTo": [
+        "adaptiveRouter.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780899973333,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5335,5 +5351,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T06:20:26.546Z"
+  "_lastUpdated": "2026-06-08T06:26:13.333Z"
 }

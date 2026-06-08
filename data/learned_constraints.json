@@ -17,7 +17,16 @@
       "firstSeenAt": 1780899626551,
       "lastSeenAt": 1780899626551,
       "active": false
+    },
+    {
+      "id": "lc_1780899973335_tl3mh",
+      "pattern": "// Get eligible providers\n  const eligible = Array.from(providers.values()).fi",
+      "reason": "Proposal is already processing",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780899973335,
+      "lastSeenAt": 1780899973335,
+      "active": false
     }
   ],
-  "lastUpdatedAt": 1780899626551
+  "lastUpdatedAt": 1780899973335
 }
