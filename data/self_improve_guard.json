@@ -2416,6 +2416,15 @@
       "result": "success",
       "details": "Auto-expired: constitution-blocked 3 times (pattern: 'rm -rf /')",
       "timestamp": "2026-06-08T00:17:31.958Z"
+    },
+    {
+      "id": "audit_1780878031263_g312tc",
+      "action": "apply",
+      "proposalId": "prop_1780878029875_fp6jom",
+      "filename": "contextBus.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/contextBus.ts(16,28): error TS2307: Cannot find module 'crypto' or its corresponding type declarations.\ndata/tmp_syntax/contextBus.ts(17,16): error TS2307: Cannot find module 'fs' or i",
+      "timestamp": "2026-06-08T00:20:31.263Z"
     }
   ]
 }
