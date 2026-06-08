@@ -179,12 +179,26 @@
       "createdAt": 1780903862302,
       "lastReferencedAt": 1780903862302,
       "referenceCount": 0
+    },
+    {
+      "id": "sl_1780904199632_7yrrz3",
+      "category": "modification",
+      "title": "Applied: Extract provider config into separate file",
+      "content": "Successfully applied improvement to llmProvider.ts: Extract provider config into separate file",
+      "context": "category: architecture, impact: medium, confidence: 0.30",
+      "confidence": 0.9,
+      "applicableTo": [
+        "llmProvider.ts"
+      ],
+      "createdAt": 1780904199632,
+      "lastReferencedAt": 1780904199632,
+      "referenceCount": 0
     }
   ],
   "baselines": [],
   "errorPatterns": [],
   "metadata": {
-    "totalLearnings": 13,
+    "totalLearnings": 14,
     "totalReferences": 0,
     "lastConsolidation": 1780537317493,
     "version": "5.28"

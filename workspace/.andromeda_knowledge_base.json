@@ -5481,6 +5481,22 @@
       "confidence": 0.8,
       "createdAt": 1780903862297,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780904199625_96m2hu",
+      "category": "success",
+      "title": "Success: Extract provider config into separate file",
+      "description": "Successfully applied \"Extract provider config into separate file\" to llmProvider.ts (architecture). Health: improved.",
+      "context": "self-modify llmProvider.ts architecture",
+      "outcome": "success",
+      "lesson": "Pattern works for llmProvider.ts: Extract provider config into separate file",
+      "applicableTo": [
+        "llmProvider.ts",
+        "architecture"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780904199625,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5623,5 +5639,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T07:31:02.297Z"
+  "_lastUpdated": "2026-06-08T07:36:39.625Z"
 }
