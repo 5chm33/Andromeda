@@ -35,7 +35,16 @@
       "firstSeenAt": 1780899973504,
       "lastSeenAt": 1780899973504,
       "active": false
+    },
+    {
+      "id": "lc_1780900194317_fzrlb",
+      "pattern": "// ── Query available providers in parallel ──\n  async function queryProvider(",
+      "reason": "Proposal is already processing",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780900194317,
+      "lastSeenAt": 1780900194317,
+      "active": false
     }
   ],
-  "lastUpdatedAt": 1780899973504
+  "lastUpdatedAt": 1780900194318
 }
