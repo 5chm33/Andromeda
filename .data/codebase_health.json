@@ -1,5 +1,5 @@
 {
-  "timestamp": 1780894360388,
+  "timestamp": 1780894606086,
   "totalFiles": 209,
   "averageScore": 88,
   "worstModules": [
@@ -126,7 +126,7 @@
           "suggestion": "Remove unused import 'IDENTITY'"
         }
       ],
-      "lastAnalyzed": 1780894360378
+      "lastAnalyzed": 1780894606077
     },
     {
       "filePath": "server/tools/selfDiagnoseTools.ts",
@@ -181,7 +181,7 @@
           "message": "TODO comment: `    // TODO: Import and test ${fn} from '${relativePath}'`,"
         }
       ],
-      "lastAnalyzed": 1780894360373
+      "lastAnalyzed": 1780894606073
     },
     {
       "filePath": "server/streamRouter.ts",
@@ -281,7 +281,7 @@
           "suggestion": "Remove unused import 'getAgentRoles'"
         }
       ],
-      "lastAnalyzed": 1780894360353
+      "lastAnalyzed": 1780894606053
     },
     {
       "filePath": "server/tools/selfTestRunner.ts",
@@ -336,7 +336,7 @@
           "suggestion": "Remove unused import 'type ToolExecutionContext'"
         }
       ],
-      "lastAnalyzed": 1780894360379
+      "lastAnalyzed": 1780894606079
     },
     {
       "filePath": "server/selfImprove.ts",
@@ -377,7 +377,7 @@
           "suggestion": "Remove unused import 'backgroundSimpleCompletion'"
         }
       ],
-      "lastAnalyzed": 1780894360330
+      "lastAnalyzed": 1780894606032
     },
     {
       "filePath": "server/aiPlanning.ts",
@@ -425,7 +425,7 @@
           "suggestion": "Remove unused import 'getActiveProvider'"
         }
       ],
-      "lastAnalyzed": 1780894360211
+      "lastAnalyzed": 1780894605926
     },
     {
       "filePath": "server/recursiveGoals.ts",
@@ -468,7 +468,7 @@
           "suggestion": "Extract helper functions or decompose logic"
         }
       ],
-      "lastAnalyzed": 1780894360289
+      "lastAnalyzed": 1780894605997
     },
     {
       "filePath": "server/tools/selfAwareness.ts",
@@ -504,7 +504,7 @@
           "suggestion": "Extract helper functions or decompose logic"
         }
       ],
-      "lastAnalyzed": 1780894360371
+      "lastAnalyzed": 1780894606071
     },
     {
       "filePath": "server/routes/systemRoutes.ts",
@@ -544,31 +544,31 @@
           "suggestion": "Remove unused import 'getToolsByCategory'"
         }
       ],
-      "lastAnalyzed": 1780894360307
+      "lastAnalyzed": 1780894606014
     },
     {
       "filePath": "server/selfImproveGuard.ts",
       "fileName": "selfImproveGuard.ts",
       "score": 58,
-      "lineCount": 697,
+      "lineCount": 712,
       "issues": [
         {
           "type": "large_file",
           "severity": "medium",
-          "message": "File has 697 lines (max recommended: 500)",
+          "message": "File has 712 lines (max recommended: 500)",
           "suggestion": "Consider splitting into smaller modules"
         },
         {
           "type": "long_function",
           "severity": "medium",
           "line": 264,
-          "message": "Function 'runSyntaxCheck' is 60 lines (max: 50)",
+          "message": "Function 'runSyntaxCheck' is 75 lines (max: 50)",
           "suggestion": "Extract helper functions or decompose logic"
         },
         {
           "type": "long_function",
           "severity": "high",
-          "line": 389,
+          "line": 404,
           "message": "Function 'guardedApply' is 221 lines (max: 50)",
           "suggestion": "Extract helper functions or decompose logic"
         },
@@ -585,7 +585,7 @@
           "suggestion": "Remove unused import 'type ImprovementProposal'"
         }
       ],
-      "lastAnalyzed": 1780894360333
+      "lastAnalyzed": 1780894606034
     }
   ],
   "totalIssues": 306,
