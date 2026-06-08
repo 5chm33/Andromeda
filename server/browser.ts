@@ -113,21 +113,12 @@ function validateUrl(url: string): string | null {
 export async function browseUrl(url: string): Promise<BrowseResult> {
   const start = Date.now();
 
-  // Validate URL
-  let parsedUrl: URL;
-  try {
-    parsedUrl = new URL(url);
-    if (!["http:", "https:"].includes(parsedUrl.protocol)) {
-      return { url, title: "", content: "", truncated: false, durationMs: 0, error: "Only HTTP/HTTPS URLs are supported" };
-    }
-  } catch {
-    return { url, title: "", content: "", truncated: false, durationMs: 0, error: "Invalid URL" };
+  // Validate URL and SSRF check
+  const validationError = validateUrl(url);
+  if (validationError) {
+    return { url, title: "", content: "", truncated: false, durationMs: 0, error: validationError };
   }
-
-  // v5.9: SSRF protection — block private/internal network access
-  if (isPrivateAddress(parsedUrl.hostname)) {
-    return { url, title: "", content: "", truncated: false, durationMs: 0, error: "Access to internal network addresses is blocked (SSRF protection)" };
-  }
+  const parsedUrl = new URL(url);
 
   let browser;
   try {
