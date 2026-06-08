@@ -98,7 +98,16 @@
       "firstSeenAt": 1780901018228,
       "lastSeenAt": 1780901018228,
       "active": false
+    },
+    {
+      "id": "lc_1780901234546_nzfwb",
+      "pattern": "// Simple LCS-based diff (sufficient for code review purposes)\n  let origIdx =",
+      "reason": "Proposal is already processing",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780901234546,
+      "lastSeenAt": 1780901234546,
+      "active": false
     }
   ],
-  "lastUpdatedAt": 1780901018229
+  "lastUpdatedAt": 1780901234546
 }

@@ -839,6 +839,13 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
   (proposal as any)._processingStartedAt = Date.now();
   saveProposals(store);
 
+  // v9.8.5 DEFINITIVE FIX: Wrap entire apply body in try/finally.
+  // No matter what throws — guard crash, LLM timeout, fs error, import failure —
+  // the proposal status is ALWAYS set to 'rejected' before returning.
+  // This is the only reliable way to prevent proposals from staying stuck in 'processing'.
+  let _applySucceeded = false;
+  try {
+
   // v5.48: Track retry count to prevent infinite retry loops
   const retryCount = (proposal as any)._retryCount || 0;
   if (retryCount >= 3) {
@@ -1029,6 +1036,7 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         });
       } catch (err) { log.caught("non-fatal", err); }
 
+      _applySucceeded = true;
       return {
         success: true,
         message: guardResult.message || `Applied successfully via guard. Backup: ${guardResult.backup?.id || "created"}`,
@@ -1094,6 +1102,21 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
       success: false,
       message: `Guard unavailable — proposal ${proposalId} queued for retry when guard is restored`,
     };
+  }
+  } finally {
+    // v9.8.5 DEFINITIVE FIX: If an unhandled exception escaped all inner catch blocks,
+    // the proposal will still be in 'processing' status. Reset it to 'rejected' here.
+    // This is a safety net — normal paths set status explicitly before returning.
+    if (!_applySucceeded) {
+      const finalStore = loadProposals();
+      const finalProp = finalStore.proposals.find(p => p.id === proposalId);
+      if (finalProp && (finalProp.status as string) === 'processing') {
+        finalProp.status = 'rejected' as any;
+        (finalProp as any)._failReason = (finalProp as any)._failReason || 'Unhandled exception in applyProposal';
+        saveProposals(finalStore);
+        console.warn(`[SelfImprove] finally: reset stuck 'processing' proposal ${proposalId} to 'rejected'`);
+      }
+    }
   }
 }
 

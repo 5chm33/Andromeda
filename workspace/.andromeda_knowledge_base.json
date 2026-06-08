@@ -5353,6 +5353,22 @@
       "confidence": 0.9,
       "createdAt": 1780901018225,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780901234543_bpkurt",
+      "category": "antipattern",
+      "title": "Failure: Improve readability of diff generator logic",
+      "description": "Failed to apply \"Improve readability of diff generator logic\" to codeIntel.ts. Reason: Proposal is already processing. Avoid similar changes.",
+      "context": "self-modify codeIntel.ts readability",
+      "outcome": "failure: Proposal is already processing",
+      "lesson": "Avoid for codeIntel.ts: Improve readability of diff generator logic — causes Proposal is already processing",
+      "applicableTo": [
+        "codeIntel.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780901234544,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5495,5 +5511,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T06:43:38.225Z"
+  "_lastUpdated": "2026-06-08T06:47:14.544Z"
 }

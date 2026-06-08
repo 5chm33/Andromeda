@@ -185,7 +185,14 @@ async function runImprovementCycle(): Promise<CycleResult> {
           console.warn(`[ContinuousImprover] Rejected: ${proposal.title || proposal.id} — ${applyResult.message}`);
         }
       } catch (err) {
-        result.errors.push(`Apply failed for ${proposal.id}: ${(err as Error).message}`);
+        const errMsg = (err as Error).message || String(err);
+        result.errors.push(`Apply failed for ${proposal.id}: ${errMsg}`);
+        console.error(`[ContinuousImprover] EXCEPTION applying ${proposal.title || proposal.id}: ${errMsg}`);
+        // Ensure the proposal is not left stuck in 'processing' after an exception
+        try {
+          const { rejectProposal } = await import('./selfImprove');
+          rejectProposal(proposal.id);
+        } catch { /* best effort */ }
       }
       // Yield to the event loop to prevent blocking during tight apply loops
       await new Promise(r => setImmediate(r));
