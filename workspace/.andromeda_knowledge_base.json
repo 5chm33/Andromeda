@@ -4409,6 +4409,22 @@
       "confidence": 0.9,
       "createdAt": 1780878031266,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780878090724_ucks52",
+      "category": "antipattern",
+      "title": "Failure: Extract eviction logic into dedicated function",
+      "description": "Failed to apply \"Extract eviction logic into dedicated function\" to contextBus.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify contextBus.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for contextBus.ts: Extract eviction logic into dedicated function — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "contextBus.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780878090724,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -4551,5 +4567,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T00:20:31.266Z"
+  "_lastUpdated": "2026-06-08T00:21:30.724Z"
 }

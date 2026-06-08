@@ -59,7 +59,7 @@ if not exist "node_modules\" (
 
 :: ── Step 5: Smart rebuild — only rebuild if source version changed ────────────
 :: Reads version from package.json and compares to dist\.version stamp.
-:: dist\.version is stored WITHOUT the "v" prefix (e.g. "9.4.0") to avoid
+:: dist\.version is stored WITHOUT the "v" prefix (e.g. "9.4.1") to avoid
 :: any prefix-mismatch causing unnecessary rebuilds on fresh unzip.
 where pnpm >nul 2>&1
 if errorlevel 1 (
@@ -108,7 +108,11 @@ if "!NEEDS_BUILD!"=="1" (
     echo  [OK] Build complete — running !SOURCE_VERSION! source.
     echo.
 )
-endlocal
+
+:: ── Save version to a plain env var BEFORE endlocal destroys delayed expansion ─
+:: endlocal kills all setlocal variables. We use a trick: pass the value out via
+:: the "endlocal & set" idiom so SOURCE_VERSION survives into the outer scope.
+endlocal & set "SOURCE_VERSION=%SOURCE_VERSION%"
 
 :: ── Step 6: Clear port 3000 ──────────────────────────────────────────────────
 for /f "tokens=5" %%a in ('netstat -aon 2^>nul ^| findstr ":3000 "') do (
@@ -122,7 +126,7 @@ start /min "" cmd /c "ping -n 6 127.0.0.1 >nul & start http://localhost:3000"
 :START_SERVER
 echo.
 echo  ============================================================
-echo   Andromeda AI v!SOURCE_VERSION!  ^|  http://localhost:3000
+echo   Andromeda AI v%SOURCE_VERSION%  ^|  http://localhost:3000
 echo   Press Ctrl+C to stop the server.
 echo  ============================================================
 echo.
