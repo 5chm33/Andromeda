@@ -2722,6 +2722,15 @@
       "result": "failure",
       "details": "Refined proposal prop_1780865475705_e6285f after syntax error",
       "timestamp": "2026-06-08T04:50:08.797Z"
+    },
+    {
+      "id": "audit_1780894268273_5kombb",
+      "action": "apply",
+      "proposalId": "prop_1780865475705_e6285f",
+      "filename": "grounding.ts",
+      "result": "failure",
+      "details": "Syntax check failed: Unbalanced brackets: 2 extra ]",
+      "timestamp": "2026-06-08T04:51:08.273Z"
     }
   ]
 }
