@@ -175,6 +175,20 @@ async function runRebuild(proposalIds: string[]): Promise<RebuildRecord> {
     });
   } catch { /* non-fatal */ }
 
+  // v9.7.0: If build FAILED, trigger rollback to last healthy point.
+  // The health check in selfRollback.ts only monitors server HTTP health — it cannot
+  // detect a build failure because the server process is still running (on the old dist).
+  // We must explicitly trigger rollback here when the build fails.
+  if (!success) {
+    try {
+      const { rollbackToLastHealthy } = await import("./selfRollback.js");
+      log.warn(`Rebuild ${id} failed — triggering rollback to last healthy point`);
+      await rollbackToLastHealthy();
+    } catch (rollbackErr) {
+      log.warn(`Rollback after failed rebuild also failed (non-fatal): ${(rollbackErr as Error).message}`);
+    }
+  }
+
   // Hot-reload: if enabled and build succeeded, signal the process to reload
   if (success && _config.hotReload) {
     try {
