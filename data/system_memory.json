@@ -214,13 +214,13 @@
       "title": "Applied: Extract SSRF validation into a shared helper function",
       "content": "Successfully applied improvement to browser.ts: Extract SSRF validation into a shared helper function",
       "context": "category: readability, impact: medium, confidence: 0.95",
-      "confidence": 0.9,
+      "confidence": 1,
       "applicableTo": [
         "browser.ts"
       ],
       "createdAt": 1780906979976,
-      "lastReferencedAt": 1780906979976,
-      "referenceCount": 0
+      "lastReferencedAt": 1780920888886,
+      "referenceCount": 1
     },
     {
       "id": "sl_1780908775199_u4xbxx",
@@ -291,12 +291,54 @@
       "createdAt": 1780919591615,
       "lastReferencedAt": 1780919591615,
       "referenceCount": 0
+    },
+    {
+      "id": "sl_1780920925928_bkp9s3",
+      "category": "modification",
+      "title": "Applied: Fix truncated seed memory entry content",
+      "content": "Successfully applied improvement to memory.ts: Fix truncated seed memory entry content",
+      "context": "category: reliability, impact: high, confidence: 1.00",
+      "confidence": 1,
+      "applicableTo": [
+        "memory.ts"
+      ],
+      "createdAt": 1780920925928,
+      "lastReferencedAt": 1780922671292,
+      "referenceCount": 1
+    },
+    {
+      "id": "sl_1780922643323_fcmhhq",
+      "category": "modification",
+      "title": "Applied: Extract SSRF validation into reusable function",
+      "content": "Successfully applied improvement to browser.ts: Extract SSRF validation into reusable function",
+      "context": "category: readability, impact: low, confidence: 1.00",
+      "confidence": 0.9,
+      "applicableTo": [
+        "browser.ts"
+      ],
+      "createdAt": 1780922643323,
+      "lastReferencedAt": 1780922643323,
+      "referenceCount": 0
+    },
+    {
+      "id": "sl_1780922701826_154kdd",
+      "category": "modification",
+      "title": "Applied: Fix diff generator hunk header logic",
+      "content": "Successfully applied improvement to codeIntel.ts: Fix diff generator hunk header logic",
+      "context": "category: readability, impact: medium, confidence: 0.95",
+      "confidence": 0.9,
+      "applicableTo": [
+        "codeIntel.ts"
+      ],
+      "createdAt": 1780922701826,
+      "lastReferencedAt": 1780922701826,
+      "referenceCount": 0
     }
   ],
   "baselines": [],
   "errorPatterns": [],
   "metadata": {
-    "totalLearnings": 21,
+    "totalLearnings": 24,
     "totalReferences": 0,
     "lastConsolidation": 1780537317493,
     "version": "5.28"

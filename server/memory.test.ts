@@ -91,7 +91,8 @@ describe("injectMemoryContextAsync", () => {
 
   it("should return correct type", async () => {
     const result = await injectMemoryContextAsync("test_query");
-    expect(result).toBeTruthy();
+    // Returns a string (may be empty string when no memories found)
+    expect(typeof result).toBe("string");
   });
 
   it("should handle empty/null inputs gracefully", async () => {

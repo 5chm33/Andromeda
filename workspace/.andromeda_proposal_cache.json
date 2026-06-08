@@ -19,7 +19,13 @@
     "testGenerator.ts::refactor mutable module-level state into a class",
     "ai.ts::remove redundant barrel export comments",
     "manifest.ts::fix version string inconsistency in manifest",
-    "memory.ts::fix truncated seed memory entry content"
+    "memory.ts::fix truncated seed memory entry content",
+    "browser.ts::extract ssrf validation into a shared helper function",
+    "codeIntel.ts::fix diff generator hunk header logic",
+    "workspace.ts::consolidate workspace directory logic into single function",
+    "browser.ts::extract ssrf validation into reusable function",
+    "contextManager.ts::improve fallbacksummary method readability",
+    "browser.ts::extract ssrf validation into dedicated module"
   ],
   "autoApplyHistory": []
 }

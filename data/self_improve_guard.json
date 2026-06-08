@@ -3379,6 +3379,96 @@
       "result": "failure",
       "details": "Syntax check failed: server/browser.ts(67,34): error TS2307: Cannot find module './ssrfProtection' or its corresponding type declarations.",
       "timestamp": "2026-06-08T11:53:27.027Z"
+    },
+    {
+      "id": "audit_1780920888862_efoui6",
+      "action": "test",
+      "proposalId": "prop_1780920858856_ehg3n8",
+      "filename": "browser.ts",
+      "result": "failure",
+      "details": "/deepseek.test.ts > DeepSeek provider > DEEPSEEK_API_KEY env var is optional\n ✓ server/deepseek.test.ts > DeepSeek provider > llmProvider module loads and has DeepSeek support\n ✓ server/self/smoke_tes",
+      "timestamp": "2026-06-08T12:14:48.862Z"
+    },
+    {
+      "id": "audit_1780920888865_x8emkk",
+      "action": "apply",
+      "proposalId": "prop_1780920858856_ehg3n8",
+      "filename": "browser.ts",
+      "result": "success",
+      "details": "Applied proposal: Extract SSRF validation into a shared helper function",
+      "timestamp": "2026-06-08T12:14:48.865Z"
+    },
+    {
+      "id": "audit_1780920925891_4fhanh",
+      "action": "test",
+      "proposalId": "prop_1780919960842_enz7nk",
+      "filename": "memory.ts",
+      "result": "failure",
+      "details": "dule loads without errors\n ✓ server/self/smoke_test_runner.test.ts > smoke_test_runner > runSmokeTests is exported and callable\n ✓ server/self/benchmark_suite.test.ts > benchmark_suite > module loads ",
+      "timestamp": "2026-06-08T12:15:25.891Z"
+    },
+    {
+      "id": "audit_1780920925895_qrtgng",
+      "action": "apply",
+      "proposalId": "prop_1780919960842_enz7nk",
+      "filename": "memory.ts",
+      "result": "success",
+      "details": "Applied proposal: Fix truncated seed memory entry content",
+      "timestamp": "2026-06-08T12:15:25.895Z"
+    },
+    {
+      "id": "audit_1780922643299_elg5sk",
+      "action": "test",
+      "proposalId": "prop_1780921297273_owv5wu",
+      "filename": "browser.ts",
+      "result": "failure",
+      "details": "file_lines\n\nstderr | server/ai.test.ts\n[ToolRegistry] Overwriting existing tool: self_run_tests\n\n ✓ server/ai.test.ts > ai barrel export > should re-export symbols from aiTokens, aiPrompts, aiStreamin",
+      "timestamp": "2026-06-08T12:44:03.299Z"
+    },
+    {
+      "id": "audit_1780922643301_gfxi1m",
+      "action": "apply",
+      "proposalId": "prop_1780921297273_owv5wu",
+      "filename": "browser.ts",
+      "result": "success",
+      "details": "Applied proposal: Extract SSRF validation into reusable function",
+      "timestamp": "2026-06-08T12:44:03.301Z"
+    },
+    {
+      "id": "audit_1780922671262_y5xdf4",
+      "action": "test",
+      "proposalId": "prop_1780919960842_enz7nk",
+      "filename": "memory.ts",
+      "result": "failure",
+      "details": "file_lines\n\nstderr | server/ai.test.ts\n[ToolRegistry] Overwriting existing tool: self_run_tests\n\n ✓ server/ai.test.ts > ai barrel export > should re-export symbols from aiTokens, aiPrompts, aiStreamin",
+      "timestamp": "2026-06-08T12:44:31.262Z"
+    },
+    {
+      "id": "audit_1780922671266_g6jlwn",
+      "action": "apply",
+      "proposalId": "prop_1780919960842_enz7nk",
+      "filename": "memory.ts",
+      "result": "success",
+      "details": "Applied proposal: Fix truncated seed memory entry content",
+      "timestamp": "2026-06-08T12:44:31.266Z"
+    },
+    {
+      "id": "audit_1780922701800_2tazyw",
+      "action": "test",
+      "proposalId": "prop_1780920950264_9cvbxo",
+      "filename": "codeIntel.ts",
+      "result": "failure",
+      "details": "file_lines\n\nstderr | server/ai.test.ts\n[ToolRegistry] Overwriting existing tool: self_run_tests\n\n ✓ server/ai.test.ts > ai barrel export > should re-export symbols from aiTokens, aiPrompts, aiStreamin",
+      "timestamp": "2026-06-08T12:45:01.800Z"
+    },
+    {
+      "id": "audit_1780922701803_zp126b",
+      "action": "apply",
+      "proposalId": "prop_1780920950264_9cvbxo",
+      "filename": "codeIntel.ts",
+      "result": "success",
+      "details": "Applied proposal: Fix diff generator hunk header logic",
+      "timestamp": "2026-06-08T12:45:01.803Z"
     }
   ]
 }

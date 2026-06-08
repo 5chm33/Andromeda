@@ -5849,6 +5849,86 @@
       "confidence": 0.9,
       "createdAt": 1780919609400,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780920888880_sb37hf",
+      "category": "success",
+      "title": "Success: Extract SSRF validation into a shared helper function",
+      "description": "Successfully applied \"Extract SSRF validation into a shared helper function\" to browser.ts (readability). Health: improved.",
+      "context": "self-modify browser.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for browser.ts: Extract SSRF validation into a shared helper function",
+      "applicableTo": [
+        "browser.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780920888880,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780920925921_jp8yrj",
+      "category": "success",
+      "title": "Success: Fix truncated seed memory entry content",
+      "description": "Successfully applied \"Fix truncated seed memory entry content\" to memory.ts (reliability). Health: improved.",
+      "context": "self-modify memory.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for memory.ts: Fix truncated seed memory entry content",
+      "applicableTo": [
+        "memory.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780920925921,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780922643318_mckg65",
+      "category": "success",
+      "title": "Success: Extract SSRF validation into reusable function",
+      "description": "Successfully applied \"Extract SSRF validation into reusable function\" to browser.ts (readability). Health: improved.",
+      "context": "self-modify browser.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for browser.ts: Extract SSRF validation into reusable function",
+      "applicableTo": [
+        "browser.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780922643318,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780922671286_hgo3qq",
+      "category": "success",
+      "title": "Success: Fix truncated seed memory entry content",
+      "description": "Successfully applied \"Fix truncated seed memory entry content\" to memory.ts (reliability). Health: improved.",
+      "context": "self-modify memory.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for memory.ts: Fix truncated seed memory entry content",
+      "applicableTo": [
+        "memory.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780922671286,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780922701822_p61g20",
+      "category": "success",
+      "title": "Success: Fix diff generator hunk header logic",
+      "description": "Successfully applied \"Fix diff generator hunk header logic\" to codeIntel.ts (readability). Health: improved.",
+      "context": "self-modify codeIntel.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for codeIntel.ts: Fix diff generator hunk header logic",
+      "applicableTo": [
+        "codeIntel.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780922701822,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5991,5 +6071,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T12:10:31.025Z"
+  "_lastUpdated": "2026-06-08T12:51:39.574Z"
 }

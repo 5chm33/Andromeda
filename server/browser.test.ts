@@ -198,7 +198,8 @@ describe("closeBrowser", () => {
 
   it("should return correct type", async () => {
     const result = await closeBrowser();
-    expect(result).toBeTruthy();
+    // closeBrowser returns void/undefined
+    expect(result).toBeUndefined();
   });
 
   it("should handle empty/null inputs gracefully", async () => {

@@ -19,6 +19,8 @@ vi.mock("./memory.js", () => ({
   storeMemory: vi.fn(),
   searchMemory: vi.fn().mockResolvedValue([]),
   getMemoryStats: vi.fn().mockReturnValue({ count: 0 }),
+  injectMemoryContext: vi.fn().mockReturnValue(""),
+  injectMemoryContextAsync: vi.fn().mockResolvedValue(""),
 }));
 
 vi.mock("./vectorMemory.js", () => ({
