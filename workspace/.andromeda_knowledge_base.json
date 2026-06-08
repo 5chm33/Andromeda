@@ -4377,6 +4377,22 @@
       "confidence": 0.9,
       "createdAt": 1780877547519,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780877851961_fced5w",
+      "category": "antipattern",
+      "title": "Failure: Consolidate workspace directory logic",
+      "description": "Failed to apply \"Consolidate workspace directory logic\" to workspace.ts. Reason: Proposal auto-expired: constitution-blocked 3 times for pattern 'rm -rf /'.. Avoid similar changes.",
+      "context": "self-modify workspace.ts readability",
+      "outcome": "failure: Proposal auto-expired: constitution-blocked 3 times for pattern 'rm -rf /'.",
+      "lesson": "Avoid for workspace.ts: Consolidate workspace directory logic — causes Proposal auto-expired: constitution-blocked 3 times for pattern 'rm -rf /'.",
+      "applicableTo": [
+        "workspace.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780877851961,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -4519,5 +4535,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T00:12:27.519Z"
+  "_lastUpdated": "2026-06-08T00:17:31.961Z"
 }

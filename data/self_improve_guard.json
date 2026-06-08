@@ -2398,6 +2398,24 @@
       "result": "blocked",
       "details": "Constitution: proposed content contains forbidden pattern 'rm -rf /'",
       "timestamp": "2026-06-08T00:12:27.517Z"
+    },
+    {
+      "id": "audit_1780877851954_5hge8a",
+      "action": "apply",
+      "proposalId": "prop_1780877368588_0mznnh",
+      "filename": "workspace.ts",
+      "result": "blocked",
+      "details": "Constitution: proposed content contains forbidden pattern 'rm -rf /'",
+      "timestamp": "2026-06-08T00:17:31.954Z"
+    },
+    {
+      "id": "audit_1780877851958_rae5me",
+      "action": "expire",
+      "proposalId": "prop_1780877368588_0mznnh",
+      "filename": "workspace.ts",
+      "result": "success",
+      "details": "Auto-expired: constitution-blocked 3 times (pattern: 'rm -rf /')",
+      "timestamp": "2026-06-08T00:17:31.958Z"
     }
   ]
 }

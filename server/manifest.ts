@@ -11,7 +11,9 @@
  * so it always reflects the actual available features.
  */
 
-import { createRequire } from "module";
+import { readFileSync } from "fs";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
 import { getAllTools } from "./tools";
 import { listProviders, getActiveProvider } from "./llmProvider";
 import { getRoutingConfig } from "./llmRouter";
@@ -20,10 +22,16 @@ import { getMemoryStats } from "./memory";
 import { vectorStats } from "./vectorMemory";
 
 // ─── Version (single source of truth: package.json) ─────────────────────────
-const _require = createRequire(import.meta.url);
+// v9.4.1: Use readFileSync instead of createRequire to avoid duplicate identifier
+// collision when esbuild bundles all ESM files into a single dist/index.js
+// (esbuild already emits `import { createRequire } from "module"` at line 1).
 let APP_VERSION = "9.4.0";
 try {
-  const pkg = _require("../../package.json") as { version: string };
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  // Works from both server/ (dev) and dist/ (built) locations
+  const pkgPath = resolve(__dirname, "../../package.json");
+  const pkg = JSON.parse(readFileSync(pkgPath, "utf-8")) as { version: string };
   APP_VERSION = pkg.version;
 } catch {
   // fallback to hardcoded if package.json not resolvable at runtime
