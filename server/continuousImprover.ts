@@ -101,12 +101,12 @@ async function runImprovementCycle(): Promise<CycleResult> {
     }
 
     // v5.32: Auto-apply high-confidence proposals from previous cycles
-
-
+    // v9.7.0: hoisted to outer scope so PR trigger can reference applied results
+    let autoResults: any[] = [];
     try {
       const { autoApplyHighConfidence } = await import("./selfImprove");
-      const autoResults = await autoApplyHighConfidence();
-      const autoApplied = autoResults.filter(r => r.applied);
+      autoResults = await autoApplyHighConfidence();
+      const autoApplied = autoResults.filter((r: any) => r.applied);
       if (autoApplied.length > 0) {
         result.proposalsApplied += autoApplied.length;
         totalApplied += autoApplied.length;
@@ -197,6 +197,58 @@ async function runImprovementCycle(): Promise<CycleResult> {
           reloadReq.end();
           console.log("[ContinuousImprover] Hot-reload triggered for modified modules.");
         } catch (err) { log.caught("non-fatal -- server will pick up changes on next import", err); }
+
+        // v9.7.0: PR generation — create a real git branch, push it, then open a PR
+        // Only runs when GITHUB_TOKEN and GITHUB_REPO are set in .env.local
+        if (process.env.GITHUB_TOKEN && process.env.GITHUB_REPO) {
+          try {
+            const { execSync: execSyncPR } = await import("child_process");
+            const cwd = process.cwd();
+            const gitEnv = {
+              ...process.env,
+              GIT_AUTHOR_NAME: "Andromeda AI",
+              GIT_AUTHOR_EMAIL: "andromeda@local",
+              GIT_COMMITTER_NAME: "Andromeda AI",
+              GIT_COMMITTER_EMAIL: "andromeda@local",
+            };
+            // Create a clean branch name: rsi/YYYYMMDD-HHMMSS
+            const ts = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+            const branchName = `rsi/${ts}`;
+            // Create branch from current HEAD, stage all changes, commit, push
+            execSyncPR(`git checkout -b ${branchName}`, { cwd, env: gitEnv, encoding: "utf-8", stdio: "pipe" });
+            execSyncPR("git add -A", { cwd, env: gitEnv, encoding: "utf-8", stdio: "pipe" });
+            const commitMsg = `[Andromeda RSI] ${result.proposalsApplied} self-improvement(s) applied`;
+            execSyncPR(`git commit -m ${JSON.stringify(commitMsg)}`, { cwd, env: gitEnv, encoding: "utf-8", stdio: "pipe" });
+            execSyncPR(`git push origin ${branchName}`, { cwd, env: gitEnv, encoding: "utf-8", stdio: "pipe" });
+            // Switch back to main
+            execSyncPR("git checkout main", { cwd, env: gitEnv, encoding: "utf-8", stdio: "pipe" });
+            console.log(`[ContinuousImprover] Pushed branch ${branchName} to GitHub`);
+            // Now create the PR via prGenerator
+            const { createPRForBranch } = await import("./prGenerator.js");
+            const appliedProposals = autoResults
+              .filter((r: any) => r.applied)
+              .map((r: any) => ({
+                id: r.proposalId,
+                title: r.title,
+                targetFile: r.targetFile,
+                category: "refactoring",
+                rationale: r.message || "Auto-applied by RSI engine",
+                confidence: 0.9,
+                impact: "medium",
+              }));
+            if (appliedProposals.length > 0) {
+              const prRecord = await createPRForBranch(branchName, appliedProposals);
+              if (prRecord.status === "open") {
+                console.log(`[ContinuousImprover] PR created: ${prRecord.prUrl}`);
+              } else {
+                console.warn(`[ContinuousImprover] PR creation failed: ${prRecord.error}`);
+              }
+            }
+          } catch (prErr: any) {
+            // Non-fatal — PR creation failure should never block the improvement cycle
+            console.warn(`[ContinuousImprover] PR pipeline failed (non-fatal): ${prErr.message}`);
+          }
+        }
       } catch (tsErr: any) {
         // TypeScript check failed -- rollback all proposals applied this cycle
         console.error(`[ContinuousImprover] TypeScript check FAILED after applies. Rolling back...`);
