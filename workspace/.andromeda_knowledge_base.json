@@ -5289,6 +5289,22 @@
       "confidence": 0.9,
       "createdAt": 1780900426042,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780900704839_sismjh",
+      "category": "antipattern",
+      "title": "Failure: Extract SSRF validation into shared helper",
+      "description": "Failed to apply \"Extract SSRF validation into shared helper\" to browser.ts. Reason: Proposal is already processing. Avoid similar changes.",
+      "context": "self-modify browser.ts readability",
+      "outcome": "failure: Proposal is already processing",
+      "lesson": "Avoid for browser.ts: Extract SSRF validation into shared helper — causes Proposal is already processing",
+      "applicableTo": [
+        "browser.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780900704839,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5431,5 +5447,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T06:33:46.042Z"
+  "_lastUpdated": "2026-06-08T06:38:24.839Z"
 }

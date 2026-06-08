@@ -71,7 +71,16 @@
       "firstSeenAt": 1780900426049,
       "lastSeenAt": 1780900426049,
       "active": false
+    },
+    {
+      "id": "lc_1780900704841_59oxn",
+      "pattern": "// v5.9: SSRF protection — block access to private/internal network addresses\nco",
+      "reason": "Proposal is already processing",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780900704841,
+      "lastSeenAt": 1780900704841,
+      "active": false
     }
   ],
-  "lastUpdatedAt": 1780900426049
+  "lastUpdatedAt": 1780900704842
 }
