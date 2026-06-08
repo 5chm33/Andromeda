@@ -1,15 +1,13 @@
 # Andromeda — Production Deploy Workflow
 #
 # Builds a Docker image and deploys to production on every push to main.
-# This workflow is OPTIONAL — it only runs if a Dockerfile exists in the repo.
+# This workflow only runs if a Dockerfile exists in the repo.
 #
 # To enable deployment, add these GitHub Secrets:
-#   GHCR_TOKEN        — GitHub PAT with packages:write (optional, falls back to GITHUB_TOKEN)
+#   GHCR_TOKEN        — GitHub PAT with packages:write (optional)
 #   DEPLOY_HOST       — SSH host for production server
 #   DEPLOY_USER       — SSH user
 #   DEPLOY_SSH_KEY    — SSH private key
-#
-# Without these secrets, the workflow skips the deploy step gracefully.
 
 name: Deploy to Production
 
@@ -27,7 +25,6 @@ jobs:
     name: Build and Deploy
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    # Skip entirely if no Dockerfile — this prevents workflow failure for non-Docker installs
     if: ${{ hashFiles('Dockerfile') != '' }}
     steps:
       - name: Checkout
@@ -61,19 +58,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Deploy via SSH
-        if: ${{ secrets.DEPLOY_HOST != '' }}
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          script: |
-            cd /opt/andromeda
-            docker pull ghcr.io/${{ github.repository }}:latest
-            docker-compose up -d --no-deps andromeda
-            echo "Deploy complete"
 
       - name: Deployment summary
         if: always()
