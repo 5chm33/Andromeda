@@ -1042,6 +1042,29 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         clearFileFeedback(proposal.targetFile);
       } catch (err) { log.caught("non-fatal", err); }
 
+      // v9.6.0: Trigger PR generation for high-confidence applies (confidence >= 0.85)
+      // This wires the prGenerator that was initialized but never fired.
+      try {
+        const confidence = proposal.confidence ?? 0;
+        if (confidence >= 0.85) {
+          const { createPRForBranch } = await import("./prGenerator.js");
+          const branch = `rsi/auto-${proposalId.slice(0, 12)}-${Date.now().toString(36)}`;
+          // Fire-and-forget — don't block the apply return
+          createPRForBranch(branch, [{
+            id: proposalId,
+            title: proposal.title || proposalId,
+            targetFile: proposal.targetFile,
+            category: proposal.category || "general",
+            rationale: proposal.rationale || "",
+            confidence,
+            impact: proposal.impact || "medium",
+          }]).catch((prErr: Error) => {
+            log.warn(`[v9.6.0 prGenerator] PR creation failed (non-fatal): ${prErr.message}`);
+          });
+          log.info(`[v9.6.0 prGenerator] Triggered PR for high-confidence apply: ${proposal.title} (confidence: ${confidence.toFixed(2)})`);
+        }
+      } catch (err) { log.caught("non-fatal", err); }
+
       return {
         success: true,
         message: guardResult.message || `Applied successfully via guard. Backup: ${guardResult.backup?.id || "created"}`,

@@ -2569,6 +2569,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/codeIntel.ts(20,21): error TS2307: Cannot find module 'fs' or its corresponding type declarations.\ndata/tmp_syntax/codeIntel.ts(21,23): error TS2307: Cannot find module 'path' or its c",
       "timestamp": "2026-06-08T01:33:40.900Z"
+    },
+    {
+      "id": "audit_1780882422585_0e4u3p",
+      "action": "apply",
+      "proposalId": "prop_1780882420910_l41kay",
+      "filename": "selfImprove.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/selfImprove.ts(34,32): error TS2307: Cannot find module './fileEngineChunking.js' or its corresponding type declarations.\ndata/tmp_syntax/selfImprove.ts(35,16): error TS2307: Cannot fi",
+      "timestamp": "2026-06-08T01:33:42.585Z"
     }
   ]
 }
