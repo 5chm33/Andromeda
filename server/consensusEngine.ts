@@ -149,7 +149,7 @@ export async function getConsensus(request: ConsensusRequest): Promise<Consensus
   // v9.8.5: In single-model mode, only bypass for non-critical requests.
   // For critical changes, query the single model to get an actual vote.
   if (config.models.length <= 1 && request.riskLevel !== 'critical') {
-    console.log(`[Consensus] Bypass: Single-model mode — auto-approving "${request.description.slice(0, 60)}"`);
+    console.log(`[Consensus] Bypass: Single-model mode — auto-approving "${(request.description ?? String(request)).slice(0, 60)}"`);
     totalApproved++;
     return {
       approved: true,

@@ -1350,9 +1350,17 @@ function gitCommitSelfImprovement(
 
   try {
     if (!fs.existsSync(path.join(cwd, ".git"))) {
-      execSync("git init", { cwd, env: gitEnv, encoding: "utf-8" });
+      // v9.10.2: Use -b main so push to 'main' works on first run from zip installs
+      // (git init without -b defaults to 'master' on older git configs)
+      execSync("git init -b main", { cwd, env: gitEnv, encoding: "utf-8" });
       execSync("git add -A", { cwd, env: gitEnv, encoding: "utf-8" });
       execSync('git commit --allow-empty -m "Initial commit by Andromeda"', { cwd, env: gitEnv, encoding: "utf-8" });
+      // Set up remote origin if GITHUB_REPO is configured
+      if (process.env.GITHUB_REPO) {
+        try {
+          execSync(`git remote add origin https://github.com/${process.env.GITHUB_REPO}.git`, { cwd, env: gitEnv, encoding: "utf-8" });
+        } catch { /* remote may already exist */ }
+      }
     }
 
     if (branchStrategy === "feature-branch") {
