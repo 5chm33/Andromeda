@@ -5097,6 +5097,22 @@
       "confidence": 0.8,
       "createdAt": 1780897354802,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780897788886_w39rib",
+      "category": "antipattern",
+      "title": "Failure: Fix unbalanced brackets in extractFactualClaims refactor",
+      "description": "Failed to apply \"Fix unbalanced brackets in extractFactualClaims refactor\" to grounding.ts. Reason: Proposal is already processing. Avoid similar changes.",
+      "context": "self-modify grounding.ts readability",
+      "outcome": "failure: Proposal is already processing",
+      "lesson": "Avoid for grounding.ts: Fix unbalanced brackets in extractFactualClaims refactor — causes Proposal is already processing",
+      "applicableTo": [
+        "grounding.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780897788886,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5239,5 +5255,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T05:42:34.802Z"
+  "_lastUpdated": "2026-06-08T05:49:48.886Z"
 }

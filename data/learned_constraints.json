@@ -4,11 +4,11 @@
       "id": "lc_1780894209671_qgur3",
       "pattern": "function extractVersions(text: string): string[] {\n  return (text.match(/\\b(?:v|",
       "reason": "Syntax check failed — proposal refined but still has errors (queued for retry)",
-      "rejectionCount": 3,
+      "rejectionCount": 4,
       "firstSeenAt": 1780894209671,
-      "lastSeenAt": 1780895237283,
+      "lastSeenAt": 1780897788889,
       "active": true
     }
   ],
-  "lastUpdatedAt": 1780895237283
+  "lastUpdatedAt": 1780897788890
 }
