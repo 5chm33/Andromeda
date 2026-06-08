@@ -253,7 +253,7 @@
       "originalContent": "/**\n * ai.ts — v6.25 (barrel export)\n *\n * This file is now a thin barrel that re-exports everything from the focused\n * sub-modules created in the v6.25 god-module split:\n *\n *   aiTokens.ts    — Token counting and model/provider helpers\n *   aiPrompts.ts   — System prompt builders\n *   aiStreaming.ts — Core SSE streaming engine and public streaming API\n *   aiPlanning.ts  — Agent planning, Claude Code capabilities, todo system\n *\n * All existing import paths (e.g. `import { streamChat } from \"./ai\"`) continue\n * to work without modification.\n */\n\nexport * from \"./aiTokens.js\";\nexport * from \"./aiPrompts.js\";\nexport * from \"./aiStreaming.js\";\nexport * from \"./aiPlanning.js\";\n",
       "proposedContent": "// Barrel re-export for backward compatibility\n\nexport * from \"./aiTokens.js\";\nexport * from \"./aiPrompts.js\";\nexport * from \"./aiStreaming.js\";\nexport * from \"./aiPlanning.js\";\n",
       "createdAt": 1780850778708,
-      "status": "pending"
+      "status": "applied"
     },
     {
       "id": "prop_1780851257444_y9n7m8",

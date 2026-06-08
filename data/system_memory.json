@@ -39,12 +39,26 @@
       "createdAt": 1780896749010,
       "lastReferencedAt": 1780896749010,
       "referenceCount": 0
+    },
+    {
+      "id": "sl_1780896758048_f9ywys",
+      "category": "modification",
+      "title": "Applied: Remove redundant barrel export comment",
+      "content": "Successfully applied improvement to ai.ts: Remove redundant barrel export comment",
+      "context": "category: readability, impact: low, confidence: 1.00",
+      "confidence": 0.9,
+      "applicableTo": [
+        "ai.ts"
+      ],
+      "createdAt": 1780896758048,
+      "lastReferencedAt": 1780896758048,
+      "referenceCount": 0
     }
   ],
   "baselines": [],
   "errorPatterns": [],
   "metadata": {
-    "totalLearnings": 3,
+    "totalLearnings": 4,
     "totalReferences": 0,
     "lastConsolidation": 1780537317493,
     "version": "5.28"

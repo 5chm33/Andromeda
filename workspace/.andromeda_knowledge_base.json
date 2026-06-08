@@ -5001,6 +5001,22 @@
       "confidence": 0.8,
       "createdAt": 1780896749007,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780896758045_axx233",
+      "category": "success",
+      "title": "Success: Remove redundant barrel export comment",
+      "description": "Successfully applied \"Remove redundant barrel export comment\" to ai.ts (readability). Health: improved.",
+      "context": "self-modify ai.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for ai.ts: Remove redundant barrel export comment",
+      "applicableTo": [
+        "ai.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780896758045,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5143,5 +5159,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T05:32:29.007Z"
+  "_lastUpdated": "2026-06-08T05:32:38.045Z"
 }
