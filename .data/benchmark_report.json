@@ -1,44 +1,44 @@
 {
-  "timestamp": 1780903798654,
-  "runDurationMs": 174,
+  "timestamp": 1780904134704,
+  "runDurationMs": 170,
   "results": [
     {
       "name": "memory_keyword_search",
       "category": "memory",
-      "durationMs": 172.54,
-      "timestamp": 1780903798652
+      "durationMs": 168.57,
+      "timestamp": 1780904134703
     },
     {
       "name": "tool_registry_lookup",
       "category": "tool_latency",
       "durationMs": 0.01,
-      "timestamp": 1780903798652
+      "timestamp": 1780904134703
     },
     {
       "name": "file_write_10kb",
       "category": "code_execution",
       "durationMs": 0.09,
-      "timestamp": 1780903798653
+      "timestamp": 1780904134703
     },
     {
       "name": "file_read_10kb",
       "category": "code_execution",
       "durationMs": 0.03,
-      "timestamp": 1780903798653
+      "timestamp": 1780904134703
     },
     {
       "name": "context_token_estimation_50msg",
       "category": "startup",
-      "durationMs": 0.11,
-      "timestamp": 1780903798653
+      "durationMs": 0.14,
+      "timestamp": 1780904134704
     },
     {
       "name": "json_parse_large_object",
       "category": "code_execution",
       "durationMs": 0.11,
-      "timestamp": 1780903798654,
+      "timestamp": 1780904134704,
       "metadata": {
-        "sizeBytes": 28917
+        "sizeBytes": 28930
       }
     }
   ],
@@ -54,8 +54,8 @@
     {
       "benchmark": "memory_keyword_search",
       "baseline": 145.01,
-      "current": 172.54,
-      "degradationPercent": 19,
+      "current": 168.57,
+      "degradationPercent": 16,
       "severity": "warning"
     },
     {
@@ -75,8 +75,8 @@
     {
       "benchmark": "context_token_estimation_50msg",
       "baseline": 0.01,
-      "current": 0.11,
-      "degradationPercent": 1000,
+      "current": 0.14,
+      "degradationPercent": 1300,
       "severity": "critical"
     },
     {

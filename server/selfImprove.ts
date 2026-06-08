@@ -1044,12 +1044,30 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         if (tscCmd) {
           execSync(`"${tscCmd}" --noEmit`, { cwd: path.resolve(getServerDir(), ".."), timeout: 60000, stdio: "pipe" });
           console.log(`[SelfImprove] TypeScript check PASSED for ${proposal.targetFile}`);
-          // v9.8.5: Re-save proposals to ensure "applied" status is persisted
-          // (guards against any concurrent writes that may have reverted the status)
-          saveProposals(store);
+          // v9.8.5: Use FRESH store to ensure "applied" status is persisted correctly
+          {
+            const freshStore = loadProposals();
+            const freshProp = freshStore.proposals.find(p => p.id === proposalId);
+            if (freshProp && (freshProp.status as string) !== 'applied') {
+              freshProp.status = 'applied' as any;
+              saveProposals(freshStore);
+            } else if (!freshProp) {
+              saveProposals(store); // fallback
+            }
+          }
         } else {
           console.warn("[SelfImprove] tsc binary not found — skipping pre-commit TypeScript check");
-          saveProposals(store); // ensure "applied" is persisted even without tsc
+          // v9.8.5: Use FRESH store for fallback save too
+          {
+            const freshStore = loadProposals();
+            const freshProp = freshStore.proposals.find(p => p.id === proposalId);
+            if (freshProp && (freshProp.status as string) !== 'applied') {
+              freshProp.status = 'applied' as any;
+              saveProposals(freshStore);
+            } else if (!freshProp) {
+              saveProposals(store);
+            }
+          }
         }
       } catch (tsErr: any) {
         tsCheckPassed = false;
@@ -1059,9 +1077,21 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         if (proposal.originalContent) {
           try { fs.writeFileSync(filePath, proposal.originalContent, "utf-8"); } catch { /* best effort */ }
         }
-        proposal.status = "rejected" as any;
-        (proposal as any)._failReason = `TypeScript check failed: ${tsErrMsg}`;
-        saveProposals(store);
+        // v9.8.5: Load a FRESH store to avoid stale data overwriting concurrent saves
+        {
+          const freshStore = loadProposals();
+          const freshProp = freshStore.proposals.find(p => p.id === proposalId);
+          if (freshProp) {
+            freshProp.status = "rejected" as any;
+            (freshProp as any)._failReason = `TypeScript check failed: ${tsErrMsg}`;
+            saveProposals(freshStore);
+          } else {
+            // Fallback: update the in-memory store
+            proposal.status = "rejected" as any;
+            (proposal as any)._failReason = `TypeScript check failed: ${tsErrMsg}`;
+            saveProposals(store);
+          }
+        }
         return { success: false, message: `TypeScript check failed after apply — reverted. Errors: ${tsErrMsg}` };
       }
 
