@@ -27,7 +27,8 @@ describe("resolveServerFile", () => {
 
   it("should return correct type", () => {
     const result = resolveServerFile("test_filename");
-    expect(result).toBeTruthy();
+    // Returns string | null — null when filename not in ANALYZABLE_FILES
+    expect(result === null || typeof result === "string").toBe(true);
   });
 
   it("should handle empty/null inputs gracefully", () => {

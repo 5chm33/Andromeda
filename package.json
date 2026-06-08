@@ -1,6 +1,6 @@
 {
   "name": "andromeda",
-  "version": "9.11.0",
+  "version": "9.12.0",
   "type": "module",
   "license": "MIT",
   "scripts": {
@@ -11,6 +11,7 @@
     "check": "tsc --noEmit",
     "format": "prettier --write .",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:integration": "npx tsx scripts/integration-test.ts",
     "test:federated": "npx tsx scripts/simulate-federated.ts",
     "test:eval": "npx tsx scripts/run-eval.ts",
@@ -111,6 +112,7 @@
     "@types/react": "^19.2.1",
     "@types/react-dom": "^19.2.1",
     "@vitejs/plugin-react": "^5.0.4",
+    "@vitest/coverage-v8": "^4.1.8",
     "autoprefixer": "^10.4.20",
     "cross-env": "^10.1.0",
     "drizzle-kit": "^0.31.4",

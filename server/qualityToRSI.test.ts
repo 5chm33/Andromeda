@@ -6,7 +6,7 @@ describe("feedQualityToRSI", () => {
     try {
       const result = await feedQualityToRSI();
       expect(result).toBeDefined();
-    } catch (e: any) {
+    } catch (e: unknown) {
       // Function may throw in test environment (e.g. no providers registered)
       expect(e).toBeDefined();
     }
@@ -14,12 +14,13 @@ describe("feedQualityToRSI", () => {
 
   it("should return correct type", async () => {
     const result = await feedQualityToRSI();
-    expect(result).toBeTruthy();
+    // Returns a number (0 when no quality report exists in test env)
+    expect(typeof result).toBe("number");
   });
 
   it("should handle invalid inputs", async () => {
     // @ts-expect-error Testing invalid input
-    try { await feedQualityToRSI(); } catch (e: any) { expect(e).toBeDefined(); }
+    try { await feedQualityToRSI(); } catch (e: unknown) { expect(e).toBeDefined(); }
   });
 
 });
@@ -29,7 +30,7 @@ describe("feedDocGapsToRSI", () => {
     try {
       const result = await feedDocGapsToRSI();
       expect(result).toBeDefined();
-    } catch (e: any) {
+    } catch (e: unknown) {
       // Function may throw in test environment (e.g. no providers registered)
       expect(e).toBeDefined();
     }
@@ -37,12 +38,13 @@ describe("feedDocGapsToRSI", () => {
 
   it("should return correct type", async () => {
     const result = await feedDocGapsToRSI();
-    expect(result).toBeTruthy();
+    // Returns a number (0 when no doc report exists in test env)
+    expect(typeof result).toBe("number");
   });
 
   it("should handle invalid inputs", async () => {
     // @ts-expect-error Testing invalid input
-    try { await feedDocGapsToRSI(); } catch (e: any) { expect(e).toBeDefined(); }
+    try { await feedDocGapsToRSI(); } catch (e: unknown) { expect(e).toBeDefined(); }
   });
 
 });
@@ -52,7 +54,7 @@ describe("runQualityToRSI", () => {
     try {
       const result = await runQualityToRSI();
       expect(result).toBeDefined();
-    } catch (e: any) {
+    } catch (e: unknown) {
       // Function may throw in test environment (e.g. no providers registered)
       expect(e).toBeDefined();
     }
@@ -60,13 +62,15 @@ describe("runQualityToRSI", () => {
 
   it("should return correct type", async () => {
     const result = await runQualityToRSI();
-    expect(result).toBeTruthy();
+    // Returns { qualityProposals: number, docProposals: number }
+    expect(typeof result).toBe("object");
+    expect(typeof result.qualityProposals).toBe("number");
+    expect(typeof result.docProposals).toBe("number");
   });
 
   it("should handle invalid inputs", async () => {
     // @ts-expect-error Testing invalid input
-    try { await runQualityToRSI(); } catch (e: any) { expect(e).toBeDefined(); }
+    try { await runQualityToRSI(); } catch (e: unknown) { expect(e).toBeDefined(); }
   });
 
 });
-

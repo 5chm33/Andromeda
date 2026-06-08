@@ -1,105 +1,5 @@
 [
   {
-    "id": 1779790520845,
-    "userId": null,
-    "sessionId": null,
-    "query": "test query for vitest",
-    "aiAnswer": "This is a test answer",
-    "sources": null,
-    "filter": "all",
-    "createdAt": "2026-05-26T10:15:21.817Z"
-  },
-  {
-    "id": 1779790520846,
-    "userId": 1,
-    "sessionId": null,
-    "query": "authenticated test query",
-    "aiAnswer": "Authenticated answer",
-    "sources": null,
-    "filter": "web",
-    "createdAt": "2026-05-26T10:15:21.819Z"
-  },
-  {
-    "id": 1779790835168,
-    "userId": null,
-    "sessionId": null,
-    "query": "test query for vitest",
-    "aiAnswer": "This is a test answer",
-    "sources": null,
-    "filter": "all",
-    "createdAt": "2026-05-26T10:20:36.296Z"
-  },
-  {
-    "id": 1779790835169,
-    "userId": 1,
-    "sessionId": null,
-    "query": "authenticated test query",
-    "aiAnswer": "Authenticated answer",
-    "sources": null,
-    "filter": "web",
-    "createdAt": "2026-05-26T10:20:36.297Z"
-  },
-  {
-    "id": 1780014503317,
-    "userId": null,
-    "sessionId": null,
-    "query": "test query for vitest",
-    "aiAnswer": "This is a test answer",
-    "sources": null,
-    "filter": "all",
-    "createdAt": "2026-05-29T00:28:24.445Z"
-  },
-  {
-    "id": 1780014503318,
-    "userId": 1,
-    "sessionId": null,
-    "query": "authenticated test query",
-    "aiAnswer": "Authenticated answer",
-    "sources": null,
-    "filter": "web",
-    "createdAt": "2026-05-29T00:28:24.447Z"
-  },
-  {
-    "id": 1780280768104,
-    "userId": null,
-    "sessionId": null,
-    "query": "test query for vitest",
-    "aiAnswer": "This is a test answer",
-    "sources": null,
-    "filter": "all",
-    "createdAt": "2026-06-01T02:26:09.212Z"
-  },
-  {
-    "id": 1780280768105,
-    "userId": 1,
-    "sessionId": null,
-    "query": "authenticated test query",
-    "aiAnswer": "Authenticated answer",
-    "sources": null,
-    "filter": "web",
-    "createdAt": "2026-06-01T02:26:09.214Z"
-  },
-  {
-    "id": 1780371885209,
-    "userId": null,
-    "sessionId": null,
-    "query": "test query for vitest",
-    "aiAnswer": "This is a test answer",
-    "sources": null,
-    "filter": "all",
-    "createdAt": "2026-06-02T03:44:46.202Z"
-  },
-  {
-    "id": 1780371885210,
-    "userId": 1,
-    "sessionId": null,
-    "query": "authenticated test query",
-    "aiAnswer": "Authenticated answer",
-    "sources": null,
-    "filter": "web",
-    "createdAt": "2026-06-02T03:44:46.204Z"
-  },
-  {
     "id": 1780537549980,
     "userId": null,
     "sessionId": null,
@@ -1998,5 +1898,105 @@
     "sources": null,
     "filter": "web",
     "createdAt": "2026-06-08T16:16:40.540Z"
+  },
+  {
+    "id": 1780937572854,
+    "userId": null,
+    "sessionId": null,
+    "query": "test query for vitest",
+    "aiAnswer": "This is a test answer",
+    "sources": null,
+    "filter": "all",
+    "createdAt": "2026-06-08T16:52:53.190Z"
+  },
+  {
+    "id": 1780937572855,
+    "userId": 1,
+    "sessionId": null,
+    "query": "authenticated test query",
+    "aiAnswer": "Authenticated answer",
+    "sources": null,
+    "filter": "web",
+    "createdAt": "2026-06-08T16:52:53.192Z"
+  },
+  {
+    "id": 1780937598062,
+    "userId": null,
+    "sessionId": null,
+    "query": "test query for vitest",
+    "aiAnswer": "This is a test answer",
+    "sources": null,
+    "filter": "all",
+    "createdAt": "2026-06-08T16:53:18.445Z"
+  },
+  {
+    "id": 1780937598063,
+    "userId": 1,
+    "sessionId": null,
+    "query": "authenticated test query",
+    "aiAnswer": "Authenticated answer",
+    "sources": null,
+    "filter": "web",
+    "createdAt": "2026-06-08T16:53:18.447Z"
+  },
+  {
+    "id": 1780937625440,
+    "userId": null,
+    "sessionId": null,
+    "query": "test query for vitest",
+    "aiAnswer": "This is a test answer",
+    "sources": null,
+    "filter": "all",
+    "createdAt": "2026-06-08T16:53:45.856Z"
+  },
+  {
+    "id": 1780937625441,
+    "userId": 1,
+    "sessionId": null,
+    "query": "authenticated test query",
+    "aiAnswer": "Authenticated answer",
+    "sources": null,
+    "filter": "web",
+    "createdAt": "2026-06-08T16:53:45.858Z"
+  },
+  {
+    "id": 1780937731490,
+    "userId": null,
+    "sessionId": null,
+    "query": "test query for vitest",
+    "aiAnswer": "This is a test answer",
+    "sources": null,
+    "filter": "all",
+    "createdAt": "2026-06-08T16:55:31.856Z"
+  },
+  {
+    "id": 1780937731491,
+    "userId": 1,
+    "sessionId": null,
+    "query": "authenticated test query",
+    "aiAnswer": "Authenticated answer",
+    "sources": null,
+    "filter": "web",
+    "createdAt": "2026-06-08T16:55:31.858Z"
+  },
+  {
+    "id": 1780937825109,
+    "userId": null,
+    "sessionId": null,
+    "query": "test query for vitest",
+    "aiAnswer": "This is a test answer",
+    "sources": null,
+    "filter": "all",
+    "createdAt": "2026-06-08T16:57:05.562Z"
+  },
+  {
+    "id": 1780937825110,
+    "userId": 1,
+    "sessionId": null,
+    "query": "authenticated test query",
+    "aiAnswer": "Authenticated answer",
+    "sources": null,
+    "filter": "web",
+    "createdAt": "2026-06-08T16:57:05.563Z"
   }
 ]
