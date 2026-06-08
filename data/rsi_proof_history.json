@@ -202,5 +202,143 @@
       "mr": 0,
       "gc": 5
     }
+  },
+  {
+    "cycleId": "rsi-1780915911709-brggmx",
+    "completedAt": "2026-06-08T10:52:36.925Z",
+    "durationMs": 45216,
+    "proposalsApplied": 0,
+    "proposalsRejected": 0,
+    "scoreBefore": 35,
+    "scoreAfter": 35,
+    "scoreDelta": 0,
+    "appliedFiles": [],
+    "benchmarkBefore": {
+      "ts": 15,
+      "pq": 10,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    },
+    "benchmarkAfter": {
+      "ts": 15,
+      "pq": 10,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    }
+  },
+  {
+    "cycleId": "rsi-1780916419331-rmepad",
+    "completedAt": "2026-06-08T11:00:56.918Z",
+    "durationMs": 37587,
+    "proposalsApplied": 0,
+    "proposalsRejected": 5,
+    "scoreBefore": 35,
+    "scoreAfter": 30,
+    "scoreDelta": -5,
+    "appliedFiles": [],
+    "benchmarkBefore": {
+      "ts": 15,
+      "pq": 10,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    },
+    "benchmarkAfter": {
+      "ts": 15,
+      "pq": 5,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    },
+    "errors": [
+      "Apply failed for prop_1780916017575_p7bpbh: Syntax check failed — proposal refined but still has errors (queued for retry)"
+    ]
+  },
+  {
+    "cycleId": "rsi-1780917659834-y8ovyv",
+    "completedAt": "2026-06-08T11:21:48.794Z",
+    "durationMs": 48960,
+    "proposalsApplied": 0,
+    "proposalsRejected": 6,
+    "scoreBefore": 30,
+    "scoreAfter": 30,
+    "scoreDelta": 0,
+    "appliedFiles": [],
+    "benchmarkBefore": {
+      "ts": 15,
+      "pq": 5,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    },
+    "benchmarkAfter": {
+      "ts": 15,
+      "pq": 5,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    },
+    "errors": [
+      "Apply failed for prop_1780916893196_i759ay: Syntax check failed — refinement generation failed",
+      "Apply failed for prop_1780916017575_p7bpbh: Syntax check failed — refinement generation failed"
+    ]
+  },
+  {
+    "cycleId": "rsi-1780918284642-4c9hgb",
+    "completedAt": "2026-06-08T11:32:27.057Z",
+    "durationMs": 62415,
+    "proposalsApplied": 0,
+    "proposalsRejected": 4,
+    "scoreBefore": 35,
+    "scoreAfter": 35,
+    "scoreDelta": 0,
+    "appliedFiles": [],
+    "benchmarkBefore": {
+      "ts": 20,
+      "pq": 5,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    },
+    "benchmarkAfter": {
+      "ts": 20,
+      "pq": 5,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    },
+    "errors": [
+      "Apply failed for prop_1780918259106_2vjvce: Constitution blocked: proposed content contains forbidden pattern 'ghp_[a-zA-Z0-9]{36}'."
+    ]
+  },
+  {
+    "cycleId": "rsi-1780919019003-6vpd59",
+    "completedAt": "2026-06-08T11:45:22.301Z",
+    "durationMs": 103298,
+    "proposalsApplied": 0,
+    "proposalsRejected": 5,
+    "scoreBefore": 35,
+    "scoreAfter": 35,
+    "scoreDelta": 0,
+    "appliedFiles": [],
+    "benchmarkBefore": {
+      "ts": 20,
+      "pq": 5,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    },
+    "benchmarkAfter": {
+      "ts": 20,
+      "pq": 5,
+      "tc": 5,
+      "mr": 0,
+      "gc": 5
+    },
+    "errors": [
+      "Apply failed for prop_1780918411916_ingsyz: Syntax check failed — proposal refined but still has errors (queued for retry)"
+    ]
   }
 ]

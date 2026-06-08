@@ -5513,6 +5513,342 @@
       "confidence": 0.8,
       "createdAt": 1780906979968,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780916103048_m62gbt",
+      "category": "success",
+      "title": "Success: Fix health check logic inconsistency in recordError",
+      "description": "Successfully applied \"Fix health check logic inconsistency in recordError\" to adaptiveRouter.ts (reliability). Health: improved.",
+      "context": "self-modify adaptiveRouter.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for adaptiveRouter.ts: Fix health check logic inconsistency in recordError",
+      "applicableTo": [
+        "adaptiveRouter.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780916103048,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780916134643_v6x5jz",
+      "category": "success",
+      "title": "Success: Remove redundant barrel export comment",
+      "description": "Successfully applied \"Remove redundant barrel export comment\" to ai.ts (readability). Health: improved.",
+      "context": "self-modify ai.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for ai.ts: Remove redundant barrel export comment",
+      "applicableTo": [
+        "ai.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780916134643,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780916163077_z62i1w",
+      "category": "success",
+      "title": "Success: Extract remaining inline routes into separate modules",
+      "description": "Successfully applied \"Extract remaining inline routes into separate modules\" to streamRouter.ts (architecture). Health: improved.",
+      "context": "self-modify streamRouter.ts architecture",
+      "outcome": "success",
+      "lesson": "Pattern works for streamRouter.ts: Extract remaining inline routes into separate modules",
+      "applicableTo": [
+        "streamRouter.ts",
+        "architecture"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780916163077,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780916447020_kz99xr",
+      "category": "antipattern",
+      "title": "Failure: Extract remaining inline routes into separate modules",
+      "description": "Failed to apply \"Extract remaining inline routes into separate modules\" to streamRouter.ts. Reason: Syntax check failed — proposal refined but still has errors (queued for retry). Avoid similar changes.",
+      "context": "self-modify streamRouter.ts architecture",
+      "outcome": "failure: Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "lesson": "Avoid for streamRouter.ts: Extract remaining inline routes into separate modules — causes Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "applicableTo": [
+        "streamRouter.ts",
+        "architecture"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780916447020,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780916569547_sklx5n",
+      "category": "antipattern",
+      "title": "Failure: Extract magic numbers into named constants",
+      "description": "Failed to apply \"Extract magic numbers into named constants\" to biasDetector.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify biasDetector.ts readability",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for biasDetector.ts: Extract magic numbers into named constants — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "biasDetector.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780916569547,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780916574092_aqvcg5",
+      "category": "antipattern",
+      "title": "Failure: Remove unused DEEPSEEK_API_KEY check and apiKey parameter",
+      "description": "Failed to apply \"Remove unused DEEPSEEK_API_KEY check and apiKey parameter\" to multiAgent.ts. Reason: Syntax check failed — proposal refined but still has errors (queued for retry). Avoid similar changes.",
+      "context": "self-modify multiAgent.ts feature",
+      "outcome": "failure: Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "lesson": "Avoid for multiAgent.ts: Remove unused DEEPSEEK_API_KEY check and apiKey parameter — causes Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "applicableTo": [
+        "multiAgent.ts",
+        "feature"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780916574092,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780916578414_ph7aeu",
+      "category": "antipattern",
+      "title": "Failure: Extract version constant to single source of truth",
+      "description": "Failed to apply \"Extract version constant to single source of truth\" to manifest.ts. Reason: Syntax check failed — proposal refined but still has errors (queued for retry). Avoid similar changes.",
+      "context": "self-modify manifest.ts readability",
+      "outcome": "failure: Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "lesson": "Avoid for manifest.ts: Extract version constant to single source of truth — causes Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "applicableTo": [
+        "manifest.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780916578414,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780917251636_dszxef",
+      "category": "antipattern",
+      "title": "Failure: Extract eviction logic into a dedicated function",
+      "description": "Failed to apply \"Extract eviction logic into a dedicated function\" to contextBus.ts. Reason: Syntax check failed — proposal refined but still has errors (queued for retry). Avoid similar changes.",
+      "context": "self-modify contextBus.ts readability",
+      "outcome": "failure: Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "lesson": "Avoid for contextBus.ts: Extract eviction logic into a dedicated function — causes Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "applicableTo": [
+        "contextBus.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780917251636,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780917257478_h3v8pi",
+      "category": "antipattern",
+      "title": "Failure: Improve readability of fallbackSummary method",
+      "description": "Failed to apply \"Improve readability of fallbackSummary method\" to contextManager.ts. Reason: Syntax check failed — proposal refined but still has errors (queued for retry). Avoid similar changes.",
+      "context": "self-modify contextManager.ts readability",
+      "outcome": "failure: Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "lesson": "Avoid for contextManager.ts: Improve readability of fallbackSummary method — causes Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "applicableTo": [
+        "contextManager.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780917257478,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780917257539_1ml7ll",
+      "category": "antipattern",
+      "title": "Failure: Sanitize Constitution Cache Path in Logs",
+      "description": "Failed to apply \"Sanitize Constitution Cache Path in Logs\" to selfImproveGuard.ts. Reason: File 'selfImproveGuard.ts' is blocked from self-improvement. Avoid similar changes.",
+      "context": "self-modify selfImproveGuard.ts security",
+      "outcome": "failure: File 'selfImproveGuard.ts' is blocked from self-improvement",
+      "lesson": "Avoid for selfImproveGuard.ts: Sanitize Constitution Cache Path in Logs — causes File 'selfImproveGuard.ts' is blocked from self-improvement",
+      "applicableTo": [
+        "selfImproveGuard.ts",
+        "security"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780917257539,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780917688441_osix0d",
+      "category": "antipattern",
+      "title": "Failure: Sanitize file paths to prevent directory traversal",
+      "description": "Failed to apply \"Sanitize file paths to prevent directory traversal\" to evalDrivenTargeting.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify evalDrivenTargeting.ts security",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for evalDrivenTargeting.ts: Sanitize file paths to prevent directory traversal — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "evalDrivenTargeting.ts",
+        "security"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780917688441,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780917699087_n09tyg",
+      "category": "antipattern",
+      "title": "Failure: Extract remaining inline routes into separate modules",
+      "description": "Failed to apply \"Extract remaining inline routes into separate modules\" to streamRouter.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify streamRouter.ts architecture",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for streamRouter.ts: Extract remaining inline routes into separate modules — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "streamRouter.ts",
+        "architecture"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780917699087,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780917748757_5qzbrb",
+      "category": "antipattern",
+      "title": "Failure: Remove redundant barrel export comment",
+      "description": "Failed to apply \"Remove redundant barrel export comment\" to ai.ts. Reason: Syntax check failed — proposal refined but still has errors (queued for retry). Avoid similar changes.",
+      "context": "self-modify ai.ts readability",
+      "outcome": "failure: Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "lesson": "Avoid for ai.ts: Remove redundant barrel export comment — causes Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "applicableTo": [
+        "ai.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780917748757,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780917757208_l3cj76",
+      "category": "antipattern",
+      "title": "Failure: Remove hardcoded API key references from provider chain",
+      "description": "Failed to apply \"Remove hardcoded API key references from provider chain\" to selfImprove.ts. Reason: Syntax check failed — proposal refined but still has errors (queued for retry). Avoid similar changes.",
+      "context": "self-modify selfImprove.ts security",
+      "outcome": "failure: Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "lesson": "Avoid for selfImprove.ts: Remove hardcoded API key references from provider chain — causes Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "applicableTo": [
+        "selfImprove.ts",
+        "security"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780917757208,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780918312716_zoegby",
+      "category": "antipattern",
+      "title": "Failure: Sanitize Git push error messages to prevent token leakage",
+      "description": "Failed to apply \"Sanitize Git push error messages to prevent token leakage\" to continuousImprover.ts. Reason: Constitution blocked: proposed content contains forbidden pattern 'ghp_[a-zA-Z0-9]{36}'.. Avoid similar changes.",
+      "context": "self-modify continuousImprover.ts security",
+      "outcome": "failure: Constitution blocked: proposed content contains forbidden pattern 'ghp_[a-zA-Z0-9]{36}'.",
+      "lesson": "Avoid for continuousImprover.ts: Sanitize Git push error messages to prevent token leakage — causes Constitution blocked: proposed content contains forbidden pattern 'ghp_[a-zA-Z0-9]{36}'.",
+      "applicableTo": [
+        "continuousImprover.ts",
+        "security"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780918312716,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780918472304_3e0ikk",
+      "category": "antipattern",
+      "title": "Failure: Fix truncated seed memory entry",
+      "description": "Failed to apply \"Fix truncated seed memory entry\" to memory.ts. Reason: Syntax check failed — proposal refined but still has errors (queued for retry). Avoid similar changes.",
+      "context": "self-modify memory.ts reliability",
+      "outcome": "failure: Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "lesson": "Avoid for memory.ts: Fix truncated seed memory entry — causes Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "applicableTo": [
+        "memory.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780918472304,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780918472367_u6807e",
+      "category": "antipattern",
+      "title": "Failure: Sanitize Git push error messages to prevent token leakage",
+      "description": "Failed to apply \"Sanitize Git push error messages to prevent token leakage\" to continuousImprover.ts. Reason: Constitution blocked: proposed content contains forbidden pattern 'ghp_[a-zA-Z0-9]{36}'.. Avoid similar changes.",
+      "context": "self-modify continuousImprover.ts security",
+      "outcome": "failure: Constitution blocked: proposed content contains forbidden pattern 'ghp_[a-zA-Z0-9]{36}'.",
+      "lesson": "Avoid for continuousImprover.ts: Sanitize Git push error messages to prevent token leakage — causes Constitution blocked: proposed content contains forbidden pattern 'ghp_[a-zA-Z0-9]{36}'.",
+      "applicableTo": [
+        "continuousImprover.ts",
+        "security"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780918472367,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780919083425_cz2ec2",
+      "category": "antipattern",
+      "title": "Failure: Refactor mutable module-level state into a class",
+      "description": "Failed to apply \"Refactor mutable module-level state into a class\" to testGenerator.ts. Reason: Syntax check failed — proposal refined but still has errors (queued for retry). Avoid similar changes.",
+      "context": "self-modify testGenerator.ts reliability",
+      "outcome": "failure: Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "lesson": "Avoid for testGenerator.ts: Refactor mutable module-level state into a class — causes Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "applicableTo": [
+        "testGenerator.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780919083425,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780919554251_xtjpcx",
+      "category": "success",
+      "title": "Success: Remove redundant barrel export comments",
+      "description": "Successfully applied \"Remove redundant barrel export comments\" to ai.ts (readability). Health: improved.",
+      "context": "self-modify ai.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for ai.ts: Remove redundant barrel export comments",
+      "applicableTo": [
+        "ai.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780919554251,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780919591609_99wq4u",
+      "category": "success",
+      "title": "Success: Fix version string inconsistency in manifest",
+      "description": "Successfully applied \"Fix version string inconsistency in manifest\" to manifest.ts (readability). Health: improved.",
+      "context": "self-modify manifest.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for manifest.ts: Fix version string inconsistency in manifest",
+      "applicableTo": [
+        "manifest.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780919591609,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780919609400_4uw6k5",
+      "category": "antipattern",
+      "title": "Failure: Extract SSRF protection into a separate module",
+      "description": "Failed to apply \"Extract SSRF protection into a separate module\" to browser.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify browser.ts readability",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for browser.ts: Extract SSRF protection into a separate module — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "browser.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780919609400,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5655,5 +5991,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T10:13:18.070Z"
+  "_lastUpdated": "2026-06-08T12:10:31.025Z"
 }

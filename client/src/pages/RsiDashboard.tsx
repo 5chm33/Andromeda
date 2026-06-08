@@ -12,7 +12,7 @@
  *   - Vector memory stats (neural vs TF-IDF)
  *   - Model routing info (which LLM analyzed what)
  */
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ProposalReviewPanel } from "@/components/rsi/ProposalReviewPanel";
 import { EvalTrendChart } from "@/components/rsi/EvalTrendChart";
 import { CapabilityGrowthChart } from "@/components/rsi/CapabilityGrowthChart";
@@ -95,7 +95,7 @@ function phaseBadgeColor(phase: string): string {
   return "bg-slate-700 text-slate-300";
 }
 
-function deltaBadge(before?: number, after?: number): JSX.Element {
+function deltaBadge(before?: number, after?: number): React.ReactElement {
   if (before == null || after == null) return <span className="text-slate-400">—</span>;
   const delta = (after - before) * 100;
   if (delta > 0) return <span className="text-emerald-400">+{delta.toFixed(1)}%</span>;

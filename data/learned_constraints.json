@@ -13,9 +13,9 @@
       "id": "lc_1780899626551_2fde3",
       "pattern": "return {\n    version: VERSION,\n    identity: \"Andromeda\",\n    generatedAt: new",
       "reason": "Proposal is already processing",
-      "rejectionCount": 2,
+      "rejectionCount": 3,
       "firstSeenAt": 1780899626551,
-      "lastSeenAt": 1780901016469,
+      "lastSeenAt": 1780916578418,
       "active": true
     },
     {
@@ -121,11 +121,119 @@
       "id": "lc_1780902314371_fca4d",
       "pattern": "{\n    content: \"Truncation fix (v5.68+): streaming max_tokens raised from 4096",
       "reason": "Proposal is already processing",
-      "rejectionCount": 1,
+      "rejectionCount": 2,
       "firstSeenAt": 1780902314371,
-      "lastSeenAt": 1780902314371,
+      "lastSeenAt": 1780918472307,
+      "active": true
+    },
+    {
+      "id": "lc_1780916447024_xje06",
+      "pattern": "// ─── Standard search stream ──────────────────────────────────────────────",
+      "reason": "Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "rejectionCount": 2,
+      "firstSeenAt": 1780916447024,
+      "lastSeenAt": 1780917699090,
+      "active": true
+    },
+    {
+      "id": "lc_1780916569552_wvhj5",
+      "pattern": "// Diversity scoring constants\n  const BASE_SCORE = 50;\n  const MAX_SLANT_BONU",
+      "reason": "Syntax check failed — refinement generation failed",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780916569552,
+      "lastSeenAt": 1780916569552,
+      "active": false
+    },
+    {
+      "id": "lc_1780916574096_4zcxy",
+      "pattern": "// No API key check needed — LLM provider is configured elsewhere",
+      "reason": "Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780916574096,
+      "lastSeenAt": 1780916574096,
+      "active": false
+    },
+    {
+      "id": "lc_1780917251639_u06dw",
+      "pattern": "evictEntries();",
+      "reason": "Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780917251639,
+      "lastSeenAt": 1780917251639,
+      "active": false
+    },
+    {
+      "id": "lc_1780917257482_u9o80",
+      "pattern": "private fallbackSummary(messages: ChatMessage[]): string {\n    // Extract key",
+      "reason": "Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780917257482,
+      "lastSeenAt": 1780917257482,
+      "active": false
+    },
+    {
+      "id": "lc_1780917257542_thvw4",
+      "pattern": "function getConstitution(): Record<string, unknown> | null {\n  if (_constitution",
+      "reason": "File 'selfImproveGuard.ts' is blocked from self-improvement",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780917257542,
+      "lastSeenAt": 1780917257542,
+      "active": false
+    },
+    {
+      "id": "lc_1780917688445_wc91o",
+      "pattern": "for (const relFile of targetFiles) {\n      // Sanitize path to prevent direc",
+      "reason": "Syntax check failed — refinement generation failed",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780917688445,
+      "lastSeenAt": 1780917688445,
+      "active": false
+    },
+    {
+      "id": "lc_1780917748761_784o0",
+      "pattern": "// Barrel file — re-exports all sub-modules for backward compatibility.\nexport *",
+      "reason": "Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780917748761,
+      "lastSeenAt": 1780917748761,
+      "active": false
+    },
+    {
+      "id": "lc_1780917757212_1zhlt",
+      "pattern": "function buildProviderFallbackChain(a?: string): string[] {\n    // v7.1.6: Use",
+      "reason": "Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780917757212,
+      "lastSeenAt": 1780917757212,
+      "active": false
+    },
+    {
+      "id": "lc_1780918312719_3fin2",
+      "pattern": "} catch (pushErr: any) {\n            // Non-fatal — push failure shoul",
+      "reason": "Constitution blocked: proposed content contains forbidden pattern 'ghp_[a-zA-Z0-9]{36}'.",
+      "rejectionCount": 2,
+      "firstSeenAt": 1780918312719,
+      "lastSeenAt": 1780918472370,
+      "active": true
+    },
+    {
+      "id": "lc_1780919083429_8ibdv",
+      "pattern": "// ── State ────────────────────────────────────────────────────────────────────",
+      "reason": "Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780919083429,
+      "lastSeenAt": 1780919083429,
+      "active": false
+    },
+    {
+      "id": "lc_1780919609403_3vpx3",
+      "pattern": "import { isPrivateAddress } from \"./ssrfProtection\";",
+      "reason": "Syntax check failed — refinement generation failed",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780919609403,
+      "lastSeenAt": 1780919609403,
       "active": false
     }
   ],
-  "lastUpdatedAt": 1780902315603
+  "lastUpdatedAt": 1780919609403
 }

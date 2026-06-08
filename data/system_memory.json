@@ -6,11 +6,11 @@
       "title": "Orchestrator Safe Mode",
       "content": "Entered safe mode due to: consecutive_failures. Cycle stats: 30 total, 3 consecutive failures.",
       "context": "orchestrator",
-      "confidence": 0.8999999999999999,
+      "confidence": 0.9999999999999999,
       "applicableTo": [],
       "createdAt": 1779618392688,
-      "lastReferencedAt": 1780912559024,
-      "referenceCount": 2
+      "lastReferencedAt": 1780919596765,
+      "referenceCount": 3
     },
     {
       "id": "sl_1780896575988_2pxa8a",
@@ -46,13 +46,13 @@
       "title": "Applied: Remove redundant barrel export comment",
       "content": "Successfully applied improvement to ai.ts: Remove redundant barrel export comment",
       "context": "category: readability, impact: low, confidence: 1.00",
-      "confidence": 0.9,
+      "confidence": 1,
       "applicableTo": [
         "ai.ts"
       ],
       "createdAt": 1780896758048,
-      "lastReferencedAt": 1780896758048,
-      "referenceCount": 0
+      "lastReferencedAt": 1780916134648,
+      "referenceCount": 1
     },
     {
       "id": "sl_1780896939623_0lf8pn",
@@ -235,12 +235,68 @@
       "createdAt": 1780908775199,
       "lastReferencedAt": 1780908775199,
       "referenceCount": 0
+    },
+    {
+      "id": "sl_1780916103056_f182qh",
+      "category": "modification",
+      "title": "Applied: Fix health check logic inconsistency in recordError",
+      "content": "Successfully applied improvement to adaptiveRouter.ts: Fix health check logic inconsistency in recordError",
+      "context": "category: reliability, impact: high, confidence: 0.95",
+      "confidence": 0.9,
+      "applicableTo": [
+        "adaptiveRouter.ts"
+      ],
+      "createdAt": 1780916103056,
+      "lastReferencedAt": 1780916103056,
+      "referenceCount": 0
+    },
+    {
+      "id": "sl_1780916163083_sm51oa",
+      "category": "modification",
+      "title": "Applied: Extract remaining inline routes into separate modules",
+      "content": "Successfully applied improvement to streamRouter.ts: Extract remaining inline routes into separate modules",
+      "context": "category: architecture, impact: high, confidence: 0.90",
+      "confidence": 0.9,
+      "applicableTo": [
+        "streamRouter.ts"
+      ],
+      "createdAt": 1780916163083,
+      "lastReferencedAt": 1780916163083,
+      "referenceCount": 0
+    },
+    {
+      "id": "sl_1780919554261_lumghx",
+      "category": "modification",
+      "title": "Applied: Remove redundant barrel export comments",
+      "content": "Successfully applied improvement to ai.ts: Remove redundant barrel export comments",
+      "context": "category: readability, impact: low, confidence: 1.00",
+      "confidence": 0.9,
+      "applicableTo": [
+        "ai.ts"
+      ],
+      "createdAt": 1780919554261,
+      "lastReferencedAt": 1780919554261,
+      "referenceCount": 0
+    },
+    {
+      "id": "sl_1780919591615_vrcn3j",
+      "category": "modification",
+      "title": "Applied: Fix version string inconsistency in manifest",
+      "content": "Successfully applied improvement to manifest.ts: Fix version string inconsistency in manifest",
+      "context": "category: readability, impact: low, confidence: 0.90",
+      "confidence": 0.9,
+      "applicableTo": [
+        "manifest.ts"
+      ],
+      "createdAt": 1780919591615,
+      "lastReferencedAt": 1780919591615,
+      "referenceCount": 0
     }
   ],
   "baselines": [],
   "errorPatterns": [],
   "metadata": {
-    "totalLearnings": 17,
+    "totalLearnings": 21,
     "totalReferences": 0,
     "lastConsolidation": 1780537317493,
     "version": "5.28"

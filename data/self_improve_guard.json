@@ -3064,6 +3064,321 @@
       "result": "success",
       "details": "Applied proposal: Extract SSRF validation into a shared helper function",
       "timestamp": "2026-06-08T08:22:59.940Z"
+    },
+    {
+      "id": "audit_1780916103038_mv6pkd",
+      "action": "test",
+      "proposalId": "prop_1780916083036_qqa5cc",
+      "filename": "adaptiveRouter.ts",
+      "result": "failure",
+      "details": "EPSEEK_API_KEY env var is optional\n ✓ server/deepseek.test.ts > DeepSeek provider > llmProvider module loads and has DeepSeek support\n ✓ server/self/dependency_graph.test.ts > dependency_graph > modul",
+      "timestamp": "2026-06-08T10:55:03.038Z"
+    },
+    {
+      "id": "audit_1780916103041_wj3t2n",
+      "action": "apply",
+      "proposalId": "prop_1780916083036_qqa5cc",
+      "filename": "adaptiveRouter.ts",
+      "result": "success",
+      "details": "Applied proposal: Fix health check logic inconsistency in recordError",
+      "timestamp": "2026-06-08T10:55:03.041Z"
+    },
+    {
+      "id": "audit_1780916134634_qax0ek",
+      "action": "test",
+      "proposalId": "prop_1780916021724_68grs2",
+      "filename": "ai.ts",
+      "result": "failure",
+      "details": "= recordError(\"test_providerId\");\n     26|     expect(result).toBeDefined();\n       |                    ^\n     27|   });\n     28| \n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯\n\n FAIL  server/adaptiveRouter.test.t",
+      "timestamp": "2026-06-08T10:55:34.634Z"
+    },
+    {
+      "id": "audit_1780916134638_ukqw6c",
+      "action": "apply",
+      "proposalId": "prop_1780916021724_68grs2",
+      "filename": "ai.ts",
+      "result": "success",
+      "details": "Applied proposal: Remove redundant barrel export comment",
+      "timestamp": "2026-06-08T10:55:34.638Z"
+    },
+    {
+      "id": "audit_1780916163067_q70ckh",
+      "action": "test",
+      "proposalId": "prop_1780916017575_p7bpbh",
+      "filename": "streamRouter.ts",
+      "result": "failure",
+      "details": "eading 'id')\n ❯ Module.registerProvider server/adaptiveRouter.ts:274:26\n    272| export function registerProvider(provider: LLMProvider): void {\n    273|   initProviders();\n    274|   providers.set(pr",
+      "timestamp": "2026-06-08T10:56:03.067Z"
+    },
+    {
+      "id": "audit_1780916163070_9iphvb",
+      "action": "apply",
+      "proposalId": "prop_1780916017575_p7bpbh",
+      "filename": "streamRouter.ts",
+      "result": "success",
+      "details": "Applied proposal: Extract remaining inline routes into separate modules",
+      "timestamp": "2026-06-08T10:56:03.070Z"
+    },
+    {
+      "id": "audit_1780916430696_bfs2og",
+      "action": "apply",
+      "proposalId": "prop_1780916017575_p7bpbh",
+      "filename": "streamRouter.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/streamRouter.ts(1,32): error TS2307: Cannot find module './aiPlanning.js' or its corresponding type declarations.\ndata/tmp_syntax/streamRouter.ts(3,34): error TS2307: Cannot find modul",
+      "timestamp": "2026-06-08T11:00:30.696Z"
+    },
+    {
+      "id": "audit_1780916446061_1p1ofx",
+      "action": "apply",
+      "proposalId": "prop_1780916017575_p7bpbh",
+      "filename": "streamRouter.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1780916017575_p7bpbh after syntax error",
+      "timestamp": "2026-06-08T11:00:46.061Z"
+    },
+    {
+      "id": "audit_1780916566839_81c3ep",
+      "action": "apply",
+      "proposalId": "prop_1780916510236_dk2ya3",
+      "filename": "biasDetector.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/biasDetector.ts(15,35): error TS2307: Cannot find module '../drizzle/schema' or its corresponding type declarations.\n",
+      "timestamp": "2026-06-08T11:02:46.845Z"
+    },
+    {
+      "id": "audit_1780916570520_gzeahy",
+      "action": "apply",
+      "proposalId": "prop_1780916505705_z9swmm",
+      "filename": "multiAgent.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/multiAgent.ts(185,49): error TS2307: Cannot find module './llmProvider.js' or its corresponding type declarations.\ndata/tmp_syntax/multiAgent.ts(254,9): error TS2339: Property 'write' ",
+      "timestamp": "2026-06-08T11:02:50.520Z"
+    },
+    {
+      "id": "audit_1780916573243_jgvtdk",
+      "action": "apply",
+      "proposalId": "prop_1780916505705_z9swmm",
+      "filename": "multiAgent.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1780916505705_z9swmm after syntax error",
+      "timestamp": "2026-06-08T11:02:53.243Z"
+    },
+    {
+      "id": "audit_1780916575001_55fpmv",
+      "action": "apply",
+      "proposalId": "prop_1780916209159_ukirr1",
+      "filename": "manifest.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/manifest.ts(14,29): error TS2307: Cannot find module './tools' or its corresponding type declarations.\ndata/tmp_syntax/manifest.ts(15,50): error TS2307: Cannot find module './llmProvid",
+      "timestamp": "2026-06-08T11:02:55.001Z"
+    },
+    {
+      "id": "audit_1780916577655_4dnh7v",
+      "action": "apply",
+      "proposalId": "prop_1780916209159_ukirr1",
+      "filename": "manifest.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1780916209159_ukirr1 after syntax error",
+      "timestamp": "2026-06-08T11:02:57.655Z"
+    },
+    {
+      "id": "audit_1780917246168_oo5eeh",
+      "action": "apply",
+      "proposalId": "prop_1780917185701_qzjfwl",
+      "filename": "contextBus.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/contextBus.ts(16,28): error TS2307: Cannot find module 'crypto' or its corresponding type declarations.\ndata/tmp_syntax/contextBus.ts(17,16): error TS2307: Cannot find module 'fs' or i",
+      "timestamp": "2026-06-08T11:14:06.174Z"
+    },
+    {
+      "id": "audit_1780917250807_bm10x2",
+      "action": "apply",
+      "proposalId": "prop_1780917185701_qzjfwl",
+      "filename": "contextBus.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1780917185701_qzjfwl after syntax error",
+      "timestamp": "2026-06-08T11:14:10.807Z"
+    },
+    {
+      "id": "audit_1780917252484_afdtqp",
+      "action": "apply",
+      "proposalId": "prop_1780917129238_hom9dh",
+      "filename": "contextManager.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/contextManager.ts(15,34): error TS2307: Cannot find module './llmProvider' or its corresponding type declarations.\ndata/tmp_syntax/contextManager.ts(16,32): error TS2307: Cannot find m",
+      "timestamp": "2026-06-08T11:14:12.484Z"
+    },
+    {
+      "id": "audit_1780917256663_bbqv5d",
+      "action": "apply",
+      "proposalId": "prop_1780917129238_hom9dh",
+      "filename": "contextManager.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1780917129238_hom9dh after syntax error",
+      "timestamp": "2026-06-08T11:14:16.663Z"
+    },
+    {
+      "id": "audit_1780917257526_fdkds5",
+      "action": "apply",
+      "proposalId": "prop_1780916834103_dqppvm",
+      "filename": "selfImproveGuard.ts",
+      "result": "blocked",
+      "details": "File selfImproveGuard.ts is blocked from self-improvement",
+      "timestamp": "2026-06-08T11:14:17.526Z"
+    },
+    {
+      "id": "audit_1780917677166_1xte1f",
+      "action": "apply",
+      "proposalId": "prop_1780916893196_i759ay",
+      "filename": "evalDrivenTargeting.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/evalDrivenTargeting.ts(11,18): error TS2307: Cannot find module 'path' or its corresponding type declarations.\ndata/tmp_syntax/evalDrivenTargeting.ts(12,16): error TS2307: Cannot find ",
+      "timestamp": "2026-06-08T11:21:17.166Z"
+    },
+    {
+      "id": "audit_1780917689418_08byuu",
+      "action": "apply",
+      "proposalId": "prop_1780916017575_p7bpbh",
+      "filename": "streamRouter.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/streamRouter.ts(1,32): error TS2307: Cannot find module './aiPlanning.js' or its corresponding type declarations.\ndata/tmp_syntax/streamRouter.ts(3,34): error TS2307: Cannot find modul",
+      "timestamp": "2026-06-08T11:21:29.418Z"
+    },
+    {
+      "id": "audit_1780917741570_u03pdx",
+      "action": "apply",
+      "proposalId": "prop_1780916021724_68grs2",
+      "filename": "ai.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/ai.ts(2,15): error TS2307: Cannot find module './aiTokens.js' or its corresponding type declarations.\ndata/tmp_syntax/ai.ts(3,15): error TS2307: Cannot find module './aiPrompts.js' or ",
+      "timestamp": "2026-06-08T11:22:21.570Z"
+    },
+    {
+      "id": "audit_1780917747987_yrcktk",
+      "action": "apply",
+      "proposalId": "prop_1780916021724_68grs2",
+      "filename": "ai.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1780916021724_68grs2 after syntax error",
+      "timestamp": "2026-06-08T11:22:27.987Z"
+    },
+    {
+      "id": "audit_1780917749902_mcyfyx",
+      "action": "apply",
+      "proposalId": "prop_1780916960971_wd5em2",
+      "filename": "selfImprove.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/selfImprove.ts(34,32): error TS2307: Cannot find module './fileEngineChunking.js' or its corresponding type declarations.\ndata/tmp_syntax/selfImprove.ts(35,16): error TS2307: Cannot fi",
+      "timestamp": "2026-06-08T11:22:29.902Z"
+    },
+    {
+      "id": "audit_1780917756081_8dw2fh",
+      "action": "apply",
+      "proposalId": "prop_1780916960971_wd5em2",
+      "filename": "selfImprove.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1780916960971_wd5em2 after syntax error",
+      "timestamp": "2026-06-08T11:22:36.081Z"
+    },
+    {
+      "id": "audit_1780918312702_hsy47y",
+      "action": "apply",
+      "proposalId": "prop_1780918259106_2vjvce",
+      "filename": "continuousImprover.ts",
+      "result": "blocked",
+      "details": "Constitution: proposed content contains forbidden pattern 'ghp_[a-zA-Z0-9]{36}'",
+      "timestamp": "2026-06-08T11:31:52.702Z"
+    },
+    {
+      "id": "audit_1780918467817_zzj5ga",
+      "action": "apply",
+      "proposalId": "prop_1780918347322_mpv867",
+      "filename": "memory.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/memory.ts(33,16): error TS2307: Cannot find module 'fs' or its corresponding type declarations.\ndata/tmp_syntax/memory.ts(34,18): error TS2307: Cannot find module 'path' or its corresp",
+      "timestamp": "2026-06-08T11:34:27.817Z"
+    },
+    {
+      "id": "audit_1780918471419_4e2i9w",
+      "action": "apply",
+      "proposalId": "prop_1780918347322_mpv867",
+      "filename": "memory.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1780918347322_mpv867 after syntax error",
+      "timestamp": "2026-06-08T11:34:31.419Z"
+    },
+    {
+      "id": "audit_1780918472355_z2ulcb",
+      "action": "apply",
+      "proposalId": "prop_1780918259106_2vjvce",
+      "filename": "continuousImprover.ts",
+      "result": "blocked",
+      "details": "Constitution: proposed content contains forbidden pattern 'ghp_[a-zA-Z0-9]{36}'",
+      "timestamp": "2026-06-08T11:34:32.355Z"
+    },
+    {
+      "id": "audit_1780919071210_2t5v13",
+      "action": "apply",
+      "proposalId": "prop_1780918411916_ingsyz",
+      "filename": "testGenerator.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/testGenerator.ts(205,17): error TS2304: Cannot find name 'config'.\nserver/testGenerator.ts(208,17): error TS2304: Cannot find name 'config'.\nserver/testGenerator.ts(218,17): error TS2552: Canno",
+      "timestamp": "2026-06-08T11:44:31.210Z"
+    },
+    {
+      "id": "audit_1780919078118_r9mqn1",
+      "action": "apply",
+      "proposalId": "prop_1780918411916_ingsyz",
+      "filename": "testGenerator.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1780918411916_ingsyz after syntax error",
+      "timestamp": "2026-06-08T11:44:38.118Z"
+    },
+    {
+      "id": "audit_1780919554229_vkod9b",
+      "action": "test",
+      "proposalId": "prop_1780919016579_qbko6l",
+      "filename": "ai.ts",
+      "result": "failure",
+      "details": "r is optional\n ✓ server/deepseek.test.ts > DeepSeek provider > llmProvider module loads and has DeepSeek support\n ✓ server/self/dependency_graph.test.ts > dependency_graph > module loads without error",
+      "timestamp": "2026-06-08T11:52:34.229Z"
+    },
+    {
+      "id": "audit_1780919554234_8n2g48",
+      "action": "apply",
+      "proposalId": "prop_1780919016579_qbko6l",
+      "filename": "ai.ts",
+      "result": "success",
+      "details": "Applied proposal: Remove redundant barrel export comments",
+      "timestamp": "2026-06-08T11:52:34.234Z"
+    },
+    {
+      "id": "audit_1780919591585_imwpsj",
+      "action": "test",
+      "proposalId": "prop_1780919425890_x3lg4n",
+      "filename": "manifest.ts",
+      "result": "failure",
+      "details": "s\n ✓ server/taskDecomposer.test.ts > taskDecomposer > analyzeComplexity is exported\n ✓ server/deepseek.test.ts > DeepSeek provider > DEEPSEEK_API_KEY env var is optional\n ✓ server/deepseek.test.ts > D",
+      "timestamp": "2026-06-08T11:53:11.585Z"
+    },
+    {
+      "id": "audit_1780919591589_itj836",
+      "action": "apply",
+      "proposalId": "prop_1780919425890_x3lg4n",
+      "filename": "manifest.ts",
+      "result": "success",
+      "details": "Applied proposal: Fix version string inconsistency in manifest",
+      "timestamp": "2026-06-08T11:53:11.589Z"
+    },
+    {
+      "id": "audit_1780919607027_hg7rre",
+      "action": "apply",
+      "proposalId": "prop_1780917956957_syw76q",
+      "filename": "browser.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/browser.ts(67,34): error TS2307: Cannot find module './ssrfProtection' or its corresponding type declarations.",
+      "timestamp": "2026-06-08T11:53:27.027Z"
     }
   ]
 }

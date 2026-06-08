@@ -241,7 +241,7 @@ const ANALYZABLE_FILES = [
   "selfImprove.ts",
   "rsiEngine.ts",
   "continuousImprover.ts",
-  "selfImproveGuard.ts",
+  // selfImproveGuard.ts is in blockedFiles — proposals for it are always rejected, so skip analysis
   "qualityToRSI.ts",
   "evalDrivenTargeting.ts",
   "testGenerator.ts",
@@ -751,6 +751,20 @@ Do NOT include any forbidden patterns listed above.`,
   }
   if (!parsed.originalSnippet || !parsed.proposedSnippet || !parsed.title) {
     throw new Error("AI response missing required fields (title, originalSnippet, proposedSnippet)");
+  }
+
+  // v9.10.1: Snippet truncation guard — reject proposals where the LLM's output was cut
+  // mid-token (e.g. "const MAX_SLANT_BONU" or unclosed string/bracket). These always fail
+  // the syntax check anyway, but catching them early saves the file-write and rollback overhead.
+  const proposedSnippetTrimmed = parsed.proposedSnippet.trimEnd();
+  const looksLikeTruncated =
+    // Ends mid-identifier (last char is a word char but the snippet has no closing brace/paren/semicolon)
+    /\w$/.test(proposedSnippetTrimmed) &&
+    !/[;,}\])]$/.test(proposedSnippetTrimmed) &&
+    proposedSnippetTrimmed.length > 10;
+  if (looksLikeTruncated) {
+    log.warn(`[v9.10.1] Snippet appears truncated for ${filename}: "${parsed.title}" — skipping`);
+    return null;
   }
 
   // v6.28 A1: Dedup check on title — skip if we already have this exact proposal

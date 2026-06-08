@@ -1,9 +1,9 @@
 {
-  "timestamp": 1780913636839,
+  "timestamp": 1780919071342,
   "totalModules": 209,
   "testedModules": 176,
   "untestedModules": 33,
-  "coveragePercent": 35,
+  "coveragePercent": 36,
   "moduleDetails": [
     {
       "filePath": "server/_core/context.ts",
@@ -2635,31 +2635,6 @@
       "coveragePercent": 31
     },
     {
-      "filePath": "server/adaptiveRouter.ts",
-      "fileName": "adaptiveRouter.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/adaptiveRouter.test.ts",
-      "exportedFunctions": [
-        "recordSuccess",
-        "recordError",
-        "selectProvider",
-        "registerProvider",
-        "setProviderEnabled",
-        "getRouterStats"
-      ],
-      "testedFunctions": [
-        "registerProvider",
-        "getRouterStats"
-      ],
-      "untestedFunctions": [
-        "recordSuccess",
-        "recordError",
-        "selectProvider",
-        "setProviderEnabled"
-      ],
-      "coveragePercent": 33
-    },
-    {
       "filePath": "server/selfConsistency.ts",
       "fileName": "selfConsistency.ts",
       "hasTestFile": true,
@@ -4423,6 +4398,30 @@
         "browserClickVision"
       ],
       "coveragePercent": 90
+    },
+    {
+      "filePath": "server/adaptiveRouter.ts",
+      "fileName": "adaptiveRouter.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/adaptiveRouter.test.ts",
+      "exportedFunctions": [
+        "recordSuccess",
+        "recordError",
+        "selectProvider",
+        "registerProvider",
+        "setProviderEnabled",
+        "getRouterStats"
+      ],
+      "testedFunctions": [
+        "recordSuccess",
+        "recordError",
+        "selectProvider",
+        "registerProvider",
+        "setProviderEnabled",
+        "getRouterStats"
+      ],
+      "untestedFunctions": [],
+      "coveragePercent": 100
     },
     {
       "filePath": "server/manifest.ts",

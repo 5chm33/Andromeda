@@ -262,68 +262,69 @@ export function generateDiffPreview(proposal: ImprovementProposal): {
 // ─── Syntax Check ─────────────────────────────────────────────────────────────
 
 function runSyntaxCheck(filename: string, proposedContent: string, originalSnippet?: string, proposedSnippet?: string): { pass: boolean; errors: string } {
-  const tmpDir = path.join(getDataDir(), "tmp_syntax");
-  if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
-  const tmpFile = path.join(tmpDir, path.basename(filename));
+  // v9.10.1: Run tsc on the FULL PROJECT with the proposed change applied to the actual server file.
+  // Running tsc on an isolated tmp file produces false-positive TS2307 "Cannot find module" errors
+  // for any file that imports from sibling modules (which is every file). The correct approach is:
+  // 1. Write proposedContent to the actual server file (with backup)
+  // 2. Run full project tsc --noEmit (uses tsconfig.json which has correct moduleResolution)
+  // 3. Restore the original file
+  // This is the same check that CI runs, so it's the ground truth for correctness.
+
+  const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+  const serverDir = path.join(projectRoot, "server");
+  const actualFile = path.join(serverDir, path.basename(filename));
+
+  // Find the local tsc binary
+  const localTscPaths = [
+    path.join(projectRoot, "node_modules", ".bin", "tsc"),
+    path.join(projectRoot, "node_modules", "typescript", "bin", "tsc"),
+  ];
+  const localTsc = localTscPaths.find(p => fs.existsSync(p));
+  let tscCmd = "pnpm exec tsc";
+  if (localTsc) {
+    tscCmd = localTsc.includes("typescript/bin/tsc") ? `node "${localTsc}"` : `"${localTsc}"`;
+  }
+
+  // Backup the original file content
+  let originalContent: string | null = null;
+  if (fs.existsSync(actualFile)) {
+    originalContent = fs.readFileSync(actualFile, "utf-8");
+  }
 
   try {
-    // v9.8.5: Always use proposedContent as the content to check.
-    // proposedContent is the full file with the change already applied, built at proposal-creation time.
-    // The snippet-based replacement approach (reading the live file and applying the diff) is unreliable
-    // because the live file may have changed since the proposal was created, causing the snippet to not
-    // be found and the replacement to silently fail. Using proposedContent directly is the safest approach.
-    const contentToCheck = proposedContent;
-    fs.writeFileSync(tmpFile, contentToCheck, "utf-8");
-
-    // v9.8.2: Find the local tsc binary instead of relying on npx (which is not always in PATH on Windows).
-    // Search order: node_modules/.bin/tsc (project-local) → global tsc → npx fallback
-    const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-    const localTscPaths = [
-      path.join(projectRoot, "node_modules", ".bin", "tsc"),
-      path.join(projectRoot, "node_modules", ".bin", "tsc.cmd"), // Windows .cmd wrapper
-      path.join(projectRoot, "node_modules", "typescript", "bin", "tsc"), // pnpm direct path
-    ];
-    const localTsc = localTscPaths.find(p => fs.existsSync(p));
-    
-    // v9.8.4: Use pnpm exec as the primary fallback if local binary isn't found directly
-    let tscCmd = "pnpm exec tsc";
-    if (localTsc) {
-      if (localTsc.endsWith(".cmd")) {
-        tscCmd = `cmd.exe /c "${localTsc}"`;
-      } else {
-        // For node_modules/typescript/bin/tsc, we need to run it via node
-        if (localTsc.includes("typescript/bin/tsc")) {
-          tscCmd = `node "${localTsc}"`;
-        } else {
-          tscCmd = `"${localTsc}"`;
-        }
-      }
-    }
+    // Apply proposed content to the actual file
+    fs.writeFileSync(actualFile, proposedContent, "utf-8");
 
     try {
-      execSync(`${tscCmd} --noEmit --skipLibCheck --noResolve "${tmpFile}" 2>&1`, {
-        timeout: 30000,
+      execSync(`${tscCmd} --noEmit 2>&1`, {
+        timeout: 45000,
         encoding: "utf-8",
         cwd: projectRoot,
       });
       return { pass: true, errors: "" };
     } catch (tscErr: any) {
       const tscOutput: string = tscErr.stdout ?? tscErr.message ?? "";
-      // v9.8.2: If tsc itself is not found (ENOENT / not recognized), fall back to a lightweight
-      // JS-based brace/bracket balance check. This is not a full type-check but catches the most
-      // common syntax errors (unmatched braces, unclosed strings) without requiring any binary.
-      const isTscMissing = /ENOENT|not recognized|not found|cannot find/i.test(tscOutput);
+      const isTscMissing = /ENOENT|command not found|not recognized as an internal or external command/i.test(tscOutput);
       if (isTscMissing) {
         if (!(global as any)._tscWarningEmitted) {
           console.warn(`[Guard] tsc binary not found — using lightweight JS syntax fallback`);
           (global as any)._tscWarningEmitted = true;
         }
-        return runLightweightSyntaxCheck(contentToCheck);
+        return runLightweightSyntaxCheck(proposedContent);
       }
-      return { pass: false, errors: tscOutput.slice(0, 1000) };
+      // Filter out errors from OTHER files (we only care about errors caused by this change)
+      const relevantErrors = tscOutput
+        .split("\n")
+        .filter(line => line.includes(path.basename(filename)) || line.match(/error TS\d+/))
+        .join("\n")
+        .slice(0, 1000);
+      return { pass: false, errors: relevantErrors || tscOutput.slice(0, 1000) };
     }
   } finally {
-    if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
+    // Always restore the original file
+    if (originalContent !== null) {
+      fs.writeFileSync(actualFile, originalContent, "utf-8");
+    }
   }
 }
 

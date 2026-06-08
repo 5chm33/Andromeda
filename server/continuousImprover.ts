@@ -245,11 +245,17 @@ async function runImprovementCycle(): Promise<CycleResult> {
             const { execSync: execSyncPush } = await import("child_process");
             const cwd = process.cwd();
             const gitEnv = { ...process.env, GIT_AUTHOR_NAME: "Andromeda AI", GIT_AUTHOR_EMAIL: "andromeda@local", GIT_COMMITTER_NAME: "Andromeda AI", GIT_COMMITTER_EMAIL: "andromeda@local" };
-            execSyncPush("git push origin main", { cwd, env: gitEnv, encoding: "utf-8", stdio: "pipe", timeout: 30000 });
+            // v9.10.1: Use GITHUB_TOKEN PAT in the remote URL for authentication.
+            // The default gh OAuth token may not have push access; the PAT always does.
+            const token = process.env.GITHUB_TOKEN;
+            const repo = process.env.GITHUB_REPO; // e.g. "5chm33/Andromeda"
+            const remoteUrl = `https://${token}@github.com/${repo}.git`;
+            execSyncPush(`git push "${remoteUrl}" main`, { cwd, env: gitEnv, encoding: "utf-8", stdio: "pipe", timeout: 30000 });
             console.log(`[ContinuousImprover] Pushed ${result.proposalsApplied} improvement(s) to origin/main — CI triggered.`);
           } catch (pushErr: any) {
             // Non-fatal — push failure should never block the improvement cycle
-            console.warn(`[ContinuousImprover] Git push failed (non-fatal): ${pushErr.message}`);
+            const safeMsg = (pushErr.message || "").replace(/ghp_[A-Za-z0-9]+/g, "ghp_***");
+            console.warn(`[ContinuousImprover] Git push failed (non-fatal): ${safeMsg.slice(0, 200)}`);
           }
         }
       } catch (tsErr: any) {
