@@ -2596,6 +2596,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/reactEngine.ts(328,9): error TS1005: 'try' expected.\ndata/tmp_syntax/reactEngine.ts(361,5): error TS1068: Unexpected token. A constructor, method, accessor, or property was expected.\nd",
       "timestamp": "2026-06-08T02:10:07.434Z"
+    },
+    {
+      "id": "audit_1780884608905_wnzybg",
+      "action": "apply",
+      "proposalId": "prop_1780854436841_pqmz8c",
+      "filename": "codeIntel.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/codeIntel.ts(20,21): error TS2307: Cannot find module 'fs' or its corresponding type declarations.\ndata/tmp_syntax/codeIntel.ts(21,23): error TS2307: Cannot find module 'path' or its c",
+      "timestamp": "2026-06-08T02:10:08.905Z"
     }
   ]
 }
