@@ -4617,6 +4617,22 @@
       "confidence": 0.9,
       "createdAt": 1780884597417,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780884598908_1mq56e",
+      "category": "antipattern",
+      "title": "Failure: Extract SSRF protection into a separate module",
+      "description": "Failed to apply \"Extract SSRF protection into a separate module\" to browser.ts. Reason: Syntax check failed — proposal not applied. Avoid similar changes.",
+      "context": "self-modify browser.ts readability",
+      "outcome": "failure: Syntax check failed — proposal not applied",
+      "lesson": "Avoid for browser.ts: Extract SSRF protection into a separate module — causes Syntax check failed — proposal not applied",
+      "applicableTo": [
+        "browser.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780884598908,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -4759,5 +4775,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T02:09:57.417Z"
+  "_lastUpdated": "2026-06-08T02:09:58.908Z"
 }
