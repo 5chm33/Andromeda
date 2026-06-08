@@ -1,0 +1,14 @@
+{
+  "constraints": [
+    {
+      "id": "lc_1780894209671_qgur3",
+      "pattern": "function extractVersions(text: string): string[] {\n  return (text.match(/\\b(?:v|",
+      "reason": "Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780894209671,
+      "lastSeenAt": 1780894209671,
+      "active": false
+    }
+  ],
+  "lastUpdatedAt": 1780894209671
+}
