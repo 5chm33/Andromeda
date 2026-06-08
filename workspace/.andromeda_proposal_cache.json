@@ -30,7 +30,8 @@
     "manifest.ts::extract version constant to single source of truth",
     "codeIntel.ts::simplify diff generator logic for readability",
     "browser.ts::extract ssrf and readability logic into separate modules",
-    "grounding.ts::refactor extractfactualclaims for readability"
+    "grounding.ts::refactor extractfactualclaims for readability",
+    "grounding.ts::fix unbalanced brackets in extractfactualclaims refactor"
   ],
   "autoApplyHistory": []
 }
