@@ -281,7 +281,12 @@ function ensureProviderInitialized(): LLMProviderConfig {
   return activeProvider;
 }
 
-// v5.48: Return the API key for a given provider id (used by auto-router)
+/**
+ * Returns the API key for a given provider ID.
+ * Used by the auto-router to validate provider availability before switching.
+ * @param id Provider identifier (e.g. 'deepseek', 'openrouter', 'anthropic')
+ * @returns The API key string, or empty string if not configured
+ */
 export function getProviderApiKey(id: string): string {
   switch (id) {
     case "kimi": return process.env.KIMI_API_KEY ?? "";
@@ -300,17 +305,26 @@ export function getProviderApiKey(id: string): string {
   }
 }
 
-// v5.48: Switch active provider by id, auto-filling the API key
+/**
+ * Switches the active LLM provider by ID, auto-filling the API key from environment variables.
+ * @param id Provider identifier (e.g. 'deepseek', 'openrouter', 'anthropic')
+ */
 export function switchProvider(id: string): void {
   const base = DEFAULT_PROVIDERS[id] ?? DEFAULT_PROVIDERS.custom;
   activeProvider = { ...base, apiKey: getProviderApiKey(id) };
   _providerInitialized = true;
 }
 
+/** Returns a copy of the currently active LLM provider configuration. */
 export function getActiveProvider(): LLMProviderConfig {
   return { ...ensureProviderInitialized() };
 }
 
+/**
+ * Overrides the active LLM provider configuration.
+ * Partial updates are merged with the existing provider config.
+ * @param config Partial provider config — must include at minimum an `id` field
+ */
 export function setActiveProvider(config: Partial<LLMProviderConfig> & { id: string }): void {
   if (!config) return;
   const base = DEFAULT_PROVIDERS[config.id] ?? DEFAULT_PROVIDERS.custom;
@@ -327,6 +341,7 @@ export function setActiveProvider(config: Partial<LLMProviderConfig> & { id: str
   log.info(`[v6.15.3] Provider switched: ${config.id} (key: ...${correctApiKey.slice(-6)})`);
 }
 
+/** Returns a list of all registered LLM providers with their IDs and display names. */
 export function listProviders(): Array<{ id: string; name: string }> {
   return Object.values(DEFAULT_PROVIDERS).map(p => ({ id: p.id, name: p.name }));
 }
@@ -353,6 +368,11 @@ export function listProviders(): Array<{ id: string; name: string }> {
 
 export type LLMTier = "eco" | "standard" | "pro";
 
+/**
+ * Returns the provider ID assigned to a given quality/cost tier.
+ * @param tier 'fast' | 'standard' | 'pro' | 'reasoning'
+ * @returns Provider ID string (e.g. 'deepseek', 'openrouter')
+ */
 export function getProviderForTier(tier: LLMTier): string {
   const override = process.env.LLM_TIER as LLMTier | undefined;
   const effectiveTier = override ?? tier;
@@ -390,6 +410,12 @@ export function getProviderForTier(tier: LLMTier): string {
 }
 
 // Helper: classify a task area into a tier
+/**
+ * Maps a task area to the appropriate LLM quality tier.
+ * Self-modification tasks use 'pro'; fast tasks use 'fast'; default is 'standard'.
+ * @param area Optional task area string (e.g. 'self-modification', 'search')
+ * @returns The recommended LLM tier for this task area
+ */
 export function tierForArea(area?: string): LLMTier {
   if (!area) return "eco";
   const a = area.toLowerCase();
@@ -863,6 +889,10 @@ export async function* streamChatCompletion(
 //
 // Priority: DeepSeek → Gemini Flash via OpenRouter → active provider (last resort)
 
+/**
+ * Returns the LLM provider configuration used for background/cheap analysis tasks.
+ * Defaults to DeepSeek for cost efficiency. Falls back to the active provider if unavailable.
+ */
 export function getBackgroundProvider(): LLMProviderConfig {
   const deepseekKey = process.env.DEEPSEEK_API_KEY;
   if (deepseekKey) {
@@ -969,6 +999,13 @@ export async function backgroundSimpleCompletion(
 // Usage:
 //   const text = await simpleChatCompletion(messages, { maxTokens: 2000, temperature: 0.3 });
 
+/**
+ * Simplified chat completion that returns just the response text string.
+ * Convenience wrapper around `chatCompletion` for single-turn interactions.
+ * @param messages Array of chat messages
+ * @param options Optional override for model, temperature, and max tokens
+ * @returns The assistant's response as a plain string
+ */
 export async function simpleChatCompletion(
   messages: Array<{ role: string; content: string }>,
   options?: { maxTokens?: number; temperature?: number; signal?: AbortSignal; providerId?: string },

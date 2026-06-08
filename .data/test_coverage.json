@@ -1,5 +1,5 @@
 {
-  "timestamp": 1780919071342,
+  "timestamp": 1780933076377,
   "totalModules": 209,
   "testedModules": 176,
   "untestedModules": 33,
@@ -3628,37 +3628,6 @@
       "coveragePercent": 50
     },
     {
-      "filePath": "server/memory.ts",
-      "fileName": "memory.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/memory.test.ts",
-      "exportedFunctions": [
-        "storeMemory",
-        "searchMemory",
-        "listMemories",
-        "deleteMemory",
-        "getMemoryStats",
-        "injectMemoryContextAsync",
-        "injectMemoryContext",
-        "autoExtractMemories",
-        "seedInitialMemoriesIfEmpty"
-      ],
-      "testedFunctions": [
-        "listMemories",
-        "deleteMemory",
-        "getMemoryStats",
-        "injectMemoryContext",
-        "seedInitialMemoriesIfEmpty"
-      ],
-      "untestedFunctions": [
-        "storeMemory",
-        "searchMemory",
-        "injectMemoryContextAsync",
-        "autoExtractMemories"
-      ],
-      "coveragePercent": 56
-    },
-    {
       "filePath": "server/contextCompressionDaemon.ts",
       "fileName": "contextCompressionDaemon.ts",
       "hasTestFile": true,
@@ -3751,52 +3720,6 @@
       "untestedFunctions": [
         "runQualityAnalysis",
         "isRunning"
-      ],
-      "coveragePercent": 60
-    },
-    {
-      "filePath": "server/consensusEngine.ts",
-      "fileName": "consensusEngine.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/consensusEngine.test.ts",
-      "exportedFunctions": [
-        "getConsensus",
-        "requiresConsensus",
-        "getConsensusStats",
-        "updateConsensusConfig",
-        "initConsensusEngine"
-      ],
-      "testedFunctions": [
-        "getConsensus",
-        "getConsensusStats",
-        "initConsensusEngine"
-      ],
-      "untestedFunctions": [
-        "requiresConsensus",
-        "updateConsensusConfig"
-      ],
-      "coveragePercent": 60
-    },
-    {
-      "filePath": "server/continuousImprover.ts",
-      "fileName": "continuousImprover.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/continuousImprover.test.ts",
-      "exportedFunctions": [
-        "startContinuousImprover",
-        "stopContinuousImprover",
-        "triggerCycleNow",
-        "getImproverStats",
-        "updateImproverConfig"
-      ],
-      "testedFunctions": [
-        "startContinuousImprover",
-        "stopContinuousImprover",
-        "getImproverStats"
-      ],
-      "untestedFunctions": [
-        "triggerCycleNow",
-        "updateImproverConfig"
       ],
       "coveragePercent": 60
     },
@@ -4091,6 +4014,37 @@
         "backgroundChatCompletion",
         "backgroundSimpleCompletion",
         "simpleChatCompletion"
+      ],
+      "coveragePercent": 67
+    },
+    {
+      "filePath": "server/memory.ts",
+      "fileName": "memory.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/memory.test.ts",
+      "exportedFunctions": [
+        "storeMemory",
+        "searchMemory",
+        "listMemories",
+        "deleteMemory",
+        "getMemoryStats",
+        "injectMemoryContextAsync",
+        "injectMemoryContext",
+        "autoExtractMemories",
+        "seedInitialMemoriesIfEmpty"
+      ],
+      "testedFunctions": [
+        "listMemories",
+        "deleteMemory",
+        "getMemoryStats",
+        "injectMemoryContextAsync",
+        "injectMemoryContext",
+        "seedInitialMemoriesIfEmpty"
+      ],
+      "untestedFunctions": [
+        "storeMemory",
+        "searchMemory",
+        "autoExtractMemories"
       ],
       "coveragePercent": 67
     },
@@ -4419,6 +4373,50 @@
         "registerProvider",
         "setProviderEnabled",
         "getRouterStats"
+      ],
+      "untestedFunctions": [],
+      "coveragePercent": 100
+    },
+    {
+      "filePath": "server/consensusEngine.ts",
+      "fileName": "consensusEngine.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/consensusEngine.test.ts",
+      "exportedFunctions": [
+        "getConsensus",
+        "requiresConsensus",
+        "getConsensusStats",
+        "updateConsensusConfig",
+        "initConsensusEngine"
+      ],
+      "testedFunctions": [
+        "getConsensus",
+        "requiresConsensus",
+        "getConsensusStats",
+        "updateConsensusConfig",
+        "initConsensusEngine"
+      ],
+      "untestedFunctions": [],
+      "coveragePercent": 100
+    },
+    {
+      "filePath": "server/continuousImprover.ts",
+      "fileName": "continuousImprover.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/continuousImprover.test.ts",
+      "exportedFunctions": [
+        "startContinuousImprover",
+        "stopContinuousImprover",
+        "triggerCycleNow",
+        "getImproverStats",
+        "updateImproverConfig"
+      ],
+      "testedFunctions": [
+        "startContinuousImprover",
+        "stopContinuousImprover",
+        "triggerCycleNow",
+        "getImproverStats",
+        "updateImproverConfig"
       ],
       "untestedFunctions": [],
       "coveragePercent": 100

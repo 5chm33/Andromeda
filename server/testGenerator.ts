@@ -190,6 +190,14 @@ function getIndent(line: string): number {
 
 // ── Test Generation ──────────────────────────────────────────────────────────
 
+/**
+ * Generates a test suite for the given source code.
+ * Extracts exported functions and creates test stubs with type assertions.
+ * @param code Source code string to analyze
+ * @param filePath Path to the source file (used to infer language)
+ * @param language Optional language override ('typescript' | 'python')
+ * @returns A GeneratedTest object containing the test code and metadata
+ */
 export function generateTests(code: string, filePath: string, language?: "typescript" | "python"): GeneratedTest {
   const lang = language || (filePath.endsWith(".py") ? "python" : "typescript");
   const functions = extractFunctions(code, lang);
@@ -377,6 +385,11 @@ function generatePythonTests(functions: FunctionSignature[], filePath: string, f
 
 // ── Test Execution ───────────────────────────────────────────────────────────
 
+/**
+ * Runs a previously generated test by its ID.
+ * @param testId The unique ID of the generated test to run
+ * @returns TestRunResult with pass/fail status and any error messages
+ */
 export function runTest(testId: string): TestRunResult {
   const test = generatedTests.find(t => t.id === testId);
   if (!test) {
@@ -438,12 +451,20 @@ export function runTest(testId: string): TestRunResult {
   return result;
 }
 
+/** Runs all previously generated tests and returns their results. */
 export function runAllTests(): TestRunResult[] {
   return generatedTests.map(t => runTest(t.id));
 }
 
 // ── Coverage Analysis ────────────────────────────────────────────────────────
 
+/**
+ * Analyzes source code to identify functions that lack test coverage.
+ * @param code Source code to analyze
+ * @param filePath Path to the file (used to infer language)
+ * @param language Optional language override
+ * @returns Array of CoverageGap objects identifying untested code paths
+ */
 export function analyzeCoverageGaps(code: string, filePath: string, language?: "typescript" | "python"): CoverageGap[] {
   const lang = language || (filePath.endsWith(".py") ? "python" : "typescript");
   const functions = extractFunctions(code, lang);
@@ -472,15 +493,22 @@ export function analyzeCoverageGaps(code: string, filePath: string, language?: "
 
 // ── Config & Stats ───────────────────────────────────────────────────────────
 
+/** Returns the current test generation configuration. */
 export function getTestGenConfig(): TestGenConfig {
   return { ...config };
 }
 
+/**
+ * Updates the test generation configuration.
+ * @param updates Partial config object to merge with current settings
+ * @returns The updated TestGenConfig
+ */
 export function setTestGenConfig(updates: Partial<TestGenConfig>): TestGenConfig {
   config = { ...config, ...updates };
   return { ...config };
 }
 
+/** Returns runtime statistics for the test generator (tests generated, run, pass rate). */
 export function getTestGenStats(): {
   totalGenerated: number;
   totalRun: number;
@@ -503,10 +531,18 @@ export function getTestGenStats(): {
   };
 }
 
+/**
+ * Returns the most recently generated tests.
+ * @param limit Maximum number of tests to return (default: 20)
+ */
 export function getGeneratedTests(limit: number = 20): GeneratedTest[] {
   return generatedTests.slice(-limit);
 }
 
+/**
+ * Returns the most recent test run results.
+ * @param limit Maximum number of results to return (default: 20)
+ */
 export function getTestResults(limit: number = 20): TestRunResult[] {
   return testResults.slice(-limit);
 }

@@ -25,7 +25,15 @@
     "workspace.ts::consolidate workspace directory logic into single function",
     "browser.ts::extract ssrf validation into reusable function",
     "contextManager.ts::improve fallbacksummary method readability",
-    "browser.ts::extract ssrf validation into dedicated module"
+    "browser.ts::extract ssrf validation into dedicated module",
+    "consensusEngine.ts::fix single-model bypass logic to require consensus for critical changes",
+    "continuousImprover.ts::sanitize github token from git push error messages",
+    "selfConsistency.ts::simplify provider query functions by extracting shared logic",
+    "qualityToRSI.ts::add input validation for file path normalization",
+    "streamRouter.ts::extract inline llm provider and tool routes into separate modules",
+    "selfImprove.ts::sanitize llm responses before json parsing",
+    "memory.ts::improve readability of seed_memories array formatting",
+    "ai.ts::add jsdoc re-export comments for clarity"
   ],
   "autoApplyHistory": []
 }

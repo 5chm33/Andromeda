@@ -69,7 +69,7 @@ export type RSICycleResult = {
 
 export type RSIConfig = {
   enabled: boolean;
-  intervalMs: number;           // How often to run a cycle (default: 6 hours)
+  intervalMs: number;           // How often to run a cycle (default: 30 minutes — matches ContinuousImprover)
   maxAutoApplyPerCycle: number; // Max proposals to auto-apply per cycle (default: 3)
   requireHumanConfirmAfter: number; // Pause after N consecutive auto-applies (default: 9)
   targetFiles: string[];        // Files to focus improvement on (empty = all allowed)
@@ -93,7 +93,7 @@ export type RSIStatus = {
 
 const DEFAULT_CONFIG: RSIConfig = {
   enabled: false, // Off by default — user must explicitly enable
-  intervalMs: 6 * 60 * 60 * 1000, // 6 hours
+  intervalMs: 30 * 60 * 1000, // v9.11.0: 30 minutes — unified with ContinuousImprover (was 6h, too slow)
   maxAutoApplyPerCycle: 3,
   requireHumanConfirmAfter: 9,
   targetFiles: [],
@@ -673,7 +673,7 @@ function scheduleNextCycle(): void {
  */
 export function initRSIEngine(): void {
   loadPersistedConfig();
-  console.log(`[RSIEngine] Initialized. Enabled: ${rsiConfig.enabled}, Interval: ${rsiConfig.intervalMs / 3600000}h`);
+  console.log(`[RSIEngine] Initialized. Enabled: ${rsiConfig.enabled}, Interval: ${rsiConfig.intervalMs / 60000}min`);
   if (rsiConfig.enabled) {
     scheduleNextCycle();
   }
@@ -689,7 +689,7 @@ export function enableRSI(config?: Partial<RSIConfig>): RSIStatus {
   rsiConfig.enabled = true;
   saveConfig();
   scheduleNextCycle();
-  console.log(`[RSIEngine] RSI ENABLED. Cycles will run every ${rsiConfig.intervalMs / 3600000}h`);
+  console.log(`[RSIEngine] RSI ENABLED. Cycles will run every ${rsiConfig.intervalMs / 60000}min`);
   return getRSIStatus();
 }
 

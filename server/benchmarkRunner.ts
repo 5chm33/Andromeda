@@ -46,6 +46,17 @@ export interface Degradation {
 const BENCHMARK_INTERVAL_MS = parseInt(process.env.BENCHMARK_INTERVAL || "21600000", 10); // 6 hours
 const DEGRADATION_THRESHOLD = 0.15; // 15% degradation triggers warning
 const CRITICAL_THRESHOLD = 0.30; // 30% degradation triggers critical alert
+// v9.11.0: Minimum baseline floors per benchmark category.
+// Without these, a single fast cached run sets an unrealistically low baseline (e.g. 0.01ms)
+// and every subsequent real run triggers a false 3000%+ degradation.
+const MIN_BASELINES: Record<string, number> = {
+  file_read_10kb: 0.5,
+  file_write_10kb: 0.5,
+  context_token_estimation_50msg: 0.5,
+  json_parse_large_object: 0.5,
+  memory_keyword_search: 5,
+  tool_registry_lookup: 0.1,
+};
 const REPORT_PATH = path.join(process.cwd(), ".data", "benchmark_report.json");
 const BASELINE_PATH = path.join(process.cwd(), ".data", "benchmark_baselines.json");
 
@@ -241,8 +252,15 @@ function updateBaselines(results: BenchmarkResult[]): void {
   let updated = false;
   for (const result of results) {
     if (result.durationMs < 0) continue; // Skip errors
-    if (!_baselines[result.name] || result.durationMs < _baselines[result.name]) {
-      _baselines[result.name] = result.durationMs;
+    // v9.11.0: Apply minimum floor to prevent unrealistically low baselines from cached runs
+    const floor = MIN_BASELINES[result.name] ?? 0.1;
+    const effectiveDuration = Math.max(result.durationMs, floor);
+    if (!_baselines[result.name] || effectiveDuration < _baselines[result.name]) {
+      _baselines[result.name] = effectiveDuration;
+      updated = true;
+    } else if (_baselines[result.name] < floor) {
+      // Correct an existing baseline that is below the floor
+      _baselines[result.name] = floor;
       updated = true;
     }
   }

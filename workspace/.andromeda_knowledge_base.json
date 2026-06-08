@@ -5929,6 +5929,70 @@
       "confidence": 0.8,
       "createdAt": 1780922701822,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780924503096_m7gxfb",
+      "category": "success",
+      "title": "Success: Sanitize GitHub token from Git push error messages",
+      "description": "Successfully applied \"Sanitize GitHub token from Git push error messages\" to continuousImprover.ts (security). Health: improved.",
+      "context": "self-modify continuousImprover.ts security",
+      "outcome": "success",
+      "lesson": "Pattern works for continuousImprover.ts: Sanitize GitHub token from Git push error messages",
+      "applicableTo": [
+        "continuousImprover.ts",
+        "security"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780924503096,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780924537940_zmcl7t",
+      "category": "success",
+      "title": "Success: Fix single-model bypass logic to require consensus for critical changes",
+      "description": "Successfully applied \"Fix single-model bypass logic to require consensus for critical changes\" to consensusEngine.ts (reliability). Health: improved.",
+      "context": "self-modify consensusEngine.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for consensusEngine.ts: Fix single-model bypass logic to require consensus for critical changes",
+      "applicableTo": [
+        "consensusEngine.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780924537940,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780935381755_c5eytz",
+      "category": "success",
+      "title": "Success: Simplify provider query functions by extracting shared logic",
+      "description": "Successfully applied \"Simplify provider query functions by extracting shared logic\" to selfConsistency.ts (readability). Health: improved.",
+      "context": "self-modify selfConsistency.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for selfConsistency.ts: Simplify provider query functions by extracting shared logic",
+      "applicableTo": [
+        "selfConsistency.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780935381755,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780935416597_9nz3si",
+      "category": "success",
+      "title": "Success: Add input validation for file path normalization",
+      "description": "Successfully applied \"Add input validation for file path normalization\" to qualityToRSI.ts (security). Health: improved.",
+      "context": "self-modify qualityToRSI.ts security",
+      "outcome": "success",
+      "lesson": "Pattern works for qualityToRSI.ts: Add input validation for file path normalization",
+      "applicableTo": [
+        "qualityToRSI.ts",
+        "security"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780935416597,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -6071,5 +6135,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T12:51:39.574Z"
+  "_lastUpdated": "2026-06-08T16:16:56.597Z"
 }

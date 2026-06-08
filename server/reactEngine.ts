@@ -1203,6 +1203,24 @@ export class ReactEngine {
       if (this.stateMachine.isAny("THINKING", "TOOL_CALL", "TOOL_RESULT", "RESPONDING")) {
         this.stateMachine.transition("DONE", "run() finally block");
       }
+      // v9.11.0: Persist conversation turn to PersistentContextStore for cross-session recall.
+      // This enables the agent to remember past conversations and build on prior work.
+      try {
+        const { storeContext } = await import("./persistentContextStore.js");
+        const lastAssistant = [...this.messages].reverse().find(m => m.role === "assistant");
+        const assistantContent = typeof lastAssistant?.content === "string" ? lastAssistant.content : "";
+        if (assistantContent) {
+          storeContext({
+            sessionId: this.sessionId,
+            timestamp: Date.now(),
+            toolName: "conversation",
+            role: "assistant",
+            content: `USER: ${userMessage.slice(0, 500)}\nASSISTANT: ${assistantContent.slice(0, 1000)}`,
+            tokenEstimate: Math.ceil((userMessage.length + assistantContent.length) / 4),
+            compressed: false,
+          });
+        }
+      } catch { /* non-fatal — context store unavailable */ }
     }
   }
 

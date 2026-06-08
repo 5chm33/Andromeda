@@ -140,11 +140,18 @@ async function apiEmbed(texts: string[], apiUrl: string, apiKey: string, model: 
   // Keep the replace as a safety net for any legacy callers
   const url = apiUrl.endsWith("/embeddings") ? apiUrl : apiUrl.replace(/\/chat\/completions$/, "/embeddings");
 
+  // v9.11.0: Add HTTP-Referer and X-Title headers required by OpenRouter for non-OpenAI endpoints.
+  // Without these, OpenRouter returns 401 Unauthorized for embedding requests.
+  const isOpenRouter = url.includes("openrouter.ai");
   const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${apiKey}`,
+      ...(isOpenRouter ? {
+        "HTTP-Referer": "http://localhost:3000",
+        "X-Title": "Andromeda AI",
+      } : {}),
     },
     body: JSON.stringify({
       input: texts,

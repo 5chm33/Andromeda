@@ -333,12 +333,68 @@
       "createdAt": 1780922701826,
       "lastReferencedAt": 1780922701826,
       "referenceCount": 0
+    },
+    {
+      "id": "sl_1780924503101_o9nadp",
+      "category": "modification",
+      "title": "Applied: Sanitize GitHub token from Git push error messages",
+      "content": "Successfully applied improvement to continuousImprover.ts: Sanitize GitHub token from Git push error messages",
+      "context": "category: security, impact: high, confidence: 0.95",
+      "confidence": 0.9,
+      "applicableTo": [
+        "continuousImprover.ts"
+      ],
+      "createdAt": 1780924503101,
+      "lastReferencedAt": 1780924503101,
+      "referenceCount": 0
+    },
+    {
+      "id": "sl_1780924537945_taawxi",
+      "category": "modification",
+      "title": "Applied: Fix single-model bypass logic to require consensus for critical changes",
+      "content": "Successfully applied improvement to consensusEngine.ts: Fix single-model bypass logic to require consensus for critical changes",
+      "context": "category: reliability, impact: high, confidence: 0.95",
+      "confidence": 0.9,
+      "applicableTo": [
+        "consensusEngine.ts"
+      ],
+      "createdAt": 1780924537945,
+      "lastReferencedAt": 1780924537945,
+      "referenceCount": 0
+    },
+    {
+      "id": "sl_1780935381759_u8lijx",
+      "category": "modification",
+      "title": "Applied: Simplify provider query functions by extracting shared logic",
+      "content": "Successfully applied improvement to selfConsistency.ts: Simplify provider query functions by extracting shared logic",
+      "context": "category: readability, impact: medium, confidence: 0.95",
+      "confidence": 0.9,
+      "applicableTo": [
+        "selfConsistency.ts"
+      ],
+      "createdAt": 1780935381759,
+      "lastReferencedAt": 1780935381759,
+      "referenceCount": 0
+    },
+    {
+      "id": "sl_1780935416600_ar7y15",
+      "category": "modification",
+      "title": "Applied: Add input validation for file path normalization",
+      "content": "Successfully applied improvement to qualityToRSI.ts: Add input validation for file path normalization",
+      "context": "category: security, impact: medium, confidence: 0.92",
+      "confidence": 0.9,
+      "applicableTo": [
+        "qualityToRSI.ts"
+      ],
+      "createdAt": 1780935416600,
+      "lastReferencedAt": 1780935416600,
+      "referenceCount": 0
     }
   ],
   "baselines": [],
   "errorPatterns": [],
   "metadata": {
-    "totalLearnings": 24,
+    "totalLearnings": 28,
     "totalReferences": 0,
     "lastConsolidation": 1780537317493,
     "version": "5.28"

@@ -127,26 +127,35 @@ const startedAt = Date.now();
 
 // ── Record Functions ───────────────────────────────────────────────────────────
 
+/** Records an HTTP request latency sample. Automatically stamps the current timestamp. */
 export function recordLatency(sample: Omit<LatencySample, "timestamp">): void {
   latencySamples.push({ ...sample, timestamp: Date.now() });
   if (latencySamples.length > MAX_LATENCY_SAMPLES) latencySamples.shift();
 }
 
+/** Records a completed RSI cycle sample including proposals generated/applied and duration. */
 export function recordRsiCycle(sample: Omit<RsiCycleSample, "timestamp">): void {
   rsiCycleSamples.push({ ...sample, timestamp: Date.now() });
   if (rsiCycleSamples.length > MAX_RSI_SAMPLES) rsiCycleSamples.shift();
 }
 
+/** Records an LLM API call sample including model, tokens, latency, and cost. */
 export function recordLlmCall(sample: Omit<LlmCallSample, "timestamp">): void {
   llmCallSamples.push({ ...sample, timestamp: Date.now() });
   if (llmCallSamples.length > MAX_LLM_SAMPLES) llmCallSamples.shift();
 }
 
+/** Records an evaluation score sample for a specific benchmark and model. */
 export function recordEvalScore(sample: Omit<EvalScoreSample, "timestamp">): void {
   evalScoreSamples.push({ ...sample, timestamp: Date.now() });
   if (evalScoreSamples.length > MAX_EVAL_SAMPLES) evalScoreSamples.shift();
 }
 
+/**
+ * Records a runtime error for a specific module.
+ * @param module The module name where the error occurred
+ * @param error The error message string
+ */
 export function recordError(module: string, error: string): void {
   errorSamples.push({ module, error, timestamp: Date.now() });
   if (errorSamples.length > MAX_ERROR_SAMPLES) errorSamples.shift();
@@ -180,6 +189,10 @@ function avg(values: number[]): number {
 
 // ── Summary ────────────────────────────────────────────────────────────────────
 
+/**
+ * Returns a comprehensive telemetry summary including latency percentiles,
+ * RSI cycle stats, LLM call costs, eval score trends, and recent errors.
+ */
 export function getTelemetrySummary(): TelemetrySummary {
   // Request latency by endpoint
   const endpointGroups: Record<string, number[]> = {};
@@ -287,6 +300,7 @@ export function getTelemetrySummary(): TelemetrySummary {
   };
 }
 
+/** Returns the raw telemetry sample arrays (last 50-100 entries each) for debugging. */
 export function getRawSamples() {
   return {
     latency: latencySamples.slice(-100),
@@ -299,6 +313,10 @@ export function getRawSamples() {
 
 // ── Express Middleware ─────────────────────────────────────────────────────────
 
+/**
+ * Returns an Express middleware function that automatically records HTTP request latency.
+ * Normalizes path parameters (e.g. `/api/session/abc123` → `/api/session/:id`).
+ */
 export function telemetryMiddleware() {
   return (req: any, res: any, next: any) => {
     const start = Date.now();
@@ -318,6 +336,7 @@ export function telemetryMiddleware() {
 
 // ── Init ───────────────────────────────────────────────────────────────────────
 
+/** Initializes the telemetry system. Called once at server startup. */
 export function initTelemetry(): void {
   log.info("[telemetry] Performance telemetry initialized");
 }

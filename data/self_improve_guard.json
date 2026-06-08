@@ -3469,6 +3469,78 @@
       "result": "success",
       "details": "Applied proposal: Fix diff generator hunk header logic",
       "timestamp": "2026-06-08T12:45:01.803Z"
+    },
+    {
+      "id": "audit_1780924503069_07nz5r",
+      "action": "test",
+      "proposalId": "prop_1780924420295_f996jw",
+      "filename": "continuousImprover.ts",
+      "result": "failure",
+      "details": "/deepseek.test.ts > DeepSeek provider > DEEPSEEK_API_KEY env var is optional\n ✓ server/deepseek.test.ts > DeepSeek provider > llmProvider module loads and has DeepSeek support\n ✓ server/self/dependenc",
+      "timestamp": "2026-06-08T13:15:03.069Z"
+    },
+    {
+      "id": "audit_1780924503072_jgd1a7",
+      "action": "apply",
+      "proposalId": "prop_1780924420295_f996jw",
+      "filename": "continuousImprover.ts",
+      "result": "success",
+      "details": "Applied proposal: Sanitize GitHub token from Git push error messages",
+      "timestamp": "2026-06-08T13:15:03.072Z"
+    },
+    {
+      "id": "audit_1780924537917_5nfvg4",
+      "action": "test",
+      "proposalId": "prop_1780923216631_01kdh9",
+      "filename": "consensusEngine.ts",
+      "result": "failure",
+      "details": "/deepseek.test.ts > DeepSeek provider > DEEPSEEK_API_KEY env var is optional\n ✓ server/deepseek.test.ts > DeepSeek provider > llmProvider module loads and has DeepSeek support\n ✓ server/self/dependenc",
+      "timestamp": "2026-06-08T13:15:37.917Z"
+    },
+    {
+      "id": "audit_1780924537920_1rsq93",
+      "action": "apply",
+      "proposalId": "prop_1780923216631_01kdh9",
+      "filename": "consensusEngine.ts",
+      "result": "success",
+      "details": "Applied proposal: Fix single-model bypass logic to require consensus for critical changes",
+      "timestamp": "2026-06-08T13:15:37.920Z"
+    },
+    {
+      "id": "audit_1780935381732_2033je",
+      "action": "test",
+      "proposalId": "prop_1780933265815_1u61ox",
+      "filename": "selfConsistency.ts",
+      "result": "failure",
+      "details": "elf/dependency_graph.test.ts > dependency_graph > module loads without errors\n ✓ server/self/dependency_graph.test.ts > dependency_graph > buildDependencyGraph is exported and callable\n ✓ server/deeps",
+      "timestamp": "2026-06-08T16:16:21.732Z"
+    },
+    {
+      "id": "audit_1780935381735_3ft2sj",
+      "action": "apply",
+      "proposalId": "prop_1780933265815_1u61ox",
+      "filename": "selfConsistency.ts",
+      "result": "success",
+      "details": "Applied proposal: Simplify provider query functions by extracting shared logic",
+      "timestamp": "2026-06-08T16:16:21.735Z"
+    },
+    {
+      "id": "audit_1780935416572_wyn0j0",
+      "action": "test",
+      "proposalId": "prop_1780935123034_b47ukr",
+      "filename": "qualityToRSI.ts",
+      "result": "failure",
+      "details": "mark_suite.test.ts > benchmark_suite > module loads without errors\n ✓ server/self/benchmark_suite.test.ts > benchmark_suite > runBenchmarks is exported and callable\n ✓ server/self/index.test.ts > inde",
+      "timestamp": "2026-06-08T16:16:56.572Z"
+    },
+    {
+      "id": "audit_1780935416575_2m3ckp",
+      "action": "apply",
+      "proposalId": "prop_1780935123034_b47ukr",
+      "filename": "qualityToRSI.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation for file path normalization",
+      "timestamp": "2026-06-08T16:16:56.575Z"
     }
   ]
 }

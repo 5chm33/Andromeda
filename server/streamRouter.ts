@@ -1,9 +1,5 @@
-import { editFilesInZip } from "./aiPlanning.js";
 import type { Express } from "express";
-import { getContextWindow } from "./modelRegistry";
-import { existsSync } from "fs";
-import { join, resolve as pathResolve, basename } from "path";
-import { stat as fsStat, readdir, readFile as fsReadFile } from "fs/promises";
+import { join } from "path";
 import { streamAIResponse, streamAIResponseWithContext, streamDeepResearch, streamFileAnalysis, generateSubQueries, setModel, streamChat, streamContinue, generateImageFromPrompt, streamAgentPlan } from "./ai";
 import { browseUrl } from "./browser";
 import { executeCodeWithWorkspace, listWorkspaceFiles, readWorkspaceFile, writeWorkspaceFile, deleteWorkspaceFile, getWorkspaceDir } from "./workspace";
@@ -13,8 +9,6 @@ import { resolveDependencies, readPackageJson, diagnoseError, searchWorkspaceCod
 import { annotateSources, analyzeDiversity, detectCensorshipSignals, buildHonestyPromptAddendum } from "./biasDetector";
 import { runMultiPassEdit, streamMultiPassAnalysis, runMultiPassEditWithAutosubmit, createBudget } from "./fileEngine";
 import { runTeamAgent } from "./multiAgent";
-import { getMemoryStats } from "./memory";
-import { listProposals } from "./selfImprove";
 import { getActiveProvider, setActiveProvider, listProviders } from "./llmProvider";
 import { streamAgentToSSE, ReactEngine } from "./reactEngine";
 
@@ -29,7 +23,6 @@ setInterval(() => {
 import { getToolDefinitions, getAllTools } from "./tools";
 import { addServerConfig, removeServerConfig, getServerConfigs, getConnectionStatus, connectServer, disconnectServer, connectAllEnabled } from "./mcpClient";
 import type { MCPServerConfig } from "./mcpClient";
-import { runOrchestration, getDefaultAgents, getAgentRoles } from "./agentOrchestrator";
 import type { SearchSource } from "../drizzle/schema";
 import rateLimit from "express-rate-limit";
 import { z } from "zod";
@@ -96,18 +89,18 @@ type SSEEvent =
   | { type: "delta"; content: string }
   | { type: "done"; fullAnswer?: string; answer?: string; sources?: SearchSource[] }
   | { type: "error"; message: string }
-  | { type: "sources"; sources: SearchSource[]; biasAnnotations?: any[]; diversityReport?: any; censorshipSignal?: any }
+  | { type: "sources"; sources: SearchSource[]; biasAnnotations?: Record<string, unknown>[]; diversityReport?: Record<string, unknown>; censorshipSignal?: Record<string, unknown> }
   | { type: "progress"; step: string; message: string; queries?: string[]; sources?: SearchSource[] }
   | { type: "grounding"; confidence: number; warnings: string[]; unverifiedCount: number }
   | { type: "truncated" }
-  | { type: "step_start"; stepIndex: number; step: any }
+  | { type: "step_start"; stepIndex: number; step: Record<string, unknown> }
   | { type: "step_result"; stepIndex: number; result: string }
   | { type: "step_error"; stepIndex: number; message: string }
-  | { type: "plan"; steps: any[] }
+  | { type: "plan"; steps: Record<string, unknown>[] }
   | { type: "image"; url: string; prompt: string };
 
 // v5.11: Helper to get real client IP behind proxies (x-forwarded-for support)
-function getClientIp(req: any): string {
+function getClientIp(req: import('express').Request): string {
   const forwarded = req.headers["x-forwarded-for"];
   if (forwarded) {
     const ips = (typeof forwarded === "string" ? forwarded : forwarded[0]).split(",");
@@ -145,7 +138,7 @@ const heavyLimiter = rateLimit({
   keyGenerator: (req) => getClientIp(req),
 });
 
-function setSseHeaders(res: any) {
+function setSseHeaders(res: import('express').Response) {
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
@@ -153,9 +146,11 @@ function setSseHeaders(res: any) {
   res.flushHeaders();
 }
 
-function sseWrite(res: any, data: object) {
+function sseWrite(res: import('express').Response, data: object) {
   res.write(`data: ${JSON.stringify(data)}\n\n`);
-  if (typeof res.flush === "function") res.flush();
+  // flush() is available when compression middleware is active (not in standard Express types)
+  const r = res as import('express').Response & { flush?: () => void };
+  if (typeof r.flush === "function") r.flush();
 }
 
 // v8.4.0: Web search is OPT-IN only.
@@ -173,7 +168,7 @@ function sseWrite(res: any, data: object) {
 //
 // SearXNG (free) is still used for filter=web/news/academic as a fallback.
 // Brave (paid) is NEVER called from the standard search path.
-function shouldRunWebSearch(filter: string, clientSources: any[] | undefined): boolean {
+function shouldRunWebSearch(filter: string, clientSources: SearchSource[] | undefined): boolean {
   // If client already provided sources, no need to search
   if (clientSources && clientSources.length > 0) return false;
   // Only search when user explicitly chose a search-oriented filter
@@ -221,7 +216,7 @@ export function registerStreamRoutes(app: Express) {
         type: "sources",
         sources,
         biasAnnotations: annotated.map(s => ({
-          url: (s as any).url ?? "",
+          url: (s as unknown as { url?: string }).url ?? "",
           biasProfile: s.biasProfile ?? null,
           sensationalismScore: s.sensationalismScore ?? 0,
           dehumanizingWarning: s.dehumanizingWarning ?? null,

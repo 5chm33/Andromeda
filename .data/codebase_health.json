@@ -1,5 +1,5 @@
 {
-  "timestamp": 1780922606218,
+  "timestamp": 1780933076679,
   "totalFiles": 209,
   "averageScore": 88,
   "worstModules": [
@@ -126,7 +126,7 @@
           "suggestion": "Remove unused import 'IDENTITY'"
         }
       ],
-      "lastAnalyzed": 1780922606208
+      "lastAnalyzed": 1780933076669
     },
     {
       "filePath": "server/tools/selfDiagnoseTools.ts",
@@ -181,7 +181,7 @@
           "message": "TODO comment: `    // TODO: Import and test ${fn} from '${relativePath}'`,"
         }
       ],
-      "lastAnalyzed": 1780922606203
+      "lastAnalyzed": 1780933076664
     },
     {
       "filePath": "server/streamRouter.ts",
@@ -281,7 +281,7 @@
           "suggestion": "Remove unused import 'getAgentRoles'"
         }
       ],
-      "lastAnalyzed": 1780922606182
+      "lastAnalyzed": 1780933076642
     },
     {
       "filePath": "server/tools/selfTestRunner.ts",
@@ -336,7 +336,7 @@
           "suggestion": "Remove unused import 'type ToolExecutionContext'"
         }
       ],
-      "lastAnalyzed": 1780922606209
+      "lastAnalyzed": 1780933076670
     },
     {
       "filePath": "server/selfImproveGuard.ts",
@@ -384,7 +384,7 @@
           "suggestion": "Remove unused import 'type ImprovementProposal'"
         }
       ],
-      "lastAnalyzed": 1780922606166
+      "lastAnalyzed": 1780933076516
     },
     {
       "filePath": "server/selfImprove.ts",
@@ -425,7 +425,7 @@
           "suggestion": "Remove unused import 'backgroundSimpleCompletion'"
         }
       ],
-      "lastAnalyzed": 1780922606164
+      "lastAnalyzed": 1780933076514
     },
     {
       "filePath": "server/aiPlanning.ts",
@@ -473,7 +473,7 @@
           "suggestion": "Remove unused import 'getActiveProvider'"
         }
       ],
-      "lastAnalyzed": 1780922606052
+      "lastAnalyzed": 1780933076400
     },
     {
       "filePath": "server/recursiveGoals.ts",
@@ -516,7 +516,7 @@
           "suggestion": "Extract helper functions or decompose logic"
         }
       ],
-      "lastAnalyzed": 1780922606127
+      "lastAnalyzed": 1780933076475
     },
     {
       "filePath": "server/tools/selfAwareness.ts",
@@ -552,7 +552,7 @@
           "suggestion": "Extract helper functions or decompose logic"
         }
       ],
-      "lastAnalyzed": 1780922606201
+      "lastAnalyzed": 1780933076662
     },
     {
       "filePath": "server/routes/systemRoutes.ts",
@@ -592,7 +592,7 @@
           "suggestion": "Remove unused import 'getToolsByCategory'"
         }
       ],
-      "lastAnalyzed": 1780922606144
+      "lastAnalyzed": 1780933076493
     }
   ],
   "totalIssues": 309,
