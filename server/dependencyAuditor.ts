@@ -10,7 +10,7 @@
  * Generates fix proposals that can be auto-applied or queued for review.
  */
 
-import { execSync } from "child_process";
+import { execSync, spawnSync } from "child_process";
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from "fs";
 import * as path from "path";
 
@@ -77,14 +77,20 @@ function runNpmAudit(): { vulnerabilities: Vulnerability[]; counts: Record<strin
   const counts = { critical: 0, high: 0, moderate: 0, low: 0 };
 
   try {
-    // Run pnpm audit in JSON format (project uses pnpm, not npm)
-    const result = execSync("pnpm audit --json", {
+    // v9.6.0: pnpm audit exits non-zero when vulnerabilities are found (by design),
+    // which causes execSync to throw even though the JSON output is valid.
+    // Use spawnSync instead so we always get stdout regardless of exit code.
+    // v9.7.1: Use top-level import instead of require() for ESM compatibility.
+    const auditResult = spawnSync("pnpm", ["audit", "--json"], {
       cwd: PROJECT_ROOT,
       encoding: "utf8",
       timeout: 60_000,
-      stdio: ["pipe", "pipe", "pipe"],
+      shell: process.platform === "win32",
     });
-    const audit = JSON.parse(result || "{}");
+    // stdout may contain valid JSON even when exit code is non-zero
+    const rawOutput = auditResult.stdout || "{}";
+    let audit: any = {};
+    try { audit = JSON.parse(rawOutput); } catch { /* malformed JSON — treat as no vulns */ }
 
     if (audit.vulnerabilities) {
       for (const [name, data] of Object.entries(audit.vulnerabilities) as [string, any][]) {
@@ -101,6 +107,10 @@ function runNpmAudit(): { vulnerabilities: Vulnerability[]; counts: Record<strin
         });
       }
     }
+    // Only warn on actual spawn errors (pnpm not found, etc.), not on non-zero exit from audit findings
+    if (auditResult.error) {
+      console.warn("[DependencyAuditor] pnpm audit unavailable:", auditResult.error.message);
+    }
   } catch (err) {
     console.warn("[DependencyAuditor] pnpm audit failed:", String(err).slice(0, 200));
   }
@@ -112,14 +122,18 @@ function checkOutdatedPackages(): OutdatedPackage[] {
   const outdated: OutdatedPackage[] = [];
 
   try {
-    const result = execSync("pnpm outdated --format json", {
+    // v9.6.0: pnpm outdated also exits non-zero when outdated packages exist.
+    // Use spawnSync to capture stdout regardless of exit code.
+    // v9.7.1: Use top-level import instead of require() for ESM compatibility.
+    const outdatedResult = spawnSync("pnpm", ["outdated", "--format", "json"], {
       cwd: PROJECT_ROOT,
       encoding: "utf8",
       timeout: 60_000,
-      stdio: ["pipe", "pipe", "pipe"],
+      shell: process.platform === "win32",
     });
-
-    const data = JSON.parse(result || "{}");
+    const rawOutput = outdatedResult.stdout || "{}";
+    let data: any = {};
+    try { data = JSON.parse(rawOutput); } catch { /* malformed JSON — treat as no outdated */ }
     for (const [name, info] of Object.entries(data) as [string, any][]) {
       outdated.push({
         name,
@@ -128,6 +142,9 @@ function checkOutdatedPackages(): OutdatedPackage[] {
         latest: info.latest || "unknown",
         type: info.type === "devDependencies" ? "devDependencies" : "dependencies",
       });
+    }
+    if (outdatedResult.error) {
+      console.warn("[DependencyAuditor] pnpm outdated unavailable:", outdatedResult.error.message);
     }
   } catch (err) {
     console.warn("[DependencyAuditor] pnpm outdated failed:", String(err).slice(0, 200));

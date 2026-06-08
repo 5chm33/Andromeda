@@ -1,5 +1,5 @@
 /**
- * evalDrivenTargeting.ts — v9.7.0
+ * evalDrivenTargeting.ts — v9.7.1
  *
  * Connects benchmark degradation reports and adaptive eval gap analysis to the
  * RSI proposal generator. When a benchmark degrades by >15% or an eval category
@@ -16,18 +16,22 @@ const log = createLogger("evalDrivenTargeting");
 
 // ─── Category → Source File Mapping ─────────────────────────────────────────
 
+// NOTE: Only reference files that actually exist in server/. This map is
+// updated whenever the RSI engine removes or renames modules.
 const CATEGORY_FILE_MAP: Record<string, string[]> = {
-  tool_latency:       ["tools/webSearch.ts", "tools/selfDiagnoseTools.ts", "reactEngine.ts"],
-  memory:             ["memory.ts", "contextCompression.ts", "episodicMemory.ts"],
+  tool_latency:       ["capabilityDiscovery.ts", "benchmarkRunner.ts"],
+  memory:             ["knowledgeBaseConsolidation.ts", "learnedConstraints.ts"],
   code_execution:     ["selfImprove.ts", "selfImproveGuard.ts", "autoRebuild.ts"],
-  llm_latency:        ["llm.ts", "manifest.ts", "multiModelRouter.ts"],
-  startup:            ["_core/index.ts", "_core/initModules.ts", "_core/initDaemons.ts"],
-  reasoning:          ["reactEngine.ts", "aiPlanning.ts", "taskPlanner.ts"],
+  llm_latency:        ["manifest.ts", "adaptiveEval.ts"],
+  startup:            ["_core/initModules.ts", "_core/initDaemons.ts"],
+  reasoning:          ["selfImprove.ts", "continuousImprover.ts"],
   coding:             ["selfImprove.ts", "selfImproveGuard.ts", "codebaseAnalyzer.ts"],
-  conversation:       ["manifest.ts", "contextBus.ts", "contextCompression.ts"],
-  "tool-use":         ["reactEngine.ts", "tools/webSearch.ts", "browser.ts"],
+  conversation:       ["manifest.ts", "proposalFeedback.ts"],
+  "tool-use":         ["capabilityDiscovery.ts", "capabilityBootstrapper.ts"],
   "self-improvement": ["selfImprove.ts", "continuousImprover.ts", "benchmarkRunner.ts"],
-  "memory-recall":    ["memory.ts", "episodicMemory.ts"],
+  "memory-recall":    ["knowledgeBaseConsolidation.ts", "learnedConstraints.ts"],
+  "self_knowledge":   ["selfImprove.ts", "selfRollback.ts", "selfImproveGuard.ts"],
+  "multi_step":       ["multiFileProposalPlanner.ts", "continuousImprover.ts"],
 };
 
 // ─── State ───────────────────────────────────────────────────────────────────

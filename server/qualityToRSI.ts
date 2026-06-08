@@ -1,5 +1,5 @@
 /**
- * qualityToRSI.ts — v9.7.0
+ * qualityToRSI.ts — v9.7.1
  *
  * Bridges the code quality monitor and doc generator to the RSI proposal queue.
  */
@@ -33,12 +33,16 @@ export async function feedQualityToRSI(): Promise<number> {
 
     const { analyzeAndPropose } = await import("./selfImprove.js");
     for (const qp of sorted) {
+      // Normalize Windows backslash paths and strip leading "server\" or "server/" prefix
+      const normalizedPath = qp.filePath
+        .replace(/\\/g, "/")
+        .replace(/^server\//, "");
       try {
-        await analyzeAndPropose(qp.filePath);
+        await analyzeAndPropose(normalizedPath);
         submitted++;
-        log.info(`Quality-driven proposal: ${qp.type} in ${qp.filePath} (${qp.severity})`);
+        log.info(`Quality-driven proposal: ${qp.type} in ${normalizedPath} (${qp.severity})`);
       } catch (err: any) {
-        log.warn(`Failed quality proposal for ${qp.filePath}:`, err.message);
+        log.warn(`Failed quality proposal for ${normalizedPath}:`, err.message);
       }
     }
   } catch (err: any) {
@@ -70,12 +74,16 @@ export async function feedDocGapsToRSI(): Promise<number> {
 
     const { analyzeAndPropose } = await import("./selfImprove.js");
     for (const filePath of topFiles) {
+      // Normalize Windows backslash paths and strip leading "server\" or "server/" prefix
+      const normalizedPath = filePath
+        .replace(/\\/g, "/")
+        .replace(/^server\//, "");
       try {
-        await analyzeAndPropose(filePath);
+        await analyzeAndPropose(normalizedPath);
         submitted++;
-        log.info(`Doc-gap proposal for: ${filePath} (${fileCounts.get(filePath)} missing JSDoc)`);
+        log.info(`Doc-gap proposal for: ${normalizedPath} (${fileCounts.get(filePath)} missing JSDoc)`);
       } catch (err: any) {
-        log.warn(`Failed doc proposal for ${filePath}:`, err.message);
+        log.warn(`Failed doc proposal for ${normalizedPath}:`, err.message);
       }
     }
   } catch (err: any) {

@@ -737,7 +737,19 @@ export function getLatestGapAnalysis(): GapAnalysis {
 // ── Init ───────────────────────────────────────────────────────────────────────
 
 export function initAdaptiveEval(): void {
-  loadBenchmarks();
-  loadHistory();
-  log.info(`[adaptiveEval] Initialized: ${adaptiveBenchmarks.length} benchmarks, ${evalHistory.length} history runs`);
+  // v9.7.1: Seed benchmarks synchronously before loading.
+  // Use dynamic import() (ESM-safe) instead of require() which fails in ESM bundles.
+  // We call loadBenchmarks/loadHistory after the async seed resolves.
+  import("./evalSeed.js")
+    .then((mod: any) => {
+      if (typeof mod.seedAdaptiveBenchmarks === "function") {
+        mod.seedAdaptiveBenchmarks();
+      }
+    })
+    .catch(() => { /* non-fatal — seed file may not exist in older builds */ })
+    .finally(() => {
+      loadBenchmarks();
+      loadHistory();
+      log.info(`[adaptiveEval] Initialized: ${adaptiveBenchmarks.length} benchmarks, ${evalHistory.length} history runs`);
+    });
 }
