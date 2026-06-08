@@ -37,10 +37,12 @@ export async function runBootIntegrityCheck(): Promise<void> {
           GIT_COMMITTER_EMAIL: "andromeda@local",
         };
         if (existsSync(join(cwd, ".git"))) {
-          const log = execSync("git log --oneline -20", { cwd, env: gitEnv, encoding: "utf-8" }) as string;
+          const log = execSync("git log --no-color --oneline -20", { cwd, env: gitEnv, encoding: "utf-8" }) as string;
           const snapshotLine = (log as string).split("\n").find((l: string) => l.includes("pre-improvement snapshot"));
           if (snapshotLine) {
-            const hash = snapshotLine.split(" ")[0];
+            // Strip any residual ANSI escape codes from the hash before using it
+            const rawHash = snapshotLine.split(" ")[0];
+            const hash = rawHash.replace(/\x1b\[[0-9;]*m/g, "").trim();
             execSync(`git checkout ${hash} -- .`, { cwd, env: gitEnv, encoding: "utf-8" });
             console.log(`[BootIntegrity] Rolled back to: ${snapshotLine}`);
           } else {
