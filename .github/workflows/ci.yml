@@ -27,7 +27,7 @@ jobs:
       run: pnpm install --no-frozen-lockfile
 
     - name: Install coverage provider
-      run: pnpm add -D @vitest/coverage-v8 --save-dev
+      run: pnpm add -D @vitest/coverage-v8 -w
 
     - name: Build
       run: pnpm run build
