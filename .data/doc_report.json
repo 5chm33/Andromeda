@@ -1,7 +1,7 @@
 {
-  "timestamp": 1780884406769,
-  "totalModules": 201,
-  "documentedModules": 113,
+  "timestamp": 1780894033645,
+  "totalModules": 209,
+  "documentedModules": 119,
   "undocumentedExports": [
     {
       "filePath": "server/_core/imageGeneration.ts",
@@ -952,6 +952,18 @@
       "line": 0
     },
     {
+      "filePath": "server/evalDrivenTargeting.ts",
+      "exportName": "runEvalDrivenTargeting",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/evalDrivenTargeting.ts",
+      "exportName": "getTargetedFiles",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/evalFramework.ts",
       "exportName": "scoreResponse",
       "exportType": "function",
@@ -1230,6 +1242,24 @@
     {
       "filePath": "server/goalManager.ts",
       "exportName": "getReprioritizationStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/knowledgeBaseConsolidation.ts",
+      "exportName": "runKBConsolidation",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/knowledgeBaseConsolidation.ts",
+      "exportName": "isKBConsolidationDue",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/knowledgeBaseConsolidation.ts",
+      "exportName": "getKBConsolidationSummary",
       "exportType": "function",
       "line": 0
     },
@@ -1554,6 +1584,24 @@
     {
       "filePath": "server/prGenerator.ts",
       "exportName": "initPRGenerator",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/qualityToRSI.ts",
+      "exportName": "feedQualityToRSI",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/qualityToRSI.ts",
+      "exportName": "feedDocGapsToRSI",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/qualityToRSI.ts",
+      "exportName": "runQualityToRSI",
       "exportType": "function",
       "line": 0
     },
@@ -2702,7 +2750,7 @@
     {
       "filePath": "ARCHITECTURE.md",
       "type": "architecture",
-      "content": "Updated: 201 modules, 449 undocumented exports"
+      "content": "Updated: 209 modules, 457 undocumented exports"
     }
   ],
   "architectureUpdated": true

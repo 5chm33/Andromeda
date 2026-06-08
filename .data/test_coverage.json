@@ -1,8 +1,8 @@
 {
-  "timestamp": 1780884561770,
-  "totalModules": 201,
-  "testedModules": 140,
-  "untestedModules": 61,
+  "timestamp": 1780894008927,
+  "totalModules": 209,
+  "testedModules": 176,
+  "untestedModules": 33,
   "coveragePercent": 34,
   "moduleDetails": [
     {
@@ -272,7 +272,8 @@
     {
       "filePath": "server/adaptiveEval.ts",
       "fileName": "adaptiveEval.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/adaptiveEval.test.ts",
       "exportedFunctions": [
         "analyzeGaps",
         "generateBenchmarks",
@@ -301,7 +302,8 @@
     {
       "filePath": "server/adminAuth.ts",
       "fileName": "adminAuth.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/adminAuth.test.ts",
       "exportedFunctions": [
         "requireAdminAuth",
         "getAdminKeyForTest"
@@ -316,7 +318,8 @@
     {
       "filePath": "server/agentStateMachine.ts",
       "fileName": "agentStateMachine.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/agentStateMachine.test.ts",
       "exportedFunctions": [
         "AgentStateMachine"
       ],
@@ -329,7 +332,8 @@
     {
       "filePath": "server/agentSystemPrompt.ts",
       "fileName": "agentSystemPrompt.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/agentSystemPrompt.test.ts",
       "exportedFunctions": [
         "DEFAULT_SYSTEM_PROMPT"
       ],
@@ -340,18 +344,25 @@
       "coveragePercent": 0
     },
     {
-      "filePath": "server/agentTypes.ts",
-      "fileName": "agentTypes.ts",
+      "filePath": "server/aiChangelog.ts",
+      "fileName": "aiChangelog.ts",
       "hasTestFile": false,
-      "exportedFunctions": [],
+      "exportedFunctions": [
+        "appendChangelogEntry",
+        "getRecentChanges"
+      ],
       "testedFunctions": [],
-      "untestedFunctions": [],
+      "untestedFunctions": [
+        "appendChangelogEntry",
+        "getRecentChanges"
+      ],
       "coveragePercent": 0
     },
     {
       "filePath": "server/aiPlanning.ts",
       "fileName": "aiPlanning.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/aiPlanning.test.ts",
       "exportedFunctions": [
         "generateSubQueries",
         "generateSuggestions",
@@ -386,18 +397,10 @@
       "coveragePercent": 0
     },
     {
-      "filePath": "server/aiPrompts.ts",
-      "fileName": "aiPrompts.ts",
-      "hasTestFile": false,
-      "exportedFunctions": [],
-      "testedFunctions": [],
-      "untestedFunctions": [],
-      "coveragePercent": 0
-    },
-    {
       "filePath": "server/aiStreaming.ts",
       "fileName": "aiStreaming.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/aiStreaming.test.ts",
       "exportedFunctions": [
         "streamToResponse",
         "streamAIResponse",
@@ -424,7 +427,8 @@
     {
       "filePath": "server/aiTokens.ts",
       "fileName": "aiTokens.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/aiTokens.test.ts",
       "exportedFunctions": [
         "getAndromedaMemory",
         "getApiUrl",
@@ -483,7 +487,8 @@
     {
       "filePath": "server/auditLog.ts",
       "fileName": "auditLog.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/auditLog.test.ts",
       "exportedFunctions": [
         "audit",
         "auditAuthFailure",
@@ -510,7 +515,8 @@
     {
       "filePath": "server/autoRebuild.ts",
       "fileName": "autoRebuild.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/autoRebuild.test.ts",
       "exportedFunctions": [
         "getAutoRebuildConfig",
         "setAutoRebuildConfig",
@@ -589,9 +595,31 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/capabilityBootstrapper.ts",
+      "fileName": "capabilityBootstrapper.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "registerCapabilityGap",
+        "bootstrapCapability",
+        "processPendingGaps",
+        "getBootstrapSummary",
+        "startCapabilityBootstrapper"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "registerCapabilityGap",
+        "bootstrapCapability",
+        "processPendingGaps",
+        "getBootstrapSummary",
+        "startCapabilityBootstrapper"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/ciPipeline.ts",
       "fileName": "ciPipeline.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/ciPipeline.test.ts",
       "exportedFunctions": [
         "runCiPipeline",
         "getCiStatus",
@@ -662,7 +690,8 @@
     {
       "filePath": "server/dbPostgres.ts",
       "fileName": "dbPostgres.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/dbPostgres.test.ts",
       "exportedFunctions": [
         "getPgDb",
         "isPgAvailable",
@@ -683,7 +712,8 @@
     {
       "filePath": "server/episodicConsolidation.ts",
       "fileName": "episodicConsolidation.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/episodicConsolidation.test.ts",
       "exportedFunctions": [
         "consolidateEpisodicMemory",
         "getConsolidatedLessons",
@@ -696,13 +726,30 @@
         "getConsolidatedLessons",
         "getEpisodicConsolidationStats",
         "initEpisodicConsolidation"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/evalDrivenTargeting.ts",
+      "fileName": "evalDrivenTargeting.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/evalDrivenTargeting.test.ts",
+      "exportedFunctions": [
+        "runEvalDrivenTargeting",
+        "getTargetedFiles"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "runEvalDrivenTargeting",
+        "getTargetedFiles"
       ],
       "coveragePercent": 0
     },
     {
       "filePath": "server/evalGoalDiscovery.ts",
       "fileName": "evalGoalDiscovery.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/evalGoalDiscovery.test.ts",
       "exportedFunctions": [
         "discoverGoalsFromEval",
         "getDiscoveryHistory",
@@ -717,9 +764,23 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/evalSeed.ts",
+      "fileName": "evalSeed.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "seedAdaptiveBenchmarks"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "seedAdaptiveBenchmarks"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/federatedLearning.ts",
       "fileName": "federatedLearning.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/federatedLearning.test.ts",
       "exportedFunctions": [
         "registerNode",
         "getNode",
@@ -762,7 +823,8 @@
     {
       "filePath": "server/fileEngineAnalysis.ts",
       "fileName": "fileEngineAnalysis.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/fileEngineAnalysis.test.ts",
       "exportedFunctions": [
         "selectRelevantFiles",
         "loadAndCompressFiles",
@@ -783,7 +845,8 @@
     {
       "filePath": "server/fileEngineChunking.ts",
       "fileName": "fileEngineChunking.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/fileEngineChunking.test.ts",
       "exportedFunctions": [
         "extractFunctionBoundaries",
         "smartChunkFile",
@@ -802,7 +865,8 @@
     {
       "filePath": "server/fileEngineTypes.ts",
       "fileName": "fileEngineTypes.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/fileEngineTypes.test.ts",
       "exportedFunctions": [
         "getModelContextMaxOutput",
         "getFileEngineProviderHeaders",
@@ -835,7 +899,8 @@
     {
       "filePath": "server/fileEngineUtils.ts",
       "fileName": "fileEngineUtils.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/fileEngineUtils.test.ts",
       "exportedFunctions": [
         "createBudget",
         "checkBudget",
@@ -862,7 +927,8 @@
     {
       "filePath": "server/goalDecomposer.ts",
       "fileName": "goalDecomposer.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/goalDecomposer.test.ts",
       "exportedFunctions": [
         "decomposeDiscoveries",
         "decomposeSingleDiscovery"
@@ -877,7 +943,8 @@
     {
       "filePath": "server/importGraph.ts",
       "fileName": "importGraph.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/importGraph.test.ts",
       "exportedFunctions": [
         "buildImportGraph",
         "getImporters",
@@ -902,9 +969,29 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/knowledgeBaseConsolidation.ts",
+      "fileName": "knowledgeBaseConsolidation.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "runKBConsolidation",
+        "isKBConsolidationDue",
+        "getKBConsolidationSummary",
+        "startKBConsolidationDaemon"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "runKBConsolidation",
+        "isKBConsolidationDue",
+        "getKBConsolidationSummary",
+        "startKBConsolidationDaemon"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/knowledgeTransfer.ts",
       "fileName": "knowledgeTransfer.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/knowledgeTransfer.test.ts",
       "exportedFunctions": [
         "learnFromAppliedProposal",
         "exportKnowledgePackage",
@@ -927,7 +1014,8 @@
     {
       "filePath": "server/learnedConstraints.ts",
       "fileName": "learnedConstraints.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/learnedConstraints.test.ts",
       "exportedFunctions": [
         "recordRejection",
         "addLearnedConstraint",
@@ -962,9 +1050,27 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/multiFileProposalPlanner.ts",
+      "fileName": "multiFileProposalPlanner.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "planMultiFileImprovement",
+        "submitMultiFileProposal",
+        "findRelatedFiles"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "planMultiFileImprovement",
+        "submitMultiFileProposal",
+        "findRelatedFiles"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/prGenerator.ts",
       "fileName": "prGenerator.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/prGenerator.test.ts",
       "exportedFunctions": [
         "createPRForBranch",
         "syncOpenPRStatus",
@@ -981,9 +1087,47 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/proposalFeedback.ts",
+      "fileName": "proposalFeedback.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "recordRejectionFeedback",
+        "getRejectionContext",
+        "getFileRejectionStats",
+        "clearFileFeedback"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "recordRejectionFeedback",
+        "getRejectionContext",
+        "getFileRejectionStats",
+        "clearFileFeedback"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/qualityToRSI.ts",
+      "fileName": "qualityToRSI.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/qualityToRSI.test.ts",
+      "exportedFunctions": [
+        "feedQualityToRSI",
+        "feedDocGapsToRSI",
+        "runQualityToRSI"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "feedQualityToRSI",
+        "feedDocGapsToRSI",
+        "runQualityToRSI"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/rbac.ts",
       "fileName": "rbac.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/rbac.test.ts",
       "exportedFunctions": [
         "roleAtLeast",
         "attachRbacContext",
@@ -1016,7 +1160,8 @@
     {
       "filePath": "server/redisLock.ts",
       "fileName": "redisLock.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/redisLock.test.ts",
       "exportedFunctions": [
         "withLock",
         "withRsiCycleLock",
@@ -1045,7 +1190,8 @@
     {
       "filePath": "server/rlhfCollector.ts",
       "fileName": "rlhfCollector.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/rlhfCollector.test.ts",
       "exportedFunctions": [
         "recordFeedback",
         "recordImplicitFeedback",
@@ -1233,7 +1379,8 @@
     {
       "filePath": "server/rsiDb.ts",
       "fileName": "rsiDb.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/rsiDb.test.ts",
       "exportedFunctions": [
         "dbSaveProposal",
         "dbLoadProposals",
@@ -1260,7 +1407,8 @@
     {
       "filePath": "server/rsiScheduler.ts",
       "fileName": "rsiScheduler.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/rsiScheduler.test.ts",
       "exportedFunctions": [
         "initRsiScheduler",
         "getRsiSchedulerStatus",
@@ -1299,7 +1447,8 @@
     {
       "filePath": "server/telemetry.ts",
       "fileName": "telemetry.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/telemetry.test.ts",
       "exportedFunctions": [
         "recordLatency",
         "recordRsiCycle",
@@ -1328,7 +1477,8 @@
     {
       "filePath": "server/tenantManager.ts",
       "fileName": "tenantManager.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/tenantManager.test.ts",
       "exportedFunctions": [
         "getTenant",
         "getOrDefaultTenant",
@@ -1363,7 +1513,8 @@
     {
       "filePath": "server/toolSynthesis.ts",
       "fileName": "toolSynthesis.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/toolSynthesis.test.ts",
       "exportedFunctions": [
         "generateToolSource",
         "validateToolSource",
@@ -1388,7 +1539,8 @@
     {
       "filePath": "server/watchdog.ts",
       "fileName": "watchdog.ts",
-      "hasTestFile": false,
+      "hasTestFile": true,
+      "testFilePath": "server/watchdog.test.ts",
       "exportedFunctions": [
         "getWatchdogStatus",
         "triggerHealthCheck",
@@ -1436,6 +1588,39 @@
         "shouldAutoDecompose"
       ],
       "coveragePercent": 9
+    },
+    {
+      "filePath": "server/selfImprove.ts",
+      "fileName": "selfImprove.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/selfImprove.test.ts",
+      "exportedFunctions": [
+        "analyzeAndPropose",
+        "applyProposal",
+        "rejectProposal",
+        "listProposals",
+        "getAnalyzableFiles",
+        "getAutoApplyConfig",
+        "setAutoApplyConfig",
+        "autoApplyHighConfidence",
+        "getAutoApplyStatus",
+        "refineProposal"
+      ],
+      "testedFunctions": [
+        "analyzeAndPropose"
+      ],
+      "untestedFunctions": [
+        "applyProposal",
+        "rejectProposal",
+        "listProposals",
+        "getAnalyzableFiles",
+        "getAutoApplyConfig",
+        "setAutoApplyConfig",
+        "autoApplyHighConfidence",
+        "getAutoApplyStatus",
+        "refineProposal"
+      ],
+      "coveragePercent": 10
     },
     {
       "filePath": "server/goalManager.ts",
@@ -1521,37 +1706,6 @@
         "loadGoalsFromDb",
         "syncGoalToDb",
         "syncGoalDeletion"
-      ],
-      "coveragePercent": 11
-    },
-    {
-      "filePath": "server/selfImprove.ts",
-      "fileName": "selfImprove.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/selfImprove.test.ts",
-      "exportedFunctions": [
-        "analyzeAndPropose",
-        "applyProposal",
-        "rejectProposal",
-        "listProposals",
-        "getAnalyzableFiles",
-        "getAutoApplyConfig",
-        "setAutoApplyConfig",
-        "autoApplyHighConfidence",
-        "getAutoApplyStatus"
-      ],
-      "testedFunctions": [
-        "analyzeAndPropose"
-      ],
-      "untestedFunctions": [
-        "applyProposal",
-        "rejectProposal",
-        "listProposals",
-        "getAnalyzableFiles",
-        "getAutoApplyConfig",
-        "setAutoApplyConfig",
-        "autoApplyHighConfidence",
-        "getAutoApplyStatus"
       ],
       "coveragePercent": 11
     },
@@ -3178,6 +3332,16 @@
       "coveragePercent": 43
     },
     {
+      "filePath": "server/agentTypes.ts",
+      "fileName": "agentTypes.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/agentTypes.test.ts",
+      "exportedFunctions": [],
+      "testedFunctions": [],
+      "untestedFunctions": [],
+      "coveragePercent": 50
+    },
+    {
       "filePath": "server/ai.ts",
       "fileName": "ai.ts",
       "hasTestFile": true,
@@ -3206,6 +3370,16 @@
         "writeAndromedaMemory",
         "readAndromedaMemory"
       ],
+      "coveragePercent": 50
+    },
+    {
+      "filePath": "server/aiPrompts.ts",
+      "fileName": "aiPrompts.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/aiPrompts.test.ts",
+      "exportedFunctions": [],
+      "testedFunctions": [],
+      "untestedFunctions": [],
       "coveragePercent": 50
     },
     {
