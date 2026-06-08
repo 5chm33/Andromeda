@@ -270,24 +270,9 @@ export class ContextManager {
    * Fallback summary when LLM is unavailable — extracts key info mechanically.
    */
   private fallbackSummary(messages: ChatMessage[]): string {
-    const toolCalls: string[] = [];
-    const files: Set<string> = new Set();
-    let lastContent = "";
-
-    for (const msg of messages) {
-      if (msg.role === "assistant" && msg.tool_calls) {
-        for (const tc of msg.tool_calls) {
-          toolCalls.push(tc.function.name);
-          // Extract file paths from arguments
-          const argStr = tc.function.arguments;
-          const pathMatch = argStr.match(/"path"\s*:\s*"([^"]+)"/);
-          if (pathMatch) files.add(pathMatch[1]);
-        }
-      }
-      if (typeof msg.content === "string" && msg.content.length > 10) {
-        lastContent = msg.content.slice(0, 200);
-      }
-    }
+    const toolCalls = this.extractToolCalls(messages);
+    const files = this.extractFilePaths(messages);
+    const lastContent = this.extractLastContent(messages);
 
     const parts: string[] = [];
     if (toolCalls.length > 0) {
@@ -301,6 +286,41 @@ export class ContextManager {
     }
 
     return parts.join("\n") || "Previous steps involved agent reasoning and tool execution.";
+  }
+
+  private extractToolCalls(messages: ChatMessage[]): string[] {
+    const toolCalls: string[] = [];
+    for (const msg of messages) {
+      if (msg.role === "assistant" && msg.tool_calls) {
+        for (const tc of msg.tool_calls) {
+          toolCalls.push(tc.function.name);
+        }
+      }
+    }
+    return toolCalls;
+  }
+
+  private extractFilePaths(messages: ChatMessage[]): Set<string> {
+    const files: Set<string> = new Set();
+    for (const msg of messages) {
+      if (msg.role === "assistant" && msg.tool_calls) {
+        for (const tc of msg.tool_calls) {
+          const argStr = tc.function.arguments;
+          const pathMatch = argStr.match(/"path"\s*:\s*"([^"]+)"/);
+          if (pathMatch) files.add(pathMatch[1]);
+        }
+      }
+    }
+    return files;
+  }
+
+  private extractLastContent(messages: ChatMessage[]): string {
+    for (const msg of messages) {
+      if (typeof msg.content === "string" && msg.content.length > 10) {
+        return msg.content.slice(0, 200);
+      }
+    }
+    return "";
   }
 
   /**
