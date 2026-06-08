@@ -53,7 +53,16 @@
       "firstSeenAt": 1780900194481,
       "lastSeenAt": 1780900194481,
       "active": false
+    },
+    {
+      "id": "lc_1780900425889_vxe8g",
+      "pattern": "// Calculate diversity score\n  const uniqueSlants = Object.keys(slantDistribut",
+      "reason": "Proposal is already processing",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780900425889,
+      "lastSeenAt": 1780900425889,
+      "active": false
     }
   ],
-  "lastUpdatedAt": 1780900194481
+  "lastUpdatedAt": 1780900425890
 }

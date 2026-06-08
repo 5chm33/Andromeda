@@ -5257,6 +5257,22 @@
       "confidence": 0.9,
       "createdAt": 1780900194479,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780900425887_fviti5",
+      "category": "antipattern",
+      "title": "Failure: Extract magic numbers into named constants",
+      "description": "Failed to apply \"Extract magic numbers into named constants\" to biasDetector.ts. Reason: Proposal is already processing. Avoid similar changes.",
+      "context": "self-modify biasDetector.ts readability",
+      "outcome": "failure: Proposal is already processing",
+      "lesson": "Avoid for biasDetector.ts: Extract magic numbers into named constants — causes Proposal is already processing",
+      "applicableTo": [
+        "biasDetector.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780900425887,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5399,5 +5415,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T06:29:54.479Z"
+  "_lastUpdated": "2026-06-08T06:33:45.887Z"
 }

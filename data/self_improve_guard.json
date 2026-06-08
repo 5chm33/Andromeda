@@ -2857,6 +2857,15 @@
       "result": "failure",
       "details": "Proposal already processing",
       "timestamp": "2026-06-08T06:29:54.461Z"
+    },
+    {
+      "id": "audit_1780900425869_9rmi5h",
+      "action": "apply",
+      "proposalId": "prop_1780852276113_nusih2",
+      "filename": "biasDetector.ts",
+      "result": "failure",
+      "details": "Proposal already processing",
+      "timestamp": "2026-06-08T06:33:45.869Z"
     }
   ]
 }
