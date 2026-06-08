@@ -361,7 +361,7 @@ export function generateManifest(): SystemManifest {
   });
 
   return {
-    version: "6.15.0",
+    version: "6.13.0",
     identity: "Andromeda",
     generatedAt: new Date().toISOString(),
     sections: allSections,
