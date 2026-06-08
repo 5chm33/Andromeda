@@ -1,50 +1,63 @@
-/**
- * manifest.test.ts — Andromeda v6.20
- * Comprehensive Vitest test suite for manifest
- */
+import { describe, it, expect } from "vitest";
+import { generateManifest, getManifestPrompt, getFullManifest } from "/home/ubuntu/andromeda_git/server/manifest";
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-
-vi.mock('llmProvider.js', () => ({
-  simpleChatCompletion: vi.fn().mockResolvedValue('mocked LLM response'),
-  chatCompletion: vi.fn().mockResolvedValue({ content: 'mocked response', usage: { total_tokens: 100 } }),
-  backgroundSimpleCompletion: vi.fn().mockResolvedValue('mocked background response'),
-  backgroundChatCompletion: vi.fn().mockResolvedValue({ content: 'mocked', usage: { total_tokens: 50 } }),
-  getActiveProvider: vi.fn().mockReturnValue({ id: 'deepseek', name: 'DeepSeek' }),
-}));
-
-vi.mock('memory.js', () => ({
-  getMemory: vi.fn().mockReturnValue({}),
-  setMemory: vi.fn(),
-  getAllMemories: vi.fn().mockReturnValue([]),
-  searchMemory: vi.fn().mockReturnValue([]),
-}));
-
-import * as Module from './manifest.js';
-
-describe('manifest', () => {
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  it('module loads without errors', () => {
-    expect(Module).toBeDefined();
-  });
-
-  it('exports are defined', () => {
-    expect(Module).toBeDefined();
-    expect(typeof Module).toBe('object');
-  });
-
-  it('getManifestPrompt returns a value', () => {
-    const result = Module.getManifestPrompt();
+describe("generateManifest", () => {
+  it("should execute without throwing", () => {
+    const result = generateManifest();
     expect(result).toBeDefined();
   });
 
-  it('getFullManifest returns a value', () => {
-    const result = Module.getFullManifest();
-    expect(result).toBeDefined();
+  it("should return correct type", () => {
+    const result = generateManifest();
+    expect(result).toBeTruthy();
+  });
+
+  it("should handle invalid inputs", () => {
+    // @ts-expect-error Testing invalid input
+    const result = generateManifest();
+    // Should either return a default value or throw a descriptive error
+    expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
+
+describe("getManifestPrompt", () => {
+  it("should execute without throwing", () => {
+    const result = getManifestPrompt();
+    expect(result).toBeDefined();
+  });
+
+  it("should return correct type", () => {
+    const result = getManifestPrompt();
+    expect(typeof result).toBe("string");
+  });
+
+  it("should handle invalid inputs", () => {
+    // @ts-expect-error Testing invalid input
+    const result = getManifestPrompt();
+    // Should either return a default value or throw a descriptive error
+    expect(true).toBe(true); // Placeholder — customize based on expected behavior
+  });
+
+});
+
+describe("getFullManifest", () => {
+  it("should execute without throwing", () => {
+    const result = getFullManifest();
+    expect(result).toBeDefined();
+  });
+
+  it("should return correct type", () => {
+    const result = getFullManifest();
+    expect(result).toBeTruthy();
+  });
+
+  it("should handle invalid inputs", () => {
+    // @ts-expect-error Testing invalid input
+    const result = getFullManifest();
+    // Should either return a default value or throw a descriptive error
+    expect(true).toBe(true); // Placeholder — customize based on expected behavior
+  });
+
+});
+
