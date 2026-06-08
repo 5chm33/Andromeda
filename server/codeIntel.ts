@@ -364,54 +364,35 @@ export function searchWorkspaceCode(
  * Generates a unified diff between two code strings.
  * Used by the AI to show precise, reviewable changes instead of full rewrites.
  */
+import { diffLines } from "diff";
+
 export function generateUnifiedDiff(
   originalCode: string,
   modifiedCode: string,
   fileName: string = "file"
 ): string {
-  const originalLines = originalCode.split("\n");
-  const modifiedLines = modifiedCode.split("\n");
-
+  const changes = diffLines(originalCode, modifiedCode);
   const diff: string[] = [
     `--- a/${fileName}`,
     `+++ b/${fileName}`,
   ];
 
-  // Simple diff using a two-pointer approach (sufficient for code review)
-  let i = 0, j = 0;
-  let hunkLines: string[] = [];
-  let hunkStart = -1;
-
-  const flushHunk = () => {
-    if (hunkLines.length > 0) {
-      diff.push(`@@ -${hunkStart + 1} +${hunkStart + 1} @@`);
-      diff.push(...hunkLines);
-      hunkLines = [];
-      hunkStart = -1;
-    }
-  };
-
-  while (i < originalLines.length || j < modifiedLines.length) {
-    const orig = originalLines[i];
-    const mod = modifiedLines[j];
-
-    if (orig === mod) {
-      flushHunk();
-      i++;
-      j++;
+  let lineNum = 1;
+  for (const change of changes) {
+    if (change.added) {
+      diff.push(`@@ -${lineNum} +${lineNum} @@`);
+      for (const line of change.value.split("\n")) {
+        if (line) diff.push(`+${line}`);
+      }
+    } else if (change.removed) {
+      diff.push(`@@ -${lineNum} +${lineNum} @@`);
+      for (const line of change.value.split("\n")) {
+        if (line) diff.push(`-${line}`);
+      }
     } else {
-      if (hunkStart === -1) hunkStart = i;
-      if (orig !== undefined) {
-        hunkLines.push(`-${orig}`);
-        i++;
-      }
-      if (mod !== undefined) {
-        hunkLines.push(`+${mod}`);
-        j++;
-      }
+      lineNum += change.count;
     }
   }
 
-  flushHunk();
   return diff.join("\n");
 }
