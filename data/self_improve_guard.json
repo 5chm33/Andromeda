@@ -2380,6 +2380,15 @@
       "result": "failure",
       "details": "Syntax check failed: data/tmp_syntax/grounding.ts(22,35): error TS2307: Cannot find module '../drizzle/schema' or its corresponding type declarations.\n",
       "timestamp": "2026-06-08T02:09:31.367Z"
+    },
+    {
+      "id": "audit_1780884573822_nw0tme",
+      "action": "apply",
+      "proposalId": "prop_1780842994142_w9p8wn",
+      "filename": "manifest.ts",
+      "result": "failure",
+      "details": "Syntax check failed: data/tmp_syntax/manifest.ts(14,29): error TS2307: Cannot find module './tools' or its corresponding type declarations.\ndata/tmp_syntax/manifest.ts(15,50): error TS2307: Cannot find module './llmProvid",
+      "timestamp": "2026-06-08T02:09:33.822Z"
     }
   ]
 }
