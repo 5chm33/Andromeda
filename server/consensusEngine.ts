@@ -146,10 +146,9 @@ export async function getConsensus(request: ConsensusRequest): Promise<Consensus
   if (!request) return { approved: false, votes: [], majorityReached: false, totalModels: 0, approvalCount: 0, consensusConfidence: 0 };
   totalConsensusRequests++;
 
-  // v9.8.5: In single-model mode, auto-approve. Querying the same model that generated
-  // the proposal for a second opinion is circular and wastes tokens — the model will
-  // always be biased toward its own output. Consensus only adds value with 2+ independent models.
-  if (config.models.length <= 1) {
+  // v9.8.5: In single-model mode, only bypass for non-critical requests.
+  // For critical changes, query the single model to get an actual vote.
+  if (config.models.length <= 1 && request.riskLevel !== 'critical') {
     console.log(`[Consensus] Bypass: Single-model mode — auto-approving "${request.description.slice(0, 60)}"`);
     totalApproved++;
     return {
