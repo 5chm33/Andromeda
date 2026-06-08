@@ -621,8 +621,6 @@ const SEED_MEMORIES: Array<{ content: string; type: MemoryType; tags: string[] }
   },
   {
     content: "Truncation fix (v5.68+): streaming max_tokens raised from 4096 to 32768. Syntax-aware truncation detection added in v5.68 — checks unclosed code fences, unbalanced braces, truncated JSON. Continuation prompt now includes last 200 chars of cut-off content for precise resumption.",
-
-
     type: "error",
     tags: ["truncation", "streaming", "max_tokens", "fix"],
   },
