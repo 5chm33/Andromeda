@@ -1,5 +1,5 @@
 {
-  "timestamp": 1780899880005,
+  "timestamp": 1780900104568,
   "totalModules": 209,
   "testedModules": 176,
   "untestedModules": 33,
@@ -1537,6 +1537,41 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/selfImprove.ts",
+      "fileName": "selfImprove.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/selfImprove.test.ts",
+      "exportedFunctions": [
+        "resetStuckProcessingProposals",
+        "analyzeAndPropose",
+        "applyProposal",
+        "rejectProposal",
+        "listProposals",
+        "getAnalyzableFiles",
+        "getAutoApplyConfig",
+        "setAutoApplyConfig",
+        "autoApplyHighConfidence",
+        "getAutoApplyStatus",
+        "refineProposal"
+      ],
+      "testedFunctions": [
+        "analyzeAndPropose"
+      ],
+      "untestedFunctions": [
+        "resetStuckProcessingProposals",
+        "applyProposal",
+        "rejectProposal",
+        "listProposals",
+        "getAnalyzableFiles",
+        "getAutoApplyConfig",
+        "setAutoApplyConfig",
+        "autoApplyHighConfidence",
+        "getAutoApplyStatus",
+        "refineProposal"
+      ],
+      "coveragePercent": 9
+    },
+    {
       "filePath": "server/taskDecomposer.ts",
       "fileName": "taskDecomposer.ts",
       "hasTestFile": true,
@@ -1570,39 +1605,6 @@
         "shouldAutoDecompose"
       ],
       "coveragePercent": 9
-    },
-    {
-      "filePath": "server/selfImprove.ts",
-      "fileName": "selfImprove.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/selfImprove.test.ts",
-      "exportedFunctions": [
-        "analyzeAndPropose",
-        "applyProposal",
-        "rejectProposal",
-        "listProposals",
-        "getAnalyzableFiles",
-        "getAutoApplyConfig",
-        "setAutoApplyConfig",
-        "autoApplyHighConfidence",
-        "getAutoApplyStatus",
-        "refineProposal"
-      ],
-      "testedFunctions": [
-        "analyzeAndPropose"
-      ],
-      "untestedFunctions": [
-        "applyProposal",
-        "rejectProposal",
-        "listProposals",
-        "getAnalyzableFiles",
-        "getAutoApplyConfig",
-        "setAutoApplyConfig",
-        "autoApplyHighConfidence",
-        "getAutoApplyStatus",
-        "refineProposal"
-      ],
-      "coveragePercent": 10
     },
     {
       "filePath": "server/goalManager.ts",

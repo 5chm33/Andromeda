@@ -141,6 +141,13 @@ async function runImprovementCycle(): Promise<CycleResult> {
     }
 
     // 4. Apply top proposals (up to limit) — with truncation check
+    // v9.8.5: Reset any stale 'processing' proposals before applying
+    // (proposals stuck in 'processing' from a previous crashed cycle will be reset to 'pending')
+    try {
+      const { resetStuckProcessingProposals } = await import("./selfImprove");
+      resetStuckProcessingProposals();
+    } catch { /* non-fatal */ }
+
     // v9.8.1: Sort by confidence before slicing, so we try the best ones first
     const sortedProposals = [...proposals].sort((a: any, b: any) => (b.confidence || 0) - (a.confidence || 0));
     const toApply = sortedProposals.slice(0, config.maxAppliesPerCycle);

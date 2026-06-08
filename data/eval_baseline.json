@@ -532,10 +532,10 @@
   ],
   "durationMs": 121758,
   "version": "9.0.0",
-  "memory_keyword_search": 145184.11,
-  "tool_registry_lookup": 5,
-  "file_write_10kb": 5,
-  "file_read_10kb": 5,
-  "context_token_estimation_50msg": 5,
-  "json_parse_large_object": 5
+  "memory_keyword_search": 1202.89,
+  "tool_registry_lookup": 0.01,
+  "file_write_10kb": 0.09,
+  "file_read_10kb": 0.05,
+  "context_token_estimation_50msg": 0.11,
+  "json_parse_large_object": 0.1
 }

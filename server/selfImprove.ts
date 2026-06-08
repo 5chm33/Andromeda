@@ -164,7 +164,7 @@ function loadProposals(): ProposalStore {
 // v9.8.5: Reset stuck 'processing' proposals — called at the start of every apply cycle.
 // A proposal gets stuck in 'processing' if the server was killed mid-apply or the apply failed
 // without cleaning up the status. This runs at the start of each cycle, not just once at startup.
-function resetStuckProcessingProposals(): void {
+export function resetStuckProcessingProposals(): void {
   const p = getProposalStorePath();
   if (!fs.existsSync(p)) return;
   try {

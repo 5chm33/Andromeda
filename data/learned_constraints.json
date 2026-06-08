@@ -26,7 +26,16 @@
       "firstSeenAt": 1780899973335,
       "lastSeenAt": 1780899973335,
       "active": false
+    },
+    {
+      "id": "lc_1780899973504_vh4o6",
+      "pattern": "// No API key needed; llmProvider handles authentication internally.",
+      "reason": "Proposal is already processing",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780899973504,
+      "lastSeenAt": 1780899973504,
+      "active": false
     }
   ],
-  "lastUpdatedAt": 1780899973335
+  "lastUpdatedAt": 1780899973504
 }

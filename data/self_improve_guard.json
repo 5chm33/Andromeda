@@ -2830,6 +2830,15 @@
       "result": "failure",
       "details": "Proposal already processing",
       "timestamp": "2026-06-08T06:26:13.313Z"
+    },
+    {
+      "id": "audit_1780899973483_qw5ace",
+      "action": "apply",
+      "proposalId": "prop_1780855712980_vykfn7",
+      "filename": "multiAgent.ts",
+      "result": "failure",
+      "details": "Proposal already processing",
+      "timestamp": "2026-06-08T06:26:13.483Z"
     }
   ]
 }
