@@ -39,8 +39,8 @@ function getConstitution(): Record<string, unknown> | null {
 }
 import {
   listProposals,
-  applyProposal,
   rejectProposal,
+  resolveServerFile,
   type ImprovementProposal,
 } from "./selfImprove";
 
@@ -595,11 +595,26 @@ export async function guardedApply(proposalId: string): Promise<{
   // Create backup
   const backup = createBackup(proposal.targetFile, proposalId, "pre-apply") ?? undefined;
 
-  // Apply the proposal
-  const result = await applyProposal(proposalId);
-  if (!result.success) {
-    addAudit("apply", "failure", result.message, proposalId, proposal.targetFile);
-    return { success: false, message: result.message, syntaxCheck: syntaxResult, backup };
+  // v9.8.5 MUTUAL-RECURSION FIX: Write the file directly instead of calling applyProposal().
+  // Previously guardedApply() called applyProposal() which called guardedApply() again —
+  // causing every proposal to be rejected with "Proposal is already processing".
+  // Now guardedApply() writes the file itself; applyProposal() handles status + git commit.
+  if (!proposal.proposedContent) {
+    addAudit("apply", "failure", "No proposedContent to write", proposalId, proposal.targetFile);
+    return { success: false, message: "Proposal has no proposedContent to write", syntaxCheck: syntaxResult, backup };
+  }
+  const targetFilePath = resolveServerFile(proposal.targetFile);
+  if (!targetFilePath) {
+    addAudit("apply", "failure", `Target file not found on disk: ${proposal.targetFile}`, proposalId, proposal.targetFile);
+    return { success: false, message: `Target file not found on disk: ${proposal.targetFile}`, syntaxCheck: syntaxResult, backup };
+  }
+  try {
+    fs.writeFileSync(targetFilePath, proposal.proposedContent, "utf-8");
+    console.log(`[Guard] Wrote ${proposal.proposedContent.length} bytes to ${proposal.targetFile}`);
+  } catch (writeErr) {
+    const msg = `Failed to write ${proposal.targetFile}: ${(writeErr as Error).message}`;
+    addAudit("apply", "failure", msg, proposalId, proposal.targetFile);
+    return { success: false, message: msg, syntaxCheck: syntaxResult, backup };
   }
 
   // Run tests after applying

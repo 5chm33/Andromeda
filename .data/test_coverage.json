@@ -1,5 +1,5 @@
 {
-  "timestamp": 1780902223159,
+  "timestamp": 1780902676620,
   "totalModules": 209,
   "testedModules": 176,
   "untestedModules": 33,
@@ -1543,6 +1543,7 @@
       "testFilePath": "server/selfImprove.test.ts",
       "exportedFunctions": [
         "resetStuckProcessingProposals",
+        "resolveServerFile",
         "analyzeAndPropose",
         "applyProposal",
         "rejectProposal",
@@ -1559,6 +1560,7 @@
       ],
       "untestedFunctions": [
         "resetStuckProcessingProposals",
+        "resolveServerFile",
         "applyProposal",
         "rejectProposal",
         "listProposals",
@@ -1569,7 +1571,7 @@
         "getAutoApplyStatus",
         "refineProposal"
       ],
-      "coveragePercent": 9
+      "coveragePercent": 8
     },
     {
       "filePath": "server/taskDecomposer.ts",

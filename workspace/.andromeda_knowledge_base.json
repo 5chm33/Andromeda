@@ -5401,6 +5401,22 @@
       "confidence": 0.9,
       "createdAt": 1780902314368,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780902315600_m3f9y0",
+      "category": "antipattern",
+      "title": "Failure: Remove unused DEEPSEEK_API_KEY check",
+      "description": "Failed to apply \"Remove unused DEEPSEEK_API_KEY check\" to multiAgent.ts. Reason: Proposal is already processing. Avoid similar changes.",
+      "context": "self-modify multiAgent.ts feature",
+      "outcome": "failure: Proposal is already processing",
+      "lesson": "Avoid for multiAgent.ts: Remove unused DEEPSEEK_API_KEY check — causes Proposal is already processing",
+      "applicableTo": [
+        "multiAgent.ts",
+        "feature"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780902315600,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5543,5 +5559,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T07:05:14.368Z"
+  "_lastUpdated": "2026-06-08T07:05:15.600Z"
 }

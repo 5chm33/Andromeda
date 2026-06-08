@@ -112,10 +112,10 @@
       "id": "lc_1780901834669_ti186",
       "pattern": "// API key is now managed by the LLM provider; no need to check here.\n  const",
       "reason": "Syntax check failed — proposal refined but still has errors (queued for retry)",
-      "rejectionCount": 1,
+      "rejectionCount": 2,
       "firstSeenAt": 1780901834669,
-      "lastSeenAt": 1780901834669,
-      "active": false
+      "lastSeenAt": 1780902315603,
+      "active": true
     },
     {
       "id": "lc_1780902314371_fca4d",
@@ -127,5 +127,5 @@
       "active": false
     }
   ],
-  "lastUpdatedAt": 1780902314371
+  "lastUpdatedAt": 1780902315603
 }

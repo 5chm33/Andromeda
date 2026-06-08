@@ -237,7 +237,7 @@ const ANALYZABLE_FILES = [
   "manifest.ts",
 ];
 
-function resolveServerFile(filename: string): string | null {
+export function resolveServerFile(filename: string): string | null {
   const basename = path.basename(filename);
   if (!ANALYZABLE_FILES.includes(basename)) return null;
 
@@ -1035,6 +1035,21 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
           applicableTo: [proposal.targetFile],
         });
       } catch (err) { log.caught("non-fatal", err); }
+
+      // v9.8.5: Git commit the applied change so it shows up in git log
+      try {
+        const autoConfig = getAutoApplyConfig();
+        if (autoConfig.commitToGit) {
+          const gitResult = gitCommitSelfImprovement(filePath, proposal.title || proposalId, autoConfig.branchStrategy);
+          if (gitResult.success) {
+            console.log(`[SelfImprove] Git committed: ${proposal.title || proposalId}`);
+          } else {
+            console.warn(`[SelfImprove] Git commit failed (non-fatal): ${gitResult.message}`);
+          }
+        }
+      } catch (gitErr) {
+        console.warn("[SelfImprove] Git commit unavailable (non-fatal):", (gitErr as Error).message);
+      }
 
       _applySucceeded = true;
       return {

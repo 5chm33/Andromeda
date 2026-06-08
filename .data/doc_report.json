@@ -1,5 +1,5 @@
 {
-  "timestamp": 1780902253227,
+  "timestamp": 1780902706627,
   "totalModules": 209,
   "documentedModules": 119,
   "undocumentedExports": [
@@ -1979,6 +1979,12 @@
     },
     {
       "filePath": "server/selfImprove.ts",
+      "exportName": "resolveServerFile",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfImprove.ts",
       "exportName": "applyProposal",
       "exportType": "function",
       "line": 0
@@ -2756,7 +2762,7 @@
     {
       "filePath": "ARCHITECTURE.md",
       "type": "architecture",
-      "content": "Updated: 209 modules, 458 undocumented exports"
+      "content": "Updated: 209 modules, 459 undocumented exports"
     }
   ],
   "architectureUpdated": true
