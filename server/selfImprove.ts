@@ -1112,6 +1112,19 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         }
       }
 
+      // v9.8.5: DEFINITIVE save — load fresh store and force status to 'applied'
+      // This is the final save before returning success, ensuring no stale data can overwrite it
+      try {
+        const defStore = loadProposals();
+        const defProp = defStore.proposals.find(p => p.id === proposalId);
+        if (defProp) {
+          defProp.status = 'applied' as any;
+          saveProposals(defStore);
+          console.log(`[SelfImprove] Status confirmed 'applied' for ${proposalId}`);
+        }
+      } catch (defErr) {
+        console.warn('[SelfImprove] Definitive save failed (non-fatal):', (defErr as Error).message);
+      }
       _applySucceeded = true;
       return {
         success: true,
