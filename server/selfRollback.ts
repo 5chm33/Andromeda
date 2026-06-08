@@ -357,7 +357,10 @@ export function startDegradationWatch(): void {
     const memoryIncrease = recent.memoryMb / (baseline.memoryMb || 1);
     const lagIncrease = recent.eventLoopLagMs / (baseline.eventLoopLagMs || 1);
 
-    if (memoryIncrease > 2.0 || lagIncrease > 5.0) {
+    // v9.8.5: Raised thresholds — LLM calls and proposal analysis naturally use 2-3x baseline
+    // memory during a cycle. Only trigger on extreme degradation (5x memory or 10x event loop lag).
+    // Also require at least 5 samples before triggering to avoid false positives on startup.
+    if (degradationHistory.length >= 5 && (memoryIncrease > 5.0 || lagIncrease > 10.0)) {
       console.error(`[Rollback] Runtime degradation detected! Memory: ${memoryIncrease.toFixed(1)}x, Lag: ${lagIncrease.toFixed(1)}x`);
       stopDegradationWatch();
 
@@ -366,6 +369,9 @@ export function startDegradationWatch(): void {
         console.error(`[Rollback] Auto-rolling back to last healthy point: ${lastHealthyPointId}`);
         await rollbackToLastHealthy();
       }
+    } else if (memoryIncrease > 2.0 || lagIncrease > 5.0) {
+      // Log warning but don't kill the server
+      console.warn(`[Rollback] Memory elevated (${memoryIncrease.toFixed(1)}x) — monitoring, not rolling back`);
     }
   }, 15_000); // Check every 15 seconds
 }

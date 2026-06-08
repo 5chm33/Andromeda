@@ -2776,6 +2776,15 @@
       "result": "failure",
       "details": "Proposal already processing",
       "timestamp": "2026-06-08T05:49:49.038Z"
+    },
+    {
+      "id": "audit_1780898276147_y0cgwm",
+      "action": "apply",
+      "proposalId": "prop_1780859780097_ubmdix",
+      "filename": "manifest.ts",
+      "result": "failure",
+      "details": "Syntax check failed: ",
+      "timestamp": "2026-06-08T05:57:56.147Z"
     }
   ]
 }

@@ -69,3 +69,4 @@
 {"id":"aud-1780896565881-zqk9iq","timestamp":1780896565881,"category":"system","action":"server_started","actor":"system","success":true,"severity":"info","details":{"pid":16761,"nodeVersion":"v22.13.0"}}
 {"id":"aud-1780897513367-onu3nz","timestamp":1780897513367,"category":"system","action":"server_started","actor":"system","success":true,"severity":"info","details":{"pid":17955,"nodeVersion":"v22.13.0"}}
 {"id":"aud-1780897966921-diuues","timestamp":1780897966921,"category":"system","action":"server_started","actor":"system","success":true,"severity":"info","details":{"pid":18476,"nodeVersion":"v22.13.0"}}
+{"id":"aud-1780898276183-70d4re","timestamp":1780898276183,"category":"api","action":"access_granted","actor":"anonymous","resource":"/api/self/proposals","requestId":"c0cce6e4","ip":"::1","userAgent":"curl/8.5.0","method":"GET","path":"/api/self/proposals","tenantId":"default","success":true,"statusCode":200,"severity":"info"}
