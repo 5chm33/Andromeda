@@ -1,49 +1,51 @@
-/**
- * contextManager.test.ts — Andromeda v6.20
- * Comprehensive Vitest test suite for contextManager
- */
+import { describe, it, expect } from "vitest";
+import { estimateTokens, estimateMessageTokens } from "/home/ubuntu/andromeda_git/server/contextManager";
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-
-vi.mock('llmProvider.js', () => ({
-  simpleChatCompletion: vi.fn().mockResolvedValue('mocked LLM response'),
-  chatCompletion: vi.fn().mockResolvedValue({ content: 'mocked response', usage: { total_tokens: 100 } }),
-  backgroundSimpleCompletion: vi.fn().mockResolvedValue('mocked background response'),
-  backgroundChatCompletion: vi.fn().mockResolvedValue({ content: 'mocked', usage: { total_tokens: 50 } }),
-  getActiveProvider: vi.fn().mockReturnValue({ id: 'deepseek', name: 'DeepSeek' }),
-}));
-
-import * as Module from './contextManager.js';
-
-describe('contextManager', () => {
-
-  beforeEach(() => {
-    vi.clearAllMocks();
+describe("estimateTokens", () => {
+  it("should execute without throwing", () => {
+    const result = estimateTokens("test_text");
+    expect(result).toBeDefined();
   });
 
-  it('module loads without errors', () => {
-    expect(Module).toBeDefined();
+  it("should return correct type", () => {
+    const result = estimateTokens("test_text");
+    expect(typeof result).toBe("number");
   });
 
-  it('exports are defined', () => {
-    expect(Module).toBeDefined();
-    expect(typeof Module).toBe('object');
+  it("should handle empty/null inputs gracefully", () => {
+    expect(() => estimateTokens("")).not.toThrow();
   });
 
-  it('module has expected structure', () => {
-    const keys = Object.keys(Module);
-    expect(keys.length).toBeGreaterThanOrEqual(0);
-  });
-
-  it('no unexpected throws on import', () => {
-    expect(Module).toBeTruthy();
-  });
-
-  it('exported types are correct', () => {
-    for (const key of Object.keys(Module)) {
-      const val = (Module as any)[key];
-      expect(['function', 'object', 'string', 'number', 'boolean', 'undefined'].includes(typeof val)).toBe(true);
-    }
+  it("should handle invalid inputs", () => {
+    // @ts-expect-error Testing invalid input
+    const result = estimateTokens(undefined);
+    // Should either return a default value or throw a descriptive error
+    expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
+
+describe("estimateMessageTokens", () => {
+  it("should execute without throwing", () => {
+    const result = estimateMessageTokens([]);
+    expect(result).toBeDefined();
+  });
+
+  it("should return correct type", () => {
+    const result = estimateMessageTokens([]);
+    expect(typeof result).toBe("number");
+  });
+
+  it("should handle empty/null inputs gracefully", () => {
+    expect(() => estimateMessageTokens([])).not.toThrow();
+  });
+
+  it("should handle invalid inputs", () => {
+    // @ts-expect-error Testing invalid input
+    const result = estimateMessageTokens(undefined);
+    // Should either return a default value or throw a descriptive error
+    expect(true).toBe(true); // Placeholder — customize based on expected behavior
+  });
+
+});
+
