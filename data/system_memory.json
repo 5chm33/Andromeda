@@ -151,12 +151,26 @@
       "createdAt": 1780902823181,
       "lastReferencedAt": 1780902823181,
       "referenceCount": 0
+    },
+    {
+      "id": "sl_1780903207919_h4aeqw",
+      "category": "modification",
+      "title": "Applied: Simplify diff generator logic for readability",
+      "content": "Successfully applied improvement to codeIntel.ts: Simplify diff generator logic for readability",
+      "context": "category: readability, impact: medium, confidence: 0.90",
+      "confidence": 0.9,
+      "applicableTo": [
+        "codeIntel.ts"
+      ],
+      "createdAt": 1780903207919,
+      "lastReferencedAt": 1780903207919,
+      "referenceCount": 0
     }
   ],
   "baselines": [],
   "errorPatterns": [],
   "metadata": {
-    "totalLearnings": 11,
+    "totalLearnings": 12,
     "totalReferences": 0,
     "lastConsolidation": 1780537317493,
     "version": "5.28"

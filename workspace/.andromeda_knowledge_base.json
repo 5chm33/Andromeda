@@ -5449,6 +5449,22 @@
       "confidence": 0.8,
       "createdAt": 1780902823176,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780903207913_1gjstd",
+      "category": "success",
+      "title": "Success: Simplify diff generator logic for readability",
+      "description": "Successfully applied \"Simplify diff generator logic for readability\" to codeIntel.ts (readability). Health: improved.",
+      "context": "self-modify codeIntel.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for codeIntel.ts: Simplify diff generator logic for readability",
+      "applicableTo": [
+        "codeIntel.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1780903207913,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5591,5 +5607,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T07:13:43.176Z"
+  "_lastUpdated": "2026-06-08T07:20:07.913Z"
 }
