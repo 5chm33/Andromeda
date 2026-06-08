@@ -38,7 +38,8 @@
     "manifest.ts::extract version constant to eliminate duplication",
     "llmProvider.ts::extract provider config into separate file",
     "memory.ts::fix truncated seed memory entry content",
-    "biasDetector.ts::extract magic numbers into named constants for diversity scoring"
+    "biasDetector.ts::extract magic numbers into named constants for diversity scoring",
+    "browser.ts::extract ssrf validation into a shared helper function"
   ],
   "autoApplyHistory": [
     1780896575988,
