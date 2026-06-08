@@ -5385,6 +5385,22 @@
       "confidence": 0.9,
       "createdAt": 1780901834666,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1780902314368_d13fzn",
+      "category": "antipattern",
+      "title": "Failure: Fix truncated seed memory entry content",
+      "description": "Failed to apply \"Fix truncated seed memory entry content\" to memory.ts. Reason: Proposal is already processing. Avoid similar changes.",
+      "context": "self-modify memory.ts reliability",
+      "outcome": "failure: Proposal is already processing",
+      "lesson": "Avoid for memory.ts: Fix truncated seed memory entry content — causes Proposal is already processing",
+      "applicableTo": [
+        "memory.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1780902314368,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5527,5 +5543,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-08T06:57:14.667Z"
+  "_lastUpdated": "2026-06-08T07:05:14.368Z"
 }

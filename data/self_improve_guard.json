@@ -2938,6 +2938,15 @@
       "result": "failure",
       "details": "Refined proposal prop_1780845080206_7brv8q after syntax error",
       "timestamp": "2026-06-08T06:57:13.857Z"
+    },
+    {
+      "id": "audit_1780902314344_cn2sj6",
+      "action": "apply",
+      "proposalId": "prop_1780902230569_g5qnjn",
+      "filename": "memory.ts",
+      "result": "failure",
+      "details": "Proposal is already processing",
+      "timestamp": "2026-06-08T07:05:14.344Z"
     }
   ]
 }

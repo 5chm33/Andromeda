@@ -116,7 +116,16 @@
       "firstSeenAt": 1780901834669,
       "lastSeenAt": 1780901834669,
       "active": false
+    },
+    {
+      "id": "lc_1780902314371_fca4d",
+      "pattern": "{\n    content: \"Truncation fix (v5.68+): streaming max_tokens raised from 4096",
+      "reason": "Proposal is already processing",
+      "rejectionCount": 1,
+      "firstSeenAt": 1780902314371,
+      "lastSeenAt": 1780902314371,
+      "active": false
     }
   ],
-  "lastUpdatedAt": 1780901834669
+  "lastUpdatedAt": 1780902314371
 }
