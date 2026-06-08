@@ -1,44 +1,44 @@
 {
-  "timestamp": 1780903141622,
-  "runDurationMs": 178,
+  "timestamp": 1780903798654,
+  "runDurationMs": 174,
   "results": [
     {
       "name": "memory_keyword_search",
       "category": "memory",
-      "durationMs": 176.36,
-      "timestamp": 1780903141621
+      "durationMs": 172.54,
+      "timestamp": 1780903798652
     },
     {
       "name": "tool_registry_lookup",
       "category": "tool_latency",
       "durationMs": 0.01,
-      "timestamp": 1780903141621
+      "timestamp": 1780903798652
     },
     {
       "name": "file_write_10kb",
       "category": "code_execution",
       "durationMs": 0.09,
-      "timestamp": 1780903141621
+      "timestamp": 1780903798653
     },
     {
       "name": "file_read_10kb",
       "category": "code_execution",
       "durationMs": 0.03,
-      "timestamp": 1780903141621
+      "timestamp": 1780903798653
     },
     {
       "name": "context_token_estimation_50msg",
       "category": "startup",
-      "durationMs": 0.12,
-      "timestamp": 1780903141621
+      "durationMs": 0.11,
+      "timestamp": 1780903798653
     },
     {
       "name": "json_parse_large_object",
       "category": "code_execution",
-      "durationMs": 0.1,
-      "timestamp": 1780903141622,
+      "durationMs": 0.11,
+      "timestamp": 1780903798654,
       "metadata": {
-        "sizeBytes": 28920
+        "sizeBytes": 28917
       }
     }
   ],
@@ -54,8 +54,8 @@
     {
       "benchmark": "memory_keyword_search",
       "baseline": 145.01,
-      "current": 176.36,
-      "degradationPercent": 22,
+      "current": 172.54,
+      "degradationPercent": 19,
       "severity": "warning"
     },
     {
@@ -75,10 +75,17 @@
     {
       "benchmark": "context_token_estimation_50msg",
       "baseline": 0.01,
-      "current": 0.12,
-      "degradationPercent": 1100,
+      "current": 0.11,
+      "degradationPercent": 1000,
       "severity": "critical"
+    },
+    {
+      "benchmark": "json_parse_large_object",
+      "baseline": 0.09,
+      "current": 0.11,
+      "degradationPercent": 22,
+      "severity": "warning"
     }
   ],
-  "overallScore": 40
+  "overallScore": 30
 }

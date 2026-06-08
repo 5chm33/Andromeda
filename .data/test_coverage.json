@@ -1,9 +1,9 @@
 {
-  "timestamp": 1780903096587,
+  "timestamp": 1780903753593,
   "totalModules": 209,
   "testedModules": 176,
   "untestedModules": 33,
-  "coveragePercent": 34,
+  "coveragePercent": 35,
   "moduleDetails": [
     {
       "filePath": "server/_core/context.ts",
@@ -630,28 +630,6 @@
         "runCiPipeline",
         "getCiStatus",
         "getCiHistory"
-      ],
-      "coveragePercent": 0
-    },
-    {
-      "filePath": "server/codeIntel.ts",
-      "fileName": "codeIntel.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/codeIntel.test.ts",
-      "exportedFunctions": [
-        "readPackageJson",
-        "resolveDependencies",
-        "diagnoseError",
-        "searchWorkspaceCode",
-        "generateUnifiedDiff"
-      ],
-      "testedFunctions": [],
-      "untestedFunctions": [
-        "readPackageJson",
-        "resolveDependencies",
-        "diagnoseError",
-        "searchWorkspaceCode",
-        "generateUnifiedDiff"
       ],
       "coveragePercent": 0
     },
@@ -3033,6 +3011,29 @@
         "generateImprovementGoals",
         "approveGoal",
         "rejectGoal"
+      ],
+      "coveragePercent": 40
+    },
+    {
+      "filePath": "server/codeIntel.ts",
+      "fileName": "codeIntel.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/codeIntel.test.ts",
+      "exportedFunctions": [
+        "readPackageJson",
+        "resolveDependencies",
+        "diagnoseError",
+        "searchWorkspaceCode",
+        "generateUnifiedDiff"
+      ],
+      "testedFunctions": [
+        "readPackageJson",
+        "diagnoseError"
+      ],
+      "untestedFunctions": [
+        "resolveDependencies",
+        "searchWorkspaceCode",
+        "generateUnifiedDiff"
       ],
       "coveragePercent": 40
     },

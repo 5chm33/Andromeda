@@ -1044,8 +1044,12 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         if (tscCmd) {
           execSync(`"${tscCmd}" --noEmit`, { cwd: path.resolve(getServerDir(), ".."), timeout: 60000, stdio: "pipe" });
           console.log(`[SelfImprove] TypeScript check PASSED for ${proposal.targetFile}`);
+          // v9.8.5: Re-save proposals to ensure "applied" status is persisted
+          // (guards against any concurrent writes that may have reverted the status)
+          saveProposals(store);
         } else {
           console.warn("[SelfImprove] tsc binary not found — skipping pre-commit TypeScript check");
+          saveProposals(store); // ensure "applied" is persisted even without tsc
         }
       } catch (tsErr: any) {
         tsCheckPassed = false;
