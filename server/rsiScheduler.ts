@@ -87,6 +87,53 @@ async function runRsiTrigger(): Promise<void> {
       return;
     }
 
+    // ── Ontological confidence gate ──────────────────────────────────────────
+    // Before triggering an autonomous RSI cycle, check that the self-model has
+    // sufficient confidence. If not, defer and log the reason.
+    try {
+      const { getSelfModelSummary, routeTask } = await import("./ontologicalModel.js");
+      const selfModel = getSelfModelSummary();
+      const MIN_CONFIDENCE = 0.45; // 45% minimum overall confidence for auto-RSI
+      if (selfModel.overallConfidence < MIN_CONFIDENCE) {
+        log.info(
+          `[rsiScheduler] Ontological gate: confidence ${(selfModel.overallConfidence * 100).toFixed(1)}% < ${(MIN_CONFIDENCE * 100).toFixed(0)}% — deferring RSI cycle`
+        );
+        appendScheduleLog({
+          triggeredAt: Date.now(),
+          source: "scheduler",
+          intervalHours: DEFAULT_HOURS,
+          cycleStarted: false,
+          note: `Deferred — ontological confidence ${(selfModel.overallConfidence * 100).toFixed(1)}% below ${(MIN_CONFIDENCE * 100).toFixed(0)}% threshold`,
+        });
+        return;
+      }
+      // Verify RSI is the right action for the current state
+      const routing = routeTask(
+        "Perform a recursive self-improvement cycle to enhance agent capabilities",
+        { urgency: "low", complexity: "high" }
+      );
+      if (routing.action !== "write_tool" && routing.action !== "train_lora") {
+        log.info(
+          `[rsiScheduler] Ontological gate: routing suggests '${routing.action}' — deferring (confidence: ${(routing.confidence * 100).toFixed(1)}%)`
+        );
+        appendScheduleLog({
+          triggeredAt: Date.now(),
+          source: "scheduler",
+          intervalHours: DEFAULT_HOURS,
+          cycleStarted: false,
+          note: `Deferred — ontological routing suggests '${routing.action}' (confidence: ${(routing.confidence * 100).toFixed(1)}%)`,
+        });
+        return;
+      }
+      log.info(
+        `[rsiScheduler] Ontological gate passed — confidence: ${(selfModel.overallConfidence * 100).toFixed(1)}%, routing: ${routing.action}`
+      );
+    } catch (ontErr) {
+      // If ontological model is unavailable, proceed anyway (fail-open for RSI)
+      log.warn("[rsiScheduler] Ontological gate unavailable — proceeding anyway:", ontErr);
+    }
+    // ── End ontological gate ─────────────────────────────────────────────────
+
     triggerRSICycleNow();
     appendScheduleLog({
       triggeredAt: Date.now(),

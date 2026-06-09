@@ -4,6 +4,8 @@
  * Live RSI Proposal Tree Visualization using @xyflow/react.
  * Shows the evolutionary branching of proposals with real-time
  * test result coloring (green = passed, red = failed, yellow = pending).
+ *
+ * Transport: SSE /api/rsi/events (primary) → 5s polling fallback
  */
 import {
   ReactFlow,
@@ -169,7 +171,6 @@ function proposalsToFlow(proposals: ProposalNode[]): { nodes: Node[]; edges: Edg
     positionTracker[parentId] = (positionTracker[parentId] ?? -1) + 1;
     const siblingIdx = positionTracker[parentId];
     const totalSiblings = childrenCount[parentId] ?? 1;
-    const xSpread = Math.max(totalSiblings * 220, 220);
     const xBase = siblingIdx * 240 - (totalSiblings - 1) * 120;
 
     nodes.push({
@@ -208,7 +209,9 @@ export function ProposalTreeGraph() {
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [isLive, setIsLive] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [sseConnected, setSseConnected] = useState(false);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const sseRef = useRef<EventSource | null>(null);
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
@@ -240,13 +243,62 @@ export function ProposalTreeGraph() {
     }
   }, []);
 
+  // ── SSE live event stream from /api/rsi/events ────────────────────────────
   useEffect(() => {
+    // Close any existing connections when live mode changes
+    if (sseRef.current) { sseRef.current.close(); sseRef.current = null; }
+    if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
+    setSseConnected(false);
+
+    if (!isLive) return;
+
+    // Initial fetch immediately
     fetchProposals();
-    if (isLive) {
+
+    // Try SSE first for push-based updates
+    let sseWorking = false;
+    try {
+      const sse = new EventSource("/api/rsi/events");
+      sseRef.current = sse;
+
+      sse.onopen = () => {
+        sseWorking = true;
+        setSseConnected(true);
+        // Cancel polling fallback once SSE is confirmed live
+        if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
+      };
+
+      // Refresh the proposal list on any RSI lifecycle event
+      const refresh = () => { fetchProposals(); };
+      sse.addEventListener("proposal:new", refresh);
+      sse.addEventListener("proposal:applied", refresh);
+      sse.addEventListener("proposal:rejected", refresh);
+      sse.addEventListener("proposal:updated", refresh);
+      sse.addEventListener("cycle:start", refresh);
+      sse.addEventListener("cycle:complete", refresh);
+      sse.addEventListener("rsi:phase", refresh);
+
+      sse.onerror = () => {
+        setSseConnected(false);
+        // Fall back to polling if SSE fails or is unsupported
+        if (!pollRef.current) {
+          pollRef.current = setInterval(fetchProposals, 5000);
+        }
+      };
+    } catch {
+      sseWorking = false;
+      setSseConnected(false);
+    }
+
+    // Start polling fallback immediately if SSE couldn't be created
+    if (!sseWorking && !pollRef.current) {
       pollRef.current = setInterval(fetchProposals, 5000);
     }
+
     return () => {
-      if (pollRef.current) clearInterval(pollRef.current);
+      if (sseRef.current) { sseRef.current.close(); sseRef.current = null; }
+      if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
+      setSseConnected(false);
     };
   }, [fetchProposals, isLive]);
 
@@ -269,6 +321,18 @@ export function ProposalTreeGraph() {
       {/* Toolbar */}
       <div className="flex items-center gap-3 px-4 py-2 border-b border-slate-700/50 bg-slate-900/50">
         <span className="text-xs text-slate-400 font-mono">RSI Proposal Tree</span>
+
+        {/* SSE / Polling indicator */}
+        <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded border ${
+          sseConnected
+            ? "border-emerald-700 text-emerald-400 bg-emerald-950/30"
+            : isLive
+            ? "border-yellow-700 text-yellow-400 bg-yellow-950/30"
+            : "border-slate-700 text-slate-500"
+        }`}>
+          {sseConnected ? "⚡ SSE" : isLive ? "⟳ POLL" : "—"}
+        </span>
+
         <div className="flex gap-1.5 ml-auto">
           {Object.entries(statusCounts).map(([status, count]) => (
             <Badge
