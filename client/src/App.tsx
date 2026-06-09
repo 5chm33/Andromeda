@@ -4,17 +4,19 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import Home from "./pages/Home";
-import Search from "./pages/Search";
-import History from "./pages/History";
-import Chat from "./pages/Chat";
-import RsiDashboard from "./pages/RsiDashboard";
+import Home from "@/pages/Home";
+import Workspace from "@/pages/Workspace";
+import Search from "@/pages/Search";
+import History from "@/pages/History";
+import Chat from "@/pages/Chat";
+import RsiDashboard from "@/pages/RsiDashboard";
 import { ProposalNotifier } from "./components/rsi/ProposalNotifier";
 
 function Router() {
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
+      <Route path={"/"} component={Workspace} />
+      <Route path={"/home"} component={Home} />
       <Route path={"/search"} component={Search} />
       <Route path={"/history"} component={History} />
       <Route path={"/chat"} component={Chat} />
