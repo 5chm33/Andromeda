@@ -361,4 +361,29 @@ export async function initModules(): Promise<void> {
   import("../localLora.js").then(() => {
     console.log("[LocalLoRA] Phase 3b: Local LoRA fine-tuning pipeline ready");
   }).catch(err => console.warn("[LocalLoRA] Module load failed (non-fatal):", err));
+
+  // ── v9.16.2: Phase 4a — RLAIF Judge (AI generates its own DPO pairs) ─────────────────
+  import("../rlaifJudge.js").then(() => {
+    console.log("[RLAIF] Phase 4a: RLAIF Judge ready — AI-generated DPO pairs enabled");
+  }).catch(err => console.warn("[RLAIF] Module load failed (non-fatal):", err));
+
+  // ── v9.16.2: Phase 4b — Evolutionary Search over RSI engine ──────────────────────────
+  import("../evolutionarySearch.js").then(() => {
+    console.log("[Evolution] Phase 4b: Evolutionary search engine ready");
+  }).catch(err => console.warn("[Evolution] Module load failed (non-fatal):", err));
+
+  // ── v9.16.2: Phase 5a — Native VLM integration ───────────────────────────────────────
+  import("../nativeVlm.js").then(() => {
+    console.log("[NativeVLM] Phase 5a: Native vision-language model integration ready");
+  }).catch(err => console.warn("[NativeVLM] Module load failed (non-fatal):", err));
+
+  // ── v9.16.2: Phase 5b — Algorithmic Self-Discovery engine ────────────────────────────
+  import("../algorithmicDiscovery.js").then(() => {
+    console.log("[AlgoDiscovery] Phase 5b: Algorithmic self-discovery engine ready");
+  }).catch(err => console.warn("[AlgoDiscovery] Module load failed (non-fatal):", err));
+
+  // ── v9.16.2: Phase 5c — Continuous unsupervised fine-tuning scheduler ────────────────
+  import("../continuousFineTuning.js").then(() => {
+    console.log("[ContinuousFineTuning] Phase 5c: Nightly RLAIF→LoRA pipeline ready");
+  }).catch(err => console.warn("[ContinuousFineTuning] Module load failed (non-fatal):", err));
 }

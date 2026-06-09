@@ -381,29 +381,27 @@ export function getProviderForTier(tier: LLMTier): string {
   const hasKimi = !!process.env.KIMI_API_KEY;
   const hasOpenRouter = !!process.env.OPENROUTER_API_KEY;
 
-  switch (effectiveTier) {
+    switch (effectiveTier) {
     case "eco":
-      // Cheapest available — DeepSeek first, then Gemini Flash via OpenRouter
+      // Cheapest available — DeepSeek first, then Kimi
       if (hasDeepSeek) return "deepseek";
-      if (hasOpenRouter) return "openrouter-fast"; // Gemini Flash
       if (hasKimi) return "kimi";
+      if (hasOpenRouter) return "openrouter-fast"; // Gemini Flash
       return "deepseek"; // fallback (will fail gracefully)
-
     case "standard":
       // Mid-tier — Kimi k2.6 (best free coding model) or DeepSeek Reasoner
       if (hasKimi) return "kimi";
       if (hasDeepSeek) return "deepseek-reasoner";
       if (hasOpenRouter) return "openrouter-fast";
       return "deepseek";
-
     case "pro":
-      // v7.1.7: Premium — prefer direct Anthropic API key (no OpenRouter dependency)
-      if (process.env.ANTHROPIC_API_KEY) return "anthropic-direct"; // Direct Claude — no OpenRouter needed
-      if (hasOpenRouter) return "anthropic";                         // Claude via OpenRouter (fallback)
+      // v9.16.2: Premium — use OpenRouter for complex decisions (Claude Sonnet 3.5)
+      // The user explicitly requested OpenRouter for complex tasks as it was not draining budget.
+      if (hasOpenRouter) return "anthropic";                         // Claude via OpenRouter
+      if (process.env.ANTHROPIC_API_KEY) return "anthropic-direct";  // Direct Claude (fallback)
       if (hasKimi) return "kimi";                                    // Kimi as last resort
-      if (hasDeepSeek) return "deepseek";
+      if (hasDeepSeek) return "deepseek-reasoner";                   // DeepSeek deep-think guard
       return "deepseek";
-
     default:
       return "deepseek";
   }

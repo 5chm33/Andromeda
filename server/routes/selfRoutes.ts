@@ -436,4 +436,78 @@ export function registerSelfRoutes(
       res.status(500).json({ error: (err as Error).message });
     }
   });
+
+  // ── v9.16.2: Phase 4a — RLAIF Judge endpoints ─────────────────────────────────────
+  // POST /api/rlaif/judge — run the RLAIF judge to generate synthetic DPO pairs
+  app.post("/api/rlaif/judge", requireAdminAuth, async (req, res) => {
+    try {
+      const { generateRlaifPairs } = await import("../rlaifJudge.js");
+      const limit = req.body?.limit ?? 10;
+      const pairs = await generateRlaifPairs(limit);
+      res.json({ success: true, pairsGenerated: pairs.length, pairs });
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  // ── v9.16.2: Phase 4b — Evolutionary Search endpoints ──────────────────────────────
+  // POST /api/evolution/run — run a single evolutionary generation on a target file
+  app.post("/api/evolution/run", requireAdminAuth, async (req, res) => {
+    try {
+      const { runEvolutionaryGeneration } = await import("../evolutionarySearch.js");
+      const { targetFile = "selfImprove.ts", generation = 1 } = req.body ?? {};
+      const result = await runEvolutionaryGeneration(targetFile, generation);
+      res.json(result);
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  // ── v9.16.2: Phase 5a — Native VLM endpoints ────────────────────────────────────────
+  // POST /api/vlm/analyze — analyze a screenshot with native VLM
+  app.post("/api/vlm/analyze", requireAdminAuth, async (req, res) => {
+    try {
+      const { analyzeRawScreenshot } = await import("../nativeVlm.js");
+      const { imagePath, query } = req.body ?? {};
+      if (!imagePath || !query) {
+        res.status(400).json({ error: "imagePath and query are required" });
+        return;
+      }
+      const result = await analyzeRawScreenshot(imagePath, query);
+      res.json(result);
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  // ── v9.16.2: Phase 5b — Algorithmic Discovery endpoints ────────────────────────────
+  // POST /api/discovery/run — run algorithmic discovery for a capability
+  app.post("/api/discovery/run", requireAdminAuth, async (req, res) => {
+    try {
+      const { discoverAlgorithm } = await import("../algorithmicDiscovery.js");
+      const { capability = "proposal_ranking" } = req.body ?? {};
+      const result = await discoverAlgorithm(capability);
+      res.json(result);
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  // ── v9.16.2: Phase 5c — Continuous Fine-Tuning endpoints ────────────────────────────
+  // POST /api/fine-tuning/run — run the nightly fine-tuning cycle manually
+  app.post("/api/fine-tuning/run", requireAdminAuth, async (req, res) => {
+    try {
+      const { runNightlyFineTuningCycle } = await import("../continuousFineTuning.js");
+      const { modelId } = req.body ?? {};
+      // Run in background — don't block the HTTP response
+      runNightlyFineTuningCycle(modelId).then(result => {
+        console.log("[FineTuning] Cycle completed:", result);
+      }).catch(err => {
+        console.error("[FineTuning] Cycle failed:", err);
+      });
+      res.json({ success: true, message: "Fine-tuning cycle started in background" });
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
 }
