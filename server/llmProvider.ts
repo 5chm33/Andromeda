@@ -95,8 +95,8 @@ const DEFAULT_PROVIDERS: Record<string, Omit<LLMProviderConfig, "apiKey">> = {
   openai: {
     id: "openai",
     name: "OpenAI",
-    apiUrl: "https://api.openai.com/v1/chat/completions",
-    model: "gpt-4o",
+    apiUrl: (process.env.OPENAI_API_BASE || "https://api.openai.com/v1").replace(/\/$/, "") + "/chat/completions",
+    model: process.env.OPENAI_MODEL || "gpt-4o",
     maxTokens: 4096,
     temperature: 0.7,
     supportsTools: true,
@@ -278,7 +278,20 @@ function ensureProviderInitialized(): LLMProviderConfig {
     }
     const base = DEFAULT_PROVIDERS[modelId] ?? DEFAULT_PROVIDERS.deepseek;
     const apiKey = getProviderApiKey(modelId);
-    activeProvider = { ...base, apiKey };
+    // v9.17: Override openai apiUrl with OPENAI_API_BASE at init time (after dotenv loads)
+    // This allows sandbox/proxy environments to redirect OpenAI calls without code changes.
+    let resolvedApiUrl = base.apiUrl;
+    let resolvedModel = base.model;
+    if (modelId === "openai") {
+      // v9.17: Override URL and model at init time (after dotenv loads)
+      if (process.env.OPENAI_API_BASE) {
+        resolvedApiUrl = process.env.OPENAI_API_BASE.replace(/\/$/, "") + "/chat/completions";
+      }
+      if (process.env.OPENAI_MODEL) {
+        resolvedModel = process.env.OPENAI_MODEL;
+      }
+    }
+    activeProvider = { ...base, apiUrl: resolvedApiUrl, model: resolvedModel, apiKey };
     _providerInitialized = true;
     console.log(`[v6.17] Startup provider: ${modelId} (LLM_MODEL=${process.env.LLM_MODEL ?? "(not set)"}, DEEPSEEK_KEY=${process.env.DEEPSEEK_API_KEY ? "set" : "MISSING"})`)
   }

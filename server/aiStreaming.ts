@@ -239,6 +239,60 @@ async function _streamToResponseCore(
     throw lastError || new Error("Stream failed after retries");
   }
 
+  // v9.18: Non-streaming fallback — some proxies (e.g. Manus sandbox) return
+  // {"error":"Streaming is not supported"} with HTTP 200 + application/json instead of SSE.
+  // Detect this by peeking at the first chunk; if it looks like JSON, parse as batch.
+  const contentType = response.headers.get("content-type") ?? "";
+  if (contentType.includes("application/json")) {
+    clearTimeout(timeoutId);
+    const batchBody = await response.json() as Record<string, unknown>;
+    const streamingNotSupported =
+      batchBody.error && typeof batchBody.error === "string" &&
+      (batchBody.error as string).toLowerCase().includes("streaming");
+    if (streamingNotSupported) {
+      // Retry as non-streaming batch request
+      const batchResp = await fetch(getApiUrl(), {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+          ...getProviderHeaders(),
+        },
+        body: JSON.stringify({
+          model: getActiveModel(),
+          messages,
+          stream: false,
+          max_tokens: Math.min(32768, Math.max(1000, options.maxTokens ?? calculateMaxTokens(messages))),
+          temperature: ["deepseek-reasoner", "kimi-k2.6"].includes(getActiveModel()) ? 1 : (options.temperature ?? 0.5),
+        }),
+      });
+      if (!batchResp.ok) {
+        const errText = await batchResp.text();
+        throw new Error(`LLM batch fallback error ${batchResp.status}: ${errText}`);
+      }
+      const batchData = await batchResp.json() as Record<string, unknown>;
+      const batchChoices = batchData.choices as Array<{ message?: { content?: string }; finish_reason?: string }> | undefined;
+      const batchContent = batchChoices?.[0]?.message?.content ?? "";
+      const batchTruncated = batchChoices?.[0]?.finish_reason === "length";
+      if (batchContent && !res.writableEnded) {
+        res.write(`data: ${JSON.stringify({ type: "delta", content: batchContent })}\n\n`);
+        if (typeof (res as any).flush === "function") (res as any).flush();
+      }
+      // Reset any previous failures since we got a successful response
+      if (llmBreaker.getStats().consecutiveFailures > 0) llmBreaker.reset();
+      return { content: batchContent, truncated: batchTruncated };
+    }
+    // Proxy returned a valid batch response directly (stream: true was ignored)
+    const directChoices = (batchBody.choices as Array<{ message?: { content?: string }; finish_reason?: string }> | undefined);
+    const directContent = directChoices?.[0]?.message?.content ?? "";
+    if (directContent && !res.writableEnded) {
+      res.write(`data: ${JSON.stringify({ type: "delta", content: directContent })}\n\n`);
+      if (typeof (res as any).flush === "function") (res as any).flush();
+    }
+    if (llmBreaker.getStats().consecutiveFailures > 0) llmBreaker.reset();
+    return { content: directContent, truncated: false };
+  }
+
   const reader = response.body?.getReader();
   if (!reader) { clearTimeout(timeoutId); throw new Error("No response body"); }
 
