@@ -30,8 +30,12 @@ describe("selfModifyHelpers", () => {
       const serverDir = getServerDir();
       const projectRoot = getProjectRoot();
       
+      // serverDir must end with /server
       expect(serverDir.endsWith("server")).toBe(true);
-      expect(projectRoot.endsWith("andromeda_fresh")).toBe(true);
+      // projectRoot must be the parent of serverDir (i.e. serverDir === projectRoot/server)
+      expect(serverDir).toBe(path.join(projectRoot, "server"));
+      // projectRoot must actually exist on disk
+      expect(fs.existsSync(projectRoot)).toBe(true);
     });
   });
 
