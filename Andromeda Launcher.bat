@@ -1,10 +1,10 @@
 @echo off
-title Andromeda AI v9.2.0
+title Andromeda AI v9.16.3
 color 0A
 
 echo.
 echo  ============================================================
-echo   Andromeda AI  v9.2.0
+echo   Andromeda AI  v9.16.3
 echo  ============================================================
 echo.
 
@@ -46,16 +46,15 @@ if not exist "node_modules\" (
         echo  [INFO] Installing pnpm...
         call npm install -g pnpm
     )
-    call pnpm install
+    call pnpm install --no-frozen-lockfile
     echo.
     echo  [OK] Dependencies installed successfully.
     echo.
 )
 
 :: ── Step 5: Smart rebuild — only rebuild if source version changed ────────────
-:: v9.2.0: Read the current version from package.json and compare to
-:: dist\.version stamp. Only rebuild when they differ (or dist is missing).
-:: This avoids the 30-60s rebuild penalty on every launch when nothing changed.
+:: v9.16.3 FIX: esbuild outputs to dist\_core\index.js (NOT dist\index.js)
+:: The server entry point is dist\_core\index.js — do not change this.
 where pnpm >nul 2>&1
 if errorlevel 1 (
     call npm install -g pnpm
@@ -64,21 +63,10 @@ if errorlevel 1 (
 :: Extract version from package.json using node
 for /f "delims=" %%v in ('node -e "process.stdout.write(require('./package.json').version)"') do set SOURCE_VERSION=%%v
 
-:: Check if dist exists and version stamp matches
-set NEEDS_BUILD=1
-if exist "dist\index.js" (
-    if exist "dist\.version" (
-        for /f "delims=" %%s in ('type "dist\.version"') do set DIST_VERSION=%%s
-        if "!DIST_VERSION!"=="!SOURCE_VERSION!" (
-            set NEEDS_BUILD=0
-        )
-    )
-)
-
-:: Enable delayed expansion for the variable comparison above
+:: Enable delayed expansion for the variable comparison
 setlocal enabledelayedexpansion
 set NEEDS_BUILD=1
-if exist "dist\index.js" (
+if exist "dist\_core\index.js" (
     if exist "dist\.version" (
         for /f "delims=" %%s in ('type "dist\.version"') do set DIST_VERSION=%%s
         if "!DIST_VERSION!"=="v!SOURCE_VERSION!" (
@@ -130,11 +118,11 @@ start /min "" cmd /c "ping -n 6 127.0.0.1 >nul & start http://localhost:3000"
 :START_SERVER
 echo.
 echo  ============================================================
-echo   Andromeda AI v9.2.0  ^|  http://localhost:3000
+echo   Andromeda AI v9.16.3  ^|  http://localhost:3000
 echo   Press Ctrl+C to stop the server.
 echo  ============================================================
 echo.
-node dist\index.js
+node dist\_core\index.js
 echo.
 echo  [INFO] Server stopped (exit code %errorlevel%). Restarting in 3 seconds...
 echo  [INFO] Press Ctrl+C NOW to exit completely.
