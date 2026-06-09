@@ -210,6 +210,75 @@ export function registerSelfRoutes(
     }
   });
 
+  // ─── Phase 2b: Federated RSI Swarm (Gossip Protocol) ────────────────────
+
+  // POST /api/federated/sync — Receive a sync payload from a peer
+  app.post("/api/federated/sync", async (req, res) => {
+    try {
+      const { processSyncPayload } = await import("../federatedLearning.js");
+      const token = (req.headers["x-federated-token"] as string) ?? "";
+      const result = processSyncPayload(req.body, token);
+      res.json(result);
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  // GET /api/federated/proposals — Fetch recent high-confidence proposals
+  app.get("/api/federated/proposals", async (req, res) => {
+    try {
+      const { prepareSyncPayload } = await import("../federatedLearning.js");
+      const payload = await prepareSyncPayload();
+      res.json({ proposals: payload.proposals });
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  // GET /api/federated/stats — Get swarm status and metrics
+  app.get("/api/federated/stats", async (_req, res) => {
+    try {
+      const { getFederatedStats } = await import("../federatedLearning.js");
+      res.json(getFederatedStats());
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  // ─── Phase 3a: Self-Distillation (RLHF to DPO) ──────────────────────────
+
+  // POST /api/distillation/export-dpo — Export RLHF data as DPO dataset
+  app.post("/api/distillation/export-dpo", requireAdminAuth, async (_req, res) => {
+    try {
+      const { exportDpoDataset } = await import("../selfDistillation.js");
+      const result = exportDpoDataset();
+      res.json(result);
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  // POST /api/distillation/train-lora — Trigger local LoRA fine-tuning
+  app.post("/api/distillation/train-lora", requireAdminAuth, async (req, res) => {
+    try {
+      const { runLocalLoraTraining } = await import("../localLora.js");
+      const { modelId, datasetPath, batchSize, epochs, learningRate } = req.body;
+      if (!modelId) {
+        res.status(400).json({ error: "modelId is required" });
+        return;
+      }
+      
+      // We don't await the training here because it takes hours.
+      // We start it and return immediately.
+      runLocalLoraTraining({ modelId, datasetPath, batchSize, epochs, learningRate })
+        .catch(err => console.error("[LoRA] Training failed:", err));
+        
+      res.json({ success: true, message: "LoRA training started in background" });
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
   // ── v9.14: Parallel RSI endpoints ──────────────────────────────────────────
   app.get("/api/rsi/parallel/status", async (_req, res) => {
     try {
@@ -259,6 +328,53 @@ export function registerSelfRoutes(
       events: getEventHistory(limit),
       connectedClients: getSseClientCount(),
     });
+  });
+
+  // ─── Phase 2a: Dynamic Tool Generation (Tool Synthesis) ───────────────────
+
+  // POST /api/tools/synthesize — Generate a new tool at runtime
+  app.post("/api/tools/synthesize", requireAdminAuth, async (req, res) => {
+    try {
+      const { name, description, parameters, proposalId } = req.body;
+      if (!name || !description || !parameters) {
+        res.status(400).json({ error: "Missing required fields: name, description, parameters" });
+        return;
+      }
+      const { synthesizeTool } = await import("../toolSynthesis.js");
+      const result = await synthesizeTool(name, description, JSON.stringify(parameters), proposalId);
+      if (!result.success) {
+        res.status(500).json({ error: result.error });
+        return;
+      }
+      res.json({ success: true, tool: result.tool });
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  // GET /api/tools/synthesized — List all dynamically generated tools
+  app.get("/api/tools/synthesized", async (req, res) => {
+    try {
+      const { listSynthesizedTools } = await import("../toolSynthesis.js");
+      res.json({ tools: listSynthesizedTools() });
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  // DELETE /api/tools/synthesized/:name — Delete a synthesized tool
+  app.delete("/api/tools/synthesized/:name", requireAdminAuth, async (req, res) => {
+    try {
+      const { deleteSynthesizedTool } = await import("../toolSynthesis.js");
+      const success = deleteSynthesizedTool(req.params.name);
+      if (success) {
+        res.json({ success: true });
+      } else {
+        res.status(404).json({ error: "Tool not found" });
+      }
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
   });
 
   // ── v9.15: Filesystem watcher endpoints ────────────────────────────────────────────────────────────────

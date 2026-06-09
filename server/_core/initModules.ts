@@ -350,4 +350,15 @@ export async function initModules(): Promise<void> {
     });
     console.log(`[FsWatcher] Filesystem event monitoring started on ${projectDir}`);
   }).catch(err => console.warn("[FsWatcher] Init failed (non-fatal):", err));
+
+  // ── v9.16: Phase 3a — Self-distillation (RLHF → DPO dataset export) ────────────────────
+  // The selfDistillation module is stateless (no init needed) but we log its availability.
+  import("../selfDistillation.js").then(() => {
+    console.log("[SelfDistillation] Phase 3a: DPO dataset export pipeline ready");
+  }).catch(err => console.warn("[SelfDistillation] Module load failed (non-fatal):", err));
+
+  // ── v9.16: Phase 3b — Local LoRA fine-tuning pipeline ──────────────────────────────
+  import("../localLora.js").then(() => {
+    console.log("[LocalLoRA] Phase 3b: Local LoRA fine-tuning pipeline ready");
+  }).catch(err => console.warn("[LocalLoRA] Module load failed (non-fatal):", err));
 }
