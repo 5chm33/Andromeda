@@ -1,45 +1,5 @@
 [
   {
-    "id": 1780557875284,
-    "userId": null,
-    "sessionId": null,
-    "query": "test query for vitest",
-    "aiAnswer": "This is a test answer",
-    "sources": null,
-    "filter": "all",
-    "createdAt": "2026-06-04T07:24:36.216Z"
-  },
-  {
-    "id": 1780557875285,
-    "userId": 1,
-    "sessionId": null,
-    "query": "authenticated test query",
-    "aiAnswer": "Authenticated answer",
-    "sources": null,
-    "filter": "web",
-    "createdAt": "2026-06-04T07:24:36.218Z"
-  },
-  {
-    "id": 1780576917318,
-    "userId": null,
-    "sessionId": null,
-    "query": "test query for vitest",
-    "aiAnswer": "This is a test answer",
-    "sources": null,
-    "filter": "all",
-    "createdAt": "2026-06-04T12:41:58.404Z"
-  },
-  {
-    "id": 1780576917319,
-    "userId": 1,
-    "sessionId": null,
-    "query": "authenticated test query",
-    "aiAnswer": "Authenticated answer",
-    "sources": null,
-    "filter": "web",
-    "createdAt": "2026-06-04T12:41:58.410Z"
-  },
-  {
     "id": 1780578926378,
     "userId": null,
     "sessionId": null,
@@ -1998,5 +1958,45 @@
     "sources": null,
     "filter": "web",
     "createdAt": "2026-06-08T18:10:29.378Z"
+  },
+  {
+    "id": 1780993326638,
+    "userId": null,
+    "sessionId": null,
+    "query": "test query for vitest",
+    "aiAnswer": "This is a test answer",
+    "sources": null,
+    "filter": "all",
+    "createdAt": "2026-06-09T08:22:07.416Z"
+  },
+  {
+    "id": 1780993326639,
+    "userId": 1,
+    "sessionId": null,
+    "query": "authenticated test query",
+    "aiAnswer": "Authenticated answer",
+    "sources": null,
+    "filter": "web",
+    "createdAt": "2026-06-09T08:22:07.419Z"
+  },
+  {
+    "id": 1780996247139,
+    "userId": null,
+    "sessionId": null,
+    "query": "test query for vitest",
+    "aiAnswer": "This is a test answer",
+    "sources": null,
+    "filter": "all",
+    "createdAt": "2026-06-09T09:10:47.756Z"
+  },
+  {
+    "id": 1780996247140,
+    "userId": 1,
+    "sessionId": null,
+    "query": "authenticated test query",
+    "aiAnswer": "Authenticated answer",
+    "sources": null,
+    "filter": "web",
+    "createdAt": "2026-06-09T09:10:47.757Z"
   }
 ]
