@@ -328,4 +328,26 @@ export async function initModules(): Promise<void> {
     m.initKnowledgeTransfer();
     console.log("[KnowledgeTransfer] Cross-agent knowledge transfer initialized");
   }).catch(err => console.warn("[KnowledgeTransfer] Init failed (non-fatal):", err));
+
+  // ── v9.15: Visual grounding tools (Playwright annotated screenshots) ─────────
+  import("../tools/visualGroundingTool.js").then(m => {
+    m.registerVisualGroundingTools();
+    console.log("[VisualGrounding] Playwright visual grounding tools registered (visual_screenshot, visual_full_page, visual_click_index, visual_save_screenshot)");
+  }).catch(err => console.warn("[VisualGrounding] Tool registration failed (non-fatal):", err));
+
+  // ── v9.15: Filesystem watcher (chokidar OS-level file events) ────────────────
+  import("../fsWatcher.js").then(m => {
+    m.initFsWatcher();
+    // Auto-watch the project source directory for RSI-aware file change tracking
+    const projectDir = process.cwd();
+    m.startWatch({
+      id: "project-root",
+      directory: projectDir,
+      patterns: ["**/*.ts", "**/*.tsx", "**/*.js"],
+      ignorePatterns: [],
+      recursive: true,
+      notifyRsi: true,
+    });
+    console.log(`[FsWatcher] Filesystem event monitoring started on ${projectDir}`);
+  }).catch(err => console.warn("[FsWatcher] Init failed (non-fatal):", err));
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.andromeda.agent</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/bin/node</string>
+        <string>ANDROMEDA_DIR/dist/server/andromedaDaemon.js</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>ANDROMEDA_DIR</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>NODE_ENV</key>
+        <string>production</string>
+        <key>ANDROMEDA_LOG_DIR</key>
+        <string>HOME_DIR/.andromeda</string>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>HOME_DIR/.andromeda/daemon.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>HOME_DIR/.andromeda/daemon.error.log</string>
+
+    <key>ThrottleInterval</key>
+    <integer>5</integer>
+</dict>
+</plist>

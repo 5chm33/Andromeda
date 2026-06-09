@@ -25,9 +25,12 @@ import "./atomicModifyTools"; // v5.68: self_atomic_modify — multi-file atomic
 import "./selfDiagnoseTools"; // v5.75: self_diagnose, self_generate_tests, self_review, self_benchmark
 import "./selfImprovementTools"; // v5.97: self_smoke_test, self_behavioral_test, self_compile_pipeline, self_benchmark_suite, self_dep_upgrade, self_dep_graph, self_chunked_write
 import "./spawnSubAgent"; // v6.14: spawn_sub_agent — parallel multi-agent execution
+import { registerVisualGroundingTools } from "./visualGroundingTool"; // v9.15: Playwright visual grounding
 
 // Register self-test tools (they use a registration function instead of module-level calls)
 registerSelfTestTools();
+// Register visual grounding tools (Playwright annotated screenshots + click-by-index)
+registerVisualGroundingTools();
 
 // Re-export the registry for convenience
 export {

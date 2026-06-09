@@ -1,0 +1,27 @@
+[Unit]
+Description=Andromeda RSI Agent Daemon
+Documentation=https://github.com/5chm33/Andromeda
+After=network.target
+
+[Service]
+Type=simple
+User=%i
+WorkingDirectory=%h/andromeda
+ExecStart=/usr/bin/node %h/andromeda/dist/server/andromedaDaemon.js
+ExecStop=/usr/bin/node %h/andromeda/dist/server/andromedaDaemon.js stop
+Restart=on-failure
+RestartSec=5s
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=andromeda
+Environment=NODE_ENV=production
+Environment=ANDROMEDA_LOG_DIR=%h/.andromeda
+
+# Security hardening
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ReadWritePaths=%h/.andromeda %h/andromeda
+
+[Install]
+WantedBy=multi-user.target

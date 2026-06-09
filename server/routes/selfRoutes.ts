@@ -260,4 +260,64 @@ export function registerSelfRoutes(
       connectedClients: getSseClientCount(),
     });
   });
+
+  // ── v9.15: Filesystem watcher endpoints ────────────────────────────────────────────────────────────────
+
+  // GET /api/fs/watches — list all active watches
+  app.get("/api/fs/watches", async (_req, res) => {
+    try {
+      const { listWatches } = await import("../fsWatcher.js");
+      res.json({ watches: listWatches() });
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  // POST /api/fs/watch — start watching a directory
+  // Body: { id?, directory, patterns?, ignorePatterns?, recursive?, notifyRsi? }
+  app.post("/api/fs/watch", requireAdminAuth, async (req, res) => {
+    try {
+      const { startWatch } = await import("../fsWatcher.js");
+      const { nanoid } = await import("nanoid");
+      const {
+        id = `watch_${nanoid(8)}`,
+        directory,
+        patterns = ["**/*"],
+        ignorePatterns = [],
+        recursive = true,
+        notifyRsi = false,
+      } = req.body ?? {};
+      if (!directory) { res.status(400).json({ error: "directory is required" }); return; }
+      const watchId = startWatch({ id, directory, patterns, ignorePatterns, recursive, notifyRsi });
+      res.json({ watchId, directory });
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  // DELETE /api/fs/watch/:id — stop a watch
+  app.delete("/api/fs/watch/:id", requireAdminAuth, async (req, res) => {
+    try {
+      const { stopWatch } = await import("../fsWatcher.js");
+      await stopWatch(req.params.id);
+      res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  // GET /api/fs/events — recent file change events
+  // Query: ?watchId=<id>&limit=<n>
+  app.get("/api/fs/events", async (req, res) => {
+    try {
+      const { getRecentEvents, getWatchStats } = await import("../fsWatcher.js");
+      const watchId = req.query.watchId as string | undefined;
+      const limit = req.query.limit ? Number(req.query.limit) : 50;
+      const events = getRecentEvents(watchId, limit);
+      const stats = watchId ? getWatchStats(watchId) : null;
+      res.json({ events, stats, count: events.length });
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
 }

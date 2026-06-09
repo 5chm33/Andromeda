@@ -1,7 +1,7 @@
 import * as esbuild from "esbuild";
 
 await esbuild.build({
-  entryPoints: ["server/_core/index.ts"],
+  entryPoints: ["server/_core/index.ts", "server/andromedaDaemon.ts"],
   platform: "node",
   packages: "external",
   bundle: true,
