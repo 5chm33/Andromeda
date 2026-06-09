@@ -52,14 +52,16 @@ The RLAIF judge and DPO pipeline exist but need **data**. The SQLite RLHF table 
 ### Gap 3 — The Weight Update Gap (Solvable with GPU)
 The `localLora.ts` + `scripts/train_lora.py` pipeline is complete and tested. It cannot run without a GPU.
 
-| Option | Cost | VRAM | Notes |
-|---|---|---|---|
-| RTX 4090 (local) | ~$1,800 | 24 GB | Best for iterative runs |
-| 2x RTX 3090 (used) | ~$1,400 | 48 GB total | More VRAM for larger models |
-| Lambda Labs A100 (cloud) | ~$1.29/hr | 40 GB | On-demand, no upfront cost |
-| Vast.ai RTX 4090 (cloud) | ~$0.35/hr | 24 GB | Cheapest option for testing |
+Based on current Vast.ai pricing (June 2026), here is the exact hardware strategy:
 
-**Action:** Provision GPU. Run `POST /api/fine-tuning/run` with `modelId: "mistralai/Mistral-7B-Instruct-v0.2"`.
+| Option | Vast.ai Cost | VRAM | Best For |
+|---|---|---|---|
+| 1x RTX 3090 | ~$0.15/hr | 24 GB | First runs (Mistral-7B / Llama-3-8B). Extremely cheap. |
+| 1x RTX 4090 | ~$0.30/hr | 24 GB | Faster 7B training. Best value for speed vs cost. |
+| 2x RTX 4090 | ~$0.80/hr | 48 GB | Required for 70B models or 8x7B MoE models. |
+| 1x RTX 5090 | ~$0.60/hr | 32 GB | Next-gen architecture. Overkill for early runs. |
+
+**Action:** When you hit 500 DPO pairs, rent a single RTX 3090 for $0.15/hr. SCP the database, run the training (takes ~3 hours), download the adapter, and destroy the instance. Total cost: ~$0.45.
 
 ### Gap 4 — The Swarm Gap (Solvable in days)
 The gossip protocol is fully implemented but has no peers. A swarm of one node learns nothing from federation.

@@ -111,8 +111,12 @@ const DEFAULT_PROVIDERS: Record<string, Omit<LLMProviderConfig, "apiKey">> = {
     // Direct Anthropic API uses a different request/response format (tool_use blocks, etc.)
     // that this codebase doesn't support. OpenRouter accepts OpenAI format and translates.
     // Claude does NOT truncate large code outputs unlike DeepSeek chat.
+    // v9.16.3 FIX: HARDCODED model — OPENROUTER_MODEL env var only applies to the cheap
+    // 'openrouter' provider. This provider is the PRO tier (security/architecture tasks)
+    // and must always use Claude Sonnet regardless of what OPENROUTER_MODEL is set to.
+    // If you want to change the pro model, edit this line directly.
     apiUrl: "https://openrouter.ai/api/v1/chat/completions",
-    model: "anthropic/claude-sonnet-4-5",
+    model: "anthropic/claude-sonnet-4-5",  // HARDCODED — see comment above
     maxTokens: 16000,  // v5.87: Claude supports up to 64K output; 16K is safe for large code files
     temperature: 0.5,  // Lower temp for code generation
     supportsTools: true,
