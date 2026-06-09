@@ -1,0 +1,395 @@
+{
+  "version": "1.0.0",
+  "modules": {
+    "rsiEngine": {
+      "module": "rsiEngine",
+      "description": "Core recursive self-improvement engine — orchestrates all RSI cycles",
+      "utilityContribution": {
+        "testPassRate": 0.3,
+        "benchmarkDelta": 0.4,
+        "latencyScore": -0.1,
+        "tokenEfficiency": 0.1,
+        "safetyScore": 0.2,
+        "noveltyScore": 0.5,
+        "stabilityScore": -0.2
+      },
+      "riskScore": 0.7,
+      "dependencies": [
+        "selfImprove",
+        "twoPhaseCommit",
+        "proofAssistant",
+        "rsiScheduler"
+      ],
+      "dependents": [
+        "autonomyOrchestrator",
+        "selfImproveGuard"
+      ],
+      "confidence": 0.8,
+      "lastUpdated": 1781037573501,
+      "rsiTouchCount": 0,
+      "avgUtilityDelta": 0
+    },
+    "twoPhaseCommit": {
+      "module": "twoPhaseCommit",
+      "description": "Safety gate for all self-modifications — prevents bad commits",
+      "utilityContribution": {
+        "testPassRate": 0.4,
+        "benchmarkDelta": 0,
+        "latencyScore": -0.2,
+        "tokenEfficiency": -0.1,
+        "safetyScore": 0.8,
+        "noveltyScore": 0,
+        "stabilityScore": 0.6
+      },
+      "riskScore": 0.9,
+      "dependencies": [
+        "safetySupervisor",
+        "failurePatternMemory",
+        "memory"
+      ],
+      "dependents": [
+        "rsiEngine",
+        "selfModify",
+        "selfImprove"
+      ],
+      "confidence": 0.9,
+      "lastUpdated": 1781037573501,
+      "rsiTouchCount": 0,
+      "avgUtilityDelta": 0
+    },
+    "proofVerifier": {
+      "module": "proofVerifier",
+      "description": "Formal proof gate — verifies proposals before commit (Phase 13)",
+      "utilityContribution": {
+        "testPassRate": 0.2,
+        "benchmarkDelta": 0,
+        "latencyScore": -0.1,
+        "tokenEfficiency": -0.1,
+        "safetyScore": 0.9,
+        "noveltyScore": 0,
+        "stabilityScore": 0.5
+      },
+      "riskScore": 0.5,
+      "dependencies": [
+        "proofAssistant",
+        "formalVerification"
+      ],
+      "dependents": [
+        "twoPhaseCommit",
+        "rsiEngine"
+      ],
+      "confidence": 0.85,
+      "lastUpdated": 1781037573501,
+      "rsiTouchCount": 0,
+      "avgUtilityDelta": 0
+    },
+    "utilityFunction": {
+      "module": "utilityFunction",
+      "description": "Unified utility function — single scalar U(state) for all improvements (Phase 14)",
+      "utilityContribution": {
+        "testPassRate": 0.1,
+        "benchmarkDelta": 0.2,
+        "latencyScore": 0.1,
+        "tokenEfficiency": 0.1,
+        "safetyScore": 0.1,
+        "noveltyScore": 0.1,
+        "stabilityScore": 0.2
+      },
+      "riskScore": 0.4,
+      "dependencies": [],
+      "dependents": [
+        "rsiScheduler",
+        "mctsPlanningEngine",
+        "rsiEngine"
+      ],
+      "confidence": 0.75,
+      "lastUpdated": 1781037573501,
+      "rsiTouchCount": 0,
+      "avgUtilityDelta": 0
+    },
+    "mctsPlanningEngine": {
+      "module": "mctsPlanningEngine",
+      "description": "Monte Carlo Tree Search for RSI planning — finds optimal refactor paths",
+      "utilityContribution": {
+        "testPassRate": 0.2,
+        "benchmarkDelta": 0.3,
+        "latencyScore": -0.2,
+        "tokenEfficiency": -0.1,
+        "safetyScore": 0.1,
+        "noveltyScore": 0.3,
+        "stabilityScore": 0.1
+      },
+      "riskScore": 0.3,
+      "dependencies": [
+        "utilityFunction"
+      ],
+      "dependents": [
+        "rsiEngine",
+        "autonomyOrchestrator"
+      ],
+      "confidence": 0.7,
+      "lastUpdated": 1781037573501,
+      "rsiTouchCount": 0,
+      "avgUtilityDelta": 0
+    },
+    "causalReasoning": {
+      "module": "causalReasoning",
+      "description": "Bayesian causal networks — finds root causes of test failures",
+      "utilityContribution": {
+        "testPassRate": 0.4,
+        "benchmarkDelta": 0.1,
+        "latencyScore": 0,
+        "tokenEfficiency": 0,
+        "safetyScore": 0.1,
+        "noveltyScore": 0.1,
+        "stabilityScore": 0.3
+      },
+      "riskScore": 0.2,
+      "dependencies": [],
+      "dependents": [
+        "rsiEngine",
+        "selfHeal"
+      ],
+      "confidence": 0.75,
+      "lastUpdated": 1781037573501,
+      "rsiTouchCount": 0,
+      "avgUtilityDelta": 0
+    },
+    "epistemicBeliefModel": {
+      "module": "epistemicBeliefModel",
+      "description": "Theory of Mind for swarm agents — models what other agents believe",
+      "utilityContribution": {
+        "testPassRate": 0,
+        "benchmarkDelta": 0.1,
+        "latencyScore": -0.1,
+        "tokenEfficiency": -0.1,
+        "safetyScore": 0.2,
+        "noveltyScore": 0.2,
+        "stabilityScore": 0.1
+      },
+      "riskScore": 0.2,
+      "dependencies": [
+        "swarmOrchestrator"
+      ],
+      "dependents": [
+        "distributedProofConsensus"
+      ],
+      "confidence": 0.65,
+      "lastUpdated": 1781037573501,
+      "rsiTouchCount": 0,
+      "avgUtilityDelta": 0
+    },
+    "astKnowledgeGraph": {
+      "module": "astKnowledgeGraph",
+      "description": "TypeScript AST knowledge graph — structural code understanding",
+      "utilityContribution": {
+        "testPassRate": 0.1,
+        "benchmarkDelta": 0.1,
+        "latencyScore": 0,
+        "tokenEfficiency": 0.1,
+        "safetyScore": 0.1,
+        "noveltyScore": 0.2,
+        "stabilityScore": 0.1
+      },
+      "riskScore": 0.2,
+      "dependencies": [],
+      "dependents": [
+        "rsiEngine",
+        "codebaseAnalyzer",
+        "semanticSelfModel"
+      ],
+      "confidence": 0.7,
+      "lastUpdated": 1781037573501,
+      "rsiTouchCount": 0,
+      "avgUtilityDelta": 0
+    },
+    "selfImprove": {
+      "module": "selfImprove",
+      "description": "Analyzes code and generates improvement proposals",
+      "utilityContribution": {
+        "testPassRate": 0.2,
+        "benchmarkDelta": 0.3,
+        "latencyScore": 0,
+        "tokenEfficiency": 0.1,
+        "safetyScore": 0.1,
+        "noveltyScore": 0.4,
+        "stabilityScore": -0.1
+      },
+      "riskScore": 0.5,
+      "dependencies": [
+        "rsiEngine",
+        "evalFramework",
+        "adaptiveEval"
+      ],
+      "dependents": [
+        "autonomyOrchestrator"
+      ],
+      "confidence": 0.8,
+      "lastUpdated": 1781037573501,
+      "rsiTouchCount": 0,
+      "avgUtilityDelta": 0
+    },
+    "reactEngine": {
+      "module": "reactEngine",
+      "description": "ReAct agent loop — reason + act cycles for complex tasks",
+      "utilityContribution": {
+        "testPassRate": 0.1,
+        "benchmarkDelta": 0.2,
+        "latencyScore": -0.1,
+        "tokenEfficiency": -0.1,
+        "safetyScore": 0,
+        "noveltyScore": 0.2,
+        "stabilityScore": 0
+      },
+      "riskScore": 0.4,
+      "dependencies": [
+        "goalManager",
+        "taskDecomposer"
+      ],
+      "dependents": [
+        "agentOrchestrator"
+      ],
+      "confidence": 0.7,
+      "lastUpdated": 1781037573501,
+      "rsiTouchCount": 0,
+      "avgUtilityDelta": 0
+    },
+    "memory": {
+      "module": "memory",
+      "description": "Persistent memory storage and retrieval",
+      "utilityContribution": {
+        "testPassRate": 0,
+        "benchmarkDelta": 0.1,
+        "latencyScore": -0.1,
+        "tokenEfficiency": 0.2,
+        "safetyScore": 0,
+        "noveltyScore": 0.1,
+        "stabilityScore": 0.10000000000000002
+      },
+      "riskScore": 0.23999999999999996,
+      "dependencies": [],
+      "dependents": [
+        "selfImprove",
+        "rsiEngine",
+        "goalManager"
+      ],
+      "confidence": 0.48250000000000004,
+      "lastUpdated": 1781037610176,
+      "rsiTouchCount": 3,
+      "avgUtilityDelta": 0.05000000000000001
+    },
+    "llmProvider": {
+      "module": "llmProvider",
+      "description": "LLM API routing and provider management",
+      "utilityContribution": {
+        "testPassRate": -0.024400000000000005,
+        "benchmarkDelta": 0.3,
+        "latencyScore": 0.4,
+        "tokenEfficiency": 0.3,
+        "safetyScore": 0,
+        "noveltyScore": 0,
+        "stabilityScore": -0.09760000000000002
+      },
+      "riskScore": 0.7500000000000001,
+      "dependencies": [],
+      "dependents": [
+        "reactEngine",
+        "selfImprove",
+        "rsiEngine"
+      ],
+      "confidence": 0.48250000000000004,
+      "lastUpdated": 1781037610178,
+      "rsiTouchCount": 3,
+      "avgUtilityDelta": -0.02
+    },
+    "federatedLearning": {
+      "module": "federatedLearning",
+      "description": "Federated LoRA training across swarm nodes",
+      "utilityContribution": {
+        "testPassRate": 0.03441280000000002,
+        "benchmarkDelta": 0.4,
+        "latencyScore": -0.2,
+        "tokenEfficiency": -0.1,
+        "safetyScore": 0,
+        "noveltyScore": 0.5,
+        "stabilityScore": -0.050809600000000024
+      },
+      "riskScore": 0.49,
+      "dependencies": [
+        "loraBackendDetector"
+      ],
+      "dependents": [
+        "crossModalSelfImprovement"
+      ],
+      "confidence": 0.5650000000000001,
+      "lastUpdated": 1781037610178,
+      "rsiTouchCount": 6,
+      "avgUtilityDelta": 0.02
+    },
+    "safetySupervisor": {
+      "module": "safetySupervisor",
+      "description": "Safety validation for all self-modifications",
+      "utilityContribution": {
+        "testPassRate": 0.2,
+        "benchmarkDelta": 0,
+        "latencyScore": -0.1,
+        "tokenEfficiency": -0.1,
+        "safetyScore": 1,
+        "noveltyScore": 0,
+        "stabilityScore": 0.5
+      },
+      "riskScore": 0.95,
+      "dependencies": [],
+      "dependents": [
+        "twoPhaseCommit",
+        "selfModify"
+      ],
+      "confidence": 0.9,
+      "lastUpdated": 1781037573501,
+      "rsiTouchCount": 0,
+      "avgUtilityDelta": 0
+    },
+    "testModule_1781037610177": {
+      "module": "testModule_1781037610177",
+      "description": "Auto-discovered module from RSI cycle",
+      "utilityContribution": {
+        "testPassRate": 0.01,
+        "benchmarkDelta": 0.009,
+        "latencyScore": 0,
+        "tokenEfficiency": 0,
+        "safetyScore": 0.1,
+        "noveltyScore": 0.2,
+        "stabilityScore": 0.1
+      },
+      "riskScore": 0.3,
+      "dependencies": [],
+      "dependents": [],
+      "confidence": 0.4,
+      "lastUpdated": 1781037610177,
+      "rsiTouchCount": 1,
+      "avgUtilityDelta": 0.03
+    },
+    "testConfModule_1781037610179": {
+      "module": "testConfModule_1781037610179",
+      "description": "Auto-discovered module from RSI cycle",
+      "utilityContribution": {
+        "testPassRate": 0.0032768000000000007,
+        "benchmarkDelta": 0.006,
+        "latencyScore": 0,
+        "tokenEfficiency": 0,
+        "safetyScore": 0.1,
+        "noveltyScore": 0,
+        "stabilityScore": 0.10000000000000002
+      },
+      "riskScore": 0.19999999999999998,
+      "dependencies": [],
+      "dependents": [],
+      "confidence": 0.5650000000000001,
+      "lastUpdated": 1781037610180,
+      "rsiTouchCount": 6,
+      "avgUtilityDelta": 0.011666666666666665
+    }
+  },
+  "lastCalibrated": 0,
+  "totalRSICycles": 33
+}
