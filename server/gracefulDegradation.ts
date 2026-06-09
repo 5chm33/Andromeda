@@ -450,21 +450,26 @@ async function dispatchQueuedRequest(request: QueuedRequest): Promise<void> {
 
   switch (service) {
     case "llm": {
-      // Re-submit an LLM completion that was queued during an outage
-      const { streamChatCompletion } = await import("./aiStreaming.js");
-      if (operation === "chat" && payload?.messages) {
-        // Fire-and-forget: we can't re-stream to the original client, so we
-        // at least ensure the request is processed and cached for future use.
+      // Re-submit an LLM completion that was queued during an outage.
+      // We can't re-stream to the original client, but we process and cache
+      // the result so the next identical request gets a fast response.
+      if (operation === "chat" && payload?.query) {
+        const { streamAIResponse } = await import("./aiStreaming.js");
         const chunks: string[] = [];
-        await streamChatCompletion(
-          payload.messages,
-          payload.model ?? "auto",
-          (chunk: string) => { chunks.push(chunk); },
-          payload.options ?? {},
-        );
-        // Cache the result so the next identical request gets a fast response
-        const { cacheResponse } = await import("./gracefulDegradation.js");
-        cacheResponse(`llm:${operation}:${JSON.stringify(payload.messages).slice(0, 100)}`, chunks.join(""));
+        // Use a no-op response shim to collect the streamed output
+        const shimRes = {
+          write: (chunk: string) => { chunks.push(chunk); },
+          end: () => {},
+          setHeader: () => {},
+          flushHeaders: () => {},
+          on: () => shimRes,
+          once: () => shimRes,
+          emit: () => false,
+        } as unknown as import("express").Response;
+        // Pass empty sources array — this is a replay, no live search available
+        await streamAIResponse(payload.query, [], shimRes);
+        // Cache the assembled result for future identical requests
+        cacheResponse(`llm:chat:${payload.query.slice(0, 100)}`, chunks.join(""));
       }
       break;
     }
@@ -486,8 +491,8 @@ async function dispatchQueuedRequest(request: QueuedRequest): Promise<void> {
     case "search": {
       // Re-run a search query that was queued during a search API outage
       if (operation === "search" && payload?.query) {
-        const { searchWeb } = await import("./search.js");
-        await searchWeb(payload.query, payload.options ?? {});
+        const { aggregateSearch } = await import("./search.js");
+        await aggregateSearch(payload.query, payload.options ?? {});
       }
       break;
     }
@@ -495,32 +500,39 @@ async function dispatchQueuedRequest(request: QueuedRequest): Promise<void> {
       // Re-store a memory write that was queued
       if (operation === "store" && payload?.content) {
         const { storeMemory } = await import("./memory.js");
-        await storeMemory(payload.content, payload.metadata ?? {});
+        storeMemory(payload.content, payload.type ?? "general", payload.tags ?? []);
       }
       break;
     }
     case "embedding": {
       // Re-run an embedding request that was queued during an embedding API outage
-      if (operation === "embed" && payload?.text) {
-        const { embedText } = await import("./vectorMemory.js");
-        await embedText(payload.text);
+      if (operation === "embed" && payload?.id && payload?.text) {
+        const { vectorStore } = await import("./vectorMemory.js");
+        await vectorStore(payload.id, payload.text);
       }
       break;
     }
     case "docker": {
-      // Re-run a Docker code execution that was queued
+      // Re-run a sandboxed code execution that was queued during a Docker outage
       if (operation === "exec" && payload?.code) {
-        const { runInDocker } = await import("./dockerSandbox.js");
-        await runInDocker(payload.code, payload.language ?? "python", payload.options ?? {});
+        const { executeSandboxed } = await import("./sandboxManager.js");
+        await executeSandboxed({
+          code: payload.code,
+          language: payload.language ?? "python",
+          ...(payload.options ?? {}),
+        });
       }
       break;
     }
     case "mcp": {
       // Re-invoke an MCP tool call that was queued
-      if (operation === "tool_call" && payload?.toolName) {
-        const { callMcpTool } = await import("./mcpClient.js");
-        await callMcpTool(payload.toolName, payload.args ?? {});
+      // MCP calls are re-dispatched by reconnecting to the server; the original
+      // tool invocation is not directly re-playable without the original session.
+      if (operation === "connect" && payload?.serverId) {
+        const { connectServer } = await import("./mcpClient.js");
+        await connectServer(payload.serverId);
       }
+      // Other MCP operations are non-replayable — log and skip
       break;
     }
     default:
