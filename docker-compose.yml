@@ -1,4 +1,4 @@
-# ─── Andromeda v6.25 — docker-compose.yml ────────────────────────────────────
+# ─── Andromeda v9.16.0 — docker-compose.yml ────────────────────────────────────
 #
 # Runs Andromeda with persistent data volumes for:
 #   - Episodic memory

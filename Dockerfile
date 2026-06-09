@@ -1,4 +1,4 @@
-# ─── Andromeda v9.14.0 — Dockerfile ─────────────────────────────────────────
+# ─── Andromeda v9.16.0 — Dockerfile ─────────────────────────────────────────
 #
 # Multi-stage build:
 #   Stage 1 (builder): Install deps, build TypeScript + Vite frontend
@@ -25,7 +25,7 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml ./
 
 # Install all dependencies (including devDependencies for build)
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --no-frozen-lockfile
 
 # Copy source
 COPY . .
@@ -52,7 +52,7 @@ COPY --from=builder --chown=andromeda:andromeda /app/package.json ./package.json
 COPY --from=builder --chown=andromeda:andromeda /app/pnpm-lock.yaml* ./
 
 # Install production dependencies only
-RUN pnpm install --frozen-lockfile --prod
+RUN pnpm install --no-frozen-lockfile --prod
 
 # Create data directories for persistent storage (SQLite, episodic memory, eval baseline, RSI state)
 RUN mkdir -p /app/data /app/.data && chown -R andromeda:andromeda /app/data /app/.data
@@ -75,4 +75,4 @@ ENV NODE_ENV=production \
     PORT=3000
 
 # Start the production server
-CMD ["node", "dist/server/index.js"]
+CMD ["node", "dist/_core/index.js"]
