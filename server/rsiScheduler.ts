@@ -134,6 +134,33 @@ async function runRsiTrigger(): Promise<void> {
     }
     // ── End ontological gate ─────────────────────────────────────────────────
 
+    // ── Utility function gate ────────────────────────────────────────────────
+    // v9.0: Check that the current system state has positive utility improvement
+    // potential before triggering an autonomous RSI cycle.
+    try {
+      const { computeDelta, createStateSnapshot } = await import("./utilityFunction.js");
+      const currentState = createStateSnapshot();
+      const delta = computeDelta(currentState);
+      if (!delta.shouldProceed) {
+        log.info(
+          `[rsiScheduler] Utility gate: delta ${delta.delta.toFixed(4)} below threshold — deferring RSI cycle. ${delta.reason}`
+        );
+        appendScheduleLog({
+          triggeredAt: Date.now(),
+          source: "scheduler",
+          intervalHours: DEFAULT_HOURS,
+          cycleStarted: false,
+          note: `Deferred — utility delta ${delta.delta.toFixed(4)} below threshold: ${delta.reason}`,
+        });
+        return;
+      }
+      log.info(`[rsiScheduler] Utility gate passed — delta: ${delta.delta.toFixed(4)}, reason: ${delta.reason}`);
+    } catch (utilErr) {
+      // Non-fatal — utility gate failure should not block RSI
+      log.warn("[rsiScheduler] Utility gate unavailable — proceeding anyway:", utilErr);
+    }
+    // ── End utility gate ─────────────────────────────────────────────────────
+
     triggerRSICycleNow();
     appendScheduleLog({
       triggeredAt: Date.now(),

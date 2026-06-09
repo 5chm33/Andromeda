@@ -391,4 +391,11 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
       res.json(getLockStatus());
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });
+
+  // ── v9.0: Gödel Machine API routes (proofVerifier, utilityFunction, semanticSelfModel, causal, MCTS, epistemic, AST) ─
+  try {
+    const { registerGodelRoutes } = await import('../routes/godelRoutes.js');
+    registerGodelRoutes(app);
+    console.log('[GodelRoutes] v9.0: Gödel Machine API routes registered (/api/godel/*)');
+  } catch (e) { console.warn('[GodelRoutes] Registration failed:', (e as Error).message); }
 }

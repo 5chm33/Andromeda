@@ -26,6 +26,7 @@ import { fileURLToPath } from "url";
 import { validateProposal, isForbiddenFile, type SafetyValidationResult } from "./safetySupervisor.js";
 import { checkFailurePattern, recordFailure, type FailureCheck } from "./failurePatternMemory.js";
 import { storeMemory } from "./memory.js";
+import { verifyCommitProposal } from "./proofVerifier.js";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -341,7 +342,43 @@ export async function twoPhaseCommit(options: CommitOptions): Promise<CommitResu
       };
     }
 
-    // 1e. Create backup + git stable-state tag (v5.68)
+    // 1e. v9.0: Proof verification gate — run propositional + TLA+ + ZK checks
+    // Runs in warn-only mode by default so it never blocks a commit on proof failure alone.
+    // To enforce blocking, set ANDROMEDA_PROOF_GATE_STRICT=true in the environment.
+    try {
+      const strictMode = process.env.ANDROMEDA_PROOF_GATE_STRICT === "true";
+      const proofResult = await verifyCommitProposal({
+        filePath: options.filePath,
+        proposedContent: options.proposedContent,
+        rationale: options.rationale,
+        preConditions: {},
+        postConditions: {},
+        expectedUtilityDelta: 0.01,
+        warnOnly: !strictMode,
+      });
+      if (!proofResult.allowed) {
+        activeCommits.delete(absolutePath);
+        return {
+          success: false,
+          phase: "preparing",
+          filePath: options.filePath,
+          safetyResult,
+          failureCheck,
+          error: `Proof gate BLOCKED: ${proofResult.reason}`,
+          durationMs: Date.now() - startTime,
+        };
+      }
+      if (proofResult.outcome !== "proved") {
+        console.log(`[TwoPhaseCommit] Proof gate: ${proofResult.outcome} (confidence: ${(proofResult.confidence * 100).toFixed(0)}%) — proceeding in warn-only mode`);
+      } else {
+        console.log(`[TwoPhaseCommit] Proof gate: PROVED (confidence: ${(proofResult.confidence * 100).toFixed(0)}%)`);
+      }
+    } catch (proofErr) {
+      // Non-fatal — proof gate failure should not block a commit
+      console.warn(`[TwoPhaseCommit] Proof gate error (non-fatal): ${String(proofErr).slice(0, 100)}`);
+    }
+
+    // 1f. Create backup + git stable-state tag (v5.68)
     const sha256Before = fs.existsSync(absolutePath)
       ? computeHash(fs.readFileSync(absolutePath, "utf8"))
       : undefined;

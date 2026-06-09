@@ -441,6 +441,94 @@ export function queueRequest(service: ServiceName, operation: string, payload: a
 /**
  * Drain the request queue for a recovered service.
  */
+/**
+ * v9.0: Dispatch a queued request to the correct service handler.
+ * Routes by service name and operation string to the appropriate module.
+ */
+async function dispatchQueuedRequest(request: QueuedRequest): Promise<void> {
+  const { service, operation, payload } = request;
+
+  switch (service) {
+    case "llm": {
+      // Re-submit an LLM completion that was queued during an outage
+      const { streamChatCompletion } = await import("./aiStreaming.js");
+      if (operation === "chat" && payload?.messages) {
+        // Fire-and-forget: we can't re-stream to the original client, so we
+        // at least ensure the request is processed and cached for future use.
+        const chunks: string[] = [];
+        await streamChatCompletion(
+          payload.messages,
+          payload.model ?? "auto",
+          (chunk: string) => { chunks.push(chunk); },
+          payload.options ?? {},
+        );
+        // Cache the result so the next identical request gets a fast response
+        const { cacheResponse } = await import("./gracefulDegradation.js");
+        cacheResponse(`llm:${operation}:${JSON.stringify(payload.messages).slice(0, 100)}`, chunks.join(""));
+      }
+      break;
+    }
+    case "database": {
+      // Re-apply a write that was queued during a DB outage
+      if (operation === "write" && payload?.table && payload?.data) {
+        const { getDb } = await import("./andromedaDb.js");
+        const db = getDb();
+        // Generic upsert — the payload must include table + data
+        const cols = Object.keys(payload.data);
+        const vals = Object.values(payload.data);
+        const placeholders = cols.map(() => "?").join(", ");
+        db.prepare(
+          `INSERT OR REPLACE INTO ${payload.table} (${cols.join(", ")}) VALUES (${placeholders})`
+        ).run(...vals);
+      }
+      break;
+    }
+    case "search": {
+      // Re-run a search query that was queued during a search API outage
+      if (operation === "search" && payload?.query) {
+        const { searchWeb } = await import("./search.js");
+        await searchWeb(payload.query, payload.options ?? {});
+      }
+      break;
+    }
+    case "memory": {
+      // Re-store a memory write that was queued
+      if (operation === "store" && payload?.content) {
+        const { storeMemory } = await import("./memory.js");
+        await storeMemory(payload.content, payload.metadata ?? {});
+      }
+      break;
+    }
+    case "embedding": {
+      // Re-run an embedding request that was queued during an embedding API outage
+      if (operation === "embed" && payload?.text) {
+        const { embedText } = await import("./vectorMemory.js");
+        await embedText(payload.text);
+      }
+      break;
+    }
+    case "docker": {
+      // Re-run a Docker code execution that was queued
+      if (operation === "exec" && payload?.code) {
+        const { runInDocker } = await import("./dockerSandbox.js");
+        await runInDocker(payload.code, payload.language ?? "python", payload.options ?? {});
+      }
+      break;
+    }
+    case "mcp": {
+      // Re-invoke an MCP tool call that was queued
+      if (operation === "tool_call" && payload?.toolName) {
+        const { callMcpTool } = await import("./mcpClient.js");
+        await callMcpTool(payload.toolName, payload.args ?? {});
+      }
+      break;
+    }
+    default:
+      // Unknown service — log and skip
+      console.warn(`[GracefulDegradation] Unknown service '${service}' for operation '${operation}' — skipping`);
+  }
+}
+
 async function drainQueue(service: ServiceName): Promise<{ processed: number; failed: number }> {
   const queue = requestQueues.get(service) || [];
   let processed = 0;
@@ -450,15 +538,17 @@ async function drainQueue(service: ServiceName): Promise<{ processed: number; fa
 
   for (const request of batch) {
     try {
-      // Re-execute the queued request
-      // This is a placeholder — actual execution depends on the service
-      console.log(`[GracefulDegradation] Draining queued request: ${request.operation}`);
+      // v9.0: Real queue drain — dispatch to the correct service handler based on operation
+      await dispatchQueuedRequest(request);
+      console.log(`[GracefulDegradation] Drained queued request: ${request.operation} (service: ${service})`);
       processed++;
-    } catch {
+    } catch (err) {
       request.retryCount++;
+      console.warn(`[GracefulDegradation] Retry ${request.retryCount}/${request.maxRetries} for ${request.operation}:`, (err as Error).message);
       if (request.retryCount < request.maxRetries) {
         queue.unshift(request); // Put back for retry
       } else {
+        console.error(`[GracefulDegradation] Dropping request ${request.operation} after ${request.maxRetries} retries`);
         failed++;
       }
     }

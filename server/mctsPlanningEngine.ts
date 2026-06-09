@@ -23,6 +23,7 @@
 
 import { createLogger } from "./logger.js";
 import { backgroundSimpleCompletion } from "./llmProvider.js";
+import { compute as computeUtility, createStateSnapshot } from "./utilityFunction.js";
 
 const log = createLogger("mctsPlanningEngine");
 
@@ -188,26 +189,48 @@ export class MCTSEngine {
 
   /**
    * Fast heuristic rollout: score based on risk/gain ratio and plan coherence.
+   * v9.0: Primary reward signal is the unified utility function U(state).
+   * Falls back to gain/risk heuristic if utility function is unavailable.
    */
   private heuristicRollout(state: PlanState): number {
     if (state.steps.length === 0) return 0.5;
 
-    const totalGain = state.steps.reduce((sum, s) => sum + s.estimatedGain, 0);
-    const totalRisk = state.steps.reduce((sum, s) => sum + s.estimatedRisk, 0);
-    const avgGain = totalGain / state.steps.length;
-    const avgRisk = totalRisk / state.steps.length;
+    // v9.0: Use unified utility function as primary reward signal
+    try {
+      const snapshot = createStateSnapshot({
+        // Map plan steps to utility-relevant state overrides
+        testPassRate: state.steps.some(s => s.action === "run_tests") ? 0.95 : 0.80,
+        safetyScore: 1.0 - (state.steps.reduce((sum, s) => sum + s.estimatedRisk, 0) / state.steps.length),
+        noveltyScore: Math.min(1.0, state.steps.length / 5),
+      });
+      const utilityScore = computeUtility(snapshot);
+      // Normalize utility total to 0-1 range (max possible is ~1.0 weighted sum)
+      const normalizedUtility = Math.min(1.0, Math.max(0.0, utilityScore.total));
 
-    // Penalize high-risk plans, reward high-gain plans
-    const score = avgGain * (1 - avgRisk * 0.5);
+      // Blend utility (70%) with gain/risk heuristic (30%) for robustness
+      const totalGain = state.steps.reduce((sum, s) => sum + s.estimatedGain, 0);
+      const totalRisk = state.steps.reduce((sum, s) => sum + s.estimatedRisk, 0);
+      const avgGain = totalGain / state.steps.length;
+      const avgRisk = totalRisk / state.steps.length;
+      const heuristicScore = avgGain * (1 - avgRisk * 0.5);
+      const hasTests = state.steps.some(s => s.action === "run_tests");
+      const testBonus = hasTests ? 0.1 : 0;
+      const lengthPenalty = Math.max(0, (state.steps.length - 5) * 0.02);
+      const blendedHeuristic = Math.min(1.0, Math.max(0.0, heuristicScore + testBonus - lengthPenalty));
 
-    // Bonus for plans that include test runs (safer)
-    const hasTests = state.steps.some(s => s.action === "run_tests");
-    const testBonus = hasTests ? 0.1 : 0;
-
-    // Penalty for very long plans (complexity risk)
-    const lengthPenalty = Math.max(0, (state.steps.length - 5) * 0.02);
-
-    return Math.min(1.0, Math.max(0.0, score + testBonus - lengthPenalty));
+      return 0.7 * normalizedUtility + 0.3 * blendedHeuristic;
+    } catch {
+      // Fallback to pure gain/risk heuristic if utility function fails
+      const totalGain = state.steps.reduce((sum, s) => sum + s.estimatedGain, 0);
+      const totalRisk = state.steps.reduce((sum, s) => sum + s.estimatedRisk, 0);
+      const avgGain = totalGain / state.steps.length;
+      const avgRisk = totalRisk / state.steps.length;
+      const score = avgGain * (1 - avgRisk * 0.5);
+      const hasTests = state.steps.some(s => s.action === "run_tests");
+      const testBonus = hasTests ? 0.1 : 0;
+      const lengthPenalty = Math.max(0, (state.steps.length - 5) * 0.02);
+      return Math.min(1.0, Math.max(0.0, score + testBonus - lengthPenalty));
+    }
   }
 
   /**

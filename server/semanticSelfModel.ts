@@ -593,3 +593,19 @@ export function getSelfModelSummaryForPrompt(): string {
 export function reloadState(): void {
   loadState();
 }
+
+/**
+ * v9.0: Warm the globalThis cache used by aiPrompts.ts to inject the semantic
+ * self-model summary into the system prompt without making buildSystemPrompt async.
+ * Call this once on startup and after every RSI cycle.
+ */
+export function warmPromptCache(): void {
+  try {
+    const summary = getSelfModelSummaryForPrompt();
+    // Prefix with newline so it appends cleanly to the architecture bullet list
+    (globalThis as Record<string, unknown>).__semanticSelfModelSummary =
+      `\n\nSemantic Self-Model (live):\n${summary}`;
+  } catch {
+    // Non-fatal
+  }
+}

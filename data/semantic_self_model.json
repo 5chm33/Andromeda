@@ -266,65 +266,65 @@
         "noveltyScore": 0.1,
         "stabilityScore": 0.10000000000000002
       },
-      "riskScore": 0.23999999999999996,
+      "riskScore": 0.21999999999999997,
       "dependencies": [],
       "dependents": [
         "selfImprove",
         "rsiEngine",
         "goalManager"
       ],
-      "confidence": 0.48250000000000004,
-      "lastUpdated": 1781037610176,
-      "rsiTouchCount": 3,
-      "avgUtilityDelta": 0.05000000000000001
+      "confidence": 0.51,
+      "lastUpdated": 1781038547864,
+      "rsiTouchCount": 4,
+      "avgUtilityDelta": 0.05
     },
     "llmProvider": {
       "module": "llmProvider",
       "description": "LLM API routing and provider management",
       "utilityContribution": {
-        "testPassRate": -0.024400000000000005,
+        "testPassRate": -0.029520000000000008,
         "benchmarkDelta": 0.3,
         "latencyScore": 0.4,
         "tokenEfficiency": 0.3,
         "safetyScore": 0,
         "noveltyScore": 0,
-        "stabilityScore": -0.09760000000000002
+        "stabilityScore": -0.11808000000000003
       },
-      "riskScore": 0.7500000000000001,
+      "riskScore": 0.8000000000000002,
       "dependencies": [],
       "dependents": [
         "reactEngine",
         "selfImprove",
         "rsiEngine"
       ],
-      "confidence": 0.48250000000000004,
-      "lastUpdated": 1781037610178,
-      "rsiTouchCount": 3,
+      "confidence": 0.51,
+      "lastUpdated": 1781038547865,
+      "rsiTouchCount": 4,
       "avgUtilityDelta": -0.02
     },
     "federatedLearning": {
       "module": "federatedLearning",
       "description": "Federated LoRA training across swarm nodes",
       "utilityContribution": {
-        "testPassRate": 0.03441280000000002,
+        "testPassRate": 0.026024192000000015,
         "benchmarkDelta": 0.4,
         "latencyScore": -0.2,
         "tokenEfficiency": -0.1,
         "safetyScore": 0,
         "noveltyScore": 0.5,
-        "stabilityScore": -0.050809600000000024
+        "stabilityScore": -0.04451814400000002
       },
-      "riskScore": 0.49,
+      "riskScore": 0.52,
       "dependencies": [
         "loraBackendDetector"
       ],
       "dependents": [
         "crossModalSelfImprovement"
       ],
-      "confidence": 0.5650000000000001,
-      "lastUpdated": 1781037610178,
-      "rsiTouchCount": 6,
-      "avgUtilityDelta": 0.02
+      "confidence": 0.6200000000000001,
+      "lastUpdated": 1781038547866,
+      "rsiTouchCount": 8,
+      "avgUtilityDelta": 0.020000000000000004
     },
     "safetySupervisor": {
       "module": "safetySupervisor",
@@ -349,8 +349,8 @@
       "rsiTouchCount": 0,
       "avgUtilityDelta": 0
     },
-    "testModule_1781037610177": {
-      "module": "testModule_1781037610177",
+    "testModule_1781038547865": {
+      "module": "testModule_1781038547865",
       "description": "Auto-discovered module from RSI cycle",
       "utilityContribution": {
         "testPassRate": 0.01,
@@ -365,12 +365,12 @@
       "dependencies": [],
       "dependents": [],
       "confidence": 0.4,
-      "lastUpdated": 1781037610177,
+      "lastUpdated": 1781038547865,
       "rsiTouchCount": 1,
       "avgUtilityDelta": 0.03
     },
-    "testConfModule_1781037610179": {
-      "module": "testConfModule_1781037610179",
+    "testConfModule_1781038547867": {
+      "module": "testConfModule_1781038547867",
       "description": "Auto-discovered module from RSI cycle",
       "utilityContribution": {
         "testPassRate": 0.0032768000000000007,
@@ -385,11 +385,11 @@
       "dependencies": [],
       "dependents": [],
       "confidence": 0.5650000000000001,
-      "lastUpdated": 1781037610180,
+      "lastUpdated": 1781038547869,
       "rsiTouchCount": 6,
       "avgUtilityDelta": 0.011666666666666665
     }
   },
   "lastCalibrated": 0,
-  "totalRSICycles": 33
+  "totalRSICycles": 44
 }

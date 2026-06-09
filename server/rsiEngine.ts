@@ -641,6 +641,36 @@ export async function runRSICycle(): Promise<RSICycleResult> {
   });
   // v6.39: Update federated learning with our latest capability score
   import("./federatedLearning.js").then(m => m.updateLocalScore(capabilityScoreAfter)).catch(() => {});
+
+  // v9.0: Update semantic self-model with actual RSI outcome for online learning
+  // Also re-warm the system prompt cache so the next chat response reflects the updated model.
+  import("./semanticSelfModel.js").then(m => {
+    m.updateFromRSICycle({
+      cycleId,
+      proposalsApplied,
+      proposalsRejected,
+      scoreBefore: capabilityScoreBefore,
+      scoreAfter: capabilityScoreAfter,
+      appliedFiles,
+      durationMs: result.durationMs,
+    });
+    m.warmPromptCache(); // Keep the system prompt cache fresh after each cycle
+  }).catch(() => {});
+
+  // v9.0: Record RSI outcome in utility function for auto-calibration
+  import("./utilityFunction.js").then(m => {
+    m.recordRSIOutcome({
+      cycleId,
+      timestamp: Date.now(),
+      scoreBefore: capabilityScoreBefore,
+      scoreAfter: capabilityScoreAfter,
+      proposalsApplied,
+      proposalsRejected,
+      durationMs: result.durationMs,
+      success: result.errors.length === 0,
+    });
+  }).catch(() => {});
+
   return result;
 }
 

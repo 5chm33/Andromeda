@@ -386,4 +386,10 @@ export async function initModules(): Promise<void> {
   import("../continuousFineTuning.js").then(() => {
     console.log("[ContinuousFineTuning] Phase 5c: Nightly RLAIF→LoRA pipeline ready");
   }).catch(err => console.warn("[ContinuousFineTuning] Module load failed (non-fatal):", err));
+
+  // ── v9.0: Semantic self-model — warm the system prompt cache on startup ────────────────
+  import("../semanticSelfModel.js").then(m => {
+    m.warmPromptCache();
+    console.log("[SemanticSelfModel] v9.0: Semantic self-model prompt cache warmed");
+  }).catch(err => console.warn("[SemanticSelfModel] warmPromptCache failed (non-fatal):", err));
 }

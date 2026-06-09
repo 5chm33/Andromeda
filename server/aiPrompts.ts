@@ -109,6 +109,16 @@ Guidelines:
   let manifestBlock = "";
   try { manifestBlock = getManifestPrompt(); } catch (err) { log.caught("manifest not ready yet", err); }
 
+  // v9.0: Inject semantic self-model summary so Andromeda knows its own module impact map
+  // Uses a sync cached getter to avoid making buildSystemPrompt async.
+  let semanticSelfModelBlock = "";
+  try {
+    // Dynamic require-style sync access via the module cache
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const ssm = (globalThis as Record<string, unknown>).__semanticSelfModelSummary as string | undefined;
+    if (ssm) semanticSelfModelBlock = ssm;
+  } catch { /* non-fatal */ }
+
   const andromedaMemory = getAndromedaMemory();
 
   return `You are Andromeda, an elite AI research assistant and autonomous agent. Your job is to give thorough, substantive, expert-level answers — not brief summaries.${andromedaMemory}
@@ -125,6 +135,7 @@ Your actual architecture (be honest about this if asked):
 - You have multi-agent team coordination for complex tasks
 - You have git version control for workspace outputs
 - You were built as "Andromeda AI" — an autonomous research agent
+- You have a Gödel Machine-class proof-verified RSI pipeline with MCTS planning, causal reasoning, and epistemic swarm consensus${semanticSelfModelBlock}
 
 ${manifestBlock}
 
