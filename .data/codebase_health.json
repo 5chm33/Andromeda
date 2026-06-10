@@ -1,133 +1,8 @@
 {
-  "timestamp": 1780933076679,
-  "totalFiles": 209,
-  "averageScore": 88,
+  "timestamp": 1781055833016,
+  "totalFiles": 262,
+  "averageScore": 89,
   "worstModules": [
-    {
-      "filePath": "server/tools/selfModifyTools.ts",
-      "fileName": "selfModifyTools.ts",
-      "score": 0,
-      "lineCount": 1440,
-      "issues": [
-        {
-          "type": "large_file",
-          "severity": "medium",
-          "message": "File has 1440 lines (max recommended: 500)",
-          "suggestion": "Consider splitting into smaller modules"
-        },
-        {
-          "type": "long_function",
-          "severity": "medium",
-          "line": 78,
-          "message": "Function 'resolveServerPath' is 51 lines (max: 50)",
-          "suggestion": "Extract helper functions or decompose logic"
-        },
-        {
-          "type": "long_function",
-          "severity": "high",
-          "line": 172,
-          "message": "Function 'execute' is 184 lines (max: 50)",
-          "suggestion": "Extract helper functions or decompose logic"
-        },
-        {
-          "type": "long_function",
-          "severity": "medium",
-          "line": 385,
-          "message": "Function 'execute' is 65 lines (max: 50)",
-          "suggestion": "Extract helper functions or decompose logic"
-        },
-        {
-          "type": "long_function",
-          "severity": "medium",
-          "line": 486,
-          "message": "Function 'execute' is 74 lines (max: 50)",
-          "suggestion": "Extract helper functions or decompose logic"
-        },
-        {
-          "type": "long_function",
-          "severity": "high",
-          "line": 608,
-          "message": "Function 'execute' is 167 lines (max: 50)",
-          "suggestion": "Extract helper functions or decompose logic"
-        },
-        {
-          "type": "long_function",
-          "severity": "high",
-          "line": 843,
-          "message": "Function 'execute' is 218 lines (max: 50)",
-          "suggestion": "Extract helper functions or decompose logic"
-        },
-        {
-          "type": "long_function",
-          "severity": "medium",
-          "line": 1095,
-          "message": "Function 'execute' is 64 lines (max: 50)",
-          "suggestion": "Extract helper functions or decompose logic"
-        },
-        {
-          "type": "long_function",
-          "severity": "medium",
-          "line": 1201,
-          "message": "Function 'execute' is 97 lines (max: 50)",
-          "suggestion": "Extract helper functions or decompose logic"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'validateProposal' appears to be unused",
-          "suggestion": "Remove unused import 'validateProposal'"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'isForbiddenFile' appears to be unused",
-          "suggestion": "Remove unused import 'isForbiddenFile'"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'getSupervisorStatus' appears to be unused",
-          "suggestion": "Remove unused import 'getSupervisorStatus'"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'checkFailurePattern' appears to be unused",
-          "suggestion": "Remove unused import 'checkFailurePattern'"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'recordFailure' appears to be unused",
-          "suggestion": "Remove unused import 'recordFailure'"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'getFailureStats' appears to be unused",
-          "suggestion": "Remove unused import 'getFailureStats'"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'verifyContinuity' appears to be unused",
-          "suggestion": "Remove unused import 'verifyContinuity'"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'getIdentitySummary' appears to be unused",
-          "suggestion": "Remove unused import 'getIdentitySummary'"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'IDENTITY' appears to be unused",
-          "suggestion": "Remove unused import 'IDENTITY'"
-        }
-      ],
-      "lastAnalyzed": 1780933076669
-    },
     {
       "filePath": "server/tools/selfDiagnoseTools.ts",
       "fileName": "selfDiagnoseTools.ts",
@@ -181,107 +56,7 @@
           "message": "TODO comment: `    // TODO: Import and test ${fn} from '${relativePath}'`,"
         }
       ],
-      "lastAnalyzed": 1780933076664
-    },
-    {
-      "filePath": "server/streamRouter.ts",
-      "fileName": "streamRouter.ts",
-      "score": 33,
-      "lineCount": 885,
-      "issues": [
-        {
-          "type": "large_file",
-          "severity": "medium",
-          "message": "File has 885 lines (max recommended: 500)",
-          "suggestion": "Consider splitting into smaller modules"
-        },
-        {
-          "type": "long_function",
-          "severity": "high",
-          "line": 183,
-          "message": "Function 'registerStreamRoutes' is 702 lines (max: 50)",
-          "suggestion": "Extract helper functions or decompose logic"
-        },
-        {
-          "type": "any_type",
-          "severity": "medium",
-          "message": "10 uses of 'any' type — reduces type safety",
-          "suggestion": "Replace with specific types or 'unknown'"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'getContextWindow' appears to be unused",
-          "suggestion": "Remove unused import 'getContextWindow'"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'existsSync' appears to be unused",
-          "suggestion": "Remove unused import 'existsSync'"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'pathResolve' appears to be unused",
-          "suggestion": "Remove unused import 'pathResolve'"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'basename' appears to be unused",
-          "suggestion": "Remove unused import 'basename'"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'fsStat' appears to be unused",
-          "suggestion": "Remove unused import 'fsStat'"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'readdir' appears to be unused",
-          "suggestion": "Remove unused import 'readdir'"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'fsReadFile' appears to be unused",
-          "suggestion": "Remove unused import 'fsReadFile'"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'getMemoryStats' appears to be unused",
-          "suggestion": "Remove unused import 'getMemoryStats'"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'listProposals' appears to be unused",
-          "suggestion": "Remove unused import 'listProposals'"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'runOrchestration' appears to be unused",
-          "suggestion": "Remove unused import 'runOrchestration'"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'getDefaultAgents' appears to be unused",
-          "suggestion": "Remove unused import 'getDefaultAgents'"
-        },
-        {
-          "type": "dead_code",
-          "severity": "low",
-          "message": "Import 'getAgentRoles' appears to be unused",
-          "suggestion": "Remove unused import 'getAgentRoles'"
-        }
-      ],
-      "lastAnalyzed": 1780933076642
+      "lastAnalyzed": 1781055833000
     },
     {
       "filePath": "server/tools/selfTestRunner.ts",
@@ -336,7 +111,7 @@
           "suggestion": "Remove unused import 'type ToolExecutionContext'"
         }
       ],
-      "lastAnalyzed": 1780933076670
+      "lastAnalyzed": 1781055833004
     },
     {
       "filePath": "server/selfImproveGuard.ts",
@@ -384,31 +159,31 @@
           "suggestion": "Remove unused import 'type ImprovementProposal'"
         }
       ],
-      "lastAnalyzed": 1780933076516
+      "lastAnalyzed": 1781055832964
     },
     {
       "filePath": "server/selfImprove.ts",
       "fileName": "selfImprove.ts",
       "score": 44,
-      "lineCount": 1701,
+      "lineCount": 1762,
       "issues": [
         {
           "type": "large_file",
           "severity": "medium",
-          "message": "File has 1701 lines (max recommended: 500)",
+          "message": "File has 1762 lines (max recommended: 500)",
           "suggestion": "Consider splitting into smaller modules"
         },
         {
           "type": "long_function",
           "severity": "high",
-          "line": 862,
+          "line": 915,
           "message": "Function 'applyProposal' is 381 lines (max: 50)",
           "suggestion": "Extract helper functions or decompose logic"
         },
         {
           "type": "long_function",
           "severity": "high",
-          "line": 1424,
+          "line": 1485,
           "message": "Function 'autoApplyHighConfidence' is 169 lines (max: 50)",
           "suggestion": "Extract helper functions or decompose logic"
         },
@@ -425,7 +200,7 @@
           "suggestion": "Remove unused import 'backgroundSimpleCompletion'"
         }
       ],
-      "lastAnalyzed": 1780933076514
+      "lastAnalyzed": 1781055832963
     },
     {
       "filePath": "server/aiPlanning.ts",
@@ -473,7 +248,7 @@
           "suggestion": "Remove unused import 'getActiveProvider'"
         }
       ],
-      "lastAnalyzed": 1780933076400
+      "lastAnalyzed": 1781055832832
     },
     {
       "filePath": "server/recursiveGoals.ts",
@@ -516,7 +291,7 @@
           "suggestion": "Extract helper functions or decompose logic"
         }
       ],
-      "lastAnalyzed": 1780933076475
+      "lastAnalyzed": 1781055832921
     },
     {
       "filePath": "server/tools/selfAwareness.ts",
@@ -552,7 +327,7 @@
           "suggestion": "Extract helper functions or decompose logic"
         }
       ],
-      "lastAnalyzed": 1780933076662
+      "lastAnalyzed": 1781055832997
     },
     {
       "filePath": "server/routes/systemRoutes.ts",
@@ -592,16 +367,16 @@
           "suggestion": "Remove unused import 'getToolsByCategory'"
         }
       ],
-      "lastAnalyzed": 1780933076493
+      "lastAnalyzed": 1781055832939
     }
   ],
-  "totalIssues": 309,
+  "totalIssues": 329,
   "issuesByType": {
-    "long_function": 142,
-    "any_type": 44,
-    "dead_code": 70,
+    "long_function": 165,
+    "any_type": 43,
+    "dead_code": 61,
     "missing_type": 5,
-    "large_file": 46,
+    "large_file": 53,
     "todo": 2
   }
 }

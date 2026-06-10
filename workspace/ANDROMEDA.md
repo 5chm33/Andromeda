@@ -2,22 +2,22 @@
 > **THIS FILE IS INJECTED AT THE START OF EVERY SYSTEM PROMPT.**
 > Read it completely before taking any action. It contains your real file structure,
 > correct tool names, and mandatory protocols.
-> Last updated: 2026-06-07T14:14:05.374Z
+> Last updated: 2026-06-10T01:43:47.788Z
 
 ## ⚠️ CRITICAL: Your Runtime Paths (v5.96)
 These are the ACTUAL paths on this machine. Use these in ALL bash_execute commands.
 
 | Path | Value |
 |------|-------|
-| Project root | `/home/ubuntu/andromeda_dev` |
-| Server source | `/home/ubuntu/andromeda_dev/server` |
-| Workspace | `/home/ubuntu/andromeda_dev/workspace` |
+| Project root | `/home/ubuntu/andromeda_repo` |
+| Server source | `/home/ubuntu/andromeda_repo/dist` |
+| Workspace | `/home/ubuntu/andromeda_repo/workspace` |
 
 **When searching for source files, use:**
 ```bash
-find "/home/ubuntu/andromeda_dev/server" -name "*.ts" | sort
+find "/home/ubuntu/andromeda_repo/dist" -name "*.ts" | sort
 # OR simply:
-ls "/home/ubuntu/andromeda_dev/server"
+ls "/home/ubuntu/andromeda_repo/dist"
 ```
 
 **NEVER use /app/, /app/src/, /app/server/src/, or C:\Users\ paths — they do NOT exist.**
@@ -28,296 +28,7 @@ You do NOT need to call any tool to discover these — they are listed here.
 To read any of these files, use: self_read_server_file with file_path set to the filename (e.g., "llmProvider.ts").
 
 ```
-  adaptiveEval.ts (27KB)
-  adaptivePartitions.test.ts (1KB)
-  adaptivePartitions.ts (8KB)
-  adaptiveRouter.test.ts (1KB)
-  adaptiveRouter.ts (10KB)
-  adminAuth.ts (3KB)
-  adversarial.test.ts (13KB)
-  agentOrchestrator.test.ts (1KB)
-  agentOrchestrator.ts (23KB)
-  agentStateMachine.ts (2KB)
-  agentSystemPrompt.ts (14KB)
-  agentTypes.ts (3KB)
-  ai.test.ts (3KB)
-  ai.ts (1KB)
-  aiMemory.test.ts (1KB)
-  aiMemory.ts (3KB)
-  aiPlanning.ts (29KB)
-  aiPrompts.ts (11KB)
-  aiStreaming.ts (23KB)
-  aiTokens.ts (9KB)
-  aiZipEdit.test.ts (1KB)
-  aiZipEdit.ts (4KB)
-  andromedaMemoryWriter.test.ts (3KB)
-  andromedaMemoryWriter.ts (20KB)
-  auditLog.ts (11KB)
-  auth.logout.test.ts (2KB)
-  autoGoalSuggester.test.ts (1KB)
-  autoGoalSuggester.ts (8KB)
-  autoRebuild.ts (12KB)
-  autoRollback.test.ts (3KB)
-  autoRollback.ts (14KB)
-  autonomousGoalGenerator.test.ts (2KB)
-  autonomousGoalGenerator.ts (13KB)
-  autonomyOrchestrator.test.ts (1KB)
-  autonomyOrchestrator.ts (22KB)
-  benchmarkRunner.test.ts (2KB)
-  benchmarkRunner.ts (12KB)
-  biasDetector.test.ts (1KB)
-  biasDetector.ts (16KB)
-  brave.test.ts (1KB)
-  browser.test.ts (2KB)
-  browser.ts (18KB)
-  cache.test.ts (1KB)
-  cache.ts (8KB)
-  capabilityDiscovery.test.ts (3KB)
-  capabilityDiscovery.ts (7KB)
-  ciPipeline.ts (10KB)
-  circuitBreaker.test.ts (2KB)
-  circuitBreaker.ts (9KB)
-  codeIntel.test.ts (3KB)
-  codeIntel.ts (14KB)
-  codeQualityMonitor.test.ts (2KB)
-  codeQualityMonitor.ts (16KB)
-  codeRunner.test.ts (1KB)
-  codeRunner.ts (6KB)
-  codebaseAnalyzer.test.ts (2KB)
-  codebaseAnalyzer.ts (11KB)
-  consensusEngine.test.ts (1KB)
-  consensusEngine.ts (7KB)
-  contextAwareness.test.ts (1KB)
-  contextAwareness.ts (9KB)
-  contextBus.test.ts (4KB)
-  contextBus.ts (19KB)
-  contextCompressionDaemon.test.ts (2KB)
-  contextCompressionDaemon.ts (9KB)
-  contextManager.test.ts (1KB)
-  contextManager.ts (12KB)
-  continuousImprover.test.ts (2KB)
-  continuousImprover.ts (12KB)
-  criticalPath.test.ts (3KB)
-  db.test.ts (2KB)
-  db.ts (10KB)
-  dbPostgres.ts (7KB)
-  deepseek.test.ts (0KB)
-  dependencyAuditor.test.ts (3KB)
-  dependencyAuditor.ts (9KB)
-  dependencyGraph.test.ts (2KB)
-  dependencyGraph.ts (16KB)
-  dependencyResolver.test.ts (3KB)
-  dependencyResolver.ts (28KB)
-  docGenerator.test.ts (2KB)
-  docGenerator.ts (12KB)
-  episodicConsolidation.ts (11KB)
-  episodicMemory.test.ts (3KB)
-  episodicMemory.ts (8KB)
-  evalFramework.test.ts (3KB)
-  evalFramework.ts (31KB)
-  evalGoalDiscovery.ts (7KB)
-  failurePatternMemory.test.ts (3KB)
-  failurePatternMemory.ts (8KB)
-  federatedLearning.ts (21KB)
-  fileEngine.test.ts (2KB)
-  fileEngine.ts (1KB)
-  fileEngineAnalysis.ts (36KB)
-  fileEngineChunking.ts (13KB)
-  fileEngineTypes.ts (10KB)
-  fileEngineUtils.ts (13KB)
-  fuzz.test.ts (17KB)
-  goalDecomposer.ts (7KB)
-  goalManager.test.ts (1KB)
-  goalManager.ts (33KB)
-  gracefulDegradation.test.ts (3KB)
-  gracefulDegradation.ts (19KB)
-  grounding.test.ts (1KB)
-  grounding.ts (13KB)
-  hotReload.test.ts (1KB)
-  hotReload.ts (18KB)
-  identityManifest.test.ts (3KB)
-  identityManifest.ts (7KB)
-  importGraph.ts (12KB)
-  knowledgeTransfer.ts (15KB)
-  learnedConstraints.ts (7KB)
-  llmProvider.test.ts (1KB)
-  llmProvider.ts (40KB)
-  llmRouter.test.ts (2KB)
-  llmRouter.ts (14KB)
-  logger.test.ts (2KB)
-  logger.ts (5KB)
-  manifest.test.ts (1KB)
-  manifest.ts (19KB)
-  mcpClient.test.ts (1KB)
-  mcpClient.ts (17KB)
-  memory.test.ts (4KB)
-  memory.ts (23KB)
-  memoryConsolidation.test.ts (1KB)
-  memoryConsolidation.ts (23KB)
-  memoryForgettingCurve.test.ts (4KB)
-  memoryForgettingCurve.ts (9KB)
-  modelRegistry.test.ts (3KB)
-  modelRegistry.ts (20KB)
-  multiAgent.test.ts (1KB)
-  multiAgent.ts (14KB)
-  multiAgentImprover.test.ts (1KB)
-  multiAgentImprover.ts (11KB)
-  observability.test.ts (3KB)
-  observability.ts (11KB)
-  persistentContextStore.test.ts (2KB)
-  persistentContextStore.ts (9KB)
-  prGenerator.ts (13KB)
-  promptEngineer.test.ts (1KB)
-  promptEngineer.ts (8KB)
-  ragPipeline.test.ts (3KB)
-  ragPipeline.ts (11KB)
-  rbac.ts (15KB)
-  reactEngine.behavioral.test.ts (27KB)
-  reactEngine.integration.test.ts (5KB)
-  reactEngine.test.ts (3KB)
-  reactEngine.ts (77KB)
-  recursionGuard.test.ts (1KB)
-  recursionGuard.ts (6KB)
-  recursiveGoals.test.ts (2KB)
-  recursiveGoals.ts (30KB)
-  redisLock.ts (7KB)
-  rlhfCollector.ts (12KB)
-  router.test.ts (4KB)
-  routers.test.ts (1KB)
-  routers.ts (4KB)
-  rsiDb.ts (15KB)
-  rsiEngine.test.ts (3KB)
-  rsiEngine.ts (31KB)
-  rsiScheduler.ts (9KB)
-  runtimeConfig.test.ts (3KB)
-  runtimeConfig.ts (10KB)
-  safety.test.ts (6KB)
-  safetyIntegration.test.ts (4KB)
-  safetySupervisor.test.ts (3KB)
-  safetySupervisor.ts (10KB)
-  sandboxManager.test.ts (3KB)
-  sandboxManager.ts (13KB)
-  sandboxVerifier.test.ts (3KB)
-  sandboxVerifier.ts (12KB)
-  scheduler.test.ts (3KB)
-  scheduler.ts (17KB)
-  search.test.ts (4KB)
-  search.ts (15KB)
-  security.test.ts (1KB)
-  security.ts (16KB)
-  selfConsistency.test.ts (2KB)
-  selfConsistency.ts (12KB)
-  selfDocumentation.test.ts (3KB)
-  selfDocumentation.ts (6KB)
-  selfHeal.test.ts (4KB)
-  selfHeal.ts (34KB)
-  selfImprove.test.ts (2KB)
-  selfImprove.ts (59KB)
-  selfImproveGuard.test.ts (3KB)
-  selfImproveGuard.ts (22KB)
-  selfIntrospect.test.ts (1KB)
-  selfIntrospect.ts (16KB)
-  selfKnowledgeBase.test.ts (2KB)
-  selfKnowledgeBase.ts (23KB)
-  selfModel.test.ts (2KB)
-  selfModel.ts (16KB)
-  selfModify.test.ts (1KB)
-  selfModify.ts (29KB)
-  selfMonitor.test.ts (3KB)
-  selfMonitor.ts (25KB)
-  selfReflectionEngine.test.ts (4KB)
-  selfReflectionEngine.ts (9KB)
-  selfReview.test.ts (3KB)
-  selfReview.ts (19KB)
-  selfRollback.test.ts (3KB)
-  selfRollback.ts (17KB)
-  selfTestGenerator.test.ts (3KB)
-  selfTestGenerator.ts (7KB)
-  selfTestPipeline.test.ts (3KB)
-  selfTestPipeline.ts (18KB)
-  skillGraph.test.ts (3KB)
-  skillGraph.ts (13KB)
-  storage.test.ts (1KB)
-  storage.ts (3KB)
-  streamIntegrityMonitor.test.ts (1KB)
-  streamIntegrityMonitor.ts (10KB)
-  streamRouter.test.ts (3KB)
-  streamRouter.ts (39KB)
-  systemMemory.test.ts (3KB)
-  systemMemory.ts (12KB)
-  taskDecomposer.test.ts (1KB)
-  taskDecomposer.ts (19KB)
-  taskPlanner.test.ts (1KB)
-  taskPlanner.ts (15KB)
-  telemetry.ts (11KB)
-  tenantManager.ts (12KB)
-  testCoverageAnalyzer.test.ts (2KB)
-  testCoverageAnalyzer.ts (10KB)
-  testGenerator.test.ts (3KB)
-  testGenerator.ts (19KB)
-  tieredContextManager.test.ts (1KB)
-  tieredContextManager.ts (18KB)
-  tokenBudgetManager.test.ts (2KB)
-  tokenBudgetManager.ts (14KB)
-  toolSynthesis.ts (10KB)
-  transactionLog.test.ts (3KB)
-  transactionLog.ts (7KB)
-  truncationDetector.test.ts (2KB)
-  truncationDetector.ts (20KB)
-  twoPhaseCommit.test.ts (2KB)
-  twoPhaseCommit.ts (22KB)
-  unifiedKnowledge.test.ts (1KB)
-  unifiedKnowledge.ts (12KB)
-  vectorMemory.test.ts (3KB)
-  vectorMemory.ts (13KB)
-  watchdog.ts (17KB)
-  workspace.test.ts (3KB)
-  workspace.ts (13KB)
-  zipEdit.test.ts (1KB)
-  tools/advancedFileOps.test.ts (1KB)
-  tools/advancedFileOps.ts (24KB)
-  tools/agentControl.test.ts (1KB)
-  tools/agentControl.ts (5KB)
-  tools/agentMemory.test.ts (1KB)
-  tools/agentMemory.ts (7KB)
-  tools/atomicModifyTools.test.ts (1KB)
-  tools/atomicModifyTools.ts (18KB)
-  tools/bashExecute.test.ts (1KB)
-  tools/bashExecute.ts (4KB)
-  tools/browserAutomation.test.ts (1KB)
-  tools/browserAutomation.ts (23KB)
-  tools/browserTools.test.ts (1KB)
-  tools/browserTools.ts (9KB)
-  tools/dockerSandbox.test.ts (1KB)
-  tools/dockerSandbox.ts (19KB)
-  tools/fileOps.test.ts (1KB)
-  tools/fileOps.ts (18KB)
-  tools/gitOps.test.ts (1KB)
-  tools/gitOps.ts (8KB)
-  tools/index.test.ts (1KB)
-  tools/index.ts (2KB)
-  tools/pythonExecute.test.ts (1KB)
-  tools/pythonExecute.ts (4KB)
-  tools/selfAwareness.test.ts (1KB)
-  tools/selfAwareness.ts (20KB)
-  tools/selfDiagnoseTools.test.ts (1KB)
-  tools/selfDiagnoseTools.ts (35KB)
-  tools/selfImprovementTools.test.ts (1KB)
-  tools/selfImprovementTools.ts (15KB)
-  tools/selfModifyTools.test.ts (1KB)
-  tools/selfModifyTools.ts (60KB)
-  tools/selfTestRunner.test.ts (1KB)
-  tools/selfTestRunner.ts (19KB)
-  tools/spawnSubAgent.test.ts (1KB)
-  tools/spawnSubAgent.ts (8KB)
-  tools/toolRegistry.test.ts (1KB)
-  tools/toolRegistry.ts (3KB)
-  tools/vision.test.ts (1KB)
-  tools/vision.ts (14KB)
-  tools/webBrowse.test.ts (1KB)
-  tools/webBrowse.ts (3KB)
-  tools/webSearch.test.ts (1KB)
-  tools/webSearch.ts (11KB)
+
 ```
 
 ## ⚠️ MANDATORY: Read This Before Any File Operation
@@ -420,364 +131,455 @@ with `find server/ -name "*.ts" | head -50` to discover the real file tree.**
 ```
 server/
 ├── _core/
-│   ├── context.ts
-│   ├── cookies.ts
-│   ├── dataApi.ts
-│   ├── env.ts
-│   ├── imageGeneration.ts
-│   ├── index.ts
-│   ├── initDaemons.ts
-│   ├── initModules.ts
-│   ├── initRoutes.ts
-│   ├── initSafety.ts
-│   ├── llm.ts
-│   ├── map.ts
-│   ├── notification.ts
-│   ├── oauth.ts
-│   ├── sdk.ts
-│   ├── systemRouter.ts
-│   ├── trpc.ts
-│   ├── types/
-│   │   ├── cookie.d.ts
-│   │   └── manusTypes.ts
-│   ├── vite.ts
-│   └── voiceTranscription.ts
-├── adaptiveEval.ts
-├── adaptivePartitions.test.ts
-├── adaptivePartitions.ts
-├── adaptiveRouter.test.ts
-├── adaptiveRouter.ts
-├── adminAuth.ts
-├── adversarial.test.ts
-├── agentOrchestrator.test.ts
-├── agentOrchestrator.ts
-├── agentStateMachine.ts
-├── agentSystemPrompt.ts
-├── agentTypes.ts
-├── ai.test.ts
-├── ai.ts
-├── aiMemory.test.ts
-├── aiMemory.ts
-├── aiPlanning.ts
-├── aiPrompts.ts
-├── aiStreaming.ts
-├── aiTokens.ts
-├── aiZipEdit.test.ts
-├── aiZipEdit.ts
-├── andromedaMemoryWriter.test.ts
-├── andromedaMemoryWriter.ts
-├── auditLog.ts
-├── auth.logout.test.ts
-├── autoGoalSuggester.test.ts
-├── autoGoalSuggester.ts
-├── autoRebuild.ts
-├── autoRollback.test.ts
-├── autoRollback.ts
-├── autonomousGoalGenerator.test.ts
-├── autonomousGoalGenerator.ts
-├── autonomyOrchestrator.test.ts
-├── autonomyOrchestrator.ts
-├── benchmarkRunner.test.ts
-├── benchmarkRunner.ts
-├── biasDetector.test.ts
-├── biasDetector.ts
-├── brave.test.ts
-├── browser.test.ts
-├── browser.ts
-├── cache.test.ts
-├── cache.ts
-├── capabilityDiscovery.test.ts
-├── capabilityDiscovery.ts
-├── ciPipeline.ts
-├── circuitBreaker.test.ts
-├── circuitBreaker.ts
-├── codeIntel.test.ts
-├── codeIntel.ts
-├── codeQualityMonitor.test.ts
-├── codeQualityMonitor.ts
-├── codeRunner.test.ts
-├── codeRunner.ts
-├── codebaseAnalyzer.test.ts
-├── codebaseAnalyzer.ts
-├── consensusEngine.test.ts
-├── consensusEngine.ts
-├── contextAwareness.test.ts
-├── contextAwareness.ts
-├── contextBus.test.ts
-├── contextBus.ts
-├── contextCompressionDaemon.test.ts
-├── contextCompressionDaemon.ts
-├── contextManager.test.ts
-├── contextManager.ts
-├── continuousImprover.test.ts
-├── continuousImprover.ts
-├── criticalPath.test.ts
-├── db.test.ts
-├── db.ts
-├── dbPostgres.ts
-├── deepseek.test.ts
-├── dependencyAuditor.test.ts
-├── dependencyAuditor.ts
-├── dependencyGraph.test.ts
-├── dependencyGraph.ts
-├── dependencyResolver.test.ts
-├── dependencyResolver.ts
-├── docGenerator.test.ts
-├── docGenerator.ts
-├── episodicConsolidation.ts
-├── episodicMemory.test.ts
-├── episodicMemory.ts
-├── evalFramework.test.ts
-├── evalFramework.ts
-├── evalGoalDiscovery.ts
-├── failurePatternMemory.test.ts
-├── failurePatternMemory.ts
-├── federatedLearning.ts
-├── fileEngine.test.ts
-├── fileEngine.ts
-├── fileEngineAnalysis.ts
-├── fileEngineChunking.ts
-├── fileEngineTypes.ts
-├── fileEngineUtils.ts
-├── fuzz.test.ts
-├── goalDecomposer.ts
-├── goalManager.test.ts
-├── goalManager.ts
-├── gracefulDegradation.test.ts
-├── gracefulDegradation.ts
-├── grounding.test.ts
-├── grounding.ts
-├── hotReload.test.ts
-├── hotReload.ts
-├── identityManifest.test.ts
-├── identityManifest.ts
-├── importGraph.ts
-├── knowledgeTransfer.ts
-├── learnedConstraints.ts
-├── llmProvider.test.ts
-├── llmProvider.ts
-├── llmRouter.test.ts
-├── llmRouter.ts
-├── logger.test.ts
-├── logger.ts
-├── manifest.test.ts
-├── manifest.ts
-├── mcpClient.test.ts
-├── mcpClient.ts
-├── memory.test.ts
-├── memory.ts
-├── memoryConsolidation.test.ts
-├── memoryConsolidation.ts
-├── memoryForgettingCurve.test.ts
-├── memoryForgettingCurve.ts
-├── modelRegistry.test.ts
-├── modelRegistry.ts
-├── multiAgent.test.ts
-├── multiAgent.ts
-├── multiAgentImprover.test.ts
-├── multiAgentImprover.ts
-├── observability.test.ts
-├── observability.ts
-├── persistentContextStore.test.ts
-├── persistentContextStore.ts
-├── prGenerator.ts
-├── promptEngineer.test.ts
-├── promptEngineer.ts
-├── ragPipeline.test.ts
-├── ragPipeline.ts
-├── rbac.ts
-├── reactEngine.behavioral.test.ts
-├── reactEngine.integration.test.ts
-├── reactEngine.test.ts
-├── reactEngine.ts
-├── recursionGuard.test.ts
-├── recursionGuard.ts
-├── recursiveGoals.test.ts
-├── recursiveGoals.ts
-├── redisLock.ts
-├── rlhfCollector.ts
-├── router.test.ts
-├── routers.test.ts
-├── routers.ts
-├── routes/
-│   ├── adaptiveEvalRoutes.ts
-│   ├── adminRoutes.ts
-│   ├── agentRoutes.test.ts
-│   ├── agentRoutes.ts
-│   ├── autonomyRoutes.test.ts
-│   ├── autonomyRoutes.ts
-│   ├── evalRoutes.test.ts
-│   ├── evalRoutes.ts
-│   ├── federatedRoutes.ts
-│   ├── llmRoutes.test.ts
-│   ├── llmRoutes.ts
-│   ├── memoryRoutes.test.ts
-│   ├── memoryRoutes.ts
-│   ├── selfRoutes.test.ts
-│   ├── selfRoutes.ts
-│   ├── systemRoutes.test.ts
-│   ├── systemRoutes.ts
-│   ├── v71Routes.ts
-│   ├── v7Routes.ts
-│   ├── validate.ts
-│   ├── workspaceRoutes.test.ts
-│   ├── workspaceRoutes.ts
-│   └── zodSchemas.ts
-├── rsiDb.ts
-├── rsiEngine.test.ts
-├── rsiEngine.ts
-├── rsiScheduler.ts
-├── runtimeConfig.test.ts
-├── runtimeConfig.ts
-├── safety.test.ts
-├── safetyIntegration.test.ts
-├── safetySupervisor.test.ts
-├── safetySupervisor.ts
-├── sandboxManager.test.ts
-├── sandboxManager.ts
-├── sandboxVerifier.test.ts
-├── sandboxVerifier.ts
-├── scheduler.test.ts
-├── scheduler.ts
-├── search.test.ts
-├── search.ts
-├── security.test.ts
-├── security.ts
-├── self/
-│   ├── atomic_editor.test.ts
-│   ├── atomic_editor.ts
-│   ├── behavioral_tests.test.ts
-│   ├── behavioral_tests.ts
-│   ├── benchmark_suite.test.ts
-│   ├── benchmark_suite.ts
-│   ├── chunked_writer.test.ts
-│   ├── chunked_writer.ts
-│   ├── compilation_pipeline.test.ts
-│   ├── compilation_pipeline.ts
-│   ├── dependency_graph.test.ts
-│   ├── dependency_graph.ts
-│   ├── dependency_upgrader.test.ts
-│   ├── dependency_upgrader.ts
-│   ├── index.test.ts
-│   ├── index.ts
-│   ├── refactoring_engine.test.ts
-│   ├── refactoring_engine.ts
-│   ├── smoke_test_runner.test.ts
-│   └── smoke_test_runner.ts
-├── selfConsistency.test.ts
-├── selfConsistency.ts
-├── selfDocumentation.test.ts
-├── selfDocumentation.ts
-├── selfHeal.test.ts
-├── selfHeal.ts
-├── selfImprove.test.ts
-├── selfImprove.ts
-├── selfImproveGuard.test.ts
-├── selfImproveGuard.ts
-├── selfIntrospect.test.ts
-├── selfIntrospect.ts
-├── selfKnowledgeBase.test.ts
-├── selfKnowledgeBase.ts
-├── selfModel.test.ts
-├── selfModel.ts
-├── selfModify.test.ts
-├── selfModify.ts
-├── selfMonitor.test.ts
-├── selfMonitor.ts
-├── selfReflectionEngine.test.ts
-├── selfReflectionEngine.ts
-├── selfReview.test.ts
-├── selfReview.ts
-├── selfRollback.test.ts
-├── selfRollback.ts
-├── selfTestGenerator.test.ts
-├── selfTestGenerator.ts
-├── selfTestPipeline.test.ts
-├── selfTestPipeline.ts
-├── skillGraph.test.ts
-├── skillGraph.ts
-├── storage.test.ts
-├── storage.ts
-├── streamIntegrityMonitor.test.ts
-├── streamIntegrityMonitor.ts
-├── streamRouter.test.ts
-├── streamRouter.ts
-├── systemMemory.test.ts
-├── systemMemory.ts
-├── taskDecomposer.test.ts
-├── taskDecomposer.ts
-├── taskPlanner.test.ts
-├── taskPlanner.ts
-├── telemetry.ts
-├── tenantManager.ts
-├── testCoverageAnalyzer.test.ts
-├── testCoverageAnalyzer.ts
-├── testGenerator.test.ts
-├── testGenerator.ts
-├── tieredContextManager.test.ts
-├── tieredContextManager.ts
-├── tokenBudgetManager.test.ts
-├── tokenBudgetManager.ts
-├── toolSynthesis.ts
-├── tools/
-│   ├── advancedFileOps.test.ts
-│   ├── advancedFileOps.ts
-│   ├── agentControl.test.ts
-│   ├── agentControl.ts
-│   ├── agentMemory.test.ts
-│   ├── agentMemory.ts
-│   ├── atomicModifyTools.test.ts
-│   ├── atomicModifyTools.ts
-│   ├── bashExecute.test.ts
-│   ├── bashExecute.ts
-│   ├── browserAutomation.test.ts
-│   ├── browserAutomation.ts
-│   ├── browserTools.test.ts
-│   ├── browserTools.ts
-│   ├── dockerSandbox.test.ts
-│   ├── dockerSandbox.ts
-│   ├── fileOps.test.ts
-│   ├── fileOps.ts
-│   ├── gitOps.test.ts
-│   ├── gitOps.ts
-│   ├── index.test.ts
-│   ├── index.ts
-│   ├── pythonExecute.test.ts
-│   ├── pythonExecute.ts
-│   ├── selfAwareness.test.ts
-│   ├── selfAwareness.ts
-│   ├── selfDiagnoseTools.test.ts
-│   ├── selfDiagnoseTools.ts
-│   ├── selfImprovementTools.test.ts
-│   ├── selfImprovementTools.ts
-│   ├── selfModifyTools.test.ts
-│   ├── selfModifyTools.ts
-│   ├── selfTestRunner.test.ts
-│   ├── selfTestRunner.ts
-│   ├── spawnSubAgent.test.ts
-│   ├── spawnSubAgent.ts
-│   ├── toolRegistry.test.ts
-│   ├── toolRegistry.ts
-│   ├── vision.test.ts
-│   ├── vision.ts
-│   ├── webBrowse.test.ts
-│   ├── webBrowse.ts
-│   ├── webSearch.test.ts
-│   └── webSearch.ts
-├── transactionLog.test.ts
-├── transactionLog.ts
-├── truncationDetector.test.ts
-├── truncationDetector.ts
-├── twoPhaseCommit.test.ts
-├── twoPhaseCommit.ts
-├── unifiedKnowledge.test.ts
-├── unifiedKnowledge.ts
-├── vectorMemory.test.ts
-├── vectorMemory.ts
-├── watchdog.ts
-├── workspace.test.ts
-├── workspace.ts
-└── zipEdit.test.ts
+│   └── index.js
+├── andromedaDaemon.js
+├── data/
+│   └── scheduler.json
+├── public/
+│   ├── .gitkeep
+│   ├── __manus__/
+│   │   └── debug-collector.js
+│   ├── andromeda-icon.png
+│   ├── assets/
+│   │   ├── KaTeX_AMS-Regular-BQhdFMY1.woff2
+│   │   ├── KaTeX_AMS-Regular-DMm9YOAa.woff
+│   │   ├── KaTeX_AMS-Regular-DRggAlZN.ttf
+│   │   ├── KaTeX_Caligraphic-Bold-ATXxdsX0.ttf
+│   │   ├── KaTeX_Caligraphic-Bold-BEiXGLvX.woff
+│   │   ├── KaTeX_Caligraphic-Bold-Dq_IR9rO.woff2
+│   │   ├── KaTeX_Caligraphic-Regular-CTRA-rTL.woff
+│   │   ├── KaTeX_Caligraphic-Regular-Di6jR-x-.woff2
+│   │   ├── KaTeX_Caligraphic-Regular-wX97UBjC.ttf
+│   │   ├── KaTeX_Fraktur-Bold-BdnERNNW.ttf
+│   │   ├── KaTeX_Fraktur-Bold-BsDP51OF.woff
+│   │   ├── KaTeX_Fraktur-Bold-CL6g_b3V.woff2
+│   │   ├── KaTeX_Fraktur-Regular-CB_wures.ttf
+│   │   ├── KaTeX_Fraktur-Regular-CTYiF6lA.woff2
+│   │   ├── KaTeX_Fraktur-Regular-Dxdc4cR9.woff
+│   │   ├── KaTeX_Main-Bold-Cx986IdX.woff2
+│   │   ├── KaTeX_Main-Bold-Jm3AIy58.woff
+│   │   ├── KaTeX_Main-Bold-waoOVXN0.ttf
+│   │   ├── KaTeX_Main-BoldItalic-DxDJ3AOS.woff2
+│   │   ├── KaTeX_Main-BoldItalic-DzxPMmG6.ttf
+│   │   ├── KaTeX_Main-BoldItalic-SpSLRI95.woff
+│   │   ├── KaTeX_Main-Italic-3WenGoN9.ttf
+│   │   ├── KaTeX_Main-Italic-BMLOBm91.woff
+│   │   ├── KaTeX_Main-Italic-NWA7e6Wa.woff2
+│   │   ├── KaTeX_Main-Regular-B22Nviop.woff2
+│   │   ├── KaTeX_Main-Regular-Dr94JaBh.woff
+│   │   ├── KaTeX_Main-Regular-ypZvNtVU.ttf
+│   │   ├── KaTeX_Math-BoldItalic-B3XSjfu4.ttf
+│   │   ├── KaTeX_Math-BoldItalic-CZnvNsCZ.woff2
+│   │   ├── KaTeX_Math-BoldItalic-iY-2wyZ7.woff
+│   │   ├── KaTeX_Math-Italic-DA0__PXp.woff
+│   │   ├── KaTeX_Math-Italic-flOr_0UB.ttf
+│   │   ├── KaTeX_Math-Italic-t53AETM-.woff2
+│   │   ├── KaTeX_SansSerif-Bold-CFMepnvq.ttf
+│   │   ├── KaTeX_SansSerif-Bold-D1sUS0GD.woff2
+│   │   ├── KaTeX_SansSerif-Bold-DbIhKOiC.woff
+│   │   ├── KaTeX_SansSerif-Italic-C3H0VqGB.woff2
+│   │   ├── KaTeX_SansSerif-Italic-DN2j7dab.woff
+│   │   ├── KaTeX_SansSerif-Italic-YYjJ1zSn.ttf
+│   │   ├── KaTeX_SansSerif-Regular-BNo7hRIc.ttf
+│   │   ├── KaTeX_SansSerif-Regular-CS6fqUqJ.woff
+│   │   ├── KaTeX_SansSerif-Regular-DDBCnlJ7.woff2
+│   │   ├── KaTeX_Script-Regular-C5JkGWo-.ttf
+│   │   ├── KaTeX_Script-Regular-D3wIWfF6.woff2
+│   │   ├── KaTeX_Script-Regular-D5yQViql.woff
+│   │   ├── KaTeX_Size1-Regular-C195tn64.woff
+│   │   ├── KaTeX_Size1-Regular-Dbsnue_I.ttf
+│   │   ├── KaTeX_Size1-Regular-mCD8mA8B.woff2
+│   │   ├── KaTeX_Size2-Regular-B7gKUWhC.ttf
+│   │   ├── KaTeX_Size2-Regular-Dy4dx90m.woff2
+│   │   ├── KaTeX_Size2-Regular-oD1tc_U0.woff
+│   │   ├── KaTeX_Size3-Regular-CTq5MqoE.woff
+│   │   ├── KaTeX_Size3-Regular-DgpXs0kz.ttf
+│   │   ├── KaTeX_Size4-Regular-BF-4gkZK.woff
+│   │   ├── KaTeX_Size4-Regular-DWFBv043.ttf
+│   │   ├── KaTeX_Size4-Regular-Dl5lxZxV.woff2
+│   │   ├── KaTeX_Typewriter-Regular-C0xS9mPB.woff
+│   │   ├── KaTeX_Typewriter-Regular-CO6r4hn1.woff2
+│   │   ├── KaTeX_Typewriter-Regular-D3Ib7_Hf.ttf
+│   │   ├── ProposalTreeGraph-C5ap-Sga.css
+│   │   ├── ProposalTreeGraph-CcDne8WA.js
+│   │   ├── _basePickBy-CLTQbRec.js
+│   │   ├── _baseUniq-BsKoBr91.js
+│   │   ├── abap-BdImnpbu.js
+│   │   ├── actionscript-3-CfeIJUat.js
+│   │   ├── ada-bCR0ucgS.js
+│   │   ├── andromeeda-C-Jbm3Hp.js
+│   │   ├── angular-html-CU67Zn6k.js
+│   │   ├── angular-ts-BwZT4LLn.js
+│   │   ├── apache-Pmp26Uib.js
+│   │   ├── apex-C7Pw0Ztw.js
+│   │   ├── apl-dKokRX4l.js
+│   │   ├── applescript-Co6uUVPk.js
+│   │   ├── ara-BRHolxvo.js
+│   │   ├── arc-CIGhak_I.js
+│   │   ├── architectureDiagram-VXUJARFQ-B4aeYcsW.js
+│   │   ├── asciidoc-Dv7Oe6Be.js
+│   │   ├── asm-D_Q5rh1f.js
+│   │   ├── astro-CbQHKStN.js
+│   │   ├── aurora-x-D-2ljcwZ.js
+│   │   ├── awk-DMzUqQB5.js
+│   │   ├── ayu-dark-Cv9koXgw.js
+│   │   ├── ballerina-BFfxhgS-.js
+│   │   ├── bat-BkioyH1T.js
+│   │   ├── beancount-k_qm7-4y.js
+│   │   ├── berry-D08WgyRC.js
+│   │   ├── bibtex-CHM0blh-.js
+│   │   ├── bicep-6nHXG8SA.js
+│   │   ├── blade-DVc8C-J4.js
+│   │   ├── blockDiagram-VD42YOAC-NVujhK3j.js
+│   │   ├── bsl-BO_Y6i37.js
+│   │   ├── c-BIGW1oBm.js
+│   │   ├── c4Diagram-YG6GDRKO-LHBlPbrE.js
+│   │   ├── cadence-Bv_4Rxtq.js
+│   │   ├── cairo-KRGpt6FW.js
+│   │   ├── catppuccin-frappe-DFWUc33u.js
+│   │   ├── catppuccin-latte-C9dUb6Cb.js
+│   │   ├── catppuccin-macchiato-DQyhUUbL.js
+│   │   ├── catppuccin-mocha-D87Tk5Gz.js
+│   │   ├── channel-DEC6LYO-.js
+│   │   ├── chunk-4BX2VUAB-De36NPYS.js
+│   │   ├── chunk-55IACEB6-b8Ao4Fee.js
+│   │   ├── chunk-B4BG7PRW-mUGr-zD0.js
+│   │   ├── chunk-DI55MBZ5-BDqUrzHU.js
+│   │   ├── chunk-FMBD7UC4-DtVE13Kn.js
+│   │   ├── chunk-QN33PNHL-D0dQuoVO.js
+│   │   ├── chunk-QZHKN3VN-YMXs9i8r.js
+│   │   ├── chunk-TZMSLE5B-0kYcRCAG.js
+│   │   ├── clarity-D53aC0YG.js
+│   │   ├── classDiagram-2ON5EDUG-Cx3uTSry.js
+│   │   ├── classDiagram-v2-WZHVMYZB-Cx3uTSry.js
+│   │   ├── clojure-P80f7IUj.js
+│   │   ├── clone-B6WWf5vG.js
+│   │   ├── cmake-D1j8_8rp.js
+│   │   ├── cobol-nwyudZeR.js
+│   │   ├── codeowners-Bp6g37R7.js
+│   │   ├── codeql-DsOJ9woJ.js
+│   │   ├── coffee-Ch7k5sss.js
+│   │   ├── common-lisp-Cg-RD9OK.js
+│   │   ├── coq-DkFqJrB1.js
+│   │   ├── cose-bilkent-S5V4N54A-ByIFf6B9.js
+│   │   ├── cpp-CofmeUqb.js
+│   │   ├── crystal-tKQVLTB8.js
+│   │   ├── csharp-CX12Zw3r.js
+│   │   ├── css-DPfMkruS.js
+│   │   ├── csv-fuZLfV_i.js
+│   │   ├── cue-D82EKSYY.js
+│   │   ├── cypher-COkxafJQ.js
+│   │   ├── cytoscape.esm-DtBltrT8.js
+│   │   ├── d-85-TOEBH.js
+│   │   ├── dagre-6UL2VRFP-DoWI23Nf.js
+│   │   ├── dark-plus-eOWES_5F.js
+│   │   ├── dart-CF10PKvl.js
+│   │   ├── dax-CEL-wOlO.js
+│   │   ├── desktop-BmXAJ9_W.js
+│   │   ├── diagram-PSM6KHXK-SXU5Y5c5.js
+│   │   ├── diagram-QEK2KX5R-Cu2mNNBZ.js
+│   │   ├── diagram-S2PKOQOG-BkJzP2mz.js
+│   │   ├── diff-D97Zzqfu.js
+│   │   ├── docker-BcOcwvcX.js
+│   │   ├── dotenv-Da5cRb03.js
+│   │   ├── dracula-BzJJZx-M.js
+│   │   ├── dracula-soft-BXkSAIEj.js
+│   │   ├── dream-maker-BtqSS_iP.js
+│   │   ├── edge-BkV0erSs.js
+│   │   ├── elixir-CDX3lj18.js
+│   │   ├── elm-DbKCFpqz.js
+│   │   ├── emacs-lisp-C9XAeP06.js
+│   │   ├── erDiagram-Q2GNP2WA-BW55tlHN.js
+│   │   ├── erb-BOJIQeun.js
+│   │   ├── erlang-DsQrWhSR.js
+│   │   ├── everforest-dark-BgDCqdQA.js
+│   │   ├── everforest-light-C8M2exoo.js
+│   │   ├── fennel-BYunw83y.js
+│   │   ├── fish-BvzEVeQv.js
+│   │   ├── flowDiagram-NV44I4VS-CX7wmFRz.js
+│   │   ├── fluent-C4IJs8-o.js
+│   │   ├── fortran-fixed-form-BZjJHVRy.js
+│   │   ├── fortran-free-form-D22FLkUw.js
+│   │   ├── fsharp-CXgrBDvD.js
+│   │   ├── ganttDiagram-LVOFAZNH-21ipPOMG.js
+│   │   ├── gdresource-B7Tvp0Sc.js
+│   │   ├── gdscript-DTMYz4Jt.js
+│   │   ├── gdshader-DkwncUOv.js
+│   │   ├── genie-D0YGMca9.js
+│   │   ├── gherkin-DyxjwDmM.js
+│   │   ├── git-commit-F4YmCXRG.js
+│   │   ├── git-rebase-r7XF79zn.js
+│   │   ├── gitGraphDiagram-NY62KEGX-DYsMw2U3.js
+│   │   ├── github-dark-DHJKELXO.js
+│   │   ├── github-dark-default-Cuk6v7N8.js
+│   │   ├── github-dark-dimmed-DH5Ifo-i.js
+│   │   ├── github-dark-high-contrast-E3gJ1_iC.js
+│   │   ├── github-light-DAi9KRSo.js
+│   │   ├── github-light-default-D7oLnXFd.js
+│   │   ├── github-light-high-contrast-BfjtVDDH.js
+│   │   ├── gleam-BspZqrRM.js
+│   │   ├── glimmer-js-Rg0-pVw9.js
+│   │   ├── glimmer-ts-U6CK756n.js
+│   │   ├── glsl-DplSGwfg.js
+│   │   ├── gnuplot-DdkO51Og.js
+│   │   ├── go-Dn2_MT6a.js
+│   │   ├── graph-D5bQypNW.js
+│   │   ├── graphql-ChdNCCLP.js
+│   │   ├── groovy-gcz8RCvz.js
+│   │   ├── gruvbox-dark-hard-CFHQjOhq.js
+│   │   ├── gruvbox-dark-medium-GsRaNv29.js
+│   │   ├── gruvbox-dark-soft-CVdnzihN.js
+│   │   ├── gruvbox-light-hard-CH1njM8p.js
+│   │   ├── gruvbox-light-medium-DRw_LuNl.js
+│   │   ├── gruvbox-light-soft-hJgmCMqR.js
+│   │   ├── hack-CaT9iCJl.js
+│   │   ├── haml-B8DHNrY2.js
+│   │   ├── handlebars-BL8al0AC.js
+│   │   ├── haskell-Df6bDoY_.js
+│   │   ├── haxe-CzTSHFRz.js
+│   │   ├── hcl-BWvSN4gD.js
+│   │   ├── hjson-D5-asLiD.js
+│   │   ├── hlsl-D3lLCCz7.js
+│   │   ├── houston-DnULxvSX.js
+│   │   ├── html-GMplVEZG.js
+│   │   ├── html-derivative-BFtXZ54Q.js
+│   │   ├── http-jrhK8wxY.js
+│   │   ├── hurl-irOxFIW8.js
+│   │   ├── hxml-Bvhsp5Yf.js
+│   │   ├── hy-DFXneXwc.js
+│   │   ├── imba-DGztddWO.js
+│   │   ├── index-IQYqYSVj.css
+│   │   ├── index-n8zvi9j2.js
+│   │   ├── infoDiagram-F6ZHWCRC-BCBgrJ0C.js
+│   │   ├── ini-BEwlwnbL.js
+│   │   ├── java-CylS5w8V.js
+│   │   ├── javascript-wDzz0qaB.js
+│   │   ├── jinja-4LBKfQ-Z.js
+│   │   ├── jison-wvAkD_A8.js
+│   │   ├── journeyDiagram-XKPGCS4Q-B2mvUaC7.js
+│   │   ├── json-Cp-IABpG.js
+│   │   ├── json5-C9tS-k6U.js
+│   │   ├── jsonc-Des-eS-w.js
+│   │   ├── jsonl-DcaNXYhu.js
+│   │   ├── jsonnet-DFQXde-d.js
+│   │   ├── jssm-C2t-YnRu.js
+│   │   ├── jsx-g9-lgVsj.js
+│   │   ├── julia-C8NyazO9.js
+│   │   ├── kanagawa-dragon-CkXjmgJE.js
+│   │   ├── kanagawa-lotus-CfQXZHmo.js
+│   │   ├── kanagawa-wave-DWedfzmr.js
+│   │   ├── kanban-definition-3W4ZIXB7-C82A9SHD.js
+│   │   ├── kdl-DV7GczEv.js
+│   │   ├── kotlin-BdnUsdx6.js
+│   │   ├── kusto-BvAqAH-y.js
+│   │   ├── laserwave-DUszq2jm.js
+│   │   ├── latex-BUKiar2Z.js
+│   │   ├── layout-CuLuAi9N.js
+│   │   ├── lean-DP1Csr6i.js
+│   │   ├── less-B1dDrJ26.js
+│   │   ├── light-plus-B7mTdjB0.js
+│   │   ├── liquid-DYVedYrR.js
+│   │   ├── llvm-BtvRca6l.js
+│   │   ├── log-2UxHyX5q.js
+│   │   ├── logo-BtOb2qkB.js
+│   │   ├── lua-BbnMAYS6.js
+│   │   ├── luau-CXu1NL6O.js
+│   │   ├── make-CHLpvVh8.js
+│   │   ├── markdown-Cvjx9yec.js
+│   │   ├── marko-CPi9NSCl.js
+│   │   ├── material-theme-D5KoaKCx.js
+│   │   ├── material-theme-darker-BfHTSMKl.js
+│   │   ├── material-theme-lighter-B0m2ddpp.js
+│   │   ├── material-theme-ocean-CyktbL80.js
+│   │   ├── material-theme-palenight-Csfq5Kiy.js
+│   │   ├── matlab-D7o27uSR.js
+│   │   ├── mdc-DUICxH0z.js
+│   │   ├── mdx-Cmh6b_Ma.js
+│   │   ├── mermaid-DKYwYmdq.js
+│   │   ├── mermaid.core-Dm5InA2_.js
+│   │   ├── min-dark-CafNBF8u.js
+│   │   ├── min-light-CTRr51gU.js
+│   │   ├── mindmap-definition-VGOIOE7T-g0tECurq.js
+│   │   ├── mipsasm-CKIfxQSi.js
+│   │   ├── mojo-1DNp92w6.js
+│   │   ├── monokai-D4h5O-jR.js
+│   │   ├── move-Bu9oaDYs.js
+│   │   ├── narrat-DRg8JJMk.js
+│   │   ├── nextflow-CUEJCptM.js
+│   │   ├── nginx-DknmC5AR.js
+│   │   ├── night-owl-C39BiMTA.js
+│   │   ├── nim-CVrawwO9.js
+│   │   ├── nix-BbRYJGeE.js
+│   │   ├── nord-Ddv68eIx.js
+│   │   ├── nushell-C-sUppwS.js
+│   │   ├── objective-c-DXmwc3jG.js
+│   │   ├── objective-cpp-CLxacb5B.js
+│   │   ├── ocaml-C0hk2d4L.js
+│   │   ├── one-dark-pro-DVMEJ2y_.js
+│   │   ├── one-light-PoHY5YXO.js
+│   │   ├── pascal-D93ZcfNL.js
+│   │   ├── perl-C0TMdlhV.js
+│   │   ├── php-CDn_0X-4.js
+│   │   ├── pieDiagram-ADFJNKIX-maWAvtLK.js
+│   │   ├── pkl-u5AG7uiY.js
+│   │   ├── plastic-3e1v2bzS.js
+│   │   ├── plsql-ChMvpjG-.js
+│   │   ├── po-BTJTHyun.js
+│   │   ├── poimandres-CS3Unz2-.js
+│   │   ├── polar-C0HS_06l.js
+│   │   ├── postcss-CXtECtnM.js
+│   │   ├── powerquery-CEu0bR-o.js
+│   │   ├── powershell-Dpen1YoG.js
+│   │   ├── prisma-Dd19v3D-.js
+│   │   ├── prolog-CbFg5uaA.js
+│   │   ├── proto-DyJlTyXw.js
+│   │   ├── pug-CGlum2m_.js
+│   │   ├── puppet-BMWR74SV.js
+│   │   ├── purescript-CklMAg4u.js
+│   │   ├── python-B6aJPvgy.js
+│   │   ├── qml-3beO22l8.js
+│   │   ├── qmldir-C8lEn-DE.js
+│   │   ├── qss-IeuSbFQv.js
+│   │   ├── quadrantDiagram-AYHSOK5B-D0Wz2T5Q.js
+│   │   ├── r-DiinP2Uv.js
+│   │   ├── racket-BqYA7rlc.js
+│   │   ├── raku-DXvB9xmW.js
+│   │   ├── razor-WgofotgN.js
+│   │   ├── red-bN70gL4F.js
+│   │   ├── reg-C-SQnVFl.js
+│   │   ├── regexp-CDVJQ6XC.js
+│   │   ├── rel-C3B-1QV4.js
+│   │   ├── requirementDiagram-UZGBJVZJ-DIzZCAzU.js
+│   │   ├── riscv-BM1_JUlF.js
+│   │   ├── rose-pine-BHrmToEH.js
+│   │   ├── rose-pine-dawn-CnK8MTSM.js
+│   │   ├── rose-pine-moon-NleAzG8P.js
+│   │   ├── rosmsg-BJDFO7_C.js
+│   │   ├── rst-B0xPkSld.js
+│   │   ├── ruby-BvKwtOVI.js
+│   │   ├── rust-B1yitclQ.js
+│   │   ├── sankeyDiagram-TZEHDZUN-CsVBATH5.js
+│   │   ├── sas-cz2c8ADy.js
+│   │   ├── sass-Cj5Yp3dK.js
+│   │   ├── scala-C151Ov-r.js
+│   │   ├── scheme-C98Dy4si.js
+│   │   ├── scss-OYdSNvt2.js
+│   │   ├── sdbl-DVxCFoDh.js
+│   │   ├── sequenceDiagram-WL72ISMW-CwDX3NTL.js
+│   │   ├── shaderlab-Dg9Lc6iA.js
+│   │   ├── shellscript-Yzrsuije.js
+│   │   ├── shellsession-BADoaaVG.js
+│   │   ├── slack-dark-BthQWCQV.js
+│   │   ├── slack-ochin-DqwNpetd.js
+│   │   ├── smalltalk-BERRCDM3.js
+│   │   ├── snazzy-light-Bw305WKR.js
+│   │   ├── solarized-dark-DXbdFlpD.js
+│   │   ├── solarized-light-L9t79GZl.js
+│   │   ├── solidity-BbcW6ACK.js
+│   │   ├── soy-Brmx7dQM.js
+│   │   ├── sparql-rVzFXLq3.js
+│   │   ├── splunk-BtCnVYZw.js
+│   │   ├── sql-BLtJtn59.js
+│   │   ├── ssh-config-_ykCGR6B.js
+│   │   ├── stata-BH5u7GGu.js
+│   │   ├── stateDiagram-FKZM4ZOC-B_LA_kRS.js
+│   │   ├── stateDiagram-v2-4FDKWEC3-De8nrfRM.js
+│   │   ├── stylus-BEDo0Tqx.js
+│   │   ├── svelte-3Dk4HxPD.js
+│   │   ├── swift-Dg5xB15N.js
+│   │   ├── synthwave-84-CbfX1IO0.js
+│   │   ├── system-verilog-CnnmHF94.js
+│   │   ├── systemd-4A_iFExJ.js
+│   │   ├── talonscript-CkByrt1z.js
+│   │   ├── tasl-QIJgUcNo.js
+│   │   ├── tcl-dwOrl1Do.js
+│   │   ├── templ-W15q3VgB.js
+│   │   ├── terraform-BETggiCN.js
+│   │   ├── tex-Cppo0RY3.js
+│   │   ├── timeline-definition-IT6M3QCI-DKS6s8qQ.js
+│   │   ├── tokyo-night-hegEt444.js
+│   │   ├── toml-vGWfd6FD.js
+│   │   ├── transform-P2IumA1s.js
+│   │   ├── treemap-KMMF4GRG-ILcq571m.js
+│   │   ├── ts-tags-zn1MmPIZ.js
+│   │   ├── tsv-B_m7g4N7.js
+│   │   ├── tsx-COt5Ahok.js
+│   │   ├── turtle-BsS91CYL.js
+│   │   ├── twig-CO9l9SDP.js
+│   │   ├── typescript-BPQ3VLAy.js
+│   │   ├── typespec-Df68jz8_.js
+│   │   ├── typst-DHCkPAjA.js
+│   │   ├── v-BcVCzyr7.js
+│   │   ├── vala-CsfeWuGM.js
+│   │   ├── vb-D17OF-Vu.js
+│   │   ├── verilog-BQ8w6xss.js
+│   │   ├── vesper-DU1UobuO.js
+│   │   ├── vhdl-CeAyd5Ju.js
+│   │   ├── viml-CJc9bBzg.js
+│   │   ├── vitesse-black-Bkuqu6BP.js
+│   │   ├── vitesse-dark-D0r3Knsf.js
+│   │   ├── vitesse-light-CVO1_9PV.js
+│   │   ├── vue-CCoi5OLL.js
+│   │   ├── vue-html-DAAvJJDi.js
+│   │   ├── vue-vine-_Ih-lPRR.js
+│   │   ├── vyper-CDx5xZoG.js
+│   │   ├── wasm-CG6Dc4jp.js
+│   │   ├── wasm-MzD3tlZU.js
+│   │   ├── wenyan-BV7otONQ.js
+│   │   ├── wgsl-Dx-B1_4e.js
+│   │   ├── wikitext-BhOHFoWU.js
+│   │   ├── wit-5i3qLPDT.js
+│   │   ├── wolfram-lXgVvXCa.js
+│   │   ├── xml-sdJ4AIDG.js
+│   │   ├── xsl-CtQFsRM5.js
+│   │   ├── xychartDiagram-PRI3JC2R-CuL_1S7j.js
+│   │   ├── yaml-Buea-lGh.js
+│   │   ├── zenscript-DVFEvuxE.js
+│   │   └── zig-VOosw3JB.js
+│   ├── index.html
+│   └── skins/
+│       ├── andromeda_default.jpg
+│       ├── aurora.jpg
+│       ├── aurora_2.jpg
+│       ├── cyberpunk.jpg
+│       ├── cyberpunk_2.jpg
+│       ├── finalfantasy.jpg
+│       ├── finalfantasy_2.jpg
+│       ├── goth.jpg
+│       ├── goth_2.jpg
+│       ├── lofi.jpg
+│       ├── lofi_2.jpg
+│       ├── lofi_new.jpg
+│       ├── luigis_mansion.jpg
+│       ├── luigis_mansion_2.jpg
+│       ├── luigis_mansion_new.jpg
+│       ├── monsters.jpg
+│       ├── monsters_2.jpg
+│       ├── nature_forest.jpg
+│       ├── nature_forest_2.jpg
+│       ├── overlays/
+│       │   ├── aurora_particles.png
+│       │   ├── cyberpunk_rain.png
+│       │   ├── goth_bats.png
+│       │   ├── lofi_rain.png
+│       │   ├── luigi_ghost.png
+│       │   └── nature_fog.png
+│       ├── space.jpg
+│       ├── space_2.jpg
+│       ├── stealth.jpg
+│       └── videos/
+│           ├── aurora.mp4
+│           ├── cyberpunk.mp4
+│           ├── finalfantasy.mp4
+│           ├── goth.mp4
+│           ├── lofi.mp4
+│           ├── luigis_mansion.mp4
+│           ├── monsters.mp4
+│           ├── nature.mp4
+│           └── space.mp4
+└── workspace/
+    ├── .andromeda_knowledge_base.json
+    └── .andromeda_meta_goals.json
 ```
 
 ## Available Tools (EXACT names — verified against source code)
