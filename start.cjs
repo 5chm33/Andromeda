@@ -84,6 +84,31 @@ if (!exists(".env.local")) {
   }
 }
 log("  [OK] .env.local found");
+// Check for unfilled placeholder values
+const envContent = fs.readFileSync(path.join(ROOT, ".env.local"), "utf8");
+const hasPlaceholder = envContent.includes("_api_key_here") || envContent.includes("your_");
+if (hasPlaceholder) {
+  err("");
+  err("  ============================================================");
+  err("   ACTION REQUIRED: Fill in your API keys in .env.local!");
+  err("  ============================================================");
+  err("");
+  err("  Your .env.local still has placeholder values like:");
+  err("    DEEPSEEK_API_KEY=your_deepseek_api_key_here");
+  err("");
+  err("  Replace them with your real API keys, save the file,");
+  err("  then run the launcher again.");
+  err("  Opening .env.local in Notepad now...");
+  err("");
+  try {
+    if (os.platform() === "win32") {
+      spawn("notepad.exe", [path.join(ROOT, ".env.local")], { detached: true, stdio: "ignore" }).unref();
+    } else {
+      spawn("open", [path.join(ROOT, ".env.local")], { detached: true, stdio: "ignore" }).unref();
+    }
+  } catch {}
+  process.exit(0);
+}
 
 // ── Step 3: pnpm check ────────────────────────────────────────────────────────
 let pnpmCmd = "pnpm";

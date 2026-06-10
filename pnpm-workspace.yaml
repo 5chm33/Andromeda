@@ -2,12 +2,13 @@ packages:
   - '.'
 
 # Only these packages are allowed to run build scripts (native addons).
-# canvas is in optionalDependencies and intentionally excluded here —
-# it requires native build tools that may not be available on all platforms.
+# canvas is optional — on platforms without build tools its build will fail
+# gracefully since it is in optionalDependencies.
 onlyBuiltDependencies:
   - esbuild
   - '@tailwindcss/oxide'
   - better-sqlite3
   - node-pty
+  - canvas
 patchedDependencies:
   wouter@3.7.1: patches/wouter@3.7.1.patch

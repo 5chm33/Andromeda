@@ -58,6 +58,7 @@ import {
 import { AmbientOrb, useOrbState } from "@/components/AmbientOrb";
 import { ArtifactPanel, extractArtifact, type Artifact } from "@/components/ArtifactPanel";
 import { ThemeCanvas } from "@/components/ThemeCanvas";
+import { SkinSelector } from "@/components/SkinSelector";
 import { getSavedSkin } from "@/lib/themeEngine";
 import type { SkinId } from "@/lib/themeEngine";
 
@@ -174,7 +175,7 @@ export default function Workspace() {
   const [model, setModel] = useState<"deepseek-chat" | "deepseek-reasoner">(() => {
     return (localStorage.getItem("andromeda_model") as "deepseek-chat" | "deepseek-reasoner") || "deepseek-chat";
   });
-  const [currentSkin] = useState<SkinId>(() => getSavedSkin());
+  const [currentSkin, setCurrentSkin] = useState<SkinId>(() => getSavedSkin());
 
   const abortRef = useRef<AbortController | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -487,7 +488,8 @@ export default function Workspace() {
   return (
     <TooltipProvider delayDuration={400}>
       <div className="flex h-screen overflow-hidden bg-[oklch(0.09_0.012_265)] text-foreground">
-        <ThemeCanvas skin={currentSkin} />
+        <ThemeCanvas skinId={currentSkin} />
+        <SkinSelector currentSkin={currentSkin} onSkinChange={setCurrentSkin} />
 
         {/* ── Left Sidebar ─────────────────────────────────────────────────── */}
         <aside
