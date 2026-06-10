@@ -114,8 +114,10 @@ if (!exists("node_modules")) {
 }
 
 // ── Step 5: Build if dist is missing ─────────────────────────────────────────
+// Check BOTH the server bundle AND the frontend (Vite) build
 const distEntry = path.join(ROOT, "dist", "_core", "index.js");
-if (!fs.existsSync(distEntry)) {
+const distFrontend = path.join(ROOT, "dist", "public", "index.html");
+if (!fs.existsSync(distEntry) || !fs.existsSync(distFrontend)) {
   log("");
   log("  [INFO] Building Andromeda (~30 seconds)...");
   log("");
