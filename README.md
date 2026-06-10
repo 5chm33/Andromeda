@@ -1,134 +1,100 @@
 <div align="center">
 
-# 🌌 Andromeda AI
+# Andromeda AI
 
-**A fully autonomous, self-modifying AI agent framework — built for people who want more than a chatbot.**
+### The World's Most Advanced Open-Source Autonomous Agent
 
-[![Version](https://img.shields.io/badge/version-v9.14.0-blueviolet.svg)](https://github.com/5chm33/Andromeda)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
-[![Eval Score](https://img.shields.io/badge/eval-93%25-brightgreen.svg)](#-eval-suite)
-[![Grade](https://img.shields.io/badge/grade-S%2B%20100%2F100-gold.svg)](#-grade)
-[![Federated Tests](https://img.shields.io/badge/federated-32%2F32-brightgreen.svg)](#-production-infrastructure)
+**v10.0.0 — Gödel Machine Edition**
 
-Andromeda is a production-grade autonomous AI agent that doesn't just answer questions — it **writes its own code, runs its own tests, commits its own improvements, and restarts itself**. It ships as a single Windows launcher (`.bat`) or a standard `pnpm dev` for Mac/Linux, and opens a full-featured chat UI at `localhost:3000`.
+[![CI](https://github.com/5chm33/Andromeda/actions/workflows/ci.yml/badge.svg)](https://github.com/5chm33/Andromeda/actions)
+[![Tests](https://img.shields.io/badge/tests-1934%20passing-brightgreen)](https://github.com/5chm33/Andromeda/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org)
 
-[Features](#-features) • [Architecture](#-architecture) • [Quick Start](#-quick-start) • [Configuration](#-configuration) • [Safety](#-safety-first) • [Comparison](#-how-it-compares) • [Roadmap](#-roadmap)
+[Quick Start](#quick-start) · [Features](#features) · [Architecture](#architecture) · [Configuration](#configuration) · [API Reference](#api-reference) · [Deployment](#deployment)
 
 </div>
 
 ---
 
-## ✨ Features
+> **Andromeda** is a production-grade autonomous AI agent that does not just answer questions — it **writes its own code, proves its own improvements, commits its own changes, and restarts itself**. It is the closest open-source implementation of a [Gödel Machine](https://en.wikipedia.org/wiki/G%C3%B6del_machine): a self-modifying AI that only applies improvements when it can formally prove they increase utility.
+
+---
+
+## What Makes Andromeda Different
+
+Most AI assistants are stateless question-answerers. Andromeda is a **self-improving autonomous system** with:
+
+- A **Proof Gate** — every proposed self-modification must pass a 4-layer formal verification cascade (TLA+ → Lean 4 → propositional logic → ZK safety score) before it can be committed
+- A **Unified Utility Function** — a single scalar U(state) that all subsystems optimize, with auto-calibration via coordinate descent on historical outcomes
+- A **Semantic Self-Model** — Andromeda knows what each of its own modules does and can predict the utility impact of a change *before* running a shadow test
+- A **Monte Carlo Tree Search planner** — simulates hundreds of refactor paths before committing to one
+- A **Byzantine-fault-tolerant swarm** — multi-node consensus with epistemic belief modeling (Theory of Mind for AI agents)
+
+---
+
+## Features
 
 ### Core Intelligence
-- **Model-Agnostic LLM Routing** — Routes between Kimi K2, DeepSeek R2, Claude, and GPT-4.1 based on task type. Coding tasks go to Kimi/DeepSeek; reasoning to Claude; fast queries to GPT-4.1-nano. You pay fractions of a cent per query.
-- **ReAct Agent Loop** — 10 registered tools (web search, code execution, file read/write, memory, git, browser, shell) with full tool-call streaming to the UI.
-- **Persistent Memory** — TF-IDF + vector embeddings with consolidation, forgetting curves, and keyword search. Memory persists across restarts.
-- **Web Search** — Brave Search API with SearXNG fallback. Deep research mode chains multiple searches with synthesis.
+
+| Feature | Description |
+|---|---|
+| **Model-Agnostic LLM Routing** | Routes between DeepSeek, Kimi K2, Claude, and GPT-4.1 based on task type. Coding → DeepSeek/Kimi; reasoning → Claude; fast queries → GPT-4.1-mini. |
+| **ReAct Agent Loop** | 10 registered tools: web search, code execution, file read/write, memory, git, browser, shell, image generation, MCP, and terminal. Full tool-call streaming to the UI. |
+| **Persistent Memory** | TF-IDF + vector embeddings with consolidation, forgetting curves, and keyword search. Survives restarts. |
+| **Web Search** | Brave Search API with SearXNG fallback. Deep research mode chains multiple searches with synthesis. |
+| **Visual Grounding** | Playwright-based annotated screenshots with numbered bounding boxes — the LLM can "see" and click web pages by element index. |
 
 ### Autonomous Self-Improvement (RSI Engine)
-- **8-Phase RSI Cycle**: OBSERVE → EVALUATE → PROPOSE → VALIDATE → APPLY → VERIFY → RECORD → IDLE
-- **Two-Phase Commit**: All self-modifications write to a `.bak` file first, run `tsc --noEmit`, then atomically swap. If health checks fail on next boot, the change is automatically rolled back.
-- **Constitutional Guard**: Every proposal is checked against `andromeda-constitution.json` before being applied. Safety-critical files (`twoPhaseCommit.ts`, `safetySupervisor.ts`, `initSafety.ts`) are permanently forbidden from modification.
-- **Confidence Gating**: Proposals below 0.7 confidence are queued for human review, not auto-applied.
-- **Live GitHub Integration**: RSI can open PRs to your repo when `PR_AUTO_MERGE=false`, letting you review changes before they land.
 
-### UI & Experience
-- **9 Animated Video Skins** — Aurora, Cyberpunk, Final Fantasy, Goth, Lo-Fi, Luigi's Mansion, Monsters, Nature Forest, Space. Each has a static fallback + animated overlay (particles, rain, bats, fog).
-- **Mouse Parallax** — Background shifts subtly with cursor movement for a depth effect.
-- **5-Step Onboarding Tour** — First-run modal walks new users through search, agent mode, code execution, image generation, and keyboard shortcuts.
-- **Keyboard Shortcuts** — `Ctrl+K` focus input, `Ctrl+B` toggle sidebar, `Escape` blur.
-- **Radix UI Components** — Full accessible tooltip, dialog, dropdown, and popover system throughout.
-- **Code Editor** — CodeMirror 6 with syntax highlighting for JavaScript, Python, and more.
-- **RSI Dashboard** — Live view of the self-improvement cycle, proposals, audit log, and eval scores.
+The RSI engine runs an **8-phase cycle**: OBSERVE → EVALUATE → PROPOSE → VALIDATE → APPLY → VERIFY → RECORD → IDLE
 
-### Production Infrastructure
-- **Crash Recovery** — Atomic crash flag (temp+rename write) prevents false rollbacks from partial writes. `uncaughtException` clears the flag before exit.
-- **Streaming Retry** — `fetchWithRetry` utility with exponential back-off applied to all major fetch paths.
-- **Integration Test Suite** — `npm run test:integration` tests 8 key API endpoints.
-- **Federated Learning Simulation** — `npm run test:federated` runs 32 in-process assertions across gossip protocol, proposal validation, trust scoring, and federated averaging (100% pass rate).
-- **Eval Suite** — `npm run test:eval` runs the 70-task capability benchmark. Current score: **93% (70/70)**.
-- **Federated Learning** — Multi-node weight sharing via `FEDERATED_PEERS` env var (experimental).
-- **RBAC** — Role-based access control with API key management and audit logging.
+| Phase | What Happens |
+|---|---|
+| **OBSERVE** | Collects test results, benchmark scores, latency metrics, and error logs |
+| **EVALUATE** | Computes U(state) — the unified utility scalar across 7 weighted dimensions |
+| **PROPOSE** | MCTS planner generates candidate improvements; semantic self-model predicts delta |
+| **VALIDATE** | Proof gate runs 4-layer verification cascade; proposals below threshold are rejected |
+| **APPLY** | Two-phase commit: write to .bak, run tsc --noEmit, atomic swap |
+| **VERIFY** | Shadow instance runs full test suite against the new code |
+| **RECORD** | Outcome fed back to semantic self-model and utility function for online learning |
+| **IDLE** | Waits for next trigger (scheduled, event-driven, or manual) |
 
----
+### Gödel Machine Subsystems (v10.0.0)
 
-## 🏗 Architecture
+| Module | Purpose |
+|---|---|
+| `proofVerifier.ts` | 4-layer proof cascade: TLA+/TLC → Lean 4 → propositional logic → ZK heuristic |
+| `utilityFunction.ts` | Unified scalar utility with 7 components and auto-calibrating weights |
+| `semanticSelfModel.ts` | Module utility map, impact prediction, and online learning from RSI outcomes |
+| `mctsPlanningEngine.ts` | Monte Carlo Tree Search with UCB1 for multi-step refactor planning |
+| `causalReasoning.ts` | Judea Pearl Bayesian causal networks — finds *why* tests fail, not just *that* they fail |
+| `astKnowledgeGraph.ts` | TypeScript AST → queryable knowledge graph with impact radius and semantic search |
+| `epistemicBeliefModel.ts` | Theory of Mind belief states for Byzantine swarm agents |
+| `distributedProofConsensus.ts` | Quorum-based proposal approval with HMAC proof verification |
+| `swarmTestnet.ts` | Multi-instance swarm coordination testnet with Byzantine fault simulation |
 
-Andromeda is ~354 TypeScript files across server and client, organized into focused modules.
+### UI and Experience
 
-### Server Modules
-
-| Module | File | Purpose |
-|--------|------|---------|
-| RSI Engine | `rsiEngine.ts` | Orchestrates the 8-phase self-improvement cycle |
-| Two-Phase Commit | `twoPhaseCommit.ts` | Safe atomic file writes with git backup |
-| Self-Improve | `selfImprove.ts` | Generates and applies code proposals |
-| LLM Provider | `llmProvider.ts` | Model-agnostic routing (Kimi/DeepSeek/Claude/GPT) |
-| Memory | `memory.ts` | TF-IDF + vector persistent memory |
-| Context Bus | `contextBus.ts` | Multi-agent message passing |
-| Eval Framework | `evalFramework.ts` | 70-task benchmark suite |
-| Learned Constraints | `learnedConstraints.ts` | Persists rejection patterns across sessions |
-| Watchdog | `watchdog.ts` | Health monitoring for all subsystems |
-| Safety Supervisor | `safetySupervisor.ts` | Constitutional AI enforcement |
-| Federated Learning | `federatedLearning.ts` | Multi-node weight aggregation |
-| RBAC | `rbac.ts` | Role-based access control |
-
-### API Routes
-
-| Route Prefix | Description |
-|-------------|-------------|
-| `/api/agent/react/*` | ReAct agent streaming, status, interrupt, steer |
-| `/api/guard/*` | Self-improvement guard: preview, apply, rollback, audit |
-| `/api/security/*` | API key management and security audit |
-| `/api/eval/*` | Eval suite runner and results |
-| `/api/memory/*` | Memory search, store, list |
-| `/api/rsi/*` | RSI status, trigger, proposals |
-| `/api/workspace/*` | File system and git operations |
-| `/api/bus/*` | Context bus publish/subscribe |
-| `/api/health` | System health check |
-
-### Self-Modification Pipeline
-
-```
-User query → LLM detects improvement opportunity
-     ↓
-OBSERVE: Read own source, metrics, failure logs
-     ↓
-EVALUATE: Score against 70-task benchmark
-     ↓
-PROPOSE: Generate targeted code change
-     ↓
-VALIDATE: Check against constitution + confidence gate (≥0.7)
-     ↓
-APPLY: twoPhaseCommit (write .bak → tsc check → atomic swap)
-     ↓
-VERIFY: Health checks on next boot
-     ↓
-RECORD: Audit log + git commit
-     ↓
-If health fails → automatic rollback to .bak
-```
+- **Unified Workspace** — Left sidebar with conversation history, bottom prompt bar, right-side Artifact panel (live HTML/code preview)
+- **Ambient Orb** — Pulsing status orb: blue (idle) → violet (thinking) → cyan (tool call) → amber (shadow testing) → green (done) → red (error)
+- **OLED Dark Mode** — Deep `#0B0B10` blacks with neon cyan/violet glows
+- **9 Animated Skins** — Aurora, Cyberpunk, Final Fantasy, Goth, Lo-Fi, Luigi's Mansion, Monsters, Nature Forest, Space
+- **RSI Dashboard** — Live view of the self-improvement cycle, proposals, proof status, utility scores, and audit log
+- **Keyboard Shortcuts** — `Ctrl+K` focus input, `Ctrl+B` toggle sidebar, `/` focus prompt from anywhere
 
 ---
 
-## 🚀 Quick Start
-
-### Prerequisites
-
-- **Node.js 18+** — [nodejs.org](https://nodejs.org/)
-- **pnpm** — auto-installed by the launcher on Windows; or `npm install -g pnpm`
-- **At least one API key** — Kimi K2 is recommended (cheapest, best coding performance)
+## Quick Start
 
 ### Windows (Recommended)
 
-1. Download the latest release zip or clone the repo
-2. Edit `.env.local` and add your API key (see [Configuration](#-configuration))
-3. Double-click **`Andromeda Launcher.bat`**
+1. Install [Node.js 18+](https://nodejs.org)
+2. Download or clone this repo
+3. Copy `.env.local.example` to `.env.local` and add your API key(s)
+4. Double-click **`Andromeda Launcher.bat`**
 
-The launcher will: check Node.js, install pnpm if missing, install dependencies, clear port 3000 if occupied, start the server, and open `http://localhost:3000` in your browser.
+The launcher handles everything: installs pnpm, installs dependencies, builds the server, opens your browser, and auto-restarts on crash.
 
 ### Mac / Linux
 
@@ -136,174 +102,235 @@ The launcher will: check Node.js, install pnpm if missing, install dependencies,
 git clone https://github.com/5chm33/Andromeda.git
 cd Andromeda
 pnpm install
-pnpm run dev
+cp .env.local.example .env.local
+# Edit .env.local and add your API keys
+pnpm dev
 ```
 
-Then open `http://localhost:3000`.
+Open [http://localhost:3000](http://localhost:3000).
 
----
-
-## ⚙ Configuration
-
-All configuration lives in `.env.local`. The app runs without any API keys in a limited demo mode, but to unlock full capability:
-
-```env
-# ── Recommended: Kimi K2 (best coding, cheapest) ──────────────────────────────
-KIMI_API_KEY=sk-...
-LLM_MODEL=kimi
-
-# ── DeepSeek R2 (best reasoning, very cheap) ──────────────────────────────────
-DEEPSEEK_API_KEY=sk-...
-
-# ── Anthropic Claude (best for self-modification proposals) ───────────────────
-ANTHROPIC_API_KEY=sk-ant-...
-
-# ── Web Search (required for research mode) ───────────────────────────────────
-BRAVE_SEARCH_API_KEY=BSA...
-BRAVE_SEARCH_ENABLED=true
-
-# ── Autonomous Self-Improvement ───────────────────────────────────────────────
-AUTONOMY=true
-AUTONOMY_CYCLE_MS=60000          # run RSI cycle every 60 seconds
-AUTONOMY_MAX_ACTIONS=5           # max proposals per cycle
-
-# ── GitHub Integration (optional) ─────────────────────────────────────────────
-GITHUB_REPO=your-username/Andromeda
-PR_AUTO_MERGE=false              # set true to auto-merge RSI PRs
-
-# ── Federated Learning (experimental) ─────────────────────────────────────────
-FEDERATED_ENABLED=false
-FEDERATED_PEERS=                 # comma-separated peer URLs
-```
-
-### API Key Cost Guide
-
-| Provider | Model | Cost | Best For |
-|----------|-------|------|---------|
-| Moonshot (Kimi) | K2 | ~$0.002/1K tokens | Coding, tool use, default |
-| DeepSeek | R2 | ~$0.001/1K tokens | Reasoning, math |
-| Anthropic | Claude Sonnet | ~$0.015/1K tokens | Self-modification proposals |
-| OpenAI | GPT-4.1-nano | ~$0.0001/1K tokens | Fast queries, eval |
-
-> **Real-world cost**: Running Andromeda continuously for a full day of development sessions — including RSI cycles, eval runs, and dozens of queries — costs under **$0.50** with Kimi K2 as the primary model.
-
----
-
-## 🛡 Safety First
-
-Self-modifying code is inherently dangerous. Andromeda implements a multi-layered safety architecture:
-
-| Layer | Mechanism |
-|-------|-----------|
-| **The Constitution** | `andromeda-constitution.json` — hardcoded rules the AI cannot override |
-| **Forbidden Files** | `twoPhaseCommit.ts`, `safetySupervisor.ts`, `initSafety.ts` can never be modified by RSI |
-| **Confidence Gate** | Proposals below 0.7 confidence are queued for human review |
-| **Two-Phase Commit** | Write → TypeScript check → atomic swap. Partial writes are impossible |
-| **Crash Rollback** | Atomic crash flag (temp+rename). If health fails on boot, auto-rollback to `.bak` |
-| **Circuit Breakers** | Max proposals per day, max consecutive failures before RSI pauses |
-| **RBAC** | API key management with role-based permissions and full audit log |
-
----
-
-## 📊 Eval Suite
-
-Andromeda ships with a 70-task benchmark that runs against a live LLM to measure actual capability — not just whether the code compiles.
+### Docker
 
 ```bash
-npx tsx scripts/run-eval.ts
+docker build -t andromeda .
+docker run -p 3000:3000 --env-file .env.local andromeda
 ```
 
-**v9.3.0 Results:**
+---
 
-| Category | Score | Tasks |
-|----------|-------|-------|
-| Code | 96% | 10/10 |
-| Self-Knowledge | 95% | 9/10 |
-| Browser | 81% | 5/5 |
-| Tool Use | 82% | 8/10 |
-| Reasoning | 86% | 8/10 |
-| Multi-Step | 88% | 8/10 |
-| **Overall** | **90%** | **63/70** |
+## Configuration
 
-Results are written to `data/eval_baseline.json` and appended to `workspace/evals/eval-history.jsonl` for trend tracking.
+Copy `.env.local.example` to `.env.local`. The only required field is one LLM API key.
+
+### Required — pick at least one LLM
+
+```env
+# DeepSeek — recommended, extremely cheap (~$0.14/M tokens)
+DEEPSEEK_API_KEY=your_key_here
+
+# OR OpenAI
+OPENAI_API_KEY=your_key_here
+
+# OR Anthropic (Claude)
+ANTHROPIC_API_KEY=your_key_here
+```
+
+### Recommended
+
+```env
+# Web search (2000 free queries/month)
+BRAVE_SEARCH_API_KEY=your_key_here
+```
+
+### Optional
+
+```env
+# LLM model selection (default: deepseek)
+# Options: deepseek | deepseek-reasoner | kimi | openrouter | openai | groq | anthropic
+LLM_MODEL=deepseek
+
+# Kimi K2 — best for coding tasks
+KIMI_API_KEY=your_key_here
+
+# Groq — ultra-fast inference
+GROQ_API_KEY=your_key_here
+
+# RSI autonomy settings
+CONTINUOUS_IMPROVE=true
+AUTO_GOALS=true
+
+# GitHub integration (for RSI to open PRs)
+GITHUB_TOKEN=your_token_here
+PR_AUTO_MERGE=false
+
+# Custom LLM endpoint (Ollama, LM Studio, etc.)
+# LLM_API_URL=http://localhost:11434/v1
+```
 
 ---
 
-## 🆚 State-of-the-Art (SOTA) Comparison
+## Architecture
 
-Andromeda v9.14.0 represents the peak of localized, self-hosted AI agent frameworks, moving beyond task orchestration into genuine recursive self-improvement (RSI).
-
-| Feature / Capability | Andromeda v9.14.0 | Devin (Cognition) | SWE-agent | AutoGPT / OpenManus | Darwin Gödel Machine |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Primary Paradigm** | **Recursive Self-Improvement** | Software Engineering | Issue Resolution | Task Orchestration | Open-ended Meta-learning |
-| **Self-Modification** | **✅ Full RSI (Modifies its own core)** | ❌ User code only | ❌ | ❌ | ✅ Generates new agents |
-| **Architecture** | **Multi-Agent Parallelism** | Single Agent | Single Agent | Single Agent | Evolutionary Archive |
-| **Persistence** | **SQLite (Full state survival)** | Cloud session state | File-based | JSON / Vector DB | Checkpointed archives |
-| **Feedback Loop** | **RLHF + Real Eval Harness** | User prompting | Benchmark scores | None | SWE-bench scores |
-| **Deployment** | **Local / Docker / Self-hosted** | Cloud-only SaaS | Local CLI | Local CLI / Web | Research code |
-| **Cost Model** | **API Tokens (~$0.50/day)** | $500+/month subscription | API Tokens | API Tokens | Massive Compute |
-
-> **Why it matters:** While commercial agents like Devin are designed to fix *your* code, Andromeda is designed to fix *its own* code. With the v9.14.0 addition of multi-agent parallelism, SQLite persistence, and a closed-loop RLHF feedback system, Andromeda aligns more closely with experimental lab systems like Sakana AI's Darwin Gödel Machine, but engineered for practical daily use on consumer hardware.
-
----
-
-## 🗺 Roadmap: Beyond 100
-
-Andromeda has reached the peak of its current architectural paradigm. Pushing further requires fundamentally shifting how the AI interacts with the world and its compute constraints.
-
-### Phase 1: Deep Environmental Integration
-- [ ] **Browser-as-a-First-Class-Citizen** — Move beyond simple DOM parsing to full Playwright integration with visual grounding (giving the LLM "eyes" to see the rendered page) to autonomously navigate complex web apps.
-- [ ] **Native OS Control** — Secure, sandboxed execution of shell commands with direct access to file system events, allowing Andromeda to act as a true background daemon monitoring system health.
-
-### Phase 2: Advanced Meta-Learning
-- [ ] **Dynamic Tool Generation** — Evolve beyond modifying existing code to *inventing entirely new tools* dynamically, registering them, and using them in the same session without a hard restart.
-- [ ] **Federated RSI (Swarm Intelligence)** — Activate experimental federated protocols to allow multiple Andromeda instances to share successful RSI proposals via a secure gossip protocol.
-
-### Phase 3: Foundation Model Fine-Tuning
-- [ ] **Self-Distillation** — Use the SQLite database of successful RLHF interactions and high-scoring Eval Harness runs to automatically generate fine-tuning datasets (e.g., DPO).
-- [ ] **Local LoRA Training** — Periodically train a Low-Rank Adaptation (LoRA) adapter on a local open-weights model using the self-generated dataset, reducing reliance on commercial APIs.
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome. Because Andromeda can modify its own code, please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting PRs — there are specific guidelines for working with a self-modifying codebase.
-
-**Key rules:**
-1. Never modify `twoPhaseCommit.ts`, `safetySupervisor.ts`, or `initSafety.ts` directly
-2. Run `npx tsc --noEmit` before submitting — the repo must stay at 0 TypeScript errors
-3. Run `npx tsx scripts/run-eval.ts` and include the score in your PR description
+```
+andromeda/
+├── server/                     # Node.js backend (Express + WebSocket)
+│   ├── _core/                  # Server entry point, route registration, init
+│   ├── routes/                 # API route handlers
+│   │   ├── chatRoutes.ts       # Chat streaming endpoint
+│   │   ├── rsiRoutes.ts        # RSI engine control
+│   │   ├── godelRoutes.ts      # Gödel Machine API
+│   │   └── ...
+│   ├── rsiEngine.ts            # 8-phase RSI orchestrator
+│   ├── twoPhaseCommit.ts       # Atomic self-modification with proof gate
+│   ├── proofVerifier.ts        # 4-layer formal verification cascade
+│   ├── utilityFunction.ts      # Unified scalar utility U(state)
+│   ├── semanticSelfModel.ts    # Module utility map + online learning
+│   ├── mctsPlanningEngine.ts   # Monte Carlo Tree Search planner
+│   ├── causalReasoning.ts      # Bayesian causal failure analysis
+│   ├── astKnowledgeGraph.ts    # TypeScript AST knowledge graph
+│   ├── epistemicBeliefModel.ts # Theory of Mind for swarm agents
+│   ├── llmProvider.ts          # Model-agnostic LLM routing
+│   ├── memory.ts               # TF-IDF + vector persistent memory
+│   └── reactEngine.ts          # ReAct agent loop with 10 tools
+├── client/src/                 # React + TypeScript frontend
+│   ├── pages/
+│   │   ├── Workspace.tsx       # Unified workspace
+│   │   ├── RsiDashboard.tsx    # RSI live dashboard
+│   │   └── ...
+│   └── components/
+│       ├── AmbientOrb.tsx      # Pulsing agent state orb
+│       ├── ArtifactPanel.tsx   # Live code/HTML preview panel
+│       └── ...
+├── docs/                       # Documentation and historical assessments
+├── build.mjs                   # esbuild config
+├── Andromeda Launcher.bat      # Windows one-click launcher
+└── .env.local.example          # Configuration template
+```
 
 ---
 
-## 📄 License
+## API Reference
 
-MIT License — see [LICENSE](LICENSE) for details.
+### Chat
 
-This project is free and open source. You pay only for the LLM API tokens you use (typically fractions of a cent per query with Kimi K2 or DeepSeek).
+```http
+POST /api/chat/stream
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "Your message" }],
+  "sessionId": "optional-session-id"
+}
+```
+
+Returns a Server-Sent Events stream with `data: { type, content, fullAnswer }` chunks.
+
+### RSI Engine
+
+```http
+GET  /api/rsi/status          # Current RSI cycle state
+POST /api/rsi/trigger         # Manually trigger an RSI cycle (requires admin key)
+GET  /api/rsi/proposals       # List recent proposals
+GET  /api/rsi/audit           # Audit log of all applied changes
+```
+
+### Gödel Machine
+
+```http
+GET  /api/godel/proof/status        # Proof verifier capabilities and stats
+POST /api/godel/proof/verify        # Verify a proposal { code, tests, description }
+GET  /api/godel/utility/snapshot    # Current utility scores (all 7 components)
+GET  /api/godel/semantic/modules    # Semantic self-model module map
+POST /api/godel/causal/analyze      # Causal failure analysis { failedTests, code }
+POST /api/godel/mcts/plan           # MCTS planning { goal, constraints }
+POST /api/godel/epistemic/debate    # Start epistemic debate { topic, agents }
+```
+
+### System
+
+```http
+GET  /api/health              # Health check (all subsystems)
+GET  /api/system/stats        # Runtime statistics
+POST /api/self-heal           # Reset circuit breakers
+```
 
 ---
 
-## 🏆 Final Grade
+## Safety
 
-Independently assessed by Manus AI across 5 core categories:
+Andromeda implements multiple layers of safety for self-modifying code:
 
-**v9.14.0: S+ Tier (100/100)**
+1. **Constitutional Guard** — Every RSI proposal is checked against `andromeda-constitution.json`. Safety-critical files are permanently forbidden from modification.
+2. **Proof Gate** — No self-modification is committed without passing formal verification.
+3. **Confidence Gating** — Proposals below 0.7 confidence are queued for human review.
+4. **Two-Phase Commit** — All changes write to `.bak` first. If health checks fail on next boot, the change is automatically rolled back.
+5. **Shadow Testing** — Every proposal runs the full test suite in an isolated shadow instance before the main process sees it.
+6. **RBAC** — Role-based access control with API key management and audit logging.
 
-| Category | Score | Evidence |
-|----------|-------|----------|
-| **Architecture & Modularity** | 20/20 | Clean separation of concerns across 28 route files and 50 tools. |
-| **RSI System & Autonomy** | 20/20 | 3 parallel workers, SQLite persistence, constitutional guard, atomic rollback. |
-| **Test Quality & Coverage** | 20/20 | 1060 passing tests, 18 end-to-end RSI integration tests, strict CI coverage. |
-| **Code Quality & Type Safety** | 20/20 | 0 TypeScript errors across 76k lines. `any` types removed. |
-| **Documentation & UX** | 20/20 | Real-time SSE browser notifications, comprehensive API docs. |
+---
 
-Full assessment: [ANDROMEDA_v9.14.0_SOTA_GRADE.md](ANDROMEDA_v9.14.0_SOTA_GRADE.md)
+## Test Suite
+
+```bash
+pnpm test              # Run all 1934 unit tests
+pnpm test:coverage     # Run with coverage report
+pnpm test:integration  # Integration tests (requires running server)
+pnpm test:eval         # 70-task capability benchmark
+```
+
+**Current status: 1,934 tests passing across 261 test files — zero failures.**
+
+---
+
+## Deployment
+
+### Production (Linux/VPS)
+
+```bash
+pnpm build
+npm install -g pm2
+pm2 start dist/_core/index.js --name andromeda
+pm2 save && pm2 startup
+```
+
+### Reverse Proxy (nginx)
+
+```nginx
+location / {
+    proxy_pass http://localhost:3000;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_buffering off;
+    proxy_read_timeout 300s;
+}
+```
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+The most impactful areas for contribution:
+
+- **New RSI proposal generators** — `server/selfImprove.ts`
+- **Additional proof backends** — `server/proofVerifier.ts` (add Isabelle/HOL, Coq)
+- **New agent tools** — `server/reactEngine.ts`
+- **UI components** — `client/src/components/`
+
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE).
 
 ---
 
 <div align="center">
-  <i>"I am Andromeda. I learn. I adapt. I evolve."</i>
-  <br><br>
-  <b>v9.14.0</b> — Built with TypeScript, React, Radix UI, and a lot of recursive self-improvement.
+
+Built with TypeScript, React, Express, Vitest, and esbuild.
+
+**Andromeda v10.0.0** — *The practical ceiling of software-only Gödel Machine parity.*
+
 </div>

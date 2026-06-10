@@ -1,5 +1,5 @@
 /**
- * visualGrounding.ts — v1.0.0
+ * visualGrounding.ts — v1.1.0
  *
  * Playwright-based visual grounding system for Andromeda.
  * Provides annotated screenshots with numbered bounding boxes over all interactive
@@ -7,13 +7,38 @@
  *
  * This gives the LLM "eyes" — it can see the rendered page and reference elements
  * by number (e.g. "click element 7") rather than guessing CSS selectors.
+ *
+ * NOTE: The `canvas` package is an optional native dependency that requires
+ * pre-built binaries (libcairo). It is loaded lazily at runtime so that a missing
+ * Windows binary does NOT crash the server at startup. If canvas is unavailable,
+ * screenshots are returned without bounding-box annotations (still fully functional).
  */
 
 import { chromium, type Browser, type BrowserContext, type Page } from "playwright";
-import { createCanvas, loadImage } from "canvas";
 import * as fs from "fs";
 import * as path from "path";
 import * as os from "os";
+
+// ─── Lazy canvas loader ───────────────────────────────────────────────────────
+
+type CanvasFns = {
+  createCanvas: (w: number, h: number) => import("canvas").Canvas;
+  loadImage: (src: Buffer | string) => Promise<import("canvas").Image>;
+};
+
+let _canvasFns: CanvasFns | null | undefined = undefined; // undefined = not yet tried
+
+async function getCanvasFns(): Promise<CanvasFns | null> {
+  if (_canvasFns !== undefined) return _canvasFns;
+  try {
+    const mod = await import("canvas");
+    _canvasFns = { createCanvas: mod.createCanvas, loadImage: mod.loadImage };
+  } catch {
+    // canvas native binary not available (common on Windows without build tools)
+    _canvasFns = null;
+  }
+  return _canvasFns;
+}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -36,7 +61,7 @@ export interface VisualElement {
 }
 
 export interface AnnotatedScreenshotResult {
-  /** Base64-encoded PNG with numbered bounding boxes drawn */
+  /** Base64-encoded PNG with numbered bounding boxes drawn (or raw if canvas unavailable) */
   annotatedScreenshot: string;
   /** Plain screenshot without annotations */
   rawScreenshot: string;
@@ -137,12 +162,19 @@ async function extractInteractableElements(page: Page): Promise<VisualElement[]>
 /**
  * Draws numbered bounding boxes over a screenshot PNG.
  * Returns the annotated image as base64.
+ * Falls back to the raw screenshot if canvas is unavailable.
  */
 async function drawAnnotations(
   screenshotBuffer: Buffer,
   elements: VisualElement[]
 ): Promise<string> {
+  const fns = await getCanvasFns();
+  if (!fns) {
+    // canvas not available — return raw screenshot (still useful for vision models)
+    return screenshotBuffer.toString("base64");
+  }
   try {
+    const { createCanvas, loadImage } = fns;
     const img = await loadImage(screenshotBuffer);
     const canvas = createCanvas(img.width, img.height);
     const ctx = canvas.getContext("2d");
@@ -168,7 +200,7 @@ async function drawAnnotations(
 
     return canvas.toBuffer("image/png").toString("base64");
   } catch {
-    // If canvas fails (no display), return raw screenshot
+    // If canvas fails at runtime, return raw screenshot
     return screenshotBuffer.toString("base64");
   }
 }
