@@ -1,85 +1,5 @@
 [
   {
-    "id": 1780902807124,
-    "userId": null,
-    "sessionId": null,
-    "query": "test query for vitest",
-    "aiAnswer": "This is a test answer",
-    "sources": null,
-    "filter": "all",
-    "createdAt": "2026-06-08T07:13:27.545Z"
-  },
-  {
-    "id": 1780902807125,
-    "userId": 1,
-    "sessionId": null,
-    "query": "authenticated test query",
-    "aiAnswer": "Authenticated answer",
-    "sources": null,
-    "filter": "web",
-    "createdAt": "2026-06-08T07:13:27.547Z"
-  },
-  {
-    "id": 1780903192743,
-    "userId": null,
-    "sessionId": null,
-    "query": "test query for vitest",
-    "aiAnswer": "This is a test answer",
-    "sources": null,
-    "filter": "all",
-    "createdAt": "2026-06-08T07:19:53.179Z"
-  },
-  {
-    "id": 1780903192744,
-    "userId": 1,
-    "sessionId": null,
-    "query": "authenticated test query",
-    "aiAnswer": "Authenticated answer",
-    "sources": null,
-    "filter": "web",
-    "createdAt": "2026-06-08T07:19:53.181Z"
-  },
-  {
-    "id": 1780903848063,
-    "userId": null,
-    "sessionId": null,
-    "query": "test query for vitest",
-    "aiAnswer": "This is a test answer",
-    "sources": null,
-    "filter": "all",
-    "createdAt": "2026-06-08T07:30:48.444Z"
-  },
-  {
-    "id": 1780903848064,
-    "userId": 1,
-    "sessionId": null,
-    "query": "authenticated test query",
-    "aiAnswer": "Authenticated answer",
-    "sources": null,
-    "filter": "web",
-    "createdAt": "2026-06-08T07:30:48.445Z"
-  },
-  {
-    "id": 1780904184438,
-    "userId": null,
-    "sessionId": null,
-    "query": "test query for vitest",
-    "aiAnswer": "This is a test answer",
-    "sources": null,
-    "filter": "all",
-    "createdAt": "2026-06-08T07:36:24.825Z"
-  },
-  {
-    "id": 1780904184439,
-    "userId": 1,
-    "sessionId": null,
-    "query": "authenticated test query",
-    "aiAnswer": "Authenticated answer",
-    "sources": null,
-    "filter": "web",
-    "createdAt": "2026-06-08T07:36:24.827Z"
-  },
-  {
     "id": 1780904761721,
     "userId": null,
     "sessionId": null,
@@ -1998,5 +1918,85 @@
     "sources": null,
     "filter": "web",
     "createdAt": "2026-06-10T02:04:26.554Z"
+  },
+  {
+    "id": 1781058552823,
+    "userId": null,
+    "sessionId": null,
+    "query": "test query for vitest",
+    "aiAnswer": "This is a test answer",
+    "sources": null,
+    "filter": "all",
+    "createdAt": "2026-06-10T02:29:13.690Z"
+  },
+  {
+    "id": 1781058552824,
+    "userId": 1,
+    "sessionId": null,
+    "query": "authenticated test query",
+    "aiAnswer": "Authenticated answer",
+    "sources": null,
+    "filter": "web",
+    "createdAt": "2026-06-10T02:29:13.692Z"
+  },
+  {
+    "id": 1781058585252,
+    "userId": null,
+    "sessionId": null,
+    "query": "test query for vitest",
+    "aiAnswer": "This is a test answer",
+    "sources": null,
+    "filter": "all",
+    "createdAt": "2026-06-10T02:29:46.156Z"
+  },
+  {
+    "id": 1781058585253,
+    "userId": 1,
+    "sessionId": null,
+    "query": "authenticated test query",
+    "aiAnswer": "Authenticated answer",
+    "sources": null,
+    "filter": "web",
+    "createdAt": "2026-06-10T02:29:46.157Z"
+  },
+  {
+    "id": 1781058618338,
+    "userId": null,
+    "sessionId": null,
+    "query": "test query for vitest",
+    "aiAnswer": "This is a test answer",
+    "sources": null,
+    "filter": "all",
+    "createdAt": "2026-06-10T02:30:19.182Z"
+  },
+  {
+    "id": 1781058618339,
+    "userId": 1,
+    "sessionId": null,
+    "query": "authenticated test query",
+    "aiAnswer": "Authenticated answer",
+    "sources": null,
+    "filter": "web",
+    "createdAt": "2026-06-10T02:30:19.184Z"
+  },
+  {
+    "id": 1781058692170,
+    "userId": null,
+    "sessionId": null,
+    "query": "test query for vitest",
+    "aiAnswer": "This is a test answer",
+    "sources": null,
+    "filter": "all",
+    "createdAt": "2026-06-10T02:31:33.089Z"
+  },
+  {
+    "id": 1781058692171,
+    "userId": 1,
+    "sessionId": null,
+    "query": "authenticated test query",
+    "aiAnswer": "Authenticated answer",
+    "sources": null,
+    "filter": "web",
+    "createdAt": "2026-06-10T02:31:33.090Z"
   }
 ]

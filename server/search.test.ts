@@ -63,9 +63,15 @@ function makeCtx(user?: TrpcContext["user"]): TrpcContext {
 
 describe("auth router", () => {
   it("returns null user when unauthenticated", async () => {
+    // In local mode (no OAUTH_SERVER_URL), auth.me returns a synthetic local admin user
     const caller = appRouter.createCaller(makeCtx());
     const result = await caller.auth.me();
-    expect(result).toBeNull();
+    if (!process.env.OAUTH_SERVER_URL) {
+      expect(result).not.toBeNull();
+      expect(result?.openId).toBe("local-admin");
+    } else {
+      expect(result).toBeNull();
+    }
   });
 
   it("returns user when authenticated", async () => {

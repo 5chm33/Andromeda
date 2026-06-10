@@ -95,9 +95,17 @@ describe("history router", () => {
 
 describe("auth router", () => {
   it("returns null user for unauthenticated requests", async () => {
+    // In local mode (no OAUTH_SERVER_URL), auth.me returns a synthetic local admin user
+    // so the frontend works without requiring sign-in.
     const caller = appRouter.createCaller(createPublicCtx());
     const user = await caller.auth.me();
-    expect(user).toBeNull();
+    // Local mode: returns synthetic local admin user (not null)
+    if (!process.env.OAUTH_SERVER_URL) {
+      expect(user).not.toBeNull();
+      expect(user?.openId).toBe("local-admin");
+    } else {
+      expect(user).toBeNull();
+    }
   });
 
   it("returns user object for authenticated requests", async () => {

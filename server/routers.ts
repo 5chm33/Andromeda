@@ -21,7 +21,24 @@ export const appRouter = router({
   system: systemRouter,
 
   auth: router({
-    me: publicProcedure.query((opts) => opts.ctx.user),
+    me: publicProcedure.query((opts) => {
+      // In local mode (no OAUTH_SERVER_URL), return a synthetic local admin user
+      // so the frontend treats the user as authenticated without requiring sign-in.
+      if (!process.env.OAUTH_SERVER_URL && !opts.ctx.user) {
+        return {
+          id: 1,
+          openId: "local-admin",
+          name: "Local User",
+          email: null,
+          loginMethod: "local",
+          role: "admin" as const,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          lastSignedIn: new Date(),
+        };
+      }
+      return opts.ctx.user;
+    }),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });

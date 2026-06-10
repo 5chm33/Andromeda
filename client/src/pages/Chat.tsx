@@ -13,6 +13,10 @@ import {
 } from "lucide-react";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useLocation } from "wouter";
+import { SkinSelector } from "@/components/SkinSelector";
+import { getSavedSkin } from "@/lib/themeEngine";
+import type { SkinId } from "@/lib/themeEngine";
+import { ThemeCanvas } from "@/components/ThemeCanvas";
 import { Streamdown } from "streamdown";
 import { toast } from "sonner";
 import {
@@ -57,6 +61,7 @@ function ImageMessage({ url }: { url: string }) {
 export default function Chat() {
   const { isAuthenticated } = useAuth();
   const [, navigate] = useLocation();
+  const [currentSkin, setCurrentSkin] = useState<SkinId>(() => getSavedSkin());
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
     try {
       const saved = localStorage.getItem("andromeda_chat_history");
@@ -286,7 +291,9 @@ export default function Chat() {
 
   return (
     <TooltipProvider delayDuration={400}>
-    <div className="flex flex-col h-screen bg-background text-foreground">
+    <div className="flex flex-col h-screen bg-background text-foreground relative">
+      <ThemeCanvas skinId={currentSkin} />
+      <SkinSelector currentSkin={currentSkin} onSkinChange={setCurrentSkin} />
       {/* Header */}
       <header className="flex-shrink-0 flex items-center justify-between px-4 py-3 glass border-b border-border/40 z-10">
         <div className="flex items-center gap-3">
