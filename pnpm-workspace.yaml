@@ -2,11 +2,13 @@ packages:
   - '.'
 
 allowBuilds:
-  '@tailwindcss/oxide': true
-  better-sqlite3: true
-  canvas: set this to true or false
-  esbuild: true
-  node-pty: true
+  '@tailwindcss/oxide': set this to true or false
+  better-sqlite3: set this to true or false
+  esbuild: set this to true or false
+
+# Only these packages are allowed to run build scripts (native addons).
+# canvas is in optionalDependencies and intentionally excluded here —
+# it requires native build tools that may not be available on all platforms.
 onlyBuiltDependencies:
   - esbuild
   - '@tailwindcss/oxide'

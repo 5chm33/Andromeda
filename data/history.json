@@ -1,25 +1,5 @@
 [
   {
-    "id": 1780902786583,
-    "userId": null,
-    "sessionId": null,
-    "query": "test query for vitest",
-    "aiAnswer": "This is a test answer",
-    "sources": null,
-    "filter": "all",
-    "createdAt": "2026-06-08T07:13:07.046Z"
-  },
-  {
-    "id": 1780902786584,
-    "userId": 1,
-    "sessionId": null,
-    "query": "authenticated test query",
-    "aiAnswer": "Authenticated answer",
-    "sources": null,
-    "filter": "web",
-    "createdAt": "2026-06-08T07:13:07.048Z"
-  },
-  {
     "id": 1780902807124,
     "userId": null,
     "sessionId": null,
@@ -1998,5 +1978,25 @@
     "sources": null,
     "filter": "web",
     "createdAt": "2026-06-10T01:33:06.989Z"
+  },
+  {
+    "id": 1781057065680,
+    "userId": null,
+    "sessionId": null,
+    "query": "test query for vitest",
+    "aiAnswer": "This is a test answer",
+    "sources": null,
+    "filter": "all",
+    "createdAt": "2026-06-10T02:04:26.552Z"
+  },
+  {
+    "id": 1781057065681,
+    "userId": 1,
+    "sessionId": null,
+    "query": "authenticated test query",
+    "aiAnswer": "Authenticated answer",
+    "sources": null,
+    "filter": "web",
+    "createdAt": "2026-06-10T02:04:26.554Z"
   }
 ]

@@ -197,29 +197,33 @@ export async function initModules(): Promise<void> {
 
   // ── v6.24: Real embedding API auto-init ──────────────────────────────────────
   // Priority order:
-  //   1. OpenAI key → OpenAI text-embedding-3-small (best quality, $0.02/M tokens)
-  //   2. OpenRouter key → OpenRouter text-embedding-3-small (same model, via proxy)
-  //      This is the primary path when DeepSeek is the LLM — DeepSeek has no /embeddings endpoint.
-  //   3. DeepSeek key only → local hash fallback (free, offline, lower quality)
+  //   1. OpenRouter key → OpenRouter text-embedding-3-small (works with Kimi/OpenRouter/DeepSeek setups)
+  //   2. OpenAI key (must start with sk-) → OpenAI text-embedding-3-small
+  //   3. DeepSeek key only → local hash fallback (DeepSeek has no /embeddings endpoint)
   //   4. No keys → local hash fallback
+  // Note: placeholder values like 'your_openai_api_key_here' are automatically skipped.
   import("../vectorMemory").then(m => {
-    const openaiKey = process.env.OPENAI_API_KEY;
-    const openrouterKey = process.env.OPENROUTER_API_KEY;
+    const rawOpenaiKey = process.env.OPENAI_API_KEY ?? "";
+    const rawOpenrouterKey = process.env.OPENROUTER_API_KEY ?? "";
     const deepseekKey = process.env.DEEPSEEK_API_KEY;
     const embModel = process.env.EMBEDDING_MODEL ?? "text-embedding-3-small";
-    if (openaiKey) {
-      m.initApiEmbeddings("https://api.openai.com/v1/embeddings", openaiKey, embModel);
-      console.log(`[VectorMemory] v7.1: Real embeddings active — OpenAI ${embModel}`);
-    } else if (openrouterKey) {
-      // v7.1: OpenRouter supports text-embedding-3-small via their unified API.
-      // This is the correct path when DeepSeek is the primary LLM.
+    // Skip placeholder values
+    const isPlaceholder = (k: string) => !k || k.includes("your_") || k === "test-stub";
+    const openrouterKey = isPlaceholder(rawOpenrouterKey) ? undefined : rawOpenrouterKey;
+    // OpenAI keys must start with 'sk-' to be valid
+    const openaiKey = !isPlaceholder(rawOpenaiKey) && rawOpenaiKey.startsWith("sk-") ? rawOpenaiKey : undefined;
+    if (openrouterKey) {
+      // OpenRouter is preferred — works with Claude, DeepSeek, Kimi setups and supports embeddings.
       m.initApiEmbeddings("https://openrouter.ai/api/v1/embeddings", openrouterKey, embModel);
-      console.log(`[VectorMemory] v7.1: Real embeddings active — OpenRouter ${embModel} (semantic search enabled)`);
-    } else if (deepseekKey) {
+      console.log(`[VectorMemory] v7.2: Real embeddings active — OpenRouter ${embModel} (semantic search enabled)`);
+    } else if (openaiKey) {
+      m.initApiEmbeddings("https://api.openai.com/v1/embeddings", openaiKey, embModel);
+      console.log(`[VectorMemory] v7.2: Real embeddings active — OpenAI ${embModel}`);
+    } else if (deepseekKey && !isPlaceholder(deepseekKey)) {
       // DeepSeek does not expose an embeddings endpoint
-      console.log("[VectorMemory] v7.1: DeepSeek has no embeddings endpoint — using local hash fallback");
+      console.log("[VectorMemory] v7.2: DeepSeek has no embeddings endpoint — using local hash fallback");
     } else {
-      console.log("[VectorMemory] v7.1: No embedding API key found — using local hash fallback");
+      console.log("[VectorMemory] v7.2: No embedding API key found — using local hash fallback");
     }
   }).catch(err => console.warn("[VectorMemory] Embedding init failed:", err));
 
