@@ -1,5 +1,5 @@
 {
-  "timestamp": 1781055833016,
+  "timestamp": 1781130260316,
   "totalFiles": 262,
   "averageScore": 89,
   "worstModules": [
@@ -56,7 +56,7 @@
           "message": "TODO comment: `    // TODO: Import and test ${fn} from '${relativePath}'`,"
         }
       ],
-      "lastAnalyzed": 1781055833000
+      "lastAnalyzed": 1781130260300
     },
     {
       "filePath": "server/tools/selfTestRunner.ts",
@@ -111,38 +111,38 @@
           "suggestion": "Remove unused import 'type ToolExecutionContext'"
         }
       ],
-      "lastAnalyzed": 1781055833004
+      "lastAnalyzed": 1781130260304
     },
     {
       "filePath": "server/selfImproveGuard.ts",
       "fileName": "selfImproveGuard.ts",
       "score": 43,
-      "lineCount": 745,
+      "lineCount": 767,
       "issues": [
         {
           "type": "large_file",
           "severity": "medium",
-          "message": "File has 745 lines (max recommended: 500)",
+          "message": "File has 767 lines (max recommended: 500)",
           "suggestion": "Consider splitting into smaller modules"
         },
         {
           "type": "long_function",
           "severity": "medium",
-          "line": 264,
-          "message": "Function 'runSyntaxCheck' is 66 lines (max: 50)",
+          "line": 282,
+          "message": "Function 'runSyntaxCheck' is 73 lines (max: 50)",
           "suggestion": "Extract helper functions or decompose logic"
         },
         {
           "type": "long_function",
           "severity": "medium",
-          "line": 337,
+          "line": 362,
           "message": "Function 'runLightweightSyntaxCheck' is 67 lines (max: 50)",
           "suggestion": "Extract helper functions or decompose logic"
         },
         {
           "type": "long_function",
           "severity": "high",
-          "line": 422,
+          "line": 447,
           "message": "Function 'guardedApply' is 236 lines (max: 50)",
           "suggestion": "Extract helper functions or decompose logic"
         },
@@ -159,7 +159,7 @@
           "suggestion": "Remove unused import 'type ImprovementProposal'"
         }
       ],
-      "lastAnalyzed": 1781055832964
+      "lastAnalyzed": 1781130260263
     },
     {
       "filePath": "server/selfImprove.ts",
@@ -200,7 +200,7 @@
           "suggestion": "Remove unused import 'backgroundSimpleCompletion'"
         }
       ],
-      "lastAnalyzed": 1781055832963
+      "lastAnalyzed": 1781130260261
     },
     {
       "filePath": "server/aiPlanning.ts",
@@ -248,7 +248,7 @@
           "suggestion": "Remove unused import 'getActiveProvider'"
         }
       ],
-      "lastAnalyzed": 1781055832832
+      "lastAnalyzed": 1781130260121
     },
     {
       "filePath": "server/recursiveGoals.ts",
@@ -291,7 +291,42 @@
           "suggestion": "Extract helper functions or decompose logic"
         }
       ],
-      "lastAnalyzed": 1781055832921
+      "lastAnalyzed": 1781130260214
+    },
+    {
+      "filePath": "server/rsiEngine.ts",
+      "fileName": "rsiEngine.ts",
+      "score": 54,
+      "lineCount": 841,
+      "issues": [
+        {
+          "type": "large_file",
+          "severity": "medium",
+          "message": "File has 841 lines (max recommended: 500)",
+          "suggestion": "Consider splitting into smaller modules"
+        },
+        {
+          "type": "long_function",
+          "severity": "high",
+          "line": 257,
+          "message": "Function 'measureBenchmark' is 120 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "long_function",
+          "severity": "high",
+          "line": 389,
+          "message": "Function 'runRSICycle' is 310 lines (max: 50)",
+          "suggestion": "Extract helper functions or decompose logic"
+        },
+        {
+          "type": "any_type",
+          "severity": "medium",
+          "message": "8 uses of 'any' type — reduces type safety",
+          "suggestion": "Replace with specific types or 'unknown'"
+        }
+      ],
+      "lastAnalyzed": 1781130260244
     },
     {
       "filePath": "server/tools/selfAwareness.ts",
@@ -327,7 +362,7 @@
           "suggestion": "Extract helper functions or decompose logic"
         }
       ],
-      "lastAnalyzed": 1781055832997
+      "lastAnalyzed": 1781130260295
     },
     {
       "filePath": "server/routes/systemRoutes.ts",
@@ -367,16 +402,16 @@
           "suggestion": "Remove unused import 'getToolsByCategory'"
         }
       ],
-      "lastAnalyzed": 1781055832939
+      "lastAnalyzed": 1781130260239
     }
   ],
-  "totalIssues": 329,
+  "totalIssues": 330,
   "issuesByType": {
     "long_function": 165,
     "any_type": 43,
     "dead_code": 61,
     "missing_type": 5,
-    "large_file": 53,
+    "large_file": 54,
     "todo": 2
   }
 }

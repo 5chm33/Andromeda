@@ -1,7 +1,7 @@
 {
-  "timestamp": 1780919077780,
-  "totalModules": 209,
-  "documentedModules": 119,
+  "timestamp": 1781130300876,
+  "totalModules": 262,
+  "documentedModules": 167,
   "undocumentedExports": [
     {
       "filePath": "server/_core/imageGeneration.ts",
@@ -232,8 +232,140 @@
       "line": 0
     },
     {
+      "filePath": "server/andromedaDb.ts",
+      "exportName": "getDb",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/andromedaDb.ts",
+      "exportName": "kvSet",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/andromedaDb.ts",
+      "exportName": "kvDelete",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/andromedaDb.ts",
+      "exportName": "upsertVector",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/andromedaDb.ts",
+      "exportName": "getAllVectors",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/andromedaDb.ts",
+      "exportName": "pruneVectors",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/andromedaDb.ts",
+      "exportName": "recordFeedback",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/andromedaDb.ts",
+      "exportName": "getLowRatedModules",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/andromedaDb.ts",
+      "exportName": "getFeedbackSummary",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/andromedaDb.ts",
+      "exportName": "recordEval",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/andromedaDb.ts",
+      "exportName": "getEvalsForReplay",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/andromedaDb.ts",
+      "exportName": "markEvalReplayed",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/andromedaDb.ts",
+      "exportName": "insertRsiCycle",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/andromedaDb.ts",
+      "exportName": "finishRsiCycle",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/andromedaDb.ts",
+      "exportName": "getRecentRsiCycles",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/andromedaDb.ts",
+      "exportName": "recordBenchmarkResult",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/andromedaDb.ts",
+      "exportName": "getBenchmarkTrend",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/andromedaDb.ts",
+      "exportName": "closeDb",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/andromedaMemoryWriter.ts",
       "exportName": "generateAndromedaMd",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/astKnowledgeGraph.ts",
+      "exportName": "ASTKnowledgeGraph",
+      "exportType": "class",
+      "line": 0
+    },
+    {
+      "filePath": "server/astKnowledgeGraph.ts",
+      "exportName": "ASTParser",
+      "exportType": "class",
+      "line": 0
+    },
+    {
+      "filePath": "server/astKnowledgeGraph.ts",
+      "exportName": "getKnowledgeGraph",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/astKnowledgeGraph.ts",
+      "exportName": "resetKnowledgeGraph",
       "exportType": "function",
       "line": 0
     },
@@ -264,6 +396,30 @@
     {
       "filePath": "server/autoGoalSuggester.ts",
       "exportName": "getSuggesterStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/autoHealing.ts",
+      "exportName": "AutoHealer",
+      "exportType": "class",
+      "line": 0
+    },
+    {
+      "filePath": "server/autoHealing.ts",
+      "exportName": "getAutoHealer",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/autoHealing.ts",
+      "exportName": "resetAutoHealer",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/autoHealing.ts",
+      "exportName": "loadHealingLog",
       "exportType": "function",
       "line": 0
     },
@@ -466,6 +622,30 @@
       "line": 0
     },
     {
+      "filePath": "server/causalReasoning.ts",
+      "exportName": "CausalNetwork",
+      "exportType": "class",
+      "line": 0
+    },
+    {
+      "filePath": "server/causalReasoning.ts",
+      "exportName": "RootCauseAnalyzer",
+      "exportType": "class",
+      "line": 0
+    },
+    {
+      "filePath": "server/causalReasoning.ts",
+      "exportName": "getRootCauseAnalyzer",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/causalReasoning.ts",
+      "exportName": "resetRootCauseAnalyzer",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/ciPipeline.ts",
       "exportName": "getCiStatus",
       "exportType": "function",
@@ -487,6 +667,18 @@
       "filePath": "server/circuitBreaker.ts",
       "exportName": "CircuitOpenError",
       "exportType": "class",
+      "line": 0
+    },
+    {
+      "filePath": "server/cloudProvisioning.ts",
+      "exportName": "detectAvailableProviders",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/cloudProvisioning.ts",
+      "exportName": "getProvisioningState",
+      "exportType": "function",
       "line": 0
     },
     {
@@ -718,6 +910,18 @@
       "line": 0
     },
     {
+      "filePath": "server/crossModalSelfImprovement.ts",
+      "exportName": "CrossModalSelfImprovementManager",
+      "exportType": "class",
+      "line": 0
+    },
+    {
+      "filePath": "server/crossModalSelfImprovement.ts",
+      "exportName": "resetCrossModalManager",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/db.ts",
       "exportName": "getDb",
       "exportType": "function",
@@ -904,6 +1108,18 @@
       "line": 0
     },
     {
+      "filePath": "server/distributedProofConsensus.ts",
+      "exportName": "DistributedProofConsensusManager",
+      "exportType": "class",
+      "line": 0
+    },
+    {
+      "filePath": "server/distributedProofConsensus.ts",
+      "exportName": "resetConsensusManager",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/docGenerator.ts",
       "exportName": "runDocGeneration",
       "exportType": "function",
@@ -934,6 +1150,24 @@
       "line": 0
     },
     {
+      "filePath": "server/ebpfGrounding.ts",
+      "exportName": "EbpfMonitor",
+      "exportType": "class",
+      "line": 0
+    },
+    {
+      "filePath": "server/ebpfGrounding.ts",
+      "exportName": "getEbpfMonitor",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ebpfGrounding.ts",
+      "exportName": "resetEbpfMonitor",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/episodicConsolidation.ts",
       "exportName": "getEpisodicConsolidationStats",
       "exportType": "function",
@@ -948,6 +1182,36 @@
     {
       "filePath": "server/episodicMemory.ts",
       "exportName": "getEpisodicStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/epistemicBeliefModel.ts",
+      "exportName": "getEpistemicOperator",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/epistemicBeliefModel.ts",
+      "exportName": "AgentBeliefState",
+      "exportType": "class",
+      "line": 0
+    },
+    {
+      "filePath": "server/epistemicBeliefModel.ts",
+      "exportName": "EpistemicModel",
+      "exportType": "class",
+      "line": 0
+    },
+    {
+      "filePath": "server/epistemicBeliefModel.ts",
+      "exportName": "getEpistemicModel",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/epistemicBeliefModel.ts",
+      "exportName": "resetEpistemicModel",
       "exportType": "function",
       "line": 0
     },
@@ -1056,6 +1320,12 @@
     {
       "filePath": "server/federatedLearning.ts",
       "exportName": "initFederatedLearning",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/federatedLoraSharing.ts",
+      "exportName": "getFederatedLoraState",
       "exportType": "function",
       "line": 0
     },
@@ -1289,49 +1559,13 @@
     },
     {
       "filePath": "server/llmProvider.ts",
-      "exportName": "getProviderApiKey",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/llmProvider.ts",
-      "exportName": "switchProvider",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/llmProvider.ts",
       "exportName": "getActiveProvider",
       "exportType": "function",
       "line": 0
     },
     {
       "filePath": "server/llmProvider.ts",
-      "exportName": "setActiveProvider",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/llmProvider.ts",
       "exportName": "listProviders",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/llmProvider.ts",
-      "exportName": "getProviderForTier",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/llmProvider.ts",
-      "exportName": "tierForArea",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/llmProvider.ts",
-      "exportName": "getBackgroundProvider",
       "exportType": "function",
       "line": 0
     },
@@ -1356,6 +1590,12 @@
     {
       "filePath": "server/logger.ts",
       "exportName": "createLogger",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/loraBackendDetector.ts",
+      "exportName": "getLoraBackendSummary",
       "exportType": "function",
       "line": 0
     },
@@ -1411,6 +1651,12 @@
       "filePath": "server/mcpClient.ts",
       "exportName": "disconnectAll",
       "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/mctsPlanningEngine.ts",
+      "exportName": "MCTSEngine",
+      "exportType": "class",
       "line": 0
     },
     {
@@ -1558,6 +1804,108 @@
       "line": 0
     },
     {
+      "filePath": "server/ontologicalModel.ts",
+      "exportName": "loadSelfModel",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ontologicalModel.ts",
+      "exportName": "saveSelfModel",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ontologicalModel.ts",
+      "exportName": "registerCapability",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/ontologicalModel.ts",
+      "exportName": "getSelfModelSummary",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/osGrounding.ts",
+      "exportName": "getMemoryMetrics",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/osGrounding.ts",
+      "exportName": "getCpuMetrics",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/osGrounding.ts",
+      "exportName": "getDiskMetrics",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/osGrounding.ts",
+      "exportName": "getDockerMetrics",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/osGrounding.ts",
+      "exportName": "listDockerContainers",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/osGrounding.ts",
+      "exportName": "stopContainer",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/osGrounding.ts",
+      "exportName": "removeStoppedContainers",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/osGrounding.ts",
+      "exportName": "getMigrationStatus",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/osGrounding.ts",
+      "exportName": "runPendingMigrations",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/osGrounding.ts",
+      "exportName": "getSystemHealth",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/parallelRsi.ts",
+      "exportName": "startParallelRsi",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/parallelRsi.ts",
+      "exportName": "stopParallelRsi",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/parallelRsi.ts",
+      "exportName": "getParallelRsiStatus",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/persistentContextStore.ts",
       "exportName": "initPersistentContextStore",
       "exportType": "function",
@@ -1590,6 +1938,48 @@
     {
       "filePath": "server/prGenerator.ts",
       "exportName": "initPRGenerator",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/privilegeSeparation.ts",
+      "exportName": "PrivilegeSeparationManager",
+      "exportType": "class",
+      "line": 0
+    },
+    {
+      "filePath": "server/privilegeSeparation.ts",
+      "exportName": "resetPrivilegeSeparationManager",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/proofAssistant.ts",
+      "exportName": "detectProverBackend",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/proofAssistant.ts",
+      "exportName": "loadProofLog",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/proofAssistant.ts",
+      "exportName": "getProofStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/proofVerifier.ts",
+      "exportName": "loadVerificationLog",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/proofVerifier.ts",
+      "exportName": "getVerificationStats",
       "exportType": "function",
       "line": 0
     },
@@ -1633,6 +2023,18 @@
       "filePath": "server/reactEngine.ts",
       "exportName": "ReactEngine",
       "exportType": "class",
+      "line": 0
+    },
+    {
+      "filePath": "server/realEvalHarness.ts",
+      "exportName": "getLastEvalHarnessReport",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/realEvalHarness.ts",
+      "exportName": "isEvalHarnessRunning",
+      "exportType": "function",
       "line": 0
     },
     {
@@ -1702,6 +2104,12 @@
       "line": 0
     },
     {
+      "filePath": "server/routes/godelRoutes.ts",
+      "exportName": "registerGodelRoutes",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/routes/validate.ts",
       "exportName": "validateBody",
       "exportType": "function",
@@ -1722,6 +2130,18 @@
     {
       "filePath": "server/rsiEngine.ts",
       "exportName": "measureBenchmark",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/rsiEventBus.ts",
+      "exportName": "getSseClientCount",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/rsiEventBus.ts",
+      "exportName": "getEventHistory",
       "exportType": "function",
       "line": 0
     },
@@ -2248,6 +2668,30 @@
       "line": 0
     },
     {
+      "filePath": "server/semanticSelfModel.ts",
+      "exportName": "getModuleInfo",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/semanticSelfModel.ts",
+      "exportName": "getAllModules",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/semanticSelfModel.ts",
+      "exportName": "getSemanticModelStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/semanticSelfModel.ts",
+      "exportName": "reloadState",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/skillGraph.ts",
       "exportName": "suggestFix",
       "exportType": "function",
@@ -2314,8 +2758,56 @@
       "line": 0
     },
     {
-      "filePath": "server/streamRouter.ts",
-      "exportName": "registerStreamRoutes",
+      "filePath": "server/swarmOrchestrator.ts",
+      "exportName": "loadPeers",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/swarmOrchestrator.ts",
+      "exportName": "savePeers",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/swarmOrchestrator.ts",
+      "exportName": "registerPeer",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/swarmOrchestrator.ts",
+      "exportName": "loadTasks",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/swarmOrchestrator.ts",
+      "exportName": "saveTask",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/swarmOrchestrator.ts",
+      "exportName": "getSwarmHealth",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/swarmTestnet.ts",
+      "exportName": "SwarmTestnet",
+      "exportType": "class",
+      "line": 0
+    },
+    {
+      "filePath": "server/swarmTestnet.ts",
+      "exportName": "getSwarmTestnet",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/swarmTestnet.ts",
+      "exportName": "resetSwarmTestnet",
       "exportType": "function",
       "line": 0
     },
@@ -2387,25 +2879,7 @@
     },
     {
       "filePath": "server/telemetry.ts",
-      "exportName": "recordError",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/telemetry.ts",
-      "exportName": "getTelemetrySummary",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/telemetry.ts",
       "exportName": "getRawSamples",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/telemetry.ts",
-      "exportName": "telemetryMiddleware",
       "exportType": "function",
       "line": 0
     },
@@ -2519,25 +2993,7 @@
     },
     {
       "filePath": "server/testGenerator.ts",
-      "exportName": "generateTests",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/testGenerator.ts",
-      "exportName": "runTest",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/testGenerator.ts",
       "exportName": "runAllTests",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/testGenerator.ts",
-      "exportName": "analyzeCoverageGaps",
       "exportType": "function",
       "line": 0
     },
@@ -2549,25 +3005,7 @@
     },
     {
       "filePath": "server/testGenerator.ts",
-      "exportName": "setTestGenConfig",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/testGenerator.ts",
       "exportName": "getTestGenStats",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/testGenerator.ts",
-      "exportName": "getGeneratedTests",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/testGenerator.ts",
-      "exportName": "getTestResults",
       "exportType": "function",
       "line": 0
     },
@@ -2650,8 +3088,8 @@
       "line": 0
     },
     {
-      "filePath": "server/tools/selfModifyTools.ts",
-      "exportName": "registerSelfModifyTools",
+      "filePath": "server/tools/selfDiffReadTool.ts",
+      "exportName": "registerSelfDiffReadTools",
       "exportType": "function",
       "line": 0
     },
@@ -2722,6 +3160,36 @@
       "line": 0
     },
     {
+      "filePath": "server/utilityFunction.ts",
+      "exportName": "getWeights",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/utilityFunction.ts",
+      "exportName": "setWeights",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/utilityFunction.ts",
+      "exportName": "resetWeights",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/utilityFunction.ts",
+      "exportName": "getUtilityHistory",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/utilityFunction.ts",
+      "exportName": "getUtilityStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/vectorMemory.ts",
       "exportName": "registerEmbeddingProvider",
       "exportType": "function",
@@ -2762,13 +3230,31 @@
       "exportName": "getWorkspaceDir",
       "exportType": "function",
       "line": 0
+    },
+    {
+      "filePath": "server/zkProofSigning.ts",
+      "exportName": "resetIdentityCache",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/zkProofSigning.ts",
+      "exportName": "loadTrustRegistry",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/zkProofSigning.ts",
+      "exportName": "saveTrustRegistry",
+      "exportType": "function",
+      "line": 0
     }
   ],
   "generatedDocs": [
     {
       "filePath": "ARCHITECTURE.md",
       "type": "architecture",
-      "content": "Updated: 209 modules, 460 undocumented exports"
+      "content": "Updated: 262 modules, 541 undocumented exports"
     }
   ],
   "architectureUpdated": true

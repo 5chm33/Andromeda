@@ -90,7 +90,8 @@ vi.mock("better-sqlite3", () => {
           return { changes: 1, lastInsertRowid: 1 };
         });
       } else if (/SELECT.*kv_store.*WHERE.*key/i.test(sql)) {
-        stmt.get = vi.fn((key: string) =>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (stmt as any).get = vi.fn((key: string) =>
           _store[key] !== undefined ? { value: _store[key] } : undefined
         );
       } else if (/SELECT.*kv_store/i.test(sql)) {

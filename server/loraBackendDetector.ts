@@ -368,7 +368,7 @@ async function trainWithLocalPeft(
   const { runLocalLoraTraining } = await import("./localLora.js");
 
   const result = await runLocalLoraTraining({
-    baseModel: request.modelId,
+    modelId: request.modelId,
     datasetPath: request.datasetPath ?? "",
     outputDir: request.outputDir ?? "/tmp/lora-output",
     epochs: request.epochs ?? 3,

@@ -125,7 +125,13 @@ async function startServer(): Promise<void> {
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   app.use((req, res, next) => {
-    const timeout = req.path.includes("/stream") ? 300_000 : 60_000;
+    // Long-running endpoints: streams, RSI trigger/pipeline, self-improve
+    const isLongRunning = req.path.includes("/stream") ||
+      req.path.includes("/rsi/trigger") ||
+      req.path.includes("/rsi/parallel") ||
+      req.path.includes("/pipeline") ||
+      req.path.includes("/self/improve");
+    const timeout = isLongRunning ? 300_000 : 60_000;
     res.setTimeout(timeout, () => {
       if (!res.headersSent) res.status(408).json({ error: "Request timeout" });
     });

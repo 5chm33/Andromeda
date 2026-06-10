@@ -70,8 +70,22 @@ let _watcherStarted = false;
 // ─── Path helpers ─────────────────────────────────────────────────────────────
 
 function getServerDir(): string {
+  // In production the built file lives at dist/_core/ so import.meta.url points
+  // there. Walk up to find the project root (contains package.json), then return
+  // the server/ subdirectory so we scan actual TypeScript source files.
   try {
-    return path.dirname(fileURLToPath(import.meta.url));
+    let cur = path.dirname(fileURLToPath(import.meta.url));
+    for (let i = 0; i < 8; i++) {
+      const serverSubdir = path.join(cur, "server");
+      if (fs.existsSync(serverSubdir) && fs.statSync(serverSubdir).isDirectory()) {
+        return serverSubdir;
+      }
+      const parent = path.dirname(cur);
+      if (parent === cur) break;
+      cur = parent;
+    }
+    // Fallback: two levels up from dist/_core is project root
+    return path.join(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", ".."), "server");
   } catch {
     return path.join(process.cwd(), "server");
   }

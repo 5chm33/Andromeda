@@ -201,7 +201,7 @@ export class MCTSEngine {
         // Map plan steps to utility-relevant state overrides
         testPassRate: state.steps.some(s => s.action === "run_tests") ? 0.95 : 0.80,
         safetyScore: 1.0 - (state.steps.reduce((sum, s) => sum + s.estimatedRisk, 0) / state.steps.length),
-        noveltyScore: Math.min(1.0, state.steps.length / 5),
+        newCapabilities: Math.round(Math.min(5, state.steps.length)),
       });
       const utilityScore = computeUtility(snapshot);
       // Normalize utility total to 0-1 range (max possible is ~1.0 weighted sum)
@@ -254,7 +254,7 @@ ${planDescription}
 
 Respond with ONLY a decimal number between 0.0 and 1.0. No explanation.`;
 
-      const response = await backgroundSimpleCompletion(prompt, "fast");
+      const response = await backgroundSimpleCompletion([{ role: "user", content: prompt }]);
       const score = parseFloat(response.trim());
       return isNaN(score) ? 0.5 : Math.min(1.0, Math.max(0.0, score));
     } catch {

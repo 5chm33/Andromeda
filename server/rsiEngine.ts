@@ -268,8 +268,15 @@ export async function measureBenchmark(): Promise<BenchmarkBreakdown> {
   // ── Dimension 1: TypeScript Health (0-20) ───────────────────────────────
   try {
     const { execSync } = await import("child_process");
-    const serverDir = path.dirname(fileURLToPath(import.meta.url));
-    const projectRoot = path.resolve(serverDir, "..");
+    const { existsSync: fsExistsSync } = await import("fs");
+    // Walk up from dist/_core/ to find project root containing tsconfig.json
+    let projectRoot = path.dirname(fileURLToPath(import.meta.url));
+    for (let i = 0; i < 8; i++) {
+      if (fsExistsSync(path.join(projectRoot, "tsconfig.json"))) break;
+      const parent = path.dirname(projectRoot);
+      if (parent === projectRoot) break;
+      projectRoot = parent;
+    }
     const tscOutput = execSync(
       `cd "${projectRoot}" && npx tsc --noEmit 2>&1 | grep -c "error TS" || echo 0`,
       { timeout: 30_000, encoding: "utf8" }
@@ -306,12 +313,27 @@ export async function measureBenchmark(): Promise<BenchmarkBreakdown> {
   }
 
   // ── Dimension 3: Test Coverage (0-20) ───────────────────────────────────
+  // v10.1: Use direct tsc check instead of runPipeline to avoid mutex contention.
+  // runPipeline has a single-instance mutex; calling it from the benchmark while
+  // another pipeline is running returns "mutex locked" and gives a false 12/20.
   try {
-    const { runPipeline } = await import("./selfTestPipeline.js");
-    // Run a lightweight test (just type-check, no full test suite)
-    const result = await runPipeline({ id: "rsi-typecheck", description: "Type-check only benchmark", changes: [], author: "self-improve", timestamp: Date.now(), priority: "low" });
-    if (result.success) breakdown.testCoverage = 20;
-    else if (result.error && result.error.length <= 200) breakdown.testCoverage = 12;
+    const { execSync: execSyncTC } = await import("child_process");
+    const { existsSync: fsExistsSyncTC } = await import("fs");
+    let tcRoot = path.dirname(fileURLToPath(import.meta.url));
+    for (let i = 0; i < 8; i++) {
+      if (fsExistsSyncTC(path.join(tcRoot, "tsconfig.json"))) break;
+      const p2 = path.dirname(tcRoot);
+      if (p2 === tcRoot) break;
+      tcRoot = p2;
+    }
+    const tcOut = execSyncTC(
+      `cd "${tcRoot}" && npx tsc --noEmit 2>&1 | grep -c "error TS" || echo 0`,
+      { timeout: 30_000, encoding: "utf8" }
+    ).trim();
+    const tcErrors = parseInt(tcOut, 10) || 0;
+    // 0 errors = 20pts (pipeline would pass), 1-5 = 15pts, else = 5pts
+    if (tcErrors === 0) breakdown.testCoverage = 20;
+    else if (tcErrors <= 5) breakdown.testCoverage = 15;
     else breakdown.testCoverage = 5;
   } catch {
     breakdown.testCoverage = 10;
@@ -645,15 +667,17 @@ export async function runRSICycle(): Promise<RSICycleResult> {
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
   // Also re-warm the system prompt cache so the next chat response reflects the updated model.
   import("./semanticSelfModel.js").then(m => {
-    m.updateFromRSICycle({
-      cycleId,
-      proposalsApplied,
-      proposalsRejected,
-      scoreBefore: capabilityScoreBefore,
-      scoreAfter: capabilityScoreAfter,
-      appliedFiles,
-      durationMs: result.durationMs,
-    });
+    // updateFromRSICycle expects per-module data; use the first applied file as a proxy
+    for (const file of (appliedFiles.length > 0 ? appliedFiles : ["unknown"])) {
+      m.updateFromRSICycle({
+        moduleName: file,
+        changeType: "refactor",
+        actualUtilityDelta: (capabilityScoreAfter - capabilityScoreBefore) / 100,
+        accepted: proposalsApplied > 0,
+        testPassRateDelta: 0,
+        regressions: result.errors.length,
+      });
+    }
     m.warmPromptCache(); // Keep the system prompt cache fresh after each cycle
   }).catch(() => {});
 
@@ -661,13 +685,12 @@ export async function runRSICycle(): Promise<RSICycleResult> {
   import("./utilityFunction.js").then(m => {
     m.recordRSIOutcome({
       cycleId,
+      proposalId: cycleId,
+      stateBefore: { testPassRate: capabilityScoreBefore / 100, benchmarkScore: capabilityScoreBefore / 100, latencyMs: 0, tokenUsage: 0, errorRate: 0 } as any,
+      stateAfter: { testPassRate: capabilityScoreAfter / 100, benchmarkScore: capabilityScoreAfter / 100, latencyMs: 0, tokenUsage: 0, errorRate: 0 } as any,
+      utilityDelta: (capabilityScoreAfter - capabilityScoreBefore) / 100,
+      accepted: result.errors.length === 0 && proposalsApplied > 0,
       timestamp: Date.now(),
-      scoreBefore: capabilityScoreBefore,
-      scoreAfter: capabilityScoreAfter,
-      proposalsApplied,
-      proposalsRejected,
-      durationMs: result.durationMs,
-      success: result.errors.length === 0,
     });
   }).catch(() => {});
 

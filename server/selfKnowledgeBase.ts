@@ -97,15 +97,19 @@ function getKnowledgeBasePath(): string {
   return path.join(workspaceDir, ".andromeda_knowledge_base.json");
 }
 
+function createDefaultStore(): KnowledgeStore {
+  return { decisions: [], issues: [], learnings: [], capabilities: [], _version: "5.17.0", _lastUpdated: new Date().toISOString() };
+}
+
 function loadStore(): KnowledgeStore {
   const p = getKnowledgeBasePath();
   if (!fs.existsSync(p)) {
-    return { decisions: [], issues: [], learnings: [], capabilities: [], _version: "5.17.0", _lastUpdated: new Date().toISOString() };
+    return createDefaultStore();
   }
   try {
     return JSON.parse(fs.readFileSync(p, "utf-8")) as KnowledgeStore;
   } catch {
-    return { decisions: [], issues: [], learnings: [], capabilities: [], _version: "5.17.0", _lastUpdated: new Date().toISOString() };
+    return createDefaultStore();
   }
 }
 

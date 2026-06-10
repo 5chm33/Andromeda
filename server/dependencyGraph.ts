@@ -54,7 +54,20 @@ export interface GraphStats {
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const PROJECT_DIR = path.resolve(__dirname, "..");
+// In production the built file lives at dist/_core/dependencyGraph.js so
+// path.resolve(__dirname, '..') = dist/, not the project root.
+// Walk up until we find a directory containing package.json.
+function _findDepGraphProjectRoot(): string {
+  let cur = __dirname;
+  for (let i = 0; i < 8; i++) {
+    if (fs.existsSync(path.join(cur, "package.json"))) return cur;
+    const parent = path.dirname(cur);
+    if (parent === cur) break;
+    cur = parent;
+  }
+  return path.resolve(__dirname, "..", ".."); // fallback: two levels up
+}
+const PROJECT_DIR = _findDepGraphProjectRoot();
 
 const graph: Map<string, DependencyNode> = new Map();
 let lastBuildTime = 0;

@@ -298,7 +298,7 @@ export class CrossModalSelfImprovementManager {
 
     try {
       const { triggerRSICycleNow } = await import("./rsiEngine.js");
-      const result = await triggerRSICycleNow("cross-modal-code-rsi");
+      const result = await triggerRSICycleNow();
 
       const artifacts: string[] = [];
       if (result && typeof result === "object" && "proposalId" in result) {
@@ -345,8 +345,9 @@ export class CrossModalSelfImprovementManager {
     log.info(`[crossModal] Executing formal verification for cycle ${cycle.id}`);
 
     try {
-      const { generateTlaSpec } = await import("./formalVerification.js");
-      const spec = await generateTlaSpec("initSafety");
+      const { verifyModule } = await import("./formalVerification.js");
+      const verifyResult = await verifyModule("initSafety");
+      const spec = verifyResult.output ?? `TLA+ verification result: ${verifyResult.passed ? "passed" : "failed"}`;
 
       const specPath = join(this.config.dataDir, `spec-${cycle.id}.tla`);
       mkdirSync(this.config.dataDir, { recursive: true });
@@ -374,11 +375,12 @@ export class CrossModalSelfImprovementManager {
 
     // Generate an improved prompt using the LLM
     try {
-      const { invokeLlm } = await import("./llmProvider.js");
-      const improvedPrompt = await invokeLlm(
-        `You are a prompt engineer. Improve this system prompt to make the AI more effective at recursive self-improvement:\n\n${currentPrompt}\n\nReturn only the improved prompt, no explanation.`,
+      const { chatCompletion } = await import("./llmProvider.js");
+      const chatResult = await chatCompletion(
+        [{ role: "user", content: `You are a prompt engineer. Improve this system prompt to make the AI more effective at recursive self-improvement:\n\n${currentPrompt}\n\nReturn only the improved prompt, no explanation.` }],
         { maxTokens: 500 }
       );
+      const improvedPrompt = chatResult.content ?? "";
 
       if (improvedPrompt && improvedPrompt.length > currentPrompt.length * 0.5) {
         mkdirSync(join(process.env.ANDROMEDA_WORKSPACE ?? process.cwd(), "data"), { recursive: true });
@@ -402,8 +404,8 @@ export class CrossModalSelfImprovementManager {
     log.info(`[crossModal] Executing knowledge consolidation for cycle ${cycle.id}`);
 
     try {
-      const { consolidateKnowledgeBase } = await import("./knowledgeBaseConsolidation.js");
-      await consolidateKnowledgeBase();
+      const { runKBConsolidation } = await import("./knowledgeBaseConsolidation.js");
+      await runKBConsolidation(true);
 
       return {
         success: true,

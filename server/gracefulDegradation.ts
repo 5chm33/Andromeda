@@ -496,8 +496,8 @@ async function dispatchQueuedRequest(request: QueuedRequest): Promise<void> {
       }
       break;
     }
-    case "memory": {
-      // Re-store a memory write that was queued
+    case "database": {
+      // Re-store a memory/database write that was queued during an outage
       if (operation === "store" && payload?.content) {
         const { storeMemory } = await import("./memory.js");
         storeMemory(payload.content, payload.type ?? "general", payload.tags ?? []);

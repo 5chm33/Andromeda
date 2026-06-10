@@ -2,7 +2,7 @@
 > **THIS FILE IS INJECTED AT THE START OF EVERY SYSTEM PROMPT.**
 > Read it completely before taking any action. It contains your real file structure,
 > correct tool names, and mandatory protocols.
-> Last updated: 2026-06-10T01:43:47.788Z
+> Last updated: 2026-06-10T22:24:15.096Z
 
 ## ⚠️ CRITICAL: Your Runtime Paths (v5.96)
 These are the ACTUAL paths on this machine. Use these in ALL bash_execute commands.
@@ -134,6 +134,9 @@ server/
 │   └── index.js
 ├── andromedaDaemon.js
 ├── data/
+│   ├── context_bus.json
+│   ├── learned_constraints.json
+│   ├── rsi_proof_history.json
 │   └── scheduler.json
 ├── public/
 │   ├── .gitkeep
@@ -201,9 +204,9 @@ server/
 │   │   ├── KaTeX_Typewriter-Regular-CO6r4hn1.woff2
 │   │   ├── KaTeX_Typewriter-Regular-D3Ib7_Hf.ttf
 │   │   ├── ProposalTreeGraph-C5ap-Sga.css
-│   │   ├── ProposalTreeGraph-CcDne8WA.js
-│   │   ├── _basePickBy-CLTQbRec.js
-│   │   ├── _baseUniq-BsKoBr91.js
+│   │   ├── ProposalTreeGraph-D1VrEQzk.js
+│   │   ├── _basePickBy-DDpOgqBZ.js
+│   │   ├── _baseUniq-Bf_T49z8.js
 │   │   ├── abap-BdImnpbu.js
 │   │   ├── actionscript-3-CfeIJUat.js
 │   │   ├── ada-bCR0ucgS.js
@@ -215,8 +218,8 @@ server/
 │   │   ├── apl-dKokRX4l.js
 │   │   ├── applescript-Co6uUVPk.js
 │   │   ├── ara-BRHolxvo.js
-│   │   ├── arc-CIGhak_I.js
-│   │   ├── architectureDiagram-VXUJARFQ-B4aeYcsW.js
+│   │   ├── arc-oJVs6EQJ.js
+│   │   ├── architectureDiagram-VXUJARFQ-DlaTNkTF.js
 │   │   ├── asciidoc-Dv7Oe6Be.js
 │   │   ├── asm-D_Q5rh1f.js
 │   │   ├── astro-CbQHKStN.js
@@ -230,30 +233,30 @@ server/
 │   │   ├── bibtex-CHM0blh-.js
 │   │   ├── bicep-6nHXG8SA.js
 │   │   ├── blade-DVc8C-J4.js
-│   │   ├── blockDiagram-VD42YOAC-NVujhK3j.js
+│   │   ├── blockDiagram-VD42YOAC-DUZN9XZ0.js
 │   │   ├── bsl-BO_Y6i37.js
 │   │   ├── c-BIGW1oBm.js
-│   │   ├── c4Diagram-YG6GDRKO-LHBlPbrE.js
+│   │   ├── c4Diagram-YG6GDRKO-Q7DAcU2H.js
 │   │   ├── cadence-Bv_4Rxtq.js
 │   │   ├── cairo-KRGpt6FW.js
 │   │   ├── catppuccin-frappe-DFWUc33u.js
 │   │   ├── catppuccin-latte-C9dUb6Cb.js
 │   │   ├── catppuccin-macchiato-DQyhUUbL.js
 │   │   ├── catppuccin-mocha-D87Tk5Gz.js
-│   │   ├── channel-DEC6LYO-.js
-│   │   ├── chunk-4BX2VUAB-De36NPYS.js
-│   │   ├── chunk-55IACEB6-b8Ao4Fee.js
-│   │   ├── chunk-B4BG7PRW-mUGr-zD0.js
-│   │   ├── chunk-DI55MBZ5-BDqUrzHU.js
-│   │   ├── chunk-FMBD7UC4-DtVE13Kn.js
-│   │   ├── chunk-QN33PNHL-D0dQuoVO.js
-│   │   ├── chunk-QZHKN3VN-YMXs9i8r.js
-│   │   ├── chunk-TZMSLE5B-0kYcRCAG.js
+│   │   ├── channel-CRBn3x0u.js
+│   │   ├── chunk-4BX2VUAB-B9pqymrF.js
+│   │   ├── chunk-55IACEB6-CQ1bVCZe.js
+│   │   ├── chunk-B4BG7PRW-Z6Znt9St.js
+│   │   ├── chunk-DI55MBZ5-BUOFH8aN.js
+│   │   ├── chunk-FMBD7UC4-X6k6JvIa.js
+│   │   ├── chunk-QN33PNHL-ClqzsH3i.js
+│   │   ├── chunk-QZHKN3VN-_RP517zK.js
+│   │   ├── chunk-TZMSLE5B-Bo3Lri9V.js
 │   │   ├── clarity-D53aC0YG.js
-│   │   ├── classDiagram-2ON5EDUG-Cx3uTSry.js
-│   │   ├── classDiagram-v2-WZHVMYZB-Cx3uTSry.js
+│   │   ├── classDiagram-2ON5EDUG-DXrjfdDa.js
+│   │   ├── classDiagram-v2-WZHVMYZB-DXrjfdDa.js
 │   │   ├── clojure-P80f7IUj.js
-│   │   ├── clone-B6WWf5vG.js
+│   │   ├── clone-CUvK3ATd.js
 │   │   ├── cmake-D1j8_8rp.js
 │   │   ├── cobol-nwyudZeR.js
 │   │   ├── codeowners-Bp6g37R7.js
@@ -261,7 +264,7 @@ server/
 │   │   ├── coffee-Ch7k5sss.js
 │   │   ├── common-lisp-Cg-RD9OK.js
 │   │   ├── coq-DkFqJrB1.js
-│   │   ├── cose-bilkent-S5V4N54A-ByIFf6B9.js
+│   │   ├── cose-bilkent-S5V4N54A-DbmUYjAD.js
 │   │   ├── cpp-CofmeUqb.js
 │   │   ├── crystal-tKQVLTB8.js
 │   │   ├── csharp-CX12Zw3r.js
@@ -271,14 +274,14 @@ server/
 │   │   ├── cypher-COkxafJQ.js
 │   │   ├── cytoscape.esm-DtBltrT8.js
 │   │   ├── d-85-TOEBH.js
-│   │   ├── dagre-6UL2VRFP-DoWI23Nf.js
+│   │   ├── dagre-6UL2VRFP-BMLgGrvK.js
 │   │   ├── dark-plus-eOWES_5F.js
 │   │   ├── dart-CF10PKvl.js
 │   │   ├── dax-CEL-wOlO.js
 │   │   ├── desktop-BmXAJ9_W.js
-│   │   ├── diagram-PSM6KHXK-SXU5Y5c5.js
-│   │   ├── diagram-QEK2KX5R-Cu2mNNBZ.js
-│   │   ├── diagram-S2PKOQOG-BkJzP2mz.js
+│   │   ├── diagram-PSM6KHXK-jP-AoFNp.js
+│   │   ├── diagram-QEK2KX5R-Bz9LnJL-.js
+│   │   ├── diagram-S2PKOQOG-Dx36tRUG.js
 │   │   ├── diff-D97Zzqfu.js
 │   │   ├── docker-BcOcwvcX.js
 │   │   ├── dotenv-Da5cRb03.js
@@ -289,19 +292,19 @@ server/
 │   │   ├── elixir-CDX3lj18.js
 │   │   ├── elm-DbKCFpqz.js
 │   │   ├── emacs-lisp-C9XAeP06.js
-│   │   ├── erDiagram-Q2GNP2WA-BW55tlHN.js
+│   │   ├── erDiagram-Q2GNP2WA-CmkGM83K.js
 │   │   ├── erb-BOJIQeun.js
 │   │   ├── erlang-DsQrWhSR.js
 │   │   ├── everforest-dark-BgDCqdQA.js
 │   │   ├── everforest-light-C8M2exoo.js
 │   │   ├── fennel-BYunw83y.js
 │   │   ├── fish-BvzEVeQv.js
-│   │   ├── flowDiagram-NV44I4VS-CX7wmFRz.js
+│   │   ├── flowDiagram-NV44I4VS-BHNU3TYs.js
 │   │   ├── fluent-C4IJs8-o.js
 │   │   ├── fortran-fixed-form-BZjJHVRy.js
 │   │   ├── fortran-free-form-D22FLkUw.js
 │   │   ├── fsharp-CXgrBDvD.js
-│   │   ├── ganttDiagram-LVOFAZNH-21ipPOMG.js
+│   │   ├── ganttDiagram-LVOFAZNH-QQcyJQIK.js
 │   │   ├── gdresource-B7Tvp0Sc.js
 │   │   ├── gdscript-DTMYz4Jt.js
 │   │   ├── gdshader-DkwncUOv.js
@@ -309,7 +312,7 @@ server/
 │   │   ├── gherkin-DyxjwDmM.js
 │   │   ├── git-commit-F4YmCXRG.js
 │   │   ├── git-rebase-r7XF79zn.js
-│   │   ├── gitGraphDiagram-NY62KEGX-DYsMw2U3.js
+│   │   ├── gitGraphDiagram-NY62KEGX-eQx448j1.js
 │   │   ├── github-dark-DHJKELXO.js
 │   │   ├── github-dark-default-Cuk6v7N8.js
 │   │   ├── github-dark-dimmed-DH5Ifo-i.js
@@ -323,7 +326,7 @@ server/
 │   │   ├── glsl-DplSGwfg.js
 │   │   ├── gnuplot-DdkO51Og.js
 │   │   ├── go-Dn2_MT6a.js
-│   │   ├── graph-D5bQypNW.js
+│   │   ├── graph-DCc_QGUT.js
 │   │   ├── graphql-ChdNCCLP.js
 │   │   ├── groovy-gcz8RCvz.js
 │   │   ├── gruvbox-dark-hard-CFHQjOhq.js
@@ -348,15 +351,15 @@ server/
 │   │   ├── hxml-Bvhsp5Yf.js
 │   │   ├── hy-DFXneXwc.js
 │   │   ├── imba-DGztddWO.js
+│   │   ├── index-CRUZJeyA.js
 │   │   ├── index-IQYqYSVj.css
-│   │   ├── index-n8zvi9j2.js
-│   │   ├── infoDiagram-F6ZHWCRC-BCBgrJ0C.js
+│   │   ├── infoDiagram-F6ZHWCRC-DbWbstRZ.js
 │   │   ├── ini-BEwlwnbL.js
 │   │   ├── java-CylS5w8V.js
 │   │   ├── javascript-wDzz0qaB.js
 │   │   ├── jinja-4LBKfQ-Z.js
 │   │   ├── jison-wvAkD_A8.js
-│   │   ├── journeyDiagram-XKPGCS4Q-B2mvUaC7.js
+│   │   ├── journeyDiagram-XKPGCS4Q-BXDps9Y5.js
 │   │   ├── json-Cp-IABpG.js
 │   │   ├── json5-C9tS-k6U.js
 │   │   ├── jsonc-Des-eS-w.js
@@ -368,13 +371,13 @@ server/
 │   │   ├── kanagawa-dragon-CkXjmgJE.js
 │   │   ├── kanagawa-lotus-CfQXZHmo.js
 │   │   ├── kanagawa-wave-DWedfzmr.js
-│   │   ├── kanban-definition-3W4ZIXB7-C82A9SHD.js
+│   │   ├── kanban-definition-3W4ZIXB7-QTwMYs5i.js
 │   │   ├── kdl-DV7GczEv.js
 │   │   ├── kotlin-BdnUsdx6.js
 │   │   ├── kusto-BvAqAH-y.js
 │   │   ├── laserwave-DUszq2jm.js
 │   │   ├── latex-BUKiar2Z.js
-│   │   ├── layout-CuLuAi9N.js
+│   │   ├── layout-BIKmHydI.js
 │   │   ├── lean-DP1Csr6i.js
 │   │   ├── less-B1dDrJ26.js
 │   │   ├── light-plus-B7mTdjB0.js
@@ -396,10 +399,10 @@ server/
 │   │   ├── mdc-DUICxH0z.js
 │   │   ├── mdx-Cmh6b_Ma.js
 │   │   ├── mermaid-DKYwYmdq.js
-│   │   ├── mermaid.core-Dm5InA2_.js
+│   │   ├── mermaid.core-_gNyaZCx.js
 │   │   ├── min-dark-CafNBF8u.js
 │   │   ├── min-light-CTRr51gU.js
-│   │   ├── mindmap-definition-VGOIOE7T-g0tECurq.js
+│   │   ├── mindmap-definition-VGOIOE7T-BGamIb29.js
 │   │   ├── mipsasm-CKIfxQSi.js
 │   │   ├── mojo-1DNp92w6.js
 │   │   ├── monokai-D4h5O-jR.js
@@ -420,7 +423,7 @@ server/
 │   │   ├── pascal-D93ZcfNL.js
 │   │   ├── perl-C0TMdlhV.js
 │   │   ├── php-CDn_0X-4.js
-│   │   ├── pieDiagram-ADFJNKIX-maWAvtLK.js
+│   │   ├── pieDiagram-ADFJNKIX-Rgplj53e.js
 │   │   ├── pkl-u5AG7uiY.js
 │   │   ├── plastic-3e1v2bzS.js
 │   │   ├── plsql-ChMvpjG-.js
@@ -440,7 +443,7 @@ server/
 │   │   ├── qml-3beO22l8.js
 │   │   ├── qmldir-C8lEn-DE.js
 │   │   ├── qss-IeuSbFQv.js
-│   │   ├── quadrantDiagram-AYHSOK5B-D0Wz2T5Q.js
+│   │   ├── quadrantDiagram-AYHSOK5B-CdODTAZv.js
 │   │   ├── r-DiinP2Uv.js
 │   │   ├── racket-BqYA7rlc.js
 │   │   ├── raku-DXvB9xmW.js
@@ -449,7 +452,7 @@ server/
 │   │   ├── reg-C-SQnVFl.js
 │   │   ├── regexp-CDVJQ6XC.js
 │   │   ├── rel-C3B-1QV4.js
-│   │   ├── requirementDiagram-UZGBJVZJ-DIzZCAzU.js
+│   │   ├── requirementDiagram-UZGBJVZJ-Cq_R67Ry.js
 │   │   ├── riscv-BM1_JUlF.js
 │   │   ├── rose-pine-BHrmToEH.js
 │   │   ├── rose-pine-dawn-CnK8MTSM.js
@@ -458,14 +461,14 @@ server/
 │   │   ├── rst-B0xPkSld.js
 │   │   ├── ruby-BvKwtOVI.js
 │   │   ├── rust-B1yitclQ.js
-│   │   ├── sankeyDiagram-TZEHDZUN-CsVBATH5.js
+│   │   ├── sankeyDiagram-TZEHDZUN-B7mx8Fmc.js
 │   │   ├── sas-cz2c8ADy.js
 │   │   ├── sass-Cj5Yp3dK.js
 │   │   ├── scala-C151Ov-r.js
 │   │   ├── scheme-C98Dy4si.js
 │   │   ├── scss-OYdSNvt2.js
 │   │   ├── sdbl-DVxCFoDh.js
-│   │   ├── sequenceDiagram-WL72ISMW-CwDX3NTL.js
+│   │   ├── sequenceDiagram-WL72ISMW-C0G1Q1wh.js
 │   │   ├── shaderlab-Dg9Lc6iA.js
 │   │   ├── shellscript-Yzrsuije.js
 │   │   ├── shellsession-BADoaaVG.js
@@ -482,8 +485,8 @@ server/
 │   │   ├── sql-BLtJtn59.js
 │   │   ├── ssh-config-_ykCGR6B.js
 │   │   ├── stata-BH5u7GGu.js
-│   │   ├── stateDiagram-FKZM4ZOC-B_LA_kRS.js
-│   │   ├── stateDiagram-v2-4FDKWEC3-De8nrfRM.js
+│   │   ├── stateDiagram-FKZM4ZOC-I9zancNg.js
+│   │   ├── stateDiagram-v2-4FDKWEC3-DLzfQGQk.js
 │   │   ├── stylus-BEDo0Tqx.js
 │   │   ├── svelte-3Dk4HxPD.js
 │   │   ├── swift-Dg5xB15N.js
@@ -496,11 +499,11 @@ server/
 │   │   ├── templ-W15q3VgB.js
 │   │   ├── terraform-BETggiCN.js
 │   │   ├── tex-Cppo0RY3.js
-│   │   ├── timeline-definition-IT6M3QCI-DKS6s8qQ.js
+│   │   ├── timeline-definition-IT6M3QCI-BTO_K79U.js
 │   │   ├── tokyo-night-hegEt444.js
 │   │   ├── toml-vGWfd6FD.js
-│   │   ├── transform-P2IumA1s.js
-│   │   ├── treemap-KMMF4GRG-ILcq571m.js
+│   │   ├── transform-BMxpUt82.js
+│   │   ├── treemap-KMMF4GRG-GgY1xQzp.js
 │   │   ├── ts-tags-zn1MmPIZ.js
 │   │   ├── tsv-B_m7g4N7.js
 │   │   ├── tsx-COt5Ahok.js
@@ -532,7 +535,7 @@ server/
 │   │   ├── wolfram-lXgVvXCa.js
 │   │   ├── xml-sdJ4AIDG.js
 │   │   ├── xsl-CtQFsRM5.js
-│   │   ├── xychartDiagram-PRI3JC2R-CuL_1S7j.js
+│   │   ├── xychartDiagram-PRI3JC2R-H1_CzeCi.js
 │   │   ├── yaml-Buea-lGh.js
 │   │   ├── zenscript-DVFEvuxE.js
 │   │   └── zig-VOosw3JB.js
@@ -579,7 +582,33 @@ server/
 │           └── space.mp4
 └── workspace/
     ├── .andromeda_knowledge_base.json
-    └── .andromeda_meta_goals.json
+    ├── .andromeda_memory.json
+    ├── .andromeda_meta_goals.json
+    ├── .andromeda_proposal_cache.json
+    ├── .pipeline_backups/
+    │   ├── rsi-typecheck_1781063770714.json
+    │   └── rsi-typecheck_1781063780921.json
+    ├── .rollback_history/
+    │   ├── rp_1781062581215_6m4jsp.json
+    │   ├── rp_1781062619071_gy18y7.json
+    │   ├── rp_1781062637969_re5d4w.json
+    │   ├── rp_1781062912827_vfwzbl.json
+    │   ├── rp_1781062929423_0tyz8c.json
+    │   ├── rp_1781062929450_azbqmb.json
+    │   ├── rp_1781063188529_9ayk0s.json
+    │   ├── rp_1781063237516_wt6aix.json
+    │   ├── rp_1781063283539_0jipdd.json
+    │   ├── rp_1781064681923_dny9o6.json
+    │   ├── rp_1781064893291_7r2zpv.json
+    │   ├── rp_1781064972369_26qgds.json
+    │   ├── rp_1781065039720_s560j5.json
+    │   ├── rp_1781129434110_cos44v.json
+    │   ├── rp_1781129434171_y0i6ov.json
+    │   ├── rp_1781129434225_vpqlp7.json
+    │   ├── rp_1781129809405_byhsha.json
+    │   ├── rp_1781129849184_uv4rly.json
+    │   └── rp_1781129849461_jnman6.json
+    └── rsi-history.jsonl
 ```
 
 ## Available Tools (EXACT names — verified against source code)

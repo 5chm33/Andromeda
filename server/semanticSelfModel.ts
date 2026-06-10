@@ -258,10 +258,9 @@ function loadState(): void {
         modules: { ...Object.fromEntries(
           Object.entries(BASELINE_MODULE_MAP).map(([k, v]) => [k, {
             ...v,
-            lastUpdated: Date.now(),
-            rsiTouchCount: 0,
-            avgUtilityDelta: 0,
-            ...saved.modules[k],
+            lastUpdated: (saved.modules[k]?.lastUpdated) ?? Date.now(),
+            rsiTouchCount: (saved.modules[k]?.rsiTouchCount) ?? 0,
+            avgUtilityDelta: (saved.modules[k]?.avgUtilityDelta) ?? 0,
           }])
         ) },
       };

@@ -49,7 +49,6 @@ export function registerGodelRoutes(app: Express): void {
         preConditions: preConditions ?? {},
         postConditions: postConditions ?? {},
         expectedUtilityDelta: expectedUtilityDelta ?? 0.01,
-        warnOnly: warnOnly ?? true,
       });
       res.json(result);
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
@@ -107,17 +106,15 @@ export function registerGodelRoutes(app: Express): void {
   app.post("/api/godel/semantic/predict", async (req, res) => {
     try {
       const { impactPredict } = await import("../semanticSelfModel.js");
-      const { targetModule, proposedChange, changeType, linesChanged } = req.body ?? {};
-      if (!targetModule || !proposedChange) {
-        res.status(400).json({ error: "targetModule and proposedChange are required" });
+      const { targetModule, changeType } = req.body ?? {};
+      if (!targetModule) {
+        res.status(400).json({ error: "targetModule is required" });
         return;
       }
-      const prediction = impactPredict({
+      const prediction = impactPredict(
         targetModule,
-        proposedChange,
-        changeType: changeType ?? "refactor",
-        linesChanged: linesChanged ?? 10,
-      });
+        changeType ?? "refactor",
+      );
       res.json(prediction);
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });
@@ -220,7 +217,7 @@ export function registerGodelRoutes(app: Express): void {
       const results = allNodes
         .filter(n =>
           (!nodeType || n.type === nodeType) &&
-          (!query || n.name.toLowerCase().includes(query.toLowerCase()) ||
+          (!query || n.label.toLowerCase().includes(query.toLowerCase()) ||
             n.filePath.toLowerCase().includes(query.toLowerCase()))
         )
         .slice(0, limit ?? 20);

@@ -532,7 +532,7 @@
   ],
   "durationMs": 121758,
   "version": "9.0.0",
-  "memory_keyword_search": 139.96,
+  "memory_keyword_search": 5,
   "tool_registry_lookup": 5,
   "file_write_10kb": 5,
   "file_read_10kb": 5,

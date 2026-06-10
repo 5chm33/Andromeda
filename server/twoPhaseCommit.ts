@@ -354,9 +354,8 @@ export async function twoPhaseCommit(options: CommitOptions): Promise<CommitResu
         preConditions: {},
         postConditions: {},
         expectedUtilityDelta: 0.01,
-        warnOnly: !strictMode,
       });
-      if (!proofResult.allowed) {
+      if (strictMode && !proofResult.valid) {
         activeCommits.delete(absolutePath);
         return {
           success: false,
@@ -364,7 +363,7 @@ export async function twoPhaseCommit(options: CommitOptions): Promise<CommitResu
           filePath: options.filePath,
           safetyResult,
           failureCheck,
-          error: `Proof gate BLOCKED: ${proofResult.reason}`,
+          error: `Proof gate BLOCKED: ${proofResult.explanation}`,
           durationMs: Date.now() - startTime,
         };
       }

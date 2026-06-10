@@ -50,6 +50,10 @@ jobs:
 
       # --no-frozen-lockfile prevents ERR_PNPM_LOCKFILE_CONFIG_MISMATCH when
       # pnpm-workspace.yaml and package.json pnpm-field are out of sync across versions.
+      # Approve all build scripts upfront so pnpm 11 doesn't throw ERR_PNPM_IGNORED_BUILDS
+      # for transitive esbuild versions (0.18.x, 0.21.x) that aren't direct dependencies.
+      - name: Approve build scripts
+        run: pnpm approve-builds --all || true
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 

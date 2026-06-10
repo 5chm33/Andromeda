@@ -94,39 +94,38 @@ async function runRsiTrigger(): Promise<void> {
       const { getSelfModelSummary, routeTask } = await import("./ontologicalModel.js");
       const selfModel = getSelfModelSummary();
       const MIN_CONFIDENCE = 0.45; // 45% minimum overall confidence for auto-RSI
-      if (selfModel.overallConfidence < MIN_CONFIDENCE) {
+      if (selfModel.intelligenceScore < MIN_CONFIDENCE) {
         log.info(
-          `[rsiScheduler] Ontological gate: confidence ${(selfModel.overallConfidence * 100).toFixed(1)}% < ${(MIN_CONFIDENCE * 100).toFixed(0)}% — deferring RSI cycle`
+          `[rsiScheduler] Ontological gate: confidence ${(selfModel.intelligenceScore * 100).toFixed(1)}% < ${(MIN_CONFIDENCE * 100).toFixed(0)}% — deferring RSI cycle`
         );
         appendScheduleLog({
           triggeredAt: Date.now(),
           source: "scheduler",
           intervalHours: DEFAULT_HOURS,
           cycleStarted: false,
-          note: `Deferred — ontological confidence ${(selfModel.overallConfidence * 100).toFixed(1)}% below ${(MIN_CONFIDENCE * 100).toFixed(0)}% threshold`,
+          note: `Deferred — ontological confidence ${(selfModel.intelligenceScore * 100).toFixed(1)}% below ${(MIN_CONFIDENCE * 100).toFixed(0)}% threshold`,
         });
         return;
       }
       // Verify RSI is the right action for the current state
       const routing = routeTask(
-        "Perform a recursive self-improvement cycle to enhance agent capabilities",
-        { urgency: "low", complexity: "high" }
+        "Perform a recursive self-improvement cycle to enhance agent capabilities"
       );
-      if (routing.action !== "write_tool" && routing.action !== "train_lora") {
+      if (routing.selectedAction !== "write_tool" && routing.selectedAction !== "train_lora") {
         log.info(
-          `[rsiScheduler] Ontological gate: routing suggests '${routing.action}' — deferring (confidence: ${(routing.confidence * 100).toFixed(1)}%)`
+          `[rsiScheduler] Ontological gate: routing suggests '${routing.selectedAction}' — deferring (confidence: ${(routing.confidence * 100).toFixed(1)}%)`
         );
         appendScheduleLog({
           triggeredAt: Date.now(),
           source: "scheduler",
           intervalHours: DEFAULT_HOURS,
           cycleStarted: false,
-          note: `Deferred — ontological routing suggests '${routing.action}' (confidence: ${(routing.confidence * 100).toFixed(1)}%)`,
+          note: `Deferred — ontological routing suggests '${routing.selectedAction}' (confidence: ${(routing.confidence * 100).toFixed(1)}%)`,
         });
         return;
       }
       log.info(
-        `[rsiScheduler] Ontological gate passed — confidence: ${(selfModel.overallConfidence * 100).toFixed(1)}%, routing: ${routing.action}`
+        `[rsiScheduler] Ontological gate passed — confidence: ${(selfModel.intelligenceScore * 100).toFixed(1)}%, routing: ${routing.selectedAction}`
       );
     } catch (ontErr) {
       // If ontological model is unavailable, proceed anyway (fail-open for RSI)
@@ -140,21 +139,21 @@ async function runRsiTrigger(): Promise<void> {
     try {
       const { computeDelta, createStateSnapshot } = await import("./utilityFunction.js");
       const currentState = createStateSnapshot();
-      const delta = computeDelta(currentState);
-      if (!delta.shouldProceed) {
+      const delta = computeDelta(currentState, currentState);
+      if (!delta.meetsThreshold) {
         log.info(
-          `[rsiScheduler] Utility gate: delta ${delta.delta.toFixed(4)} below threshold — deferring RSI cycle. ${delta.reason}`
+          `[rsiScheduler] Utility gate: delta ${delta.delta.toFixed(4)} below threshold — deferring RSI cycle. ${delta.explanation}`
         );
         appendScheduleLog({
           triggeredAt: Date.now(),
           source: "scheduler",
           intervalHours: DEFAULT_HOURS,
           cycleStarted: false,
-          note: `Deferred — utility delta ${delta.delta.toFixed(4)} below threshold: ${delta.reason}`,
+          note: `Deferred — utility delta ${delta.delta.toFixed(4)} below threshold: ${delta.explanation}`,
         });
         return;
       }
-      log.info(`[rsiScheduler] Utility gate passed — delta: ${delta.delta.toFixed(4)}, reason: ${delta.reason}`);
+      log.info(`[rsiScheduler] Utility gate passed — delta: ${delta.delta.toFixed(4)}, reason: ${delta.explanation}`);
     } catch (utilErr) {
       // Non-fatal — utility gate failure should not block RSI
       log.warn("[rsiScheduler] Utility gate unavailable — proceeding anyway:", utilErr);

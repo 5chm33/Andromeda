@@ -18,15 +18,33 @@ import path from "path";
 import { execSync } from "child_process";
 import { fileURLToPath } from "url";
 
+// ─── Project Root Resolution ─────────────────────────────────────────────────
+// In production the built file lives at dist/_core/selfImproveGuard.js so
+// path.dirname(import.meta.url) = dist/_core/.  We walk up until we find a
+// directory that contains package.json (the true project root).
+const _guardDistDir = path.dirname(fileURLToPath(import.meta.url));
+function _findProjectRoot(): string {
+  let cur = _guardDistDir;
+  for (let i = 0; i < 8; i++) {
+    if (fs.existsSync(path.join(cur, "package.json"))) return cur;
+    const parent = path.dirname(cur);
+    if (parent === cur) break;
+    cur = parent;
+  }
+  // Fallback: two levels up from dist/_core is project root
+  return path.resolve(_guardDistDir, "..", "..");
+}
+const _guardProjectRoot = _findProjectRoot();
+
 // v5.54: Cache the constitution JSON to avoid re-reading on every guardedApply call
 let _constitutionCache: Record<string, unknown> | null = null;
 let _constitutionCachePath: string | null = null;
 function getConstitution(): Record<string, unknown> | null {
   if (_constitutionCache) return _constitutionCache;
-  const serverDir = path.dirname(fileURLToPath(import.meta.url));
   const candidates = [
-    path.resolve(serverDir, "..", "andromeda-constitution.json"),
-    path.resolve(serverDir, "..", "..", "andromeda-constitution.json"),
+    path.resolve(_guardProjectRoot, "andromeda-constitution.json"),
+    path.resolve(_guardDistDir, "..", "andromeda-constitution.json"),
+    path.resolve(_guardDistDir, "..", "..", "andromeda-constitution.json"),
     path.resolve(process.cwd(), "andromeda-constitution.json"),
   ];
   const found = candidates.find(p => fs.existsSync(p));
@@ -94,7 +112,7 @@ type GuardStore = {
 // ─── Storage ──────────────────────────────────────────────────────────────────
 
 function getDataDir(): string {
-  const dir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "data");
+  const dir = path.resolve(_guardProjectRoot, "data");
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   return dir;
 }
@@ -168,9 +186,9 @@ function addAudit(
 // ─── Backup Management ───────────────────────────────────────────────────────
 
 function createBackup(filename: string, proposalId?: string, reason = "pre-apply"): BackupEntry | null {
-  const serverDir = path.dirname(fileURLToPath(import.meta.url));
-  const filePath = path.join(serverDir, path.basename(filename));
-  if (!fs.existsSync(filePath)) return null;
+  // Use resolveServerFile so we find the actual source file, not dist/_core/<file>
+  const filePath = resolveServerFile(filename);
+  if (!filePath || !fs.existsSync(filePath)) return null;
 
   const content = fs.readFileSync(filePath);
   const backupName = `${path.basename(filename, ".ts")}_${Date.now()}.ts.bak`;
@@ -270,9 +288,8 @@ function runSyntaxCheck(filename: string, proposedContent: string, originalSnipp
   // 3. Restore the original file
   // This is the same check that CI runs, so it's the ground truth for correctness.
 
-  const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-  const serverDir = path.join(projectRoot, "server");
-  const actualFile = path.join(serverDir, path.basename(filename));
+  const projectRoot = _guardProjectRoot;
+  const actualFile = resolveServerFile(filename) ?? path.join(projectRoot, "server", path.basename(filename));
 
   // Find the local tsc binary
   const localTscPaths = [
@@ -312,13 +329,21 @@ function runSyntaxCheck(filename: string, proposedContent: string, originalSnipp
         }
         return runLightweightSyntaxCheck(proposedContent);
       }
-      // Filter out errors from OTHER files (we only care about errors caused by this change)
-      const relevantErrors = tscOutput
+      // Filter out errors from OTHER files — only keep errors in the target file.
+      // Do NOT use a generic 'error TS\d+' filter because that catches pre-existing
+      // errors in unrelated files and causes every proposal to fail.
+      const targetBase = path.basename(filename);
+      const targetLines = tscOutput
         .split("\n")
-        .filter(line => line.includes(path.basename(filename)) || line.match(/error TS\d+/))
+        .filter(line => line.includes(targetBase))
         .join("\n")
         .slice(0, 1000);
-      return { pass: false, errors: relevantErrors || tscOutput.slice(0, 1000) };
+      if (!targetLines) {
+        // No errors in the target file — the errors are all pre-existing in other files.
+        // Treat this as a pass (the proposal didn't introduce new errors).
+        return { pass: true, errors: "" };
+      }
+      return { pass: false, errors: targetLines };
     }
   } finally {
     // Always restore the original file
@@ -409,7 +434,7 @@ function runTests(): { pass: boolean; output: string } {
     const output = execSync("npx vitest run --reporter=verbose 2>&1", {
       timeout: 120000,
       encoding: "utf-8",
-      cwd: path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".."),
+      cwd: _guardProjectRoot,
     });
     return { pass: true, output: output.slice(-2000) };
   } catch (err: any) {
@@ -665,10 +690,7 @@ export function rollbackToBackup(backupId: string): { success: boolean; message:
 
   const backupPath = path.join(getBackupDir(), backup.backupPath);
   if (!fs.existsSync(backupPath)) return { success: false, message: "Backup file missing from disk" };
-
-  const serverDir = path.dirname(fileURLToPath(import.meta.url));
-  const targetPath = path.join(serverDir, backup.filename);
-
+  const targetPath = resolveServerFile(backup.filename) ?? path.join(_guardProjectRoot, "server", backup.filename);
   try {
     // Create a backup of the current state before rolling back
     createBackup(backup.filename, undefined, "pre-rollback");

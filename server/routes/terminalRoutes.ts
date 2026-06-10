@@ -63,7 +63,7 @@ export function attachTerminalWss(server: import("http").Server): WebSocketServe
       return;
     }
 
-    wss.handleUpgrade(req, socket, head, (ws) => {
+    wss.handleUpgrade(req, socket, head, (ws: WebSocket) => {
       wss.emit("connection", ws, req);
     });
   });
@@ -129,7 +129,7 @@ export function attachTerminalWss(server: import("http").Server): WebSocketServe
       try { pty.kill(); } catch { /* already dead */ }
     });
 
-    ws.on("error", (err) => {
+    ws.on("error", (err: Error) => {
       log.warn("Terminal WebSocket error", { sessionId, error: err.message });
     });
   });

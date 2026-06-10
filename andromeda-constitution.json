@@ -1,5 +1,5 @@
 {
-  "_comment": "Andromeda AI Constitution v1.3.0 — Machine-readable rules checked before every autonomous self-improvement apply.",
+  "_comment": "Andromeda AI Constitution v1.3.0 \u2014 Machine-readable rules checked before every autonomous self-improvement apply.",
   "_version": "1.3.0",
   "_updated": "2026-06-04",
   "_changelog": "v1.3.0: Tightened forbidden patterns to match hardcoded credential assignments only. Removed overly broad patterns ('token', 'API_KEY', 'password', 'secret', 'process.env.X') that were causing false-positive blocks on legitimate code. These patterns blocked valid proposals for 10+ days (e.g. adaptiveRouter.ts, contextManager.ts). New patterns use assignment syntax to only catch hardcoded values.",
@@ -83,7 +83,9 @@
       "twoPhaseCommit.ts",
       "failurePatternMemory.ts",
       "identityManifest.ts",
-      "selfTestGenerator.ts"
+      "selfTestGenerator.ts",
+      "pnpm-workspace.yaml",
+      ".npmrc"
     ],
     "patterns": [
       "sk-[a-zA-Z0-9]{20,}",

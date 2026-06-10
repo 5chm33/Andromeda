@@ -199,7 +199,7 @@ async function runLocalShadowTest(
     } catch (e: unknown) {
       if (e && typeof e === "object" && "stdout" in e) {
         stdout = String((e as { stdout: unknown }).stdout ?? "");
-        stderr = String((e as { stderr: unknown }).stderr ?? "");
+        stderr = String(((e as unknown) as { stderr: unknown }).stderr ?? "");
       }
     }
 

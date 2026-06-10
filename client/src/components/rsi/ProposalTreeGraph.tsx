@@ -146,7 +146,7 @@ function proposalsToFlow(proposals: ProposalNode[]): { nodes: Node[]; edges: Edg
         score: 1,
         createdAt: Date.now(),
         isRoot: true,
-      } as ProposalNode & { isRoot: boolean },
+      } as unknown as Record<string, unknown>,
     },
   ];
 
@@ -177,7 +177,7 @@ function proposalsToFlow(proposals: ProposalNode[]): { nodes: Node[]; edges: Edg
       id: p.id,
       type: "proposal",
       position: { x: xBase, y: level * 160 },
-      data: p,
+      data: p as unknown as Record<string, unknown>,
     });
 
     edges.push({
@@ -397,7 +397,7 @@ export function ProposalTreeGraph() {
           <MiniMap
             className="!bg-slate-900 !border-slate-700"
             nodeColor={(n) => {
-              const s = (n.data as ProposalNode).status;
+              const s = (n.data as unknown as ProposalNode).status;
               return s === "passed" || s === "adopted"
                 ? "#10b981"
                 : s === "failed"

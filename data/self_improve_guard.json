@@ -21,7 +21,161 @@
       "selfTestPipeline.ts"
     ]
   },
-  "backups": [],
+  "backups": [
+    {
+      "id": "bak_1781062942420_hulfvl",
+      "filename": "adaptiveRouter.ts",
+      "backupPath": "adaptiveRouter_1781062942418.ts.bak",
+      "originalSize": 10558,
+      "createdAt": "2026-06-10T03:42:22.420Z",
+      "proposalId": "prop_1781062566859_o7u3t0",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781062978622_l3wp9w",
+      "filename": "adaptiveRouter.ts",
+      "backupPath": "adaptiveRouter_1781062978622.ts.bak",
+      "originalSize": 10886,
+      "createdAt": "2026-06-10T03:42:58.622Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781063201845_ngdlvd",
+      "filename": "codeIntel.ts",
+      "backupPath": "codeIntel_1781063201845.ts.bak",
+      "originalSize": 14358,
+      "createdAt": "2026-06-10T03:46:41.845Z",
+      "proposalId": "prop_1781063112198_nhjn6k",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781063237485_krajv6",
+      "filename": "codeIntel.ts",
+      "backupPath": "codeIntel_1781063237485.ts.bak",
+      "originalSize": 14503,
+      "createdAt": "2026-06-10T03:47:17.485Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781063249965_2xm15x",
+      "filename": "evalDrivenTargeting.ts",
+      "backupPath": "evalDrivenTargeting_1781063249965.ts.bak",
+      "originalSize": 8493,
+      "createdAt": "2026-06-10T03:47:29.965Z",
+      "proposalId": "prop_1781063142907_vdggw9",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781063283382_oa0z2h",
+      "filename": "evalDrivenTargeting.ts",
+      "backupPath": "evalDrivenTargeting_1781063283382.ts.bak",
+      "originalSize": 8828,
+      "createdAt": "2026-06-10T03:48:03.382Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781064692848_upv38c",
+      "filename": "evalDrivenTargeting.ts",
+      "backupPath": "evalDrivenTargeting_1781064692848.ts.bak",
+      "originalSize": 8493,
+      "createdAt": "2026-06-10T04:11:32.848Z",
+      "proposalId": "prop_1781064635626_npmu6o",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781064720980_v81aag",
+      "filename": "evalDrivenTargeting.ts",
+      "backupPath": "evalDrivenTargeting_1781064720980.ts.bak",
+      "originalSize": 8821,
+      "createdAt": "2026-06-10T04:12:00.980Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781064910669_6dhata",
+      "filename": "aiChangelog.ts",
+      "backupPath": "aiChangelog_1781064910668.ts.bak",
+      "originalSize": 7286,
+      "createdAt": "2026-06-10T04:15:10.669Z",
+      "proposalId": "prop_1781064790512_5jo5ov",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781064972239_7c9nnx",
+      "filename": "aiChangelog.ts",
+      "backupPath": "aiChangelog_1781064972238.ts.bak",
+      "originalSize": 7076,
+      "createdAt": "2026-06-10T04:16:12.239Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781065007835_y04eir",
+      "filename": "taskDecomposer.ts",
+      "backupPath": "taskDecomposer_1781065007833.ts.bak",
+      "originalSize": 19350,
+      "createdAt": "2026-06-10T04:16:47.835Z",
+      "proposalId": "prop_1781064447334_41ynvg",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781065039510_oi2p8g",
+      "filename": "taskDecomposer.ts",
+      "backupPath": "taskDecomposer_1781065039509.ts.bak",
+      "originalSize": 19119,
+      "createdAt": "2026-06-10T04:17:19.510Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781129454817_c6t1t6",
+      "filename": "agentOrchestrator.ts",
+      "backupPath": "agentOrchestrator_1781129454817.ts.bak",
+      "originalSize": 23380,
+      "createdAt": "2026-06-10T22:10:54.817Z",
+      "proposalId": "prop_1781129254080_2y01ka",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781129485231_spbcl9",
+      "filename": "agentOrchestrator.ts",
+      "backupPath": "agentOrchestrator_1781129485231.ts.bak",
+      "originalSize": 23293,
+      "createdAt": "2026-06-10T22:11:25.231Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781129814190_ryt34x",
+      "filename": "biasDetector.ts",
+      "backupPath": "biasDetector_1781129814190.ts.bak",
+      "originalSize": 17356,
+      "createdAt": "2026-06-10T22:16:54.190Z",
+      "proposalId": "prop_1781129667896_8yqvlb",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781129849130_u9119i",
+      "filename": "biasDetector.ts",
+      "backupPath": "biasDetector_1781129849129.ts.bak",
+      "originalSize": 17356,
+      "createdAt": "2026-06-10T22:17:29.130Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781129866987_4imwu9",
+      "filename": "memory.ts",
+      "backupPath": "memory_1781129866987.ts.bak",
+      "originalSize": 27280,
+      "createdAt": "2026-06-10T22:17:46.987Z",
+      "proposalId": "prop_1781063301508_56nz8f",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781129910484_t30pxt",
+      "filename": "memory.ts",
+      "backupPath": "memory_1781129910484.ts.bak",
+      "originalSize": 27470,
+      "createdAt": "2026-06-10T22:18:30.484Z",
+      "reason": "pre-rollback"
+    }
+  ],
   "audit": [
     {
       "id": "audit_1779841344965_e9s2dj",
@@ -3541,6 +3695,402 @@
       "result": "success",
       "details": "Applied proposal: Add input validation for file path normalization",
       "timestamp": "2026-06-08T16:16:56.575Z"
+    },
+    {
+      "id": "audit_1781062602977_9kdv1y",
+      "action": "apply",
+      "proposalId": "prop_1781062493199_rgr927",
+      "filename": "taskPlanner.ts",
+      "result": "failure",
+      "details": "Syntax check failed: client/src/components/rsi/ProposalTreeGraph.tsx(142,7): error TS2322: Type 'ProposalNode & { isRoot: boolean; }' is not assignable to type 'Record<string, unknown>'.\nclient/src/components/rsi/Proposal",
+      "timestamp": "2026-06-10T03:36:42.977Z"
+    },
+    {
+      "id": "audit_1781062606416_blpj88",
+      "action": "apply",
+      "proposalId": "prop_1781062493199_rgr927",
+      "filename": "taskPlanner.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1781062493199_rgr927 after syntax error",
+      "timestamp": "2026-06-10T03:36:46.416Z"
+    },
+    {
+      "id": "audit_1781062624393_b15c3r",
+      "action": "apply",
+      "proposalId": "prop_1781062581195_4svx59",
+      "filename": "aiPlanning.ts",
+      "result": "failure",
+      "details": "Syntax check failed: client/src/components/rsi/ProposalTreeGraph.tsx(142,7): error TS2322: Type 'ProposalNode & { isRoot: boolean; }' is not assignable to type 'Record<string, unknown>'.\nclient/src/components/rsi/Proposal",
+      "timestamp": "2026-06-10T03:37:04.393Z"
+    },
+    {
+      "id": "audit_1781062632713_d2ju9i",
+      "action": "apply",
+      "proposalId": "prop_1781062581195_4svx59",
+      "filename": "aiPlanning.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1781062581195_4svx59 after syntax error",
+      "timestamp": "2026-06-10T03:37:12.713Z"
+    },
+    {
+      "id": "audit_1781062645346_wcbq0r",
+      "action": "apply",
+      "proposalId": "prop_1781062484275_5rx4pb",
+      "filename": "telemetry.ts",
+      "result": "failure",
+      "details": "Syntax check failed: client/src/components/rsi/ProposalTreeGraph.tsx(142,7): error TS2322: Type 'ProposalNode & { isRoot: boolean; }' is not assignable to type 'Record<string, unknown>'.\nclient/src/components/rsi/Proposal",
+      "timestamp": "2026-06-10T03:37:25.346Z"
+    },
+    {
+      "id": "audit_1781062655220_pz8h8g",
+      "action": "apply",
+      "proposalId": "prop_1781062484275_5rx4pb",
+      "filename": "telemetry.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1781062484275_5rx4pb after syntax error",
+      "timestamp": "2026-06-10T03:37:35.220Z"
+    },
+    {
+      "id": "audit_1781062925627_hmdy5q",
+      "action": "apply",
+      "proposalId": "prop_1781062898837_5swttx",
+      "filename": "adaptiveRouter.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/adaptiveRouter.ts(105,23): error TS2304: Cannot find name 'createDefaultMetrics'.",
+      "timestamp": "2026-06-10T03:42:05.627Z"
+    },
+    {
+      "id": "audit_1781062929427_1huiwt",
+      "action": "apply",
+      "proposalId": "prop_1781062817751_wlgger",
+      "filename": "selfRollback.ts",
+      "result": "blocked",
+      "details": "File selfRollback.ts is blocked from self-improvement",
+      "timestamp": "2026-06-10T03:42:09.427Z"
+    },
+    {
+      "id": "audit_1781062978618_kmwa1f",
+      "action": "test",
+      "proposalId": "prop_1781062566859_o7u3t0",
+      "filename": "adaptiveRouter.ts",
+      "result": "failure",
+      "details": "lf/dependency_graph.test.ts > dependency_graph > buildDependencyGraph is exported and callable\n ✓ server/self/smoke_test_runner.test.ts > smoke_test_runner > module loads without errors\n ✓ server/self",
+      "timestamp": "2026-06-10T03:42:58.618Z"
+    },
+    {
+      "id": "audit_1781062978628_3xvy7x",
+      "action": "rollback",
+      "proposalId": "prop_1781062566859_o7u3t0",
+      "filename": "adaptiveRouter.ts",
+      "result": "success",
+      "details": "Rolled back adaptiveRouter.ts to backup bak_1781062942420_hulfvl",
+      "timestamp": "2026-06-10T03:42:58.628Z"
+    },
+    {
+      "id": "audit_1781062978631_gn8aib",
+      "action": "rollback",
+      "proposalId": "prop_1781062566859_o7u3t0",
+      "filename": "adaptiveRouter.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back adaptiveRouter.ts to 2026-06-10T03:42:22.420Z",
+      "timestamp": "2026-06-10T03:42:58.631Z"
+    },
+    {
+      "id": "audit_1781063237481_lah12d",
+      "action": "test",
+      "proposalId": "prop_1781063112198_nhjn6k",
+      "filename": "codeIntel.ts",
+      "result": "failure",
+      "details": "erver/deepseek.test.ts > DeepSeek provider > llmProvider module loads and has DeepSeek support\n ✓ server/self/smoke_test_runner.test.ts > smoke_test_runner > module loads without errors\n ✓ server/self",
+      "timestamp": "2026-06-10T03:47:17.481Z"
+    },
+    {
+      "id": "audit_1781063237490_yv4kg0",
+      "action": "rollback",
+      "proposalId": "prop_1781063112198_nhjn6k",
+      "filename": "codeIntel.ts",
+      "result": "success",
+      "details": "Rolled back codeIntel.ts to backup bak_1781063201845_ngdlvd",
+      "timestamp": "2026-06-10T03:47:17.490Z"
+    },
+    {
+      "id": "audit_1781063237493_dw63be",
+      "action": "rollback",
+      "proposalId": "prop_1781063112198_nhjn6k",
+      "filename": "codeIntel.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back codeIntel.ts to 2026-06-10T03:46:41.845Z",
+      "timestamp": "2026-06-10T03:47:17.493Z"
+    },
+    {
+      "id": "audit_1781063283379_v3vre0",
+      "action": "test",
+      "proposalId": "prop_1781063142907_vdggw9",
+      "filename": "evalDrivenTargeting.ts",
+      "result": "failure",
+      "details": "lf/dependency_graph.test.ts > dependency_graph > buildDependencyGraph is exported and callable\n ✓ server/self/benchmark_suite.test.ts > benchmark_suite > module loads without errors\n ✓ server/self/ben",
+      "timestamp": "2026-06-10T03:48:03.379Z"
+    },
+    {
+      "id": "audit_1781063283386_pl507i",
+      "action": "rollback",
+      "proposalId": "prop_1781063142907_vdggw9",
+      "filename": "evalDrivenTargeting.ts",
+      "result": "success",
+      "details": "Rolled back evalDrivenTargeting.ts to backup bak_1781063249965_2xm15x",
+      "timestamp": "2026-06-10T03:48:03.386Z"
+    },
+    {
+      "id": "audit_1781063283389_7vx58o",
+      "action": "rollback",
+      "proposalId": "prop_1781063142907_vdggw9",
+      "filename": "evalDrivenTargeting.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back evalDrivenTargeting.ts to 2026-06-10T03:47:29.965Z",
+      "timestamp": "2026-06-10T03:48:03.389Z"
+    },
+    {
+      "id": "audit_1781063288952_20g3dx",
+      "action": "apply",
+      "proposalId": "prop_1781063100398_uyajrx",
+      "filename": "autoRebuild.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/autoRebuild.ts(281,1): error TS1128: Declaration or statement expected.",
+      "timestamp": "2026-06-10T03:48:08.952Z"
+    },
+    {
+      "id": "audit_1781063296447_r6zsce",
+      "action": "apply",
+      "proposalId": "prop_1781063100398_uyajrx",
+      "filename": "autoRebuild.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1781063100398_uyajrx after syntax error",
+      "timestamp": "2026-06-10T03:48:16.447Z"
+    },
+    {
+      "id": "audit_1781064720976_9fr30p",
+      "action": "test",
+      "proposalId": "prop_1781064635626_npmu6o",
+      "filename": "evalDrivenTargeting.ts",
+      "result": "failure",
+      "details": "lf/dependency_graph.test.ts > dependency_graph > buildDependencyGraph is exported and callable\n ✓ server/self/smoke_test_runner.test.ts > smoke_test_runner > module loads without errors\n ✓ server/self",
+      "timestamp": "2026-06-10T04:12:00.976Z"
+    },
+    {
+      "id": "audit_1781064720986_02rkkd",
+      "action": "rollback",
+      "proposalId": "prop_1781064635626_npmu6o",
+      "filename": "evalDrivenTargeting.ts",
+      "result": "success",
+      "details": "Rolled back evalDrivenTargeting.ts to backup bak_1781064692848_upv38c",
+      "timestamp": "2026-06-10T04:12:00.986Z"
+    },
+    {
+      "id": "audit_1781064720989_oo3oni",
+      "action": "rollback",
+      "proposalId": "prop_1781064635626_npmu6o",
+      "filename": "evalDrivenTargeting.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back evalDrivenTargeting.ts to 2026-06-10T04:11:32.848Z",
+      "timestamp": "2026-06-10T04:12:00.989Z"
+    },
+    {
+      "id": "audit_1781064972223_yvjf8g",
+      "action": "test",
+      "proposalId": "prop_1781064790512_5jo5ov",
+      "filename": "aiChangelog.ts",
+      "result": "failure",
+      "details": "f/dependency_graph.test.ts > dependency_graph > buildDependencyGraph is exported and callable\n ✓ server/self/smoke_test_runner.test.ts > smoke_test_runner > module loads without errors\n ✓ server/self/",
+      "timestamp": "2026-06-10T04:16:12.223Z"
+    },
+    {
+      "id": "audit_1781064972247_qrs5od",
+      "action": "rollback",
+      "proposalId": "prop_1781064790512_5jo5ov",
+      "filename": "aiChangelog.ts",
+      "result": "success",
+      "details": "Rolled back aiChangelog.ts to backup bak_1781064910669_6dhata",
+      "timestamp": "2026-06-10T04:16:12.247Z"
+    },
+    {
+      "id": "audit_1781064972255_at3qpw",
+      "action": "rollback",
+      "proposalId": "prop_1781064790512_5jo5ov",
+      "filename": "aiChangelog.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back aiChangelog.ts to 2026-06-10T04:15:10.669Z",
+      "timestamp": "2026-06-10T04:16:12.255Z"
+    },
+    {
+      "id": "audit_1781065039504_7wlvko",
+      "action": "test",
+      "proposalId": "prop_1781064447334_41ynvg",
+      "filename": "taskDecomposer.ts",
+      "result": "failure",
+      "details": "lf/dependency_graph.test.ts > dependency_graph > buildDependencyGraph is exported and callable\n ✓ server/self/smoke_test_runner.test.ts > smoke_test_runner > module loads without errors\n ✓ server/self",
+      "timestamp": "2026-06-10T04:17:19.504Z"
+    },
+    {
+      "id": "audit_1781065039515_yqy0m8",
+      "action": "rollback",
+      "proposalId": "prop_1781064447334_41ynvg",
+      "filename": "taskDecomposer.ts",
+      "result": "success",
+      "details": "Rolled back taskDecomposer.ts to backup bak_1781065007835_y04eir",
+      "timestamp": "2026-06-10T04:17:19.515Z"
+    },
+    {
+      "id": "audit_1781065039519_qfqmrf",
+      "action": "rollback",
+      "proposalId": "prop_1781064447334_41ynvg",
+      "filename": "taskDecomposer.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back taskDecomposer.ts to 2026-06-10T04:16:47.835Z",
+      "timestamp": "2026-06-10T04:17:19.519Z"
+    },
+    {
+      "id": "audit_1781065044939_iia9rr",
+      "action": "apply",
+      "proposalId": "prop_1781063715756_01yaeo",
+      "filename": "qualityToRSI.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/qualityToRSI.ts(127,43): error TS1005: ',' expected.\nserver/qualityToRSI.ts(127,48): error TS1005: ',' expected.\nserver/qualityToRSI.ts(127,58): error TS1005: ',' expected.\nserver/qualityToRSI.",
+      "timestamp": "2026-06-10T04:17:24.940Z"
+    },
+    {
+      "id": "audit_1781129434123_ccagan",
+      "action": "apply",
+      "proposalId": "prop_1781129359989_rr3qei",
+      "filename": "selfImprove.ts",
+      "result": "blocked",
+      "details": "Constitution: proposed content contains forbidden pattern 'sk-[a-zA-Z0-9]{20,}'",
+      "timestamp": "2026-06-10T22:10:34.123Z"
+    },
+    {
+      "id": "audit_1781129434181_63fvjz",
+      "action": "apply",
+      "proposalId": "prop_1781129302366_nqopjx",
+      "filename": "selfHeal.ts",
+      "result": "blocked",
+      "details": "File selfHeal.ts is blocked from self-improvement",
+      "timestamp": "2026-06-10T22:10:34.181Z"
+    },
+    {
+      "id": "audit_1781129439362_b50rtk",
+      "action": "apply",
+      "proposalId": "prop_1781129254080_2y01ka",
+      "filename": "agentOrchestrator.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/agentOrchestrator.ts(279,5): error TS2322: Type 'AsyncGenerator<LLMStreamChunk, any, any>' is not assignable to type 'string'.\nserver/agentOrchestrator.ts(282,7): error TS2554: Expected 1-2 arg",
+      "timestamp": "2026-06-10T22:10:39.362Z"
+    },
+    {
+      "id": "audit_1781129449494_qxwvku",
+      "action": "apply",
+      "proposalId": "prop_1781129254080_2y01ka",
+      "filename": "agentOrchestrator.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1781129254080_2y01ka after syntax error",
+      "timestamp": "2026-06-10T22:10:49.494Z"
+    },
+    {
+      "id": "audit_1781129454814_2hc1fi",
+      "action": "apply",
+      "proposalId": "prop_1781129254080_2y01ka",
+      "filename": "agentOrchestrator.ts",
+      "result": "success",
+      "details": "Refinement fixed syntax errors for prop_1781129254080_2y01ka",
+      "timestamp": "2026-06-10T22:10:54.814Z"
+    },
+    {
+      "id": "audit_1781129485227_al0dxz",
+      "action": "test",
+      "proposalId": "prop_1781129254080_2y01ka",
+      "filename": "agentOrchestrator.ts",
+      "result": "failure",
+      "details": "lf/dependency_graph.test.ts > dependency_graph > buildDependencyGraph is exported and callable\n ✓ server/self/smoke_test_runner.test.ts > smoke_test_runner > module loads without errors\n ✓ server/self",
+      "timestamp": "2026-06-10T22:11:25.227Z"
+    },
+    {
+      "id": "audit_1781129485236_glcdjk",
+      "action": "rollback",
+      "proposalId": "prop_1781129254080_2y01ka",
+      "filename": "agentOrchestrator.ts",
+      "result": "success",
+      "details": "Rolled back agentOrchestrator.ts to backup bak_1781129454817_c6t1t6",
+      "timestamp": "2026-06-10T22:11:25.236Z"
+    },
+    {
+      "id": "audit_1781129485239_phltat",
+      "action": "rollback",
+      "proposalId": "prop_1781129254080_2y01ka",
+      "filename": "agentOrchestrator.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back agentOrchestrator.ts to 2026-06-10T22:10:54.817Z",
+      "timestamp": "2026-06-10T22:11:25.239Z"
+    },
+    {
+      "id": "audit_1781129849126_xi1m0a",
+      "action": "test",
+      "proposalId": "prop_1781129667896_8yqvlb",
+      "filename": "biasDetector.ts",
+      "result": "failure",
+      "details": "lf/dependency_graph.test.ts > dependency_graph > buildDependencyGraph is exported and callable\n ✓ server/self/smoke_test_runner.test.ts > smoke_test_runner > module loads without errors\n ✓ server/self",
+      "timestamp": "2026-06-10T22:17:29.126Z"
+    },
+    {
+      "id": "audit_1781129849133_rhtg1g",
+      "action": "rollback",
+      "proposalId": "prop_1781129667896_8yqvlb",
+      "filename": "biasDetector.ts",
+      "result": "success",
+      "details": "Rolled back biasDetector.ts to backup bak_1781129814190_ryt34x",
+      "timestamp": "2026-06-10T22:17:29.133Z"
+    },
+    {
+      "id": "audit_1781129849136_2ffbsp",
+      "action": "rollback",
+      "proposalId": "prop_1781129667896_8yqvlb",
+      "filename": "biasDetector.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back biasDetector.ts to 2026-06-10T22:16:54.190Z",
+      "timestamp": "2026-06-10T22:17:29.136Z"
+    },
+    {
+      "id": "audit_1781129849194_tdwnm7",
+      "action": "apply",
+      "proposalId": "prop_1781065191501_2yilp2",
+      "filename": "selfTestGenerator.ts",
+      "result": "blocked",
+      "details": "Constitution: selfTestGenerator.ts is in forbiddenModifications.files",
+      "timestamp": "2026-06-10T22:17:29.194Z"
+    },
+    {
+      "id": "audit_1781129910478_j5t1qk",
+      "action": "test",
+      "proposalId": "prop_1781063301508_56nz8f",
+      "filename": "memory.ts",
+      "result": "failure",
+      "details": "lf/dependency_graph.test.ts > dependency_graph > buildDependencyGraph is exported and callable\n ✓ server/self/smoke_test_runner.test.ts > smoke_test_runner > module loads without errors\n ✓ server/self",
+      "timestamp": "2026-06-10T22:18:30.478Z"
+    },
+    {
+      "id": "audit_1781129910489_yhvltu",
+      "action": "rollback",
+      "proposalId": "prop_1781063301508_56nz8f",
+      "filename": "memory.ts",
+      "result": "success",
+      "details": "Rolled back memory.ts to backup bak_1781129866987_4imwu9",
+      "timestamp": "2026-06-10T22:18:30.489Z"
+    },
+    {
+      "id": "audit_1781129910491_2dm6dq",
+      "action": "rollback",
+      "proposalId": "prop_1781063301508_56nz8f",
+      "filename": "memory.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back memory.ts to 2026-06-10T22:17:46.987Z",
+      "timestamp": "2026-06-10T22:18:30.491Z"
     }
   ]
 }

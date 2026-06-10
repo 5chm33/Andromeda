@@ -204,7 +204,7 @@ export class CausalNetwork {
    * Pearl's do-operator: P(effect=fail | do(cause=fix))
    * Simulates the effect of intervening on a node (cutting incoming edges).
    */
-  doIntervention(interventionNodeId: string, value: "fix" | "fail"): InterventionResult {
+  doIntervention(interventionNodeId: string, value: "fix" | "revert" | "skip"): InterventionResult {
     const interventionProb = value === "fix" ? 0.0 : 1.0;
 
     // Temporarily override the node's failure probability
@@ -259,7 +259,7 @@ export class CausalNetwork {
       interventionValue: value,
       predictedImpact: totalImpact,
       affectedNodes,
-      confidence: Math.min(1.0, node.observationCount > 0
+      confidence: Math.min(1.0, (node.failureCount + node.passCount) > 0
         ? Math.min(node.failureCount, node.passCount) / (node.failureCount + node.passCount + 1)
         : 0.3),
     };
