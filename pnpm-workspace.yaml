@@ -4,14 +4,13 @@ packages:
 allowBuilds:
   '@tailwindcss/oxide': true
   better-sqlite3: true
-  canvas: true
+  canvas: set this to true or false
   esbuild: true
   node-pty: true
 onlyBuiltDependencies:
   - esbuild
   - '@tailwindcss/oxide'
   - better-sqlite3
-  - canvas
   - node-pty
 patchedDependencies:
   wouter@3.7.1: patches/wouter@3.7.1.patch

@@ -74,7 +74,6 @@
     "@xyflow/react": "^12.11.0",
     "axios": "^1.12.0",
     "better-sqlite3": "^12.10.0",
-    "canvas": "^3.2.3",
     "chokidar": "^5.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -120,6 +119,9 @@
     "xterm-addon-fit": "^0.8.0",
     "zod": "^4.1.12"
   },
+  "optionalDependencies": {
+    "canvas": "^3.2.3"
+  },
   "devDependencies": {
     "@builder.io/vite-plugin-jsx-loc": "^0.1.1",
     "@tailwindcss/typography": "^0.5.15",
@@ -149,10 +151,5 @@
     "vite": "^7.1.7",
     "vite-plugin-manus-runtime": "^0.0.57",
     "vitest": "^2.1.4"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "node-pty"
-    ]
   }
 }

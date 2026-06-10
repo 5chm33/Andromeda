@@ -191,6 +191,17 @@ async function startServer(): Promise<void> {
     }).catch(() => {});
   });
   process.on("uncaughtException", (err) => {
+    // v10.1: canvas.node is an optional native dependency. On Windows without
+    // build tools, canvas.node is missing and throws MODULE_NOT_FOUND when
+    // required. Swallow this error and continue — visual annotation is disabled
+    // gracefully. This prevents the server from crash-looping on Windows.
+    const nodeErr = err as NodeJS.ErrnoException & { requireStack?: string[] };
+    if (nodeErr.code === "MODULE_NOT_FOUND" &&
+        (nodeErr.message?.includes("canvas") || nodeErr.requireStack?.some?.(s => s.includes("canvas")))) {
+      console.warn("[WARN] canvas native binary not available (Windows without build tools)");
+      console.warn("[WARN] Visual annotation features disabled. Server continues normally.");
+      return; // Do NOT exit — canvas is optional
+    }
     console.error("[UNCAUGHT EXCEPTION]", err);
     // v8.9: Clear crash flag so a non-RSI crash does not trigger a spurious
     // git rollback on the next boot. The crash flag is only meaningful for
