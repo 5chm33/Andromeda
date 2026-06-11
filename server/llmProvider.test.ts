@@ -1,129 +1,129 @@
 import { describe, it, expect } from "vitest";
-import { getProviderApiKey, switchProvider, getActiveProvider, setActiveProvider, listProviders, getProviderForTier, tierForArea, getBackgroundProvider } from "./llmProvider.js";
+import * as LlmproviderModule from "./llmProvider.js";
 
-describe("getProviderApiKey", () => {
+describe("LlmproviderModule.getProviderApiKey", () => {
   it("should execute without throwing", () => {
-    const result = getProviderApiKey("test_id");
+    const result = LlmproviderModule.getProviderApiKey("test_id");
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = getProviderApiKey("test_id");
+    const result = LlmproviderModule.getProviderApiKey("test_id");
     expect(typeof result).toBe("string");
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => getProviderApiKey("")).not.toThrow();
+    expect(() => LlmproviderModule.getProviderApiKey("")).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    expect(() => getProviderApiKey(undefined)).not.toThrow();
+    expect(() => LlmproviderModule.getProviderApiKey(undefined)).not.toThrow();
   });
 });
 
-describe("switchProvider", () => {
+describe("LlmproviderModule.switchProvider", () => {
   it("should execute without throwing", () => {
-    // switchProvider returns void — just verify it doesn't throw
-    expect(() => switchProvider("test_id")).not.toThrow();
+    // LlmproviderModule.switchProvider returns void — just verify it doesn't throw
+    expect(() => LlmproviderModule.switchProvider("test_id")).not.toThrow();
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => switchProvider("")).not.toThrow();
+    expect(() => LlmproviderModule.switchProvider("")).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    expect(() => switchProvider(undefined)).not.toThrow();
+    expect(() => LlmproviderModule.switchProvider(undefined)).not.toThrow();
   });
 });
 
-describe("getActiveProvider", () => {
+describe("LlmproviderModule.getActiveProvider", () => {
   it("should execute without throwing", () => {
-    const result = getActiveProvider();
+    const result = LlmproviderModule.getActiveProvider();
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = getActiveProvider();
+    const result = LlmproviderModule.getActiveProvider();
     expect(result).toBeTruthy();
   });
 
   it("should handle invalid inputs", () => {
-    const result = getActiveProvider();
+    const result = LlmproviderModule.getActiveProvider();
     expect(result).toBeDefined();
   });
 });
 
-describe("setActiveProvider", () => {
+describe("LlmproviderModule.setActiveProvider", () => {
   it("should execute without throwing", () => {
-    // setActiveProvider returns void — just verify it doesn't throw
-    expect(() => setActiveProvider({ id: "test_value" })).not.toThrow();
+    // LlmproviderModule.setActiveProvider returns void — just verify it doesn't throw
+    expect(() => LlmproviderModule.setActiveProvider({ id: "test_value" })).not.toThrow();
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => setActiveProvider({ id: "" })).not.toThrow();
+    expect(() => LlmproviderModule.setActiveProvider({ id: "" })).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    expect(() => setActiveProvider(undefined)).not.toThrow();
+    expect(() => LlmproviderModule.setActiveProvider(undefined)).not.toThrow();
   });
 });
 
-describe("listProviders", () => {
+describe("LlmproviderModule.listProviders", () => {
   it("should execute without throwing", () => {
-    const result = listProviders();
+    const result = LlmproviderModule.listProviders();
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = listProviders();
+    const result = LlmproviderModule.listProviders();
     expect(Array.isArray(result)).toBe(true);
   });
 });
 
-describe("getProviderForTier", () => {
+describe("LlmproviderModule.getProviderForTier", () => {
   it("should execute without throwing", () => {
-    const result = getProviderForTier("test_value");
+    const result = LlmproviderModule.getProviderForTier("test_value");
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = getProviderForTier("test_value");
+    const result = LlmproviderModule.getProviderForTier("test_value");
     expect(typeof result).toBe("string");
   });
 
   it("should handle empty/null inputs gracefully", () => {
     // @ts-expect-error Testing invalid input
-    expect(() => getProviderForTier({})).not.toThrow();
+    expect(() => LlmproviderModule.getProviderForTier({})).not.toThrow();
   });
 });
 
-describe("tierForArea", () => {
+describe("LlmproviderModule.tierForArea", () => {
   it("should execute without throwing", () => {
-    const result = tierForArea();
+    const result = LlmproviderModule.tierForArea();
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = tierForArea();
+    const result = LlmproviderModule.tierForArea();
     expect(result).toBeTruthy();
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => tierForArea("")).not.toThrow();
+    expect(() => LlmproviderModule.tierForArea("")).not.toThrow();
   });
 });
 
-describe("getBackgroundProvider", () => {
+describe("LlmproviderModule.getBackgroundProvider", () => {
   it("should execute without throwing", () => {
-    const result = getBackgroundProvider();
+    const result = LlmproviderModule.getBackgroundProvider();
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = getBackgroundProvider();
+    const result = LlmproviderModule.getBackgroundProvider();
     expect(result).toBeTruthy();
   });
 });

@@ -3,7 +3,7 @@
  * Integration tests for the ReAct engine using the actual ReactEngine API.
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { ReactEngine } from "./reactEngine.js";
+import * as ReactengineModule from "./reactEngine.js";
 
 vi.mock("./llmProvider.js", () => ({
   chatCompletion: vi.fn(),
@@ -37,7 +37,7 @@ describe("ReactEngine — Integration Tests", () => {
 
   function createEngine(extraConfig: Record<string, unknown> = {}) {
     events = [];
-    return new ReactEngine({
+    return new ReactengineModule.ReactEngine({
       maxSteps: 5,
       maxTokens: 4096,
       temperature: 0,
@@ -87,7 +87,7 @@ describe("ReactEngine — Integration Tests", () => {
       () => new Promise((resolve) => setTimeout(() => resolve(makeTextResponse("done")), 5000))
     );
     events = [];
-    const engine = new ReactEngine({
+    const engine = new ReactengineModule.ReactEngine({
       maxSteps: 5, maxTokens: 4096, temperature: 0,
       workspaceDir: "/tmp/test-workspace",
       onEvent: (e: any) => events.push(e),
@@ -116,7 +116,7 @@ describe("ReactEngine — Integration Tests", () => {
     const { chatCompletion } = await import("./llmProvider.js");
     (chatCompletion as ReturnType<typeof vi.fn>).mockResolvedValue(makeTextResponse("hello"));
     const receivedEvents: any[] = [];
-    const engine = new ReactEngine({
+    const engine = new ReactengineModule.ReactEngine({
       maxSteps: 3, maxTokens: 4096, temperature: 0,
       workspaceDir: "/tmp/test-workspace",
       onEvent: (e: any) => receivedEvents.push(e),

@@ -1,48 +1,48 @@
 import { describe, it, expect } from "vitest";
-import { estimateTokens, estimateMessageTokens } from "./contextManager.js";
+import * as ContextmanagerModule from "./contextManager.js";
 
-describe("estimateTokens", () => {
+describe("ContextmanagerModule.estimateTokens", () => {
   it("should execute without throwing", () => {
-    const result = estimateTokens("test_text");
+    const result = ContextmanagerModule.estimateTokens("test_text");
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = estimateTokens("test_text");
+    const result = ContextmanagerModule.estimateTokens("test_text");
     expect(typeof result).toBe("number");
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => estimateTokens("")).not.toThrow();
+    expect(() => ContextmanagerModule.estimateTokens("")).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = estimateTokens(undefined);
+    const result = ContextmanagerModule.estimateTokens(undefined);
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
 
-describe("estimateMessageTokens", () => {
+describe("ContextmanagerModule.estimateMessageTokens", () => {
   it("should execute without throwing", () => {
-    const result = estimateMessageTokens([]);
+    const result = ContextmanagerModule.estimateMessageTokens([]);
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = estimateMessageTokens([]);
+    const result = ContextmanagerModule.estimateMessageTokens([]);
     expect(typeof result).toBe("number");
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => estimateMessageTokens([])).not.toThrow();
+    expect(() => ContextmanagerModule.estimateMessageTokens([])).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = estimateMessageTokens(undefined);
+    const result = ContextmanagerModule.estimateMessageTokens(undefined);
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });

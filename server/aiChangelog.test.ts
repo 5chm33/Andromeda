@@ -9,7 +9,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
-import { appendChangelogEntry, getRecentChanges } from "./aiChangelog";
+import * as AichangelogModule from "./aiChangelog";
 
 let tmpDir: string;
 let originalCwd: string;
@@ -31,9 +31,9 @@ afterEach(() => {
 });
 
 describe("aiChangelog", () => {
-  describe("appendChangelogEntry", () => {
+  describe("AichangelogModule.appendChangelogEntry", () => {
     it("creates CHANGELOG_AI.md with a header on first call", () => {
-      appendChangelogEntry(
+      AichangelogModule.appendChangelogEntry(
         "prop-001",
         "server/selfImprove.ts",
         "Improve retry logic",
@@ -56,8 +56,8 @@ describe("aiChangelog", () => {
     });
 
     it("prepends new entries (newest first) on subsequent calls", () => {
-      appendChangelogEntry("p1", "a.ts", "First change", "rationale A", "perf", "low", 0.9, "old", "new");
-      appendChangelogEntry("p2", "b.ts", "Second change", "rationale B", "security", "high", 0.95, "old2", "new2");
+      AichangelogModule.appendChangelogEntry("p1", "a.ts", "First change", "rationale A", "perf", "low", 0.9, "old", "new");
+      AichangelogModule.appendChangelogEntry("p2", "b.ts", "Second change", "rationale B", "security", "high", 0.95, "old2", "new2");
 
       const changelogPath = path.join(tmpDir, "CHANGELOG_AI.md");
       const content = fs.readFileSync(changelogPath, "utf-8");
@@ -68,7 +68,7 @@ describe("aiChangelog", () => {
     });
 
     it("records multiFile changes with secondary files listed", () => {
-      appendChangelogEntry(
+      AichangelogModule.appendChangelogEntry(
         "p-multi",
         "server/core.ts",
         "Multi-file refactor",
@@ -90,7 +90,7 @@ describe("aiChangelog", () => {
 
     it("handles missing rationale gracefully", () => {
       expect(() => {
-        appendChangelogEntry("p-no-rationale", "x.ts", "Title", "", "general", "low", 0.5, "a", "b");
+        AichangelogModule.appendChangelogEntry("p-no-rationale", "x.ts", "Title", "", "general", "low", 0.5, "a", "b");
       }).not.toThrow();
 
       const changelogPath = path.join(tmpDir, "CHANGELOG_AI.md");
@@ -99,7 +99,7 @@ describe("aiChangelog", () => {
     });
 
     it("includes a diff block with removed and added lines", () => {
-      appendChangelogEntry("p-diff", "y.ts", "Diff test", "reason", "general", "medium", 0.8, "line one\nline two", "line three\nline four");
+      AichangelogModule.appendChangelogEntry("p-diff", "y.ts", "Diff test", "reason", "general", "medium", 0.8, "line one\nline two", "line three\nline four");
       const changelogPath = path.join(tmpDir, "CHANGELOG_AI.md");
       const content = fs.readFileSync(changelogPath, "utf-8");
       expect(content).toContain("```diff");
@@ -111,24 +111,24 @@ describe("aiChangelog", () => {
       const changelogPath = path.join(tmpDir, "CHANGELOG_AI.md");
       // Write a file without the expected header separator
       fs.writeFileSync(changelogPath, "# Custom Header\n\n");
-      appendChangelogEntry("p-fallback", "z.ts", "Fallback append", "reason", "general", "low", 0.6, "a", "b");
+      AichangelogModule.appendChangelogEntry("p-fallback", "z.ts", "Fallback append", "reason", "general", "low", 0.6, "a", "b");
       const content = fs.readFileSync(changelogPath, "utf-8");
       expect(content).toContain("Fallback append");
     });
   });
 
-  describe("getRecentChanges", () => {
+  describe("AichangelogModule.getRecentChanges", () => {
     it("returns 'No changes logged yet.' when no changelog exists", () => {
-      const result = getRecentChanges();
+      const result = AichangelogModule.getRecentChanges();
       expect(result).toBe("No changes logged yet.");
     });
 
     it("returns a formatted summary of recent entries", () => {
-      appendChangelogEntry("p1", "a.ts", "Alpha change", "reason", "perf", "low", 0.9, "old", "new");
-      appendChangelogEntry("p2", "b.ts", "Beta change", "reason", "security", "high", 0.95, "old", "new");
-      appendChangelogEntry("p3", "c.ts", "Gamma change", "reason", "general", "medium", 0.7, "old", "new");
+      AichangelogModule.appendChangelogEntry("p1", "a.ts", "Alpha change", "reason", "perf", "low", 0.9, "old", "new");
+      AichangelogModule.appendChangelogEntry("p2", "b.ts", "Beta change", "reason", "security", "high", 0.95, "old", "new");
+      AichangelogModule.appendChangelogEntry("p3", "c.ts", "Gamma change", "reason", "general", "medium", 0.7, "old", "new");
 
-      const result = getRecentChanges(2);
+      const result = AichangelogModule.getRecentChanges(2);
       // Should return at most 2 entries
       const lines = result.split("\n").filter(l => l.startsWith("- "));
       expect(lines.length).toBeLessThanOrEqual(2);
@@ -139,7 +139,7 @@ describe("aiChangelog", () => {
     it("handles a changelog with no ## entries gracefully", () => {
       const changelogPath = path.join(tmpDir, "CHANGELOG_AI.md");
       fs.writeFileSync(changelogPath, "corrupted content with no ## headers");
-      const result = getRecentChanges();
+      const result = AichangelogModule.getRecentChanges();
       expect(result).toBe("No changes logged yet.");
     });
   });

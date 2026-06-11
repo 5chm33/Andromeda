@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { checkSelfConsistency, getConsistencyStats } from "./selfConsistency.js";
+import * as SelfconsistencyModule from "./selfConsistency.js";
 import type { ConsistencyCheck } from "./selfConsistency.js";
 
 const sampleCheck: ConsistencyCheck = {
@@ -9,10 +9,10 @@ const sampleCheck: ConsistencyCheck = {
   checkType: "self_improvement",
 };
 
-describe("checkSelfConsistency", () => {
+describe("SelfconsistencyModule.checkSelfConsistency", () => {
   it("should execute without throwing", async () => {
     try {
-      const result = await checkSelfConsistency(sampleCheck);
+      const result = await SelfconsistencyModule.checkSelfConsistency(sampleCheck);
       expect(result).toBeDefined();
     } catch (e: unknown) {
       // Function may throw in test environment (e.g. no providers registered)
@@ -22,7 +22,7 @@ describe("checkSelfConsistency", () => {
 
   it("should return correct type", async () => {
     try {
-      const result = await checkSelfConsistency(sampleCheck);
+      const result = await SelfconsistencyModule.checkSelfConsistency(sampleCheck);
       // Returns ConsistencyReport with consensus, confidence, recommendation
       expect(typeof result).toBe("object");
       expect(typeof result.consensus).toBe("number");
@@ -37,21 +37,21 @@ describe("checkSelfConsistency", () => {
   it("should handle empty/null inputs gracefully", async () => {
     try {
       // @ts-expect-error Testing invalid input
-      await checkSelfConsistency({});
+      await SelfconsistencyModule.checkSelfConsistency({});
     } catch (e: unknown) { expect(e).toBeDefined(); }
   });
 
   it("should handle invalid inputs", async () => {
     // @ts-expect-error Testing invalid input
-    try { await checkSelfConsistency(undefined); } catch (e: unknown) { expect(e).toBeDefined(); }
+    try { await SelfconsistencyModule.checkSelfConsistency(undefined); } catch (e: unknown) { expect(e).toBeDefined(); }
   });
 
 });
 
-describe("getConsistencyStats", () => {
+describe("SelfconsistencyModule.getConsistencyStats", () => {
   it("should execute without throwing", () => {
     try {
-      const result = getConsistencyStats();
+      const result = SelfconsistencyModule.getConsistencyStats();
       expect(result).toBeDefined();
     } catch (e: unknown) {
       // Function may throw in test environment (e.g. no providers registered)
@@ -60,14 +60,14 @@ describe("getConsistencyStats", () => {
   });
 
   it("should return correct type", () => {
-    const result = getConsistencyStats();
+    const result = SelfconsistencyModule.getConsistencyStats();
     expect(typeof result).toBe("object");
     expect(result).not.toBeNull();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    try { getConsistencyStats(); } catch (e: unknown) { expect(e).toBeDefined(); }
+    try { SelfconsistencyModule.getConsistencyStats(); } catch (e: unknown) { expect(e).toBeDefined(); }
   });
 
 });

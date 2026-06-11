@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // v10.3: Mock analyzeAndPropose to prevent real LLM calls during tests.
-// feedQualityToRSI calls analyzeAndPropose which makes LLM API calls that
+// QualitytorsiModule.feedQualityToRSI calls analyzeAndPropose which makes LLM API calls that
 // time out in CI/test environments. Mock at the module level.
 vi.mock("./selfImprove.js", () => ({
   analyzeAndPropose: vi.fn().mockResolvedValue(undefined),
@@ -9,16 +9,16 @@ vi.mock("./selfImprove.js", () => ({
   resetStuckProcessingProposals: vi.fn(),
 }));
 
-import { feedQualityToRSI, feedDocGapsToRSI, runQualityToRSI } from "./qualityToRSI.js";
+import * as QualitytorsiModule from "./qualityToRSI.js";
 
 beforeEach(() => {
   vi.clearAllMocks();
 });
 
-describe("feedQualityToRSI", () => {
+describe("QualitytorsiModule.feedQualityToRSI", () => {
   it("should execute without throwing", async () => {
     try {
-      const result = await feedQualityToRSI();
+      const result = await QualitytorsiModule.feedQualityToRSI();
       expect(result).toBeDefined();
     } catch (e: unknown) {
       // Function may throw in test environment (e.g. no quality report exists)
@@ -27,22 +27,22 @@ describe("feedQualityToRSI", () => {
   });
 
   it("should return correct type", async () => {
-    const result = await feedQualityToRSI();
+    const result = await QualitytorsiModule.feedQualityToRSI();
     // Returns a number (0 when no quality report exists in test env)
     expect(typeof result).toBe("number");
   });
 
   it("should handle invalid inputs", async () => {
     // @ts-expect-error Testing invalid input
-    try { await feedQualityToRSI(); } catch (e: unknown) { expect(e).toBeDefined(); }
+    try { await QualitytorsiModule.feedQualityToRSI(); } catch (e: unknown) { expect(e).toBeDefined(); }
   });
 
 });
 
-describe("feedDocGapsToRSI", () => {
+describe("QualitytorsiModule.feedDocGapsToRSI", () => {
   it("should execute without throwing", async () => {
     try {
-      const result = await feedDocGapsToRSI();
+      const result = await QualitytorsiModule.feedDocGapsToRSI();
       expect(result).toBeDefined();
     } catch (e: unknown) {
       // Function may throw in test environment (e.g. no doc report exists)
@@ -51,22 +51,22 @@ describe("feedDocGapsToRSI", () => {
   });
 
   it("should return correct type", async () => {
-    const result = await feedDocGapsToRSI();
+    const result = await QualitytorsiModule.feedDocGapsToRSI();
     // Returns a number (0 when no doc report exists in test env)
     expect(typeof result).toBe("number");
   });
 
   it("should handle invalid inputs", async () => {
     // @ts-expect-error Testing invalid input
-    try { await feedDocGapsToRSI(); } catch (e: unknown) { expect(e).toBeDefined(); }
+    try { await QualitytorsiModule.feedDocGapsToRSI(); } catch (e: unknown) { expect(e).toBeDefined(); }
   });
 
 });
 
-describe("runQualityToRSI", () => {
+describe("QualitytorsiModule.runQualityToRSI", () => {
   it("should execute without throwing", async () => {
     try {
-      const result = await runQualityToRSI();
+      const result = await QualitytorsiModule.runQualityToRSI();
       expect(result).toBeDefined();
     } catch (e: unknown) {
       // Function may throw in test environment (e.g. no providers registered)
@@ -75,7 +75,7 @@ describe("runQualityToRSI", () => {
   });
 
   it("should return correct type", async () => {
-    const result = await runQualityToRSI();
+    const result = await QualitytorsiModule.runQualityToRSI();
     // Returns { qualityProposals: number, docProposals: number }
     expect(typeof result).toBe("object");
     expect(typeof result.qualityProposals).toBe("number");
@@ -84,7 +84,7 @@ describe("runQualityToRSI", () => {
 
   it("should handle invalid inputs", async () => {
     // @ts-expect-error Testing invalid input
-    try { await runQualityToRSI(); } catch (e: unknown) { expect(e).toBeDefined(); }
+    try { await QualitytorsiModule.runQualityToRSI(); } catch (e: unknown) { expect(e).toBeDefined(); }
   });
 
 });

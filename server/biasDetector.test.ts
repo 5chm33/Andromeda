@@ -1,73 +1,73 @@
 import { describe, it, expect } from "vitest";
-import { getKnownBiasProfile, annotateSources, analyzeDiversity } from "./biasDetector.js";
+import * as BiasdetectorModule from "./biasDetector.js";
 
-describe("getKnownBiasProfile", () => {
+describe("BiasdetectorModule.getKnownBiasProfile", () => {
   it("should execute without throwing", () => {
     // Returns null for unknown domains — that is correct behaviour
-    expect(() => getKnownBiasProfile("test_domain")).not.toThrow();
+    expect(() => BiasdetectorModule.getKnownBiasProfile("test_domain")).not.toThrow();
   });
 
   it("should return correct type", () => {
-    const result = getKnownBiasProfile("test_domain");
+    const result = BiasdetectorModule.getKnownBiasProfile("test_domain");
     // null is a valid return for an unknown domain
     expect(result === null || typeof result === "object").toBe(true);
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => getKnownBiasProfile("")).not.toThrow();
+    expect(() => BiasdetectorModule.getKnownBiasProfile("")).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = getKnownBiasProfile(undefined);
+    const result = BiasdetectorModule.getKnownBiasProfile(undefined);
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
 
-describe("annotateSources", () => {
+describe("BiasdetectorModule.annotateSources", () => {
   it("should execute without throwing", () => {
-    const result = annotateSources([]);
+    const result = BiasdetectorModule.annotateSources([]);
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = annotateSources([]);
+    const result = BiasdetectorModule.annotateSources([]);
     expect(Array.isArray(result)).toBe(true);
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => annotateSources([])).not.toThrow();
+    expect(() => BiasdetectorModule.annotateSources([])).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = annotateSources(undefined);
+    const result = BiasdetectorModule.annotateSources(undefined);
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
 
-describe("analyzeDiversity", () => {
+describe("BiasdetectorModule.analyzeDiversity", () => {
   it("should execute without throwing", () => {
-    const result = analyzeDiversity([]);
+    const result = BiasdetectorModule.analyzeDiversity([]);
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = analyzeDiversity([]);
+    const result = BiasdetectorModule.analyzeDiversity([]);
     expect(result).toBeDefined();
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => analyzeDiversity([])).not.toThrow();
+    expect(() => BiasdetectorModule.analyzeDiversity([])).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = analyzeDiversity(undefined);
+    const result = BiasdetectorModule.analyzeDiversity(undefined);
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });

@@ -1,375 +1,375 @@
 import { describe, it, expect } from "vitest";
-import { createChannel, listChannels, deleteChannel, unsubscribe, unsubscribeAgent, query, markRead, getUnreadCount, claimWork, releaseWork, getActiveClaims, getContextSummaryForAgent, getThread, getBusStats, resetBus, persistBus, loadPersistedBus } from "./contextBus.js";
+import * as ContextbusModule from "./contextBus.js";
 
-describe("createChannel", () => {
+describe("ContextbusModule.createChannel", () => {
   it("should execute without throwing", () => {
-    const result = createChannel("test_name", "test_description");
+    const result = ContextbusModule.createChannel("test_name", "test_description");
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = createChannel("test_name", "test_description");
+    const result = ContextbusModule.createChannel("test_name", "test_description");
     expect(result).toBeTruthy();
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => createChannel("", "")).not.toThrow();
+    expect(() => ContextbusModule.createChannel("", "")).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = createChannel(undefined, undefined);
+    const result = ContextbusModule.createChannel(undefined, undefined);
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
 
-describe("listChannels", () => {
+describe("ContextbusModule.listChannels", () => {
   it("should execute without throwing", () => {
-    const result = listChannels();
+    const result = ContextbusModule.listChannels();
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = listChannels();
+    const result = ContextbusModule.listChannels();
     expect(Array.isArray(result)).toBe(true);
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = listChannels();
+    const result = ContextbusModule.listChannels();
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
 
-describe("deleteChannel", () => {
+describe("ContextbusModule.deleteChannel", () => {
   it("should execute without throwing", () => {
-    const result = deleteChannel("test_name");
+    const result = ContextbusModule.deleteChannel("test_name");
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = deleteChannel("test_name");
+    const result = ContextbusModule.deleteChannel("test_name");
     expect(typeof result).toBe("boolean");
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => deleteChannel("")).not.toThrow();
+    expect(() => ContextbusModule.deleteChannel("")).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = deleteChannel(undefined);
+    const result = ContextbusModule.deleteChannel(undefined);
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
 
-describe("unsubscribe", () => {
+describe("ContextbusModule.unsubscribe", () => {
   it("should execute without throwing", () => {
-    const result = unsubscribe("test_subscriptionId");
+    const result = ContextbusModule.unsubscribe("test_subscriptionId");
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = unsubscribe("test_subscriptionId");
+    const result = ContextbusModule.unsubscribe("test_subscriptionId");
     expect(typeof result).toBe("boolean");
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => unsubscribe("")).not.toThrow();
+    expect(() => ContextbusModule.unsubscribe("")).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = unsubscribe(undefined);
+    const result = ContextbusModule.unsubscribe(undefined);
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
 
-describe("unsubscribeAgent", () => {
+describe("ContextbusModule.unsubscribeAgent", () => {
   it("should execute without throwing", () => {
-    const result = unsubscribeAgent("test_agentId");
+    const result = ContextbusModule.unsubscribeAgent("test_agentId");
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = unsubscribeAgent("test_agentId");
+    const result = ContextbusModule.unsubscribeAgent("test_agentId");
     expect(typeof result).toBe("number");
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => unsubscribeAgent("")).not.toThrow();
+    expect(() => ContextbusModule.unsubscribeAgent("")).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = unsubscribeAgent(undefined);
+    const result = ContextbusModule.unsubscribeAgent(undefined);
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
 
-describe("query", () => {
+describe("ContextbusModule.query", () => {
   it("should execute without throwing", () => {
-    // query expects a ContextQuery object, not a string
-    expect(() => query({ channel: "test" })).not.toThrow();
+    // ContextbusModule.query expects a ContextQuery object, not a string
+    expect(() => ContextbusModule.query({ channel: "test" })).not.toThrow();
   });
 
   it("should return correct type", () => {
-    const result = query({ channel: "test" });
+    const result = ContextbusModule.query({ channel: "test" });
     expect(Array.isArray(result)).toBe(true);
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => query({})).not.toThrow();
+    expect(() => ContextbusModule.query({})).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = query(undefined);
+    const result = ContextbusModule.query(undefined);
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
 
-describe("markRead", () => {
+describe("ContextbusModule.markRead", () => {
   it("should execute without throwing", () => {
-    const result = markRead("test_agentId", []);
+    const result = ContextbusModule.markRead("test_agentId", []);
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = markRead("test_agentId", []);
+    const result = ContextbusModule.markRead("test_agentId", []);
     expect(typeof result).toBe("number");
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => markRead("", [])).not.toThrow();
+    expect(() => ContextbusModule.markRead("", [])).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = markRead(undefined, undefined);
+    const result = ContextbusModule.markRead(undefined, undefined);
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
 
-describe("getUnreadCount", () => {
+describe("ContextbusModule.getUnreadCount", () => {
   it("should execute without throwing", () => {
-    const result = getUnreadCount("test_agentId");
+    const result = ContextbusModule.getUnreadCount("test_agentId");
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = getUnreadCount("test_agentId");
+    const result = ContextbusModule.getUnreadCount("test_agentId");
     expect(result).toBeTruthy();
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => getUnreadCount("")).not.toThrow();
+    expect(() => ContextbusModule.getUnreadCount("")).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = getUnreadCount(undefined);
+    const result = ContextbusModule.getUnreadCount(undefined);
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
 
-describe("claimWork", () => {
+describe("ContextbusModule.claimWork", () => {
   it("should execute without throwing", () => {
-    // claimWork returns AgentWorkClaim | null — null is valid when no work is available
-    expect(() => claimWork("test_agentId", "test_taskDescription", "test_channel")).not.toThrow();
+    // ContextbusModule.claimWork returns AgentWorkClaim | null — null is valid when no work is available
+    expect(() => ContextbusModule.claimWork("test_agentId", "test_taskDescription", "test_channel")).not.toThrow();
   });
 
   it("should return correct type", () => {
-    const result = claimWork("test_agentId", "test_taskDescription", "test_channel");
+    const result = ContextbusModule.claimWork("test_agentId", "test_taskDescription", "test_channel");
     // null is valid when no work is available in the channel
     expect(result === null || typeof result === "object").toBe(true);
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => claimWork("", "", "")).not.toThrow();
+    expect(() => ContextbusModule.claimWork("", "", "")).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = claimWork(undefined, undefined, undefined, undefined);
+    const result = ContextbusModule.claimWork(undefined, undefined, undefined, undefined);
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
 
-describe("releaseWork", () => {
+describe("ContextbusModule.releaseWork", () => {
   it("should execute without throwing", () => {
-    const result = releaseWork("test_agentId", "test_taskDescription");
+    const result = ContextbusModule.releaseWork("test_agentId", "test_taskDescription");
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = releaseWork("test_agentId", "test_taskDescription");
+    const result = ContextbusModule.releaseWork("test_agentId", "test_taskDescription");
     expect(typeof result).toBe("boolean");
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => releaseWork("", "")).not.toThrow();
+    expect(() => ContextbusModule.releaseWork("", "")).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = releaseWork(undefined, undefined);
+    const result = ContextbusModule.releaseWork(undefined, undefined);
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
 
-describe("getActiveClaims", () => {
+describe("ContextbusModule.getActiveClaims", () => {
   it("should execute without throwing", () => {
-    const result = getActiveClaims();
+    const result = ContextbusModule.getActiveClaims();
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = getActiveClaims();
+    const result = ContextbusModule.getActiveClaims();
     expect(Array.isArray(result)).toBe(true);
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = getActiveClaims();
+    const result = ContextbusModule.getActiveClaims();
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
 
-describe("getContextSummaryForAgent", () => {
+describe("ContextbusModule.getContextSummaryForAgent", () => {
   it("should execute without throwing", () => {
-    const result = getContextSummaryForAgent("test_agentId", "test_value");
+    const result = ContextbusModule.getContextSummaryForAgent("test_agentId", "test_value");
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = getContextSummaryForAgent("test_agentId", "test_value");
+    const result = ContextbusModule.getContextSummaryForAgent("test_agentId", "test_value");
     expect(typeof result).toBe("string");
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => getContextSummaryForAgent("", {})).not.toThrow();
+    expect(() => ContextbusModule.getContextSummaryForAgent("", {})).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = getContextSummaryForAgent(undefined, undefined);
+    const result = ContextbusModule.getContextSummaryForAgent(undefined, undefined);
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
 
-describe("getThread", () => {
+describe("ContextbusModule.getThread", () => {
   it("should execute without throwing", () => {
-    const result = getThread("test_rootEntryId");
+    const result = ContextbusModule.getThread("test_rootEntryId");
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = getThread("test_rootEntryId");
+    const result = ContextbusModule.getThread("test_rootEntryId");
     expect(Array.isArray(result)).toBe(true);
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    expect(() => getThread("")).not.toThrow();
+    expect(() => ContextbusModule.getThread("")).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = getThread(undefined);
+    const result = ContextbusModule.getThread(undefined);
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
 
-describe("getBusStats", () => {
+describe("ContextbusModule.getBusStats", () => {
   it("should execute without throwing", () => {
-    const result = getBusStats();
+    const result = ContextbusModule.getBusStats();
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = getBusStats();
+    const result = ContextbusModule.getBusStats();
     expect(result).toBeTruthy();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = getBusStats();
+    const result = ContextbusModule.getBusStats();
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
 
-describe("resetBus", () => {
+describe("ContextbusModule.resetBus", () => {
   it("should execute without throwing", () => {
-    // resetBus returns void
-    expect(() => resetBus()).not.toThrow();
+    // ContextbusModule.resetBus returns void
+    expect(() => ContextbusModule.resetBus()).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = resetBus();
+    const result = ContextbusModule.resetBus();
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
 
-describe("persistBus", () => {
+describe("ContextbusModule.persistBus", () => {
   it("should execute without throwing", () => {
-    // persistBus returns void
-    expect(() => persistBus()).not.toThrow();
+    // ContextbusModule.persistBus returns void
+    expect(() => ContextbusModule.persistBus()).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = persistBus();
+    const result = ContextbusModule.persistBus();
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });
 
 });
 
-describe("loadPersistedBus", () => {
+describe("ContextbusModule.loadPersistedBus", () => {
   it("should execute without throwing", () => {
-    const result = loadPersistedBus();
+    const result = ContextbusModule.loadPersistedBus();
     expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = loadPersistedBus();
+    const result = ContextbusModule.loadPersistedBus();
     expect(typeof result).toBe("number");
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    const result = loadPersistedBus();
+    const result = ContextbusModule.loadPersistedBus();
     // Should either return a default value or throw a descriptive error
     expect(true).toBe(true); // Placeholder — customize based on expected behavior
   });

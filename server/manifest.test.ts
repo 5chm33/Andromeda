@@ -1,10 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { generateManifest, getManifestPrompt, getFullManifest } from "./manifest.js";
+import * as ManifestModule from "./manifest.js";
 
-describe("generateManifest", () => {
+describe("ManifestModule.generateManifest", () => {
   it("should execute without throwing", () => {
     try {
-      const result = generateManifest();
+      const result = ManifestModule.generateManifest();
       expect(result).toBeDefined();
     } catch (e: any) {
       // Function may throw in test environment (e.g. no providers registered)
@@ -13,21 +13,21 @@ describe("generateManifest", () => {
   });
 
   it("should return correct type", () => {
-    const result = generateManifest();
+    const result = ManifestModule.generateManifest();
     expect(result).toBeTruthy();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    try { generateManifest(); } catch (e: any) { expect(e).toBeDefined(); }
+    try { ManifestModule.generateManifest(); } catch (e: any) { expect(e).toBeDefined(); }
   });
 
 });
 
-describe("getManifestPrompt", () => {
+describe("ManifestModule.getManifestPrompt", () => {
   it("should execute without throwing", () => {
     try {
-      const result = getManifestPrompt();
+      const result = ManifestModule.getManifestPrompt();
       expect(result).toBeDefined();
     } catch (e: any) {
       // Function may throw in test environment (e.g. no providers registered)
@@ -36,21 +36,21 @@ describe("getManifestPrompt", () => {
   });
 
   it("should return correct type", () => {
-    const result = getManifestPrompt();
+    const result = ManifestModule.getManifestPrompt();
     expect(typeof result).toBe("string");
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    try { getManifestPrompt(); } catch (e: any) { expect(e).toBeDefined(); }
+    try { ManifestModule.getManifestPrompt(); } catch (e: any) { expect(e).toBeDefined(); }
   });
 
 });
 
-describe("getFullManifest", () => {
+describe("ManifestModule.getFullManifest", () => {
   it("should execute without throwing", () => {
     try {
-      const result = getFullManifest();
+      const result = ManifestModule.getFullManifest();
       expect(result).toBeDefined();
     } catch (e: any) {
       // Function may throw in test environment (e.g. no providers registered)
@@ -59,13 +59,13 @@ describe("getFullManifest", () => {
   });
 
   it("should return correct type", () => {
-    const result = getFullManifest();
+    const result = ManifestModule.getFullManifest();
     expect(result).toBeTruthy();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    try { getFullManifest(); } catch (e: any) { expect(e).toBeDefined(); }
+    try { ManifestModule.getFullManifest(); } catch (e: any) { expect(e).toBeDefined(); }
   });
 
 });

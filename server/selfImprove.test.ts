@@ -1,23 +1,23 @@
 import { describe, it, expect } from "vitest";
-import { resetStuckProcessingProposals, resolveServerFile, applyProposal, rejectProposal, listProposals, getAnalyzableFiles, getAutoApplyConfig, setAutoApplyConfig, autoApplyHighConfidence, getAutoApplyStatus } from "./selfImprove.js";
+import * as SelfimproveModule from "./selfImprove.js";
 
-describe("resetStuckProcessingProposals", () => {
+describe("SelfimproveModule.resetStuckProcessingProposals", () => {
   it("should execute without throwing", () => {
-    // resetStuckProcessingProposals returns void — just verify it doesn't throw
-    expect(() => resetStuckProcessingProposals()).not.toThrow();
+    // SelfimproveModule.resetStuckProcessingProposals returns void — just verify it doesn't throw
+    expect(() => SelfimproveModule.resetStuckProcessingProposals()).not.toThrow();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    try { resetStuckProcessingProposals(); } catch (e: any) { expect(e).toBeDefined(); }
+    try { SelfimproveModule.resetStuckProcessingProposals(); } catch (e: any) { expect(e).toBeDefined(); }
   });
 
 });
 
-describe("resolveServerFile", () => {
+describe("SelfimproveModule.resolveServerFile", () => {
   it("should execute without throwing", () => {
     try {
-      const result = resolveServerFile("test_filename");
+      const result = SelfimproveModule.resolveServerFile("test_filename");
       expect(result).toBeDefined();
     } catch (e: any) {
       // Function may throw in test environment (e.g. no providers registered)
@@ -26,26 +26,26 @@ describe("resolveServerFile", () => {
   });
 
   it("should return correct type", () => {
-    const result = resolveServerFile("test_filename");
+    const result = SelfimproveModule.resolveServerFile("test_filename");
     // Returns string | null — null when filename not in ANALYZABLE_FILES
     expect(result === null || typeof result === "string").toBe(true);
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    try { resolveServerFile(""); } catch (e: any) { expect(e).toBeDefined(); }
+    try { SelfimproveModule.resolveServerFile(""); } catch (e: any) { expect(e).toBeDefined(); }
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    try { resolveServerFile(undefined); } catch (e: any) { expect(e).toBeDefined(); }
+    try { SelfimproveModule.resolveServerFile(undefined); } catch (e: any) { expect(e).toBeDefined(); }
   });
 
 });
 
-describe("applyProposal", () => {
+describe("SelfimproveModule.applyProposal", () => {
   it("should execute without throwing", async () => {
     try {
-      const result = await applyProposal("test_proposalId");
+      const result = await SelfimproveModule.applyProposal("test_proposalId");
       expect(result).toBeDefined();
     } catch (e: any) {
       // Function may throw in test environment (e.g. no providers registered)
@@ -54,25 +54,25 @@ describe("applyProposal", () => {
   });
 
   it("should return correct type", async () => {
-    const result = await applyProposal("test_proposalId");
+    const result = await SelfimproveModule.applyProposal("test_proposalId");
     expect(result).toBeTruthy();
   });
 
   it("should handle empty/null inputs gracefully", async () => {
-    try { await applyProposal(""); } catch (e: any) { expect(e).toBeDefined(); }
+    try { await SelfimproveModule.applyProposal(""); } catch (e: any) { expect(e).toBeDefined(); }
   });
 
   it("should handle invalid inputs", async () => {
     // @ts-expect-error Testing invalid input
-    try { await applyProposal(undefined); } catch (e: any) { expect(e).toBeDefined(); }
+    try { await SelfimproveModule.applyProposal(undefined); } catch (e: any) { expect(e).toBeDefined(); }
   });
 
 });
 
-describe("rejectProposal", () => {
+describe("SelfimproveModule.rejectProposal", () => {
   it("should execute without throwing", () => {
     try {
-      const result = rejectProposal("test_proposalId");
+      const result = SelfimproveModule.rejectProposal("test_proposalId");
       expect(result).toBeDefined();
     } catch (e: any) {
       // Function may throw in test environment (e.g. no providers registered)
@@ -81,25 +81,25 @@ describe("rejectProposal", () => {
   });
 
   it("should return correct type", () => {
-    const result = rejectProposal("test_proposalId");
+    const result = SelfimproveModule.rejectProposal("test_proposalId");
     expect(typeof result).toBe("boolean");
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    try { rejectProposal(""); } catch (e: any) { expect(e).toBeDefined(); }
+    try { SelfimproveModule.rejectProposal(""); } catch (e: any) { expect(e).toBeDefined(); }
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    try { rejectProposal(undefined); } catch (e: any) { expect(e).toBeDefined(); }
+    try { SelfimproveModule.rejectProposal(undefined); } catch (e: any) { expect(e).toBeDefined(); }
   });
 
 });
 
-describe("listProposals", () => {
+describe("SelfimproveModule.listProposals", () => {
   it("should execute without throwing", () => {
     try {
-      const result = listProposals();
+      const result = SelfimproveModule.listProposals();
       expect(result).toBeDefined();
     } catch (e: any) {
       // Function may throw in test environment (e.g. no providers registered)
@@ -108,25 +108,25 @@ describe("listProposals", () => {
   });
 
   it("should return correct type", () => {
-    const result = listProposals();
+    const result = SelfimproveModule.listProposals();
     expect(Array.isArray(result)).toBe(true);
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    try { listProposals({}); } catch (e: any) { expect(e).toBeDefined(); }
+    try { SelfimproveModule.listProposals({}); } catch (e: any) { expect(e).toBeDefined(); }
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    try { listProposals(undefined); } catch (e: any) { expect(e).toBeDefined(); }
+    try { SelfimproveModule.listProposals(undefined); } catch (e: any) { expect(e).toBeDefined(); }
   });
 
 });
 
-describe("getAnalyzableFiles", () => {
+describe("SelfimproveModule.getAnalyzableFiles", () => {
   it("should execute without throwing", () => {
     try {
-      const result = getAnalyzableFiles();
+      const result = SelfimproveModule.getAnalyzableFiles();
       expect(result).toBeDefined();
     } catch (e: any) {
       // Function may throw in test environment (e.g. no providers registered)
@@ -135,21 +135,21 @@ describe("getAnalyzableFiles", () => {
   });
 
   it("should return correct type", () => {
-    const result = getAnalyzableFiles();
+    const result = SelfimproveModule.getAnalyzableFiles();
     expect(Array.isArray(result)).toBe(true);
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    try { getAnalyzableFiles(); } catch (e: any) { expect(e).toBeDefined(); }
+    try { SelfimproveModule.getAnalyzableFiles(); } catch (e: any) { expect(e).toBeDefined(); }
   });
 
 });
 
-describe("getAutoApplyConfig", () => {
+describe("SelfimproveModule.getAutoApplyConfig", () => {
   it("should execute without throwing", () => {
     try {
-      const result = getAutoApplyConfig();
+      const result = SelfimproveModule.getAutoApplyConfig();
       expect(result).toBeDefined();
     } catch (e: any) {
       // Function may throw in test environment (e.g. no providers registered)
@@ -158,21 +158,21 @@ describe("getAutoApplyConfig", () => {
   });
 
   it("should return correct type", () => {
-    const result = getAutoApplyConfig();
+    const result = SelfimproveModule.getAutoApplyConfig();
     expect(result).toBeTruthy();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    try { getAutoApplyConfig(); } catch (e: any) { expect(e).toBeDefined(); }
+    try { SelfimproveModule.getAutoApplyConfig(); } catch (e: any) { expect(e).toBeDefined(); }
   });
 
 });
 
-describe("setAutoApplyConfig", () => {
+describe("SelfimproveModule.setAutoApplyConfig", () => {
   it("should execute without throwing", () => {
     try {
-      const result = setAutoApplyConfig("test_value");
+      const result = SelfimproveModule.setAutoApplyConfig("test_value");
       expect(result).toBeDefined();
     } catch (e: any) {
       // Function may throw in test environment (e.g. no providers registered)
@@ -181,22 +181,22 @@ describe("setAutoApplyConfig", () => {
   });
 
   it("should return correct type", () => {
-    const result = setAutoApplyConfig("test_value");
+    const result = SelfimproveModule.setAutoApplyConfig("test_value");
     expect(result).toBeTruthy();
   });
 
   it("should handle empty/null inputs gracefully", () => {
-    try { setAutoApplyConfig({}); } catch (e: any) { expect(e).toBeDefined(); }
+    try { SelfimproveModule.setAutoApplyConfig({}); } catch (e: any) { expect(e).toBeDefined(); }
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    try { setAutoApplyConfig(undefined); } catch (e: any) { expect(e).toBeDefined(); }
+    try { SelfimproveModule.setAutoApplyConfig(undefined); } catch (e: any) { expect(e).toBeDefined(); }
   });
 
 });
 
-describe("autoApplyHighConfidence", () => {
+describe("SelfimproveModule.autoApplyHighConfidence", () => {
   it("should execute without throwing", async () => {
     // Mocked to prevent hanging in tests
     expect(true).toBe(true);
@@ -211,10 +211,10 @@ describe("autoApplyHighConfidence", () => {
   });
 });
 
-describe("getAutoApplyStatus", () => {
+describe("SelfimproveModule.getAutoApplyStatus", () => {
   it("should execute without throwing", () => {
     try {
-      const result = getAutoApplyStatus();
+      const result = SelfimproveModule.getAutoApplyStatus();
       expect(result).toBeDefined();
     } catch (e: any) {
       // Function may throw in test environment (e.g. no providers registered)
@@ -223,13 +223,13 @@ describe("getAutoApplyStatus", () => {
   });
 
   it("should return correct type", () => {
-    const result = getAutoApplyStatus();
+    const result = SelfimproveModule.getAutoApplyStatus();
     expect(result).toBeTruthy();
   });
 
   it("should handle invalid inputs", () => {
     // @ts-expect-error Testing invalid input
-    try { getAutoApplyStatus(); } catch (e: any) { expect(e).toBeDefined(); }
+    try { SelfimproveModule.getAutoApplyStatus(); } catch (e: any) { expect(e).toBeDefined(); }
   });
 
 });

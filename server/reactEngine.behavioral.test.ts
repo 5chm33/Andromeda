@@ -14,7 +14,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { ReactEngine, AgentStateMachine } from "./reactEngine.js";
+import * as ReactengineModule from "./reactEngine.js";
 
 // ─── Mock LLM Provider ───────────────────────────────────────────────────────
 vi.mock("./llmProvider.js", () => ({
@@ -143,7 +143,7 @@ function makeTextResponse(content: string) {
 
 function createEngine(extraConfig: Record<string, unknown> = {}) {
   const events: Array<{ type: string; [key: string]: unknown }> = [];
-  const engine = new ReactEngine({
+  const engine = new ReactengineModule.ReactEngine({
     maxSteps: 10,
     maxTokens: 4096,
     temperature: 0,
@@ -528,7 +528,7 @@ describe("ReactEngine — Behavioral Tests (v6.22)", () => {
     });
 
     it("reset() clears history and returns to IDLE", () => {
-      const sm = new AgentStateMachine();
+      const sm = new ReactengineModule.AgentStateMachine();
       sm.transition("THINKING", "test");
       sm.transition("TOOL_CALL", "test");
       expect(sm.history.length).toBe(2);
@@ -601,12 +601,12 @@ describe("ReactEngine — Behavioral Tests (v6.22)", () => {
   // ── Scenario 12: AgentStateMachine unit tests ─────────────────────────────
   describe("Scenario 12: AgentStateMachine unit tests", () => {
     it("starts in IDLE state", () => {
-      const sm = new AgentStateMachine();
+      const sm = new ReactengineModule.AgentStateMachine();
       expect(sm.state).toBe("IDLE");
     });
 
     it("transitions correctly between states", () => {
-      const sm = new AgentStateMachine();
+      const sm = new ReactengineModule.AgentStateMachine();
       sm.transition("THINKING", "test");
       expect(sm.state).toBe("THINKING");
       sm.transition("TOOL_CALL", "tool requested");
@@ -618,21 +618,21 @@ describe("ReactEngine — Behavioral Tests (v6.22)", () => {
     });
 
     it("is() returns true for current state", () => {
-      const sm = new AgentStateMachine();
+      const sm = new ReactengineModule.AgentStateMachine();
       sm.transition("THINKING", "test");
       expect(sm.is("THINKING")).toBe(true);
       expect(sm.is("IDLE")).toBe(false);
     });
 
     it("isAny() returns true if current state is in the list", () => {
-      const sm = new AgentStateMachine();
+      const sm = new ReactengineModule.AgentStateMachine();
       sm.transition("TOOL_CALL", "test");
       expect(sm.isAny("THINKING", "TOOL_CALL", "DONE")).toBe(true);
       expect(sm.isAny("IDLE", "ERROR")).toBe(false);
     });
 
     it("records transition history with timestamps", () => {
-      const sm = new AgentStateMachine();
+      const sm = new ReactengineModule.AgentStateMachine();
       const before = Date.now();
       sm.transition("THINKING", "step 1");
       const after = Date.now();
@@ -646,7 +646,7 @@ describe("ReactEngine — Behavioral Tests (v6.22)", () => {
     });
 
     it("caps history at 50 entries", () => {
-      const sm = new AgentStateMachine();
+      const sm = new ReactengineModule.AgentStateMachine();
       for (let i = 0; i < 60; i++) {
         sm.transition(i % 2 === 0 ? "THINKING" : "TOOL_CALL", `step ${i}`);
       }
@@ -654,7 +654,7 @@ describe("ReactEngine — Behavioral Tests (v6.22)", () => {
     });
 
     it("reset() clears all history", () => {
-      const sm = new AgentStateMachine();
+      const sm = new ReactengineModule.AgentStateMachine();
       sm.transition("THINKING", "test");
       sm.transition("TOOL_CALL", "test");
       sm.reset();

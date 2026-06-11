@@ -1,1 +1,78 @@
-{}
+{
+  "helpfulness": {
+    "category": "helpfulness",
+    "sampleCount": 444,
+    "meanReward": 0.3844,
+    "acceptRate": 0.705,
+    "rejectRate": 0.2815,
+    "editRate": 0.0,
+    "topFiles": [
+      "codeIntel.ts",
+      "manifest.ts",
+      "llmProvider.ts"
+    ],
+    "bottomFiles": [
+      "adaptiveRouter.ts",
+      "selfConsistency.ts",
+      "memory.ts"
+    ],
+    "lastUpdated": "2026-06-11T15:24:48.311365+00:00"
+  },
+  "accuracy": {
+    "category": "accuracy",
+    "sampleCount": 9,
+    "meanReward": 0.5056,
+    "acceptRate": 0.7778,
+    "rejectRate": 0.2222,
+    "editRate": 0.0,
+    "topFiles": [
+      "contextBus.ts",
+      "adaptiveRouter.ts",
+      "browser.ts"
+    ],
+    "bottomFiles": [
+      "biasDetector.ts",
+      "selfConsistency.ts",
+      "codeIntel.ts"
+    ],
+    "lastUpdated": "2026-06-11T15:24:48.311408+00:00"
+  },
+  "clarity": {
+    "category": "clarity",
+    "sampleCount": 41,
+    "meanReward": 0.4624,
+    "acceptRate": 0.7561,
+    "rejectRate": 0.2439,
+    "editRate": 0.0,
+    "topFiles": [
+      "codeIntel.ts",
+      "llmProvider.ts",
+      "biasDetector.ts"
+    ],
+    "bottomFiles": [
+      "browser.ts",
+      "selfConsistency.ts",
+      "contextBus.ts"
+    ],
+    "lastUpdated": "2026-06-11T15:24:48.311453+00:00"
+  },
+  "quality": {
+    "category": "quality",
+    "sampleCount": 6,
+    "meanReward": 0.595,
+    "acceptRate": 0.8333,
+    "rejectRate": 0.1667,
+    "editRate": 0.0,
+    "topFiles": [
+      "contextBus.ts",
+      "memory.ts",
+      "contextManager.ts"
+    ],
+    "bottomFiles": [
+      "biasDetector.ts",
+      "selfConsistency.ts",
+      "browser.ts"
+    ],
+    "lastUpdated": "2026-06-11T15:24:48.311479+00:00"
+  }
+}
