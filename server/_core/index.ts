@@ -121,9 +121,20 @@ async function startServer(): Promise<void> {
   });
 
   // v5.8: Request size limit and timeout
-  // v6.18: Reduced from 2gb to 50mb (DoS fix) — 50mb is sufficient for code/file uploads
-  app.use(express.json({ limit: "50mb" }));
-  app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  // v6.18: Reduced from 2gb to 50mb (DoS fix) — 50mb is sufficient for most routes
+  // v10.2: Large-payload routes (zip analysis/edit) get 200MB limit to support 69MB+ zips
+  //        (base64 encoding inflates ~33%, so 69MB zip → ~92MB JSON body)
+  const LARGE_PAYLOAD_ROUTES = ["/api/analyze/stream", "/api/edit/zip"];
+  app.use((req, res, next) => {
+    const isLargeRoute = LARGE_PAYLOAD_ROUTES.some(r => req.path.startsWith(r));
+    const limit = isLargeRoute ? "200mb" : "50mb";
+    express.json({ limit })(req, res, next);
+  });
+  app.use((req, res, next) => {
+    const isLargeRoute = LARGE_PAYLOAD_ROUTES.some(r => req.path.startsWith(r));
+    const limit = isLargeRoute ? "200mb" : "50mb";
+    express.urlencoded({ limit, extended: true })(req, res, next);
+  });
   app.use((req, res, next) => {
     // Long-running endpoints: streams, RSI trigger/pipeline, self-improve
     const isLongRunning = req.path.includes("/stream") ||

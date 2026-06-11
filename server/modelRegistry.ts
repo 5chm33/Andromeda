@@ -258,6 +258,37 @@ const MODEL_SPECS: ModelSpec[] = [
     qualityTier: "economy",
     deprecated: false,
   },
+  // Kimi / Moonshot Models
+  {
+    id: "kimi-k2.6",
+    provider: "custom",
+    contextWindow: 1000000, // 1M token context window
+    maxOutputTokens: 32768,
+    inputCostPer1M: 0.14,
+    outputCostPer1M: 0.56,
+    supportsStreaming: true,
+    supportsTools: true,
+    supportsVision: false,
+    supportsReasoning: true,
+    latencyClass: "medium",
+    qualityTier: "flagship",
+    deprecated: false,
+  },
+  {
+    id: "kimi-k2",
+    provider: "custom",
+    contextWindow: 1000000, // 1M token context window
+    maxOutputTokens: 32768,
+    inputCostPer1M: 0.14,
+    outputCostPer1M: 0.56,
+    supportsStreaming: true,
+    supportsTools: true,
+    supportsVision: false,
+    supportsReasoning: true,
+    latencyClass: "medium",
+    qualityTier: "flagship",
+    deprecated: false,
+  },
   // Google Models
   {
     id: "gemini-2.0-flash",
@@ -421,6 +452,7 @@ export function getContextWindow(modelId: string): number {
 
   // Fallback: check if model name contains hints
   if (modelId.includes("gemini")) return 1048576;
+  if (modelId.includes("kimi") || modelId.includes("moonshot")) return 1000000;
   if (modelId.includes("claude")) return 200000;
   if (modelId.includes("gpt-4")) return 128000;
   if (modelId.includes("deepseek")) return 131072;

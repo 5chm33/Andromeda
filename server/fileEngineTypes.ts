@@ -30,12 +30,55 @@ export function getModelContextMaxOutput(model: string): number {
 
 // v6.15: Use active provider URL — supports OpenRouter, DeepSeek, etc.
 // Falls back to env vars for backward compatibility
-import { getActiveProvider as _getFileEngineProvider } from "./llmProvider.js";
+import { getActiveProvider as _getFileEngineProvider, getProviderApiKey as _getProviderApiKey, listProviders as _listProviders } from "./llmProvider.js";
 export function getFileEngineProviderHeaders(): Record<string, string> {
   try { return _getFileEngineProvider()?.headers ?? {}; } catch { return {}; }
 }
 export function getFileEngineApiUrl(): string {
   try { return _getFileEngineProvider().apiUrl || process.env.LLM_API_URL || "https://api.deepseek.com/v1/chat/completions"; } catch { return process.env.LLM_API_URL || "https://api.deepseek.com/v1/chat/completions"; }
+}
+
+// Known provider URL map for key-prefix detection
+const DEEPSEEK_BASE_URL = process.env.LLM_API_URL || process.env.DEEPSEEK_API_URL || "https://api.deepseek.com/v1/chat/completions";
+const PROVIDER_URL_MAP: Array<{ prefix: string; apiUrl: string; headers: Record<string, string> }> = [
+  { prefix: "sk-CM",  apiUrl: "https://api.moonshot.ai/v1/chat/completions", headers: {} },
+  { prefix: "sk-ant-", apiUrl: "https://api.anthropic.com/v1/messages", headers: { "anthropic-version": "2023-06-01" } },
+  { prefix: "sk-or-",  apiUrl: "https://openrouter.ai/api/v1/chat/completions", headers: { "HTTP-Referer": "https://andromeda.ai", "X-Title": "Andromeda" } },
+  // DeepSeek keys start with sk- followed by hex (no special suffix)
+  { prefix: "sk-",     apiUrl: DEEPSEEK_BASE_URL, headers: {} },
+];
+
+/**
+ * v10.2: Resolve the correct API URL and headers for a given API key.
+ * When smart routing selects a different provider (e.g., Kimi for large payloads),
+ * the fileEngine needs to use that provider's URL, not the active provider's URL.
+ * Matches the apiKey against all registered providers, then falls back to key-prefix detection.
+ */
+export function resolveApiUrlFromKey(apiKey: string): { apiUrl: string; headers: Record<string, string> } {
+  if (!apiKey) {
+    return { apiUrl: getFileEngineApiUrl(), headers: getFileEngineProviderHeaders() };
+  }
+  // Try to match against registered providers
+  try {
+    const providerList = _listProviders();
+    for (const { id } of providerList) {
+      const key = _getProviderApiKey(id);
+      if (key && key === apiKey) {
+        // Found matching provider — get its config
+        const prev = _getFileEngineProvider();
+        // Use the provider URL map for well-known providers
+        const urlEntry = PROVIDER_URL_MAP.find(e => apiKey.startsWith(e.prefix));
+        if (urlEntry) return { apiUrl: urlEntry.apiUrl, headers: urlEntry.headers };
+        // Fall through to prefix detection
+        break;
+      }
+    }
+  } catch { /* ignore */ }
+  // Fallback: detect provider from key prefix
+  const urlEntry = PROVIDER_URL_MAP.find(e => apiKey.startsWith(e.prefix));
+  if (urlEntry) return { apiUrl: urlEntry.apiUrl, headers: urlEntry.headers };
+  // Default: use active provider URL
+  return { apiUrl: getFileEngineApiUrl(), headers: getFileEngineProviderHeaders() };
 }
 const DEEPSEEK_API_URL = process.env.LLM_API_URL || process.env.DEEPSEEK_API_URL || "https://api.deepseek.com/v1/chat/completions";
 

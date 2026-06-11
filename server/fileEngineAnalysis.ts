@@ -7,7 +7,7 @@ import JSZip from "jszip";
 import { getActiveProvider } from "./llmProvider.js";
 import { createLogger } from "./logger.js";
 import type { FileEntry, FileIndex, MultiPassResult, SSEEmitter } from "./fileEngineTypes.js";
-import { TEXT_EXTS, compressFile, getFileEngineApiUrl, MAX_REQUESTED_FILES, getFileEngineProviderHeaders, getModelContextMaxOutput, MAX_CONTEXT_CHARS } from "./fileEngineTypes.js";
+import { TEXT_EXTS, compressFile, getFileEngineApiUrl, MAX_REQUESTED_FILES, getFileEngineProviderHeaders, getModelContextMaxOutput, MAX_CONTEXT_CHARS, resolveApiUrlFromKey } from "./fileEngineTypes.js";
 import { buildFileIndex, smartChunkFile } from "./fileEngineChunking.js";
 const log = createLogger("fileEngineAnalysis");
 
@@ -16,6 +16,11 @@ const log = createLogger("fileEngineAnalysis");
 /**
  * Pass 2: Ask the LLM which files it needs to see in full.
  */
+/** v10.2: Detect reasoning models that only accept temperature=1 */
+function isReasoningModel(model: string): boolean {
+  return /kimi-k2|deepseek-reasoner|o1-|o3-|o1$|o3$/.test(model);
+}
+
 export async function selectRelevantFiles(
   index: FileIndex,
   instruction: string,
@@ -36,31 +41,53 @@ Rules:
 - If the project is small (<15 files), you may request all of them
 - Prefer source files over test files unless the task is about tests`;
 
+  // v10.2: Truncate indexText for large projects to prevent LLM timeout
+  const MAX_INDEX_CHARS = 25_000;
+  const truncatedIndex = index.indexText.length > MAX_INDEX_CHARS
+    ? index.indexText.slice(0, MAX_INDEX_CHARS) + `\n...[truncated — ${index.totalFiles} total files]`
+    : index.indexText;
   const userPrompt = `## User Instruction
 ${instruction}
 
 ## File Index (${index.totalFiles} files, ${Math.round(index.totalSize / 1024)}KB total)
-${index.indexText}
+${truncatedIndex}
 
 Return ONLY a JSON array of file paths you need to see in full.`;
 
-  const response = await fetch(getFileEngineApiUrl(), {
-    method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", ...getFileEngineProviderHeaders() },
-    body: JSON.stringify({
-      model,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      max_tokens: 2000,
-      temperature: 0.1,
-      response_format: { type: "json_object" },
-    }),
-  });
+  const { apiUrl: selApiUrl, headers: selHeaders } = resolveApiUrlFromKey(apiKey);
+  // v10.2: Add 90s timeout — reasoning models (kimi-k2.6) can be slow
+  const selAbort = new AbortController();
+  const selTimeout = setTimeout(() => selAbort.abort(), 90_000);
+  let response: Response;
+  try {
+    response = await fetch(selApiUrl, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", ...selHeaders },
+      signal: selAbort.signal,
+      body: JSON.stringify({
+        model,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        max_tokens: 2000,
+        temperature: isReasoningModel(model) ? 1 : 0.1,
+        response_format: { type: "json_object" },
+      }),
+    });
+  } catch (fetchErr: any) {
+    clearTimeout(selTimeout);
+    if (fetchErr?.name === "AbortError") {
+      throw new Error("File selection timed out after 90s — falling back to priority files");
+    }
+    throw fetchErr;
+  } finally {
+    clearTimeout(selTimeout);
+  }
 
   if (!response.ok) {
-    throw new Error(`DeepSeek API error in file selection: ${response.status}`);
+    const errBody = await response.text().catch(() => "(no body)");
+    throw new Error(`API error in file selection: ${response.status}: ${errBody.slice(0, 200)}`);
   }
 
   const data = (await response.json()) as any;
@@ -281,23 +308,23 @@ ${index.indexText.slice(0, 10000)}
 ## Full File Contents (${stats.loaded} files loaded, ${tokenEstimate} tokens estimated)
 ${fileContent}`;
 
-  const analysisResponse = await fetch(getFileEngineApiUrl(), {
+  const { apiUrl: analysisApiUrl, headers: analysisHeaders } = resolveApiUrlFromKey(apiKey);
+  const analysisResponse = await fetch(analysisApiUrl, {
     method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", ...getFileEngineProviderHeaders() },
+    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", ...analysisHeaders },
     body: JSON.stringify({
       model,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
       ],
-      max_tokens: 8000,
-      temperature: 0.3,
+            max_tokens: 8000,
+      temperature: isReasoningModel(model) ? 1 : 0.3,
     }),
   });
-
   if (!analysisResponse.ok) {
     const err = await analysisResponse.text();
-    throw new Error(`DeepSeek API error in analysis: ${analysisResponse.status}: ${err}`);
+    throw new Error(`API error in analysis: ${analysisResponse.status}: ${err}`);
   }
 
   const analysisData = (await analysisResponse.json()) as any;
@@ -457,21 +484,22 @@ Produce the edit plan as JSON.`;
   ];
 
   for (let attempt = 0; attempt <= MAX_EDIT_CONTINUATIONS; attempt++) {
-    const editResponse = await fetch(getFileEngineApiUrl(), {
+    const { apiUrl: editApiUrl, headers: editHeaders } = resolveApiUrlFromKey(apiKey);
+    const editResponse = await fetch(editApiUrl, {
       method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", ...getFileEngineProviderHeaders() },
+      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", ...editHeaders },
       body: JSON.stringify({
         model,
         messages: editMessages,
         max_tokens: getModelContextMaxOutput(model),
-        temperature: 0.2,
+        temperature: isReasoningModel(model) ? 1 : 0.2,
         response_format: { type: "json_object" },
       }),
     });
 
     if (!editResponse.ok) {
       const err = await editResponse.text();
-      throw new Error(`DeepSeek API error in edit: ${editResponse.status}: ${err}`);
+      throw new Error(`API error in edit: ${editResponse.status}: ${err}`);
     }
 
     const editData = (await editResponse.json()) as any;
@@ -678,11 +706,21 @@ export async function streamMultiPassAnalysis(
     if (index.totalFiles <= 500) {
       selectedPaths = index.entries.filter(e => TEXT_EXTS.test(e.path)).map(e => e.path);
       emit({ type: "files_selected", count: selectedPaths.length, reason: "Full codebase mode — all text files" });
-    } else {
-      selectedPaths = await selectRelevantFiles(index, instruction, apiKey, model);
-      emit({ type: "files_selected", count: selectedPaths.length, paths: selectedPaths.slice(0, 10), reason: "AI-selected (500+ files)" });
+        } else {
+      try {
+        selectedPaths = await selectRelevantFiles(index, instruction, apiKey, model);
+        emit({ type: "files_selected", count: selectedPaths.length, paths: selectedPaths.slice(0, 10), reason: "AI-selected (500+ files)" });
+      } catch (selErr: any) {
+        // v10.2: Fallback if AI selection times out or fails — use priority files
+        const priorityExts = /\.(ts|tsx|js|jsx|py|go|rs|java|json|md)$/;
+        selectedPaths = index.entries
+          .filter(e => priorityExts.test(e.path) && !e.path.includes("node_modules") && !e.path.includes("dist/"))
+          .sort((a, b) => b.size - a.size)
+          .slice(0, 80)
+          .map(e => e.path);
+        emit({ type: "files_selected", count: selectedPaths.length, paths: selectedPaths.slice(0, 10), reason: `Fallback selection (AI timed out: ${selErr?.message?.slice(0, 60)})` });
+      }
     }
-
     // Pass 3 — v5.21: Load all files, track overflow for chunked analysis
     emit({ type: "engine_phase", phase: "loading", message: `Loading ${selectedPaths.length} files (full codebase mode)...` });
     const allPaths = Object.keys(zip.files).filter(p => !zip.files[p].dir);
@@ -725,9 +763,10 @@ export async function streamMultiPassAnalysis(
         emit({ type: "engine_phase", phase: "chunked_overflow", message: `Analyzing overflow chunk ${i + 1}/${overflowChunks.length}...` });
         const chunkContent = overflowChunks[i].join("\n");
         try {
-          const chunkResp = await fetch(getFileEngineApiUrl(), {
+          const { apiUrl: chunkApiUrl, headers: chunkHeaders } = resolveApiUrlFromKey(apiKey);
+          const chunkResp = await fetch(chunkApiUrl, {
             method: "POST",
-            headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", ...getFileEngineProviderHeaders() },
+            headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", ...chunkHeaders },
             body: JSON.stringify({
               model,
               messages: [
@@ -735,7 +774,7 @@ export async function streamMultiPassAnalysis(
                 { role: "user", content: `Instruction: ${instruction}\n\nAdditional files (chunk ${i + 1}/${overflowChunks.length}):\n${chunkContent}` },
               ],
               max_tokens: 4000,
-              temperature: 0.3,
+              temperature: isReasoningModel(model) ? 1 : 0.3,
             }),
           });
           if (chunkResp.ok) {
@@ -784,21 +823,22 @@ ${fileContent}${overflowSection}`;
     ];
 
     while (continuationCount <= MAX_CONTINUATIONS) {
-      const streamResponse = await fetch(getFileEngineApiUrl(), {
+      const { apiUrl: streamApiUrl, headers: streamHeaders } = resolveApiUrlFromKey(apiKey);
+      const streamResponse = await fetch(streamApiUrl, {
         method: "POST",
-        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", ...getFileEngineProviderHeaders() },
+        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", ...streamHeaders },
         body: JSON.stringify({
           model,
           messages,
           max_tokens: getModelContextMaxOutput(model),
-          temperature: 0.3,
+          temperature: isReasoningModel(model) ? 1 : 0.3,
           stream: true,
         }),
       });
 
       if (!streamResponse.ok) {
         const err = await streamResponse.text();
-        throw new Error(`DeepSeek API error: ${streamResponse.status}: ${err}`);
+        throw new Error(`API error: ${streamResponse.status}: ${err}`);
       }
 
       let wasTruncated = false;
