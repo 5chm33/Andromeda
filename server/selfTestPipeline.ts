@@ -519,15 +519,20 @@ export function recoverFromCrash(): { recovered: boolean; message: string } {
   const allBackups = fs.readdirSync(config.backupDir).filter(f => f.endsWith(".json"));
   if (allBackups.length === 0) return { recovered: false, message: "No pending backups" };
 
-  // Auto-clean backups older than 24h — they are definitely stale after any restart
+  // Auto-clean backups older than 24h — they are definitely stale after any restart.
+  // Use the timestamp embedded in the filename (e.g. prop_1781129302366_xxx.json or
+  // rsi-typecheck_1780904753656.json) rather than mtime, which can be updated by git
+  // operations and falsely appear recent.
   const STALE_MS = 24 * 60 * 60 * 1000;
   const now = Date.now();
   let cleaned = 0;
   for (const fname of allBackups) {
     const fpath = path.join(config.backupDir, fname);
     try {
-      const stat = fs.statSync(fpath);
-      if (now - stat.mtimeMs > STALE_MS) {
+      // Extract first numeric sequence from filename as creation timestamp
+      const tsMatch = fname.match(/(\d{13})/);
+      const fileAge = tsMatch ? now - parseInt(tsMatch[1], 10) : now - fs.statSync(fpath).mtimeMs;
+      if (fileAge > STALE_MS) {
         fs.unlinkSync(fpath);
         cleaned++;
       }
