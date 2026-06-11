@@ -233,7 +233,7 @@
       "category": "tool_use",
       "score": 65,
       "passed": true,
-      "response": "Here are the last 3 commit messages from the git log:\n\n1. **pre-improvement snapshot: before \"Fix truncated seed memory entry\"** \u2014 SHA: eac674e3e7346bd3d498110242c3e52752d7f469  \n2. **pre-improvement "
+      "response": "Here are the last 3 commit messages from the git log:\n\n1. **pre-improvement snapshot: before \"Fix truncated seed memory entry\"** — SHA: eac674e3e7346bd3d498110242c3e52752d7f469  \n2. **pre-improvement "
     },
     {
       "taskId": "t09",
@@ -366,7 +366,7 @@
       "category": "multi_step",
       "score": 100,
       "passed": true,
-      "response": "The RSI Engine cycle phases for Andromeda are:\n\n1. OBSERVE \u2014 observing own source code, metrics, and failure logs.\n2. EVALUATE \u2014 scoring current capabilities against benchmarks.\n3. PROPOSE \u2014 generatin"
+      "response": "The RSI Engine cycle phases for Andromeda are:\n\n1. OBSERVE — observing own source code, metrics, and failure logs.\n2. EVALUATE — scoring current capabilities against benchmarks.\n3. PROPOSE — generatin"
     },
     {
       "taskId": "m08",
@@ -436,7 +436,7 @@
       "category": "multi_step",
       "score": 72,
       "passed": true,
-      "response": "Let's calculate the total amount each person spends:\n\n**Alice:**\n- Apples: 4 \u00d7 $0.50 = $2.00\n- Oranges: 3 \u00d7 $0.75 = $2.25\n- **Total for Alice:** $2.00 + $2.25 = **$4.25**\n\n**Bob:**\n- Apples: 2 \u00d7 $0.50"
+      "response": "Let's calculate the total amount each person spends:\n\n**Alice:**\n- Apples: 4 × $0.50 = $2.00\n- Oranges: 3 × $0.75 = $2.25\n- **Total for Alice:** $2.00 + $2.25 = **$4.25**\n\n**Bob:**\n- Apples: 2 × $0.50"
     },
     {
       "taskId": "ms03",
@@ -533,9 +533,9 @@
   "durationMs": 121758,
   "version": "9.0.0",
   "memory_keyword_search": 150,
-  "tool_registry_lookup": 0.01,
-  "file_write_10kb": 0.16,
-  "file_read_10kb": 0.06,
-  "context_token_estimation_50msg": 0.16,
-  "json_parse_large_object": 0.19
+  "tool_registry_lookup": 5,
+  "file_write_10kb": 5,
+  "file_read_10kb": 5,
+  "context_token_estimation_50msg": 5,
+  "json_parse_large_object": 5
 }

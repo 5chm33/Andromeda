@@ -233,7 +233,61 @@
       "firstSeenAt": 1780919609403,
       "lastSeenAt": 1780919609403,
       "active": false
+    },
+    {
+      "id": "lc_1781155539576_s5phe",
+      "pattern": "// ── Query each source ──\n  const queryPromises: Promise<void>[] = [];\n\n  con",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781155539576,
+      "lastSeenAt": 1781155539576,
+      "active": false
+    },
+    {
+      "id": "lc_1781155539648_k8ah7",
+      "pattern": "browser: [\n      {\n        prompt: \"Describe the steps to navigate to a webp",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781155539648,
+      "lastSeenAt": 1781155539648,
+      "active": false
+    },
+    {
+      "id": "lc_1781155539717_zb8g0",
+      "pattern": "// Helper to evaluate a provider and handle errors uniformly\n  async function",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781155539717,
+      "lastSeenAt": 1781155539717,
+      "active": false
+    },
+    {
+      "id": "lc_1781157229819_1kfwl",
+      "pattern": "// Strategy 1: Summarize low-value conversation turns (old assistant messages)",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781157229819,
+      "lastSeenAt": 1781157229819,
+      "active": false
+    },
+    {
+      "id": "lc_1781157229906_i4g00",
+      "pattern": "for (const filePath of topFiles) {\n      // Validate and normalize file path",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781157229906,
+      "lastSeenAt": 1781157229906,
+      "active": false
+    },
+    {
+      "id": "lc_1781157229999_x99lm",
+      "pattern": "function readEntries(sessionId: string): ContextEntry[] {\n  const filePath = get",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781157229999,
+      "lastSeenAt": 1781157229999,
+      "active": false
     }
   ],
-  "lastUpdatedAt": 1780919609403
+  "lastUpdatedAt": 1781157229999
 }

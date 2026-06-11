@@ -1,7 +1,7 @@
 {
-  "timestamp": 1781149508417,
-  "overallScore": 59,
-  "totalModules": 262,
+  "timestamp": 1781157339554,
+  "overallScore": 90,
+  "totalModules": 263,
   "complexityMetrics": [
     {
       "filePath": "server/_core/context.ts",
@@ -340,6 +340,38 @@
       "averageComplexity": 0,
       "maxComplexity": 0,
       "linesOfCode": 70
+    },
+    {
+      "filePath": "server/_core/videoGeneration.ts",
+      "functions": [
+        {
+          "name": "getFalClient",
+          "line": 140,
+          "complexity": 2,
+          "linesOfCode": 11,
+          "parameters": 0,
+          "nestingDepth": 1
+        },
+        {
+          "name": "gcd",
+          "line": 343,
+          "complexity": 2,
+          "linesOfCode": 3,
+          "parameters": 2,
+          "nestingDepth": 0
+        },
+        {
+          "name": "isFalAvailable",
+          "line": 409,
+          "complexity": 1,
+          "linesOfCode": 3,
+          "parameters": 0,
+          "nestingDepth": 0
+        }
+      ],
+      "averageComplexity": 1.7,
+      "maxComplexity": 2,
+      "linesOfCode": 412
     },
     {
       "filePath": "server/_core/vite.ts",
@@ -2077,7 +2109,7 @@
       "functions": [
         {
           "name": "benchmarkMemoryRetrieval",
-          "line": 72,
+          "line": 76,
           "complexity": 1,
           "linesOfCode": 27,
           "parameters": 0,
@@ -2085,7 +2117,7 @@
         },
         {
           "name": "benchmarkToolRegistry",
-          "line": 100,
+          "line": 104,
           "complexity": 1,
           "linesOfCode": 26,
           "parameters": 0,
@@ -2093,7 +2125,7 @@
         },
         {
           "name": "benchmarkFileOperations",
-          "line": 127,
+          "line": 131,
           "complexity": 1,
           "linesOfCode": 42,
           "parameters": 0,
@@ -2101,7 +2133,7 @@
         },
         {
           "name": "benchmarkContextAssembly",
-          "line": 170,
+          "line": 174,
           "complexity": 2,
           "linesOfCode": 32,
           "parameters": 0,
@@ -2109,7 +2141,7 @@
         },
         {
           "name": "benchmarkJsonParsing",
-          "line": 203,
+          "line": 207,
           "complexity": 1,
           "linesOfCode": 26,
           "parameters": 0,
@@ -2117,7 +2149,7 @@
         },
         {
           "name": "loadBaselines",
-          "line": 232,
+          "line": 236,
           "complexity": 2,
           "linesOfCode": 8,
           "parameters": 0,
@@ -2125,7 +2157,7 @@
         },
         {
           "name": "saveBaselines",
-          "line": 241,
+          "line": 245,
           "complexity": 2,
           "linesOfCode": 9,
           "parameters": 2,
@@ -2133,7 +2165,7 @@
         },
         {
           "name": "updateBaselines",
-          "line": 251,
+          "line": 255,
           "complexity": 9,
           "linesOfCode": 18,
           "parameters": 1,
@@ -2141,7 +2173,7 @@
         },
         {
           "name": "detectDegradations",
-          "line": 270,
+          "line": 274,
           "complexity": 7,
           "linesOfCode": 22,
           "parameters": 1,
@@ -2149,7 +2181,7 @@
         },
         {
           "name": "runBenchmarks",
-          "line": 295,
+          "line": 299,
           "complexity": 5,
           "linesOfCode": 56,
           "parameters": 0,
@@ -2157,7 +2189,7 @@
         },
         {
           "name": "startBenchmarkRunner",
-          "line": 354,
+          "line": 358,
           "complexity": 4,
           "linesOfCode": 16,
           "parameters": 0,
@@ -2165,7 +2197,7 @@
         },
         {
           "name": "stopBenchmarkRunner",
-          "line": 371,
+          "line": 375,
           "complexity": 2,
           "linesOfCode": 7,
           "parameters": 0,
@@ -2173,7 +2205,7 @@
         },
         {
           "name": "getLastBenchmarkReport",
-          "line": 379,
+          "line": 383,
           "complexity": 3,
           "linesOfCode": 9,
           "parameters": 0,
@@ -2181,7 +2213,7 @@
         },
         {
           "name": "isRunning",
-          "line": 389,
+          "line": 393,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 0,
@@ -2190,7 +2222,7 @@
       ],
       "averageComplexity": 2.9,
       "maxComplexity": 9,
-      "linesOfCode": 392
+      "linesOfCode": 396
     },
     {
       "filePath": "server/biasDetector.ts",
@@ -2389,7 +2421,7 @@
         },
         {
           "name": "getLogLevel",
-          "line": 78,
+          "line": 81,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 0,
@@ -2397,7 +2429,7 @@
         },
         {
           "name": "setLogLevel",
-          "line": 82,
+          "line": 85,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 1,
@@ -2405,7 +2437,7 @@
         },
         {
           "name": "getRecentLogs",
-          "line": 86,
+          "line": 89,
           "complexity": 2,
           "linesOfCode": 7,
           "parameters": 2,
@@ -2413,7 +2445,7 @@
         },
         {
           "name": "hashKey",
-          "line": 232,
+          "line": 235,
           "complexity": 2,
           "linesOfCode": 9,
           "parameters": 1,
@@ -2421,7 +2453,7 @@
         },
         {
           "name": "searchCacheKey",
-          "line": 242,
+          "line": 245,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 2,
@@ -2429,7 +2461,7 @@
         },
         {
           "name": "aiCacheKey",
-          "line": 246,
+          "line": 249,
           "complexity": 1,
           "linesOfCode": 4,
           "parameters": 1,
@@ -2437,7 +2469,7 @@
         },
         {
           "name": "browseCacheKey",
-          "line": 251,
+          "line": 254,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 1,
@@ -2445,7 +2477,7 @@
         },
         {
           "name": "getCachedSearch",
-          "line": 257,
+          "line": 260,
           "complexity": 2,
           "linesOfCode": 7,
           "parameters": 1,
@@ -2453,7 +2485,7 @@
         },
         {
           "name": "setCachedSearch",
-          "line": 265,
+          "line": 268,
           "complexity": 1,
           "linesOfCode": 4,
           "parameters": 2,
@@ -2461,7 +2493,7 @@
         },
         {
           "name": "getCachedAI",
-          "line": 270,
+          "line": 273,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 1,
@@ -2469,7 +2501,7 @@
         },
         {
           "name": "setCachedAI",
-          "line": 274,
+          "line": 277,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 2,
@@ -2477,7 +2509,7 @@
         },
         {
           "name": "getCachedBrowse",
-          "line": 278,
+          "line": 281,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 1,
@@ -2485,7 +2517,7 @@
         },
         {
           "name": "setCachedBrowse",
-          "line": 282,
+          "line": 285,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 2,
@@ -2493,7 +2525,7 @@
         },
         {
           "name": "getAllCacheStats",
-          "line": 286,
+          "line": 289,
           "complexity": 1,
           "linesOfCode": 7,
           "parameters": 0,
@@ -2501,7 +2533,7 @@
         },
         {
           "name": "clearAllCaches",
-          "line": 294,
+          "line": 297,
           "complexity": 1,
           "linesOfCode": 6,
           "parameters": 0,
@@ -2509,7 +2541,7 @@
         },
         {
           "name": "pruneExpired",
-          "line": 301,
+          "line": 304,
           "complexity": 1,
           "linesOfCode": 9,
           "parameters": 0,
@@ -2518,7 +2550,7 @@
       ],
       "averageComplexity": 1.6,
       "maxComplexity": 7,
-      "linesOfCode": 315
+      "linesOfCode": 318
     },
     {
       "filePath": "server/capabilityBootstrapper.ts",
@@ -2917,7 +2949,7 @@
       "functions": [
         {
           "name": "calculateCyclomaticComplexity",
-          "line": 83,
+          "line": 86,
           "complexity": 1,
           "linesOfCode": 1,
           "parameters": 1,
@@ -2925,7 +2957,7 @@
         },
         {
           "name": "extractFunctions",
-          "line": 108,
+          "line": 111,
           "complexity": 16,
           "linesOfCode": 39,
           "parameters": 1,
@@ -2933,7 +2965,7 @@
         },
         {
           "name": "calculateNestingDepth",
-          "line": 148,
+          "line": 151,
           "complexity": 5,
           "linesOfCode": 15,
           "parameters": 1,
@@ -2941,7 +2973,7 @@
         },
         {
           "name": "analyzeComplexity",
-          "line": 164,
+          "line": 167,
           "complexity": 4,
           "linesOfCode": 35,
           "parameters": 1,
@@ -2949,7 +2981,7 @@
         },
         {
           "name": "analyzeCoupling",
-          "line": 202,
+          "line": 205,
           "complexity": 10,
           "linesOfCode": 48,
           "parameters": 1,
@@ -2957,7 +2989,7 @@
         },
         {
           "name": "calculateTrend",
-          "line": 306,
+          "line": 309,
           "complexity": 5,
           "linesOfCode": 15,
           "parameters": 1,
@@ -2965,7 +2997,7 @@
         },
         {
           "name": "recordHistory",
-          "line": 322,
+          "line": 325,
           "complexity": 4,
           "linesOfCode": 13,
           "parameters": 1,
@@ -2973,7 +3005,7 @@
         },
         {
           "name": "getTypeScriptFiles",
-          "line": 338,
+          "line": 341,
           "complexity": 10,
           "linesOfCode": 17,
           "parameters": 1,
@@ -2981,15 +3013,15 @@
         },
         {
           "name": "runQualityAnalysis",
-          "line": 356,
-          "complexity": 7,
-          "linesOfCode": 59,
+          "line": 359,
+          "complexity": 21,
+          "linesOfCode": 105,
           "parameters": 0,
           "nestingDepth": 2
         },
         {
           "name": "startCodeQualityMonitor",
-          "line": 418,
+          "line": 467,
           "complexity": 4,
           "linesOfCode": 14,
           "parameters": 0,
@@ -2997,7 +3029,7 @@
         },
         {
           "name": "stopCodeQualityMonitor",
-          "line": 433,
+          "line": 482,
           "complexity": 2,
           "linesOfCode": 7,
           "parameters": 0,
@@ -3005,7 +3037,7 @@
         },
         {
           "name": "getLastQualityReport",
-          "line": 441,
+          "line": 490,
           "complexity": 3,
           "linesOfCode": 9,
           "parameters": 0,
@@ -3013,16 +3045,16 @@
         },
         {
           "name": "isRunning",
-          "line": 451,
+          "line": 500,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 0,
           "nestingDepth": 0
         }
       ],
-      "averageComplexity": 5.5,
-      "maxComplexity": 16,
-      "linesOfCode": 454
+      "averageComplexity": 6.6,
+      "maxComplexity": 21,
+      "linesOfCode": 503
     },
     {
       "filePath": "server/codeRunner.ts",
@@ -3526,14 +3558,14 @@
         {
           "name": "runImprovementCycle",
           "line": 66,
-          "complexity": 53,
-          "linesOfCode": 257,
+          "complexity": 56,
+          "linesOfCode": 262,
           "parameters": 0,
           "nestingDepth": 6
         },
         {
           "name": "startContinuousImprover",
-          "line": 326,
+          "line": 331,
           "complexity": 7,
           "linesOfCode": 27,
           "parameters": 1,
@@ -3541,7 +3573,7 @@
         },
         {
           "name": "stopContinuousImprover",
-          "line": 354,
+          "line": 359,
           "complexity": 2,
           "linesOfCode": 7,
           "parameters": 0,
@@ -3549,7 +3581,7 @@
         },
         {
           "name": "triggerCycleNow",
-          "line": 362,
+          "line": 367,
           "complexity": 2,
           "linesOfCode": 4,
           "parameters": 0,
@@ -3557,7 +3589,7 @@
         },
         {
           "name": "getImproverStats",
-          "line": 367,
+          "line": 372,
           "complexity": 1,
           "linesOfCode": 23,
           "parameters": 0,
@@ -3565,16 +3597,16 @@
         },
         {
           "name": "updateImproverConfig",
-          "line": 391,
+          "line": 396,
           "complexity": 3,
           "linesOfCode": 8,
           "parameters": 1,
           "nestingDepth": 1
         }
       ],
-      "averageComplexity": 11.3,
-      "maxComplexity": 53,
-      "linesOfCode": 399
+      "averageComplexity": 11.8,
+      "maxComplexity": 56,
+      "linesOfCode": 404
     },
     {
       "filePath": "server/crossInstanceRlhf.ts",
@@ -4638,23 +4670,23 @@
         {
           "name": "runEvalDrivenTargeting",
           "line": 44,
-          "complexity": 30,
-          "linesOfCode": 124,
+          "complexity": 31,
+          "linesOfCode": 129,
           "parameters": 0,
           "nestingDepth": 6
         },
         {
           "name": "getTargetedFiles",
-          "line": 169,
+          "line": 174,
           "complexity": 12,
           "linesOfCode": 32,
           "parameters": 0,
           "nestingDepth": 4
         }
       ],
-      "averageComplexity": 21,
-      "maxComplexity": 30,
-      "linesOfCode": 201
+      "averageComplexity": 21.5,
+      "maxComplexity": 31,
+      "linesOfCode": 206
     },
     {
       "filePath": "server/evalFramework.ts",
@@ -6243,16 +6275,48 @@
           "nestingDepth": 2
         },
         {
-          "name": "runKBConsolidation",
-          "line": 108,
-          "complexity": 54,
-          "linesOfCode": 201,
+          "name": "buildKBSummaries",
+          "line": 110,
+          "complexity": 13,
+          "linesOfCode": 10,
+          "parameters": 4,
+          "nestingDepth": 1
+        },
+        {
+          "name": "parseKBAnalysis",
+          "line": 121,
+          "complexity": 3,
+          "linesOfCode": 10,
           "parameters": 1,
-          "nestingDepth": 5
+          "nestingDepth": 3
+        },
+        {
+          "name": "applyRedundancyRemovals",
+          "line": 132,
+          "complexity": 12,
+          "linesOfCode": 16,
+          "parameters": 2,
+          "nestingDepth": 4
+        },
+        {
+          "name": "promoteToConstitution",
+          "line": 172,
+          "complexity": 9,
+          "linesOfCode": 14,
+          "parameters": 1,
+          "nestingDepth": 2
+        },
+        {
+          "name": "runKBConsolidation",
+          "line": 187,
+          "complexity": 13,
+          "linesOfCode": 66,
+          "parameters": 1,
+          "nestingDepth": 3
         },
         {
           "name": "isKBConsolidationDue",
-          "line": 310,
+          "line": 255,
           "complexity": 1,
           "linesOfCode": 4,
           "parameters": 0,
@@ -6260,7 +6324,7 @@
         },
         {
           "name": "getKBConsolidationSummary",
-          "line": 315,
+          "line": 260,
           "complexity": 2,
           "linesOfCode": 7,
           "parameters": 0,
@@ -6268,16 +6332,16 @@
         },
         {
           "name": "startKBConsolidationDaemon",
-          "line": 328,
+          "line": 273,
           "complexity": 5,
           "linesOfCode": 21,
           "parameters": 0,
           "nestingDepth": 3
         }
       ],
-      "averageComplexity": 7,
-      "maxComplexity": 54,
-      "linesOfCode": 349
+      "averageComplexity": 4.9,
+      "maxComplexity": 13,
+      "linesOfCode": 294
     },
     {
       "filePath": "server/knowledgeTransfer.ts",
@@ -6812,7 +6876,7 @@
       "functions": [
         {
           "name": "generateManifest",
-          "line": 334,
+          "line": 348,
           "complexity": 2,
           "linesOfCode": 37,
           "parameters": 0,
@@ -6820,7 +6884,7 @@
         },
         {
           "name": "getManifestPrompt",
-          "line": 461,
+          "line": 475,
           "complexity": 1,
           "linesOfCode": 4,
           "parameters": 0,
@@ -6828,7 +6892,7 @@
         },
         {
           "name": "getFullManifest",
-          "line": 469,
+          "line": 483,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 0,
@@ -6837,7 +6901,7 @@
       ],
       "averageComplexity": 1.3,
       "maxComplexity": 2,
-      "linesOfCode": 472
+      "linesOfCode": 486
     },
     {
       "filePath": "server/mcpClient.ts",
@@ -9055,7 +9119,7 @@
       "functions": [],
       "averageComplexity": 0,
       "maxComplexity": 0,
-      "linesOfCode": 167
+      "linesOfCode": 291
     },
     {
       "filePath": "server/routes/codeRoutes.ts",
@@ -11087,7 +11151,7 @@
       "functions": [
         {
           "name": "getServerDir",
-          "line": 328,
+          "line": 332,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 0,
@@ -11095,7 +11159,7 @@
         },
         {
           "name": "generateEventId",
-          "line": 332,
+          "line": 336,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 0,
@@ -11103,7 +11167,7 @@
         },
         {
           "name": "getSeverity",
-          "line": 336,
+          "line": 340,
           "complexity": 4,
           "linesOfCode": 6,
           "parameters": 3,
@@ -11111,7 +11175,7 @@
         },
         {
           "name": "detectDegradation",
-          "line": 348,
+          "line": 352,
           "complexity": 9,
           "linesOfCode": 39,
           "parameters": 0,
@@ -11119,7 +11183,7 @@
         },
         {
           "name": "attemptImmediateRecovery",
-          "line": 391,
+          "line": 395,
           "complexity": 3,
           "linesOfCode": 10,
           "parameters": 1,
@@ -11127,7 +11191,7 @@
         },
         {
           "name": "diagnoseWithLLM",
-          "line": 405,
+          "line": 409,
           "complexity": 19,
           "linesOfCode": 94,
           "parameters": 1,
@@ -11135,7 +11199,7 @@
         },
         {
           "name": "healCycle",
-          "line": 503,
+          "line": 507,
           "complexity": 39,
           "linesOfCode": 179,
           "parameters": 0,
@@ -11143,7 +11207,7 @@
         },
         {
           "name": "startHealLoop",
-          "line": 688,
+          "line": 692,
           "complexity": 3,
           "linesOfCode": 17,
           "parameters": 0,
@@ -11151,7 +11215,7 @@
         },
         {
           "name": "stopHealLoop",
-          "line": 709,
+          "line": 713,
           "complexity": 3,
           "linesOfCode": 13,
           "parameters": 0,
@@ -11159,7 +11223,7 @@
         },
         {
           "name": "runHealCycleOnce",
-          "line": 726,
+          "line": 730,
           "complexity": 3,
           "linesOfCode": 29,
           "parameters": 0,
@@ -11167,7 +11231,7 @@
         },
         {
           "name": "getHealStatus",
-          "line": 759,
+          "line": 763,
           "complexity": 1,
           "linesOfCode": 17,
           "parameters": 0,
@@ -11175,7 +11239,7 @@
         },
         {
           "name": "setHealConfig",
-          "line": 780,
+          "line": 784,
           "complexity": 5,
           "linesOfCode": 15,
           "parameters": 1,
@@ -11183,7 +11247,7 @@
         },
         {
           "name": "resetCircuitBreaker",
-          "line": 799,
+          "line": 803,
           "complexity": 3,
           "linesOfCode": 7,
           "parameters": 0,
@@ -11191,7 +11255,7 @@
         },
         {
           "name": "registerHealthCheck",
-          "line": 810,
+          "line": 814,
           "complexity": 2,
           "linesOfCode": 8,
           "parameters": 1,
@@ -11199,7 +11263,7 @@
         },
         {
           "name": "runAllHealthChecks",
-          "line": 822,
+          "line": 826,
           "complexity": 3,
           "linesOfCode": 12,
           "parameters": 0,
@@ -11207,7 +11271,7 @@
         },
         {
           "name": "recordMetricForTrend",
-          "line": 853,
+          "line": 857,
           "complexity": 9,
           "linesOfCode": 23,
           "parameters": 2,
@@ -11215,7 +11279,7 @@
         },
         {
           "name": "getProactiveAlerts",
-          "line": 881,
+          "line": 885,
           "complexity": 9,
           "linesOfCode": 38,
           "parameters": 0,
@@ -11223,7 +11287,7 @@
         },
         {
           "name": "initSelfHeal",
-          "line": 920,
+          "line": 924,
           "complexity": 6,
           "linesOfCode": 28,
           "parameters": 0,
@@ -11232,7 +11296,7 @@
       ],
       "averageComplexity": 6.8,
       "maxComplexity": 39,
-      "linesOfCode": 951
+      "linesOfCode": 955
     },
     {
       "filePath": "server/selfImprove.ts",
@@ -11295,7 +11359,7 @@
         },
         {
           "name": "loadProposals",
-          "line": 154,
+          "line": 157,
           "complexity": 2,
           "linesOfCode": 9,
           "parameters": 0,
@@ -11303,7 +11367,7 @@
         },
         {
           "name": "resetStuckProcessingProposals",
-          "line": 167,
+          "line": 170,
           "complexity": 6,
           "linesOfCode": 23,
           "parameters": 0,
@@ -11311,7 +11375,7 @@
         },
         {
           "name": "pruneProposalStore",
-          "line": 193,
+          "line": 196,
           "complexity": 6,
           "linesOfCode": 18,
           "parameters": 1,
@@ -11319,7 +11383,7 @@
         },
         {
           "name": "saveProposals",
-          "line": 212,
+          "line": 218,
           "complexity": 1,
           "linesOfCode": 5,
           "parameters": 1,
@@ -11327,7 +11391,7 @@
         },
         {
           "name": "resolveServerFile",
-          "line": 304,
+          "line": 310,
           "complexity": 17,
           "linesOfCode": 50,
           "parameters": 1,
@@ -11335,7 +11399,7 @@
         },
         {
           "name": "getConstitutionConstraints",
-          "line": 362,
+          "line": 368,
           "complexity": 8,
           "linesOfCode": 22,
           "parameters": 0,
@@ -11343,7 +11407,7 @@
         },
         {
           "name": "validateEnvKeysOnce",
-          "line": 391,
+          "line": 397,
           "complexity": 10,
           "linesOfCode": 23,
           "parameters": 0,
@@ -11351,7 +11415,7 @@
         },
         {
           "name": "generateSimpleDiff",
-          "line": 419,
+          "line": 425,
           "complexity": 12,
           "linesOfCode": 49,
           "parameters": 3,
@@ -11359,7 +11423,7 @@
         },
         {
           "name": "flushHunk",
-          "line": 441,
+          "line": 447,
           "complexity": 2,
           "linesOfCode": 8,
           "parameters": 0,
@@ -11367,7 +11431,7 @@
         },
         {
           "name": "buildProviderFallbackChain",
-          "line": 687,
+          "line": 693,
           "complexity": 14,
           "linesOfCode": 24,
           "parameters": 1,
@@ -11375,7 +11439,7 @@
         },
         {
           "name": "tryParseProposal",
-          "line": 768,
+          "line": 774,
           "complexity": 3,
           "linesOfCode": 7,
           "parameters": 1,
@@ -11383,15 +11447,15 @@
         },
         {
           "name": "applyProposal",
-          "line": 930,
-          "complexity": 92,
-          "linesOfCode": 381,
+          "line": 936,
+          "complexity": 93,
+          "linesOfCode": 391,
           "parameters": 1,
           "nestingDepth": 8
         },
         {
           "name": "rejectProposal",
-          "line": 1312,
+          "line": 1328,
           "complexity": 2,
           "linesOfCode": 8,
           "parameters": 1,
@@ -11399,7 +11463,7 @@
         },
         {
           "name": "listProposals",
-          "line": 1321,
+          "line": 1341,
           "complexity": 2,
           "linesOfCode": 7,
           "parameters": 1,
@@ -11407,7 +11471,7 @@
         },
         {
           "name": "getAnalyzableFiles",
-          "line": 1329,
+          "line": 1349,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 0,
@@ -11415,7 +11479,7 @@
         },
         {
           "name": "getAutoApplyConfigPath",
-          "line": 1359,
+          "line": 1379,
           "complexity": 2,
           "linesOfCode": 5,
           "parameters": 0,
@@ -11423,7 +11487,7 @@
         },
         {
           "name": "getAutoApplyConfig",
-          "line": 1365,
+          "line": 1385,
           "complexity": 2,
           "linesOfCode": 10,
           "parameters": 0,
@@ -11431,7 +11495,7 @@
         },
         {
           "name": "setAutoApplyConfig",
-          "line": 1376,
+          "line": 1396,
           "complexity": 1,
           "linesOfCode": 8,
           "parameters": 1,
@@ -11439,7 +11503,7 @@
         },
         {
           "name": "canAutoApply",
-          "line": 1389,
+          "line": 1409,
           "complexity": 3,
           "linesOfCode": 8,
           "parameters": 1,
@@ -11447,7 +11511,7 @@
         },
         {
           "name": "recordAutoApply",
-          "line": 1398,
+          "line": 1418,
           "complexity": 1,
           "linesOfCode": 4,
           "parameters": 0,
@@ -11455,7 +11519,7 @@
         },
         {
           "name": "runTypeCheck",
-          "line": 1468,
+          "line": 1488,
           "complexity": 8,
           "linesOfCode": 11,
           "parameters": 0,
@@ -11463,7 +11527,7 @@
         },
         {
           "name": "autoApplyHighConfidence",
-          "line": 1500,
+          "line": 1520,
           "complexity": 46,
           "linesOfCode": 169,
           "parameters": 0,
@@ -11471,7 +11535,7 @@
         },
         {
           "name": "scoreProposal",
-          "line": 1536,
+          "line": 1556,
           "complexity": 20,
           "linesOfCode": 26,
           "parameters": 1,
@@ -11479,16 +11543,16 @@
         },
         {
           "name": "getAutoApplyStatus",
-          "line": 1673,
+          "line": 1693,
           "complexity": 3,
           "linesOfCode": 21,
           "parameters": 0,
           "nestingDepth": 1
         }
       ],
-      "averageComplexity": 9,
-      "maxComplexity": 92,
-      "linesOfCode": 1777
+      "averageComplexity": 9.1,
+      "maxComplexity": 93,
+      "linesOfCode": 1797
     },
     {
       "filePath": "server/selfImproveGuard.ts",
@@ -11576,14 +11640,14 @@
         {
           "name": "runSyntaxCheck",
           "line": 290,
-          "complexity": 12,
-          "linesOfCode": 73,
+          "complexity": 18,
+          "linesOfCode": 113,
           "parameters": 4,
           "nestingDepth": 4
         },
         {
           "name": "runLightweightSyntaxCheck",
-          "line": 370,
+          "line": 410,
           "complexity": 45,
           "linesOfCode": 67,
           "parameters": 1,
@@ -11591,15 +11655,15 @@
         },
         {
           "name": "runTests",
-          "line": 440,
-          "complexity": 4,
-          "linesOfCode": 12,
+          "line": 480,
+          "complexity": 7,
+          "linesOfCode": 22,
           "parameters": 0,
           "nestingDepth": 2
         },
         {
           "name": "guardedApply",
-          "line": 455,
+          "line": 505,
           "complexity": 60,
           "linesOfCode": 236,
           "parameters": 1,
@@ -11607,7 +11671,7 @@
         },
         {
           "name": "rollbackToBackup",
-          "line": 694,
+          "line": 744,
           "complexity": 6,
           "linesOfCode": 18,
           "parameters": 1,
@@ -11615,7 +11679,7 @@
         },
         {
           "name": "syncEnvToConfig",
-          "line": 720,
+          "line": 770,
           "complexity": 7,
           "linesOfCode": 13,
           "parameters": 0,
@@ -11623,7 +11687,7 @@
         },
         {
           "name": "getGuardConfig",
-          "line": 734,
+          "line": 784,
           "complexity": 1,
           "linesOfCode": 4,
           "parameters": 0,
@@ -11631,7 +11695,7 @@
         },
         {
           "name": "updateGuardConfig",
-          "line": 739,
+          "line": 789,
           "complexity": 1,
           "linesOfCode": 6,
           "parameters": 1,
@@ -11639,7 +11703,7 @@
         },
         {
           "name": "listBackups",
-          "line": 748,
+          "line": 798,
           "complexity": 2,
           "linesOfCode": 5,
           "parameters": 1,
@@ -11647,7 +11711,7 @@
         },
         {
           "name": "getAuditLog",
-          "line": 754,
+          "line": 804,
           "complexity": 1,
           "linesOfCode": 3,
           "parameters": 1,
@@ -11655,16 +11719,16 @@
         },
         {
           "name": "sweepExpiredProposals",
-          "line": 760,
+          "line": 810,
           "complexity": 4,
           "linesOfCode": 15,
           "parameters": 0,
           "nestingDepth": 3
         }
       ],
-      "averageComplexity": 8.4,
+      "averageComplexity": 8.8,
       "maxComplexity": 60,
-      "linesOfCode": 775
+      "linesOfCode": 825
     },
     {
       "filePath": "server/selfIntrospect.ts",
@@ -12872,22 +12936,22 @@
         {
           "name": "runTypeCheck",
           "line": 212,
-          "complexity": 9,
-          "linesOfCode": 27,
+          "complexity": 13,
+          "linesOfCode": 39,
           "parameters": 1,
           "nestingDepth": 4
         },
         {
           "name": "runUnitTests",
-          "line": 240,
-          "complexity": 8,
-          "linesOfCode": 21,
+          "line": 252,
+          "complexity": 12,
+          "linesOfCode": 33,
           "parameters": 0,
           "nestingDepth": 3
         },
         {
           "name": "runHealthCheck",
-          "line": 262,
+          "line": 286,
           "complexity": 3,
           "linesOfCode": 17,
           "parameters": 0,
@@ -12895,7 +12959,7 @@
         },
         {
           "name": "runPipeline",
-          "line": 286,
+          "line": 310,
           "complexity": 17,
           "linesOfCode": 116,
           "parameters": 1,
@@ -12903,7 +12967,7 @@
         },
         {
           "name": "getPipelineStatus",
-          "line": 436,
+          "line": 460,
           "complexity": 2,
           "linesOfCode": 16,
           "parameters": 0,
@@ -12911,7 +12975,7 @@
         },
         {
           "name": "setPipelineConfig",
-          "line": 456,
+          "line": 480,
           "complexity": 1,
           "linesOfCode": 4,
           "parameters": 1,
@@ -12919,7 +12983,7 @@
         },
         {
           "name": "validateProposal",
-          "line": 464,
+          "line": 488,
           "complexity": 12,
           "linesOfCode": 23,
           "parameters": 1,
@@ -12927,24 +12991,24 @@
         },
         {
           "name": "recoverFromCrash",
-          "line": 491,
-          "complexity": 3,
-          "linesOfCode": 14,
+          "line": 516,
+          "complexity": 8,
+          "linesOfCode": 39,
           "parameters": 0,
-          "nestingDepth": 2
+          "nestingDepth": 3
         },
         {
           "name": "initPipeline",
-          "line": 509,
+          "line": 559,
           "complexity": 2,
           "linesOfCode": 9,
           "parameters": 0,
           "nestingDepth": 2
         }
       ],
-      "averageComplexity": 6.5,
+      "averageComplexity": 7.5,
       "maxComplexity": 17,
-      "linesOfCode": 518
+      "linesOfCode": 568
     },
     {
       "filePath": "server/semanticSelfModel.ts",
@@ -15323,16 +15387,48 @@
           "nestingDepth": 2
         },
         {
-          "name": "detectCodeTruncation",
-          "line": 134,
-          "complexity": 55,
-          "linesOfCode": 134,
+          "name": "scanBracketBalance",
+          "line": 140,
+          "complexity": 39,
+          "linesOfCode": 25,
+          "parameters": 1,
+          "nestingDepth": 3
+        },
+        {
+          "name": "buildBracketIssues",
+          "line": 166,
+          "complexity": 10,
+          "linesOfCode": 13,
+          "parameters": 3,
+          "nestingDepth": 3
+        },
+        {
+          "name": "checkTailPatterns",
+          "line": 180,
+          "complexity": 4,
+          "linesOfCode": 13,
+          "parameters": 1,
+          "nestingDepth": 3
+        },
+        {
+          "name": "buildTruncationResult",
+          "line": 194,
+          "complexity": 6,
+          "linesOfCode": 8,
           "parameters": 2,
-          "nestingDepth": 4
+          "nestingDepth": 1
+        },
+        {
+          "name": "detectCodeTruncation",
+          "line": 207,
+          "complexity": 1,
+          "linesOfCode": 9,
+          "parameters": 2,
+          "nestingDepth": 0
         },
         {
           "name": "detectJsonTruncation",
-          "line": 272,
+          "line": 220,
           "complexity": 3,
           "linesOfCode": 10,
           "parameters": 1,
@@ -15340,7 +15436,7 @@
         },
         {
           "name": "detectTextTruncation",
-          "line": 300,
+          "line": 248,
           "complexity": 7,
           "linesOfCode": 25,
           "parameters": 1,
@@ -15348,24 +15444,56 @@
         },
         {
           "name": "detectOutputTruncation",
-          "line": 332,
+          "line": 280,
           "complexity": 20,
           "linesOfCode": 73,
           "parameters": 1,
           "nestingDepth": 6
         },
         {
-          "name": "repairTruncatedCode",
-          "line": 428,
-          "complexity": 49,
-          "linesOfCode": 95,
+          "name": "repairTemplateLiterals",
+          "line": 376,
+          "complexity": 6,
+          "linesOfCode": 8,
           "parameters": 2,
-          "nestingDepth": 3
+          "nestingDepth": 1
+        },
+        {
+          "name": "repairStringLiterals",
+          "line": 385,
+          "complexity": 7,
+          "linesOfCode": 7,
+          "parameters": 2,
+          "nestingDepth": 1
+        },
+        {
+          "name": "repairMidExpressions",
+          "line": 393,
+          "complexity": 5,
+          "linesOfCode": 7,
+          "parameters": 2,
+          "nestingDepth": 2
+        },
+        {
+          "name": "repairOpenBrackets",
+          "line": 401,
+          "complexity": 4,
+          "linesOfCode": 5,
+          "parameters": 2,
+          "nestingDepth": 2
+        },
+        {
+          "name": "repairTruncatedCode",
+          "line": 409,
+          "complexity": 5,
+          "linesOfCode": 11,
+          "parameters": 2,
+          "nestingDepth": 1
         }
       ],
-      "averageComplexity": 24.7,
-      "maxComplexity": 55,
-      "linesOfCode": 582
+      "averageComplexity": 9.4,
+      "maxComplexity": 39,
+      "linesOfCode": 471
     },
     {
       "filePath": "server/twoPhaseCommit.ts",
@@ -16499,6 +16627,14 @@
         "server/_core/sdk.ts"
       ],
       "afferentCoupling": 1,
+      "efferentCoupling": 0,
+      "instability": 0
+    },
+    {
+      "filePath": "server/_core/videoGeneration.ts",
+      "imports": [],
+      "importedBy": [],
+      "afferentCoupling": 0,
       "efferentCoupling": 0,
       "instability": 0
     },
@@ -20173,2660 +20309,1224 @@
   ],
   "refactoringProposals": [
     {
-      "id": "refactor_server/_core/imageGeneration.ts_buildConstrainedPrompt_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/_core/imageGeneration.ts",
-      "functionName": "buildConstrainedPrompt",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'buildConstrainedPrompt' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/_core/imageGeneration.ts_buildConstrainedPrompt_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/_core/imageGeneration.ts",
-      "functionName": "buildConstrainedPrompt",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/_core/index.ts_startServer_1781149508415",
+      "id": "refactor_server/_core/index.ts_startServer_1781157339553",
       "type": "split_module",
       "filePath": "server/_core/index.ts",
       "functionName": "startServer",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 31 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 31 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'startServer' to reduce decision paths"
     },
     {
-      "id": "nesting_server/_core/index.ts_startServer_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/_core/index.ts",
-      "functionName": "startServer",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/_core/initModules.ts_initModules_1781149508415",
+      "id": "refactor_server/_core/initModules.ts_initModules_1781157339553",
       "type": "split_module",
       "filePath": "server/_core/initModules.ts",
       "functionName": "initModules",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 85 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 85 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'initModules' to reduce decision paths"
     },
     {
-      "id": "nesting_server/_core/initModules.ts_initModules_1781149508415",
+      "id": "nesting_server/_core/initModules.ts_initModules_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/_core/initModules.ts",
       "functionName": "initModules",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/_core/initModules.ts_isPlaceholder_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/_core/initModules.ts",
-      "functionName": "isPlaceholder",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'isPlaceholder' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/_core/initRoutes.ts_registerCoreRoutes_1781149508415",
+      "id": "refactor_server/_core/initRoutes.ts_registerCoreRoutes_1781157339553",
       "type": "split_module",
       "filePath": "server/_core/initRoutes.ts",
       "functionName": "registerCoreRoutes",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 68 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 68 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'registerCoreRoutes' to reduce decision paths"
     },
     {
-      "id": "refactor_server/adaptiveEval.ts_analyzeGaps_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/adaptiveEval.ts_analyzeGaps_1781157339553",
+      "type": "extract_function",
       "filePath": "server/adaptiveEval.ts",
       "functionName": "analyzeGaps",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 19 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 19 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'analyzeGaps' to reduce decision paths"
     },
     {
-      "id": "refactor_server/adaptiveEval.ts_evolveBenchmarks_1781149508415",
+      "id": "refactor_server/adaptiveRouter.ts_selectProvider_1781157339553",
       "type": "extract_function",
-      "filePath": "server/adaptiveEval.ts",
-      "functionName": "evolveBenchmarks",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 15 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'evolveBenchmarks' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/adaptiveRouter.ts_selectProvider_1781149508415",
-      "type": "split_module",
       "filePath": "server/adaptiveRouter.ts",
       "functionName": "selectProvider",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 24 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 24 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'selectProvider' to reduce decision paths"
     },
     {
-      "id": "refactor_server/aiPlanning.ts_generateSubQueries_1781149508415",
+      "id": "refactor_server/aiPlanning.ts_streamAgentPlan_1781157339553",
       "type": "extract_function",
-      "filePath": "server/aiPlanning.ts",
-      "functionName": "generateSubQueries",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 11 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'generateSubQueries' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/aiPlanning.ts_generateSubQueries_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/aiPlanning.ts",
-      "functionName": "generateSubQueries",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "nesting_server/aiPlanning.ts_generateSuggestions_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/aiPlanning.ts",
-      "functionName": "generateSuggestions",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/aiPlanning.ts_generateAgentPlan_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/aiPlanning.ts",
-      "functionName": "generateAgentPlan",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 14 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'generateAgentPlan' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/aiPlanning.ts_streamAgentPlan_1781149508415",
-      "type": "split_module",
       "filePath": "server/aiPlanning.ts",
       "functionName": "streamAgentPlan",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 24 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 24 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'streamAgentPlan' to reduce decision paths"
     },
     {
-      "id": "nesting_server/aiPlanning.ts_streamAgentPlan_1781149508415",
+      "id": "nesting_server/aiPlanning.ts_streamAgentPlan_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/aiPlanning.ts",
       "functionName": "streamAgentPlan",
       "severity": "high",
-      "reason": "Nesting depth of 8 exceeds threshold of 4",
+      "reason": "Nesting depth of 8 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "nesting_server/aiPlanning.ts_generateExecutionPlan_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/aiPlanning.ts",
-      "functionName": "generateExecutionPlan",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/aiStreaming.ts_isSyntacticallyIncomplete_1781149508415",
+      "id": "refactor_server/aiStreaming.ts_isSyntacticallyIncomplete_1781157339553",
       "type": "split_module",
       "filePath": "server/aiStreaming.ts",
       "functionName": "isSyntacticallyIncomplete",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 36 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 36 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'isSyntacticallyIncomplete' to reduce decision paths"
     },
     {
-      "id": "nesting_server/aiTokens.ts_getAndromedaMemory_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/aiTokens.ts",
-      "functionName": "getAndromedaMemory",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/algorithmicDiscovery.ts_discoverAlgorithm_1781149508415",
+      "id": "refactor_server/auditLog.ts_getRecentAuditEvents_1781157339553",
       "type": "extract_function",
-      "filePath": "server/algorithmicDiscovery.ts",
-      "functionName": "discoverAlgorithm",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'discoverAlgorithm' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/andromedaDaemon.ts_startDaemon_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/andromedaDaemon.ts",
-      "functionName": "startDaemon",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 13 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'startDaemon' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/andromedaDb.ts_recordFeedback_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/andromedaDb.ts",
-      "functionName": "recordFeedback",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 11 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'recordFeedback' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/andromedaDb.ts_insertRsiCycle_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/andromedaDb.ts",
-      "functionName": "insertRsiCycle",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 13 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'insertRsiCycle' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/andromedaMemoryWriter.ts_generateAndromedaMd_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/andromedaMemoryWriter.ts",
-      "functionName": "generateAndromedaMd",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/auditLog.ts_getRecentAuditEvents_1781149508415",
-      "type": "split_module",
       "filePath": "server/auditLog.ts",
       "functionName": "getRecentAuditEvents",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 17 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 17 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'getRecentAuditEvents' to reduce decision paths"
     },
     {
-      "id": "nesting_server/autoGoalSuggester.ts_analyzeErrorPatterns_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/autoGoalSuggester.ts",
-      "functionName": "analyzeErrorPatterns",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "nesting_server/autoGoalSuggester.ts_analyzePerformanceMetrics_1781149508415",
+      "id": "nesting_server/autoGoalSuggester.ts_analyzePerformanceMetrics_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/autoGoalSuggester.ts",
       "functionName": "analyzePerformanceMetrics",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "nesting_server/autoGoalSuggester.ts_runSuggestionCycle_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/autoGoalSuggester.ts",
-      "functionName": "runSuggestionCycle",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "nesting_server/autoHealing.ts_checkDatabaseHealth_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/autoHealing.ts",
-      "functionName": "checkDatabaseHealth",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "nesting_server/autoHealing.ts_checkTmpFilesHealth_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/autoHealing.ts",
-      "functionName": "checkTmpFilesHealth",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/autoRebuild.ts_runRebuild_1781149508415",
+      "id": "refactor_server/autoRollback.ts_buildDependencyMap_1781157339553",
       "type": "extract_function",
-      "filePath": "server/autoRebuild.ts",
-      "functionName": "runRebuild",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 15 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'runRebuild' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/autoRollback.ts_buildDependencyMap_1781149508415",
-      "type": "split_module",
       "filePath": "server/autoRollback.ts",
       "functionName": "buildDependencyMap",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 20 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 20 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'buildDependencyMap' to reduce decision paths"
     },
     {
-      "id": "nesting_server/autoRollback.ts_buildDependencyMap_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/autoRollback.ts",
-      "functionName": "buildDependencyMap",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/autonomousGoalGenerator.ts_analyzeCapabilityGaps_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/autonomousGoalGenerator.ts",
-      "functionName": "analyzeCapabilityGaps",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 13 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'analyzeCapabilityGaps' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/autonomousGoalGenerator.ts_analyzeCapabilityGaps_1781149508415",
+      "id": "nesting_server/autonomousGoalGenerator.ts_analyzeCapabilityGaps_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/autonomousGoalGenerator.ts",
       "functionName": "analyzeCapabilityGaps",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/autonomousGoalGenerator.ts_analyzeErrorPatterns_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/autonomousGoalGenerator.ts",
-      "functionName": "analyzeErrorPatterns",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 11 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'analyzeErrorPatterns' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/autonomousGoalGenerator.ts_analyzeErrorPatterns_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/autonomousGoalGenerator.ts",
-      "functionName": "analyzeErrorPatterns",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "nesting_server/autonomousGoalGenerator.ts_generateImprovementGoals_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/autonomousGoalGenerator.ts",
-      "functionName": "generateImprovementGoals",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/autonomyOrchestrator.ts_runCycle_1781149508415",
+      "id": "refactor_server/autonomyOrchestrator.ts_runCycle_1781157339553",
       "type": "split_module",
       "filePath": "server/autonomyOrchestrator.ts",
       "functionName": "runCycle",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 47 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 47 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'runCycle' to reduce decision paths"
     },
     {
-      "id": "nesting_server/autonomyOrchestrator.ts_runCycle_1781149508415",
+      "id": "nesting_server/autonomyOrchestrator.ts_runCycle_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/autonomyOrchestrator.ts",
       "functionName": "runCycle",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/biasDetector.ts_analyzeDiversity_1781149508415",
+      "id": "refactor_server/browser.ts_browseUrl_1781157339553",
       "type": "extract_function",
-      "filePath": "server/biasDetector.ts",
-      "functionName": "analyzeDiversity",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 14 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'analyzeDiversity' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/browser.ts_browseUrl_1781149508415",
-      "type": "split_module",
       "filePath": "server/browser.ts",
       "functionName": "browseUrl",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 17 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 17 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'browseUrl' to reduce decision paths"
     },
     {
-      "id": "refactor_server/browser.ts_browserExtractData_1781149508415",
+      "id": "refactor_server/capabilityBootstrapper.ts_bootstrapCapability_1781157339553",
       "type": "extract_function",
-      "filePath": "server/browser.ts",
-      "functionName": "browserExtractData",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'browserExtractData' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/capabilityBootstrapper.ts_bootstrapCapability_1781149508415",
-      "type": "split_module",
       "filePath": "server/capabilityBootstrapper.ts",
       "functionName": "bootstrapCapability",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 22 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 22 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'bootstrapCapability' to reduce decision paths"
     },
     {
-      "id": "nesting_server/codeIntel.ts_readPackageJson_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/codeIntel.ts",
-      "functionName": "readPackageJson",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/codeIntel.ts_diagnoseError_1781149508415",
+      "id": "refactor_server/codeIntel.ts_diagnoseError_1781157339553",
       "type": "split_module",
       "filePath": "server/codeIntel.ts",
       "functionName": "diagnoseError",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 43 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 43 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'diagnoseError' to reduce decision paths"
     },
     {
-      "id": "refactor_server/codeQualityMonitor.ts_extractFunctions_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/codeQualityMonitor.ts_extractFunctions_1781157339553",
+      "type": "extract_function",
       "filePath": "server/codeQualityMonitor.ts",
       "functionName": "extractFunctions",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 16 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 16 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'extractFunctions' to reduce decision paths"
     },
     {
-      "id": "nesting_server/codeQualityMonitor.ts_extractFunctions_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/codeQualityMonitor.ts",
-      "functionName": "extractFunctions",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/codeRunner.ts_detectLanguage_1781149508415",
+      "id": "refactor_server/codeQualityMonitor.ts_runQualityAnalysis_1781157339553",
       "type": "extract_function",
-      "filePath": "server/codeRunner.ts",
-      "functionName": "detectLanguage",
+      "filePath": "server/codeQualityMonitor.ts",
+      "functionName": "runQualityAnalysis",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'detectLanguage' to reduce decision paths"
+      "reason": "Cyclomatic complexity of 21 exceeds threshold of 15",
+      "suggestion": "Extract sub-routines from 'runQualityAnalysis' to reduce decision paths"
     },
     {
-      "id": "refactor_server/codebaseAnalyzer.ts_analyzeFile_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/codebaseAnalyzer.ts_analyzeFile_1781157339553",
+      "type": "extract_function",
       "filePath": "server/codebaseAnalyzer.ts",
       "functionName": "analyzeFile",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 25 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 25 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'analyzeFile' to reduce decision paths"
     },
     {
-      "id": "nesting_server/codebaseAnalyzer.ts_analyzeFile_1781149508415",
+      "id": "nesting_server/codebaseAnalyzer.ts_analyzeFile_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/codebaseAnalyzer.ts",
       "functionName": "analyzeFile",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/consensusEngine.ts_queryModel_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/consensusEngine.ts",
-      "functionName": "queryModel",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 14 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'queryModel' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/contextBus.ts_query_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/contextBus.ts",
-      "functionName": "query",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 14 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'query' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/continuousImprover.ts_runImprovementCycle_1781149508415",
+      "id": "refactor_server/continuousImprover.ts_runImprovementCycle_1781157339553",
       "type": "split_module",
       "filePath": "server/continuousImprover.ts",
       "functionName": "runImprovementCycle",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 53 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 56 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'runImprovementCycle' to reduce decision paths"
     },
     {
-      "id": "nesting_server/continuousImprover.ts_runImprovementCycle_1781149508415",
+      "id": "nesting_server/continuousImprover.ts_runImprovementCycle_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/continuousImprover.ts",
       "functionName": "runImprovementCycle",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/crossInstanceRlhf.ts_estimateCodeQuality_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/crossInstanceRlhf.ts",
-      "functionName": "estimateCodeQuality",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 11 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'estimateCodeQuality' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/db.ts_getDb_1781149508415",
+      "id": "nesting_server/db.ts_getDb_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/db.ts",
       "functionName": "getDb",
       "severity": "high",
-      "reason": "Nesting depth of 8 exceeds threshold of 4",
+      "reason": "Nesting depth of 8 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/db.ts_upsertUser_1781149508415",
+      "id": "refactor_server/dependencyAuditor.ts_runNpmAudit_1781157339553",
       "type": "extract_function",
-      "filePath": "server/db.ts",
-      "functionName": "upsertUser",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'upsertUser' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/dependencyAuditor.ts_runNpmAudit_1781149508415",
-      "type": "split_module",
       "filePath": "server/dependencyAuditor.ts",
       "functionName": "runNpmAudit",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 17 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 17 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'runNpmAudit' to reduce decision paths"
     },
     {
-      "id": "refactor_server/dependencyGraph.ts_analyzeImpact_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/dependencyGraph.ts_analyzeImpact_1781157339553",
+      "type": "extract_function",
       "filePath": "server/dependencyGraph.ts",
       "functionName": "analyzeImpact",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 16 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 16 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'analyzeImpact' to reduce decision paths"
     },
     {
-      "id": "refactor_server/dependencyResolver.ts_scanImportsForDependencies_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/dependencyResolver.ts_scanImportsForDependencies_1781157339553",
+      "type": "extract_function",
       "filePath": "server/dependencyResolver.ts",
       "functionName": "scanImportsForDependencies",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 20 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 20 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'scanImportsForDependencies' to reduce decision paths"
     },
     {
-      "id": "nesting_server/dependencyResolver.ts_scanImportsForDependencies_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/dependencyResolver.ts",
-      "functionName": "scanImportsForDependencies",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/dependencyResolver.ts_diffManifestDependencies_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/dependencyResolver.ts",
-      "functionName": "diffManifestDependencies",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'diffManifestDependencies' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/dependencyResolver.ts_diffManifestDependencies_1781149508415",
+      "id": "nesting_server/dependencyResolver.ts_diffManifestDependencies_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/dependencyResolver.ts",
       "functionName": "diffManifestDependencies",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "nesting_server/dependencyResolver.ts_installDependency_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/dependencyResolver.ts",
-      "functionName": "installDependency",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/docGenerator.ts_generateArchitectureDoc_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/docGenerator.ts",
-      "functionName": "generateArchitectureDoc",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'generateArchitectureDoc' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/docGenerator.ts_runDocGeneration_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/docGenerator.ts",
-      "functionName": "runDocGeneration",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 11 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'runDocGeneration' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/docGenerator.ts_runDocGeneration_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/docGenerator.ts",
-      "functionName": "runDocGeneration",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/evalDrivenTargeting.ts_runEvalDrivenTargeting_1781149508415",
+      "id": "refactor_server/evalDrivenTargeting.ts_runEvalDrivenTargeting_1781157339553",
       "type": "split_module",
       "filePath": "server/evalDrivenTargeting.ts",
       "functionName": "runEvalDrivenTargeting",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 30 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 31 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'runEvalDrivenTargeting' to reduce decision paths"
     },
     {
-      "id": "nesting_server/evalDrivenTargeting.ts_runEvalDrivenTargeting_1781149508415",
+      "id": "nesting_server/evalDrivenTargeting.ts_runEvalDrivenTargeting_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/evalDrivenTargeting.ts",
       "functionName": "runEvalDrivenTargeting",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/evalDrivenTargeting.ts_getTargetedFiles_1781149508415",
+      "id": "refactor_server/evalGoalDiscovery.ts_discoverGoalsFromEval_1781157339553",
       "type": "extract_function",
-      "filePath": "server/evalDrivenTargeting.ts",
-      "functionName": "getTargetedFiles",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'getTargetedFiles' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/evalGoalDiscovery.ts_discoverGoalsFromEval_1781149508415",
-      "type": "split_module",
       "filePath": "server/evalGoalDiscovery.ts",
       "functionName": "discoverGoalsFromEval",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 23 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 23 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'discoverGoalsFromEval' to reduce decision paths"
     },
     {
-      "id": "nesting_server/evalGoalDiscovery.ts_discoverGoalsFromEval_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/evalGoalDiscovery.ts",
-      "functionName": "discoverGoalsFromEval",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/evolutionarySearch.ts_runEvolutionaryGeneration_1781149508415",
+      "id": "refactor_server/fileEngineChunking.ts_extractChunksAST_1781157339553",
       "type": "extract_function",
-      "filePath": "server/evolutionarySearch.ts",
-      "functionName": "runEvolutionaryGeneration",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 11 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'runEvolutionaryGeneration' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/federatedLearning.ts_syncWithPeer_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/federatedLearning.ts",
-      "functionName": "syncWithPeer",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'syncWithPeer' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/fileEngineChunking.ts_extractChunksAST_1781149508415",
-      "type": "split_module",
       "filePath": "server/fileEngineChunking.ts",
       "functionName": "extractChunksAST",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 21 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 21 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'extractChunksAST' to reduce decision paths"
     },
     {
-      "id": "refactor_server/fileEngineChunking.ts_extractChunksRegex_1781149508415",
+      "id": "refactor_server/fileEngineChunking.ts_extractChunksRegex_1781157339553",
       "type": "split_module",
       "filePath": "server/fileEngineChunking.ts",
       "functionName": "extractChunksRegex",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 32 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 32 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'extractChunksRegex' to reduce decision paths"
     },
     {
-      "id": "nesting_server/fileEngineChunking.ts_extractChunksRegex_1781149508415",
+      "id": "nesting_server/fileEngineChunking.ts_extractChunksRegex_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/fileEngineChunking.ts",
       "functionName": "extractChunksRegex",
       "severity": "high",
-      "reason": "Nesting depth of 8 exceeds threshold of 4",
+      "reason": "Nesting depth of 8 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/fileEngineChunking.ts_buildFileIndex_1781149508415",
+      "id": "refactor_server/goalManager.ts_persistGoal_1781157339553",
       "type": "extract_function",
-      "filePath": "server/fileEngineChunking.ts",
-      "functionName": "buildFileIndex",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 15 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'buildFileIndex' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/fileEngineTypes.ts_compressFile_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/fileEngineTypes.ts",
-      "functionName": "compressFile",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 13 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'compressFile' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/goalManager.ts_initDefaultRules_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/goalManager.ts",
-      "functionName": "initDefaultRules",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'initDefaultRules' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/goalManager.ts_runReprioritization_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/goalManager.ts",
-      "functionName": "runReprioritization",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/goalManager.ts_persistGoal_1781149508415",
-      "type": "split_module",
       "filePath": "server/goalManager.ts",
       "functionName": "persistGoal",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 23 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 23 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'persistGoal' to reduce decision paths"
     },
     {
-      "id": "refactor_server/goalManager.ts_loadGoalsFromDb_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/goalManager.ts_loadGoalsFromDb_1781157339553",
+      "type": "extract_function",
       "filePath": "server/goalManager.ts",
       "functionName": "loadGoalsFromDb",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 24 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 24 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'loadGoalsFromDb' to reduce decision paths"
     },
     {
-      "id": "refactor_server/gracefulDegradation.ts_dispatchQueuedRequest_1781149508415",
+      "id": "refactor_server/gracefulDegradation.ts_dispatchQueuedRequest_1781157339553",
       "type": "split_module",
       "filePath": "server/gracefulDegradation.ts",
       "functionName": "dispatchQueuedRequest",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 39 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 39 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'dispatchQueuedRequest' to reduce decision paths"
     },
     {
-      "id": "nesting_server/gracefulDegradation.ts_dispatchQueuedRequest_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/gracefulDegradation.ts",
-      "functionName": "dispatchQueuedRequest",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/gracefulDegradation.ts_startHealthMonitoring_1781149508415",
+      "id": "refactor_server/grounding.ts_extractFactualClaims_1781157339553",
       "type": "extract_function",
-      "filePath": "server/gracefulDegradation.ts",
-      "functionName": "startHealthMonitoring",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 11 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'startHealthMonitoring' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/gracefulDegradation.ts_startHealthMonitoring_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/gracefulDegradation.ts",
-      "functionName": "startHealthMonitoring",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/grounding.ts_extractFactualClaims_1781149508415",
-      "type": "split_module",
       "filePath": "server/grounding.ts",
       "functionName": "extractFactualClaims",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 21 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 21 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'extractFactualClaims' to reduce decision paths"
     },
     {
-      "id": "refactor_server/hotReload.ts_hotReloadModule_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/hotReload.ts_hotReloadModule_1781157339553",
+      "type": "extract_function",
       "filePath": "server/hotReload.ts",
       "functionName": "hotReloadModule",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 16 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 16 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'hotReloadModule' to reduce decision paths"
     },
     {
-      "id": "refactor_server/hotReload.ts_getHotReloadStatus_1781149508415",
+      "id": "refactor_server/importGraph.ts_buildImportGraph_1781157339553",
       "type": "extract_function",
-      "filePath": "server/hotReload.ts",
-      "functionName": "getHotReloadStatus",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 14 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'getHotReloadStatus' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/identityManifest.ts_verifyContinuity_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/identityManifest.ts",
-      "functionName": "verifyContinuity",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 13 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'verifyContinuity' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/importGraph.ts_buildImportGraph_1781149508415",
-      "type": "split_module",
       "filePath": "server/importGraph.ts",
       "functionName": "buildImportGraph",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 21 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 21 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'buildImportGraph' to reduce decision paths"
     },
     {
-      "id": "nesting_server/importGraph.ts_buildImportGraph_1781149508415",
+      "id": "nesting_server/importGraph.ts_buildImportGraph_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/importGraph.ts",
       "functionName": "buildImportGraph",
       "severity": "high",
-      "reason": "Nesting depth of 8 exceeds threshold of 4",
+      "reason": "Nesting depth of 8 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/knowledgeBaseConsolidation.ts_runKBConsolidation_1781149508415",
-      "type": "split_module",
-      "filePath": "server/knowledgeBaseConsolidation.ts",
-      "functionName": "runKBConsolidation",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 54 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'runKBConsolidation' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/knowledgeBaseConsolidation.ts_runKBConsolidation_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/knowledgeBaseConsolidation.ts",
-      "functionName": "runKBConsolidation",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/llmProvider.ts_ensureProviderInitialized_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/llmProvider.ts_ensureProviderInitialized_1781157339553",
+      "type": "extract_function",
       "filePath": "server/llmProvider.ts",
       "functionName": "ensureProviderInitialized",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 21 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 21 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'ensureProviderInitialized' to reduce decision paths"
     },
     {
-      "id": "refactor_server/llmProvider.ts_getProviderApiKey_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/llmProvider.ts_getProviderApiKey_1781157339553",
+      "type": "extract_function",
       "filePath": "server/llmProvider.ts",
       "functionName": "getProviderApiKey",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 20 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 20 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'getProviderApiKey' to reduce decision paths"
     },
     {
-      "id": "refactor_server/llmProvider.ts_getProviderForTier_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/llmProvider.ts",
-      "functionName": "getProviderForTier",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 15 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'getProviderForTier' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/llmRouter.ts_selectProvider_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/llmRouter.ts",
-      "functionName": "selectProvider",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 13 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'selectProvider' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/localLora.ts_runLocalLoraTraining_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/localLora.ts",
-      "functionName": "runLocalLoraTraining",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'runLocalLoraTraining' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/localLora.ts_runLocalLoraTraining_1781149508415",
+      "id": "nesting_server/localLora.ts_runLocalLoraTraining_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/localLora.ts",
       "functionName": "runLocalLoraTraining",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/loraBackendDetector.ts_detectLoraBackend_1781149508415",
+      "id": "refactor_server/mcpClient.ts_connectSSE_1781157339553",
       "type": "extract_function",
-      "filePath": "server/loraBackendDetector.ts",
-      "functionName": "detectLoraBackend",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 11 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'detectLoraBackend' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/mcpClient.ts_connectServer_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/mcpClient.ts",
-      "functionName": "connectServer",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 11 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'connectServer' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/mcpClient.ts_connectStdio_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/mcpClient.ts",
-      "functionName": "connectStdio",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/mcpClient.ts_connectSSE_1781149508415",
-      "type": "split_module",
       "filePath": "server/mcpClient.ts",
       "functionName": "connectSSE",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 24 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 24 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'connectSSE' to reduce decision paths"
     },
     {
-      "id": "nesting_server/mcpClient.ts_connectSSE_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/mcpClient.ts",
-      "functionName": "connectSSE",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/mcpClient.ts_discoverTools_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/mcpClient.ts",
-      "functionName": "discoverTools",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 13 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'discoverTools' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/mcpClient.ts_discoverTools_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/mcpClient.ts",
-      "functionName": "discoverTools",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/mcpClient.ts_callMCPTool_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/mcpClient.ts",
-      "functionName": "callMCPTool",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'callMCPTool' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/mcpClient.ts_registerMCPTool_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/mcpClient.ts",
-      "functionName": "registerMCPTool",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/memory.ts_injectMemoryContextAsync_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/memory.ts",
-      "functionName": "injectMemoryContextAsync",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 15 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'injectMemoryContextAsync' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/memory.ts_injectMemoryContextAsync_1781149508415",
+      "id": "nesting_server/memory.ts_injectMemoryContextAsync_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/memory.ts",
       "functionName": "injectMemoryContextAsync",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/memoryConsolidation.ts_runConsolidation_1781149508415",
+      "id": "refactor_server/memoryConsolidation.ts_runDeduplication_1781157339553",
       "type": "extract_function",
-      "filePath": "server/memoryConsolidation.ts",
-      "functionName": "runConsolidation",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'runConsolidation' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/memoryConsolidation.ts_runDeduplication_1781149508415",
-      "type": "split_module",
       "filePath": "server/memoryConsolidation.ts",
       "functionName": "runDeduplication",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 16 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 16 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'runDeduplication' to reduce decision paths"
     },
     {
-      "id": "refactor_server/memoryForgettingCurve.ts_consolidateRelatedMemories_1781149508415",
+      "id": "refactor_server/multiAgent.ts_runTeamAgent_1781157339553",
       "type": "extract_function",
-      "filePath": "server/memoryForgettingCurve.ts",
-      "functionName": "consolidateRelatedMemories",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'consolidateRelatedMemories' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/multiAgent.ts_runTeamAgent_1781149508415",
-      "type": "split_module",
       "filePath": "server/multiAgent.ts",
       "functionName": "runTeamAgent",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 27 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 27 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'runTeamAgent' to reduce decision paths"
     },
     {
-      "id": "refactor_server/multiAgentImprover.ts_reviewWithAgents_1781149508415",
+      "id": "refactor_server/multiAgentImprover.ts_structuralReview_1781157339553",
       "type": "extract_function",
-      "filePath": "server/multiAgentImprover.ts",
-      "functionName": "reviewWithAgents",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 14 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'reviewWithAgents' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/multiAgentImprover.ts_queryAgent_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/multiAgentImprover.ts",
-      "functionName": "queryAgent",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 11 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'queryAgent' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/multiAgentImprover.ts_structuralReview_1781149508415",
-      "type": "split_module",
       "filePath": "server/multiAgentImprover.ts",
       "functionName": "structuralReview",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 19 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 19 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'structuralReview' to reduce decision paths"
     },
     {
-      "id": "refactor_server/osGrounding.ts_getSystemHealth_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/osGrounding.ts",
-      "functionName": "getSystemHealth",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'getSystemHealth' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/persistentContextStore.ts_initPersistentContextStore_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/persistentContextStore.ts",
-      "functionName": "initPersistentContextStore",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "nesting_server/persistentContextStore.ts_cleanup_1781149508415",
+      "id": "nesting_server/persistentContextStore.ts_cleanup_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/persistentContextStore.ts",
       "functionName": "cleanup",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/prGenerator.ts_syncOpenPRStatus_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/prGenerator.ts",
-      "functionName": "syncOpenPRStatus",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'syncOpenPRStatus' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/prGenerator.ts_syncOpenPRStatus_1781149508415",
+      "id": "nesting_server/prGenerator.ts_syncOpenPRStatus_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/prGenerator.ts",
       "functionName": "syncOpenPRStatus",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/proofVerifier.ts_checkPropositional_1781149508415",
+      "id": "refactor_server/proposalFeedback.ts_classifyRejection_1781157339553",
       "type": "extract_function",
-      "filePath": "server/proofVerifier.ts",
-      "functionName": "checkPropositional",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 14 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'checkPropositional' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/proofVerifier.ts_runTLAVerification_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/proofVerifier.ts",
-      "functionName": "runTLAVerification",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'runTLAVerification' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/proposalFeedback.ts_classifyRejection_1781149508415",
-      "type": "split_module",
       "filePath": "server/proposalFeedback.ts",
       "functionName": "classifyRejection",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 17 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 17 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'classifyRejection' to reduce decision paths"
     },
     {
-      "id": "refactor_server/qualityToRSI.ts_feedQualityToRSI_1781149508415",
+      "id": "refactor_server/recursiveGoals.ts_scanForImprovementOpportunities_1781157339553",
       "type": "extract_function",
-      "filePath": "server/qualityToRSI.ts",
-      "functionName": "feedQualityToRSI",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 15 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'feedQualityToRSI' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/ragPipeline.ts_chunkDocument_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/ragPipeline.ts",
-      "functionName": "chunkDocument",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 14 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'chunkDocument' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/ragPipeline.ts_chunkDocument_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/ragPipeline.ts",
-      "functionName": "chunkDocument",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/ragPipeline.ts_registerRagRoutes_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/ragPipeline.ts",
-      "functionName": "registerRagRoutes",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 13 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'registerRagRoutes' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/rbac.ts_resolveRole_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/rbac.ts",
-      "functionName": "resolveRole",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 14 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'resolveRole' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/rbac.ts_isExemptPath_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/rbac.ts",
-      "functionName": "isExemptPath",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'isExemptPath' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/rbac.ts_roleRateLimit_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/rbac.ts",
-      "functionName": "roleRateLimit",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 11 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'roleRateLimit' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/realEvalHarness.ts_scoreResponse_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/realEvalHarness.ts",
-      "functionName": "scoreResponse",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 13 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'scoreResponse' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/recursiveGoals.ts_checkMetaMetaGuard_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/recursiveGoals.ts",
-      "functionName": "checkMetaMetaGuard",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/recursiveGoals.ts_scanForImprovementOpportunities_1781149508415",
-      "type": "split_module",
       "filePath": "server/recursiveGoals.ts",
       "functionName": "scanForImprovementOpportunities",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 19 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 19 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'scanForImprovementOpportunities' to reduce decision paths"
     },
     {
-      "id": "refactor_server/recursiveGoals.ts_autoExecuteNextGoal_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/recursiveGoals.ts_autoExecuteNextGoal_1781157339553",
+      "type": "extract_function",
       "filePath": "server/recursiveGoals.ts",
       "functionName": "autoExecuteNextGoal",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 30 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 30 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'autoExecuteNextGoal' to reduce decision paths"
     },
     {
-      "id": "nesting_server/recursiveGoals.ts_autoExecuteNextGoal_1781149508415",
+      "id": "nesting_server/recursiveGoals.ts_autoExecuteNextGoal_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/recursiveGoals.ts",
       "functionName": "autoExecuteNextGoal",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/rlaifJudge.ts_generateRlaifPairs_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/rlaifJudge.ts_generateRlaifPairs_1781157339553",
+      "type": "extract_function",
       "filePath": "server/rlaifJudge.ts",
       "functionName": "generateRlaifPairs",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 20 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 20 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'generateRlaifPairs' to reduce decision paths"
     },
     {
-      "id": "refactor_server/routes/autonomyRoutes.ts_registerAutonomyRoutes_1781149508415",
+      "id": "refactor_server/routes/autonomyRoutes.ts_registerAutonomyRoutes_1781157339553",
       "type": "split_module",
       "filePath": "server/routes/autonomyRoutes.ts",
       "functionName": "registerAutonomyRoutes",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 78 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 78 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'registerAutonomyRoutes' to reduce decision paths"
     },
     {
-      "id": "nesting_server/routes/autonomyRoutes.ts_registerAutonomyRoutes_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/routes/autonomyRoutes.ts",
-      "functionName": "registerAutonomyRoutes",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/routes/editRoutes.ts_selectLargeContextProvider_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/routes/editRoutes.ts_selectLargeContextProvider_1781157339553",
+      "type": "extract_function",
       "filePath": "server/routes/editRoutes.ts",
       "functionName": "selectLargeContextProvider",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 19 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 19 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'selectLargeContextProvider' to reduce decision paths"
     },
     {
-      "id": "refactor_server/routes/evalRoutes.ts_registerEvalRoutes_1781149508415",
+      "id": "refactor_server/routes/evalRoutes.ts_registerEvalRoutes_1781157339553",
       "type": "split_module",
       "filePath": "server/routes/evalRoutes.ts",
       "functionName": "registerEvalRoutes",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 48 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 48 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'registerEvalRoutes' to reduce decision paths"
     },
     {
-      "id": "nesting_server/routes/evalRoutes.ts_registerEvalRoutes_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/routes/evalRoutes.ts",
-      "functionName": "registerEvalRoutes",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/routes/godelRoutes.ts_registerGodelRoutes_1781149508415",
+      "id": "refactor_server/routes/godelRoutes.ts_registerGodelRoutes_1781157339553",
       "type": "split_module",
       "filePath": "server/routes/godelRoutes.ts",
       "functionName": "registerGodelRoutes",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 49 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 49 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'registerGodelRoutes' to reduce decision paths"
     },
     {
-      "id": "nesting_server/routes/godelRoutes.ts_registerGodelRoutes_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/routes/godelRoutes.ts",
-      "functionName": "registerGodelRoutes",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/routes/llmRoutes.ts_registerLLMRoutes_1781149508415",
+      "id": "refactor_server/routes/llmRoutes.ts_registerLLMRoutes_1781157339553",
       "type": "split_module",
       "filePath": "server/routes/llmRoutes.ts",
       "functionName": "registerLLMRoutes",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 66 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 66 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'registerLLMRoutes' to reduce decision paths"
     },
     {
-      "id": "nesting_server/routes/llmRoutes.ts_registerLLMRoutes_1781149508415",
+      "id": "nesting_server/routes/llmRoutes.ts_registerLLMRoutes_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/routes/llmRoutes.ts",
       "functionName": "registerLLMRoutes",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/routes/systemRoutes.ts_registerSystemRoutes_1781149508415",
+      "id": "refactor_server/routes/systemRoutes.ts_registerSystemRoutes_1781157339553",
       "type": "split_module",
       "filePath": "server/routes/systemRoutes.ts",
       "functionName": "registerSystemRoutes",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 145 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 145 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'registerSystemRoutes' to reduce decision paths"
     },
     {
-      "id": "nesting_server/routes/systemRoutes.ts_registerSystemRoutes_1781149508415",
+      "id": "nesting_server/routes/systemRoutes.ts_registerSystemRoutes_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/routes/systemRoutes.ts",
       "functionName": "registerSystemRoutes",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/routes/terminalRoutes.ts_attachTerminalWss_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/routes/terminalRoutes.ts_attachTerminalWss_1781157339553",
+      "type": "extract_function",
       "filePath": "server/routes/terminalRoutes.ts",
       "functionName": "attachTerminalWss",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 20 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 20 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'attachTerminalWss' to reduce decision paths"
     },
     {
-      "id": "nesting_server/routes/terminalRoutes.ts_attachTerminalWss_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/routes/terminalRoutes.ts",
-      "functionName": "attachTerminalWss",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/routes/toolMcpRoutes.ts_registerToolMcpRoutes_1781149508415",
+      "id": "refactor_server/routes/workspaceRoutes.ts_registerWorkspaceRoutes_1781157339553",
       "type": "extract_function",
-      "filePath": "server/routes/toolMcpRoutes.ts",
-      "functionName": "registerToolMcpRoutes",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 11 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'registerToolMcpRoutes' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/routes/workspaceRoutes.ts_registerWorkspaceRoutes_1781149508415",
-      "type": "split_module",
       "filePath": "server/routes/workspaceRoutes.ts",
       "functionName": "registerWorkspaceRoutes",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 26 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 26 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'registerWorkspaceRoutes' to reduce decision paths"
     },
     {
-      "id": "nesting_server/routes/workspaceRoutes.ts_registerWorkspaceRoutes_1781149508415",
+      "id": "nesting_server/routes/workspaceRoutes.ts_registerWorkspaceRoutes_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/routes/workspaceRoutes.ts",
       "functionName": "registerWorkspaceRoutes",
       "severity": "high",
-      "reason": "Nesting depth of 7 exceeds threshold of 4",
+      "reason": "Nesting depth of 7 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/rsiDb.ts_dbSaveProposal_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/rsiDb.ts_dbSaveProposal_1781157339553",
+      "type": "extract_function",
       "filePath": "server/rsiDb.ts",
       "functionName": "dbSaveProposal",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 19 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 19 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'dbSaveProposal' to reduce decision paths"
     },
     {
-      "id": "refactor_server/rsiDb.ts_dbSaveCycle_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/rsiDb.ts_dbSaveCycle_1781157339553",
+      "type": "extract_function",
       "filePath": "server/rsiDb.ts",
       "functionName": "dbSaveCycle",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 20 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 20 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'dbSaveCycle' to reduce decision paths"
     },
     {
-      "id": "refactor_server/rsiDb.ts_dbSaveEvalRun_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/rsiDb.ts",
-      "functionName": "dbSaveEvalRun",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 13 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'dbSaveEvalRun' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/rsiEngine.ts_measureBenchmark_1781149508415",
+      "id": "refactor_server/rsiEngine.ts_measureBenchmark_1781157339553",
       "type": "split_module",
       "filePath": "server/rsiEngine.ts",
       "functionName": "measureBenchmark",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 45 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 45 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'measureBenchmark' to reduce decision paths"
     },
     {
-      "id": "refactor_server/rsiEngine.ts_runRSICycle_1781149508415",
+      "id": "refactor_server/rsiEngine.ts_runRSICycle_1781157339553",
       "type": "split_module",
       "filePath": "server/rsiEngine.ts",
       "functionName": "runRSICycle",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 44 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 44 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'runRSICycle' to reduce decision paths"
     },
     {
-      "id": "nesting_server/rsiEngine.ts_runRSICycle_1781149508415",
+      "id": "nesting_server/rsiEngine.ts_runRSICycle_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/rsiEngine.ts",
       "functionName": "runRSICycle",
       "severity": "high",
-      "reason": "Nesting depth of 7 exceeds threshold of 4",
+      "reason": "Nesting depth of 7 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "nesting_server/rsiScheduler.ts_runRsiTrigger_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/rsiScheduler.ts",
-      "functionName": "runRsiTrigger",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/rsiScheduler.ts_getRsiSchedulerStatus_1781149508415",
+      "id": "refactor_server/safetySupervisor.ts_validateInline_1781157339553",
       "type": "extract_function",
-      "filePath": "server/rsiScheduler.ts",
-      "functionName": "getRsiSchedulerStatus",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 14 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'getRsiSchedulerStatus' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/runtimeConfig.ts_syncConfigToEnv_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/runtimeConfig.ts",
-      "functionName": "syncConfigToEnv",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 11 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'syncConfigToEnv' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/safetySupervisor.ts_validateInline_1781149508415",
-      "type": "split_module",
       "filePath": "server/safetySupervisor.ts",
       "functionName": "validateInline",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 17 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 17 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'validateInline' to reduce decision paths"
     },
     {
-      "id": "refactor_server/sandboxManager.ts_validateSandboxRequest_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/sandboxManager.ts_validateSandboxRequest_1781157339553",
+      "type": "extract_function",
       "filePath": "server/sandboxManager.ts",
       "functionName": "validateSandboxRequest",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 19 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 19 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'validateSandboxRequest' to reduce decision paths"
     },
     {
-      "id": "nesting_server/sandboxManager.ts_validateSandboxRequest_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/sandboxManager.ts",
-      "functionName": "validateSandboxRequest",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/sandboxManager.ts_executeInDocker_1781149508415",
+      "id": "refactor_server/sandboxVerifier.ts_verifyInLocalSandbox_1781157339553",
       "type": "extract_function",
-      "filePath": "server/sandboxManager.ts",
-      "functionName": "executeInDocker",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 15 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'executeInDocker' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/sandboxManager.ts_executeInDocker_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/sandboxManager.ts",
-      "functionName": "executeInDocker",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/sandboxVerifier.ts_verifyInLocalSandbox_1781149508415",
-      "type": "split_module",
       "filePath": "server/sandboxVerifier.ts",
       "functionName": "verifyInLocalSandbox",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 20 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 20 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'verifyInLocalSandbox' to reduce decision paths"
     },
     {
-      "id": "nesting_server/sandboxVerifier.ts_verifyInLocalSandbox_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/sandboxVerifier.ts",
-      "functionName": "verifyInLocalSandbox",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/sandboxVerifier.ts_quickValidate_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/sandboxVerifier.ts_quickValidate_1781157339553",
+      "type": "extract_function",
       "filePath": "server/sandboxVerifier.ts",
       "functionName": "quickValidate",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 21 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 21 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'quickValidate' to reduce decision paths"
     },
     {
-      "id": "refactor_server/scheduler.ts_parseCronField_1781149508415",
+      "id": "refactor_server/scheduler.ts_executeTask_1781157339553",
       "type": "extract_function",
-      "filePath": "server/scheduler.ts",
-      "functionName": "parseCronField",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'parseCronField' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/scheduler.ts_scheduleNextRun_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/scheduler.ts",
-      "functionName": "scheduleNextRun",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 15 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'scheduleNextRun' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/scheduler.ts_executeTask_1781149508415",
-      "type": "split_module",
       "filePath": "server/scheduler.ts",
       "functionName": "executeTask",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 16 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 16 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'executeTask' to reduce decision paths"
     },
     {
-      "id": "nesting_server/scheduler.ts_executeTask_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/scheduler.ts",
-      "functionName": "executeTask",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/search.ts_searchSearXNG_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/search.ts_searchSearXNG_1781157339553",
+      "type": "extract_function",
       "filePath": "server/search.ts",
       "functionName": "searchSearXNG",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 17 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 17 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'searchSearXNG' to reduce decision paths"
     },
     {
-      "id": "refactor_server/security.ts_pathToScope_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/security.ts_pathToScope_1781157339553",
+      "type": "extract_function",
       "filePath": "server/security.ts",
       "functionName": "pathToScope",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 19 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 19 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'pathToScope' to reduce decision paths"
     },
     {
-      "id": "refactor_server/security.ts_securityMiddleware_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/security.ts_securityMiddleware_1781157339553",
+      "type": "extract_function",
       "filePath": "server/security.ts",
       "functionName": "securityMiddleware",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 22 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 22 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'securityMiddleware' to reduce decision paths"
     },
     {
-      "id": "nesting_server/security.ts_securityMiddleware_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/security.ts",
-      "functionName": "securityMiddleware",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/self/atomic_editor.ts_applyFileEdit_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/self/atomic_editor.ts_applyFileEdit_1781157339553",
+      "type": "extract_function",
       "filePath": "server/self/atomic_editor.ts",
       "functionName": "applyFileEdit",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 17 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 17 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'applyFileEdit' to reduce decision paths"
     },
     {
-      "id": "refactor_server/self/benchmark_suite.ts_runBenchmarks_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/self/benchmark_suite.ts",
-      "functionName": "runBenchmarks",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'runBenchmarks' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/self/benchmark_suite.ts_runBenchmarks_1781149508415",
+      "id": "nesting_server/self/benchmark_suite.ts_runBenchmarks_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/self/benchmark_suite.ts",
       "functionName": "runBenchmarks",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/self/compilation_pipeline.ts_runSelfCompilation_1781149508415",
+      "id": "refactor_server/self/dependency_upgrader.ts_scanOutdatedPackages_1781157339553",
       "type": "extract_function",
-      "filePath": "server/self/compilation_pipeline.ts",
-      "functionName": "runSelfCompilation",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 15 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'runSelfCompilation' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/self/dependency_upgrader.ts_scanOutdatedPackages_1781149508415",
-      "type": "split_module",
       "filePath": "server/self/dependency_upgrader.ts",
       "functionName": "scanOutdatedPackages",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 17 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 17 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'scanOutdatedPackages' to reduce decision paths"
     },
     {
-      "id": "refactor_server/self/refactoring_engine.ts_generateRefactoringProposals_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/self/refactoring_engine.ts",
-      "functionName": "generateRefactoringProposals",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'generateRefactoringProposals' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/self/smoke_test_runner.ts_testConfigFiles_1781149508415",
+      "id": "nesting_server/self/smoke_test_runner.ts_testConfigFiles_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/self/smoke_test_runner.ts",
       "functionName": "testConfigFiles",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/selfConsistency.ts_checkSelfConsistency_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/selfConsistency.ts_checkSelfConsistency_1781157339553",
+      "type": "extract_function",
       "filePath": "server/selfConsistency.ts",
       "functionName": "checkSelfConsistency",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 24 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 24 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'checkSelfConsistency' to reduce decision paths"
     },
     {
-      "id": "nesting_server/selfHeal.ts_detectDegradation_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/selfHeal.ts",
-      "functionName": "detectDegradation",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/selfHeal.ts_diagnoseWithLLM_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/selfHeal.ts_diagnoseWithLLM_1781157339553",
+      "type": "extract_function",
       "filePath": "server/selfHeal.ts",
       "functionName": "diagnoseWithLLM",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 19 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 19 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'diagnoseWithLLM' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfHeal.ts_healCycle_1781149508415",
+      "id": "refactor_server/selfHeal.ts_healCycle_1781157339553",
       "type": "split_module",
       "filePath": "server/selfHeal.ts",
       "functionName": "healCycle",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 39 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 39 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'healCycle' to reduce decision paths"
     },
     {
-      "id": "nesting_server/selfHeal.ts_healCycle_1781149508415",
+      "id": "nesting_server/selfHeal.ts_healCycle_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/selfHeal.ts",
       "functionName": "healCycle",
       "severity": "high",
-      "reason": "Nesting depth of 8 exceeds threshold of 4",
+      "reason": "Nesting depth of 8 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "nesting_server/selfHeal.ts_getProactiveAlerts_1781149508415",
+      "id": "nesting_server/selfHeal.ts_getProactiveAlerts_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/selfHeal.ts",
       "functionName": "getProactiveAlerts",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/selfImprove.ts_resolveServerFile_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/selfImprove.ts_resolveServerFile_1781157339553",
+      "type": "extract_function",
       "filePath": "server/selfImprove.ts",
       "functionName": "resolveServerFile",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 17 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 17 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'resolveServerFile' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfImprove.ts_generateSimpleDiff_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/selfImprove.ts",
-      "functionName": "generateSimpleDiff",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'generateSimpleDiff' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/selfImprove.ts_generateSimpleDiff_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/selfImprove.ts",
-      "functionName": "generateSimpleDiff",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/selfImprove.ts_buildProviderFallbackChain_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/selfImprove.ts",
-      "functionName": "buildProviderFallbackChain",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 14 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'buildProviderFallbackChain' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/selfImprove.ts_applyProposal_1781149508415",
+      "id": "refactor_server/selfImprove.ts_applyProposal_1781157339553",
       "type": "split_module",
       "filePath": "server/selfImprove.ts",
       "functionName": "applyProposal",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 92 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 93 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'applyProposal' to reduce decision paths"
     },
     {
-      "id": "nesting_server/selfImprove.ts_applyProposal_1781149508415",
+      "id": "nesting_server/selfImprove.ts_applyProposal_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/selfImprove.ts",
       "functionName": "applyProposal",
       "severity": "high",
-      "reason": "Nesting depth of 8 exceeds threshold of 4",
+      "reason": "Nesting depth of 8 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/selfImprove.ts_autoApplyHighConfidence_1781149508415",
+      "id": "refactor_server/selfImprove.ts_autoApplyHighConfidence_1781157339553",
       "type": "split_module",
       "filePath": "server/selfImprove.ts",
       "functionName": "autoApplyHighConfidence",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 46 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 46 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'autoApplyHighConfidence' to reduce decision paths"
     },
     {
-      "id": "nesting_server/selfImprove.ts_autoApplyHighConfidence_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/selfImprove.ts",
-      "functionName": "autoApplyHighConfidence",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/selfImprove.ts_scoreProposal_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/selfImprove.ts_scoreProposal_1781157339553",
+      "type": "extract_function",
       "filePath": "server/selfImprove.ts",
       "functionName": "scoreProposal",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 20 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 20 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'scoreProposal' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfImproveGuard.ts_runSyntaxCheck_1781149508415",
+      "id": "refactor_server/selfImproveGuard.ts_runSyntaxCheck_1781157339553",
       "type": "extract_function",
       "filePath": "server/selfImproveGuard.ts",
       "functionName": "runSyntaxCheck",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 18 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'runSyntaxCheck' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfImproveGuard.ts_runLightweightSyntaxCheck_1781149508415",
+      "id": "refactor_server/selfImproveGuard.ts_runLightweightSyntaxCheck_1781157339553",
       "type": "split_module",
       "filePath": "server/selfImproveGuard.ts",
       "functionName": "runLightweightSyntaxCheck",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 45 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 45 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'runLightweightSyntaxCheck' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfImproveGuard.ts_guardedApply_1781149508415",
+      "id": "refactor_server/selfImproveGuard.ts_guardedApply_1781157339553",
       "type": "split_module",
       "filePath": "server/selfImproveGuard.ts",
       "functionName": "guardedApply",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 60 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 60 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'guardedApply' to reduce decision paths"
     },
     {
-      "id": "nesting_server/selfImproveGuard.ts_guardedApply_1781149508415",
+      "id": "nesting_server/selfImproveGuard.ts_guardedApply_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/selfImproveGuard.ts",
       "functionName": "guardedApply",
       "severity": "high",
-      "reason": "Nesting depth of 8 exceeds threshold of 4",
+      "reason": "Nesting depth of 8 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/selfIntrospect.ts_findCircularDeps_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/selfIntrospect.ts",
-      "functionName": "findCircularDeps",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 13 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'findCircularDeps' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/selfIntrospect.ts_findOrphanedExports_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/selfIntrospect.ts",
-      "functionName": "findOrphanedExports",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 14 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'findOrphanedExports' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/selfIntrospect.ts_findOrphanedExports_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/selfIntrospect.ts",
-      "functionName": "findOrphanedExports",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "nesting_server/selfIntrospect.ts_introspectSelf_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/selfIntrospect.ts",
-      "functionName": "introspectSelf",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/selfKnowledgeBase.ts_getImprovementContext_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/selfKnowledgeBase.ts",
-      "functionName": "getImprovementContext",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 15 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'getImprovementContext' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/selfModel.ts_validateSelfModel_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/selfModel.ts",
-      "functionName": "validateSelfModel",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'validateSelfModel' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/selfModify.ts_runTests_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/selfModify.ts",
-      "functionName": "runTests",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 11 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'runTests' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/selfModify.ts_selfModify_1781149508415",
+      "id": "refactor_server/selfModify.ts_selfModify_1781157339553",
       "type": "split_module",
       "filePath": "server/selfModify.ts",
       "functionName": "selfModify",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 68 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 68 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'selfModify' to reduce decision paths"
     },
     {
-      "id": "nesting_server/selfModify.ts_selfModify_1781149508415",
+      "id": "nesting_server/selfModify.ts_selfModify_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/selfModify.ts",
       "functionName": "selfModify",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "nesting_server/selfModify.ts_initSelfModify_1781149508415",
+      "id": "nesting_server/selfModify.ts_initSelfModify_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/selfModify.ts",
       "functionName": "initSelfModify",
       "severity": "high",
-      "reason": "Nesting depth of 7 exceeds threshold of 4",
+      "reason": "Nesting depth of 7 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/selfMonitor.ts_checkThreshold_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/selfMonitor.ts_checkThreshold_1781157339553",
+      "type": "extract_function",
       "filePath": "server/selfMonitor.ts",
       "functionName": "checkThreshold",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 16 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 16 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'checkThreshold' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfMonitor.ts_recalculateBaselines_1781149508415",
+      "id": "refactor_server/selfReflectionEngine.ts_runReflectionCycle_1781157339553",
       "type": "extract_function",
-      "filePath": "server/selfMonitor.ts",
-      "functionName": "recalculateBaselines",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 11 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'recalculateBaselines' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/selfReflectionEngine.ts_runReflectionCycle_1781149508415",
-      "type": "split_module",
       "filePath": "server/selfReflectionEngine.ts",
       "functionName": "runReflectionCycle",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 19 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 19 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'runReflectionCycle' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfReview.ts_reviewCode_1781149508415",
+      "id": "refactor_server/selfReview.ts_reviewCode_1781157339553",
       "type": "split_module",
       "filePath": "server/selfReview.ts",
       "functionName": "reviewCode",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 34 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 34 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'reviewCode' to reduce decision paths"
     },
     {
-      "id": "nesting_server/selfReview.ts_reviewCode_1781149508415",
+      "id": "nesting_server/selfReview.ts_reviewCode_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/selfReview.ts",
       "functionName": "reviewCode",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/selfReview.ts_checkSyntax_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/selfReview.ts_checkSyntax_1781157339553",
+      "type": "extract_function",
       "filePath": "server/selfReview.ts",
       "functionName": "checkSyntax",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 18 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 18 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'checkSyntax' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfRollback.ts_startDegradationWatch_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/selfRollback.ts",
-      "functionName": "startDegradationWatch",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'startDegradationWatch' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/selfRollback.ts_loadPersistedPoints_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/selfRollback.ts",
-      "functionName": "loadPersistedPoints",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/selfTestPipeline.ts_applyChanges_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/selfTestPipeline.ts",
-      "functionName": "applyChanges",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 13 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'applyChanges' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/selfTestPipeline.ts_applyChanges_1781149508415",
+      "id": "nesting_server/selfTestPipeline.ts_applyChanges_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/selfTestPipeline.ts",
       "functionName": "applyChanges",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/selfTestPipeline.ts_runPipeline_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/selfTestPipeline.ts_runPipeline_1781157339553",
+      "type": "extract_function",
       "filePath": "server/selfTestPipeline.ts",
       "functionName": "runPipeline",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 17 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 17 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'runPipeline' to reduce decision paths"
     },
     {
-      "id": "refactor_server/selfTestPipeline.ts_validateProposal_1781149508415",
+      "id": "refactor_server/streamIntegrityMonitor.ts_checkCompleteness_1781157339553",
       "type": "extract_function",
-      "filePath": "server/selfTestPipeline.ts",
-      "functionName": "validateProposal",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'validateProposal' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/semanticSelfModel.ts_loadState_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/semanticSelfModel.ts",
-      "functionName": "loadState",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/shadowInstance.ts_runShadowTest_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/shadowInstance.ts",
-      "functionName": "runShadowTest",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 14 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'runShadowTest' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/streamIntegrityMonitor.ts_checkCompleteness_1781149508415",
-      "type": "split_module",
       "filePath": "server/streamIntegrityMonitor.ts",
       "functionName": "checkCompleteness",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 18 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 18 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'checkCompleteness' to reduce decision paths"
     },
     {
-      "id": "refactor_server/taskDecomposer.ts_detectSignals_1781149508415",
+      "id": "refactor_server/taskDecomposer.ts_decomposeQuery_1781157339553",
       "type": "extract_function",
-      "filePath": "server/taskDecomposer.ts",
-      "functionName": "detectSignals",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 14 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'detectSignals' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/taskDecomposer.ts_decomposeQuery_1781149508415",
-      "type": "split_module",
       "filePath": "server/taskDecomposer.ts",
       "functionName": "decomposeQuery",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 19 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 19 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'decomposeQuery' to reduce decision paths"
     },
     {
-      "id": "nesting_server/taskDecomposer.ts_decomposeQuery_1781149508415",
+      "id": "nesting_server/taskDecomposer.ts_decomposeQuery_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/taskDecomposer.ts",
       "functionName": "decomposeQuery",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/taskPlanner.ts_detectParallelGroups_1781149508415",
+      "id": "refactor_server/telemetry.ts_getTelemetrySummary_1781157339553",
       "type": "extract_function",
-      "filePath": "server/taskPlanner.ts",
-      "functionName": "detectParallelGroups",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'detectParallelGroups' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/telemetry.ts_getTelemetrySummary_1781149508415",
-      "type": "split_module",
       "filePath": "server/telemetry.ts",
       "functionName": "getTelemetrySummary",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 16 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 16 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'getTelemetrySummary' to reduce decision paths"
     },
     {
-      "id": "refactor_server/tenantManager.ts_loadTenants_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/tenantManager.ts_loadTenants_1781157339553",
+      "type": "extract_function",
       "filePath": "server/tenantManager.ts",
       "functionName": "loadTenants",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 17 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 17 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'loadTenants' to reduce decision paths"
     },
     {
-      "id": "nesting_server/tenantManager.ts_loadTenants_1781149508415",
+      "id": "nesting_server/tenantManager.ts_loadTenants_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/tenantManager.ts",
       "functionName": "loadTenants",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "nesting_server/testCoverageAnalyzer.ts_runCoverageAnalysis_1781149508415",
+      "id": "nesting_server/testCoverageAnalyzer.ts_runCoverageAnalysis_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/testCoverageAnalyzer.ts",
       "functionName": "runCoverageAnalysis",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/testGenerator.ts_generateTypeScriptTests_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/testGenerator.ts_generateTypeScriptTests_1781157339553",
+      "type": "extract_function",
       "filePath": "server/testGenerator.ts",
       "functionName": "generateTypeScriptTests",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 30 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 30 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'generateTypeScriptTests' to reduce decision paths"
     },
     {
-      "id": "nesting_server/testGenerator.ts_generateTypeScriptTests_1781149508415",
+      "id": "nesting_server/testGenerator.ts_generateTypeScriptTests_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/testGenerator.ts",
       "functionName": "generateTypeScriptTests",
       "severity": "high",
-      "reason": "Nesting depth of 7 exceeds threshold of 4",
+      "reason": "Nesting depth of 7 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/testGenerator.ts_runTest_1781149508415",
+      "id": "refactor_server/tools/selfTestRunner.ts_runTestFile_1781157339553",
       "type": "extract_function",
-      "filePath": "server/testGenerator.ts",
-      "functionName": "runTest",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 15 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'runTest' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/testGenerator.ts_generateMockValue_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/testGenerator.ts",
-      "functionName": "generateMockValue",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'generateMockValue' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/toolSynthesis.ts_loadSynthesizedTools_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/toolSynthesis.ts",
-      "functionName": "loadSynthesizedTools",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'loadSynthesizedTools' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/tools/fileOps.ts_findInServerDir_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/tools/fileOps.ts",
-      "functionName": "findInServerDir",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'findInServerDir' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/tools/fileOps.ts_findInServerDir_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/tools/fileOps.ts",
-      "functionName": "findInServerDir",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/tools/selfDiagnoseTools.ts_findFilesMatchingKeywords_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/tools/selfDiagnoseTools.ts",
-      "functionName": "findFilesMatchingKeywords",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 11 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'findFilesMatchingKeywords' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/tools/selfDiagnoseTools.ts_findFilesMatchingKeywords_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/tools/selfDiagnoseTools.ts",
-      "functionName": "findFilesMatchingKeywords",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/tools/selfDiagnoseTools.ts_walk_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/tools/selfDiagnoseTools.ts",
-      "functionName": "walk",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 11 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'walk' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/tools/selfModifyHelpers.ts_resolveServerPath_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/tools/selfModifyHelpers.ts",
-      "functionName": "resolveServerPath",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 14 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'resolveServerPath' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/tools/selfTestRunner.ts_discoverTestFiles_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/tools/selfTestRunner.ts",
-      "functionName": "discoverTestFiles",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/tools/selfTestRunner.ts_runTestFile_1781149508415",
-      "type": "split_module",
       "filePath": "server/tools/selfTestRunner.ts",
       "functionName": "runTestFile",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 25 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 25 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'runTestFile' to reduce decision paths"
     },
     {
-      "id": "nesting_server/tools/selfTestRunner.ts_runTestFile_1781149508415",
+      "id": "nesting_server/tools/selfTestRunner.ts_runTestFile_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/tools/selfTestRunner.ts",
       "functionName": "runTestFile",
       "severity": "high",
-      "reason": "Nesting depth of 7 exceeds threshold of 4",
+      "reason": "Nesting depth of 7 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/tools/selfTestRunner.ts_analyzeFailure_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/tools/selfTestRunner.ts_analyzeFailure_1781157339553",
+      "type": "extract_function",
       "filePath": "server/tools/selfTestRunner.ts",
       "functionName": "analyzeFailure",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 18 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 18 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'analyzeFailure' to reduce decision paths"
     },
     {
-      "id": "refactor_server/tools/selfTestRunner.ts_attemptAutoFix_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/tools/selfTestRunner.ts",
-      "functionName": "attemptAutoFix",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 15 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'attemptAutoFix' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/tools/selfTestRunner.ts_attemptAutoFix_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/tools/selfTestRunner.ts",
-      "functionName": "attemptAutoFix",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/tools/selfTestRunner.ts_registerSelfTestTools_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/tools/selfTestRunner.ts",
-      "functionName": "registerSelfTestTools",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'registerSelfTestTools' to reduce decision paths"
-    },
-    {
-      "id": "nesting_server/tools/selfTestRunner.ts_registerSelfTestTools_1781149508415",
+      "id": "nesting_server/tools/selfTestRunner.ts_registerSelfTestTools_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/tools/selfTestRunner.ts",
       "functionName": "registerSelfTestTools",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/tools/vision.ts_captureScreenshot_1781149508415",
+      "id": "refactor_server/tools/visualGroundingTool.ts_registerVisualGroundingTools_1781157339553",
       "type": "extract_function",
-      "filePath": "server/tools/vision.ts",
-      "functionName": "captureScreenshot",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'captureScreenshot' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/tools/visualGroundingTool.ts_registerVisualGroundingTools_1781149508415",
-      "type": "split_module",
       "filePath": "server/tools/visualGroundingTool.ts",
       "functionName": "registerVisualGroundingTools",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 20 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 20 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'registerVisualGroundingTools' to reduce decision paths"
     },
     {
-      "id": "nesting_server/tools/visualGroundingTool.ts_registerVisualGroundingTools_1781149508415",
+      "id": "nesting_server/tools/visualGroundingTool.ts_registerVisualGroundingTools_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/tools/visualGroundingTool.ts",
       "functionName": "registerVisualGroundingTools",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/tools/webSearch.ts_searchBrave_1781149508415",
+      "id": "refactor_server/tools/webSearch.ts_searchDDG_1781157339553",
       "type": "extract_function",
-      "filePath": "server/tools/webSearch.ts",
-      "functionName": "searchBrave",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 14 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'searchBrave' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/tools/webSearch.ts_searchDDG_1781149508415",
-      "type": "split_module",
       "filePath": "server/tools/webSearch.ts",
       "functionName": "searchDDG",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 17 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 17 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'searchDDG' to reduce decision paths"
     },
     {
-      "id": "refactor_server/tools/webSearch.ts_executeWebSearch_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/tools/webSearch.ts_executeWebSearch_1781157339553",
+      "type": "extract_function",
       "filePath": "server/tools/webSearch.ts",
       "functionName": "executeWebSearch",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 20 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 20 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'executeWebSearch' to reduce decision paths"
     },
     {
-      "id": "refactor_server/transactionLog.ts_rollbackTransaction_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/transactionLog.ts",
-      "functionName": "rollbackTransaction",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 11 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'rollbackTransaction' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/truncationDetector.ts_detectFileTruncation_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/truncationDetector.ts",
-      "functionName": "detectFileTruncation",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 14 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'detectFileTruncation' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/truncationDetector.ts_detectCodeTruncation_1781149508415",
+      "id": "refactor_server/truncationDetector.ts_scanBracketBalance_1781157339553",
       "type": "split_module",
       "filePath": "server/truncationDetector.ts",
-      "functionName": "detectCodeTruncation",
+      "functionName": "scanBracketBalance",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 55 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'detectCodeTruncation' to reduce decision paths"
+      "reason": "Cyclomatic complexity of 39 exceeds threshold of 15",
+      "suggestion": "Extract sub-routines from 'scanBracketBalance' to reduce decision paths"
     },
     {
-      "id": "refactor_server/truncationDetector.ts_detectOutputTruncation_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/truncationDetector.ts_detectOutputTruncation_1781157339553",
+      "type": "extract_function",
       "filePath": "server/truncationDetector.ts",
       "functionName": "detectOutputTruncation",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 20 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 20 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'detectOutputTruncation' to reduce decision paths"
     },
     {
-      "id": "nesting_server/truncationDetector.ts_detectOutputTruncation_1781149508415",
+      "id": "nesting_server/truncationDetector.ts_detectOutputTruncation_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/truncationDetector.ts",
       "functionName": "detectOutputTruncation",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/truncationDetector.ts_repairTruncatedCode_1781149508415",
-      "type": "split_module",
-      "filePath": "server/truncationDetector.ts",
-      "functionName": "repairTruncatedCode",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 49 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'repairTruncatedCode' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/twoPhaseCommit.ts_twoPhaseCommit_1781149508415",
-      "type": "split_module",
+      "id": "refactor_server/twoPhaseCommit.ts_twoPhaseCommit_1781157339553",
+      "type": "extract_function",
       "filePath": "server/twoPhaseCommit.ts",
       "functionName": "twoPhaseCommit",
-      "severity": "high",
-      "reason": "Cyclomatic complexity of 30 exceeds threshold of 10",
+      "severity": "medium",
+      "reason": "Cyclomatic complexity of 30 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'twoPhaseCommit' to reduce decision paths"
     },
     {
-      "id": "nesting_server/twoPhaseCommit.ts_twoPhaseCommit_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/twoPhaseCommit.ts",
-      "functionName": "twoPhaseCommit",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/unifiedKnowledge.ts_queryUnifiedKnowledge_1781149508415",
+      "id": "refactor_server/unifiedKnowledge.ts_queryUnifiedKnowledge_1781157339553",
       "type": "split_module",
       "filePath": "server/unifiedKnowledge.ts",
       "functionName": "queryUnifiedKnowledge",
       "severity": "high",
-      "reason": "Cyclomatic complexity of 48 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 48 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'queryUnifiedKnowledge' to reduce decision paths"
     },
     {
-      "id": "nesting_server/unifiedKnowledge.ts_queryUnifiedKnowledge_1781149508415",
-      "type": "simplify_logic",
-      "filePath": "server/unifiedKnowledge.ts",
-      "functionName": "queryUnifiedKnowledge",
-      "severity": "medium",
-      "reason": "Nesting depth of 5 exceeds threshold of 4",
-      "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
-    },
-    {
-      "id": "refactor_server/visualGrounding.ts_extractInteractableElements_1781149508415",
+      "id": "refactor_server/watchdog.ts_runHealthCheck_1781157339553",
       "type": "extract_function",
-      "filePath": "server/visualGrounding.ts",
-      "functionName": "extractInteractableElements",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 14 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'extractInteractableElements' to reduce decision paths"
-    },
-    {
-      "id": "refactor_server/watchdog.ts_runHealthCheck_1781149508415",
-      "type": "split_module",
       "filePath": "server/watchdog.ts",
       "functionName": "runHealthCheck",
       "severity": "medium",
-      "reason": "Cyclomatic complexity of 19 exceeds threshold of 10",
+      "reason": "Cyclomatic complexity of 19 exceeds threshold of 15",
       "suggestion": "Extract sub-routines from 'runHealthCheck' to reduce decision paths"
     },
     {
-      "id": "nesting_server/watchdog.ts_runHealthCheck_1781149508415",
+      "id": "nesting_server/watchdog.ts_runHealthCheck_1781157339553",
       "type": "simplify_logic",
       "filePath": "server/watchdog.ts",
       "functionName": "runHealthCheck",
       "severity": "medium",
-      "reason": "Nesting depth of 6 exceeds threshold of 4",
+      "reason": "Nesting depth of 6 exceeds threshold of 5",
       "suggestion": "Use early returns, guard clauses, or extract nested logic into helper functions"
     },
     {
-      "id": "refactor_server/workspace.ts_detectLanguage_1781149508415",
-      "type": "extract_function",
-      "filePath": "server/workspace.ts",
-      "functionName": "detectLanguage",
-      "severity": "medium",
-      "reason": "Cyclomatic complexity of 12 exceeds threshold of 10",
-      "suggestion": "Extract sub-routines from 'detectLanguage' to reduce decision paths"
-    },
-    {
-      "id": "coupling_server/_core/index.ts_1781149508415",
+      "id": "coupling_server/_core/index.ts_1781157339553",
       "type": "reduce_coupling",
       "filePath": "server/_core/index.ts",
       "severity": "high",
-      "reason": "Module imports from 18 other modules (threshold: 8)",
+      "reason": "Module imports from 18 other modules (threshold: 15)",
       "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
     },
     {
-      "id": "coupling_server/_core/initDaemons.ts_1781149508415",
+      "id": "coupling_server/_core/initDaemons.ts_1781157339553",
       "type": "reduce_coupling",
       "filePath": "server/_core/initDaemons.ts",
       "severity": "high",
-      "reason": "Module imports from 16 other modules (threshold: 8)",
+      "reason": "Module imports from 16 other modules (threshold: 15)",
       "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
     },
     {
-      "id": "coupling_server/_core/initRoutes.ts_1781149508415",
-      "type": "reduce_coupling",
-      "filePath": "server/_core/initRoutes.ts",
-      "severity": "medium",
-      "reason": "Module imports from 11 other modules (threshold: 8)",
-      "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
-    },
-    {
-      "id": "coupling_server/_core/sdk.ts_1781149508415",
-      "type": "reduce_coupling",
-      "filePath": "server/_core/sdk.ts",
-      "severity": "medium",
-      "reason": "Module imports from 10 other modules (threshold: 8)",
-      "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
-    },
-    {
-      "id": "coupling_server/aiPlanning.ts_1781149508415",
-      "type": "reduce_coupling",
-      "filePath": "server/aiPlanning.ts",
-      "severity": "medium",
-      "reason": "Module imports from 10 other modules (threshold: 8)",
-      "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
-    },
-    {
-      "id": "coupling_server/aiStreaming.ts_1781149508415",
-      "type": "reduce_coupling",
-      "filePath": "server/aiStreaming.ts",
-      "severity": "medium",
-      "reason": "Module imports from 11 other modules (threshold: 8)",
-      "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
-    },
-    {
-      "id": "coupling_server/reactEngine.ts_1781149508416",
-      "type": "reduce_coupling",
-      "filePath": "server/reactEngine.ts",
-      "severity": "medium",
-      "reason": "Module imports from 11 other modules (threshold: 8)",
-      "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
-    },
-    {
-      "id": "coupling_server/routers.ts_1781149508416",
-      "type": "reduce_coupling",
-      "filePath": "server/routers.ts",
-      "severity": "medium",
-      "reason": "Module imports from 10 other modules (threshold: 8)",
-      "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
-    },
-    {
-      "id": "coupling_server/routes/autonomyRoutes.ts_1781149508416",
-      "type": "reduce_coupling",
-      "filePath": "server/routes/autonomyRoutes.ts",
-      "severity": "high",
-      "reason": "Module imports from 15 other modules (threshold: 8)",
-      "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
-    },
-    {
-      "id": "coupling_server/routes/llmRoutes.ts_1781149508416",
-      "type": "reduce_coupling",
-      "filePath": "server/routes/llmRoutes.ts",
-      "severity": "medium",
-      "reason": "Module imports from 11 other modules (threshold: 8)",
-      "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
-    },
-    {
-      "id": "coupling_server/routes/systemRoutes.ts_1781149508416",
-      "type": "reduce_coupling",
-      "filePath": "server/routes/systemRoutes.ts",
-      "severity": "medium",
-      "reason": "Module imports from 10 other modules (threshold: 8)",
-      "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
-    },
-    {
-      "id": "coupling_server/self/index.ts_1781149508416",
-      "type": "reduce_coupling",
-      "filePath": "server/self/index.ts",
-      "severity": "medium",
-      "reason": "Module imports from 9 other modules (threshold: 8)",
-      "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
-    },
-    {
-      "id": "coupling_server/selfImprove.ts_1781149508416",
-      "type": "reduce_coupling",
-      "filePath": "server/selfImprove.ts",
-      "severity": "medium",
-      "reason": "Module imports from 9 other modules (threshold: 8)",
-      "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
-    },
-    {
-      "id": "coupling_server/selfModel.ts_1781149508416",
+      "id": "coupling_server/selfModel.ts_1781157339553",
       "type": "reduce_coupling",
       "filePath": "server/selfModel.ts",
       "severity": "high",
-      "reason": "Module imports from 20 other modules (threshold: 8)",
-      "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
-    },
-    {
-      "id": "coupling_server/streamRouter.ts_1781149508416",
-      "type": "reduce_coupling",
-      "filePath": "server/streamRouter.ts",
-      "severity": "high",
-      "reason": "Module imports from 14 other modules (threshold: 8)",
-      "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
-    },
-    {
-      "id": "coupling_server/twoPhaseCommit.ts_1781149508416",
-      "type": "reduce_coupling",
-      "filePath": "server/twoPhaseCommit.ts",
-      "severity": "medium",
-      "reason": "Module imports from 9 other modules (threshold: 8)",
+      "reason": "Module imports from 20 other modules (threshold: 15)",
       "suggestion": "Consider dependency injection or splitting this module into focused sub-modules"
     }
   ],

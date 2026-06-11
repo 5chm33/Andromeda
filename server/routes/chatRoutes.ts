@@ -1,11 +1,15 @@
 /**
- * chatRoutes.ts — Chat, continue, image generation, and browse endpoints (extracted from streamRouter.ts v9.12.0)
+ * chatRoutes.ts — Chat, continue, image generation, video generation, and browse endpoints
  *
  * Routes:
- *   POST /api/chat/stream       — Multi-turn streaming chat (with self-mod redirect)
- *   POST /api/continue/stream   — Continue a truncated response
- *   POST /api/image/generate    — AI image generation
- *   POST /api/browse            — Web page browsing
+ *   POST /api/chat/stream         — Multi-turn streaming chat (with self-mod redirect)
+ *   POST /api/continue/stream     — Continue a truncated response
+ *   POST /api/image/generate      — AI image generation (HuggingFace FLUX)
+ *   POST /api/image/generate/pro  — High-quality image generation (fal.ai FLUX Pro)
+ *   POST /api/video/generate      — Text-to-video generation (fal.ai Kling v2.1)
+ *   POST /api/video/animate       — Image-to-video animation (fal.ai Kling v2.1)
+ *   GET  /api/video/status        — Check if video generation is available
+ *   POST /api/browse              — Web page browsing
  */
 import type { Express, Request, Response } from "express";
 import { z } from "zod";
@@ -127,6 +131,126 @@ export function registerChatRoutes(
       res.json({ url: result.url, enhancedPrompt: result.enhancedPrompt, usedReference: result.usedReference ?? false });
     } catch (err) {
       const message = err instanceof Error ? err.message : "Image generation failed";
+      res.status(500).json({ error: message });
+    }
+  });
+
+  // ── POST /api/image/generate/pro ─────────────────────────────────────────────
+  // Higher quality image generation via fal.ai FLUX Pro (requires FAL_KEY)
+  app.post("/api/image/generate/pro", heavyLimiter, async (req: Request, res: Response) => {
+    const { prompt, negativePrompt, width, height, useUltra } = req.body as {
+      prompt: string;
+      negativePrompt?: string;
+      width?: number;
+      height?: number;
+      useUltra?: boolean;
+    };
+    if (!prompt?.trim()) {
+      res.status(400).json({ error: "prompt is required" });
+      return;
+    }
+    try {
+      const { generateImageFal, isFalAvailable } = await import("../_core/videoGeneration.js");
+      if (!isFalAvailable()) {
+        res.status(503).json({ error: "FAL_KEY not configured. Add FAL_KEY to .env.local" });
+        return;
+      }
+      const result = await generateImageFal({
+        prompt: prompt.trim(),
+        negativePrompt,
+        width: width ?? 1024,
+        height: height ?? 1024,
+        useUltra: useUltra ?? true,
+      });
+      res.json({ url: result.imageUrl, width: result.width, height: result.height, model: result.model, seed: result.seed });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Pro image generation failed";
+      res.status(500).json({ error: message });
+    }
+  });
+
+  // ── GET /api/video/status ──────────────────────────────────────────────────
+  app.get("/api/video/status", (_req: Request, res: Response) => {
+    const configured = !!process.env.FAL_KEY;
+    res.json({
+      available: configured,
+      provider: "fal.ai",
+      models: [
+        { id: "kling-video/v2.1/master", type: "text-to-video", durations: ["5s", "10s"] },
+        { id: "kling-video/v2.1/master", type: "image-to-video", durations: ["5s", "10s"] },
+        { id: "flux-pro/v1.1-ultra", type: "text-to-image", quality: "ultra" },
+      ],
+      configured,
+    });
+  });
+
+  // ── POST /api/video/generate ───────────────────────────────────────────────
+  // Text-to-video using Kling v2.1 Master (SOTA quality, 5s or 10s clips)
+  app.post("/api/video/generate", heavyLimiter, async (req: Request, res: Response) => {
+    const { prompt, negativePrompt, duration, aspectRatio, cameraMovement } = req.body as {
+      prompt: string;
+      negativePrompt?: string;
+      duration?: "5" | "10";
+      aspectRatio?: "16:9" | "9:16" | "1:1";
+      cameraMovement?: string;
+    };
+    if (!prompt?.trim()) {
+      res.status(400).json({ error: "prompt is required" });
+      return;
+    }
+    try {
+      const { generateVideoFromText, isFalAvailable } = await import("../_core/videoGeneration.js");
+      if (!isFalAvailable()) {
+        res.status(503).json({ error: "FAL_KEY not configured. Add FAL_KEY to .env.local" });
+        return;
+      }
+      const result = await generateVideoFromText({
+        prompt: prompt.trim(),
+        negativePrompt,
+        duration: duration ?? "5",
+        aspectRatio: aspectRatio ?? "16:9",
+        cameraMovement,
+      });
+      res.json(result);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Video generation failed";
+      res.status(500).json({ error: message });
+    }
+  });
+
+  // ── POST /api/video/animate ────────────────────────────────────────────────
+  // Image-to-video: animate a still image using Kling v2.1 Master
+  app.post("/api/video/animate", heavyLimiter, async (req: Request, res: Response) => {
+    const { prompt, imageUrl, duration, aspectRatio, tailImageUrl } = req.body as {
+      prompt: string;
+      imageUrl: string;
+      duration?: "5" | "10";
+      aspectRatio?: "16:9" | "9:16" | "1:1";
+      tailImageUrl?: string;
+    };
+    if (!prompt?.trim()) {
+      res.status(400).json({ error: "prompt is required" });
+      return;
+    }
+    if (!imageUrl?.trim()) {
+      res.status(400).json({ error: "imageUrl is required" });
+      return;
+    }
+    try {
+      const { generateVideoFromImage, isFalAvailable } = await import("../_core/videoGeneration.js");
+      if (!isFalAvailable()) {
+        res.status(503).json({ error: "FAL_KEY not configured. Add FAL_KEY to .env.local" });
+        return;
+      }
+      const result = await generateVideoFromImage({
+        prompt: prompt.trim(),
+        imageUrl: imageUrl.trim(),
+        duration: duration ?? "5",
+        aspectRatio: aspectRatio ?? "16:9",
+      });
+      res.json(result);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Image-to-video generation failed";
       res.status(500).json({ error: message });
     }
   });

@@ -398,6 +398,244 @@
       "originalSize": 11848,
       "createdAt": "2026-06-11T04:24:12.693Z",
       "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781153579734_u00son",
+      "filename": "grounding.ts",
+      "backupPath": "grounding_1781153579734.ts.bak",
+      "originalSize": 13276,
+      "createdAt": "2026-06-11T04:52:59.734Z",
+      "proposalId": "prop_1781153228831_9rwqfw",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781153608978_dluyzu",
+      "filename": "grounding.ts",
+      "backupPath": "grounding_1781153608978.ts.bak",
+      "originalSize": 13175,
+      "createdAt": "2026-06-11T04:53:28.978Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781153614113_n7lyrs",
+      "filename": "autoGoalSuggester.ts",
+      "backupPath": "autoGoalSuggester_1781153614113.ts.bak",
+      "originalSize": 8577,
+      "createdAt": "2026-06-11T04:53:34.113Z",
+      "proposalId": "prop_1781153133852_95pw8u",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781153643669_ug5hyb",
+      "filename": "autoGoalSuggester.ts",
+      "backupPath": "autoGoalSuggester_1781153643669.ts.bak",
+      "originalSize": 8577,
+      "createdAt": "2026-06-11T04:54:03.669Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781153649039_tfp5e2",
+      "filename": "skillGraph.ts",
+      "backupPath": "skillGraph_1781153649039.ts.bak",
+      "originalSize": 13484,
+      "createdAt": "2026-06-11T04:54:09.039Z",
+      "proposalId": "prop_1781153194776_w0djou",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781153689762_pk5h4m",
+      "filename": "skillGraph.ts",
+      "backupPath": "skillGraph_1781153689762.ts.bak",
+      "originalSize": 13485,
+      "createdAt": "2026-06-11T04:54:49.762Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781155055806_43i6eb",
+      "filename": "aiChangelog.ts",
+      "backupPath": "aiChangelog_1781155055806.ts.bak",
+      "originalSize": 7286,
+      "createdAt": "2026-06-11T05:17:35.806Z",
+      "proposalId": "prop_1781155034435_4gqysx",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781155085306_3g1vo0",
+      "filename": "aiChangelog.ts",
+      "backupPath": "aiChangelog_1781155085306.ts.bak",
+      "originalSize": 7476,
+      "createdAt": "2026-06-11T05:18:05.306Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781155092442_09pdra",
+      "filename": "codeIntel.ts",
+      "backupPath": "codeIntel_1781155092441.ts.bak",
+      "originalSize": 14358,
+      "createdAt": "2026-06-11T05:18:12.442Z",
+      "proposalId": "prop_1781154973623_6vxsq4",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781155122413_nnrklj",
+      "filename": "codeIntel.ts",
+      "backupPath": "codeIntel_1781155122413.ts.bak",
+      "originalSize": 14392,
+      "createdAt": "2026-06-11T05:18:42.413Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781155539528_0zvte0",
+      "filename": "unifiedKnowledge.ts",
+      "backupPath": "unifiedKnowledge_1781155539528.ts.bak",
+      "originalSize": 11950,
+      "createdAt": "2026-06-11T05:25:39.528Z",
+      "proposalId": "prop_1781155518533_hpvl8t",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781155539537_lwy7j2",
+      "filename": "unifiedKnowledge.ts",
+      "backupPath": "unifiedKnowledge_1781155539536.ts.bak",
+      "originalSize": 13195,
+      "createdAt": "2026-06-11T05:25:39.537Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781155539609_xfgjk7",
+      "filename": "adaptiveEval.ts",
+      "backupPath": "adaptiveEval_1781155539609.ts.bak",
+      "originalSize": 28456,
+      "createdAt": "2026-06-11T05:25:39.609Z",
+      "proposalId": "prop_1781155155412_nfqucq",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781155539617_p40bzb",
+      "filename": "adaptiveEval.ts",
+      "backupPath": "adaptiveEval_1781155539617.ts.bak",
+      "originalSize": 28757,
+      "createdAt": "2026-06-11T05:25:39.617Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781155539681_9zhzzv",
+      "filename": "selfConsistency.ts",
+      "backupPath": "selfConsistency_1781155539681.ts.bak",
+      "originalSize": 12314,
+      "createdAt": "2026-06-11T05:25:39.681Z",
+      "proposalId": "prop_1781155134867_hll6ed",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781155539689_hiexrp",
+      "filename": "selfConsistency.ts",
+      "backupPath": "selfConsistency_1781155539689.ts.bak",
+      "originalSize": 11719,
+      "createdAt": "2026-06-11T05:25:39.689Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781156842955_v51u8d",
+      "filename": "aiMemory.ts",
+      "backupPath": "aiMemory_1781156842955.ts.bak",
+      "originalSize": 3344,
+      "createdAt": "2026-06-11T05:47:22.955Z",
+      "proposalId": "prop_1781156455311_f72xhq",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781156872004_3zanzt",
+      "filename": "aiMemory.ts",
+      "backupPath": "aiMemory_1781156872003.ts.bak",
+      "originalSize": 3404,
+      "createdAt": "2026-06-11T05:47:52.004Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781156877336_1upg3r",
+      "filename": "episodicMemory.ts",
+      "backupPath": "episodicMemory_1781156877336.ts.bak",
+      "originalSize": 8590,
+      "createdAt": "2026-06-11T05:47:57.336Z",
+      "proposalId": "prop_1781156316310_nsdz9b",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781156906872_loazrw",
+      "filename": "episodicMemory.ts",
+      "backupPath": "episodicMemory_1781156906872.ts.bak",
+      "originalSize": 8531,
+      "createdAt": "2026-06-11T05:48:26.872Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781156914284_0v2bwo",
+      "filename": "selfIntrospect.ts",
+      "backupPath": "selfIntrospect_1781156914284.ts.bak",
+      "originalSize": 15942,
+      "createdAt": "2026-06-11T05:48:34.284Z",
+      "proposalId": "prop_1781156826092_cu008u",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781156945402_asiq5j",
+      "filename": "selfIntrospect.ts",
+      "backupPath": "selfIntrospect_1781156945402.ts.bak",
+      "originalSize": 15956,
+      "createdAt": "2026-06-11T05:49:05.402Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781157229769_kyml3j",
+      "filename": "contextAwareness.ts",
+      "backupPath": "contextAwareness_1781157229769.ts.bak",
+      "originalSize": 8730,
+      "createdAt": "2026-06-11T05:53:49.769Z",
+      "proposalId": "prop_1781157211346_v15bso",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781157229780_6r5t8t",
+      "filename": "contextAwareness.ts",
+      "backupPath": "contextAwareness_1781157229780.ts.bak",
+      "originalSize": 9246,
+      "createdAt": "2026-06-11T05:53:49.780Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781157229859_o7sr0a",
+      "filename": "qualityToRSI.ts",
+      "backupPath": "qualityToRSI_1781157229859.ts.bak",
+      "originalSize": 5817,
+      "createdAt": "2026-06-11T05:53:49.859Z",
+      "proposalId": "prop_1781156975009_atuh9d",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781157229868_yadz5g",
+      "filename": "qualityToRSI.ts",
+      "backupPath": "qualityToRSI_1781157229868.ts.bak",
+      "originalSize": 6183,
+      "createdAt": "2026-06-11T05:53:49.868Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781157229948_bi3y86",
+      "filename": "persistentContextStore.ts",
+      "backupPath": "persistentContextStore_1781157229948.ts.bak",
+      "originalSize": 9415,
+      "createdAt": "2026-06-11T05:53:49.948Z",
+      "proposalId": "prop_1781156956681_gvtkeb",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781157229957_wepb0l",
+      "filename": "persistentContextStore.ts",
+      "backupPath": "persistentContextStore_1781157229957.ts.bak",
+      "originalSize": 9488,
+      "createdAt": "2026-06-11T05:53:49.957Z",
+      "reason": "pre-rollback"
     }
   ],
   "audit": [
@@ -4809,6 +5047,402 @@
       "result": "success",
       "details": "Auto-rollback after test failure: Rolled back selfConsistency.ts to 2026-06-11T04:23:41.480Z",
       "timestamp": "2026-06-11T04:24:12.704Z"
+    },
+    {
+      "id": "audit_1781153608974_fzac8j",
+      "action": "test",
+      "proposalId": "prop_1781153228831_9rwqfw",
+      "filename": "grounding.ts",
+      "result": "failure",
+      "details": "\n  Unexpected \"}\"\n  252|  }\n  253|  \n  254|  }\n     |  ^\n  255|  \n  256|  export function isKBConsolidationDue(): boolean {\n  \n ❯ failureErrorWithLog node_modules/.pnpm/esbuild@0.21.5/node_modules/esb",
+      "timestamp": "2026-06-11T04:53:28.974Z"
+    },
+    {
+      "id": "audit_1781153608983_z8fiop",
+      "action": "rollback",
+      "proposalId": "prop_1781153228831_9rwqfw",
+      "filename": "grounding.ts",
+      "result": "success",
+      "details": "Rolled back grounding.ts to backup bak_1781153579734_u00son",
+      "timestamp": "2026-06-11T04:53:28.983Z"
+    },
+    {
+      "id": "audit_1781153608986_syyvei",
+      "action": "rollback",
+      "proposalId": "prop_1781153228831_9rwqfw",
+      "filename": "grounding.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back grounding.ts to 2026-06-11T04:52:59.734Z",
+      "timestamp": "2026-06-11T04:53:28.986Z"
+    },
+    {
+      "id": "audit_1781153643664_44vc2d",
+      "action": "test",
+      "proposalId": "prop_1781153133852_95pw8u",
+      "filename": "autoGoalSuggester.ts",
+      "result": "failure",
+      "details": "\n  Unexpected \"}\"\n  252|  }\n  253|  \n  254|  }\n     |  ^\n  255|  \n  256|  export function isKBConsolidationDue(): boolean {\n  \n ❯ failureErrorWithLog node_modules/.pnpm/esbuild@0.21.5/node_modules/esb",
+      "timestamp": "2026-06-11T04:54:03.665Z"
+    },
+    {
+      "id": "audit_1781153643678_icn8c8",
+      "action": "rollback",
+      "proposalId": "prop_1781153133852_95pw8u",
+      "filename": "autoGoalSuggester.ts",
+      "result": "success",
+      "details": "Rolled back autoGoalSuggester.ts to backup bak_1781153614113_n7lyrs",
+      "timestamp": "2026-06-11T04:54:03.678Z"
+    },
+    {
+      "id": "audit_1781153643681_6xdn0a",
+      "action": "rollback",
+      "proposalId": "prop_1781153133852_95pw8u",
+      "filename": "autoGoalSuggester.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back autoGoalSuggester.ts to 2026-06-11T04:53:34.113Z",
+      "timestamp": "2026-06-11T04:54:03.681Z"
+    },
+    {
+      "id": "audit_1781153689757_xrasqa",
+      "action": "test",
+      "proposalId": "prop_1781153194776_w0djou",
+      "filename": "skillGraph.ts",
+      "result": "failure",
+      "details": "\n  Unexpected \"}\"\n  252|  }\n  253|  \n  254|  }\n     |  ^\n  255|  \n  256|  export function isKBConsolidationDue(): boolean {\n  \n ❯ failureErrorWithLog node_modules/.pnpm/esbuild@0.21.5/node_modules/esb",
+      "timestamp": "2026-06-11T04:54:49.757Z"
+    },
+    {
+      "id": "audit_1781153689768_d5cpqd",
+      "action": "rollback",
+      "proposalId": "prop_1781153194776_w0djou",
+      "filename": "skillGraph.ts",
+      "result": "success",
+      "details": "Rolled back skillGraph.ts to backup bak_1781153649039_tfp5e2",
+      "timestamp": "2026-06-11T04:54:49.768Z"
+    },
+    {
+      "id": "audit_1781153689773_xfc0jv",
+      "action": "rollback",
+      "proposalId": "prop_1781153194776_w0djou",
+      "filename": "skillGraph.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back skillGraph.ts to 2026-06-11T04:54:09.039Z",
+      "timestamp": "2026-06-11T04:54:49.773Z"
+    },
+    {
+      "id": "audit_1781155040464_82unds",
+      "action": "apply",
+      "proposalId": "prop_1781154912775_2bhbi1",
+      "filename": "multiAgent.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/multiAgent.ts(270,58): error TS2304: Cannot find name 'apiKey'.",
+      "timestamp": "2026-06-11T05:17:20.464Z"
+    },
+    {
+      "id": "audit_1781155045329_98lurq",
+      "action": "apply",
+      "proposalId": "prop_1781154912775_2bhbi1",
+      "filename": "multiAgent.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1781154912775_2bhbi1 after syntax error",
+      "timestamp": "2026-06-11T05:17:25.329Z"
+    },
+    {
+      "id": "audit_1781155085300_nzui9w",
+      "action": "test",
+      "proposalId": "prop_1781155034435_4gqysx",
+      "filename": "aiChangelog.ts",
+      "result": "failure",
+      "details": "epseek.test.ts > DeepSeek provider > DEEPSEEK_API_KEY env var is optional\n ✓ server/deepseek.test.ts > DeepSeek provider > llmProvider module loads and has DeepSeek support\n ✓ server/taskDecomposer.te",
+      "timestamp": "2026-06-11T05:18:05.300Z"
+    },
+    {
+      "id": "audit_1781155085313_gu197n",
+      "action": "rollback",
+      "proposalId": "prop_1781155034435_4gqysx",
+      "filename": "aiChangelog.ts",
+      "result": "success",
+      "details": "Rolled back aiChangelog.ts to backup bak_1781155055806_43i6eb",
+      "timestamp": "2026-06-11T05:18:05.313Z"
+    },
+    {
+      "id": "audit_1781155085317_d788am",
+      "action": "rollback",
+      "proposalId": "prop_1781155034435_4gqysx",
+      "filename": "aiChangelog.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back aiChangelog.ts to 2026-06-11T05:17:35.806Z",
+      "timestamp": "2026-06-11T05:18:05.317Z"
+    },
+    {
+      "id": "audit_1781155122407_2zyke5",
+      "action": "test",
+      "proposalId": "prop_1781154973623_6vxsq4",
+      "filename": "codeIntel.ts",
+      "result": "failure",
+      "details": " > DEEPSEEK_API_KEY env var is optional\n ✓ server/deepseek.test.ts > DeepSeek provider > llmProvider module loads and has DeepSeek support\n ✓ server/self/dependency_graph.test.ts > dependency_graph > ",
+      "timestamp": "2026-06-11T05:18:42.407Z"
+    },
+    {
+      "id": "audit_1781155122419_xls7u9",
+      "action": "rollback",
+      "proposalId": "prop_1781154973623_6vxsq4",
+      "filename": "codeIntel.ts",
+      "result": "success",
+      "details": "Rolled back codeIntel.ts to backup bak_1781155092442_09pdra",
+      "timestamp": "2026-06-11T05:18:42.419Z"
+    },
+    {
+      "id": "audit_1781155122423_fscht8",
+      "action": "rollback",
+      "proposalId": "prop_1781154973623_6vxsq4",
+      "filename": "codeIntel.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back codeIntel.ts to 2026-06-11T05:18:12.442Z",
+      "timestamp": "2026-06-11T05:18:42.423Z"
+    },
+    {
+      "id": "audit_1781155539533_vu32i4",
+      "action": "test",
+      "proposalId": "prop_1781155518533_hpvl8t",
+      "filename": "unifiedKnowledge.ts",
+      "result": "failure",
+      "details": "require is not defined",
+      "timestamp": "2026-06-11T05:25:39.533Z"
+    },
+    {
+      "id": "audit_1781155539541_0wi1t3",
+      "action": "rollback",
+      "proposalId": "prop_1781155518533_hpvl8t",
+      "filename": "unifiedKnowledge.ts",
+      "result": "success",
+      "details": "Rolled back unifiedKnowledge.ts to backup bak_1781155539528_0zvte0",
+      "timestamp": "2026-06-11T05:25:39.541Z"
+    },
+    {
+      "id": "audit_1781155539544_utr30f",
+      "action": "rollback",
+      "proposalId": "prop_1781155518533_hpvl8t",
+      "filename": "unifiedKnowledge.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back unifiedKnowledge.ts to 2026-06-11T05:25:39.528Z",
+      "timestamp": "2026-06-11T05:25:39.544Z"
+    },
+    {
+      "id": "audit_1781155539614_jqs11j",
+      "action": "test",
+      "proposalId": "prop_1781155155412_nfqucq",
+      "filename": "adaptiveEval.ts",
+      "result": "failure",
+      "details": "require is not defined",
+      "timestamp": "2026-06-11T05:25:39.614Z"
+    },
+    {
+      "id": "audit_1781155539622_va6y5w",
+      "action": "rollback",
+      "proposalId": "prop_1781155155412_nfqucq",
+      "filename": "adaptiveEval.ts",
+      "result": "success",
+      "details": "Rolled back adaptiveEval.ts to backup bak_1781155539609_xfgjk7",
+      "timestamp": "2026-06-11T05:25:39.622Z"
+    },
+    {
+      "id": "audit_1781155539625_9y48i4",
+      "action": "rollback",
+      "proposalId": "prop_1781155155412_nfqucq",
+      "filename": "adaptiveEval.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back adaptiveEval.ts to 2026-06-11T05:25:39.609Z",
+      "timestamp": "2026-06-11T05:25:39.625Z"
+    },
+    {
+      "id": "audit_1781155539686_e8i8tw",
+      "action": "test",
+      "proposalId": "prop_1781155134867_hll6ed",
+      "filename": "selfConsistency.ts",
+      "result": "failure",
+      "details": "require is not defined",
+      "timestamp": "2026-06-11T05:25:39.686Z"
+    },
+    {
+      "id": "audit_1781155539694_0sd827",
+      "action": "rollback",
+      "proposalId": "prop_1781155134867_hll6ed",
+      "filename": "selfConsistency.ts",
+      "result": "success",
+      "details": "Rolled back selfConsistency.ts to backup bak_1781155539681_9zhzzv",
+      "timestamp": "2026-06-11T05:25:39.694Z"
+    },
+    {
+      "id": "audit_1781155539697_nrj72x",
+      "action": "rollback",
+      "proposalId": "prop_1781155134867_hll6ed",
+      "filename": "selfConsistency.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back selfConsistency.ts to 2026-06-11T05:25:39.681Z",
+      "timestamp": "2026-06-11T05:25:39.697Z"
+    },
+    {
+      "id": "audit_1781156871999_fdbnhf",
+      "action": "test",
+      "proposalId": "prop_1781156455311_f72xhq",
+      "filename": "aiMemory.ts",
+      "result": "failure",
+      "details": "r.test.ts > taskDecomposer > module loads without errors\n ✓ server/taskDecomposer.test.ts > taskDecomposer > analyzeComplexity is exported\n ✓ server/self/smoke_test_runner.test.ts > smoke_test_runner ",
+      "timestamp": "2026-06-11T05:47:51.999Z"
+    },
+    {
+      "id": "audit_1781156872013_83g5ob",
+      "action": "rollback",
+      "proposalId": "prop_1781156455311_f72xhq",
+      "filename": "aiMemory.ts",
+      "result": "success",
+      "details": "Rolled back aiMemory.ts to backup bak_1781156842955_v51u8d",
+      "timestamp": "2026-06-11T05:47:52.013Z"
+    },
+    {
+      "id": "audit_1781156872016_7exfe2",
+      "action": "rollback",
+      "proposalId": "prop_1781156455311_f72xhq",
+      "filename": "aiMemory.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back aiMemory.ts to 2026-06-11T05:47:22.955Z",
+      "timestamp": "2026-06-11T05:47:52.016Z"
+    },
+    {
+      "id": "audit_1781156906865_g0wxj9",
+      "action": "test",
+      "proposalId": "prop_1781156316310_nsdz9b",
+      "filename": "episodicMemory.ts",
+      "result": "failure",
+      "details": " > DEEPSEEK_API_KEY env var is optional\n ✓ server/deepseek.test.ts > DeepSeek provider > llmProvider module loads and has DeepSeek support\n ✓ server/self/dependency_graph.test.ts > dependency_graph > ",
+      "timestamp": "2026-06-11T05:48:26.865Z"
+    },
+    {
+      "id": "audit_1781156906879_l4i45b",
+      "action": "rollback",
+      "proposalId": "prop_1781156316310_nsdz9b",
+      "filename": "episodicMemory.ts",
+      "result": "success",
+      "details": "Rolled back episodicMemory.ts to backup bak_1781156877336_1upg3r",
+      "timestamp": "2026-06-11T05:48:26.879Z"
+    },
+    {
+      "id": "audit_1781156906884_tgj16e",
+      "action": "rollback",
+      "proposalId": "prop_1781156316310_nsdz9b",
+      "filename": "episodicMemory.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back episodicMemory.ts to 2026-06-11T05:47:57.336Z",
+      "timestamp": "2026-06-11T05:48:26.884Z"
+    },
+    {
+      "id": "audit_1781156945395_ho5llg",
+      "action": "test",
+      "proposalId": "prop_1781156826092_cu008u",
+      "filename": "selfIntrospect.ts",
+      "result": "failure",
+      "details": " > DEEPSEEK_API_KEY env var is optional\n ✓ server/deepseek.test.ts > DeepSeek provider > llmProvider module loads and has DeepSeek support\n ✓ server/self/dependency_graph.test.ts > dependency_graph > ",
+      "timestamp": "2026-06-11T05:49:05.395Z"
+    },
+    {
+      "id": "audit_1781156945409_w6sz83",
+      "action": "rollback",
+      "proposalId": "prop_1781156826092_cu008u",
+      "filename": "selfIntrospect.ts",
+      "result": "success",
+      "details": "Rolled back selfIntrospect.ts to backup bak_1781156914284_0v2bwo",
+      "timestamp": "2026-06-11T05:49:05.409Z"
+    },
+    {
+      "id": "audit_1781156945413_1wa34w",
+      "action": "rollback",
+      "proposalId": "prop_1781156826092_cu008u",
+      "filename": "selfIntrospect.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back selfIntrospect.ts to 2026-06-11T05:48:34.284Z",
+      "timestamp": "2026-06-11T05:49:05.413Z"
+    },
+    {
+      "id": "audit_1781157229776_olfkoo",
+      "action": "test",
+      "proposalId": "prop_1781157211346_v15bso",
+      "filename": "contextAwareness.ts",
+      "result": "failure",
+      "details": "require is not defined",
+      "timestamp": "2026-06-11T05:53:49.776Z"
+    },
+    {
+      "id": "audit_1781157229786_3sjsi2",
+      "action": "rollback",
+      "proposalId": "prop_1781157211346_v15bso",
+      "filename": "contextAwareness.ts",
+      "result": "success",
+      "details": "Rolled back contextAwareness.ts to backup bak_1781157229769_kyml3j",
+      "timestamp": "2026-06-11T05:53:49.786Z"
+    },
+    {
+      "id": "audit_1781157229790_c2z8px",
+      "action": "rollback",
+      "proposalId": "prop_1781157211346_v15bso",
+      "filename": "contextAwareness.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back contextAwareness.ts to 2026-06-11T05:53:49.769Z",
+      "timestamp": "2026-06-11T05:53:49.790Z"
+    },
+    {
+      "id": "audit_1781157229864_bhkudw",
+      "action": "test",
+      "proposalId": "prop_1781156975009_atuh9d",
+      "filename": "qualityToRSI.ts",
+      "result": "failure",
+      "details": "require is not defined",
+      "timestamp": "2026-06-11T05:53:49.864Z"
+    },
+    {
+      "id": "audit_1781157229874_ifjc4x",
+      "action": "rollback",
+      "proposalId": "prop_1781156975009_atuh9d",
+      "filename": "qualityToRSI.ts",
+      "result": "success",
+      "details": "Rolled back qualityToRSI.ts to backup bak_1781157229859_o7sr0a",
+      "timestamp": "2026-06-11T05:53:49.874Z"
+    },
+    {
+      "id": "audit_1781157229877_q3apr6",
+      "action": "rollback",
+      "proposalId": "prop_1781156975009_atuh9d",
+      "filename": "qualityToRSI.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back qualityToRSI.ts to 2026-06-11T05:53:49.859Z",
+      "timestamp": "2026-06-11T05:53:49.877Z"
+    },
+    {
+      "id": "audit_1781157229953_nahg7p",
+      "action": "test",
+      "proposalId": "prop_1781156956681_gvtkeb",
+      "filename": "persistentContextStore.ts",
+      "result": "failure",
+      "details": "require is not defined",
+      "timestamp": "2026-06-11T05:53:49.953Z"
+    },
+    {
+      "id": "audit_1781157229963_2pghip",
+      "action": "rollback",
+      "proposalId": "prop_1781156956681_gvtkeb",
+      "filename": "persistentContextStore.ts",
+      "result": "success",
+      "details": "Rolled back persistentContextStore.ts to backup bak_1781157229948_bi3y86",
+      "timestamp": "2026-06-11T05:53:49.963Z"
+    },
+    {
+      "id": "audit_1781157229967_at5psf",
+      "action": "rollback",
+      "proposalId": "prop_1781156956681_gvtkeb",
+      "filename": "persistentContextStore.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back persistentContextStore.ts to 2026-06-11T05:53:49.948Z",
+      "timestamp": "2026-06-11T05:53:49.967Z"
     }
   ]
 }

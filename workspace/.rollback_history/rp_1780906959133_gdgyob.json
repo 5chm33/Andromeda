@@ -1,8 +1,0 @@
-{
-  "id": "rp_1780906959133_gdgyob",
-  "description": "Before proposal prop_1780906958744_gptu7r: Extract SSRF validation into a shared helper function",
-  "timestamp": 1780906959133,
-  "author": "self-improve",
-  "files": [],
-  "metadata": {}
-}

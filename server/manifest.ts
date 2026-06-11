@@ -112,10 +112,24 @@ const CORE_FEATURES: ManifestSection[] = [
   {
     name: "Image Generation",
     status: "active",
-    description: "Generate images from text prompts via FLUX.",
+    description: "Generate images from text prompts via FLUX (HuggingFace free tier) or FLUX Pro Ultra (fal.ai, requires FAL_KEY).",
     capabilities: [
-      "Text-to-image generation",
+      "Text-to-image generation (HuggingFace FLUX, free)",
+      "Pro text-to-image generation (fal.ai FLUX 1.1 Pro Ultra, requires FAL_KEY)",
+      "Reference-guided style transfer",
       "Configurable resolution and parameters",
+    ],
+  },
+  {
+    name: "Video Generation",
+    status: process.env.FAL_KEY ? "active" : "disabled",
+    description: "Generate videos from text prompts or animate still images using Kling v2.1 Master via fal.ai (requires FAL_KEY).",
+    capabilities: [
+      "Text-to-video generation (Kling v2.1 Master, 5s or 10s clips)",
+      "Image-to-video animation (animate any still image)",
+      "Configurable aspect ratio (16:9, 9:16, 1:1)",
+      "Camera movement control",
+      "Start-end frame control (tail image)",
     ],
   },
   {

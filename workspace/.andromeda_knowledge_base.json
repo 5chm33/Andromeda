@@ -6201,6 +6201,246 @@
       "confidence": 0.9,
       "createdAt": 1781151852713,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781153608992_e8cmdq",
+      "category": "antipattern",
+      "title": "Failure: Improve readability of extractFactualClaims function",
+      "description": "Failed to apply \"Improve readability of extractFactualClaims function\" to grounding.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify grounding.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for grounding.ts: Improve readability of extractFactualClaims function — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "grounding.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781153608992,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781153643687_xb8nu7",
+      "category": "antipattern",
+      "title": "Failure: Improve readability of error handling in analysis functions",
+      "description": "Failed to apply \"Improve readability of error handling in analysis functions\" to autoGoalSuggester.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify autoGoalSuggester.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for autoGoalSuggester.ts: Improve readability of error handling in analysis functions — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "autoGoalSuggester.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781153643687,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781153689781_kd0ew0",
+      "category": "antipattern",
+      "title": "Failure: Improve readability with consistent formatting and comments",
+      "description": "Failed to apply \"Improve readability with consistent formatting and comments\" to skillGraph.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify skillGraph.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for skillGraph.ts: Improve readability with consistent formatting and comments — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "skillGraph.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781153689781,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781155050541_z2fge1",
+      "category": "antipattern",
+      "title": "Failure: Remove unused DEEPSEEK_API_KEY check and apiKey parameter",
+      "description": "Failed to apply \"Remove unused DEEPSEEK_API_KEY check and apiKey parameter\" to multiAgent.ts. Reason: Syntax check failed — proposal refined but still has errors (queued for retry). Avoid similar changes.",
+      "context": "self-modify multiAgent.ts feature",
+      "outcome": "failure: Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "lesson": "Avoid for multiAgent.ts: Remove unused DEEPSEEK_API_KEY check and apiKey parameter — causes Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "applicableTo": [
+        "multiAgent.ts",
+        "feature"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781155050541,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781155085323_h1ot41",
+      "category": "antipattern",
+      "title": "Failure: Improve diff formatting readability",
+      "description": "Failed to apply \"Improve diff formatting readability\" to aiChangelog.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify aiChangelog.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for aiChangelog.ts: Improve diff formatting readability — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "aiChangelog.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781155085323,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781155122432_isuhdx",
+      "category": "antipattern",
+      "title": "Failure: Refactor diff generator for readability",
+      "description": "Failed to apply \"Refactor diff generator for readability\" to codeIntel.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify codeIntel.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for codeIntel.ts: Refactor diff generator for readability — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "codeIntel.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781155122432,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781155539563_5qj7vz",
+      "category": "antipattern",
+      "title": "Failure: Extract source query logic into reusable function",
+      "description": "Failed to apply \"Extract source query logic into reusable function\" to unifiedKnowledge.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify unifiedKnowledge.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for unifiedKnowledge.ts: Extract source query logic into reusable function — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "unifiedKnowledge.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781155539563,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781155539641_jv7bne",
+      "category": "antipattern",
+      "title": "Failure: Fix missing 'browser' category in template fallback",
+      "description": "Failed to apply \"Fix missing 'browser' category in template fallback\" to adaptiveEval.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify adaptiveEval.ts reliability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for adaptiveEval.ts: Fix missing 'browser' category in template fallback — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "adaptiveEval.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781155539641,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781155539713_adxvs1",
+      "category": "antipattern",
+      "title": "Failure: Extract duplicate error handling into shared helper",
+      "description": "Failed to apply \"Extract duplicate error handling into shared helper\" to selfConsistency.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify selfConsistency.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for selfConsistency.ts: Extract duplicate error handling into shared helper — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "selfConsistency.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781155539713,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781156872023_hvfvtp",
+      "category": "antipattern",
+      "title": "Failure: Improve readability of getAndromedaMemoryPath function",
+      "description": "Failed to apply \"Improve readability of getAndromedaMemoryPath function\" to aiMemory.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify aiMemory.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for aiMemory.ts: Improve readability of getAndromedaMemoryPath function — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "aiMemory.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781156872023,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781156906893_mac867",
+      "category": "antipattern",
+      "title": "Failure: Improve readability of getEpisodicMemory function",
+      "description": "Failed to apply \"Improve readability of getEpisodicMemory function\" to episodicMemory.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify episodicMemory.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for episodicMemory.ts: Improve readability of getEpisodicMemory function — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "episodicMemory.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781156906893,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781156945420_y4lehq",
+      "category": "antipattern",
+      "title": "Failure: Fix circular dependency detection false positives",
+      "description": "Failed to apply \"Fix circular dependency detection false positives\" to selfIntrospect.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify selfIntrospect.ts reliability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for selfIntrospect.ts: Fix circular dependency detection false positives — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "selfIntrospect.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781156945420,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781157229813_ubfpwi",
+      "category": "antipattern",
+      "title": "Failure: Improve readability of context optimization logic",
+      "description": "Failed to apply \"Improve readability of context optimization logic\" to contextAwareness.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify contextAwareness.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for contextAwareness.ts: Improve readability of context optimization logic — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "contextAwareness.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781157229813,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781157229901_p5h2go",
+      "category": "antipattern",
+      "title": "Failure: Add input validation for doc gap file paths",
+      "description": "Failed to apply \"Add input validation for doc gap file paths\" to qualityToRSI.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify qualityToRSI.ts security",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for qualityToRSI.ts: Add input validation for doc gap file paths — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "qualityToRSI.ts",
+        "security"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781157229901,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781157229994_e64vxc",
+      "category": "antipattern",
+      "title": "Failure: Extract file reading logic into helper function",
+      "description": "Failed to apply \"Extract file reading logic into helper function\" to persistentContextStore.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify persistentContextStore.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for persistentContextStore.ts: Extract file reading logic into helper function — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "persistentContextStore.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781157229994,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -6343,5 +6583,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-11T04:30:36.271Z"
+  "_lastUpdated": "2026-06-11T05:54:49.094Z"
 }

@@ -1,8 +1,8 @@
 {
-  "timestamp": 1781149503300,
-  "totalModules": 262,
+  "timestamp": 1781157334376,
+  "totalModules": 263,
   "testedModules": 248,
-  "untestedModules": 14,
+  "untestedModules": 15,
   "coveragePercent": 44,
   "moduleDetails": [
     {
@@ -131,6 +131,25 @@
       "exportedFunctions": [],
       "testedFunctions": [],
       "untestedFunctions": [],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/_core/videoGeneration.ts",
+      "fileName": "videoGeneration.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "generateVideoFromText",
+        "generateVideoFromImage",
+        "generateImageFal",
+        "isFalAvailable"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "generateVideoFromText",
+        "generateVideoFromImage",
+        "generateImageFal",
+        "isFalAvailable"
+      ],
       "coveragePercent": 0
     },
     {

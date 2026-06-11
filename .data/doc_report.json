@@ -1,7 +1,7 @@
 {
-  "timestamp": 1781149566068,
-  "totalModules": 262,
-  "documentedModules": 168,
+  "timestamp": 1781157364487,
+  "totalModules": 263,
+  "documentedModules": 169,
   "undocumentedExports": [
     {
       "filePath": "server/_core/imageGeneration.ts",
@@ -2393,19 +2393,7 @@
     },
     {
       "filePath": "server/selfImprove.ts",
-      "exportName": "loadProposals",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/selfImprove.ts",
       "exportName": "resetStuckProcessingProposals",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/selfImprove.ts",
-      "exportName": "saveProposals",
       "exportType": "function",
       "line": 0
     },
@@ -2424,12 +2412,6 @@
     {
       "filePath": "server/selfImprove.ts",
       "exportName": "rejectProposal",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/selfImprove.ts",
-      "exportName": "listProposals",
       "exportType": "function",
       "line": 0
     },
@@ -3160,6 +3142,12 @@
       "line": 0
     },
     {
+      "filePath": "server/truncationDetector.ts",
+      "exportName": "repairTruncatedCode",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/unifiedKnowledge.ts",
       "exportName": "getUnifiedKnowledgeStats",
       "exportType": "function",
@@ -3260,7 +3248,7 @@
     {
       "filePath": "ARCHITECTURE.md",
       "type": "architecture",
-      "content": "Updated: 262 modules, 542 undocumented exports"
+      "content": "Updated: 263 modules, 540 undocumented exports"
     }
   ],
   "architectureUpdated": true
