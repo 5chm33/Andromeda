@@ -72,6 +72,12 @@ export function log(level: LogLevel, module: string, message: string, context?: 
   }
 }
 
+/** Returns the current minimum log level. Logs below this level are suppressed. */
+/** Returns the current minimum log level. Logs below this level are suppressed. */
+/** Returns the current minimum log level. Logs below this level are suppressed. */
+/** Returns the current log level for the application.
+ * @returns {string} The current log level (e.g. 'info', 'debug', 'warn', 'error')
+ */
 export function getLogLevel(): LogLevel {
   return currentLogLevel;
 }

@@ -180,7 +180,7 @@ function getServerDir(): string {
 }
 
 function getConfigPath(): string {
-  const workspaceDir = path.resolve(getServerDir(), "..", "workspace");
+  const workspaceDir = path.resolve(process.cwd(), "workspace");
   if (!fs.existsSync(workspaceDir)) fs.mkdirSync(workspaceDir, { recursive: true });
   return path.join(workspaceDir, "andromeda-config.json");
 }

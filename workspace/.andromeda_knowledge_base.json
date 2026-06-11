@@ -5993,6 +5993,166 @@
       "confidence": 0.8,
       "createdAt": 1780935416597,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781147251489_xbenja",
+      "category": "antipattern",
+      "title": "Failure: Optimize LRU eviction by using a linked list",
+      "description": "Failed to apply \"Optimize LRU eviction by using a linked list\" to cache.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify cache.ts performance",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for cache.ts: Optimize LRU eviction by using a linked list — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "cache.ts",
+        "performance"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781147251489,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781147506617_jlwyxr",
+      "category": "antipattern",
+      "title": "Failure: Extract duplicate API call logic into helper function",
+      "description": "Failed to apply \"Extract duplicate API call logic into helper function\" to aiPlanning.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify aiPlanning.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for aiPlanning.ts: Extract duplicate API call logic into helper function — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "aiPlanning.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781147506617,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781147506655_tk3wph",
+      "category": "antipattern",
+      "title": "Failure: Improve readability of validateAtRuntime function",
+      "description": "Failed to apply \"Improve readability of validateAtRuntime function\" to capabilityBootstrapper.ts. Reason: Constitution blocked: proposed content contains forbidden pattern 'process.exit('.. Avoid similar changes.",
+      "context": "self-modify capabilityBootstrapper.ts readability",
+      "outcome": "failure: Constitution blocked: proposed content contains forbidden pattern 'process.exit('.",
+      "lesson": "Avoid for capabilityBootstrapper.ts: Improve readability of validateAtRuntime function — causes Constitution blocked: proposed content contains forbidden pattern 'process.exit('.",
+      "applicableTo": [
+        "capabilityBootstrapper.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781147506655,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781147542112_5s5lhn",
+      "category": "antipattern",
+      "title": "Failure: Remove duplicate dynamic imports in refreshSelfModel",
+      "description": "Failed to apply \"Remove duplicate dynamic imports in refreshSelfModel\" to selfModel.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify selfModel.ts performance",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for selfModel.ts: Remove duplicate dynamic imports in refreshSelfModel — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "selfModel.ts",
+        "performance"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781147542112,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781147957177_ay27f1",
+      "category": "antipattern",
+      "title": "Goal execution: Reduce Response Latency",
+      "description": "Processed 1 sub-goals, 0 succeeded",
+      "context": "Goal: Reduce Response Latency (performance)",
+      "outcome": "no progress",
+      "lesson": "Processed 1 sub-goals, 0 succeeded",
+      "applicableTo": [
+        "recursiveGoals",
+        "selfImprove"
+      ],
+      "confidence": 0.7,
+      "createdAt": 1781147957177,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781148425871_cg8uqu",
+      "category": "antipattern",
+      "title": "Failure: Fix health check logic inconsistency in recordError",
+      "description": "Failed to apply \"Fix health check logic inconsistency in recordError\" to adaptiveRouter.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify adaptiveRouter.ts reliability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for adaptiveRouter.ts: Fix health check logic inconsistency in recordError — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "adaptiveRouter.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781148425871,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781148442564_6b6rx1",
+      "category": "antipattern",
+      "title": "Failure: Extract shared infrastructure into a dedicated module",
+      "description": "Failed to apply \"Extract shared infrastructure into a dedicated module\" to streamRouter.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify streamRouter.ts architecture",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for streamRouter.ts: Extract shared infrastructure into a dedicated module — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "streamRouter.ts",
+        "architecture"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781148442564,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781149692219_f3duuh",
+      "category": "antipattern",
+      "title": "Failure: Extract duplicate API call logic into helper function",
+      "description": "Failed to apply \"Extract duplicate API call logic into helper function\" to aiPlanning.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify aiPlanning.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for aiPlanning.ts: Extract duplicate API call logic into helper function — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "aiPlanning.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781149692219,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781149724344_rnep2o",
+      "category": "antipattern",
+      "title": "Failure: Fix health check logic inconsistency in recordError",
+      "description": "Failed to apply \"Fix health check logic inconsistency in recordError\" to adaptiveRouter.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify adaptiveRouter.ts reliability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for adaptiveRouter.ts: Fix health check logic inconsistency in recordError — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "adaptiveRouter.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781149724344,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781149756120_twknq0",
+      "category": "antipattern",
+      "title": "Failure: Extract provider query functions into shared helper",
+      "description": "Failed to apply \"Extract provider query functions into shared helper\" to selfConsistency.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify selfConsistency.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for selfConsistency.ts: Extract provider query functions into shared helper — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "selfConsistency.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781149756120,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -6135,5 +6295,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-10T22:19:23.873Z"
+  "_lastUpdated": "2026-06-11T03:54:23.646Z"
 }

@@ -80,7 +80,7 @@ function getServerDir(): string {
 }
 
 function getGoalsStorePath(): string {
-  const workspaceDir = path.resolve(getServerDir(), "..", "workspace");
+  const workspaceDir = path.resolve(process.cwd(), "workspace");
   if (!fs.existsSync(workspaceDir)) fs.mkdirSync(workspaceDir, { recursive: true });
   return path.join(workspaceDir, ".andromeda_meta_goals.json");
 }
@@ -618,7 +618,7 @@ export function initRecursiveGoals(): void {
  */
 // v5.29: Recursion and TTL limits to prevent infinite loops
 const MAX_ACTIVE_GOALS = 5;
-const GOAL_TTL_MS = 30 * 60 * 1000; // 30 minutes max per goal
+const GOAL_TTL_MS = 4 * 60 * 60 * 1000; // v10.3: 4 hours max per goal (was 30min — too short for LLM-backed sub-goals)
 // v6.16: Increased from 60s to 15min — the orchestrator calls this every 60s but
 // actual goal execution (which calls analyzeAndPropose → LLM) should be infrequent.
 // With DeepSeek routing, each analyzeAndPropose call costs ~$0.001 — 15min interval

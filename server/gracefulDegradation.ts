@@ -182,7 +182,7 @@ fallbackChains.set("database", [
     name: "file_backed_store",
     description: "Use JSON file-backed storage",
     handler: async () => {
-      const workspaceDir = path.resolve(getServerDir(), "..", "workspace");
+      const workspaceDir = path.resolve(process.cwd(), "workspace");
       return fs.existsSync(workspaceDir);
     },
     limitations: ["Slower than DB", "No concurrent access safety", "Limited query capability"],

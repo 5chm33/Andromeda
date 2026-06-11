@@ -136,11 +136,13 @@ async function startServer(): Promise<void> {
     express.urlencoded({ limit, extended: true })(req, res, next);
   });
   app.use((req, res, next) => {
-    // Long-running endpoints: streams, RSI trigger/pipeline, self-improve
+    // Long-running endpoints: streams, RSI trigger/pipeline, self-improve, guard apply
     const isLongRunning = req.path.includes("/stream") ||
       req.path.includes("/rsi/trigger") ||
       req.path.includes("/rsi/parallel") ||
+      req.path.includes("/rsi/scheduler") ||
       req.path.includes("/pipeline") ||
+      req.path.includes("/guard/apply") ||
       req.path.includes("/self/improve");
     const timeout = isLongRunning ? 300_000 : 60_000;
     res.setTimeout(timeout, () => {

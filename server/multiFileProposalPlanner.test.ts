@@ -130,7 +130,8 @@ describe("multiFileProposalPlanner", () => {
     expect(proposalId).toContain("prop_multi_");
     
     // Verify it was written to the store
-    const storePath = path.join(originalCwd, "workspace", ".andromeda_proposals.json");
+    // v10.3: process.cwd() is tmpDir (changed in beforeEach), so the store is written there
+    const storePath = path.join(tmpDir, "workspace", ".andromeda_proposals.json");
     expect(fs.existsSync(storePath)).toBe(true);
     
     const store = JSON.parse(fs.readFileSync(storePath, "utf-8"));

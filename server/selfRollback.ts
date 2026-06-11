@@ -59,7 +59,7 @@ export interface RollbackResult {
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const PROJECT_DIR = path.resolve(__dirname, "..");
+const PROJECT_DIR = process.cwd();
 
 const DEFAULT_CONFIG: RollbackConfig = {
   enabled: true,

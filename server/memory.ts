@@ -95,7 +95,7 @@ function getMemoryPath(): string {
   // Allow tests to override workspace dir via env var
   const workspaceDir = process.env.ANDROMEDA_WORKSPACE
     ? path.resolve(process.env.ANDROMEDA_WORKSPACE)
-    : path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "workspace");
+    : path.resolve(process.cwd(), "workspace");
   if (!fs.existsSync(workspaceDir)) {
     fs.mkdirSync(workspaceDir, { recursive: true });
   }

@@ -258,7 +258,7 @@ export async function submitMultiFileProposal(plan: MultiFileProposalPlan): Prom
 
     // Use the internal proposal creation path via a special marker
     // We create the proposal object and inject it via the store
-    const workspaceDir = path.resolve(__dirname, "..", "workspace");
+    const workspaceDir = path.resolve(process.cwd(), "workspace");
     const storePath = path.join(workspaceDir, ".andromeda_proposals.json");
 
     let store: { proposals: any[] } = { proposals: [] };

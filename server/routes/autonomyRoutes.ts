@@ -54,6 +54,11 @@ import {
   listBackups, getAuditLog as getGuardAuditLog, sweepExpiredProposals,
 } from "../selfImproveGuard.js";
 import {
+  listProposals as listProposalsStore,
+  loadProposals as loadProposalsStore,
+  saveProposals as saveProposalsStore,
+} from "../selfImprove.js";
+import {
   createApiKey, revokeApiKey, deleteApiKey, listApiKeys, getAuditLog as getSecurityAuditLog,
   getAuditStats, getSecurityConfig, updateSecurityConfig, getSecurityStats,
 } from "../security.js";
@@ -67,8 +72,7 @@ export function registerAutonomyRoutes(app: Express) {
   app.post("/api/guard/preview", (req, res) => {
     const { proposalId } = req.body;
     if (!proposalId) return res.status(400).json({ error: "proposalId required" });
-    const { listProposals } = require("../selfImprove.js");
-    const proposals = listProposals();
+    const proposals = listProposalsStore();
     const proposal = proposals.find((p: any) => p.id === proposalId);
     if (!proposal) return res.status(404).json({ error: "Proposal not found" });
     res.json(generateDiffPreview(proposal));
@@ -77,6 +81,32 @@ export function registerAutonomyRoutes(app: Express) {
     const { proposalId } = req.body;
     if (!proposalId) return res.status(400).json({ error: "proposalId required" });
     const result = await guardedApply(proposalId);
+    // v10.3: Update proposal status to 'applied' in the proposals store after successful apply
+    if (result.success) {
+      try {
+        const store = loadProposalsStore();
+        const prop = store.proposals.find((p: any) => p.id === proposalId);
+        if (prop) {
+          prop.status = "applied";
+          (prop as any).appliedAt = Date.now();
+          saveProposalsStore(store);
+          console.log(`[Guard API] Marked proposal ${proposalId} as applied in proposals store`);
+        } else {
+          // Proposal injected externally — create a minimal applied record
+          store.proposals.push({
+            id: proposalId, status: "applied", appliedAt: Date.now(),
+            title: "External proposal", targetFile: "unknown", rationale: "",
+            category: "readability", impact: "low", confidence: 1.0,
+            diff: "", originalSnippet: "", proposedSnippet: "",
+            originalContent: "", proposedContent: "", createdAt: Date.now(),
+          } as any);
+          saveProposalsStore(store);
+          console.log(`[Guard API] Created applied record for external proposal ${proposalId}`);
+        }
+      } catch (err) {
+        console.warn("[Guard API] Failed to update proposal status (non-fatal):", (err as Error).message);
+      }
+    }
     res.json(result);
   });
   app.post("/api/guard/rollback", (req, res) => {

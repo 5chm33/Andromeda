@@ -43,7 +43,7 @@ interface FeedbackStore {
 // ─── Storage ──────────────────────────────────────────────────────────────────
 
 function getFeedbackPath(): string {
-  const workspaceDir = path.resolve(__dirname, "..", "workspace");
+  const workspaceDir = path.resolve(process.cwd(), "workspace");
   if (!fs.existsSync(workspaceDir)) fs.mkdirSync(workspaceDir, { recursive: true });
   return path.join(workspaceDir, ".andromeda_proposal_feedback.json");
 }

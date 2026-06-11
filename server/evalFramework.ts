@@ -18,7 +18,7 @@ import { fileURLToPath } from "url";
 import { backgroundSimpleCompletion } from "./llmProvider.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const EVAL_DIR = path.resolve(__dirname, "..", "workspace", "evals");
+const EVAL_DIR = path.resolve(process.cwd(), "workspace", "evals");
 const RESULTS_FILE = path.join(EVAL_DIR, "eval-history.jsonl");
 
 export interface EvalTask {

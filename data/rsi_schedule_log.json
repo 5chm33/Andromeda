@@ -1,0 +1,30 @@
+[
+  {
+    "triggeredAt": 1781147182248,
+    "source": "scheduler",
+    "intervalHours": 0,
+    "cycleStarted": true,
+    "note": "Manual trigger via API"
+  },
+  {
+    "triggeredAt": 1781148446961,
+    "source": "scheduler",
+    "intervalHours": 0,
+    "cycleStarted": true,
+    "note": "Manual trigger via API"
+  },
+  {
+    "triggeredAt": 1781150090351,
+    "source": "scheduler",
+    "intervalHours": 0,
+    "cycleStarted": true,
+    "note": "Manual trigger via API"
+  },
+  {
+    "triggeredAt": 1781150350566,
+    "source": "scheduler",
+    "intervalHours": 0,
+    "cycleStarted": true,
+    "note": "Manual trigger via API"
+  }
+]

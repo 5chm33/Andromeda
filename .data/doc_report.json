@@ -1,7 +1,7 @@
 {
-  "timestamp": 1781130300876,
+  "timestamp": 1781149566068,
   "totalModules": 262,
-  "documentedModules": 167,
+  "documentedModules": 168,
   "undocumentedExports": [
     {
       "filePath": "server/_core/imageGeneration.ts",
@@ -528,12 +528,6 @@
     {
       "filePath": "server/cache.ts",
       "exportName": "log",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/cache.ts",
-      "exportName": "getLogLevel",
       "exportType": "function",
       "line": 0
     },
@@ -2399,7 +2393,19 @@
     },
     {
       "filePath": "server/selfImprove.ts",
+      "exportName": "loadProposals",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfImprove.ts",
       "exportName": "resetStuckProcessingProposals",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfImprove.ts",
+      "exportName": "saveProposals",
       "exportType": "function",
       "line": 0
     },
@@ -3254,7 +3260,7 @@
     {
       "filePath": "ARCHITECTURE.md",
       "type": "architecture",
-      "content": "Updated: 262 modules, 541 undocumented exports"
+      "content": "Updated: 262 modules, 542 undocumented exports"
     }
   ],
   "architectureUpdated": true

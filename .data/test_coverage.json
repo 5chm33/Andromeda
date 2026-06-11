@@ -1,5 +1,5 @@
 {
-  "timestamp": 1781130270202,
+  "timestamp": 1781149503300,
   "totalModules": 262,
   "testedModules": 248,
   "untestedModules": 14,
@@ -702,6 +702,7 @@
         "getModelContextMaxOutput",
         "getFileEngineProviderHeaders",
         "getFileEngineApiUrl",
+        "resolveApiUrlFromKey",
         "extractSignatures",
         "categorizeFile",
         "compressFile",
@@ -716,6 +717,7 @@
         "getModelContextMaxOutput",
         "getFileEngineProviderHeaders",
         "getFileEngineApiUrl",
+        "resolveApiUrlFromKey",
         "extractSignatures",
         "categorizeFile",
         "compressFile",
@@ -4400,6 +4402,47 @@
       "coveragePercent": 67
     },
     {
+      "filePath": "server/selfImprove.ts",
+      "fileName": "selfImprove.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/selfImprove.test.ts",
+      "exportedFunctions": [
+        "loadProposals",
+        "resetStuckProcessingProposals",
+        "saveProposals",
+        "resolveServerFile",
+        "analyzeAndPropose",
+        "applyProposal",
+        "rejectProposal",
+        "listProposals",
+        "getAnalyzableFiles",
+        "getAutoApplyConfig",
+        "setAutoApplyConfig",
+        "autoApplyHighConfidence",
+        "getAutoApplyStatus",
+        "refineProposal"
+      ],
+      "testedFunctions": [
+        "resetStuckProcessingProposals",
+        "resolveServerFile",
+        "applyProposal",
+        "rejectProposal",
+        "listProposals",
+        "getAnalyzableFiles",
+        "getAutoApplyConfig",
+        "setAutoApplyConfig",
+        "autoApplyHighConfidence",
+        "getAutoApplyStatus"
+      ],
+      "untestedFunctions": [
+        "loadProposals",
+        "saveProposals",
+        "analyzeAndPropose",
+        "refineProposal"
+      ],
+      "coveragePercent": 71
+    },
+    {
       "filePath": "server/tools/toolRegistry.ts",
       "fileName": "toolRegistry.ts",
       "hasTestFile": true,
@@ -4521,43 +4564,6 @@
         "verifyConstitutionIntegrity"
       ],
       "coveragePercent": 80
-    },
-    {
-      "filePath": "server/selfImprove.ts",
-      "fileName": "selfImprove.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/selfImprove.test.ts",
-      "exportedFunctions": [
-        "resetStuckProcessingProposals",
-        "resolveServerFile",
-        "analyzeAndPropose",
-        "applyProposal",
-        "rejectProposal",
-        "listProposals",
-        "getAnalyzableFiles",
-        "getAutoApplyConfig",
-        "setAutoApplyConfig",
-        "autoApplyHighConfidence",
-        "getAutoApplyStatus",
-        "refineProposal"
-      ],
-      "testedFunctions": [
-        "resetStuckProcessingProposals",
-        "resolveServerFile",
-        "applyProposal",
-        "rejectProposal",
-        "listProposals",
-        "getAnalyzableFiles",
-        "getAutoApplyConfig",
-        "setAutoApplyConfig",
-        "autoApplyHighConfidence",
-        "getAutoApplyStatus"
-      ],
-      "untestedFunctions": [
-        "analyzeAndPropose",
-        "refineProposal"
-      ],
-      "coveragePercent": 83
     },
     {
       "filePath": "server/contextBus.ts",

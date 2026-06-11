@@ -281,7 +281,7 @@ async function executeTask(taskId: string): Promise<void> {
         const output = execSync(task.action, {
           timeout: 60000,
           encoding: "utf-8",
-          cwd: path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "workspace"),
+          cwd: path.resolve(process.cwd(), "workspace"),
         });
         result = output.slice(0, 2000);
         break;

@@ -95,7 +95,7 @@ function proposalHash(targetFile: string, title: string): string {
 
 // v9.8.0: Persist seenHashes and autoApplyHistory across restarts
 function getCacheStorePath(): string {
-  const workspaceDir = path.resolve(getServerDir(), "..", "workspace");
+  const workspaceDir = path.resolve(process.cwd(), "workspace");
   if (!fs.existsSync(workspaceDir)) fs.mkdirSync(workspaceDir, { recursive: true });
   return path.join(workspaceDir, ".andromeda_proposal_cache.json");
 }
@@ -146,12 +146,15 @@ function getServerDir(): string {
 }
 
 function getProposalStorePath(): string {
-  const workspaceDir = path.resolve(getServerDir(), "..", "workspace");
+  const workspaceDir = path.resolve(process.cwd(), "workspace");
   if (!fs.existsSync(workspaceDir)) fs.mkdirSync(workspaceDir, { recursive: true });
   return path.join(workspaceDir, ".andromeda_proposals.json");
 }
 
-function loadProposals(): ProposalStore {
+/** Loads the proposal store from disk. Returns an empty store if the file does not exist.
+ * @returns {ProposalStore} The current proposal store
+ */
+export function loadProposals(): ProposalStore {
   const p = getProposalStorePath();
   if (!fs.existsSync(p)) return { proposals: [] };
   try {
@@ -209,7 +212,10 @@ function pruneProposalStore(store: ProposalStore): void {
   }
 }
 
-function saveProposals(store: ProposalStore): void {
+/** Persists the proposal store to disk, pruning old entries first.
+ * @param {ProposalStore} store - The proposal store to save
+ */
+export function saveProposals(store: ProposalStore): void {
   pruneProposalStore(store);
   fs.writeFileSync(getProposalStorePath(), JSON.stringify(store, null, 2), "utf-8");
   saveCacheStore(); // Save seenHashes whenever proposals are saved
@@ -693,6 +699,7 @@ export async function analyzeAndPropose(
     const hasDeepSeek = !!process.env.DEEPSEEK_API_KEY;
     const hasKimi = !!process.env.KIMI_API_KEY;
     const hasOpenRouter = !!process.env.OPENROUTER_API_KEY;
+    const hasOpenAI = !!process.env.OPENAI_API_KEY;
     const chain: string[] = [primary];
     // Add eco-tier fallbacks (cheapest) that aren't already in chain
     for (const fb of ["deepseek", "kimi", "openrouter-fast"]) {
@@ -702,7 +709,9 @@ export async function analyzeAndPropose(
         else if (fb === "openrouter-fast" && hasOpenRouter) chain.push(fb);
       }
     }
-    if (chain.length === 0) chain.push("deepseek");
+    // v10.3: openai (sandbox Gemini proxy) as final fallback — always available in sandbox
+    if (!chain.includes("openai") && hasOpenAI) chain.push("openai");
+    if (chain.length === 0) chain.push("openai");
     return chain;
   }
   const { simpleChatCompletion, getProviderForTier: getProviderForTier_fn, tierForArea: tierForArea_fn } = await import("./llmProvider.js");
@@ -903,7 +912,19 @@ Do NOT include any forbidden patterns listed above.`,
 
   // v6.28 A1: Register in dedup hash set before saving
   _seenProposalHashes.add(hash);
-
+  // v10.3: Load a FRESH store before saving to preserve any 'applied' proposals
+  // added concurrently (fixes race condition between analyzeAndPropose and guardedApply)
+  {
+    const freshStore = loadProposals();
+    const appliedInFresh = freshStore.proposals.filter(p => p.status === "applied");
+    const appliedIds = new Set(appliedInFresh.map(p => p.id));
+    for (const p of store.proposals) {
+      if (appliedIds.has(p.id)) { p.status = "applied" as any; }
+    }
+    for (const ap of appliedInFresh) {
+      if (!store.proposals.find(p => p.id === ap.id)) { store.proposals.push(ap); }
+    }
+  }
   store.proposals.push(proposal);
   saveProposals(store);
 
@@ -1303,6 +1324,10 @@ export function rejectProposal(proposalId: string): boolean {
   return true;
 }
 
+/** Returns a filtered list of proposals from the store.
+ * @param status - Optional status filter ('pending', 'applied', 'rejected')
+ * @returns Array of matching proposals
+ */
 export function listProposals(statusFilter?: ImprovementProposal["status"]): ImprovementProposal[] {
   const store = loadProposals();
   const proposals = statusFilter
@@ -1342,7 +1367,7 @@ const DEFAULT_AUTO_APPLY_CONFIG: AutoApplyConfig = {
 };
 
 function getAutoApplyConfigPath(): string {
-  const workspaceDir = path.resolve(getServerDir(), "..", "workspace");
+  const workspaceDir = path.resolve(process.cwd(), "workspace");
   if (!fs.existsSync(workspaceDir)) fs.mkdirSync(workspaceDir, { recursive: true });
   return path.join(workspaceDir, ".andromeda_auto_apply.json");
 }

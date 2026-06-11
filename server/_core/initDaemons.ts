@@ -33,7 +33,7 @@ export function startDaemons(): void {
   // v5.75: Generate ANDROMEDA.md — grounds the model in actual file structure
   try {
     const serverDir = resolve(__dirname, "..");
-    const workspaceDir = resolve(__dirname, "../../workspace");
+    const workspaceDir = resolve(process.cwd(), "workspace");
     generateAndromedaMd(serverDir, workspaceDir);
   } catch { /* non-fatal */ }
 

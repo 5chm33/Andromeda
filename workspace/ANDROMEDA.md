@@ -2,22 +2,22 @@
 > **THIS FILE IS INJECTED AT THE START OF EVERY SYSTEM PROMPT.**
 > Read it completely before taking any action. It contains your real file structure,
 > correct tool names, and mandatory protocols.
-> Last updated: 2026-06-10T22:24:15.096Z
+> Last updated: 2026-06-11T03:44:48.199Z
 
 ## ⚠️ CRITICAL: Your Runtime Paths (v5.96)
 These are the ACTUAL paths on this machine. Use these in ALL bash_execute commands.
 
 | Path | Value |
 |------|-------|
-| Project root | `/home/ubuntu/andromeda_repo` |
-| Server source | `/home/ubuntu/andromeda_repo/dist` |
-| Workspace | `/home/ubuntu/andromeda_repo/workspace` |
+| Project root | `/home/ubuntu/andromeda_git` |
+| Server source | `/home/ubuntu/andromeda_git/dist` |
+| Workspace | `/home/ubuntu/andromeda_git/workspace` |
 
 **When searching for source files, use:**
 ```bash
-find "/home/ubuntu/andromeda_repo/dist" -name "*.ts" | sort
+find "/home/ubuntu/andromeda_git/dist" -name "*.ts" | sort
 # OR simply:
-ls "/home/ubuntu/andromeda_repo/dist"
+ls "/home/ubuntu/andromeda_git/dist"
 ```
 
 **NEVER use /app/, /app/src/, /app/server/src/, or C:\Users\ paths — they do NOT exist.**
@@ -135,8 +135,6 @@ server/
 ├── andromedaDaemon.js
 ├── data/
 │   ├── context_bus.json
-│   ├── learned_constraints.json
-│   ├── rsi_proof_history.json
 │   └── scheduler.json
 ├── public/
 │   ├── .gitkeep
@@ -581,34 +579,6 @@ server/
 │           ├── nature.mp4
 │           └── space.mp4
 └── workspace/
-    ├── .andromeda_knowledge_base.json
-    ├── .andromeda_memory.json
-    ├── .andromeda_meta_goals.json
-    ├── .andromeda_proposal_cache.json
-    ├── .pipeline_backups/
-    │   ├── rsi-typecheck_1781063770714.json
-    │   └── rsi-typecheck_1781063780921.json
-    ├── .rollback_history/
-    │   ├── rp_1781062581215_6m4jsp.json
-    │   ├── rp_1781062619071_gy18y7.json
-    │   ├── rp_1781062637969_re5d4w.json
-    │   ├── rp_1781062912827_vfwzbl.json
-    │   ├── rp_1781062929423_0tyz8c.json
-    │   ├── rp_1781062929450_azbqmb.json
-    │   ├── rp_1781063188529_9ayk0s.json
-    │   ├── rp_1781063237516_wt6aix.json
-    │   ├── rp_1781063283539_0jipdd.json
-    │   ├── rp_1781064681923_dny9o6.json
-    │   ├── rp_1781064893291_7r2zpv.json
-    │   ├── rp_1781064972369_26qgds.json
-    │   ├── rp_1781065039720_s560j5.json
-    │   ├── rp_1781129434110_cos44v.json
-    │   ├── rp_1781129434171_y0i6ov.json
-    │   ├── rp_1781129434225_vpqlp7.json
-    │   ├── rp_1781129809405_byhsha.json
-    │   ├── rp_1781129849184_uv4rly.json
-    │   └── rp_1781129849461_jnman6.json
-    └── rsi-history.jsonl
 ```
 
 ## Available Tools (EXACT names — verified against source code)

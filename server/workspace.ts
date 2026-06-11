@@ -59,9 +59,8 @@ export function getWorkspaceDir(): string {
     _cachedWorkspaceDir = resolved;
     return resolved;
   }
-  // Default: andromeda/workspace/
-  const serverDir = path.dirname(fileURLToPath(import.meta.url));
-  const workspaceDir = path.resolve(serverDir, "..", "workspace");
+  // Default: andromeda/workspace/ — use process.cwd() so it works from any entry point
+  const workspaceDir = path.resolve(process.cwd(), "workspace");
   if (!fs.existsSync(workspaceDir)) {
     fs.mkdirSync(workspaceDir, { recursive: true });
   }

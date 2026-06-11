@@ -341,8 +341,8 @@ export async function measureBenchmark(): Promise<BenchmarkBreakdown> {
 
   // ── Dimension 4: Memory Richness (0-20) ─────────────────────────────────
   try {
-    const { searchMemory } = await import("./memory.js");
-    const memories = searchMemory("", 100, undefined);
+    const { listMemories } = await import("./memory.js");
+    const memories = listMemories(100);
     const count = Array.isArray(memories) ? memories.length : 0;
     // 100+ memories = 20pts, 50-99 = 15pts, 20-49 = 10pts, 5-19 = 5pts, <5 = 0pts
     if (count >= 100) breakdown.memoryRichness = 20;

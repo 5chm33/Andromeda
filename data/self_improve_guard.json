@@ -174,6 +174,179 @@
       "originalSize": 27470,
       "createdAt": "2026-06-10T22:18:30.484Z",
       "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781147222451_x8s6o3",
+      "filename": "cache.ts",
+      "backupPath": "cache_1781147222451.ts.bak",
+      "originalSize": 8674,
+      "createdAt": "2026-06-11T03:07:02.451Z",
+      "proposalId": "prop_1781147032563_itosta",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781147251475_p8vmj5",
+      "filename": "cache.ts",
+      "backupPath": "cache_1781147251475.ts.bak",
+      "originalSize": 8674,
+      "createdAt": "2026-06-11T03:07:31.475Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781147475841_uba7tn",
+      "filename": "aiPlanning.ts",
+      "backupPath": "aiPlanning_1781147475840.ts.bak",
+      "originalSize": 29632,
+      "createdAt": "2026-06-11T03:11:15.841Z",
+      "proposalId": "prop_1781147450066_rqln0g",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781147506600_i5odd4",
+      "filename": "aiPlanning.ts",
+      "backupPath": "aiPlanning_1781147506600.ts.bak",
+      "originalSize": 29632,
+      "createdAt": "2026-06-11T03:11:46.600Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781147512147_kpja34",
+      "filename": "selfModel.ts",
+      "backupPath": "selfModel_1781147512147.ts.bak",
+      "originalSize": 16527,
+      "createdAt": "2026-06-11T03:11:52.147Z",
+      "proposalId": "prop_1781147133874_xc6hs4",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781147542095_fp3evo",
+      "filename": "selfModel.ts",
+      "backupPath": "selfModel_1781147542095.ts.bak",
+      "originalSize": 16442,
+      "createdAt": "2026-06-11T03:12:22.095Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781148397470_9itvvh",
+      "filename": "adaptiveRouter.ts",
+      "backupPath": "adaptiveRouter_1781148397470.ts.bak",
+      "originalSize": 10558,
+      "createdAt": "2026-06-11T03:26:37.470Z",
+      "proposalId": "prop_1781148374108_e9gd7r",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781148425857_ffkcl7",
+      "filename": "adaptiveRouter.ts",
+      "backupPath": "adaptiveRouter_1781148425857.ts.bak",
+      "originalSize": 10583,
+      "createdAt": "2026-06-11T03:27:05.857Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781148932306_lvm7rx",
+      "filename": "cache.ts",
+      "backupPath": "cache_1781148932306.ts.bak",
+      "originalSize": 8758,
+      "createdAt": "2026-06-11T03:35:32.306Z",
+      "proposalId": "prop_1781148921723_6srn7d",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781149298667_tkzg5g",
+      "filename": "cache.ts",
+      "backupPath": "cache_1781149298667.ts.bak",
+      "originalSize": 8842,
+      "createdAt": "2026-06-11T03:41:38.667Z",
+      "proposalId": "prop_1781149279873_5lp7m1",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781149538494_7iu83p",
+      "filename": "cache.ts",
+      "backupPath": "cache_1781149538494.ts.bak",
+      "originalSize": 8926,
+      "createdAt": "2026-06-11T03:45:38.494Z",
+      "proposalId": "prop_1781149526998_jsdoc_v2",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781149664808_72jmm5",
+      "filename": "aiPlanning.ts",
+      "backupPath": "aiPlanning_1781149664808.ts.bak",
+      "originalSize": 29632,
+      "createdAt": "2026-06-11T03:47:44.808Z",
+      "proposalId": "prop_1781149642025_nomb4t",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781149692203_zy8hu7",
+      "filename": "aiPlanning.ts",
+      "backupPath": "aiPlanning_1781149692202.ts.bak",
+      "originalSize": 29619,
+      "createdAt": "2026-06-11T03:48:12.203Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781149697200_v13hev",
+      "filename": "adaptiveRouter.ts",
+      "backupPath": "adaptiveRouter_1781149697199.ts.bak",
+      "originalSize": 10558,
+      "createdAt": "2026-06-11T03:48:17.200Z",
+      "proposalId": "prop_1781149632181_x8x1o3",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781149724329_dey35u",
+      "filename": "adaptiveRouter.ts",
+      "backupPath": "adaptiveRouter_1781149724329.ts.bak",
+      "originalSize": 10583,
+      "createdAt": "2026-06-11T03:48:44.329Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781149729213_41s4ui",
+      "filename": "selfConsistency.ts",
+      "backupPath": "selfConsistency_1781149729212.ts.bak",
+      "originalSize": 12314,
+      "createdAt": "2026-06-11T03:48:49.213Z",
+      "proposalId": "prop_1781149566338_skxr9i",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781149756106_3gc23r",
+      "filename": "selfConsistency.ts",
+      "backupPath": "selfConsistency_1781149756106.ts.bak",
+      "originalSize": 12314,
+      "createdAt": "2026-06-11T03:49:16.106Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781149969296_579e6c",
+      "filename": "selfImprove.ts",
+      "backupPath": "selfImprove_1781149969295.ts.bak",
+      "originalSize": 78070,
+      "createdAt": "2026-06-11T03:52:49.296Z",
+      "proposalId": "prop_1781149958144_1_jsdoc_v2",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781150010245_w5oy1w",
+      "filename": "selfImprove.ts",
+      "backupPath": "selfImprove_1781150010245.ts.bak",
+      "originalSize": 78220,
+      "createdAt": "2026-06-11T03:53:30.245Z",
+      "proposalId": "prop_1781149999043_2_jsdoc_v2",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781150050588_ep8sa3",
+      "filename": "selfImprove.ts",
+      "backupPath": "selfImprove_1781150050587.ts.bak",
+      "originalSize": 78353,
+      "createdAt": "2026-06-11T03:54:10.588Z",
+      "proposalId": "prop_1781150039495_3_jsdoc_v2",
+      "reason": "pre-apply"
     }
   ],
   "audit": [
@@ -4091,6 +4264,419 @@
       "result": "success",
       "details": "Auto-rollback after test failure: Rolled back memory.ts to 2026-06-10T22:17:46.987Z",
       "timestamp": "2026-06-10T22:18:30.491Z"
+    },
+    {
+      "id": "audit_1781147213227_x1c6kl",
+      "action": "apply",
+      "proposalId": "prop_1781147032563_itosta",
+      "filename": "cache.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/cache.ts(195,14): error TS2339: Property 'head' does not exist on type 'LRUCache<T>'.\nserver/cache.ts(196,24): error TS2339: Property 'head' does not exist on type 'LRUCache<T>'.\nserver/cache.t",
+      "timestamp": "2026-06-11T03:06:53.227Z"
+    },
+    {
+      "id": "audit_1781147217037_zsb8fu",
+      "action": "apply",
+      "proposalId": "prop_1781147032563_itosta",
+      "filename": "cache.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1781147032563_itosta after syntax error",
+      "timestamp": "2026-06-11T03:06:57.037Z"
+    },
+    {
+      "id": "audit_1781147222448_flqeux",
+      "action": "apply",
+      "proposalId": "prop_1781147032563_itosta",
+      "filename": "cache.ts",
+      "result": "success",
+      "details": "Refinement fixed syntax errors for prop_1781147032563_itosta",
+      "timestamp": "2026-06-11T03:07:02.448Z"
+    },
+    {
+      "id": "audit_1781147251471_mp5was",
+      "action": "test",
+      "proposalId": "prop_1781147032563_itosta",
+      "filename": "cache.ts",
+      "result": "failure",
+      "details": " > DEEPSEEK_API_KEY env var is optional\n ✓ server/deepseek.test.ts > DeepSeek provider > llmProvider module loads and has DeepSeek support\n ✓ server/self/dependency_graph.test.ts > dependency_graph > ",
+      "timestamp": "2026-06-11T03:07:31.471Z"
+    },
+    {
+      "id": "audit_1781147251481_dprw1y",
+      "action": "rollback",
+      "proposalId": "prop_1781147032563_itosta",
+      "filename": "cache.ts",
+      "result": "success",
+      "details": "Rolled back cache.ts to backup bak_1781147222451_x8s6o3",
+      "timestamp": "2026-06-11T03:07:31.481Z"
+    },
+    {
+      "id": "audit_1781147251484_5wllrd",
+      "action": "rollback",
+      "proposalId": "prop_1781147032563_itosta",
+      "filename": "cache.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back cache.ts to 2026-06-11T03:07:02.451Z",
+      "timestamp": "2026-06-11T03:07:31.484Z"
+    },
+    {
+      "id": "audit_1781147462503_qwmfcn",
+      "action": "apply",
+      "proposalId": "prop_1781147450066_rqln0g",
+      "filename": "aiPlanning.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/aiPlanning.ts(24,24): error TS2304: Cannot find name 'callLLM'.",
+      "timestamp": "2026-06-11T03:11:02.503Z"
+    },
+    {
+      "id": "audit_1781147470341_b6li3i",
+      "action": "apply",
+      "proposalId": "prop_1781147450066_rqln0g",
+      "filename": "aiPlanning.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1781147450066_rqln0g after syntax error",
+      "timestamp": "2026-06-11T03:11:10.341Z"
+    },
+    {
+      "id": "audit_1781147475838_sb3483",
+      "action": "apply",
+      "proposalId": "prop_1781147450066_rqln0g",
+      "filename": "aiPlanning.ts",
+      "result": "success",
+      "details": "Refinement fixed syntax errors for prop_1781147450066_rqln0g",
+      "timestamp": "2026-06-11T03:11:15.838Z"
+    },
+    {
+      "id": "audit_1781147506595_0bpmji",
+      "action": "test",
+      "proposalId": "prop_1781147450066_rqln0g",
+      "filename": "aiPlanning.ts",
+      "result": "failure",
+      "details": "self/dependency_graph.test.ts > dependency_graph > module loads without errors\n ✓ server/self/dependency_graph.test.ts > dependency_graph > buildDependencyGraph is exported and callable\n ✓ server/self",
+      "timestamp": "2026-06-11T03:11:46.595Z"
+    },
+    {
+      "id": "audit_1781147506607_qp5gla",
+      "action": "rollback",
+      "proposalId": "prop_1781147450066_rqln0g",
+      "filename": "aiPlanning.ts",
+      "result": "success",
+      "details": "Rolled back aiPlanning.ts to backup bak_1781147475841_uba7tn",
+      "timestamp": "2026-06-11T03:11:46.607Z"
+    },
+    {
+      "id": "audit_1781147506611_bh0ot2",
+      "action": "rollback",
+      "proposalId": "prop_1781147450066_rqln0g",
+      "filename": "aiPlanning.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back aiPlanning.ts to 2026-06-11T03:11:15.841Z",
+      "timestamp": "2026-06-11T03:11:46.611Z"
+    },
+    {
+      "id": "audit_1781147506648_ulqljr",
+      "action": "apply",
+      "proposalId": "prop_1781147321488_6v7abs",
+      "filename": "capabilityBootstrapper.ts",
+      "result": "blocked",
+      "details": "Constitution: proposed content contains forbidden pattern 'process.exit('",
+      "timestamp": "2026-06-11T03:11:46.648Z"
+    },
+    {
+      "id": "audit_1781147542088_oqgez5",
+      "action": "test",
+      "proposalId": "prop_1781147133874_xc6hs4",
+      "filename": "selfModel.ts",
+      "result": "failure",
+      "details": "ndency_graph > module loads without errors\n ✓ server/self/dependency_graph.test.ts > dependency_graph > buildDependencyGraph is exported and callable\n ✓ server/deepseek.test.ts > DeepSeek provider > D",
+      "timestamp": "2026-06-11T03:12:22.088Z"
+    },
+    {
+      "id": "audit_1781147542102_mgnib0",
+      "action": "rollback",
+      "proposalId": "prop_1781147133874_xc6hs4",
+      "filename": "selfModel.ts",
+      "result": "success",
+      "details": "Rolled back selfModel.ts to backup bak_1781147512147_kpja34",
+      "timestamp": "2026-06-11T03:12:22.102Z"
+    },
+    {
+      "id": "audit_1781147542106_nqdoc9",
+      "action": "rollback",
+      "proposalId": "prop_1781147133874_xc6hs4",
+      "filename": "selfModel.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back selfModel.ts to 2026-06-11T03:11:52.147Z",
+      "timestamp": "2026-06-11T03:12:22.106Z"
+    },
+    {
+      "id": "audit_1781148025042_gsscxc",
+      "action": "apply",
+      "proposalId": "prop_1781148018661_s0epci",
+      "result": "failure",
+      "details": "Proposal not found",
+      "timestamp": "2026-06-11T03:20:25.042Z"
+    },
+    {
+      "id": "audit_1781148425853_o0ucfa",
+      "action": "test",
+      "proposalId": "prop_1781148374108_e9gd7r",
+      "filename": "adaptiveRouter.ts",
+      "result": "failure",
+      "details": "st_runner.test.ts > smoke_test_runner > module loads without errors\n ✓ server/self/smoke_test_runner.test.ts > smoke_test_runner > runSmokeTests is exported and callable\n ✓ server/self/dependency_grap",
+      "timestamp": "2026-06-11T03:27:05.853Z"
+    },
+    {
+      "id": "audit_1781148425861_sw4a6g",
+      "action": "rollback",
+      "proposalId": "prop_1781148374108_e9gd7r",
+      "filename": "adaptiveRouter.ts",
+      "result": "success",
+      "details": "Rolled back adaptiveRouter.ts to backup bak_1781148397470_9itvvh",
+      "timestamp": "2026-06-11T03:27:05.861Z"
+    },
+    {
+      "id": "audit_1781148425864_8jl9ja",
+      "action": "rollback",
+      "proposalId": "prop_1781148374108_e9gd7r",
+      "filename": "adaptiveRouter.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back adaptiveRouter.ts to 2026-06-11T03:26:37.470Z",
+      "timestamp": "2026-06-11T03:27:05.864Z"
+    },
+    {
+      "id": "audit_1781148430999_nt7osb",
+      "action": "apply",
+      "proposalId": "prop_1781147951699_3kt398",
+      "filename": "streamRouter.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/streamRouter.ts(34,91): error TS2307: Cannot find module './routeInfra.js' or its corresponding type declarations.",
+      "timestamp": "2026-06-11T03:27:10.999Z"
+    },
+    {
+      "id": "audit_1781148959750_gf8g75",
+      "action": "test",
+      "proposalId": "prop_1781148921723_6srn7d",
+      "filename": "server/cache.ts",
+      "result": "success",
+      "details": "riting existing tool: self_run_tests\n\n ✓ server/self/refactoring_engine.test.ts > refactoring_engine > module loads without errors\n ✓ server/self/refactoring_engine.test.ts > refactoring_engine > gene",
+      "timestamp": "2026-06-11T03:35:59.750Z"
+    },
+    {
+      "id": "audit_1781148959754_k31u6h",
+      "action": "apply",
+      "proposalId": "prop_1781148921723_6srn7d",
+      "filename": "server/cache.ts",
+      "result": "success",
+      "details": "Applied proposal: Add JSDoc documentation to log level functions",
+      "timestamp": "2026-06-11T03:35:59.754Z"
+    },
+    {
+      "id": "audit_1781149326121_kar5lh",
+      "action": "test",
+      "proposalId": "prop_1781149279873_5lp7m1",
+      "filename": "server/cache.ts",
+      "result": "success",
+      "details": "er/watchdog.test.ts > watchdog > exports at least one symbol\n ✓ server/rsiDb.test.ts > rsiDb > module loads without throwing\n ✓ server/rsiDb.test.ts > rsiDb > exports at least one symbol\n ✓ server/rba",
+      "timestamp": "2026-06-11T03:42:06.121Z"
+    },
+    {
+      "id": "audit_1781149326125_xkzyk9",
+      "action": "apply",
+      "proposalId": "prop_1781149279873_5lp7m1",
+      "filename": "server/cache.ts",
+      "result": "success",
+      "details": "Applied proposal: Add JSDoc documentation to log level functions",
+      "timestamp": "2026-06-11T03:42:06.125Z"
+    },
+    {
+      "id": "audit_1781149565912_5jdkrh",
+      "action": "test",
+      "proposalId": "prop_1781149526998_jsdoc_v2",
+      "filename": "server/cache.ts",
+      "result": "success",
+      "details": "er/watchdog.test.ts > watchdog > exports at least one symbol\n ✓ server/rsiDb.test.ts > rsiDb > module loads without throwing\n ✓ server/rsiDb.test.ts > rsiDb > exports at least one symbol\n ✓ server/sel",
+      "timestamp": "2026-06-11T03:46:05.912Z"
+    },
+    {
+      "id": "audit_1781149565916_2h2a6t",
+      "action": "apply",
+      "proposalId": "prop_1781149526998_jsdoc_v2",
+      "filename": "server/cache.ts",
+      "result": "success",
+      "details": "Applied proposal: Add JSDoc documentation to log level functions",
+      "timestamp": "2026-06-11T03:46:05.916Z"
+    },
+    {
+      "id": "audit_1781149651684_p0sxnq",
+      "action": "apply",
+      "proposalId": "prop_1781149642025_nomb4t",
+      "filename": "aiPlanning.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/aiPlanning.ts(27,24): error TS2304: Cannot find name 'callLLM'.",
+      "timestamp": "2026-06-11T03:47:31.684Z"
+    },
+    {
+      "id": "audit_1781149659865_i719oe",
+      "action": "apply",
+      "proposalId": "prop_1781149642025_nomb4t",
+      "filename": "aiPlanning.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1781149642025_nomb4t after syntax error",
+      "timestamp": "2026-06-11T03:47:39.865Z"
+    },
+    {
+      "id": "audit_1781149664803_07quvq",
+      "action": "apply",
+      "proposalId": "prop_1781149642025_nomb4t",
+      "filename": "aiPlanning.ts",
+      "result": "success",
+      "details": "Refinement fixed syntax errors for prop_1781149642025_nomb4t",
+      "timestamp": "2026-06-11T03:47:44.804Z"
+    },
+    {
+      "id": "audit_1781149692198_utwurt",
+      "action": "test",
+      "proposalId": "prop_1781149642025_nomb4t",
+      "filename": "aiPlanning.ts",
+      "result": "failure",
+      "details": "/self/dependency_graph.test.ts > dependency_graph > module loads without errors\n ✓ server/self/dependency_graph.test.ts > dependency_graph > buildDependencyGraph is exported and callable\n ✓ server/aiP",
+      "timestamp": "2026-06-11T03:48:12.198Z"
+    },
+    {
+      "id": "audit_1781149692207_j4o8sd",
+      "action": "rollback",
+      "proposalId": "prop_1781149642025_nomb4t",
+      "filename": "aiPlanning.ts",
+      "result": "success",
+      "details": "Rolled back aiPlanning.ts to backup bak_1781149664808_72jmm5",
+      "timestamp": "2026-06-11T03:48:12.207Z"
+    },
+    {
+      "id": "audit_1781149692212_6uiisj",
+      "action": "rollback",
+      "proposalId": "prop_1781149642025_nomb4t",
+      "filename": "aiPlanning.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back aiPlanning.ts to 2026-06-11T03:47:44.808Z",
+      "timestamp": "2026-06-11T03:48:12.212Z"
+    },
+    {
+      "id": "audit_1781149724324_n1rpdr",
+      "action": "test",
+      "proposalId": "prop_1781149632181_x8x1o3",
+      "filename": "adaptiveRouter.ts",
+      "result": "failure",
+      "details": " > DEEPSEEK_API_KEY env var is optional\n ✓ server/deepseek.test.ts > DeepSeek provider > llmProvider module loads and has DeepSeek support\n ✓ server/self/dependency_graph.test.ts > dependency_graph > ",
+      "timestamp": "2026-06-11T03:48:44.324Z"
+    },
+    {
+      "id": "audit_1781149724334_mtk1yt",
+      "action": "rollback",
+      "proposalId": "prop_1781149632181_x8x1o3",
+      "filename": "adaptiveRouter.ts",
+      "result": "success",
+      "details": "Rolled back adaptiveRouter.ts to backup bak_1781149697200_v13hev",
+      "timestamp": "2026-06-11T03:48:44.334Z"
+    },
+    {
+      "id": "audit_1781149724338_6as295",
+      "action": "rollback",
+      "proposalId": "prop_1781149632181_x8x1o3",
+      "filename": "adaptiveRouter.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back adaptiveRouter.ts to 2026-06-11T03:48:17.200Z",
+      "timestamp": "2026-06-11T03:48:44.338Z"
+    },
+    {
+      "id": "audit_1781149756099_sfy3ar",
+      "action": "test",
+      "proposalId": "prop_1781149566338_skxr9i",
+      "filename": "selfConsistency.ts",
+      "result": "failure",
+      "details": "/self/dependency_graph.test.ts > dependency_graph > module loads without errors\n ✓ server/self/dependency_graph.test.ts > dependency_graph > buildDependencyGraph is exported and callable\n ✓ server/sel",
+      "timestamp": "2026-06-11T03:49:16.099Z"
+    },
+    {
+      "id": "audit_1781149756112_srhbey",
+      "action": "rollback",
+      "proposalId": "prop_1781149566338_skxr9i",
+      "filename": "selfConsistency.ts",
+      "result": "success",
+      "details": "Rolled back selfConsistency.ts to backup bak_1781149729213_41s4ui",
+      "timestamp": "2026-06-11T03:49:16.112Z"
+    },
+    {
+      "id": "audit_1781149756115_abg32s",
+      "action": "rollback",
+      "proposalId": "prop_1781149566338_skxr9i",
+      "filename": "selfConsistency.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back selfConsistency.ts to 2026-06-11T03:48:49.213Z",
+      "timestamp": "2026-06-11T03:49:16.115Z"
+    },
+    {
+      "id": "audit_1781149956139_6gm091",
+      "action": "apply",
+      "proposalId": "prop_1781149956120_0_jsdoc_v2",
+      "filename": "server/workspace.ts",
+      "result": "blocked",
+      "details": "Constitution: proposed content contains forbidden pattern 'rm -rf /'",
+      "timestamp": "2026-06-11T03:52:36.139Z"
+    },
+    {
+      "id": "audit_1781149997034_7qrnhq",
+      "action": "test",
+      "proposalId": "prop_1781149958144_1_jsdoc_v2",
+      "filename": "server/selfImprove.ts",
+      "result": "success",
+      "details": "er/watchdog.test.ts > watchdog > exports at least one symbol\n ✓ server/rsiDb.test.ts > rsiDb > module loads without throwing\n ✓ server/rsiDb.test.ts > rsiDb > exports at least one symbol\n ✓ server/sel",
+      "timestamp": "2026-06-11T03:53:17.034Z"
+    },
+    {
+      "id": "audit_1781149997037_4xlt8z",
+      "action": "apply",
+      "proposalId": "prop_1781149958144_1_jsdoc_v2",
+      "filename": "server/selfImprove.ts",
+      "result": "success",
+      "details": "Applied proposal: Add JSDoc to loadProposals in selfImprove.ts",
+      "timestamp": "2026-06-11T03:53:17.037Z"
+    },
+    {
+      "id": "audit_1781150037487_yrlhb6",
+      "action": "test",
+      "proposalId": "prop_1781149999043_2_jsdoc_v2",
+      "filename": "server/selfImprove.ts",
+      "result": "success",
+      "details": "bac > exports at least one symbol\n ✓ server/rsiDb.test.ts > rsiDb > module loads without throwing\n ✓ server/rsiDb.test.ts > rsiDb > exports at least one symbol\n ✓ server/self/refactoring_engine.test.t",
+      "timestamp": "2026-06-11T03:53:57.487Z"
+    },
+    {
+      "id": "audit_1781150037491_ab2nh9",
+      "action": "apply",
+      "proposalId": "prop_1781149999043_2_jsdoc_v2",
+      "filename": "server/selfImprove.ts",
+      "result": "success",
+      "details": "Applied proposal: Add JSDoc to saveProposals in selfImprove.ts",
+      "timestamp": "2026-06-11T03:53:57.491Z"
+    },
+    {
+      "id": "audit_1781150077908_vmilci",
+      "action": "test",
+      "proposalId": "prop_1781150039495_3_jsdoc_v2",
+      "filename": "server/selfImprove.ts",
+      "result": "success",
+      "details": " > rsiDb > exports at least one symbol\n ✓ server/rbac.test.ts > rbac > module loads without throwing\n ✓ server/rbac.test.ts > rbac > exports at least one symbol\n ✓ server/self/refactoring_engine.test.",
+      "timestamp": "2026-06-11T03:54:37.908Z"
+    },
+    {
+      "id": "audit_1781150077911_8ohkbb",
+      "action": "apply",
+      "proposalId": "prop_1781150039495_3_jsdoc_v2",
+      "filename": "server/selfImprove.ts",
+      "result": "success",
+      "details": "Applied proposal: Add JSDoc to listProposals in selfImprove.ts",
+      "timestamp": "2026-06-11T03:54:37.911Z"
     }
   ]
 }

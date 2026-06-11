@@ -921,7 +921,7 @@ export function initSelfHeal(): void {
   // Load config from workspace if available
 
 
-  const configPath = path.join(path.resolve(getServerDir(), "..", "workspace"), ".andromeda_heal_config.json");
+  const configPath = path.join(path.resolve(process.cwd(), "workspace"), ".andromeda_heal_config.json");
   if (fs.existsSync(configPath)) {
     try {
       const saved = JSON.parse(fs.readFileSync(configPath, "utf-8"));

@@ -327,7 +327,7 @@ export async function gracefulRestart(options: Partial<GracefulRestartOptions> =
         reloadHistory: reloadHistory.slice(-20),
         timestamp: Date.now(),
       };
-      const statePath = path.join(getServerDir(), "..", "workspace", ".andromeda_state.json");
+      const statePath = path.join(process.cwd(), "workspace", ".andromeda_state.json");
       fs.writeFileSync(statePath, JSON.stringify(state, null, 2), "utf-8");
     }
 
@@ -336,7 +336,7 @@ export async function gracefulRestart(options: Partial<GracefulRestartOptions> =
     console.log("[HotReload] Graceful restart initiated. State preserved.");
 
     // 3. Set a flag for the next startup to restore state
-    const flagPath = path.join(getServerDir(), "..", "workspace", ".restart_flag");
+    const flagPath = path.join(process.cwd(), "workspace", ".restart_flag");
     fs.writeFileSync(flagPath, JSON.stringify({ reason: "graceful_restart", timestamp: Date.now() }), "utf-8");
 
     return { initiated: true, message: "Graceful restart initiated. State preserved to workspace." };
@@ -349,7 +349,7 @@ export async function gracefulRestart(options: Partial<GracefulRestartOptions> =
  * Check if this is a restart (state restoration needed).
  */
 export function checkRestartState(): { isRestart: boolean; state?: any } {
-  const flagPath = path.join(getServerDir(), "..", "workspace", ".restart_flag");
+  const flagPath = path.join(process.cwd(), "workspace", ".restart_flag");
   if (!fs.existsSync(flagPath)) return { isRestart: false };
 
   try {
@@ -358,7 +358,7 @@ export function checkRestartState(): { isRestart: boolean; state?: any } {
     fs.unlinkSync(flagPath);
 
     // Load preserved state
-    const statePath = path.join(getServerDir(), "..", "workspace", ".andromeda_state.json");
+    const statePath = path.join(process.cwd(), "workspace", ".andromeda_state.json");
     if (fs.existsSync(statePath)) {
       const state = JSON.parse(fs.readFileSync(statePath, "utf-8"));
       return { isRestart: true, state };

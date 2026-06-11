@@ -136,7 +136,15 @@ function loadStore(): GuardStore {
       audit: [],
     };
   }
-  try { return JSON.parse(fs.readFileSync(p, "utf-8")); }
+  try {
+    const parsed = JSON.parse(fs.readFileSync(p, "utf-8"));
+    // v10.3: Defensive merge — ensure config field is always present and complete
+    if (!parsed.config) parsed.config = getDefaultConfig();
+    else parsed.config = { ...getDefaultConfig(), ...parsed.config };
+    if (!Array.isArray(parsed.backups)) parsed.backups = [];
+    if (!Array.isArray(parsed.audit)) parsed.audit = [];
+    return parsed;
+  }
   catch { return { config: getDefaultConfig(), backups: [], audit: [] }; }
 }
 

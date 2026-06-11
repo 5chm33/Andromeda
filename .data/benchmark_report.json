@@ -1,44 +1,44 @@
 {
-  "timestamp": 1781130315109,
-  "runDurationMs": 9,
+  "timestamp": 1781149566269,
+  "runDurationMs": 197,
   "results": [
     {
       "name": "memory_keyword_search",
       "category": "memory",
-      "durationMs": 7.27,
-      "timestamp": 1781130315108
+      "durationMs": 194.26,
+      "timestamp": 1781149566266
     },
     {
       "name": "tool_registry_lookup",
       "category": "tool_latency",
       "durationMs": 0.01,
-      "timestamp": 1781130315108
+      "timestamp": 1781149566267
     },
     {
       "name": "file_write_10kb",
       "category": "code_execution",
-      "durationMs": 0.1,
-      "timestamp": 1781130315108
+      "durationMs": 0.16,
+      "timestamp": 1781149566267
     },
     {
       "name": "file_read_10kb",
       "category": "code_execution",
-      "durationMs": 0.03,
-      "timestamp": 1781130315108
+      "durationMs": 0.06,
+      "timestamp": 1781149566267
     },
     {
       "name": "context_token_estimation_50msg",
       "category": "startup",
-      "durationMs": 0.22,
-      "timestamp": 1781130315109
+      "durationMs": 0.16,
+      "timestamp": 1781149566268
     },
     {
       "name": "json_parse_large_object",
       "category": "code_execution",
-      "durationMs": 0.1,
-      "timestamp": 1781130315109,
+      "durationMs": 0.19,
+      "timestamp": 1781149566268,
       "metadata": {
-        "sizeBytes": 28902
+        "sizeBytes": 28912
       }
     }
   ],
@@ -54,8 +54,8 @@
     {
       "benchmark": "memory_keyword_search",
       "baseline": 5,
-      "current": 7.27,
-      "degradationPercent": 45,
+      "current": 194.26,
+      "degradationPercent": 3785,
       "severity": "critical"
     }
   ],
