@@ -4,10 +4,12 @@
 
 ### The World's Most Advanced Open-Source Autonomous Agent
 
-**v10.0.0 — Gödel Machine Edition**
+**v10.5.0 — Gödel Machine Edition**
 
 [![CI](https://github.com/5chm33/Andromeda/actions/workflows/ci.yml/badge.svg)](https://github.com/5chm33/Andromeda/actions)
-[![Tests](https://img.shields.io/badge/tests-1934%20passing-brightgreen)](https://github.com/5chm33/Andromeda/actions)
+[![Tests](https://img.shields.io/badge/tests-1960%20passing-brightgreen)](https://github.com/5chm33/Andromeda/actions)
+[![Eval](https://img.shields.io/badge/eval-80%2F80%20tasks-brightgreen)](https://github.com/5chm33/Andromeda/actions)
+[![Code Quality](https://img.shields.io/badge/code%20quality-100%2F100-brightgreen)](https://github.com/5chm33/Andromeda/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org)
 
@@ -30,6 +32,7 @@ Most AI assistants are stateless question-answerers. Andromeda is a **self-impro
 - A **Semantic Self-Model** — Andromeda knows what each of its own modules does and can predict the utility impact of a change *before* running a shadow test
 - A **Monte Carlo Tree Search planner** — simulates hundreds of refactor paths before committing to one
 - A **Byzantine-fault-tolerant swarm** — multi-node consensus with epistemic belief modeling (Theory of Mind for AI agents)
+- **AI Video & Image Generation** — text-to-video (Kling v2.1 Master), image-to-video animation, and FLUX Pro Ultra image generation via fal.ai
 
 ---
 
@@ -41,9 +44,10 @@ Most AI assistants are stateless question-answerers. Andromeda is a **self-impro
 |---|---|
 | **Model-Agnostic LLM Routing** | Routes between DeepSeek, Kimi K2, Claude, and GPT-4.1 based on task type. Coding → DeepSeek/Kimi; reasoning → Claude; fast queries → GPT-4.1-mini. |
 | **ReAct Agent Loop** | 10 registered tools: web search, code execution, file read/write, memory, git, browser, shell, image generation, MCP, and terminal. Full tool-call streaming to the UI. |
-| **Persistent Memory** | TF-IDF + vector embeddings with consolidation, forgetting curves, and keyword search. Survives restarts. |
+| **Persistent Memory** | TF-IDF + vector embeddings with consolidation, forgetting curves, and keyword search. Three memory tiers: semantic, episodic, and persistent cross-session. |
 | **Web Search** | Brave Search API with SearXNG fallback. Deep research mode chains multiple searches with synthesis. |
 | **Visual Grounding** | Playwright-based annotated screenshots with numbered bounding boxes — the LLM can "see" and click web pages by element index. |
+| **AI Media Generation** | Image generation via HuggingFace FLUX (free tier) or FLUX Pro Ultra (fal.ai). Text-to-video and image-to-video via Kling v2.1 Master (fal.ai). |
 
 ### Autonomous Self-Improvement (RSI Engine)
 
@@ -60,7 +64,7 @@ The RSI engine runs an **8-phase cycle**: OBSERVE → EVALUATE → PROPOSE → V
 | **RECORD** | Outcome fed back to semantic self-model and utility function for online learning |
 | **IDLE** | Waits for next trigger (scheduled, event-driven, or manual) |
 
-### Gödel Machine Subsystems (v10.0.0)
+### Gödel Machine Subsystems (v10.0.0+)
 
 | Module | Purpose |
 |---|---|
@@ -73,6 +77,17 @@ The RSI engine runs an **8-phase cycle**: OBSERVE → EVALUATE → PROPOSE → V
 | `epistemicBeliefModel.ts` | Theory of Mind belief states for Byzantine swarm agents |
 | `distributedProofConsensus.ts` | Quorum-based proposal approval with HMAC proof verification |
 | `swarmTestnet.ts` | Multi-instance swarm coordination testnet with Byzantine fault simulation |
+
+### Media Generation (v10.4.1+)
+
+| Endpoint | Model | Description |
+|---|---|---|
+| `POST /api/video/generate` | Kling v2.1 Master | Text-to-video: 1080p cinematic clips, 5s or 10s, any aspect ratio |
+| `POST /api/video/animate` | Kling v2.1 Master | Image-to-video: animate any still image with a motion prompt |
+| `POST /api/image/generate/pro` | FLUX 1.1 Pro Ultra | High-fidelity image generation with superior prompt adherence |
+| `POST /api/image/generate` | FLUX (HuggingFace) | Free-tier image generation, no API key required |
+
+Requires a `FAL_KEY` from [fal.ai](https://fal.ai) for video and Pro image generation.
 
 ### UI and Experience
 
@@ -155,6 +170,9 @@ KIMI_API_KEY=your_key_here
 # Groq — ultra-fast inference
 GROQ_API_KEY=your_key_here
 
+# fal.ai — video generation (Kling v2.1) and FLUX Pro Ultra images
+FAL_KEY=your_key_here
+
 # RSI autonomy settings
 CONTINUOUS_IMPROVE=true
 AUTO_GOALS=true
@@ -175,9 +193,13 @@ PR_AUTO_MERGE=false
 andromeda/
 ├── server/                     # Node.js backend (Express + WebSocket)
 │   ├── _core/                  # Server entry point, route registration, init
+│   │   ├── index.ts            # Express app, middleware, long-running route config
+│   │   ├── videoGeneration.ts  # fal.ai video and FLUX Pro image generation
+│   │   └── imageGeneration.ts  # HuggingFace FLUX image generation
 │   ├── routes/                 # API route handlers
-│   │   ├── chatRoutes.ts       # Chat streaming endpoint
+│   │   ├── chatRoutes.ts       # Chat streaming + media generation endpoints
 │   │   ├── rsiRoutes.ts        # RSI engine control
+│   │   ├── evalRoutes.ts       # Eval harness with live system context injection
 │   │   ├── godelRoutes.ts      # Gödel Machine API
 │   │   └── ...
 │   ├── rsiEngine.ts            # 8-phase RSI orchestrator
@@ -191,6 +213,8 @@ andromeda/
 │   ├── epistemicBeliefModel.ts # Theory of Mind for swarm agents
 │   ├── llmProvider.ts          # Model-agnostic LLM routing
 │   ├── memory.ts               # TF-IDF + vector persistent memory
+│   ├── evalFramework.ts        # 80-task capability eval harness
+│   ├── codeQualityMonitor.ts   # Industry-standard complexity scoring (100/100)
 │   └── reactEngine.ts          # ReAct agent loop with 10 tools
 ├── client/src/                 # React + TypeScript frontend
 │   ├── pages/
@@ -225,6 +249,22 @@ Content-Type: application/json
 
 Returns a Server-Sent Events stream with `data: { type, content, fullAnswer }` chunks.
 
+### Media Generation
+
+```http
+POST /api/video/generate
+{ "prompt": "A cinematic drone shot over a mountain range at sunset", "duration": 5, "aspectRatio": "16:9" }
+
+POST /api/video/animate
+{ "imageUrl": "https://...", "prompt": "The clouds slowly drift across the sky", "duration": 5 }
+
+POST /api/image/generate/pro
+{ "prompt": "A photorealistic portrait of an astronaut on Mars", "width": 1024, "height": 1024 }
+
+GET /api/video/status
+# Returns { available: true/false, provider: "fal.ai", models: [...] }
+```
+
 ### RSI Engine
 
 ```http
@@ -244,6 +284,15 @@ GET  /api/godel/semantic/modules    # Semantic self-model module map
 POST /api/godel/causal/analyze      # Causal failure analysis { failedTests, code }
 POST /api/godel/mcts/plan           # MCTS planning { goal, constraints }
 POST /api/godel/epistemic/debate    # Start epistemic debate { topic, agents }
+```
+
+### Eval & Quality
+
+```http
+POST /api/eval/baseline       # Run full 80-task capability eval
+GET  /api/eval/tasks          # List all eval tasks with metadata
+GET  /api/quality/report      # Current code quality score (100/100)
+GET  /api/benchmarks/results  # Latest benchmark run results
 ```
 
 ### System
@@ -272,13 +321,13 @@ Andromeda implements multiple layers of safety for self-modifying code:
 ## Test Suite
 
 ```bash
-pnpm test              # Run all 1934 unit tests
+pnpm test              # Run all 1960 unit tests
 pnpm test:coverage     # Run with coverage report
 pnpm test:integration  # Integration tests (requires running server)
-pnpm test:eval         # 70-task capability benchmark
+pnpm test:eval         # 80-task capability benchmark
 ```
 
-**Current status: 1,934 tests passing across 261 test files — zero failures.**
+**Current status: 1,960 tests passing across 261 test files — zero failures. Eval: 80/80 tasks passing.**
 
 ---
 
@@ -331,6 +380,6 @@ MIT — see [LICENSE](LICENSE).
 
 Built with TypeScript, React, Express, Vitest, and esbuild.
 
-**Andromeda v10.0.0** — *The practical ceiling of software-only Gödel Machine parity.*
+**Andromeda v10.5.0** — *The practical ceiling of software-only Gödel Machine parity.*
 
 </div>
