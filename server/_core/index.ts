@@ -143,7 +143,9 @@ async function startServer(): Promise<void> {
       req.path.includes("/rsi/scheduler") ||
       req.path.includes("/pipeline") ||
       req.path.includes("/guard/apply") ||
-      req.path.includes("/self/improve");
+      req.path.includes("/self/improve") ||
+      req.path.includes("/eval/baseline") ||  // v10.4.1: full eval runs take 3-8 minutes
+      req.path.includes("/eval/run");           // v10.4.1: eval run also long-running
     const timeout = isLongRunning ? 300_000 : 60_000;
     res.setTimeout(timeout, () => {
       if (!res.headersSent) res.status(408).json({ error: "Request timeout" });

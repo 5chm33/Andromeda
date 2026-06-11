@@ -455,6 +455,8 @@ export async function chatCompletion(
     sessionId?: string;  // v5.68: For token budget tracking
     /** v6.33: Override the active provider for this call only (e.g. "kimi", "deepseek", "anthropic"). */
     providerId?: string;
+    /** v10.4.1: Skip json_object response_format — use for natural language tasks like eval prompts. */
+    plainText?: boolean;
   },
 ): Promise<LLMCompletionResult> {
   // v6.33: Use a temporary provider override if requested, otherwise use the active provider
@@ -489,8 +491,9 @@ export async function chatCompletion(
     body.tools = options.tools;
     body.tool_choice = options.toolChoice ?? "auto";
     // v6.15: When tools are active, do NOT add response_format — it conflicts with tool_calls on some providers
-  } else if (provider.supportsJsonMode) {
+  } else if (provider.supportsJsonMode && !options?.plainText) {
     // v6.15: No tools active — request JSON object mode to guarantee valid structured output
+    // v10.4.1: Skip if plainText=true (e.g. eval tasks that expect natural language responses)
     body.response_format = { type: "json_object" };
   }
 
@@ -1023,7 +1026,7 @@ export async function backgroundSimpleCompletion(
  */
 export async function simpleChatCompletion(
   messages: Array<{ role: string; content: string }>,
-  options?: { maxTokens?: number; temperature?: number; signal?: AbortSignal; providerId?: string },
+  options?: { maxTokens?: number; temperature?: number; signal?: AbortSignal; providerId?: string; plainText?: boolean },
 ): Promise<string> {
   const result = await chatCompletion(
     messages as ChatMessage[],
@@ -1032,6 +1035,7 @@ export async function simpleChatCompletion(
       temperature: options?.temperature ?? 0.4,
       signal: options?.signal,
       providerId: options?.providerId,
+      plainText: options?.plainText,
     },
   );
   // LLMCompletionResult has { content: string | null, toolCalls, finishReason, usage }

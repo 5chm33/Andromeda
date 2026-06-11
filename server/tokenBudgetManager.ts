@@ -196,25 +196,31 @@ export function getBudget(sessionId: string): TokenBudget {
  */
 function autoResetIfExhausted(sessionId: string): void {
   const budget = getBudget(sessionId);
-  if (budget.utilizationPercent >= 85) {
-    const session = sessions.get(sessionId);
-    if (!session) return;
-    // v5.81: Instead of deleting the session (which causes restart loops),
-    // compress it by removing the oldest 50% of allocations to simulate
-    // context summarization. This preserves continuity.
-    const prevUtil = budget.utilizationPercent;
-    const keepCount = Math.floor(session.allocations.length * 0.5);
-    const removedAllocations = session.allocations.splice(0, session.allocations.length - keepCount);
-    // AllocationRecord uses 'allocated' field (not 'tokens')
-    const removedTokens = removedAllocations.reduce((sum, a) => sum + a.allocated, 0);
-    // SessionState tracks tokens via inputTokens + outputTokens (not totalAllocated)
-    // Reduce both proportionally to simulate context compression
-    const reductionRatio = removedTokens / Math.max(1, session.inputTokens + session.outputTokens);
-    session.inputTokens = Math.max(0, Math.floor(session.inputTokens * (1 - reductionRatio)));
-    session.outputTokens = Math.max(0, Math.floor(session.outputTokens * (1 - reductionRatio)));
-    const newBudget = getBudget(sessionId);
-    console.log(`[TokenBudget] Compressed session ${sessionId}: ${prevUtil.toFixed(1)}% → ${newBudget.utilizationPercent.toFixed(1)}% (removed ${removedTokens} tokens from ${removedAllocations.length} old allocations)`);
-  }
+  if (budget.utilizationPercent < 85) return;
+
+  const session = sessions.get(sessionId);
+  if (!session) return;
+
+  // Compress session by removing oldest 50% of allocations to simulate context summarization.
+  // This preserves continuity and avoids restart loops caused by full resets.
+  const previousUtilization = budget.utilizationPercent;
+  const allocationsToKeep = Math.floor(session.allocations.length * 0.5);
+  const removedAllocations = session.allocations.splice(0, session.allocations.length - allocationsToKeep);
+
+  // Calculate total tokens removed from allocations
+  const removedTokens = removedAllocations.reduce((sum, allocation) => sum + allocation.allocated, 0);
+
+  // Reduce input and output tokens proportionally to simulate compression
+  const totalTokens = session.inputTokens + session.outputTokens;
+  const reductionRatio = removedTokens / Math.max(1, totalTokens);
+  session.inputTokens = Math.max(0, Math.floor(session.inputTokens * (1 - reductionRatio)));
+  session.outputTokens = Math.max(0, Math.floor(session.outputTokens * (1 - reductionRatio)));
+
+  const newBudget = getBudget(sessionId);
+  console.log(
+    `[TokenBudget] Compressed session ${sessionId}: ${previousUtilization.toFixed(1)}% → ${newBudget.utilizationPercent.toFixed(1)}% ` +
+    `(removed ${removedTokens} tokens from ${removedAllocations.length} old allocations)`
+  );
 }
 
 /**

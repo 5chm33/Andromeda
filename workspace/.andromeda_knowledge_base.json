@@ -6441,6 +6441,678 @@
       "confidence": 0.9,
       "createdAt": 1781157229994,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781157397517_pk7st8",
+      "category": "antipattern",
+      "title": "Failure: Parallelize independent benchmark executions",
+      "description": "Failed to apply \"Parallelize independent benchmark executions\" to benchmarkRunner.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify benchmarkRunner.ts performance",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for benchmarkRunner.ts: Parallelize independent benchmark executions — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "benchmarkRunner.ts",
+        "performance"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781157397517,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781157397602_kjd9hn",
+      "category": "antipattern",
+      "title": "Failure: Improve readability of clusterEpisodes function",
+      "description": "Failed to apply \"Improve readability of clusterEpisodes function\" to episodicConsolidation.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify episodicConsolidation.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for episodicConsolidation.ts: Improve readability of clusterEpisodes function — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "episodicConsolidation.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781157397603,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781157397677_qbzb4z",
+      "category": "antipattern",
+      "title": "Failure: Extract duplicate API call logic into helper function",
+      "description": "Failed to apply \"Extract duplicate API call logic into helper function\" to aiPlanning.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify aiPlanning.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for aiPlanning.ts: Extract duplicate API call logic into helper function — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "aiPlanning.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781157397677,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781158718272_kg3w0q",
+      "category": "antipattern",
+      "title": "Failure: Improve readability by extracting dedup logic",
+      "description": "Failed to apply \"Improve readability by extracting dedup logic\" to selfRollback.ts. Reason: File 'selfRollback.ts' is blocked from self-improvement. Avoid similar changes.",
+      "context": "self-modify selfRollback.ts readability",
+      "outcome": "failure: File 'selfRollback.ts' is blocked from self-improvement",
+      "lesson": "Avoid for selfRollback.ts: Improve readability by extracting dedup logic — causes File 'selfRollback.ts' is blocked from self-improvement",
+      "applicableTo": [
+        "selfRollback.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781158718272,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781158735085_7in2na",
+      "category": "antipattern",
+      "title": "Failure: Extract inline options type to named interface",
+      "description": "Failed to apply \"Extract inline options type to named interface\" to ciPipeline.ts. Reason: Syntax check failed — proposal refined but still has errors (queued for retry). Avoid similar changes.",
+      "context": "self-modify ciPipeline.ts readability",
+      "outcome": "failure: Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "lesson": "Avoid for ciPipeline.ts: Extract inline options type to named interface — causes Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "applicableTo": [
+        "ciPipeline.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781158735085,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781158746248_kv8mpk",
+      "category": "antipattern",
+      "title": "Failure: Consolidate workspace directory logic into single function",
+      "description": "Failed to apply \"Consolidate workspace directory logic into single function\" to workspace.ts. Reason: Constitution blocked: proposed content contains forbidden pattern 'rm -rf /'.. Avoid similar changes.",
+      "context": "self-modify workspace.ts readability",
+      "outcome": "failure: Constitution blocked: proposed content contains forbidden pattern 'rm -rf /'.",
+      "lesson": "Avoid for workspace.ts: Consolidate workspace directory logic into single function — causes Constitution blocked: proposed content contains forbidden pattern 'rm -rf /'.",
+      "applicableTo": [
+        "workspace.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781158746248,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781158746336_xk87gp",
+      "category": "antipattern",
+      "title": "Failure: Extract magic numbers into named constants",
+      "description": "Failed to apply \"Extract magic numbers into named constants\" to biasDetector.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify biasDetector.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for biasDetector.ts: Extract magic numbers into named constants — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "biasDetector.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781158746336,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781158778993_ag5s5u",
+      "category": "success",
+      "title": "Success: Improve readability of autoResetIfExhausted function",
+      "description": "Successfully applied \"Improve readability of autoResetIfExhausted function\" to tokenBudgetManager.ts (readability). Health: improved.",
+      "context": "self-modify tokenBudgetManager.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for tokenBudgetManager.ts: Improve readability of autoResetIfExhausted function",
+      "applicableTo": [
+        "tokenBudgetManager.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1781158778993,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781159022912_2jcw2c",
+      "category": "antipattern",
+      "title": "Failure: Fix TypeScript require() calls for ESM compatibility",
+      "description": "Failed to apply \"Fix TypeScript require() calls for ESM compatibility\" to selfTestPipeline.ts. Reason: File 'selfTestPipeline.ts' is blocked from self-improvement. Avoid similar changes.",
+      "context": "self-modify selfTestPipeline.ts reliability",
+      "outcome": "failure: File 'selfTestPipeline.ts' is blocked from self-improvement",
+      "lesson": "Avoid for selfTestPipeline.ts: Fix TypeScript require() calls for ESM compatibility — causes File 'selfTestPipeline.ts' is blocked from self-improvement",
+      "applicableTo": [
+        "selfTestPipeline.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781159022912,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781159022985_zops38",
+      "category": "antipattern",
+      "title": "Failure: Consolidate workspace directory logic into single function",
+      "description": "Failed to apply \"Consolidate workspace directory logic into single function\" to workspace.ts. Reason: Constitution blocked: proposed content contains forbidden pattern 'rm -rf /'.. Avoid similar changes.",
+      "context": "self-modify workspace.ts readability",
+      "outcome": "failure: Constitution blocked: proposed content contains forbidden pattern 'rm -rf /'.",
+      "lesson": "Avoid for workspace.ts: Consolidate workspace directory logic into single function — causes Constitution blocked: proposed content contains forbidden pattern 'rm -rf /'.",
+      "applicableTo": [
+        "workspace.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781159022985,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781159023087_ya6j5q",
+      "category": "antipattern",
+      "title": "Failure: Extract magic numbers into named constants",
+      "description": "Failed to apply \"Extract magic numbers into named constants\" to biasDetector.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify biasDetector.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for biasDetector.ts: Extract magic numbers into named constants — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "biasDetector.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781159023087,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781159110102_fwanco",
+      "category": "antipattern",
+      "title": "Failure: Replace require() calls with ESM imports",
+      "description": "Failed to apply \"Replace require() calls with ESM imports\" to selfTestPipeline.ts. Reason: File 'selfTestPipeline.ts' is blocked from self-improvement. Avoid similar changes.",
+      "context": "self-modify selfTestPipeline.ts reliability",
+      "outcome": "failure: File 'selfTestPipeline.ts' is blocked from self-improvement",
+      "lesson": "Avoid for selfTestPipeline.ts: Replace require() calls with ESM imports — causes File 'selfTestPipeline.ts' is blocked from self-improvement",
+      "applicableTo": [
+        "selfTestPipeline.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781159110102,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781159110197_fykhnx",
+      "category": "antipattern",
+      "title": "Failure: Improve diff generator readability",
+      "description": "Failed to apply \"Improve diff generator readability\" to codeIntel.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify codeIntel.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for codeIntel.ts: Improve diff generator readability — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "codeIntel.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781159110197,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781159253257_odckt0",
+      "category": "antipattern",
+      "title": "Failure: Refactor getNextExecutableStep for readability",
+      "description": "Failed to apply \"Refactor getNextExecutableStep for readability\" to taskPlanner.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify taskPlanner.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for taskPlanner.ts: Refactor getNextExecutableStep for readability — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "taskPlanner.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781159253257,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781159253368_h2np8h",
+      "category": "antipattern",
+      "title": "Failure: Refactor extractFactualClaims for readability",
+      "description": "Failed to apply \"Refactor extractFactualClaims for readability\" to grounding.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify grounding.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for grounding.ts: Refactor extractFactualClaims for readability — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "grounding.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781159253368,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781159756903_oe45u0",
+      "category": "antipattern",
+      "title": "Failure: Extract health check logic into helper function",
+      "description": "Failed to apply \"Extract health check logic into helper function\" to watchdog.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify watchdog.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for watchdog.ts: Extract health check logic into helper function — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "watchdog.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781159756903,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781159757026_n4fz0d",
+      "category": "antipattern",
+      "title": "Failure: Extract SSRF validation into a shared module",
+      "description": "Failed to apply \"Extract SSRF validation into a shared module\" to browser.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify browser.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for browser.ts: Extract SSRF validation into a shared module — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "browser.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781159757026,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781159757140_xvin6h",
+      "category": "antipattern",
+      "title": "Failure: Refactor hybridSearch for readability by extracting scoring logic",
+      "description": "Failed to apply \"Refactor hybridSearch for readability by extracting scoring logic\" to vectorMemory.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify vectorMemory.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for vectorMemory.ts: Refactor hybridSearch for readability by extracting scoring logic — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "vectorMemory.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781159757140,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781160098818_1fx33q",
+      "category": "antipattern",
+      "title": "Failure: Improve readability of getSeverity function",
+      "description": "Failed to apply \"Improve readability of getSeverity function\" to dependencyResolver.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify dependencyResolver.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for dependencyResolver.ts: Improve readability of getSeverity function — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "dependencyResolver.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781160098818,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781160098953_g0ksth",
+      "category": "antipattern",
+      "title": "Failure: Sanitize GitHub token from error messages in catch blocks",
+      "description": "Failed to apply \"Sanitize GitHub token from error messages in catch blocks\" to continuousImprover.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify continuousImprover.ts security",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for continuousImprover.ts: Sanitize GitHub token from error messages in catch blocks — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "continuousImprover.ts",
+        "security"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781160098953,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781160314834_n23kpn",
+      "category": "antipattern",
+      "title": "Failure: Improve readability of rebuild history persistence",
+      "description": "Failed to apply \"Improve readability of rebuild history persistence\" to autoRebuild.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify autoRebuild.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for autoRebuild.ts: Improve readability of rebuild history persistence — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "autoRebuild.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781160314834,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781160314920_x4x1hl",
+      "category": "antipattern",
+      "title": "Failure: Fix LLM connectivity health check to avoid forbidden pattern",
+      "description": "Failed to apply \"Fix LLM connectivity health check to avoid forbidden pattern\" to selfHeal.ts. Reason: File 'selfHeal.ts' is blocked from self-improvement. Avoid similar changes.",
+      "context": "self-modify selfHeal.ts reliability",
+      "outcome": "failure: File 'selfHeal.ts' is blocked from self-improvement",
+      "lesson": "Avoid for selfHeal.ts: Fix LLM connectivity health check to avoid forbidden pattern — causes File 'selfHeal.ts' is blocked from self-improvement",
+      "applicableTo": [
+        "selfHeal.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781160314920,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781160315029_pbj6k5",
+      "category": "antipattern",
+      "title": "Failure: Remove Array.from in cache prune loop",
+      "description": "Failed to apply \"Remove Array.from in cache prune loop\" to cache.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify cache.ts performance",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for cache.ts: Remove Array.from in cache prune loop — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "cache.ts",
+        "performance"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781160315029,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781160478876_aaopko",
+      "category": "antipattern",
+      "title": "Failure: Refactor complexity scoring interpolation for readability",
+      "description": "Failed to apply \"Refactor complexity scoring interpolation for readability\" to codeQualityMonitor.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify codeQualityMonitor.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for codeQualityMonitor.ts: Refactor complexity scoring interpolation for readability — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "codeQualityMonitor.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781160478876,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781160478975_c0ytpm",
+      "category": "antipattern",
+      "title": "Failure: Fix LLM connectivity health check to avoid forbidden pattern",
+      "description": "Failed to apply \"Fix LLM connectivity health check to avoid forbidden pattern\" to selfHeal.ts. Reason: File 'selfHeal.ts' is blocked from self-improvement. Avoid similar changes.",
+      "context": "self-modify selfHeal.ts reliability",
+      "outcome": "failure: File 'selfHeal.ts' is blocked from self-improvement",
+      "lesson": "Avoid for selfHeal.ts: Fix LLM connectivity health check to avoid forbidden pattern — causes File 'selfHeal.ts' is blocked from self-improvement",
+      "applicableTo": [
+        "selfHeal.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781160478975,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781160524286_qa9b6f",
+      "category": "antipattern",
+      "title": "Failure: Extract cosineSimilarity to a pure function with JSDoc",
+      "description": "Failed to apply \"Extract cosineSimilarity to a pure function with JSDoc\" to vectorMemory.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify vectorMemory.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for vectorMemory.ts: Extract cosineSimilarity to a pure function with JSDoc — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "vectorMemory.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781160524286,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781160533718_4ietmi",
+      "category": "antipattern",
+      "title": "Failure: Add path traversal validation for doc gap file paths",
+      "description": "Failed to apply \"Add path traversal validation for doc gap file paths\" to qualityToRSI.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify qualityToRSI.ts security",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for qualityToRSI.ts: Add path traversal validation for doc gap file paths — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "qualityToRSI.ts",
+        "security"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781160533718,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781160743082_sx74g2",
+      "category": "antipattern",
+      "title": "Failure: Improve readability of transitionTo method",
+      "description": "Failed to apply \"Improve readability of transitionTo method\" to circuitBreaker.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify circuitBreaker.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for circuitBreaker.ts: Improve readability of transitionTo method — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "circuitBreaker.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781160743082,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781160743159_iln30d",
+      "category": "antipattern",
+      "title": "Failure: Extract goal creation logic into helper function",
+      "description": "Failed to apply \"Extract goal creation logic into helper function\" to autonomousGoalGenerator.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify autonomousGoalGenerator.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for autonomousGoalGenerator.ts: Extract goal creation logic into helper function — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "autonomousGoalGenerator.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781160743159,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781160743237_qvabxw",
+      "category": "antipattern",
+      "title": "Failure: Extract goal creation into helper function",
+      "description": "Failed to apply \"Extract goal creation into helper function\" to autonomousGoalGenerator.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify autonomousGoalGenerator.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for autonomousGoalGenerator.ts: Extract goal creation into helper function — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "autonomousGoalGenerator.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781160743237,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781161011858_n3myvg",
+      "category": "antipattern",
+      "title": "Failure: Refactor optimizeContext for readability",
+      "description": "Failed to apply \"Refactor optimizeContext for readability\" to contextAwareness.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify contextAwareness.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for contextAwareness.ts: Refactor optimizeContext for readability — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "contextAwareness.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781161011858,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781161456839_16sbyu",
+      "category": "antipattern",
+      "title": "Failure: Extract duplicate error handling into helper function",
+      "description": "Failed to apply \"Extract duplicate error handling into helper function\" to selfConsistency.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify selfConsistency.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for selfConsistency.ts: Extract duplicate error handling into helper function — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "selfConsistency.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781161456839,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781161456947_yk19ke",
+      "category": "antipattern",
+      "title": "Failure: Fix single-model bypass logic to require consensus for critical changes",
+      "description": "Failed to apply \"Fix single-model bypass logic to require consensus for critical changes\" to consensusEngine.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify consensusEngine.ts reliability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for consensusEngine.ts: Fix single-model bypass logic to require consensus for critical changes — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "consensusEngine.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781161456947,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781161725149_o3v1h0",
+      "category": "antipattern",
+      "title": "Failure: Add validation for invalid state transitions",
+      "description": "Failed to apply \"Add validation for invalid state transitions\" to agentStateMachine.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify agentStateMachine.ts feature",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for agentStateMachine.ts: Add validation for invalid state transitions — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "agentStateMachine.ts",
+        "feature"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781161725149,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781161725248_fgjj3c",
+      "category": "antipattern",
+      "title": "Failure: Improve readability of compressToolOutput function",
+      "description": "Failed to apply \"Improve readability of compressToolOutput function\" to contextCompressionDaemon.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify contextCompressionDaemon.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for contextCompressionDaemon.ts: Improve readability of compressToolOutput function — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "contextCompressionDaemon.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781161725248,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781161852991_iawg9n",
+      "category": "antipattern",
+      "title": "Failure: Improve readability of markdown insertion logic",
+      "description": "Failed to apply \"Improve readability of markdown insertion logic\" to selfDocumentation.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify selfDocumentation.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for selfDocumentation.ts: Improve readability of markdown insertion logic — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "selfDocumentation.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781161852991,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781161853143_1on15c",
+      "category": "antipattern",
+      "title": "Failure: Extract cosine similarity and blending into helper functions",
+      "description": "Failed to apply \"Extract cosine similarity and blending into helper functions\" to vectorMemory.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify vectorMemory.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for vectorMemory.ts: Extract cosine similarity and blending into helper functions — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "vectorMemory.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781161853143,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781161853251_a6sauz",
+      "category": "antipattern",
+      "title": "Failure: Sanitize GitHub token from Git push error messages",
+      "description": "Failed to apply \"Sanitize GitHub token from Git push error messages\" to continuousImprover.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify continuousImprover.ts security",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for continuousImprover.ts: Sanitize GitHub token from Git push error messages — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "continuousImprover.ts",
+        "security"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781161853251,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781162181973_08n3iv",
+      "category": "antipattern",
+      "title": "Failure: Simplify isStale by removing grace period comment",
+      "description": "Failed to apply \"Simplify isStale by removing grace period comment\" to dependencyGraph.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify dependencyGraph.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for dependencyGraph.ts: Simplify isStale by removing grace period comment — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "dependencyGraph.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781162181973,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781162271559_hrb4ef",
+      "category": "antipattern",
+      "title": "Failure: Extract version constant to single source of truth",
+      "description": "Failed to apply \"Extract version constant to single source of truth\" to manifest.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify manifest.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for manifest.ts: Extract version constant to single source of truth — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "manifest.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781162271559,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781162278841_te807u",
+      "category": "antipattern",
+      "title": "Failure: Refactor file reading into helper function",
+      "description": "Failed to apply \"Refactor file reading into helper function\" to persistentContextStore.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify persistentContextStore.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for persistentContextStore.ts: Refactor file reading into helper function — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "persistentContextStore.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781162278841,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781162314586_oc4i1a",
+      "category": "antipattern",
+      "title": "Failure: Improve readability of transitionTo method",
+      "description": "Failed to apply \"Improve readability of transitionTo method\" to circuitBreaker.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify circuitBreaker.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for circuitBreaker.ts: Improve readability of transitionTo method — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "circuitBreaker.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781162314586,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -6583,5 +7255,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-11T05:54:49.094Z"
+  "_lastUpdated": "2026-06-11T07:20:26.413Z"
 }

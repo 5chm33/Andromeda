@@ -4,10 +4,10 @@
       "id": "lc_1780899626395_sptyj",
       "pattern": "function safeWorkspacePath(filename: string): string {\n  const wsDir = getWorksp",
       "reason": "Proposal is already processing",
-      "rejectionCount": 1,
+      "rejectionCount": 3,
       "firstSeenAt": 1780899626395,
-      "lastSeenAt": 1780899626395,
-      "active": false
+      "lastSeenAt": 1781159022989,
+      "active": true
     },
     {
       "id": "lc_1780899626551_2fde3",
@@ -139,10 +139,10 @@
       "id": "lc_1780916569552_wvhj5",
       "pattern": "// Diversity scoring constants\n  const BASE_SCORE = 50;\n  const MAX_SLANT_BONU",
       "reason": "Syntax check failed — refinement generation failed",
-      "rejectionCount": 1,
+      "rejectionCount": 3,
       "firstSeenAt": 1780916569552,
-      "lastSeenAt": 1780916569552,
-      "active": false
+      "lastSeenAt": 1781159023092,
+      "active": true
     },
     {
       "id": "lc_1780916574096_4zcxy",
@@ -211,9 +211,9 @@
       "id": "lc_1780918312719_3fin2",
       "pattern": "} catch (pushErr: any) {\n            // Non-fatal — push failure shoul",
       "reason": "Constitution blocked: proposed content contains forbidden pattern 'ghp_[a-zA-Z0-9]{36}'.",
-      "rejectionCount": 2,
+      "rejectionCount": 3,
       "firstSeenAt": 1780918312719,
-      "lastSeenAt": 1780918472370,
+      "lastSeenAt": 1781161853260,
       "active": true
     },
     {
@@ -274,10 +274,10 @@
       "id": "lc_1781157229906_i4g00",
       "pattern": "for (const filePath of topFiles) {\n      // Validate and normalize file path",
       "reason": "Tests failed after applying — automatically rolled back",
-      "rejectionCount": 1,
+      "rejectionCount": 2,
       "firstSeenAt": 1781157229906,
-      "lastSeenAt": 1781157229906,
-      "active": false
+      "lastSeenAt": 1781160533726,
+      "active": true
     },
     {
       "id": "lc_1781157229999_x99lm",
@@ -287,7 +287,250 @@
       "firstSeenAt": 1781157229999,
       "lastSeenAt": 1781157229999,
       "active": false
+    },
+    {
+      "id": "lc_1781157397530_24vos",
+      "pattern": "const [memoryResults, toolResults, fileResults, contextResults, jsonResults] =",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781157397530,
+      "lastSeenAt": 1781157397530,
+      "active": false
+    },
+    {
+      "id": "lc_1781157397607_63ov1",
+      "pattern": "function deriveClusterKey(ep: Episode): string {\n  if (ep.tags?.[0]) return ep.t",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781157397607,
+      "lastSeenAt": 1781157397607,
+      "active": false
+    },
+    {
+      "id": "lc_1781157397683_nlt0k",
+      "pattern": "async function callLlm(messages: Array<{role: string; content: string}>, options",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781157397683,
+      "lastSeenAt": 1781157397683,
+      "active": false
+    },
+    {
+      "id": "lc_1781159022924_8zfqj",
+      "pattern": "function runTypeCheck(targetFiles?: string[]): { passed: boolean; output: string",
+      "reason": "File 'selfTestPipeline.ts' is blocked from self-improvement",
+      "rejectionCount": 2,
+      "firstSeenAt": 1781159022924,
+      "lastSeenAt": 1781159110110,
+      "active": true
+    },
+    {
+      "id": "lc_1781159110202_sjmv2",
+      "pattern": "import { diffLines, formatLines } from \"diff\";\n\nexport function generateUnifiedD",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781159110202,
+      "lastSeenAt": 1781159110202,
+      "active": false
+    },
+    {
+      "id": "lc_1781159253272_6y2a3",
+      "pattern": "export function getNextExecutableStep(plan: TaskPlan): PlanStep | null {\n  const",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781159253272,
+      "lastSeenAt": 1781159253272,
+      "active": false
+    },
+    {
+      "id": "lc_1781159253373_h93rr",
+      "pattern": "function matchPatterns(text: string, pattern: RegExp): string[] {\n  return text.",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781159253373,
+      "lastSeenAt": 1781159253373,
+      "active": false
+    },
+    {
+      "id": "lc_1781159756909_5o0dh",
+      "pattern": "if (health === \"healthy\") {\n      handleHealthy(spec, state, prevHealth);",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781159756909,
+      "lastSeenAt": 1781159756909,
+      "active": false
+    },
+    {
+      "id": "lc_1781159757031_jd3sj",
+      "pattern": "// SSRF protection imported from shared module\nimport { isPrivateAddress, valida",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781159757031,
+      "lastSeenAt": 1781159757031,
+      "active": false
+    },
+    {
+      "id": "lc_1781159757148_1m1l5",
+      "pattern": "function computeBlendedScore(\n  queryVector: number[],\n  entry: EmbeddingEntry,",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781159757148,
+      "lastSeenAt": 1781159757148,
+      "active": false
+    },
+    {
+      "id": "lc_1781160098834_t9qfm",
+      "pattern": "function getSeverity(current: string, latest: string): \"patch\" | \"minor\" | \"majo",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781160098834,
+      "lastSeenAt": 1781160098834,
+      "active": false
+    },
+    {
+      "id": "lc_1781160098958_hy96q",
+      "pattern": "} catch (tsErr: any) {\n        // TypeScript check failed -- rollback all",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781160098958,
+      "lastSeenAt": 1781160098958,
+      "active": false
+    },
+    {
+      "id": "lc_1781160314844_dtcod",
+      "pattern": "function ensureHistoryDir(): void {\n  const dir = path.dirname(HISTORY_FILE);",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781160314844,
+      "lastSeenAt": 1781160314844,
+      "active": false
+    },
+    {
+      "id": "lc_1781160314927_pphxe",
+      "pattern": "{\n    name: \"llm_connectivity\",\n    check: async () => {\n      const providers",
+      "reason": "File 'selfHeal.ts' is blocked from self-improvement",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781160314927,
+      "lastSeenAt": 1781160314927,
+      "active": false
+    },
+    {
+      "id": "lc_1781160315033_1i5bm",
+      "pattern": "prune(): number {\n    const now = Date.now();\n    let pruned = 0;\n    for (con",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781160315033,
+      "lastSeenAt": 1781160315033,
+      "active": false
+    },
+    {
+      "id": "lc_1781160743088_cvjv6",
+      "pattern": "private transitionTo(newState: CircuitState): void {\n    if (this.state === ne",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781160743088,
+      "lastSeenAt": 1781160743088,
+      "active": false
+    },
+    {
+      "id": "lc_1781160743164_u3zvu",
+      "pattern": "goals.push(createGoal({\n            title: `Enable/fix ${c.name || \"un",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781160743164,
+      "lastSeenAt": 1781160743164,
+      "active": false
+    },
+    {
+      "id": "lc_1781160743242_2sa2k",
+      "pattern": "function generateId(): string {\n  return `agoal_${Date.now()}_${Math.random().to",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781160743242,
+      "lastSeenAt": 1781160743242,
+      "active": false
+    },
+    {
+      "id": "lc_1781161011870_obhdf",
+      "pattern": "function summarizeAssistantMessages(\n  messages: Array<{ role: string; content:",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781161011870,
+      "lastSeenAt": 1781161011870,
+      "active": false
+    },
+    {
+      "id": "lc_1781161456850_ugleg",
+      "pattern": "async function addEvaluation(\n    provider: string,\n    model: string,\n    que",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781161456850,
+      "lastSeenAt": 1781161456850,
+      "active": false
+    },
+    {
+      "id": "lc_1781161456952_9ywd2",
+      "pattern": "if (config.models.length < 1 && request.riskLevel !== 'critical') {\n    consol",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781161456952,
+      "lastSeenAt": 1781161456952,
+      "active": false
+    },
+    {
+      "id": "lc_1781161725156_l4a2v",
+      "pattern": "private static readonly VALID_TRANSITIONS: Record<AgentState, AgentState[]> =",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781161725156,
+      "lastSeenAt": 1781161725156,
+      "active": false
+    },
+    {
+      "id": "lc_1781161725253_takyi",
+      "pattern": "function truncateContent(content: string, lines: string[], keepLines: number, re",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781161725253,
+      "lastSeenAt": 1781161725253,
+      "active": false
+    },
+    {
+      "id": "lc_1781161853010_9nn2o",
+      "pattern": "// Insert after \"## Recent Changes\" header\n  mdContent = insertAfterHeader(mdC",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781161853010,
+      "lastSeenAt": 1781161853010,
+      "active": false
+    },
+    {
+      "id": "lc_1781161853148_6z4kc",
+      "pattern": "function cosineSimilarity(a: number[], b: number[]): number {\n  if (a.length !==",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781161853148,
+      "lastSeenAt": 1781161853148,
+      "active": false
+    },
+    {
+      "id": "lc_1781162181978_mgyyt",
+      "pattern": "export function isStale(): boolean {\n  if (lastBuildTime === 0) return true;\n  i",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781162181978,
+      "lastSeenAt": 1781162181978,
+      "active": false
+    },
+    {
+      "id": "lc_1781162278847_qm4m7",
+      "pattern": "function getStoreFile(sessionId: string): string {\n  return path.join(STORE_DIR,",
+      "reason": "Tests failed after applying — automatically rolled back",
+      "rejectionCount": 1,
+      "firstSeenAt": 1781162278847,
+      "lastSeenAt": 1781162278847,
+      "active": false
     }
   ],
-  "lastUpdatedAt": 1781157229999
+  "lastUpdatedAt": 1781162278848
 }

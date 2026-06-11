@@ -2,7 +2,7 @@
 > **THIS FILE IS INJECTED AT THE START OF EVERY SYSTEM PROMPT.**
 > Read it completely before taking any action. It contains your real file structure,
 > correct tool names, and mandatory protocols.
-> Last updated: 2026-06-11T05:55:19.308Z
+> Last updated: 2026-06-11T07:13:55.090Z
 
 ## ⚠️ CRITICAL: Your Runtime Paths (v5.96)
 These are the ACTUAL paths on this machine. Use these in ALL bash_execute commands.
@@ -159,7 +159,7 @@ To read any of these files, use: self_read_server_file with file_path set to the
   evalDrivenTargeting.test.ts (1KB)
   evalDrivenTargeting.ts (9KB)
   evalFramework.test.ts (3KB)
-  evalFramework.ts (37KB)
+  evalFramework.ts (41KB)
   evalGoalDiscovery.test.ts (1KB)
   evalGoalDiscovery.ts (7KB)
   evalSeed.test.ts (3KB)
@@ -375,7 +375,7 @@ To read any of these files, use: self_read_server_file with file_path set to the
   testGenerator.ts (22KB)
   tieredContextManager.test.ts (1KB)
   tieredContextManager.ts (18KB)
-  tokenBudgetManager.test.ts (2KB)
+  tokenBudgetManager.test.ts (7KB)
   tokenBudgetManager.ts (14KB)
   toolSynthesis.test.ts (1KB)
   toolSynthesis.ts (10KB)

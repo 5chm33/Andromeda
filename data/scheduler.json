@@ -16,7 +16,7 @@
         "rsi-auto"
       ],
       "storeInMemory": false,
-      "nextRunAt": "2026-06-11T11:55:19.339Z",
+      "nextRunAt": "2026-06-11T13:13:55.083Z",
       "lastRunAt": "2026-06-07T20:44:09.514Z",
       "lastError": "Command failed: rsi-auto-trigger\n/bin/sh: 1: rsi-auto-trigger: not found\n"
     }

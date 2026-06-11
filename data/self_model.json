@@ -1,15 +1,15 @@
 {
-  "version": "10.4.0",
+  "version": "10.0.0",
   "identity": "Andromeda — Autonomous Self-Improving AI System",
-  "uptime": 59398,
-  "lastUpdated": 1781157379643,
+  "uptime": 12946577,
+  "lastUpdated": 1781162434596,
   "capabilities": [
     {
       "name": "Self-Healing",
       "module": "selfHeal",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1781157379637,
+      "lastChecked": 1781162434595,
       "description": "Detects and recovers from runtime errors automatically"
     },
     {
@@ -17,7 +17,7 @@
       "module": "selfModify",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1781157379637,
+      "lastChecked": 1781162434595,
       "description": "Modifies own source code with safety checks"
     },
     {
@@ -25,7 +25,7 @@
       "module": "selfImprove",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1781157379637,
+      "lastChecked": 1781162434595,
       "description": "Analyzes code and generates improvement proposals"
     },
     {
@@ -33,7 +33,7 @@
       "module": "recursiveGoals",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1781157379637,
+      "lastChecked": 1781162434595,
       "description": "Tracks and executes hierarchical goals"
     },
     {
@@ -41,7 +41,7 @@
       "module": "streamIntegrityMonitor",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1781157379637,
+      "lastChecked": 1781162434595,
       "description": "Detects truncated or incomplete outputs"
     },
     {
@@ -49,7 +49,7 @@
       "module": "tokenBudgetManager",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1781157379637,
+      "lastChecked": 1781162434595,
       "description": "Manages token allocation across sessions"
     },
     {
@@ -57,7 +57,7 @@
       "module": "hotReload",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1781157379637,
+      "lastChecked": 1781162434595,
       "description": "Reloads modified modules without restart"
     },
     {
@@ -65,7 +65,7 @@
       "module": "gracefulDegradation",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1781157379637,
+      "lastChecked": 1781162434595,
       "description": "Falls back gracefully when APIs fail"
     },
     {
@@ -73,7 +73,7 @@
       "module": "recursionGuard",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1781157379637,
+      "lastChecked": 1781162434595,
       "description": "Prevents runaway self-modification loops"
     },
     {
@@ -81,7 +81,7 @@
       "module": "skillGraph",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1781157379637,
+      "lastChecked": 1781162434595,
       "description": "Learns error→fix patterns across sessions"
     },
     {
@@ -89,7 +89,7 @@
       "module": "consensusEngine",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1781157379637,
+      "lastChecked": 1781162434595,
       "description": "Multi-model voting for critical decisions"
     },
     {
@@ -97,7 +97,7 @@
       "module": "continuousImprover",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1781157379637,
+      "lastChecked": 1781162434595,
       "description": "Periodic autonomous improvement cycles"
     },
     {
@@ -105,7 +105,7 @@
       "module": "sandboxManager",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1781157379637,
+      "lastChecked": 1781162434595,
       "description": "Sandboxed code execution for safety"
     },
     {
@@ -113,7 +113,7 @@
       "module": "multiAgent",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1781157379637,
+      "lastChecked": 1781162434595,
       "description": "Spawns specialist agents for complex tasks"
     },
     {
@@ -121,7 +121,7 @@
       "module": "memory",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1781157379637,
+      "lastChecked": 1781162434595,
       "description": "Persistent memory storage and retrieval"
     },
     {
@@ -129,7 +129,7 @@
       "module": "selfMonitor",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1781157379637,
+      "lastChecked": 1781162434595,
       "description": "Tracks performance metrics and health"
     },
     {
@@ -137,7 +137,7 @@
       "module": "selfKnowledgeBase",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1781157379637,
+      "lastChecked": 1781162434595,
       "description": "Stores architectural decisions and learnings"
     },
     {
@@ -145,7 +145,7 @@
       "module": "autonomyOrchestrator",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1781157379637,
+      "lastChecked": 1781162434595,
       "description": "Coordinates all autonomous subsystems"
     }
   ],
@@ -153,227 +153,12 @@
   "resources": {
     "tokensUsedToday": 0,
     "tokenBudgetRemaining": 0,
-    "apiCallsToday": 0,
+    "apiCallsToday": 68,
     "memoryEntriesCount": 0,
     "activeConnections": 0
   },
   "trends": [],
   "recentActions": [
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781129923902,
-      "result": "Cycle #5: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781147046242,
-      "result": "Cycle #3: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781147321491,
-      "result": "Cycle #7: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781147633717,
-      "result": "Cycle #12: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781147759664,
-      "result": "Cycle #14: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781148283620,
-      "result": "Cycle #1: 0 actions, 1 errors"
-    },
-    {
-      "action": "Guard unavailable — proposal queued",
-      "timestamp": 1781148385822,
-      "result": "Proposal prop_1781148046055_agzmt4 waiting for guard"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781148562414,
-      "result": "Cycle #5: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781148676555,
-      "result": "Cycle #7: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781148734860,
-      "result": "Cycle #8: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781148795034,
-      "result": "Cycle #9: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781148918121,
-      "result": "Cycle #11: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781149068467,
-      "result": "Cycle #12: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781149859831,
-      "result": "Cycle #6: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781150331869,
-      "result": "Cycle #13: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781150387160,
-      "result": "Cycle #14: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781150504018,
-      "result": "Cycle #16: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781150869900,
-      "result": "Cycle #22: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781150925707,
-      "result": "Cycle #23: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781151105424,
-      "result": "Cycle #26: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781151430532,
-      "result": "Cycle #29: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781151607013,
-      "result": "Cycle #32: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781151861255,
-      "result": "Cycle #35: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781151884158,
-      "result": "Cycle #36: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781151999491,
-      "result": "Cycle #38: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781152358828,
-      "result": "Cycle #44: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781152487486,
-      "result": "Cycle #46: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781152534656,
-      "result": "Cycle #47: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781152900178,
-      "result": "Cycle #52: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781152960667,
-      "result": "Cycle #53: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781153133855,
-      "result": "Cycle #56: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781153194780,
-      "result": "Cycle #57: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781153349287,
-      "result": "Cycle #58: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781153436076,
-      "result": "Cycle #60: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781154015132,
-      "result": "Cycle #69: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781154130980,
-      "result": "Cycle #71: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781154789570,
-      "result": "Cycle #77: 0 actions, 1 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781154912776,
-      "result": "Cycle #78: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781154973625,
-      "result": "Cycle #79: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781155034438,
-      "result": "Cycle #80: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781155134871,
-      "result": "Cycle #81: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781155155417,
-      "result": "Cycle #82: 1 actions, 0 errors"
-    },
-    {
-      "action": "orchestrator_cycle",
-      "timestamp": 1781155450027,
-      "result": "Cycle #85: 1 actions, 0 errors"
-    },
     {
       "action": "orchestrator_cycle",
       "timestamp": 1781155495777,
@@ -406,8 +191,223 @@
     },
     {
       "action": "orchestrator_cycle",
-      "timestamp": 1781156975023,
-      "result": "Cycle #1: 1 actions, 0 errors"
+      "timestamp": 1781157164101,
+      "result": "Cycle #107: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781157275720,
+      "result": "Cycle #109: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781157396335,
+      "result": "Cycle #111: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781157994009,
+      "result": "Cycle #121: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781158056569,
+      "result": "Cycle #122: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781158278434,
+      "result": "Cycle #124: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781158657365,
+      "result": "Cycle #131: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781158717370,
+      "result": "Cycle #132: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781159274260,
+      "result": "Cycle #141: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781159577412,
+      "result": "Cycle #146: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781159638624,
+      "result": "Cycle #147: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781159691335,
+      "result": "Cycle #148: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781159754828,
+      "result": "Cycle #149: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781160289749,
+      "result": "Cycle #153: 0 actions, 1 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781160599004,
+      "result": "Cycle #158: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781160659005,
+      "result": "Cycle #159: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781160730718,
+      "result": "Cycle #160: 2 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781160779006,
+      "result": "Cycle #161: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781160839005,
+      "result": "Cycle #162: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781160912403,
+      "result": "Cycle #163: 2 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781160959005,
+      "result": "Cycle #164: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781161026848,
+      "result": "Cycle #165: 2 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781161079007,
+      "result": "Cycle #166: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781161149356,
+      "result": "Cycle #167: 2 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781161199009,
+      "result": "Cycle #168: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781161259009,
+      "result": "Cycle #169: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781161328280,
+      "result": "Cycle #170: 2 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781161379011,
+      "result": "Cycle #171: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781161450454,
+      "result": "Cycle #172: 2 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781161499010,
+      "result": "Cycle #173: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781161559010,
+      "result": "Cycle #174: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781161619010,
+      "result": "Cycle #175: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781161679010,
+      "result": "Cycle #176: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781161757228,
+      "result": "Cycle #177: 2 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781161815936,
+      "result": "Cycle #178: 2 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781161859010,
+      "result": "Cycle #179: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781161919010,
+      "result": "Cycle #180: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781161979010,
+      "result": "Cycle #181: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781162039010,
+      "result": "Cycle #182: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781162099011,
+      "result": "Cycle #183: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781162159009,
+      "result": "Cycle #184: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781162236045,
+      "result": "Cycle #185: 2 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781162314595,
+      "result": "Cycle #186: 1 actions, 0 errors"
+    },
+    {
+      "action": "orchestrator_cycle",
+      "timestamp": 1781162374596,
+      "result": "Cycle #187: 1 actions, 0 errors"
     }
   ],
   "currentModel": "deepseek/deepseek-chat",
