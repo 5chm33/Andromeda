@@ -208,13 +208,18 @@ async function runImprovementCycle(): Promise<CycleResult> {
     // 5. Post-cycle: validate all changes with TypeScript check + smoke tests + behavioral tests
     if (result.proposalsApplied > 0) {
       try {
-        const { execSync } = await import("child_process");
+        const { spawnSync } = await import("child_process");
         const serverDir = path.resolve(process.cwd());
         console.log(`[ContinuousImprover] Running TypeScript check after ${result.proposalsApplied} applies...`);
         // v9.8.5: Use node_modules/.bin/tsc directly — npx is not available in all environments
+        // v10.3.1: Use spawnSync with args array instead of execSync with shell string to avoid DEP0190.
         const tscBin = path.resolve(serverDir, "node_modules", ".bin", "tsc");
-        const tscCmd = require("fs").existsSync(tscBin) ? tscBin : "npx tsc";
-        execSync(`${JSON.stringify(tscCmd)} --noEmit`, { cwd: serverDir, timeout: 60000, stdio: "pipe" });
+        const fs2 = require("fs");
+        const [tscExe, tscArgs] = fs2.existsSync(tscBin)
+          ? [tscBin, ["--noEmit"]]
+          : ["node", [require("path").resolve(serverDir, "node_modules", "typescript", "bin", "tsc"), "--noEmit"]];
+        const tscResult = spawnSync(tscExe, tscArgs, { cwd: serverDir, timeout: 60000, stdio: "pipe", encoding: "utf-8" });
+        if (tscResult.status !== 0) { throw new Error(tscResult.stderr || tscResult.stdout || "TypeScript check failed"); }
         console.log("[ContinuousImprover] TypeScript check PASSED. Changes are valid.");
 
         // v5.97: Run smoke tests after TypeScript check

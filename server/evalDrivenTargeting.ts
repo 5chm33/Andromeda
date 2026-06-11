@@ -72,9 +72,14 @@ export async function runEvalDrivenTargeting(): Promise<number> {
         const current = result.durationMs;
         const baseline = persistedBaselines[benchmark];
         
-        if (!baseline || baseline < 5) {
+        // v10.3.1: Per-benchmark minimum floors to prevent false regression alarms.
+        // memory_keyword_search does real disk I/O and takes 150-250ms on Windows.
+        // The old 5ms floor caused a persistent 3785% false regression on every run.
+        const BENCHMARK_MIN_FLOORS: Record<string, number> = { memory_keyword_search: 150 };
+        const minFloor = BENCHMARK_MIN_FLOORS[benchmark] ?? 5;
+        if (!baseline || baseline < minFloor) {
           // First time seeing this benchmark, or baseline is too small to yield meaningful percentages — establish baseline
-          persistedBaselines[benchmark] = Math.max(current, 5); // Minimum 5ms baseline to prevent huge % spikes
+          persistedBaselines[benchmark] = Math.max(current, minFloor); // Apply per-benchmark minimum floor
           baselinesUpdated = true;
         } else {
           // Compare against persisted baseline

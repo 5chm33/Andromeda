@@ -347,6 +347,57 @@
       "createdAt": "2026-06-11T03:54:10.588Z",
       "proposalId": "prop_1781150039495_3_jsdoc_v2",
       "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781151736163_9pxu4q",
+      "filename": "ai.ts",
+      "backupPath": "ai_1781151736162.ts.bak",
+      "originalSize": 130,
+      "createdAt": "2026-06-11T04:22:16.163Z",
+      "proposalId": "prop_1781151105415_698pik",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781151766921_m7xizg",
+      "filename": "ai.ts",
+      "backupPath": "ai_1781151766921.ts.bak",
+      "originalSize": 167,
+      "createdAt": "2026-06-11T04:22:46.921Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781151778784_132dub",
+      "filename": "telemetry.ts",
+      "backupPath": "telemetry_1781151778784.ts.bak",
+      "originalSize": 11897,
+      "createdAt": "2026-06-11T04:22:58.784Z",
+      "proposalId": "prop_1781150869890_rxqr88",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781151808927_a03wba",
+      "filename": "telemetry.ts",
+      "backupPath": "telemetry_1781151808927.ts.bak",
+      "originalSize": 11766,
+      "createdAt": "2026-06-11T04:23:28.927Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1781151821480_5bg78u",
+      "filename": "selfConsistency.ts",
+      "backupPath": "selfConsistency_1781151821480.ts.bak",
+      "originalSize": 12314,
+      "createdAt": "2026-06-11T04:23:41.480Z",
+      "proposalId": "prop_1781151606999_nr8fny",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1781151852692_9bposf",
+      "filename": "selfConsistency.ts",
+      "backupPath": "selfConsistency_1781151852692.ts.bak",
+      "originalSize": 11848,
+      "createdAt": "2026-06-11T04:24:12.693Z",
+      "reason": "pre-rollback"
     }
   ],
   "audit": [
@@ -4677,6 +4728,87 @@
       "result": "success",
       "details": "Applied proposal: Add JSDoc to listProposals in selfImprove.ts",
       "timestamp": "2026-06-11T03:54:37.911Z"
+    },
+    {
+      "id": "audit_1781151766915_ceociz",
+      "action": "test",
+      "proposalId": "prop_1781151105415_698pik",
+      "filename": "ai.ts",
+      "result": "failure",
+      "details": " > DEEPSEEK_API_KEY env var is optional\n ✓ server/deepseek.test.ts > DeepSeek provider > llmProvider module loads and has DeepSeek support\n ✓ server/self/dependency_graph.test.ts > dependency_graph > ",
+      "timestamp": "2026-06-11T04:22:46.915Z"
+    },
+    {
+      "id": "audit_1781151766926_gq27dz",
+      "action": "rollback",
+      "proposalId": "prop_1781151105415_698pik",
+      "filename": "ai.ts",
+      "result": "success",
+      "details": "Rolled back ai.ts to backup bak_1781151736163_9pxu4q",
+      "timestamp": "2026-06-11T04:22:46.926Z"
+    },
+    {
+      "id": "audit_1781151766931_o5ji33",
+      "action": "rollback",
+      "proposalId": "prop_1781151105415_698pik",
+      "filename": "ai.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back ai.ts to 2026-06-11T04:22:16.163Z",
+      "timestamp": "2026-06-11T04:22:46.931Z"
+    },
+    {
+      "id": "audit_1781151808922_wxxfp8",
+      "action": "test",
+      "proposalId": "prop_1781150869890_rxqr88",
+      "filename": "telemetry.ts",
+      "result": "failure",
+      "details": "\n ✓ server/deepseek.test.ts > DeepSeek provider > DEEPSEEK_API_KEY env var is optional\n ✓ server/deepseek.test.ts > DeepSeek provider > llmProvider module loads and has DeepSeek support\n ✓ server/self",
+      "timestamp": "2026-06-11T04:23:28.922Z"
+    },
+    {
+      "id": "audit_1781151808934_ilqv0o",
+      "action": "rollback",
+      "proposalId": "prop_1781150869890_rxqr88",
+      "filename": "telemetry.ts",
+      "result": "success",
+      "details": "Rolled back telemetry.ts to backup bak_1781151778784_132dub",
+      "timestamp": "2026-06-11T04:23:28.934Z"
+    },
+    {
+      "id": "audit_1781151808939_unlssi",
+      "action": "rollback",
+      "proposalId": "prop_1781150869890_rxqr88",
+      "filename": "telemetry.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back telemetry.ts to 2026-06-11T04:22:58.784Z",
+      "timestamp": "2026-06-11T04:23:28.939Z"
+    },
+    {
+      "id": "audit_1781151852688_6x8xm2",
+      "action": "test",
+      "proposalId": "prop_1781151606999_nr8fny",
+      "filename": "selfConsistency.ts",
+      "result": "failure",
+      "details": "self/dependency_graph.test.ts > dependency_graph > module loads without errors\n ✓ server/self/dependency_graph.test.ts > dependency_graph > buildDependencyGraph is exported and callable\n ✓ server/self",
+      "timestamp": "2026-06-11T04:24:12.688Z"
+    },
+    {
+      "id": "audit_1781151852697_2txagt",
+      "action": "rollback",
+      "proposalId": "prop_1781151606999_nr8fny",
+      "filename": "selfConsistency.ts",
+      "result": "success",
+      "details": "Rolled back selfConsistency.ts to backup bak_1781151821480_5bg78u",
+      "timestamp": "2026-06-11T04:24:12.697Z"
+    },
+    {
+      "id": "audit_1781151852704_lrbwdj",
+      "action": "rollback",
+      "proposalId": "prop_1781151606999_nr8fny",
+      "filename": "selfConsistency.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back selfConsistency.ts to 2026-06-11T04:23:41.480Z",
+      "timestamp": "2026-06-11T04:24:12.704Z"
     }
   ]
 }

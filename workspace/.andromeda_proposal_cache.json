@@ -6,7 +6,17 @@
     "aiPlanning.ts::extract duplicate api call logic into helper function",
     "scheduler.ts::extract cron parser and execution logic into helper functions",
     "selfReview.ts::extract repeated line-scanning logic into helper function",
-    "reactEngine.ts::extract duplicate file preloading logic into helper method"
+    "reactEngine.ts::extract duplicate file preloading logic into helper method",
+    "codebaseAnalyzer.ts::improve readability of function detection regex",
+    "telemetry.ts::extract ring buffer push logic into helper function",
+    "selfTestPipeline.ts::fix missing await in health check timeout",
+    "ai.ts::remove redundant barrel export comments",
+    "episodicMemory.ts::fix redundant variable and improve readability in getepisodicmemory",
+    "continuousImprover.ts::sanitize github token from git remote url construction",
+    "selfConsistency.ts::extract provider query error handling into shared helper",
+    "ai.ts::remove redundant barrel export comment",
+    "capabilityDiscovery.ts::improve readability of rundiscoverycycle function",
+    "autoGoalSuggester.ts::extract suggestion generation logic for readability"
   ],
   "autoApplyHistory": []
 }

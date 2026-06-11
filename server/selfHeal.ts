@@ -216,15 +216,19 @@ const isWindows = process.platform === "win32";
     name: "open_handles",
     check: async () => {
       // Approximate: check active handles/requests
+      // v10.3.1: Threshold raised to 3000 — chokidar recursive file watching on a 635-file project
+      // creates ~600-800 OS-level handles on Windows (one per watched directory/file).
+      // Combined with setInterval timers, HTTP keep-alive connections, and SQLite handles,
+      // a healthy baseline is 1000-1700. The old threshold of 1000 was a false alarm.
       const handles = (process as any)._getActiveHandles?.()?.length || 0;
       const requests = (process as any)._getActiveRequests?.()?.length || 0;
       const total = handles + requests;
-      return { healthy: total < 1000, value: total };
+      return { healthy: total < 3000, value: total };
     },
     recover: async () => {
-      return { success: false, message: "High handle count — may indicate connection leaks" };
+      return { success: false, message: "High handle count (>3000) — may indicate connection leaks" };
     },
-    threshold: 1000,
+    threshold: 3000,
     direction: "above",
     critical: false,
   },

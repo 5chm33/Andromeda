@@ -49,12 +49,16 @@ const CRITICAL_THRESHOLD = 0.30; // 30% degradation triggers critical alert
 // v9.11.0: Minimum baseline floors per benchmark category.
 // Without these, a single fast cached run sets an unrealistically low baseline (e.g. 0.01ms)
 // and every subsequent real run triggers a false 3000%+ degradation.
+// v10.3.1: memory_keyword_search floor raised from 5ms to 150ms.
+// searchMemory() performs real disk I/O (reads and parses a JSON file on every call).
+// On Windows with a large memory store, actual latency is 150-250ms. The old 5ms floor
+// caused a persistent false 3785% regression alarm on every benchmark run.
 const MIN_BASELINES: Record<string, number> = {
   file_read_10kb: 0.5,
   file_write_10kb: 0.5,
   context_token_estimation_50msg: 0.5,
   json_parse_large_object: 0.5,
-  memory_keyword_search: 5,
+  memory_keyword_search: 150,
   tool_registry_lookup: 0.1,
 };
 const REPORT_PATH = path.join(process.cwd(), ".data", "benchmark_report.json");

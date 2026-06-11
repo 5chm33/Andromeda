@@ -6153,6 +6153,54 @@
       "confidence": 0.9,
       "createdAt": 1781149756120,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781151766941_qryeio",
+      "category": "antipattern",
+      "title": "Failure: Remove redundant barrel export comments",
+      "description": "Failed to apply \"Remove redundant barrel export comments\" to ai.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify ai.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for ai.ts: Remove redundant barrel export comments — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "ai.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781151766941,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781151808948_ai2a1k",
+      "category": "antipattern",
+      "title": "Failure: Extract ring buffer push logic into helper function",
+      "description": "Failed to apply \"Extract ring buffer push logic into helper function\" to telemetry.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify telemetry.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for telemetry.ts: Extract ring buffer push logic into helper function — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "telemetry.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781151808948,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1781151852713_satcvy",
+      "category": "antipattern",
+      "title": "Failure: Extract provider query error handling into shared helper",
+      "description": "Failed to apply \"Extract provider query error handling into shared helper\" to selfConsistency.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify selfConsistency.ts readability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for selfConsistency.ts: Extract provider query error handling into shared helper — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "selfConsistency.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1781151852713,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -6295,5 +6343,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-11T03:54:23.646Z"
+  "_lastUpdated": "2026-06-11T04:30:36.271Z"
 }

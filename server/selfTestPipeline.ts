@@ -211,14 +211,23 @@ function applyChanges(changes: CodeChange[]): { applied: number; errors: string[
 
 function runTypeCheck(targetFiles?: string[]): { passed: boolean; output: string } {
   try {
-    const output = execSync("npx tsc --noEmit --pretty 2>&1", {
+    // v10.3.1: Use spawnSync with args array to avoid DEP0190 shell injection warning on Node 22.
+    const { spawnSync } = require("child_process") as typeof import("child_process");
+    const tscBin = path.join(PROJECT_DIR, "node_modules", ".bin", "tsc");
+    const tscExists = require("fs").existsSync(tscBin);
+    const [tscExe, tscArgs] = tscExists
+      ? [tscBin, ["--noEmit", "--pretty"]]
+      : ["npx", ["tsc", "--noEmit", "--pretty"]];
+    const result = spawnSync(tscExe, tscArgs, {
       cwd: PROJECT_DIR,
       timeout: config.typecheckTimeout,
       encoding: "utf-8",
+      stdio: "pipe",
     });
-    return { passed: true, output: output || "No errors" };
-  } catch (err: any) {
-    const rawOutput = (err.stdout || err.stderr || err.message || "");
+    const rawOutput = ((result.stdout as string || "") + (result.stderr as string || ""));
+    if (result.status === 0) {
+      return { passed: true, output: rawOutput || "No errors" };
+    }
     // If we know which files were changed, only fail if those files have errors.
     // Pre-existing errors in OTHER files should not block a valid proposal.
     if (targetFiles && targetFiles.length > 0) {
@@ -234,19 +243,31 @@ function runTypeCheck(targetFiles?: string[]): { passed: boolean; output: string
       return { passed: false, output: relevantLines.substring(0, 3000) };
     }
     return { passed: false, output: rawOutput.substring(0, 3000) };
+  } catch (err: any) {
+    const rawOutput = (err.stdout || err.stderr || err.message || "");
+    return { passed: false, output: rawOutput.substring(0, 3000) };
   }
 }
 
 function runUnitTests(): { passed: boolean; output: string } {
   try {
-    const output = execSync("npx vitest run --reporter=verbose 2>&1", {
+    // v10.3.1: Use spawnSync with args array to avoid DEP0190 shell injection warning on Node 22.
+    const { spawnSync } = require("child_process") as typeof import("child_process");
+    const vitestBin = path.join(PROJECT_DIR, "node_modules", ".bin", "vitest");
+    const vitestExists = require("fs").existsSync(vitestBin);
+    const [vitestExe, vitestArgs] = vitestExists
+      ? [vitestBin, ["run", "--reporter=verbose"]]
+      : ["npx", ["vitest", "run", "--reporter=verbose"]];
+    const result = spawnSync(vitestExe, vitestArgs, {
       cwd: PROJECT_DIR,
       timeout: config.unittestTimeout,
       encoding: "utf-8",
+      stdio: "pipe",
     });
-    return { passed: true, output: output.substring(0, 3000) };
-  } catch (err: any) {
-    const output = (err.stdout || err.stderr || err.message || "").substring(0, 3000);
+    const output = ((result.stdout as string || "") + (result.stderr as string || "")).substring(0, 3000);
+    if (result.status === 0) {
+      return { passed: true, output };
+    }
     // Check if tests ran but some failed vs. couldn't run at all
     if (output.includes("Tests  ") || output.includes("Test Files")) {
       return { passed: false, output };
@@ -255,6 +276,9 @@ function runUnitTests(): { passed: boolean; output: string } {
     if (output.includes("No test files found")) {
       return { passed: true, output: "No test files found (OK)" };
     }
+    return { passed: false, output };
+  } catch (err: any) {
+    const output = (err.stdout || err.stderr || err.message || "").substring(0, 3000);
     return { passed: false, output };
   }
 }

@@ -305,9 +305,22 @@ function runSyntaxCheck(filename: string, proposedContent: string, originalSnipp
     path.join(projectRoot, "node_modules", "typescript", "bin", "tsc"),
   ];
   const localTsc = localTscPaths.find(p => fs.existsSync(p));
-  let tscCmd = "pnpm exec tsc";
+  // v10.3.1: Build [exe, args] tuple for spawnSync to avoid DEP0190 shell injection warning.
+  // execSync with a quoted string like `"C:\path\tsc" --noEmit` triggers DEP0190 on Node 22.
+  let tscExe: string;
+  let tscArgs: string[];
   if (localTsc) {
-    tscCmd = localTsc.includes("typescript/bin/tsc") ? `node "${localTsc}"` : `"${localTsc}"`;
+    if (localTsc.includes("typescript/bin/tsc")) {
+      tscExe = "node";
+      tscArgs = [localTsc, "--noEmit"];
+    } else {
+      tscExe = localTsc;
+      tscArgs = ["--noEmit"];
+    }
+  } else {
+    // Fallback: use pnpm exec tsc
+    tscExe = "pnpm";
+    tscArgs = ["exec", "tsc", "--noEmit"];
   }
 
   // Backup the original file content
@@ -321,12 +334,39 @@ function runSyntaxCheck(filename: string, proposedContent: string, originalSnipp
     fs.writeFileSync(actualFile, proposedContent, "utf-8");
 
     try {
-      execSync(`${tscCmd} --noEmit 2>&1`, {
+      // v10.3.1: Use require() (sync) instead of await import() since this function is not async.
+      // spawnSync with args array avoids DEP0190 shell injection warning on Node 22.
+      const { spawnSync } = require("child_process") as typeof import("child_process");
+      const tscResult = spawnSync(tscExe, tscArgs, {
         timeout: 45000,
         encoding: "utf-8",
         cwd: projectRoot,
+        stdio: "pipe",
       });
-      return { pass: true, errors: "" };
+      if (tscResult.status === 0) {
+        return { pass: true, errors: "" };
+      }
+      // Treat as a caught tsc error
+      const tscOutput: string = (tscResult.stdout || tscResult.stderr || "TypeScript check failed") as string;
+      const isTscMissing = /ENOENT|command not found|not recognized as an internal or external command/i.test(tscOutput);
+      if (isTscMissing) {
+        if (!(global as any)._tscWarningEmitted) {
+          console.warn(`[Guard] tsc binary not found — using lightweight JS syntax fallback`);
+          (global as any)._tscWarningEmitted = true;
+        }
+        return runLightweightSyntaxCheck(proposedContent);
+      }
+      // Filter out errors from OTHER files — only keep errors in the target file.
+      const targetBase2 = path.basename(filename);
+      const targetLines2 = tscOutput
+        .split("\n")
+        .filter((line: string) => line.includes(targetBase2))
+        .join("\n")
+        .slice(0, 1000);
+      if (!targetLines2) {
+        return { pass: true, errors: "" };
+      }
+      return { pass: false, errors: targetLines2 };
     } catch (tscErr: any) {
       const tscOutput: string = tscErr.stdout ?? tscErr.message ?? "";
       const isTscMissing = /ENOENT|command not found|not recognized as an internal or external command/i.test(tscOutput);
@@ -439,12 +479,22 @@ function runLightweightSyntaxCheck(content: string): { pass: boolean; errors: st
 
 function runTests(): { pass: boolean; output: string } {
   try {
-    const output = execSync("npx vitest run --reporter=verbose 2>&1", {
+    // v10.3.1: Use spawnSync with args array to avoid DEP0190 shell injection warning on Node 22.
+    const { spawnSync } = require("child_process") as typeof import("child_process");
+    // Prefer local vitest binary over npx to avoid shell invocation
+    const vitestBin = path.join(_guardProjectRoot, "node_modules", ".bin", "vitest");
+    const vitestExists = fs.existsSync(vitestBin);
+    const [vitestExe, vitestArgs] = vitestExists
+      ? [vitestBin, ["run", "--reporter=verbose"]]
+      : ["npx", ["vitest", "run", "--reporter=verbose"]];
+    const result = spawnSync(vitestExe, vitestArgs, {
       timeout: 120000,
       encoding: "utf-8",
       cwd: _guardProjectRoot,
+      stdio: "pipe",
     });
-    return { pass: true, output: output.slice(-2000) };
+    const output = ((result.stdout as string || "") + (result.stderr as string || "")).slice(-4000);
+    return { pass: result.status === 0, output };
   } catch (err: any) {
     return { pass: false, output: (err.stdout ?? err.message ?? "").slice(-2000) };
   }

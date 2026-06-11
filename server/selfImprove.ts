@@ -1006,19 +1006,29 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
   // v9.10.0: Git pre-apply snapshot — use a lightweight tag instead of a commit
   // to preserve rollback capability without polluting git log with "pre-improvement snapshot" noise.
   // Tags are hidden from the default git log view but accessible via `git tag -l 'rsi-snap/*'`.
+  // v10.3.1: Check for git repo first — silently skip when running from an extracted zip.
   try {
     const cwd = path.resolve(getServerDir(), "..");
-    const gitEnv = { ...process.env, GIT_AUTHOR_NAME: "Andromeda AI", GIT_AUTHOR_EMAIL: "andromeda@local", GIT_COMMITTER_NAME: "Andromeda AI", GIT_COMMITTER_EMAIL: "andromeda@local" };
-    const safeTitle = (proposal.title || proposalId).replace(/[^a-zA-Z0-9_-]/g, "-").slice(0, 40);
-    const tagName = `rsi-snap/${safeTitle}-${Date.now()}`;
+    // v10.3.1: Detect non-git directories before attempting tag to avoid noisy warnings
+    // when users run Andromeda from an extracted zip (not a git repository).
+    let isGitRepo = false;
     try {
-      execSync(`git tag ${JSON.stringify(tagName)}`, { cwd, env: gitEnv, encoding: "utf-8", stdio: "pipe" });
-      console.log(`[SelfImprove] Git snapshot tag: ${tagName}`);
-    } catch (tagErr: any) {
-      // Non-fatal — tag creation failure should never block the improvement cycle
-      const errMsg = String(tagErr.stderr || tagErr.message || "");
-      if (!errMsg.includes("already exists")) {
-        console.warn("[SelfImprove] Git snapshot tag warning:", errMsg.slice(0, 100));
+      execSync("git rev-parse --git-dir", { cwd, stdio: "pipe", timeout: 3000 });
+      isGitRepo = true;
+    } catch { /* not a git repo — silently skip snapshot */ }
+    if (isGitRepo) {
+      const gitEnv = { ...process.env, GIT_AUTHOR_NAME: "Andromeda AI", GIT_AUTHOR_EMAIL: "andromeda@local", GIT_COMMITTER_NAME: "Andromeda AI", GIT_COMMITTER_EMAIL: "andromeda@local" };
+      const safeTitle = (proposal.title || proposalId).replace(/[^a-zA-Z0-9_-]/g, "-").slice(0, 40);
+      const tagName = `rsi-snap/${safeTitle}-${Date.now()}`;
+      try {
+        execSync(`git tag ${JSON.stringify(tagName)}`, { cwd, env: gitEnv, encoding: "utf-8", stdio: "pipe" });
+        console.log(`[SelfImprove] Git snapshot tag: ${tagName}`);
+      } catch (tagErr: any) {
+        // Non-fatal — tag creation failure should never block the improvement cycle
+        const errMsg = String(tagErr.stderr || tagErr.message || "");
+        if (!errMsg.includes("already exists")) {
+          console.warn("[SelfImprove] Git snapshot tag warning:", errMsg.slice(0, 100));
+        }
       }
     }
   } catch (snapErr) {
