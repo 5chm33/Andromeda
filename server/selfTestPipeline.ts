@@ -511,16 +511,37 @@ export function validateProposal(proposal: PipelineProposal): { valid: boolean; 
 
 /**
  * Recover from a crash by checking for unfinished backups.
+ * v10.4.0: Auto-cleans backups older than 24h (definitely stale after a restart).
  */
 export function recoverFromCrash(): { recovered: boolean; message: string } {
   if (!fs.existsSync(config.backupDir)) return { recovered: false, message: "No backup directory" };
 
+  const allBackups = fs.readdirSync(config.backupDir).filter(f => f.endsWith(".json"));
+  if (allBackups.length === 0) return { recovered: false, message: "No pending backups" };
+
+  // Auto-clean backups older than 24h — they are definitely stale after any restart
+  const STALE_MS = 24 * 60 * 60 * 1000;
+  const now = Date.now();
+  let cleaned = 0;
+  for (const fname of allBackups) {
+    const fpath = path.join(config.backupDir, fname);
+    try {
+      const stat = fs.statSync(fpath);
+      if (now - stat.mtimeMs > STALE_MS) {
+        fs.unlinkSync(fpath);
+        cleaned++;
+      }
+    } catch { /* non-fatal */ }
+  }
+  if (cleaned > 0) {
+    console.log(`[Pipeline] Auto-cleaned ${cleaned} stale backup(s) older than 24h`);
+  }
+
   const backups = fs.readdirSync(config.backupDir).filter(f => f.endsWith(".json"));
   if (backups.length === 0) return { recovered: false, message: "No pending backups" };
 
-  // If there are backup files, it means a pipeline crashed mid-execution
-  // The safest action is to log and let the user decide
-  console.warn(`[Pipeline] Found ${backups.length} unfinished backup(s). Manual review recommended.`);
+  // Recent backups (< 24h) indicate a pipeline crash — log and let the user decide
+  console.warn(`[Pipeline] Found ${backups.length} recent unfinished backup(s). Manual review recommended.`);
   return {
     recovered: false,
     message: `Found ${backups.length} unfinished backup(s) in ${config.backupDir}. These indicate a pipeline crash. Review and delete manually.`,

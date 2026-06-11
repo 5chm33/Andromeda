@@ -127,143 +127,91 @@ export function detectFileTruncation(content: string, filePath: string): Truncat
   return { isTruncated: false, confidence: "low" };
 }
 
-/**
- * v5.33: Comprehensive code truncation detection.
- * Checks bracket balance, string literals, AND 25+ mid-expression patterns.
- */
-function detectCodeTruncation(content: string, ext: string): TruncationResult {
-  const issues: TruncationIssue[] = [];
+// ─── Bracket/String Balance Helpers ────────────────────────────────────────
 
-  // ── 1. Check bracket balance ──
+interface BalanceScanResult {
+  braces: number;
+  parens: number;
+  brackets: number;
+  inString: boolean;
+  stringChar: string;
+}
+
+function scanBracketBalance(content: string): BalanceScanResult {
   let braces = 0, parens = 0, brackets = 0;
   let inString = false, stringChar = "", templateDepth = 0;
-
   for (let i = 0; i < content.length; i++) {
     const ch = content[i];
     const prev = i > 0 ? content[i - 1] : "";
-
     if (!inString) {
-      // Skip line comments
-      if (ch === "/" && content[i + 1] === "/") {
-        const newline = content.indexOf("\n", i);
-        if (newline >= 0) i = newline;
-        continue;
-      }
-      // Skip block comments
-      if (ch === "/" && content[i + 1] === "*") {
-        const end = content.indexOf("*/", i + 2);
-        if (end >= 0) i = end + 1;
-        continue;
-      }
-
-      if (ch === '"' || ch === "'" || ch === "`") {
-        inString = true;
-        stringChar = ch;
-        if (ch === "`") templateDepth = 0;
-      } else {
-        if (ch === "{") braces++;
-        else if (ch === "}") braces--;
-        else if (ch === "(") parens++;
-        else if (ch === ")") parens--;
-        else if (ch === "[") brackets++;
-        else if (ch === "]") brackets--;
-      }
+      if (ch === "/" && content[i + 1] === "/") { const nl = content.indexOf("\n", i); if (nl >= 0) i = nl; continue; }
+      if (ch === "/" && content[i + 1] === "*") { const end = content.indexOf("*/", i + 2); if (end >= 0) i = end + 1; continue; }
+      if (ch === '"' || ch === "'" || ch === "`") { inString = true; stringChar = ch; if (ch === "`") templateDepth = 0; }
+      else if (ch === "{") braces++;
+      else if (ch === "}") braces--;
+      else if (ch === "(") parens++;
+      else if (ch === ")") parens--;
+      else if (ch === "[") brackets++;
+      else if (ch === "]") brackets--;
     } else {
       if (prev === "\\" && (i < 2 || content[i - 2] !== "\\")) continue;
-      if (stringChar === "`" && ch === "$" && content[i + 1] === "{") {
-        templateDepth++;
-      } else if (stringChar === "`" && ch === "}" && templateDepth > 0) {
-        templateDepth--;
-      } else if (ch === stringChar && templateDepth === 0) {
-        inString = false;
-      }
+      if (stringChar === "`" && ch === "$" && content[i + 1] === "{") templateDepth++;
+      else if (stringChar === "`" && ch === "}" && templateDepth > 0) templateDepth--;
+      else if (ch === stringChar && templateDepth === 0) inString = false;
     }
   }
+  return { braces, parens, brackets, inString, stringChar };
+}
 
-  if (inString) {
-    issues.push({
-      type: "unclosed_string",
-      line: content.substring(0, content.length).split("\n").length,
-      description: `File ends inside an unclosed ${stringChar === "`" ? "template literal" : "string literal"}`,
-      severity: "critical",
-    });
+function buildBracketIssues(scan: BalanceScanResult, lineCount: number, content: string): TruncationIssue[] {
+  const issues: TruncationIssue[] = [];
+  if (scan.inString) {
+    issues.push({ type: "unclosed_string", line: lineCount,
+      description: `File ends inside an unclosed ${scan.stringChar === "`" ? "template literal" : "string literal"}`, severity: "critical" });
   }
+  if (scan.braces > 3) issues.push({ type: "bracket_imbalance", line: lineCount, description: `${scan.braces} unclosed braces — severe truncation`, severity: "critical" });
+  else if (scan.braces > 1) issues.push({ type: "bracket_imbalance", line: lineCount, description: `${scan.braces} unclosed braces`, severity: "high" });
+  else if (scan.braces === 1) issues.push({ type: "bracket_imbalance", line: lineCount, description: "1 unclosed brace", severity: "medium" });
+  if (scan.parens > 1) issues.push({ type: "bracket_imbalance", line: lineCount, description: `${scan.parens} unclosed parentheses`, severity: "high" });
+  if (scan.brackets > 1) issues.push({ type: "bracket_imbalance", line: lineCount, description: `${scan.brackets} unclosed brackets`, severity: "high" });
+  return issues;
+}
 
-  if (braces > 3) {
-    issues.push({
-      type: "bracket_imbalance",
-      line: content.split("\n").length,
-      description: `${braces} unclosed braces — severe truncation`,
-      severity: "critical",
-    });
-  } else if (braces > 1) {
-    issues.push({
-      type: "bracket_imbalance",
-      line: content.split("\n").length,
-      description: `${braces} unclosed braces`,
-      severity: "high",
-    });
-  } else if (braces === 1) {
-    issues.push({
-      type: "bracket_imbalance",
-      line: content.split("\n").length,
-      description: "1 unclosed brace",
-      severity: "medium",
-    });
-  }
-
-  if (parens > 1) {
-    issues.push({
-      type: "bracket_imbalance",
-      line: content.split("\n").length,
-      description: `${parens} unclosed parentheses`,
-      severity: "high",
-    });
-  }
-
-  if (brackets > 1) {
-    issues.push({
-      type: "bracket_imbalance",
-      line: content.split("\n").length,
-      description: `${brackets} unclosed brackets`,
-      severity: "high",
-    });
-  }
-
-  // ── 2. v5.33: Check comprehensive truncation patterns against last 500 chars ──
+function checkTailPatterns(content: string): TruncationIssue[] {
+  const issues: TruncationIssue[] = [];
   const tail = content.slice(-500);
   const tailStartLine = content.substring(0, content.length - tail.length).split("\n").length;
-
   for (const { pattern, description, severity } of TRUNCATION_PATTERNS) {
     const match = tail.match(pattern);
     if (match) {
       const matchLine = tailStartLine + tail.substring(0, match.index || 0).split("\n").length - 1;
-      issues.push({
-        type: "truncated_syntax",
-        line: matchLine,
-        description,
-        severity,
-      });
+      issues.push({ type: "truncated_syntax", line: matchLine, description, severity });
     }
   }
+  return issues;
+}
 
-  // ── 3. Calculate overall result ──
-  if (issues.length === 0) {
-    return { isTruncated: false, confidence: "low" };
-  }
-
+function buildTruncationResult(issues: TruncationIssue[], contentLength: number): TruncationResult {
+  if (issues.length === 0) return { isTruncated: false, confidence: "low" };
   const hasCritical = issues.some(i => i.severity === "critical");
   const hasHigh = issues.some(i => i.severity === "high");
   const confidence = hasCritical ? "high" : hasHigh ? "medium" : "low";
   const isTruncated = hasCritical || hasHigh || issues.length >= 2;
+  return { isTruncated, confidence, reason: issues.map(i => i.description).join("; "), position: contentLength, issues };
+}
 
-  return {
-    isTruncated,
-    confidence,
-    reason: issues.map(i => i.description).join("; "),
-    position: content.length,
-    issues,
-  };
+/**
+ * v10.4.0: Comprehensive code truncation detection.
+ * Checks bracket balance, string literals, AND 25+ mid-expression patterns.
+ */
+function detectCodeTruncation(content: string, ext: string): TruncationResult {
+  const scan = scanBracketBalance(content);
+  const lineCount = content.split("\n").length;
+  const issues: TruncationIssue[] = [
+    ...buildBracketIssues(scan, lineCount, content),
+    ...checkTailPatterns(content),
+  ];
+  return buildTruncationResult(issues, content.length);
 }
 
 /**
@@ -425,107 +373,48 @@ export function detectOutputTruncation(output: string): TruncationResult {
  * v5.33: Smarter repair that handles mid-expression truncation.
  * Preserves valid code and adds minimal closing syntax.
  */
-export function repairTruncatedCode(content: string, filePath: string): string {
-  const ext = filePath.split(".").pop()?.toLowerCase() || "";
-
-  if (!["ts", "tsx", "js", "jsx", "java", "c", "cpp", "cs", "go", "rs"].includes(ext)) {
-    return content;
-  }
-
-  let repair = content;
-  const repairs: string[] = [];
-
-  // ── 1. Close unclosed template literals ──
+function repairTemplateLiterals(repair: string, repairs: string[]): string {
   let inTemplate = false;
-  let templateStart = -1;
   for (let i = 0; i < repair.length; i++) {
-    if (repair[i] === "`" && (i === 0 || repair[i - 1] !== "\\")) {
-      if (!inTemplate) {
-        inTemplate = true;
-        templateStart = i;
-      } else {
-        inTemplate = false;
-      }
-    }
+    if (repair[i] === "`" && (i === 0 || repair[i - 1] !== "\\")) inTemplate = !inTemplate;
   }
-  if (inTemplate) {
-    repair += "`";
-    repairs.push("Closed unclosed template literal");
-  }
+  if (inTemplate) { repair += "`"; repairs.push("Closed unclosed template literal"); }
+  return repair;
+}
 
-  // ── 2. Close unclosed string literals ──
+function repairStringLiterals(repair: string, repairs: string[]): string {
   const lines = repair.split("\n");
   const lastLine = lines[lines.length - 1];
-  const singleQuotes = (lastLine.match(/(?<!\\)'/g) || []).length;
-  const doubleQuotes = (lastLine.match(/(?<!\\)"/g) || []).length;
-  if (singleQuotes % 2 !== 0) {
-    repair += "'";
-    repairs.push("Closed unclosed single-quote string");
-  }
-  if (doubleQuotes % 2 !== 0) {
-    repair += '"';
-    repairs.push("Closed unclosed double-quote string");
-  }
+  if ((lastLine.match(/(?<!\\)'/g) || []).length % 2 !== 0) { repair += "'"; repairs.push("Closed unclosed single-quote string"); }
+  if ((lastLine.match(/(?<!\\)"/g) || []).length % 2 !== 0) { repair += '"'; repairs.push("Closed unclosed double-quote string"); }
+  return repair;
+}
 
-  // ── 3. Close mid-expression patterns ──
+function repairMidExpressions(repair: string, repairs: string[]): string {
   const tail = repair.slice(-200);
+  if (/\w+\s*\([^)]*$/m.test(tail) && !/function\s+\w+\s*\([^)]*$/m.test(tail)) { repair += ")"; repairs.push("Closed unclosed function call"); }
+  if (/function\s+\w+\s*\([^)]*$/m.test(tail)) { repair += ") {}"; repairs.push("Closed unclosed function signature"); }
+  if (/=>\s*$/m.test(tail)) { repair += " {}"; repairs.push("Added empty arrow function body"); }
+  return repair;
+}
 
-  // Mid-function call: foo(arg1, arg2
-  if (/\w+\s*\([^)]*$/m.test(tail) && !/function\s+\w+\s*\([^)]*$/m.test(tail)) {
-    repair += ")";
-    repairs.push("Closed unclosed function call");
-  }
+function repairOpenBrackets(repair: string, repairs: string[]): string {
+  const scan = scanBracketBalance(repair);
+  if (scan.parens > 0) { repair += ")".repeat(scan.parens); repairs.push(`Closed ${scan.parens} parentheses`); }
+  if (scan.brackets > 0) { repair += "]".repeat(scan.brackets); repairs.push(`Closed ${scan.brackets} brackets`); }
+  if (scan.braces > 0) { repair += "\n" + "}\n".repeat(scan.braces); repairs.push(`Closed ${scan.braces} braces`); }
+  return repair;
+}
 
-  // Mid-function signature: function foo(
-  if (/function\s+\w+\s*\([^)]*$/m.test(tail)) {
-    repair += ") {}";
-    repairs.push("Closed unclosed function signature");
-  }
-
-  // Mid-arrow function: =>
-  if (/=>\s*$/m.test(tail)) {
-    repair += " {}";
-    repairs.push("Added empty arrow function body");
-  }
-
-  // ── 4. Close brackets (same as before but smarter) ──
-  let braces = 0, parens = 0, brackets = 0;
-  // Re-scan the repaired content
-  let inStr = false, strCh = "";
-  for (let i = 0; i < repair.length; i++) {
-    const ch = repair[i];
-    if (!inStr) {
-      if (ch === "/" && repair[i + 1] === "/") {
-        const nl = repair.indexOf("\n", i);
-        if (nl >= 0) i = nl;
-        continue;
-      }
-      if (ch === "/" && repair[i + 1] === "*") {
-        const end = repair.indexOf("*/", i + 2);
-        if (end >= 0) i = end + 1;
-        continue;
-      }
-      if (ch === '"' || ch === "'" || ch === "`") { inStr = true; strCh = ch; }
-      else if (ch === "{") braces++;
-      else if (ch === "}") braces--;
-      else if (ch === "(") parens++;
-      else if (ch === ")") parens--;
-      else if (ch === "[") brackets++;
-      else if (ch === "]") brackets--;
-    } else {
-      if (ch === strCh && (i === 0 || repair[i - 1] !== "\\")) inStr = false;
-    }
-  }
-
-  if (parens > 0) { repair += ")".repeat(parens); repairs.push(`Closed ${parens} parentheses`); }
-  if (brackets > 0) { repair += "]".repeat(brackets); repairs.push(`Closed ${brackets} brackets`); }
-  if (braces > 0) { repair += "\n" + "}\n".repeat(braces); repairs.push(`Closed ${braces} braces`); }
-
-  // ── 5. Add repair comment ──
-  if (repairs.length > 0) {
-    repair += `\n// [AUTO-REPAIRED v5.33: ${repairs.join(", ")}]\n`;
-  }
-
+export function repairTruncatedCode(content: string, filePath: string): string {
+  const ext = filePath.split(".").pop()?.toLowerCase() || "";
+  if (!["ts", "tsx", "js", "jsx", "java", "c", "cpp", "cs", "go", "rs"].includes(ext)) return content;
+  const repairs: string[] = [];
+  let repair = repairTemplateLiterals(content, repairs);
+  repair = repairStringLiterals(repair, repairs);
+  repair = repairMidExpressions(repair, repairs);
+  repair = repairOpenBrackets(repair, repairs);
+  if (repairs.length > 0) repair += `\n// [AUTO-REPAIRED v10.4.0: ${repairs.join(", ")}]\n`;
   return repair;
 }
 

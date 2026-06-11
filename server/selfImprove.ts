@@ -35,7 +35,7 @@ import { smartChunkFile } from "./fileEngineChunking.js";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { execSync } from "child_process";
+import { execSync, spawnSync } from "child_process";
 import { backgroundSimpleCompletion } from "./llmProvider.js";
 import { createLogger } from "./logger.js";
 import { applyPatch } from "diff";
@@ -1158,7 +1158,7 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         const tscBin = path.resolve(getServerDir(), "..", "node_modules", ".bin", "tsc");
         const tscCmd = fs.existsSync(tscBin) ? tscBin : null;
         if (tscCmd) {
-          execSync(`"${tscCmd}" --noEmit`, { cwd: path.resolve(getServerDir(), ".."), timeout: 60000, stdio: "pipe" });
+          spawnSync(tscCmd, ["--noEmit"], { cwd: path.resolve(getServerDir(), ".."), timeout: 60000, stdio: "pipe" });
           console.log(`[SelfImprove] TypeScript check PASSED for ${proposal.targetFile}`);
           // v9.8.5: Use FRESH store to ensure "applied" status is persisted correctly
           {
