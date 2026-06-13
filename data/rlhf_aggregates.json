@@ -74,5 +74,23 @@
       "browser.ts"
     ],
     "lastUpdated": "2026-06-11T15:24:48.311479+00:00"
+  },
+  "code_quality": {
+    "count": 142,
+    "avg_score_gap": 0.3373,
+    "source": "coding_rlhf",
+    "updated_at": 1781313598751
+  },
+  "code_correctness": {
+    "count": 273,
+    "avg_score_gap": 0.3319,
+    "source": "coding_rlhf",
+    "updated_at": 1781313598751
+  },
+  "code_efficiency": {
+    "count": 23,
+    "avg_score_gap": 0.3217,
+    "source": "coding_rlhf",
+    "updated_at": 1781313598751
   }
 }
