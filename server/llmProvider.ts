@@ -912,6 +912,25 @@ export async function* streamChatCompletion(
  * Defaults to DeepSeek for cost efficiency. Falls back to the active provider if unavailable.
  */
 export function getBackgroundProvider(): LLMProviderConfig {
+  // v10.5.2: Ollama (local, free, zero-cost) — preferred for RSI background cycles
+  // when OLLAMA_BASE_URL is set. On RTX 3060 8GB, use qwen2.5-coder:7b (~4.7GB VRAM).
+  // Set OLLAMA_BASE_URL=http://localhost:11434 and OLLAMA_MODEL=qwen2.5-coder:7b in .env.local
+  const ollamaUrl = process.env.OLLAMA_BASE_URL;
+  if (ollamaUrl) {
+    const ollamaModel = process.env.OLLAMA_MODEL ?? "qwen2.5-coder:7b";
+    return {
+      id: "ollama",
+      name: "Ollama (Local — Free)",
+      apiUrl: ollamaUrl.replace(/\/$/, "") + "/v1/chat/completions",
+      model: ollamaModel,
+      apiKey: "ollama",  // Ollama doesn't require a real API key
+      maxTokens: 4096,
+      temperature: 0.4,
+      supportsTools: false,
+      supportsVision: false,
+      supportsStreaming: false,
+    };
+  }
   const deepseekKey = process.env.DEEPSEEK_API_KEY;
   if (deepseekKey) {
     return {
