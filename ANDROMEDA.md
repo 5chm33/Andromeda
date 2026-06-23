@@ -7,6 +7,18 @@ It records self-improvements, configuration changes, and system events.
 
 ## Recent Changes
 
+- **[vv11.17.0]** Jun 23, 2026, 11:45 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 23, 2026, 11:45 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 23, 2026, 11:45 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 23, 2026, 11:45 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 23, 2026, 11:45 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 23, 2026, 11:45 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
 - **[vv11.17.0]** Jun 23, 2026, 11:31 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
 
 - **[vv11.17.0]** Jun 23, 2026, 11:31 PM — Self-improvement applied: B (`b.ts`) [auto]
