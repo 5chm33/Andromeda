@@ -709,6 +709,26 @@ export async function runRSICycle(): Promise<RSICycleResult> {
   // v6.39: Update federated learning with our latest capability score
   import("./federatedLearning.js").then(m => m.updateLocalScore(capabilityScoreAfter)).catch(() => {});
 
+  // v11.24.0 Audit 16 Fix A: Wire comparePrePostRsi from sweBenchHarness to evaluate true real-world impact
+  // Run every 15 cycles to perform a deep SWE-bench style evaluation
+  if (cycleCount % 15 === 0) {
+    import("./sweBenchHarness.js").then(m => {
+      m.comparePrePostRsi().then(res => {
+        console.log(`[RSIEngine] SWE-bench delta: ${res.delta > 0 ? '+' : ''}${res.delta}% (Before: ${res.before}%, After: ${res.after}%)`);
+      }).catch(() => {});
+    }).catch(() => {});
+  }
+
+  // v11.24.0 Audit 16 Fix B: Wire runPendingMigrations from osGrounding to ensure system health
+  // Run every 50 cycles to ensure Docker containers and database migrations are healthy
+  if (cycleCount % 50 === 0) {
+    import("./osGrounding.js").then(m => {
+      m.runPendingMigrations().then(() => {
+        console.log(`[RSIEngine] System health check: ran pending migrations.`);
+      }).catch(() => {});
+    }).catch(() => {});
+  }
+
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
   // Also re-warm the system prompt cache so the next chat response reflects the updated model.
   import("./semanticSelfModel.js").then(m => {

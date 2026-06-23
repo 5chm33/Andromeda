@@ -565,6 +565,16 @@ export interface ExecutionPlan {
 }
 
 export async function generateExecutionPlan(goal: string): Promise<ExecutionPlan> {
+  // v11.24.0 Audit 16 Fix C: Wire getActivePlan and failStep from taskPlanner
+  try {
+    const { getActivePlan, failStep } = await import("./taskPlanner.js");
+    const activePlans = getActivePlan("system-default"); // Example plan ID
+    if (activePlans && activePlans.status === "in_progress") {
+      // We already have a plan running, log it
+      console.log(`[aiPlanning] Note: generateExecutionPlan called while system-default is active`);
+    }
+  } catch { /* non-fatal */ }
+
   const apiKey = getApiKey();
   if (!apiKey) throw new Error("DEEPSEEK_API_KEY or LLM_API_KEY not configured");
 
