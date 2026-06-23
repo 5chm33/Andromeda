@@ -1,0 +1,47 @@
+[
+  {
+    "patternId": "performance:selfImprove",
+    "category": "performance",
+    "targetFilePattern": "*selfImprove*",
+    "description": "Improvements to selfImprove in category performance",
+    "successRate": 1,
+    "sampleCount": 15,
+    "avgConfidence": 0.8499999999999998,
+    "avgImpact": "high",
+    "exampleTitle": "Reduce redundant LLM calls",
+    "firstSeen": "2026-06-23T15:29:16.594Z",
+    "lastSeen": "2026-06-23T21:55:42.359Z",
+    "sourceInstanceId": "andromeda_1782141894352_aat6sxgy",
+    "exampleRationale": "Caching repeated prompts saves tokens"
+  },
+  {
+    "patternId": "reliability:selfImprove",
+    "category": "reliability",
+    "targetFilePattern": "*selfImprove*",
+    "description": "Improvements to selfImprove in category reliability",
+    "successRate": 1,
+    "sampleCount": 15,
+    "avgConfidence": 0.9000000000000002,
+    "avgImpact": "medium",
+    "exampleTitle": "Add retry on timeout",
+    "firstSeen": "2026-06-23T15:29:16.594Z",
+    "lastSeen": "2026-06-23T21:55:42.360Z",
+    "sourceInstanceId": "andromeda_1782141894352_aat6sxgy",
+    "exampleRationale": "Retries improve resilience"
+  },
+  {
+    "patternId": "performance:continuousImprover",
+    "category": "performance",
+    "targetFilePattern": "*continuousImprover*",
+    "description": "Improvements to continuousImprover in category performance",
+    "successRate": 1,
+    "sampleCount": 45,
+    "avgConfidence": 0.75,
+    "avgImpact": "low",
+    "exampleTitle": "Improvement 2",
+    "firstSeen": "2026-06-23T15:29:16.603Z",
+    "lastSeen": "2026-06-23T21:55:42.361Z",
+    "sourceInstanceId": "andromeda_1782141894352_aat6sxgy",
+    "exampleRationale": "Rationale 2"
+  }
+]

@@ -1,0 +1,53 @@
+# ─── Andromeda v6.25 — .dockerignore ─────────────────────────────────────────
+# Excludes files from the Docker build context to keep images lean and fast.
+
+# Dependencies (reinstalled in container)
+node_modules/
+
+# Build output (rebuilt in container)
+dist/
+
+# Development data (not needed in container)
+.data/
+data/
+workspace/
+
+# Environment files (passed via --env-file at runtime, not baked in)
+.env
+.env.local
+.env.*.local
+
+# Version control
+.git/
+.gitignore
+
+# Editor and OS files
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+
+# Test artifacts
+coverage/
+*.lcov
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Documentation (not needed at runtime)
+*.md
+!README.md
+
+# CI/CD config (not needed at runtime)
+.github/
+
+# Docker files themselves (avoid recursive inclusion)
+Dockerfile
+docker-compose.yml
+.dockerignore

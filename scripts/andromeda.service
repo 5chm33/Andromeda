@@ -1,0 +1,27 @@
+[Unit]
+Description=Andromeda RSI Daemon
+After=network.target
+
+[Service]
+Type=simple
+User=%USER%
+WorkingDirectory=%WORKDIR%
+ExecStart=/usr/bin/env node dist/_core/index.js
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=andromeda-rsi
+Environment=NODE_ENV=production
+Environment=PORT=3000
+
+# Security hardening
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=%WORKDIR%
+ReadWritePaths=%WORKDIR%/logs
+
+[Install]
+WantedBy=multi-user.target

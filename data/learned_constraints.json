@@ -1,0 +1,50 @@
+{
+  "constraints": [
+    {
+      "id": "lc_1782228556577_txs9s",
+      "pattern": "process.exit(",
+      "reason": "Never call process.exit in server code",
+      "rejectionCount": 17,
+      "firstSeenAt": 1782228556577,
+      "lastSeenAt": 1782251731435,
+      "active": true
+    },
+    {
+      "id": "lc_1782228556588_cu67r",
+      "pattern": "eval(userInput)",
+      "reason": "eval with user input is dangerous",
+      "rejectionCount": 6,
+      "firstSeenAt": 1782228556588,
+      "lastSeenAt": 1782228735106,
+      "active": true
+    },
+    {
+      "id": "lc_1782228556589_wroku",
+      "pattern": "__dangerousHook__",
+      "reason": "test constraint to disable",
+      "rejectionCount": 17,
+      "firstSeenAt": 1782228556589,
+      "lastSeenAt": 1782251731439,
+      "active": false
+    },
+    {
+      "id": "lc_1782228556591_bk9mn",
+      "pattern": "delete fs.rmSync",
+      "reason": "rmSync is too destructive",
+      "rejectionCount": 16,
+      "firstSeenAt": 1782228556591,
+      "lastSeenAt": 1782251731444,
+      "active": true
+    },
+    {
+      "id": "lc_1782228756734_gnlpg",
+      "pattern": "UNSAFE_EVAL_MARKER",
+      "reason": "unsafe eval marker for testing",
+      "rejectionCount": 12,
+      "firstSeenAt": 1782228756734,
+      "lastSeenAt": 1782251731438,
+      "active": true
+    }
+  ],
+  "lastUpdatedAt": 1782251731444
+}

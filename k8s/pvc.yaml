@@ -1,0 +1,17 @@
+# ─── Andromeda v6.37 — Persistent Volume Claim ───────────────────────────────
+#
+# Stores the data/ directory (eval history, proposals, context bus, etc.)
+# across pod restarts and rolling updates.
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: andromeda-data-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: standard  # change to your cloud provider's storage class
+  resources:
+    requests:
+      storage: 5Gi

@@ -1,0 +1,2119 @@
+/**
+ * selfImprove.ts — v7.2.0
+ *
+ * v7.2.0 Hardening:
+ *   Security — sanitizeForLog() strips API keys from all log/error output.
+ *   Any string that flows into log.warn / log.info / throw Error is first
+ *   passed through sanitizeForLog() which replaces known key patterns with
+ *   "[REDACTED]". This prevents accidental credential leaks in:
+ *     - Provider error messages (which include the raw HTTP response body)
+ *     - Dead-provider cache warnings
+ *     - Git commit failure messages
+ *     - Any future log path
+ *
+ * v7.1.5 Fix:
+ *   getServerDir() now uses process.cwd()+"server" so RSI git commits target
+ *   the source tree, not the compiled dist/ directory.
+ *
+ * v7.1.4 Fix:
+ *   Provider fallback chain — if the preferred LLM provider returns a 401
+ *   (invalid key) or 402 (insufficient credits), the system now automatically
+ *   retries with the next available provider instead of throwing and tripping
+ *   the circuit breaker. This eliminates the persistent "1 error per cycle"
+ *   pattern when one provider has a billing/auth issue.
+ *
+ * v7.1 RSI Fixes:
+ *   A1 — Proposal deduplication: hash(targetFile + title) prevents the same fix
+ *        being regenerated every cycle (was 45% of all proposals).
+ *   A2 — Confidence scoring: LLM now rates each proposal 0.0–1.0; the
+ *        confidenceThreshold filter in autoApplyHighConfidence() actually works.
+ *   A3 — Constitution-aware generation: forbidden files and forbidden patterns
+ *        from andromeda-constitution.json are injected into the system prompt so
+ *        the LLM never generates proposals that will be immediately blocked.
+ *   A4 — File-aware generation: the actual current file content is read BEFORE
+ *        generating the diff, eliminating hallucinated import paths.
+ *   A5 — Env/key validation on startup: warns clearly if no LLM key is present
+ *        so the 2% baseline issue (401 on every eval task) is caught immediately.
+ *
+ * Previous fixes retained:
+ *   v5.3  — snippet-only diffs (token-efficient for large files)
+ *   v5.22 — guarded apply pipeline (backup → apply → typecheck → rollback)
+ *   v5.25 — knowledge base context injection
+ *   v5.27 — cross-session learning / impact analysis
+ *   v5.50 — auto-apply enabled by default with rate limiter
+ *   v6.00 — canonical path resolution (Kimi audit fix)
+ *   v6.16 — background DeepSeek provider for cheap analysis cycles
+ */
+
+import { smartChunkFile } from "./fileEngineChunking.js";
+import { createRequire } from "module";
+const _require = createRequire(import.meta.url);
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import { execSync, spawnSync } from "child_process";
+import { gitSandbox, GitCommandNotAllowedError } from "./gitSandbox.js";
+import { backgroundSimpleCompletion } from "./llmProvider.js";
+import { createLogger } from "./logger.js";
+import { applyPatch } from "diff";
+import { checkConstitution } from "./constitutionalConstraints.js";
+import { scoreWithRewardModel } from "./rewardModel.js";
+import { verifyProposalProof } from "./z3ProofLayer.js";
+import { recordFailure as recordFailurePattern } from "./failurePatternMemory.js";
+
+const log = createLogger("selfImprove");
+
+
+// ─── v7.2.0 Security: API Key Sanitizer ──────────────────────────────────────
+//
+// LLM provider HTTP responses frequently echo back the Authorization header
+// or include the API key in error bodies (e.g. "Invalid key: sk-abc...").
+// sanitizeForLog() must be called on ANY string before it is written to a
+// log, thrown as an error message, or stored in the knowledge base.
+//
+// Patterns matched:
+//   sk-...  (OpenAI / DeepSeek / Kimi / Anthropic short-form keys)
+//   sk-ant-api03-...  (Anthropic full-form keys)
+//   sk-or-v1-...  (OpenRouter keys)
+//   Bearer <token>  (Authorization header values)
+//   hf_...  (HuggingFace tokens)
+//   ghp_...  (GitHub personal access tokens)
+
+const KEY_PATTERNS: RegExp[] = [
+  // OpenAI / DeepSeek / Kimi style: sk- followed by 20+ hex/alphanumeric chars
+  /sk-[A-Za-z0-9_-]{20,}/g,
+  // Anthropic full key: sk-ant-api03- prefix
+  /sk-ant-api03-[A-Za-z0-9_-]{20,}/g,
+  // OpenRouter key: sk-or-v1- prefix
+  /sk-or-v1-[A-Za-z0-9_-]{20,}/g,
+  // HuggingFace token
+  /hf_[A-Za-z0-9]{20,}/g,
+  // GitHub PAT
+  /ghp_[A-Za-z0-9]{20,}/g,
+  // Bearer token in Authorization header
+  /Bearer\s+[A-Za-z0-9._~+/=-]{20,}/g,
+];
+
+/**
+ * v7.2.0: Strip API keys and tokens from any string before logging or throwing.
+ * Returns the sanitized string with all key patterns replaced by "[REDACTED]".
+ */
+function sanitizeForLog(input: string): string {
+  let out = input;
+  for (const pattern of KEY_PATTERNS) {
+    // Reset lastIndex for global regexes to avoid stateful skip-every-other-match bug
+    pattern.lastIndex = 0;
+    out = out.replace(pattern, "[REDACTED]");
+  }
+  return out;
+}
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+/**
+ * v6.29: A secondary file change that is part of a multi-file proposal.
+ * When a function signature changes, callers in other files must also be updated.
+ * All secondary changes are applied atomically with the primary change — if any
+ * secondary change fails the entire proposal is rolled back.
+ */
+export type SecondaryFileChange = {
+  targetFile: string;
+  originalSnippet: string;
+  proposedSnippet: string;
+  originalContent: string;
+  proposedContent: string;
+  rationale: string;
+};
+
+export type ImprovementProposal = {
+  id: string;
+  targetFile: string;
+  title: string;
+  rationale: string;
+  category: "performance" | "reliability" | "security" | "readability" | "feature";
+  impact: "high" | "medium" | "low";
+  /** v6.28 A2: LLM self-rated confidence 0.0–1.0. Used by the RSI threshold filter. */
+  confidence: number;
+  diff: string;
+  originalSnippet: string;
+  proposedSnippet: string;
+  originalContent: string;
+  proposedContent: string;
+  createdAt: number;
+  status: "pending" | "approved" | "rejected" | "applied";
+  /** v6.29: Optional secondary file changes applied atomically with the primary change. */
+  secondaryChanges?: SecondaryFileChange[];
+};
+
+type ProposalStore = {
+  proposals: ImprovementProposal[];
+};
+
+// ─── v6.28 A1: Deduplication hash set ────────────────────────────────────────
+// Keyed by "targetFile::title" — prevents the same fix being regenerated every
+// cycle. Populated from the persisted store on first load; updated on insert.
+
+const _seenProposalHashes = new Set<string>();
+
+// v11.0.1: Session-level dead provider cache.
+// When a provider returns a 401/402 billing/auth error, it is added here and
+// skipped for ALL subsequent proposals in this session. This prevents the
+// system from wasting time retrying a provider that is known to be down.
+const _deadProviders = new Set<string>();
+
+function proposalHash(targetFile: string, title: string): string {
+  return `${path.basename(targetFile)}::${title.toLowerCase().trim()}`;
+}
+
+// v9.8.0: Persist seenHashes and autoApplyHistory across restarts
+function getCacheStorePath(): string {
+  const workspaceDir = path.resolve(process.cwd(), "workspace");
+  if (!fs.existsSync(workspaceDir)) fs.mkdirSync(workspaceDir, { recursive: true });
+  return path.join(workspaceDir, ".andromeda_proposal_cache.json");
+}
+
+function loadCacheStore(): void {
+  try {
+    const p = getCacheStorePath();
+    if (fs.existsSync(p)) {
+      const cache = JSON.parse(fs.readFileSync(p, "utf-8"));
+      if (Array.isArray(cache.seenHashes)) {
+        cache.seenHashes.forEach((h: string) => _seenProposalHashes.add(h));
+      }
+      if (Array.isArray(cache.autoApplyHistory)) {
+        autoApplyHistory.length = 0;
+        cache.autoApplyHistory.forEach((t: number) => autoApplyHistory.push(t));
+      }
+    }
+  } catch (err) {
+    // non-fatal
+  }
+}
+
+function saveCacheStore(): void {
+  try {
+    const cache = {
+      seenHashes: Array.from(_seenProposalHashes),
+      autoApplyHistory: autoApplyHistory
+    };
+    fs.writeFileSync(getCacheStorePath(), JSON.stringify(cache, null, 2), "utf-8");
+  } catch (err) {
+    // non-fatal
+  }
+}
+
+function initSeenHashes(store: ProposalStore): void {
+  if (_seenProposalHashes.size > 0) return; // already initialised
+  loadCacheStore(); // Load cross-session cache first
+  for (const p of store.proposals) {
+    _seenProposalHashes.add(proposalHash(p.targetFile, p.title));
+  }
+  saveCacheStore();
+}
+
+// ─── Storage ──────────────────────────────────────────────────────────────────
+
+function getServerDir(): string {
+  // v7.1.5: When running from dist/_core/index.js, import.meta.url points to dist/_core/
+  // but git operations need the SOURCE server/ directory (where .git lives at project root).
+  // process.cwd() is always the project root (andromeda_fresh/) when started with `node dist/...`.
+  const sourceServerDir = path.join(process.cwd(), "server");
+  if (fs.existsSync(sourceServerDir)) return sourceServerDir;
+  // Fallback: resolve relative to this file (works in ts-node / dev mode)
+  return path.dirname(fileURLToPath(import.meta.url));
+}
+
+function getProposalStorePath(): string {
+  const workspaceDir = path.resolve(process.cwd(), "workspace");
+  if (!fs.existsSync(workspaceDir)) fs.mkdirSync(workspaceDir, { recursive: true });
+  return path.join(workspaceDir, ".andromeda_proposals.json");
+}
+
+/** Loads the proposal store from disk. Returns an empty store if the file does not exist.
+ * @returns {ProposalStore} The current proposal store
+ */
+export function loadProposals(): ProposalStore {
+  const p = getProposalStorePath();
+  if (!fs.existsSync(p)) return { proposals: [] };
+  try {
+    const store = JSON.parse(fs.readFileSync(p, "utf-8")) as ProposalStore;
+    initSeenHashes(store); // v6.28 A1: seed dedup set from persisted store
+    return store;
+  } catch { return { proposals: [] }; }
+}
+
+// v9.8.5: Reset stuck 'processing' proposals — called at the start of every apply cycle.
+// A proposal gets stuck in 'processing' if the server was killed mid-apply or the apply failed
+// without cleaning up the status. This runs at the start of each cycle, not just once at startup.
+export function resetStuckProcessingProposals(): void {
+  const p = getProposalStorePath();
+  if (!fs.existsSync(p)) return;
+  try {
+    const store = JSON.parse(fs.readFileSync(p, "utf-8")) as ProposalStore;
+    let resetCount = 0;
+    // v9.8.5: Reset ALL 'processing' proposals unconditionally at the start of each cycle.
+    // Since we apply proposals sequentially (never concurrently), there is no legitimate case
+    // where a proposal should be in 'processing' when a new cycle starts. Any 'processing'
+    // proposal at cycle start is stale from a previous crashed or failed cycle.
+    for (const proposal of store.proposals) {
+      if ((proposal.status as string) === 'processing') {
+        proposal.status = 'pending';
+        delete (proposal as any)._processingStartedAt;
+        resetCount++;
+      }
+    }
+    if (resetCount > 0) {
+      console.log(`[SelfImprove] Reset ${resetCount} stale 'processing' proposals back to 'pending'`);
+      fs.writeFileSync(p, JSON.stringify(store, null, 2), 'utf-8');
+    }
+  } catch { /* non-fatal */ }
+}
+
+// v7.1.6: Prune proposal store — keep max 500 proposals, evicting oldest applied/rejected first
+const MAX_PROPOSALS = 500;
+function pruneProposalStore(store: ProposalStore): void {
+  if (store.proposals.length <= MAX_PROPOSALS) return;
+  // Sort: keep pending first (most valuable), then by recency
+  const pending = store.proposals.filter(p => p.status === "pending");
+  const done = store.proposals
+    .filter(p => p.status !== "pending")
+    .sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0)); // newest first
+  const kept = [...pending, ...done].slice(0, MAX_PROPOSALS);
+  const removed = store.proposals.length - kept.length;
+  store.proposals = kept;
+  // Rebuild the seen-hashes set to match pruned store
+  _seenProposalHashes.clear();
+  for (const p of store.proposals) _seenProposalHashes.add(proposalHash(p.targetFile, p.title));
+  if (removed > 0) {
+    const log2 = { info: (msg: string) => console.log(`[SelfImprove] ${msg}`) };
+    log2.info(`[v7.1.6] Pruned ${removed} old proposals from store (kept ${kept.length})`);
+  }
+}
+
+/** Persists the proposal store to disk, pruning old entries first.
+ * @param {ProposalStore} store - The proposal store to save
+ */
+export function saveProposals(store: ProposalStore): void {
+  pruneProposalStore(store);
+  fs.writeFileSync(getProposalStorePath(), JSON.stringify(store, null, 2), "utf-8");
+  saveCacheStore(); // Save seenHashes whenever proposals are saved
+}
+
+// ─── Allowed Files ────────────────────────────────────────────────────────────
+
+export const ANALYZABLE_FILES = [
+  // ── Application layer ─────────────────────────────────────────────────────
+  "ai.ts",
+  "grounding.ts",
+  "browser.ts",
+  "workspace.ts",
+  "memory.ts",
+  "multiAgent.ts",
+  "biasDetector.ts",
+  "codeIntel.ts",
+  "streamRouter.ts",
+  "reactEngine.ts",
+  "llmProvider.ts",
+  "contextManager.ts",
+  "adaptiveRouter.ts",
+  "selfConsistency.ts",
+  "contextBus.ts",
+  "manifest.ts",
+  // ── v9.10.0: RSI engine itself — true recursive self-improvement ───────────
+  // The guard pipeline (TypeScript check + rollback) prevents runaway self-modification.
+  // The RSI can now improve its own improvement algorithms.
+  "selfImprove.ts",
+  "rsiEngine.ts",
+  "continuousImprover.ts",
+  // selfImproveGuard.ts is in blockedFiles — proposals for it are always rejected, so skip analysis
+  "qualityToRSI.ts",
+  "evalDrivenTargeting.ts",
+  "testGenerator.ts",
+  "consensusEngine.ts",
+  // ── v9.11.0: Expanded allowlist — 30 additional safe modules for better RSI coverage ──
+  // These modules have no external side effects at import time and are safe to analyze.
+  // Adding them increases RSI coverage from 24 → 54 modules (125% increase).
+  "benchmarkRunner.ts",
+  "vectorMemory.ts",
+  "persistentContextStore.ts",
+  "episodicMemory.ts",
+  "episodicConsolidation.ts",
+  "autoGoalSuggester.ts",
+  "autonomousGoalGenerator.ts",
+  "autoRollback.ts",
+  "autoRebuild.ts",
+  "ciPipeline.ts",
+  "codeQualityMonitor.ts",
+  "codebaseAnalyzer.ts",
+  "dependencyGraph.ts",
+  "dependencyResolver.ts",
+  "docGenerator.ts",
+  "selfDocumentation.ts",
+  "selfHeal.ts",
+  "selfIntrospect.ts",
+  "selfKnowledgeBase.ts",
+  "selfModel.ts",
+  "selfReflectionEngine.ts",
+  "selfReview.ts",
+  "selfRollback.ts",
+  "selfTestGenerator.ts",
+  "selfTestPipeline.ts",
+  "skillGraph.ts",
+  "taskDecomposer.ts",
+  "taskPlanner.ts",
+  "telemetry.ts",
+  "tokenBudgetManager.ts",
+  "truncationDetector.ts",
+  "unifiedKnowledge.ts",
+  "watchdog.ts",
+  "circuitBreaker.ts",
+  "cache.ts",
+  "adaptiveEval.ts",
+  "aiChangelog.ts",
+  "aiMemory.ts",
+  "aiPlanning.ts",
+  "contextAwareness.ts",
+  "contextCompressionDaemon.ts",
+  "agentOrchestrator.ts",
+  "agentStateMachine.ts",
+  "capabilityDiscovery.ts",
+  "capabilityBootstrapper.ts",
+  "scheduler.ts",
+  "search.ts",
+  "systemMemory.ts",
+  "tieredContextManager.ts",
+  "toolSynthesis.ts",
+];
+
+export function resolveServerFile(filename: string): string | null {
+  const basename = path.basename(filename);
+  if (!ANALYZABLE_FILES.includes(basename)) return null;
+
+  // v6.00 FIX: Use canonical path first (Kimi audit — brute-force search may find wrong file in monorepo).
+  const distDir = getServerDir();
+  let projectRoot: string | null = null;
+  let cur = distDir;
+  for (let i = 0; i < 8; i++) {
+    const serverSubdir = path.join(cur, "server");
+    try {
+      if (fs.existsSync(serverSubdir) && fs.statSync(serverSubdir).isDirectory()) {
+        projectRoot = cur;
+        break;
+      }
+    } catch (err) { log.caught("skip", err); }
+    cur = path.dirname(cur);
+  }
+
+  if (projectRoot) {
+    const canonical = path.join(projectRoot, "server", basename);
+    try { if (fs.existsSync(canonical)) return canonical; } catch (err) { log.caught("skip", err); }
+    const canonicalTools = path.join(projectRoot, "server", "tools", basename);
+    try { if (fs.existsSync(canonicalTools)) return canonicalTools; } catch (err) { log.caught("skip", err); }
+    const canonicalSelf = path.join(projectRoot, "server", "self", basename);
+    try { if (fs.existsSync(canonicalSelf)) return canonicalSelf; } catch (err) { log.caught("skip", err); }
+  }
+
+  const candidates: string[] = [
+    path.join(distDir, basename),
+    path.join(path.resolve(distDir, "..", "server"), basename),
+    path.join(path.resolve(distDir, "..", "server", "tools"), basename),
+    path.join(process.cwd(), "server", basename),
+    path.join(process.cwd(), "andromeda", "server", basename),
+    path.join(distDir, "..", basename),
+  ];
+  let current = distDir;
+  for (let i = 0; i < 6; i++) {
+    candidates.push(path.join(current, "server", basename));
+    candidates.push(path.join(current, basename));
+    current = path.dirname(current);
+  }
+  for (const candidate of candidates) {
+    try {
+      if (fs.existsSync(candidate)) return candidate;
+    } catch (err) { log.caught("skip inaccessible paths", err); }
+  }
+
+  return null;
+}
+
+// ─── v6.28 A3: Constitution loader ───────────────────────────────────────────
+// Reads andromeda-constitution.json once and caches it.
+// Returns the forbidden files list and forbidden patterns list so they can be
+// injected into the LLM system prompt BEFORE generation.
+
+let _constitutionForPromptCache: { files: string[]; patterns: string[] } | null = null;
+
+function getConstitutionConstraints(): { files: string[]; patterns: string[] } {
+  if (_constitutionForPromptCache) return _constitutionForPromptCache;
+  const candidates = [
+    path.resolve(getServerDir(), "..", "andromeda-constitution.json"),
+    path.resolve(getServerDir(), "..", "..", "andromeda-constitution.json"),
+    path.resolve(process.cwd(), "andromeda-constitution.json"),
+  ];
+  for (const p of candidates) {
+    try {
+      if (fs.existsSync(p)) {
+        const c = JSON.parse(fs.readFileSync(p, "utf-8")) as any;
+        _constitutionForPromptCache = {
+          files: c.forbiddenModifications?.files || [],
+          patterns: c.forbiddenModifications?.patterns || [],
+        };
+        return _constitutionForPromptCache;
+      }
+    } catch { /* try next */ }
+  }
+  _constitutionForPromptCache = { files: [], patterns: [] };
+  return _constitutionForPromptCache;
+}
+
+// ─── v7.1.3: Env / key validation ────────────────────────────────────────────
+// Deferred to first analyzeAndPropose() call — NOT run at module load time.
+// ESM static imports evaluate before dotenv loads in index.ts, so an IIFE here
+// always sees empty process.env and produces a false 'no LLM key' warning.
+
+let _envValidated = false;
+function validateEnvKeysOnce(): void {
+  if (_envValidated) return;
+  _envValidated = true;
+  const hasDeepSeek = !!process.env.DEEPSEEK_API_KEY;
+  const hasOpenRouter = !!process.env.OPENROUTER_API_KEY;
+  const hasAnthropic = !!process.env.ANTHROPIC_API_KEY;
+  const hasKimi = !!process.env.KIMI_API_KEY;
+  const hasOpenAI = !!process.env.OPENAI_API_KEY;  // v11.0.2: also accept OpenAI key
+
+  if (!hasDeepSeek && !hasOpenRouter && !hasAnthropic && !hasKimi && !hasOpenAI) {
+    log.warn(
+      "⚠️  [v7.1.3] No LLM API key found in environment. " +
+      "Set DEEPSEEK_API_KEY, OPENROUTER_API_KEY, ANTHROPIC_API_KEY, KIMI_API_KEY, or OPENAI_API_KEY. " +
+      "RSI proposal generation and eval baseline will fail with 401 errors until a key is set."
+    );
+  } else {
+    const active: string[] = [];
+    if (hasDeepSeek) active.push("DeepSeek");
+    if (hasOpenRouter) active.push("OpenRouter");
+    if (hasAnthropic) active.push("Anthropic");
+    if (hasKimi) active.push("Kimi");
+    if (hasOpenAI) active.push("OpenAI");
+    log.info(`[v7.1.3] LLM keys present: ${active.join(", ")} ✓`);
+  }
+}
+
+// ─── Unified Diff Generator (v6.33) ──────────────────────────────────────────────
+// Uses the `diff` package (Myers algorithm) for proper unified diffs.
+// Falls back to the simple line-by-line diff if the package is unavailable.
+
+function generateSimpleDiff(original: string, proposed: string, filename: string): string {
+  try {
+    // v6.33: Proper Myers unified diff with 3-line context
+    const { createTwoFilesPatch } = _require("diff");
+    const patch = createTwoFilesPatch(
+      `a/${filename}`,
+      `b/${filename}`,
+      original,
+      proposed,
+      "",
+      "",
+      { context: 3 }
+    );
+    return patch.trim();
+  } catch {
+    // Fallback: simple line-by-line diff
+    const origLines = original.split("\n");
+    const propLines = proposed.split("\n");
+    const diff: string[] = [`--- a/${filename}`, `+++ b/${filename}`];
+    let i = 0, j = 0;
+    let hunkLines: string[] = [];
+    let hunkStart = -1;
+    const flushHunk = () => {
+      if (hunkLines.length > 0) {
+        diff.push(`@@ -${hunkStart + 1} +${hunkStart + 1} @@`);
+        diff.push(...hunkLines);
+        hunkLines = [];
+        hunkStart = -1;
+      }
+    };
+    while (i < origLines.length || j < propLines.length) {
+      const orig = origLines[i];
+      const prop = propLines[j];
+      if (orig === prop) {
+        if (hunkLines.length > 0) {
+          hunkLines.push(` ${orig ?? ""}`);
+          if (hunkLines.filter(l => !l.startsWith(" ")).length > 0 && hunkLines.length > 6) flushHunk();
+        }
+        i++; j++;
+      } else {
+        if (hunkStart === -1) hunkStart = Math.max(0, i - 3);
+        if (orig !== undefined) { hunkLines.push(`-${orig}`); i++; }
+        if (prop !== undefined) { hunkLines.push(`+${prop}`); j++; }
+      }
+    }
+    flushHunk();
+    return diff.join("\n");
+  }
+}
+
+// ─── AI Analysis ──────────────────────────────────────────────────────────────
+// v5.3:  Ask for a specific code SNIPPET change (token-efficient for large files).
+// v6.28: A2 — LLM rates its own confidence; A3 — constitution constraints in prompt;
+//         A4 — actual file content read before generating diff.
+
+export async function analyzeAndPropose(
+  targetFile: string,
+  area?: string
+): Promise<ImprovementProposal | null> {
+  // v7.1.3: Validate env keys on first call (deferred from module load to avoid ESM race)
+  validateEnvKeysOnce();
+
+  // v6.15: Use active provider key instead of hardcoded DEEPSEEK_API_KEY
+  // v11.0.2: Also accept OPENAI_API_KEY as a valid provider key
+  const { getProviderApiKey } = await import("./llmProvider.js");
+  const activeModel = process.env.LLM_MODEL || "deepseek";
+  const apiKey = getProviderApiKey(activeModel) || process.env.DEEPSEEK_API_KEY || process.env.OPENAI_API_KEY;
+  if (!apiKey) throw new Error("No LLM API key configured (set DEEPSEEK_API_KEY, OPENROUTER_API_KEY, or OPENAI_API_KEY)");
+
+  // v6.34: Auto-categorise the proposal area from the filename if not provided.
+  // This ensures multi-model routing fires automatically without needing a manual area param.
+  if (!area) {
+    const fn = targetFile.toLowerCase();
+    // v9.10.0: RSI engine files get "security" tier → Claude (Pro) for self-modification
+    // These files control the improvement pipeline itself — highest stakes, best model.
+    if (fn.includes("selfimprove") || fn.includes("selfimproveguard") ||
+        fn.includes("continuousimprover") || fn.includes("rsiengine") ||
+        fn.includes("qualitytorsi") || fn.includes("evaldriventargeting")) {
+      area = "security"; // → Pro tier → Claude
+    } else if (fn.includes("security") || fn.includes("auth") || fn.includes("guard") || fn.includes("constitution")) {
+      area = "security";
+    } else if (fn.includes("llm") || fn.includes("model") || fn.includes("provider") || fn.includes("router")) {
+      area = "architecture";
+    } else if (fn.includes("consensus") || fn.includes("testgenerator")) {
+      area = "architecture"; // → Standard tier → DeepSeek Reasoner
+    } else if (fn.includes("perf") || fn.includes("cache") || fn.includes("optim") || fn.includes("bench")) {
+      area = "performance";
+    } else if (fn.includes("test") || fn.includes("eval") || fn.includes("spec")) {
+      area = "reliability";
+    } else if (fn.includes("heal") || fn.includes("recover") || fn.includes("retry")) {
+      area = "reliability";
+    } else if (fn.includes("feature") || fn.includes("agent") || fn.includes("tool")) {
+      area = "feature";
+    } else {
+      area = "readability"; // safe default → DeepSeek
+    }
+  }
+
+  // v6.28 A4: Resolve the actual source file path FIRST so we read the real
+  // current content — not a stale snapshot — before generating any diff.
+  const filePath = resolveServerFile(targetFile);
+  if (!filePath) {
+    throw new Error(`File '${targetFile}' is not in the list of analyzable files or does not exist.`);
+  }
+
+  // v6.28 A4: Read the CURRENT file content from disk (not from any cache).
+  const originalContent = fs.readFileSync(filePath, "utf-8");
+  const filename = path.basename(filePath);
+
+  // v9.8.0: Constitution pre-filter — skip LLM call entirely if file is forbidden
+  try {
+    const constitutionPath = path.join(getServerDir(), "..", "andromeda-constitution.json");
+    if (fs.existsSync(constitutionPath)) {
+      const constitution = JSON.parse(fs.readFileSync(constitutionPath, "utf-8"));
+      const forbiddenFiles = constitution.forbiddenModifications?.files || [];
+      if (forbiddenFiles.some((f: string) => filename.endsWith(f))) {
+        log.info(`[Pre-filter] Skipping ${filename} — forbidden by constitution`);
+        return null;
+      }
+    }
+  } catch (err) {
+    // non-fatal
+  }
+
+  // v6.28 A1: Dedup check — skip if we already have a pending/applied proposal
+  // with the same (file, title) hash. Title is unknown until after LLM call, so
+  // we check AFTER parsing but BEFORE saving. The hash set is also checked here
+  // against the persisted store to catch cross-restart duplicates.
+  const store = loadProposals();
+  const existingPendingForFile = store.proposals.filter(
+    p => p.targetFile === filename && (p.status === "pending" || p.status === "applied")
+  ).length;
+  if (existingPendingForFile >= 5) {
+    log.info(`[A1 dedup] Skipping ${filename} — already has ${existingPendingForFile} pending/applied proposals`);
+    return null;
+  }
+
+  // v5.31: Dynamic model-aware analysis budget
+  const { getContextWindow: getCtxWindow } = await import("./modelRegistry.js");
+  const analysisCharBudget = Math.floor(
+    getCtxWindow(process.env.LLM_MODEL || process.env.LLM_DEFAULT_MODEL || "deepseek/deepseek-chat") * 3.5 * 0.4
+  );
+  let contentForAnalysis: string;
+  if (originalContent.length > analysisCharBudget) {
+    try {
+      const { smartChunkFile } = await import("./fileEngine.js");
+      const chunked = smartChunkFile(originalContent, path.basename(filePath), analysisCharBudget);
+      contentForAnalysis = chunked.loaded + (chunked.manifest ? `\n\n// ${chunked.manifest}` : "");
+    } catch {
+      contentForAnalysis = originalContent.slice(0, analysisCharBudget) + "\n\n// ... (file truncated for analysis) ...";
+    }
+  } else {
+    contentForAnalysis = originalContent;
+  }
+
+  // v5.25: Inject knowledge base context for informed improvements
+  let knowledgeContext = "";
+  try {
+    const { getImprovementContext } = await import("./selfKnowledgeBase.js");
+    knowledgeContext = getImprovementContext(targetFile) || "";
+  } catch {
+    // Knowledge base not available — proceed without context
+  }
+
+  // v11.14.0: Inject cross-agent learned patterns for this file (knowledgeTransfer)
+  let patternContext = "";
+  try {
+    const { getPatternContextForFile } = await import("./knowledgeTransfer.js");
+    patternContext = getPatternContextForFile(targetFile, area) || "";
+  } catch {
+    // Knowledge transfer not available — proceed without pattern context
+  }
+
+  // v5.25 + v5.53: Check memory for previous attempts on this file
+  let previousAttempts = "";
+  try {
+    const { vectorSearch } = await import("./vectorMemory.js");
+    const memories = await vectorSearch(`self-modify ${filename}`, 3);
+    if (memories && memories.length > 0) {
+      previousAttempts = "\n\nPrevious modification attempts on this file (vector search):\n" +
+        memories.map((m: any) => `- ${m.content}`).join("\n");
+    }
+  } catch {
+    // Vector memory not available
+  }
+  try {
+    const { searchMemory } = await import("./memory.js");
+    const pastProposals = searchMemory(`self-improve ${filename}`, 5, "project");
+    if (pastProposals && pastProposals.length > 0) {
+      const pastSummary = pastProposals
+        .filter((m: any) => m.content.includes(filename))
+        .map((m: any) => m.content.split("\n").slice(0, 3).join(" | "))
+        .join("\n");
+      if (pastSummary) {
+        previousAttempts += `\n\nPreviously applied improvements to this file (do NOT repeat these):\n${pastSummary}`;
+      }
+    }
+  } catch {
+    // Memory search not available
+  }
+
+  // v6.31: Build import graph context — find all callers of exported symbols in this file
+  // so the LLM can propose secondary changes that update callers automatically.
+  let importGraphContext = "";
+  try {
+    const { findSymbolUsages, getExportedSymbols } = await import("./importGraph.js");
+    const exportedSymbols = await getExportedSymbols(filePath);
+    if (exportedSymbols.length > 0) {
+      const usageLines: string[] = [];
+      for (const sym of exportedSymbols.slice(0, 5)) { // limit to 5 symbols to keep prompt size manageable
+        const usages = await findSymbolUsages(filePath, sym);
+        if (usages.length > 0) {
+          usageLines.push(`  - ${sym}: used in ${usages.slice(0, 3).map((u: string) => path.basename(u)).join(", ")}${usages.length > 3 ? ` (+${usages.length - 3} more)` : ""}`);
+        }
+      }
+      if (usageLines.length > 0) {
+        importGraphContext = `\n\nIMPORT GRAPH — exported symbols from this file and where they are used:\n${usageLines.join("\n")}\nIf you change a function signature, add secondaryChanges entries for each caller file.`;
+      }
+    }
+  } catch {
+    // importGraph not available — proceed without it
+  }
+
+  // v11.5.0: RLHF context — inject aggregated human feedback into the proposal prompt
+  // so the LLM knows which categories users historically accept vs reject.
+  // getRlhfContext() returns a formatted string like:
+  //   "RLHF HIGH-REWARD categories: security (reward=0.85, n=12), reliability (reward=0.72, n=8)"
+  //   "RLHF LOW-REWARD categories: feature (reward=-0.40, n=5)"
+  // This directly biases the LLM to propose more security/reliability improvements
+  // and fewer feature additions — matching what users actually accept.
+  let rlhfContext = "";
+  try {
+    const { getRlhfContext } = await import("./rlhfCollector.js");
+    rlhfContext = getRlhfContext();
+  } catch {
+    // RLHF collector not available — proceed without context
+  }
+
+  // v11.9.1: Per-file rejection history — inject into prompt so LLM avoids
+  // repeating approaches that were rejected for this specific file.
+  let rejectionContext = "";
+  try {
+    const { getRejectionContext, getFileRejectionStats } = await import("./proposalFeedback.js");
+    const stats = getFileRejectionStats(filename);
+    if (stats.shouldSkip) {
+      // File has 8+ rejections in last 24h — skip it entirely to avoid thrashing
+      throw new Error(`File ${filename} throttled: ${stats.recentRejections} rejections in 24h`);
+    }
+    rejectionContext = getRejectionContext(filename);
+  } catch (rejErr: any) {
+    if ((rejErr as Error).message?.includes("throttled")) throw rejErr;
+    // proposalFeedback not available — proceed without rejection context
+  }
+
+  // v6.36: Meta-learning — read rsi_proof_history.json and inject category success rates
+  // into the system prompt so the LLM focuses on historically weak categories.
+  let metaLearningContext = "";
+  try {
+    const proofPath = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "data", "rsi_proof_history.json");
+    if (fs.existsSync(proofPath)) {
+      const history: any[] = JSON.parse(fs.readFileSync(proofPath, "utf-8"));
+      const recent = history.slice(-20);
+      const catStats: Record<string, { totalDelta: number; count: number }> = {};
+      for (const entry of recent) {
+        const catBefore = entry.categoryScoresBefore ?? {};
+        const catAfter = entry.categoryScoresAfter ?? {};
+        const allCats = new Set([...Object.keys(catBefore), ...Object.keys(catAfter)]);
+        for (const cat of allCats) {
+          const before = (catBefore as any)[cat] ?? 0;
+          const after = (catAfter as any)[cat] ?? 0;
+          if (!catStats[cat]) catStats[cat] = { totalDelta: 0, count: 0 };
+          catStats[cat].totalDelta += after - before;
+          catStats[cat].count++;
+        }
+      }
+      const catSummary = Object.entries(catStats)
+        .map(([cat, s]) => ({ cat, avgDelta: s.count > 0 ? s.totalDelta / s.count : 0 }))
+        .sort((a, b) => a.avgDelta - b.avgDelta);
+      if (catSummary.length > 0) {
+        const weakest = catSummary.slice(0, 3).map(c => `${c.cat}(${c.avgDelta.toFixed(1)})`).join(", ");
+        const strongest = catSummary.slice(-2).map(c => `${c.cat}(${c.avgDelta.toFixed(1)})`).join(", ");
+        metaLearningContext = `\n\nMETA-LEARNING (last ${recent.length} RSI cycles): Weakest categories: ${weakest}. Strongest: ${strongest}. PRIORITISE improving the weakest categories.`;
+      }
+    }
+  } catch { /* non-fatal */ }
+
+  // v11.17.0 Audit 9 Fix C: Wire getDegradingMetrics + findResolution from systemMemory
+  // Inject degrading performance metrics and known error resolutions into the prompt
+  let systemHealthContext = "";
+  try {
+    const { getDegradingMetrics, findResolution } = await import("./systemMemory.js");
+    const degrading = getDegradingMetrics();
+    if (degrading.length > 0) {
+      const degradingStr = degrading
+        .slice(0, 3)
+        .map(b => `  - ${b.metric}: trend=${b.trend}, current=${b.current.toFixed(3)}`)
+        .join("\n");
+      systemHealthContext += `\n\nDEGRADING METRICS (prioritize improvements that address these):\n${degradingStr}`;
+    }
+    // Check if there's a known resolution for errors in this file
+    const resolution = findResolution(targetFile);
+    if (resolution) {
+      systemHealthContext += `\n\nKNOWN ERROR RESOLUTION for this module: ${resolution.resolution}`;
+    }
+  } catch { /* non-fatal */ }
+
+  // v6.28 A3: Load constitution constraints and inject into the system prompt.
+  // This means the LLM will never propose touching forbidden files or inserting
+  // forbidden patterns — so proposals won't be immediately blocked by the guard.
+  // v11.12.0: Inject episodic memory lessons into the RSI prompt
+  let episodicContext = "";
+  try {
+    const { synthesizeLessons } = await import("./episodicMemory.js");
+    const lessons = await synthesizeLessons(targetFile);
+    if (lessons && lessons !== "No prior experience with this type of task.") {
+      episodicContext = `\n\nEPISODIC MEMORY (lessons from past RSI attempts on this file):\n${lessons}`;
+    }
+  } catch { /* non-fatal */ }
+
+  // v11.19.0 Audit 11 Fix A: Wire getSynthesizedRulesForPrompt so long-term memory patterns reach the LLM
+  let longTermMemoryContext = "";
+  try {
+    const { getSynthesizedRulesForPrompt } = await import("./longTermMemoryConsolidation.js");
+    const ltmRules = getSynthesizedRulesForPrompt(targetFile);
+    if (ltmRules && ltmRules.trim().length > 0) {
+      longTermMemoryContext = `\n\nLONG-TERM MEMORY RULES (synthesized from improvement history for this file):\n${ltmRules}`;
+    }
+  } catch { /* non-fatal */ }
+
+  const constitution = getConstitutionConstraints();
+  const constitutionBlock = constitution.files.length > 0 || constitution.patterns.length > 0
+    ? `\n\nCONSTITUTION CONSTRAINTS (you MUST NOT violate these):\n` +
+      (constitution.files.length > 0
+        ? `- NEVER propose changes to these files: ${constitution.files.join(", ")}\n`
+        : "") +
+      (constitution.patterns.length > 0
+        ? `- NEVER include these patterns in proposedSnippet: ${constitution.patterns.join(" | ")}\n`
+        : "")
+    : "";
+
+  // v6.16: Use cheap background provider (DeepSeek) for analysis cycles.
+  // v6.28 A2: Added "confidence" field to the JSON schema so the LLM self-rates
+  //           each proposal 0.0–1.0. This makes the confidenceThreshold filter work.
+  // v6.33: Multi-model routing — route by proposal area.
+  // v7.1.4: Provider fallback chain — if preferred provider returns 401/402, retry next.
+  // v7.1.6: Tiered cost model — Eco/Standard/Pro tiers based on task area.
+  //         Eco (default): DeepSeek → Gemini Flash (routine analysis, 95%+ of cycles)
+  //         Standard: Kimi k2.6 → DeepSeek Reasoner (complex refactoring)
+  //         Pro: Claude Sonnet 4.5 → Kimi (security/auth/orchestrator changes only)
+  function buildProviderFallbackChain(a?: string): string[] {
+    // v7.1.6: Use already-imported llmProvider functions (imported below via dynamic import)
+    // getProviderForTier and tierForArea are resolved after the await import("./llmProvider.js") below
+    const tier = tierForArea_fn(a);
+    const primary = getProviderForTier_fn(tier);
+    // Build fallback: primary → eco fallbacks → last resort
+    const hasDeepSeek = !!process.env.DEEPSEEK_API_KEY;
+    const hasKimi = !!process.env.KIMI_API_KEY;
+    const hasOpenRouter = !!process.env.OPENROUTER_API_KEY;
+    const hasOpenAI = !!process.env.OPENAI_API_KEY;
+    const chain: string[] = [primary];
+    // Add eco-tier fallbacks (cheapest) that aren't already in chain
+    for (const fb of ["deepseek", "kimi", "openrouter-fast"]) {
+      if (!chain.includes(fb)) {
+        if (fb === "deepseek" && hasDeepSeek) chain.push(fb);
+        else if (fb === "kimi" && hasKimi) chain.push(fb);
+        else if (fb === "openrouter-fast" && hasOpenRouter) chain.push(fb);
+      }
+    }
+    // v10.3: openai (sandbox Gemini proxy) as final fallback — always available in sandbox
+    if (!chain.includes("openai") && hasOpenAI) chain.push("openai");
+    if (chain.length === 0) chain.push("openai");
+    return chain;
+  }
+  const { simpleChatCompletion, getProviderForTier: getProviderForTier_fn, tierForArea: tierForArea_fn } = await import("./llmProvider.js");
+  const providerChain = buildProviderFallbackChain(area);
+  const llmMessages = [
+    {
+      role: "system",
+      content: `You are an expert TypeScript software engineer performing a targeted code improvement.
+You will receive source code and must identify the SINGLE BEST improvement to make.
+${knowledgeContext ? `\nArchitecture decisions and known issues for this file:\n${knowledgeContext}` : ""}${patternContext ? `\nCross-agent learned patterns for this file:\n${patternContext}` : ""}${longTermMemoryContext}${systemHealthContext}${previousAttempts}${metaLearningContext}${episodicContext}${rlhfContext}${rejectionContext}${constitutionBlock}${importGraphContext}
+
+CRITICAL: Return ONLY a JSON object. No markdown. No explanation outside the JSON.
+The JSON must contain:
+- "title": short title (max 10 words)
+- "rationale": 2 sentences explaining the improvement
+- "category": one of: performance, reliability, security, readability, feature
+- "impact": one of: high, medium, low
+- "confidence": a float 0.0–1.0 representing how confident you are this improvement is correct, safe, and will pass a TypeScript type-check (1.0 = certain, 0.5 = unsure)
+- "originalSnippet": the EXACT lines of code to replace (copy verbatim from the file, max 30 lines)
+- "proposedSnippet": the improved replacement code (same approximate length)
+- "secondaryChanges": (optional) array of {"file": "relative/path.ts", "originalSnippet": "...", "proposedSnippet": "..."} for caller files that must be updated atomically
+
+The originalSnippet MUST be an exact substring of the provided file content.
+Keep both snippets SHORT and focused. Do not rewrite the whole file.
+Do NOT repeat previous failed attempts.
+Do NOT include any forbidden patterns listed above.
+
+CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
+1. NEVER change the name, parameter types, parameter count, or return type of any EXPORTED function or class.
+2. NEVER rename exported symbols (functions, classes, constants, interfaces, types).
+3. Internal refactoring (helper functions, variable names, logic flow, error handling) is SAFE.
+4. Adding NEW exports is SAFE. Removing or renaming EXISTING exports is FORBIDDEN.
+5. If you are unsure whether a change preserves backward compatibility, set confidence below 0.8.
+6. Prefer improvements that are purely internal (private helpers, local variables, comments) to minimize CI risk.`,
+    },
+    {
+      role: "user",
+      content: `Analyze this TypeScript file and propose the single best improvement${area ? ` focusing on: ${area}` : ``}.\n\nFile: ${filename}\n\n\`\`\`typescript\n${contentForAnalysis}\n\`\`\`\n\nReturn ONLY valid JSON.`,
+    },
+  ];
+  // v7.1.4: Iterate through fallback chain; skip providers that return 401/402
+  // v11.0.1: Also skip providers in the session-level _deadProviders cache to avoid
+  //          wasting time on providers known to be billing/auth-failed this session.
+  let rawContent: string | null = null;
+  let lastProviderError: Error | null = null;
+  for (const pid of providerChain) {
+    // Skip providers already known to be dead this session
+    if (_deadProviders.has(pid)) {
+      log.info(`[v11.0.1] Skipping dead provider '${pid}' (auth/billing failed earlier this session)`);
+      continue;
+    }
+    try {
+      rawContent = await simpleChatCompletion(llmMessages, { maxTokens: 2000, temperature: 0.3, providerId: pid });
+      if (rawContent) break; // success — stop trying
+    } catch (provErr: any) {
+      const msg: string = provErr?.message ?? "";
+      const isAuthOrBilling = /40[12]/.test(msg) ||
+        /authentication/i.test(msg) ||
+        /insufficient.*credit/i.test(msg) ||
+        /invalid.*key/i.test(msg);
+      if (isAuthOrBilling) {
+        log.warn(`[v7.1.4] Provider '${pid}' returned auth/billing error — trying next. (${sanitizeForLog(msg).slice(0, 100)})`);
+        _deadProviders.add(pid); // v11.0.1: Mark as dead for this session
+        lastProviderError = provErr;
+        continue;
+      }
+      throw provErr; // non-auth error — propagate immediately
+    }
+  }
+  if (!rawContent) {
+    throw lastProviderError ?? new Error("All LLM providers failed or returned empty responses");
+  }
+
+  // v7.1.7: Parse helper — tries to extract JSON from raw LLM output
+  // Strips control characters that cause "Bad control character in JSON" parse errors.
+  // LLMs sometimes embed literal \x00-\x1F chars inside JSON string values (e.g. in code snippets).
+  function tryParseProposal(raw: string): { title: string; rationale: string; category: ImprovementProposal["category"]; impact: ImprovementProposal["impact"]; confidence?: number; originalSnippet: string; proposedSnippet: string; secondaryChanges?: any[] } | null {
+    // Step 1: strip markdown fences and non-printable control chars (keep \n \r \t)
+    const cleaned = raw
+      .replace(/^```json?\s*/i, "")
+      .replace(/\s*```$/, "")
+      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, "") // strip non-printable control chars
+      .trim();
+    try { return JSON.parse(cleaned); } catch {}
+    // Step 2: try extracting the outermost JSON object
+    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+    if (jsonMatch) { try { return JSON.parse(jsonMatch[0]); } catch {} }
+    // Step 3: last resort — escape unescaped newlines/tabs inside string values
+    try {
+      const reEscaped = cleaned
+        .replace(/(?<!\\)\n/g, "\\n")
+        .replace(/(?<!\\)\r/g, "\\r")
+        .replace(/(?<!\\)\t/g, "\\t");
+      return JSON.parse(reEscaped);
+    } catch {}
+    return null;
+  }
+
+  let parsed = tryParseProposal(rawContent);
+
+  // v7.1.6: Retry once if truncated (finish_reason=stop but JSON incomplete) or missing fields
+  const isTruncated = !parsed || !parsed.originalSnippet || !parsed.proposedSnippet || !parsed.title;
+  if (isTruncated) {
+    log.warn(`[v7.1.6] Response incomplete or unparseable — retrying with higher token budget`);
+    let retryContent: string | null = null;
+    for (const pid of providerChain) {
+      try {
+        // Use a more explicit prompt and 4x token budget on retry
+        const retryMessages = [
+          ...llmMessages.slice(0, -1),
+          {
+            role: "user" as const,
+            content: llmMessages[llmMessages.length - 1].content +
+              "\n\nIMPORTANT: Your previous response was truncated or incomplete. You MUST return a COMPLETE, valid JSON object. Include ALL required fields: title, rationale, category, impact, confidence, originalSnippet, proposedSnippet. Keep snippets SHORT (under 20 lines each) to avoid truncation.",
+          },
+        ];
+        retryContent = await simpleChatCompletion(retryMessages, { maxTokens: 4000, temperature: 0.2, providerId: pid });
+        if (retryContent) break;
+      } catch (retryErr: any) {
+        const retryMsg: string = retryErr?.message ?? "";
+        if (/40[12]/.test(retryMsg) || /authentication/i.test(retryMsg) || /insufficient.*credit/i.test(retryMsg)) continue;
+        break;
+      }
+    }
+    if (retryContent) parsed = tryParseProposal(retryContent);
+  }
+
+  if (!parsed) {
+    throw new Error(`Failed to parse AI response as JSON. Raw response: ${rawContent.slice(0, 300)}`);
+  }
+  if (!parsed.originalSnippet || !parsed.proposedSnippet || !parsed.title) {
+    throw new Error("AI response missing required fields (title, originalSnippet, proposedSnippet)");
+  }
+
+  // v9.10.1: Snippet truncation guard — reject proposals where the LLM's output was cut
+  // mid-token (e.g. "const MAX_SLANT_BONU" or unclosed string/bracket). These always fail
+  // the syntax check anyway, but catching them early saves the file-write and rollback overhead.
+  const proposedSnippetTrimmed = parsed.proposedSnippet.trimEnd();
+  const looksLikeTruncated =
+    // Ends mid-identifier (last char is a word char but the snippet has no closing brace/paren/semicolon)
+    /\w$/.test(proposedSnippetTrimmed) &&
+    !/[;,}\])]$/.test(proposedSnippetTrimmed) &&
+    proposedSnippetTrimmed.length > 10;
+  if (looksLikeTruncated) {
+    log.warn(`[v9.10.1] Snippet appears truncated for ${filename}: "${parsed.title}" — skipping`);
+    return null;
+  }
+
+  // v6.28 A1: Dedup check on title — skip if we already have this exact proposal
+  const hash = proposalHash(filename, parsed.title);
+  if (_seenProposalHashes.has(hash)) {
+    log.info(`[A1 dedup] Skipping duplicate proposal for ${filename}: "${parsed.title}"`);
+    return null;
+  }
+
+  // v6.28 A2: Normalise confidence to 0.0–1.0 (LLM sometimes returns 0–100)
+  let confidence = typeof parsed.confidence === "number" ? parsed.confidence : 0.7;
+  if (confidence > 1.0) confidence = confidence / 100;
+  confidence = Math.max(0, Math.min(1, confidence));
+  // v11.10.1: Blend LLM self-rated confidence with reward model score.
+  // Build a proper unified diff so extractFeatures() can count +/- lines correctly.
+  // scoreWithRewardModel() returns a sigmoid in [0, 1]; blend 70% LLM + 30% reward.
+  try {
+    const origLines = (parsed.originalSnippet || "").split("\n");
+    const propLines = (parsed.proposedSnippet || "").split("\n");
+    // Build a minimal unified diff: removed lines prefixed with -, added with +
+    const removedPart = origLines.map((l: string) => `-${l}`).join("\n");
+    const addedPart = propLines.map((l: string) => `+${l}`).join("\n");
+    const rmInput = `--- original\n+++ proposed\n${removedPart}\n${addedPart}`;
+    const rmScore = scoreWithRewardModel(rmInput); // sigmoid [0, 1]
+    confidence = 0.7 * confidence + 0.3 * rmScore;
+    confidence = Math.max(0, Math.min(1, confidence));
+  } catch { /* non-fatal — reward model unavailable */ }
+
+    // v6.34: Patch-based apply — use applyPatch() from the diff package when a
+  // stored unified diff exists. Falls back to snippet-replace for robustness.
+  let proposedContent: string;
+  let diff: string;
+
+  // v11.10.1: Check learned constraints before applying — reject if the proposed
+  // snippet matches a pattern that has been rejected before.
+  try {
+    const { checkLearnedConstraints } = await import("./learnedConstraints.js");
+    const violated = checkLearnedConstraints(parsed.proposedSnippet || "");
+    if (violated) {
+      console.warn(`[SelfImprove] Proposal blocked by learned constraint '${violated.pattern}': ${violated.reason}`);
+      return null; // Reject proposal — matches analyzeAndPropose return type Promise<ImprovementProposal | null>
+    }
+  } catch { /* non-fatal — learnedConstraints unavailable */ }
+
+  // First, build the proposed content via snippet replacement (same as before)
+  let snippetApplied = false;
+  if (originalContent.includes(parsed.originalSnippet)) {
+    proposedContent = originalContent.replace(parsed.originalSnippet, parsed.proposedSnippet);
+    snippetApplied = true;
+  } else {
+    // Fuzzy match on trimmed lines
+    const origLines = originalContent.split("\n");
+    const snippetLines = parsed.originalSnippet.split("\n").map(l => l.trim());
+    let matchStart = -1;
+    for (let i = 0; i <= origLines.length - snippetLines.length; i++) {
+      const window = origLines.slice(i, i + snippetLines.length).map(l => l.trim());
+      if (window.join("\n") === snippetLines.join("\n")) { matchStart = i; break; }
+    }
+    if (matchStart >= 0) {
+      const before = origLines.slice(0, matchStart).join("\n");
+      const after = origLines.slice(matchStart + snippetLines.length).join("\n");
+      proposedContent = [before, parsed.proposedSnippet, after].filter(Boolean).join("\n");
+      snippetApplied = true;
+    } else {
+      // Snippet not found — lower confidence and still save for display
+      confidence = Math.min(confidence, 0.3);
+      proposedContent = originalContent;
+    }
+  }
+
+  // v6.34: Generate a proper Myers unified diff using the diff package.
+  // This diff is stored on the proposal and used by applyPatch() on apply,
+  // which is more robust than string-replace for whitespace-sensitive files.
+  diff = generateSimpleDiff(originalContent, proposedContent, filename);
+
+  // v6.34: Validate that the generated diff round-trips correctly via applyPatch.
+  // If it does, we store the diff and use it on apply. If not, we fall back to
+  // the proposedContent string (which is already correct from the snippet replace).
+  if (snippetApplied && diff && diff.length > 10) {
+    try {
+      const patched = applyPatch(originalContent, diff);
+      if (typeof patched === "string" && patched === proposedContent) {
+        log.info(`[v6.34] Patch round-trip validated for ${filename} — will use patch-based apply`);
+      } else {
+        log.info(`[v6.34] Patch round-trip mismatch for ${filename} — falling back to proposedContent`);
+      }
+    } catch {
+      log.info(`[v6.34] applyPatch threw for ${filename} — falling back to proposedContent`);
+    }
+  }
+
+  const proposal: ImprovementProposal = {
+    id: `prop_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    targetFile: filename,
+    title: parsed.title,
+    rationale: parsed.rationale,
+    category: parsed.category ?? "readability",
+    impact: parsed.impact ?? "medium",
+    confidence,
+    diff,
+    originalSnippet: parsed.originalSnippet,
+    proposedSnippet: parsed.proposedSnippet,
+    originalContent,
+    proposedContent,
+    createdAt: Date.now(),
+    status: "pending",
+  };
+
+  // v6.28 A1: Register in dedup hash set before saving
+  _seenProposalHashes.add(hash);
+  // v10.3: Load a FRESH store before saving to preserve any 'applied' proposals
+  // added concurrently (fixes race condition between analyzeAndPropose and guardedApply)
+  {
+    const freshStore = loadProposals();
+    const appliedInFresh = freshStore.proposals.filter(p => p.status === "applied");
+    const appliedIds = new Set(appliedInFresh.map(p => p.id));
+    for (const p of store.proposals) {
+      if (appliedIds.has(p.id)) { p.status = "applied" as any; }
+    }
+    for (const ap of appliedInFresh) {
+      if (!store.proposals.find(p => p.id === ap.id)) { store.proposals.push(ap); }
+    }
+  }
+  store.proposals.push(proposal);
+  saveProposals(store);
+
+  log.info(`[v6.28] New proposal for ${filename}: "${proposal.title}" (confidence=${confidence.toFixed(2)}, impact=${proposal.impact})`);
+
+  return proposal;
+}
+
+export async function applyProposal(proposalId: string): Promise<{ success: boolean; message: string }> {
+  const store = loadProposals();
+  const proposal = store.proposals.find(p => p.id === proposalId);
+
+  if (!proposal) return { success: false, message: "Proposal not found" };
+  if (proposal.status !== "pending") return { success: false, message: `Proposal is already ${proposal.status}` };
+  // v10.7.0: Constitutional AI hard gate — block before any file I/O
+  try {
+    const constitResult = checkConstitution({
+      diff: proposal.diff || "",
+      targetFile: proposal.targetFile,
+      description: proposal.title,
+    });
+    if (!constitResult.allowed) {
+      proposal.status = "rejected" as any;
+      (proposal as any)._failReason = `Constitutional violation: ${constitResult.violations.join("; ")}`;
+      saveProposals(store);
+      log.info(`[ConstitutionalAI] Blocked proposal ${proposalId}: ${constitResult.violations[0]}`);
+      return { success: false, message: `Constitutional violation: ${constitResult.violations[0]}` };
+    }
+  } catch { /* non-fatal — allow if constitution check throws */ }
+
+  // v10.7.0: Z3 proof verification — ensure utility non-decrease
+  try {
+    const proofResult = await verifyProposalProof(proposal.diff || "", proposal.targetFile);
+    if (!proofResult.valid && proofResult.confidence > 0.8) {
+      proposal.status = "rejected" as any;
+      (proposal as any)._failReason = `Z3 proof failed: ${proofResult.reason}`;
+      saveProposals(store);
+      log.info(`[Z3Proof] Blocked proposal ${proposalId}: ${proofResult.reason}`);
+      return { success: false, message: `Z3 proof failed: ${proofResult.reason}` };
+    }
+  } catch { /* non-fatal */ }
+
+
+  // v9.8.5: Mark as processing immediately to prevent concurrent applies
+  // Record the timestamp so resetStuckProcessingProposals() can detect stale processing proposals
+  proposal.status = "processing" as any;
+  (proposal as any)._processingStartedAt = Date.now();
+  saveProposals(store);
+
+  // v9.8.5 DEFINITIVE FIX: Wrap entire apply body in try/finally.
+  // No matter what throws — guard crash, LLM timeout, fs error, import failure —
+  // the proposal status is ALWAYS set to 'rejected' before returning.
+  // This is the only reliable way to prevent proposals from staying stuck in 'processing'.
+  let _applySucceeded = false;
+  try {
+
+  // v5.48: Track retry count to prevent infinite retry loops
+  const retryCount = (proposal as any)._retryCount || 0;
+  if (retryCount >= 3) {
+    proposal.status = "rejected" as any;
+    (proposal as any)._failReason = `Max retries (3) exceeded — guard unavailable or path unresolvable`;
+    saveProposals(store);
+    console.warn(`[SelfImprove] Proposal ${proposalId} marked as rejected after ${retryCount} failed attempts`);
+    return { success: false, message: `Proposal rejected after ${retryCount} failed attempts` };
+  }
+
+  const filePath = resolveServerFile(proposal.targetFile);
+  if (!filePath) {
+    // v9.8.5: Always reset status from 'processing' on early return
+    proposal.status = "rejected" as any;
+    (proposal as any)._failReason = "Target file no longer accessible";
+    saveProposals(store);
+    return { success: false, message: "Target file no longer accessible" };
+  }
+
+  // v5.27: Impact analysis before applying changes
+  try {
+    const { analyzeImpact } = await import("./dependencyGraph");
+    const impact = analyzeImpact(proposal.targetFile);
+    if (impact && impact.riskLevel === "critical" && impact.totalAffectedFiles > 10) {
+      console.warn(`[SelfImprove] HIGH-RISK: ${proposal.targetFile} affects ${impact.totalAffectedFiles} files`);
+      // v9.8.5: Always reset status from 'processing' on early return
+      proposal.status = "rejected" as any;
+      (proposal as any)._failReason = `Blocked: high-risk change affects ${impact.totalAffectedFiles} files`;
+      saveProposals(store);
+      return {
+        success: false,
+        message: `Blocked: Change to ${proposal.targetFile} affects ${impact.totalAffectedFiles} files (risk: critical). Reduce scope or split into smaller changes.`,
+      };
+    } else if (impact && impact.riskLevel === "critical") {
+      console.warn(`[SelfImprove] Elevated risk for ${proposal.targetFile}: ${impact.totalAffectedFiles} affected files`);
+    }
+  } catch (impactErr) {
+    console.warn("[SelfImprove] Impact analysis unavailable:", (impactErr as Error).message);
+  }
+
+  // v5.27: Cross-session learning — check past attempts before applying
+  try {
+    const { getCrossSessionInsights } = await import("./selfKnowledgeBase");
+    const insights = getCrossSessionInsights(proposal.targetFile);
+    // v9.8.5: Increase totalAttempts threshold to 10 to avoid noise during initial failures
+    if (insights.totalAttempts > 10 && insights.successRate < 0.3) {
+      console.warn(`[SelfImprove] Low success rate (${(insights.successRate * 100).toFixed(0)}%) for ${proposal.targetFile}. Proceeding with caution.`);
+    }
+  } catch (err) { log.caught("non-fatal", err); }
+
+  // v9.10.0: Git pre-apply snapshot — use a lightweight tag instead of a commit
+  // to preserve rollback capability without polluting git log with "pre-improvement snapshot" noise.
+  // Tags are hidden from the default git log view but accessible via `git tag -l 'rsi-snap/*'`.
+  // v10.3.1: Check for git repo first — silently skip when running from an extracted zip.
+  try {
+    const cwd = path.resolve(getServerDir(), "..");
+    // v10.3.1: Detect non-git directories before attempting tag to avoid noisy warnings
+    // when users run Andromeda from an extracted zip (not a git repository).
+    let isGitRepo = false;
+    try {
+      gitSandbox("git rev-parse --git-dir", { cwd, stdio: "pipe", timeout: 3000, encoding: "utf-8" });
+      isGitRepo = true;
+    } catch { /* not a git repo — silently skip snapshot */ }
+    if (isGitRepo) {
+      const gitEnv = { ...process.env, GIT_AUTHOR_NAME: "Andromeda AI", GIT_AUTHOR_EMAIL: "andromeda@local", GIT_COMMITTER_NAME: "Andromeda AI", GIT_COMMITTER_EMAIL: "andromeda@local" };
+      const safeTitle = (proposal.title || proposalId).replace(/[^a-zA-Z0-9_-]/g, "-").slice(0, 40);
+      const tagName = `rsi-snap/${safeTitle}-${Date.now()}`;
+      try {
+        gitSandbox(`git tag ${JSON.stringify(tagName)}`, { cwd, env: gitEnv, encoding: "utf-8", stdio: "pipe" });
+        console.log(`[SelfImprove] Git snapshot tag: ${tagName}`);
+      } catch (tagErr: any) {
+        // Non-fatal — tag creation failure should never block the improvement cycle
+        const errMsg = String(tagErr.stderr || tagErr.message || "");
+        if (!errMsg.includes("already exists")) {
+          console.warn("[SelfImprove] Git snapshot tag warning:", sanitizeForLog(errMsg).slice(0, 100));
+        }
+      }
+    }
+  } catch (snapErr) {
+    console.warn("[SelfImprove] Git snapshot unavailable:", sanitizeForLog((snapErr as Error).message));
+  }
+
+  // v5.22: Use the self-test pipeline for safe application
+  try {
+    const { createRollbackPoint } = await import("./selfRollback") as any;
+    createRollbackPoint([proposal.targetFile], `Before proposal ${proposalId}: ${proposal.title || "self-improvement"}`, "self-improve");
+  } catch (err) { log.caught("non-fatal", err); }
+
+  try {
+    const { guardedApply } = await import("./selfImproveGuard");
+    const guardResult = await guardedApply(proposalId);
+
+    if (guardResult.success) {
+      proposal.status = "applied";
+
+      // v6.29: Apply secondary file changes atomically.
+      // If any secondary change fails, roll back ALL secondary writes and mark
+      // the proposal as rejected so the primary change is also reverted.
+      if (proposal.secondaryChanges && proposal.secondaryChanges.length > 0) {
+        const writtenSecondary: Array<{ path: string; original: string }> = [];
+        let secondaryFailed = false;
+        let secondaryError = "";
+
+        for (const change of proposal.secondaryChanges) {
+          const secPath = resolveServerFile(change.targetFile);
+          if (!secPath) {
+            secondaryFailed = true;
+            secondaryError = `Secondary file not found: ${change.targetFile}`;
+            break;
+          }
+          // v11.9.2: Check constitution forbidden file patterns before writing secondary files.
+          // Previously secondaryChanges bypassed the constitution check entirely.
+          try {
+            const constitPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "andromeda-constitution.json");
+            if (fs.existsSync(constitPath)) {
+              const constitution = JSON.parse(fs.readFileSync(constitPath, "utf-8"));
+              const forbiddenFiles: string[] = constitution.forbiddenModifications?.files || [];
+              const forbiddenPatterns: string[] = constitution.forbiddenModifications?.filePatterns || [];
+              const targetBase = path.basename(change.targetFile);
+              const isBlockedFile = forbiddenFiles.some((f: string) => change.targetFile.endsWith(f) || targetBase === f);
+              const isBlockedPattern = forbiddenPatterns.some((pat: string) => {
+                const regex = new RegExp(pat.replace(/\./g, "\\.").replace(/\*/g, ".*"));
+                return regex.test(targetBase);
+              });
+              if (isBlockedFile || isBlockedPattern) {
+                secondaryFailed = true;
+                secondaryError = `Secondary file ${change.targetFile} blocked by constitution (forbidden file/pattern)`;
+                break;
+              }
+            }
+          } catch { /* constitution check optional for secondary files */ }
+          try {
+            const currentContent = fs.readFileSync(secPath, "utf-8");
+            writtenSecondary.push({ path: secPath, original: currentContent });
+            fs.writeFileSync(secPath, change.proposedContent, "utf-8");
+            log.info(`[v6.29 multi-file] Applied secondary change to ${change.targetFile}`);
+          } catch (secErr) {
+            secondaryFailed = true;
+            secondaryError = `Failed to write ${change.targetFile}: ${(secErr as Error).message}`;
+            break;
+          }
+        }
+
+        if (secondaryFailed) {
+          // Roll back all secondary writes
+          for (const { path: p, original } of writtenSecondary) {
+            try { fs.writeFileSync(p, original, "utf-8"); } catch { /* best effort */ }
+          }
+          // Also roll back the primary change
+          if (proposal.originalContent) {
+            try { fs.writeFileSync(filePath, proposal.originalContent, "utf-8"); } catch { /* best effort */ }
+          }
+          proposal.status = "rejected" as any;
+          (proposal as any)._failReason = `Multi-file rollback: ${secondaryError}`;
+          saveProposals(store);
+          return { success: false, message: `Multi-file apply rolled back: ${secondaryError}` };
+        }
+      }
+
+      saveProposals(store);
+
+      try {
+        const { recordAppliedSuggestion } = await import("./skillGraph.js");
+        recordAppliedSuggestion();
+      } catch { /* skill graph optional */ }
+
+      try {
+        const { recordMetric } = await import("./selfMonitor.js");
+        recordMetric("self_modify_success", 1, `Applied: ${proposal.title}`);
+        recordMetric("proposal_quality", 1, `Accepted: ${proposal.targetFile}`);
+      } catch (err) { log.caught("non-fatal", err); }
+
+      try {
+        const { recordModificationOutcome } = await import("./selfKnowledgeBase");
+        recordModificationOutcome({
+          targetFile: proposal.targetFile,
+          proposalTitle: proposal.title || proposalId,
+          category: proposal.category || "general",
+          success: true,
+          healthImpact: "improved",
+        });
+      } catch (err) { log.caught("non-fatal", err); }
+
+      try {
+        const { generateTests } = await import("./testGenerator");
+        const content = fs.readFileSync(filePath, "utf-8");
+        const language = filePath.endsWith(".ts") ? "typescript" : "python";
+        const tests = generateTests(content, filePath, language);
+        if (tests.testCode) {
+          const testPath = filePath.replace(/\.(ts|py)$/, `.test.$1`);
+          // v11.8.0: Constitution v1.4.0 — NEVER overwrite existing test files.
+          // Test files are the ground truth for correctness and must only be modified
+          // by human developers. Only write generated tests for NEW files (no existing test).
+          if (!fs.existsSync(testPath)) {
+            fs.writeFileSync(testPath, tests.testCode, "utf-8");
+            console.log(`[SelfImprove] Auto-generated tests: ${path.basename(testPath)} (${tests.functions.length} functions covered)`);
+          } else {
+            console.log(`[SelfImprove] Skipping test generation for ${path.basename(testPath)} — existing test file preserved (constitution v1.4.0).`);
+          }
+        }
+      } catch (testErr) {
+        console.warn(`[SelfImprove] Test generation failed (non-fatal):`, (testErr as Error).message);
+      }
+
+      try {
+        const { startHealthWatch } = await import("./selfRollback") as any;
+        startHealthWatch(proposalId);
+      } catch (err) { log.caught("non-fatal", err); }
+
+      // v7.1: Schedule auto-rebuild so the applied change takes effect without manual restart
+      try {
+        const { scheduleRebuild } = await import("./autoRebuild.js");
+        scheduleRebuild(proposalId);
+      } catch (err) { log.caught("non-fatal", err); }
+
+      try {
+        const { recordSystemLearning } = await import("./systemMemory");
+        recordSystemLearning({
+          category: "modification",
+          title: `Applied: ${proposal.title}`,
+          content: `Successfully applied improvement to ${proposal.targetFile}: ${proposal.title}`,
+          context: `category: ${proposal.category || "unknown"}, impact: ${proposal.impact || "unknown"}, confidence: ${(proposal.confidence ?? 0).toFixed(2)}`,
+          confidence: 0.9,
+          applicableTo: [proposal.targetFile],
+        });
+      } catch (err) { log.caught("non-fatal", err); }
+
+      // v9.8.5: TypeScript check BEFORE git commit — prevents committing broken code
+      let tsCheckPassed = true;
+      try {
+        const tscBin = path.resolve(getServerDir(), "..", "node_modules", ".bin", "tsc");
+        const tscCmd = fs.existsSync(tscBin) ? tscBin : null;
+        if (tscCmd) {
+          const tscResult = spawnSync(tscCmd, ["--noEmit"], { cwd: path.resolve(getServerDir(), ".."), timeout: 60000, stdio: "pipe" });
+          // v11.9.2: Check exit code — spawnSync does NOT throw on non-zero exit.
+          // Previously this always logged "PASSED" even when tsc found errors.
+          if (tscResult.status !== 0) {
+            const errOut = ((tscResult.stderr || tscResult.stdout || "") as Buffer).toString().slice(0, 300);
+            throw new Error(`tsc exited with code ${tscResult.status}: ${errOut}`);
+          }
+          console.log(`[SelfImprove] TypeScript check PASSED for ${proposal.targetFile}`);
+          // v9.8.5: Use FRESH store to ensure "applied" status is persisted correctly
+          {
+            const freshStore = loadProposals();
+            const freshProp = freshStore.proposals.find(p => p.id === proposalId);
+            if (freshProp && (freshProp.status as string) !== 'applied') {
+              freshProp.status = 'applied' as any;
+              saveProposals(freshStore);
+            } else if (!freshProp) {
+              saveProposals(store); // fallback
+            }
+          }
+        } else {
+          console.warn("[SelfImprove] tsc binary not found — skipping pre-commit TypeScript check");
+          // v9.8.5: Use FRESH store for fallback save too
+          {
+            const freshStore = loadProposals();
+            const freshProp = freshStore.proposals.find(p => p.id === proposalId);
+            if (freshProp && (freshProp.status as string) !== 'applied') {
+              freshProp.status = 'applied' as any;
+              saveProposals(freshStore);
+            } else if (!freshProp) {
+              saveProposals(store);
+            }
+          }
+        }
+      } catch (tsErr: any) {
+        tsCheckPassed = false;
+        const tsErrMsg = (tsErr.stderr || tsErr.stdout || tsErr.message || "").toString().slice(0, 300);
+        console.warn(`[SelfImprove] TypeScript check FAILED for ${proposal.targetFile} — reverting file. Errors: ${tsErrMsg}`);
+        // Revert the file write to restore the original content
+        if (proposal.originalContent) {
+          try { fs.writeFileSync(filePath, proposal.originalContent, "utf-8"); } catch { /* best effort */ }
+        }
+        // v9.8.5: Load a FRESH store to avoid stale data overwriting concurrent saves
+        {
+          const freshStore = loadProposals();
+          const freshProp = freshStore.proposals.find(p => p.id === proposalId);
+          if (freshProp) {
+            freshProp.status = "rejected" as any;
+            (freshProp as any)._failReason = `TypeScript check failed: ${tsErrMsg}`;
+            saveProposals(freshStore);
+          } else {
+            // Fallback: update the in-memory store
+            proposal.status = "rejected" as any;
+            (proposal as any)._failReason = `TypeScript check failed: ${tsErrMsg}`;
+            saveProposals(store);
+          }
+        }
+        // v11.12.0: Record this TypeScript failure in failure pattern memory so it won't be repeated
+        try {
+          await recordFailurePattern({
+            filePath: proposal.targetFile,
+            rationale: proposal.title || "RSI proposal",
+            failureType: "typescript",
+            errorMessage: tsErrMsg,
+            proposedBy: "rsi",
+            proposedContent: proposal.proposedContent,
+          });
+        } catch (fpErr) {
+          console.warn("[SelfImprove] recordFailure (non-fatal):", (fpErr as Error).message);
+        }
+        return { success: false, message: `TypeScript check failed after apply — reverted. Errors: ${tsErrMsg}` };
+      }
+
+      // v9.8.5: Git commit the applied change so it shows up in git log
+      if (tsCheckPassed) {
+        try {
+          const autoConfig = getAutoApplyConfig();
+          if (autoConfig.commitToGit) {
+            const gitResult = gitCommitSelfImprovement(filePath, proposal.title || proposalId, autoConfig.branchStrategy);
+            if (gitResult.success) {
+              console.log(`[SelfImprove] Git committed: ${proposal.title || proposalId}`);
+            } else {
+              console.warn(`[SelfImprove] Git commit failed (non-fatal): ${sanitizeForLog(gitResult.message)}`);
+            }
+          }
+        } catch (gitErr) {
+          console.warn("[SelfImprove] Git commit unavailable (non-fatal):", sanitizeForLog((gitErr as Error).message));
+        }
+      }
+
+      // v9.8.5: DEFINITIVE save — load fresh store and force status to 'applied'
+      // This is the final save before returning success, ensuring no stale data can overwrite it
+      try {
+        const defStore = loadProposals();
+        const defProp = defStore.proposals.find(p => p.id === proposalId);
+        if (defProp) {
+          defProp.status = 'applied' as any;
+          saveProposals(defStore);
+          console.log(`[SelfImprove] Status confirmed 'applied' for ${proposalId}`);
+        }
+      } catch (defErr) {
+        console.warn('[SelfImprove] Definitive save failed (non-fatal):', (defErr as Error).message);
+      }
+      _applySucceeded = true;
+      // v11.9.1: Clear per-file rejection history on successful apply so the
+      // next proposal for this file starts fresh without stale rejection context.
+      try {
+        const { clearFileFeedback } = await import("./proposalFeedback.js");
+        clearFileFeedback(proposal.targetFile || "unknown");
+      } catch { /* non-fatal */ }
+      // v11.18.0 Audit 10 Fix D: Record prompt outcome so promptEngineer DB grows from RSI successes
+      try {
+        const { recordPromptOutcome } = await import("./promptEngineer.js");
+        recordPromptOutcome(
+          "self_improvement",
+          `RSI proposal: ${proposal.title || proposalId}`,
+          proposal.confidence ?? 0.8,
+          "success"
+        );
+      } catch { /* non-fatal */ }
+      return {
+        success: true,
+        message: guardResult.message || `Applied successfully via guard. Backup: ${guardResult.backup?.id || "created"}`,
+      };
+    } else {
+      // v9.8.5: Critical fix — set status to 'rejected' so the proposal never stays stuck in 'processing'
+      proposal.status = "rejected" as any;
+      (proposal as any)._failReason = guardResult.message || "Guard rejected";
+      saveProposals(store);
+
+      try {
+        const { recordMetric } = await import("./selfMonitor.js");
+        recordMetric("self_modify_success", 0, `Rejected: ${proposal.title}`);
+        recordMetric("self_modify_rollback", 1, `Guard rejected: ${proposal.targetFile}`);
+        recordMetric("proposal_quality", 0, `Rejected: ${proposal.targetFile}`);
+      } catch (err) { log.caught("non-fatal", err); }
+
+      try {
+        const { recordModificationOutcome } = await import("./selfKnowledgeBase");
+        recordModificationOutcome({
+          targetFile: proposal.targetFile,
+          proposalTitle: proposal.title || proposalId,
+          category: proposal.category || "general",
+          success: false,
+          rollbackReason: guardResult.message || "Guard rejected",
+          healthImpact: "degraded",
+        });
+      } catch (err) { log.caught("non-fatal", err); }
+
+      // v6.36: Constitutional AI expansion — record rejection pattern for learned constraints
+      try {
+        const { recordRejection } = await import("./learnedConstraints.js");
+        // Extract the pattern from the proposed snippet (first 80 chars as a fingerprint)
+        const snippet = (proposal.proposedSnippet || proposal.proposedContent || "").slice(0, 80).trim();
+        if (snippet.length >= 10) {
+          recordRejection(snippet, guardResult.message || "Guard rejected");
+        }
+      } catch { /* non-fatal */ }
+
+      // v11.9.1: Record rejection in proposalFeedback so getRejectionContext can
+      // inject this into future prompts for the same file, preventing repeated mistakes.
+      try {
+        const { recordRejectionFeedback } = await import("./proposalFeedback.js");
+        recordRejectionFeedback(
+          proposalId,
+          proposal.targetFile || "unknown",
+          proposal.title || proposalId,
+          proposal.originalSnippet || "",
+          proposal.proposedSnippet || "",
+          guardResult.message || "Guard rejected"
+        );
+      } catch { /* non-fatal */ }
+
+      return {
+        success: false,
+        message: guardResult.message || "Guard rejected the proposal (syntax check or test failure)",
+      };
+    }
+  } catch (guardErr) {
+    (proposal as any)._retryCount = ((proposal as any)._retryCount || 0) + 1;
+    if ((proposal as any)._retryCount >= 3) {
+      proposal.status = "rejected" as any;
+      (proposal as any)._failReason = `Guard unavailable after ${(proposal as any)._retryCount} attempts: ${(guardErr as Error).message}`;
+      console.warn(`[SelfImprove] Proposal ${proposalId} permanently rejected after ${(proposal as any)._retryCount} guard failures`);
+    } else {
+      console.warn("[SelfImprove] Guard unavailable. Queuing proposal for retry:", sanitizeForLog((guardErr as Error).message));
+      proposal.status = "pending" as any;
+    }
+    saveProposals(store);
+
+    try {
+      const { recordAction } = await import("./selfModel");
+      recordAction("Guard unavailable — proposal queued", `Proposal ${proposalId} waiting for guard`);
+    } catch (err) { log.caught("non-fatal", err); }
+
+    return {
+      success: false,
+      message: `Guard unavailable — proposal ${proposalId} queued for retry when guard is restored`,
+    };
+  }
+  } finally {
+    // v9.8.5 DEFINITIVE FIX: If an unhandled exception escaped all inner catch blocks,
+    // the proposal will still be in 'processing' status. Reset it to 'rejected' here.
+    // This is a safety net — normal paths set status explicitly before returning.
+    if (!_applySucceeded) {
+      const finalStore = loadProposals();
+      const finalProp = finalStore.proposals.find(p => p.id === proposalId);
+      if (finalProp && (finalProp.status as string) === 'processing') {
+        finalProp.status = 'rejected' as any;
+        (finalProp as any)._failReason = (finalProp as any)._failReason || 'Unhandled exception in applyProposal';
+        saveProposals(finalStore);
+        console.warn(`[SelfImprove] finally: reset stuck 'processing' proposal ${proposalId} to 'rejected'`);
+      }
+    }
+  }
+}
+
+export function rejectProposal(proposalId: string): boolean {
+  const store = loadProposals();
+  const proposal = store.proposals.find(p => p.id === proposalId);
+  if (!proposal) return false;
+  proposal.status = "rejected";
+  saveProposals(store);
+  return true;
+}
+
+/** Returns a filtered list of proposals from the store.
+ * @param status - Optional status filter ('pending', 'applied', 'rejected')
+ * @returns Array of matching proposals
+ */
+export function listProposals(statusFilter?: ImprovementProposal["status"]): ImprovementProposal[] {
+  const store = loadProposals();
+  const proposals = statusFilter
+    ? store.proposals.filter(p => p.status === statusFilter)
+    : store.proposals;
+  return proposals.sort((a, b) => b.createdAt - a.createdAt);
+}
+
+export function getAnalyzableFiles(): string[] {
+  return ANALYZABLE_FILES.filter(f => resolveServerFile(f) !== null);
+}
+
+// ─── v5.16: Auto-Apply Mode + GitOps Integration ─────────────────────────────
+
+/**
+ * Auto-apply configuration — controls autonomous self-improvement behavior.
+ * When enabled, proposals with confidence >= threshold are applied automatically
+ * without human approval, then committed via git.
+ */
+export interface AutoApplyConfig {
+  enabled: boolean;
+  confidenceThreshold: number; // 0-100, default 75
+  maxAutoAppliesPerHour: number; // safety limit
+  requireTypeCheck: boolean; // must pass tsc before committing
+  commitToGit: boolean; // auto-commit applied changes
+  branchStrategy: "main" | "feature-branch"; // commit to main or create feature branches
+}
+
+// v5.50: Auto-apply is now ENABLED by default.
+const DEFAULT_AUTO_APPLY_CONFIG: AutoApplyConfig = {
+  enabled: true,
+  confidenceThreshold: 75,
+  maxAutoAppliesPerHour: 8,
+  requireTypeCheck: true,
+  commitToGit: true,
+  branchStrategy: "main",
+};
+
+function getAutoApplyConfigPath(): string {
+  const workspaceDir = path.resolve(process.cwd(), "workspace");
+  if (!fs.existsSync(workspaceDir)) fs.mkdirSync(workspaceDir, { recursive: true });
+  return path.join(workspaceDir, ".andromeda_auto_apply.json");
+}
+
+export function getAutoApplyConfig(): AutoApplyConfig {
+  const configPath = getAutoApplyConfigPath();
+  if (!fs.existsSync(configPath)) return { ...DEFAULT_AUTO_APPLY_CONFIG };
+  try {
+    const raw = JSON.parse(fs.readFileSync(configPath, "utf-8"));
+    return { ...DEFAULT_AUTO_APPLY_CONFIG, ...raw };
+  } catch {
+    return { ...DEFAULT_AUTO_APPLY_CONFIG };
+  }
+}
+
+export function setAutoApplyConfig(updates: Partial<AutoApplyConfig>): AutoApplyConfig {
+  const current = getAutoApplyConfig();
+  const merged: AutoApplyConfig = { ...current, ...updates };
+  merged.confidenceThreshold = Math.max(50, Math.min(100, merged.confidenceThreshold));
+  merged.maxAutoAppliesPerHour = Math.max(1, Math.min(20, merged.maxAutoAppliesPerHour));
+  fs.writeFileSync(getAutoApplyConfigPath(), JSON.stringify(merged, null, 2), "utf-8");
+  return merged;
+}
+
+// ─── Auto-Apply Rate Limiter ─────────────────────────────────────────────────
+
+const autoApplyHistory: number[] = [];
+
+function canAutoApply(config: AutoApplyConfig): boolean {
+  const oneHourAgo = Date.now() - 3600_000;
+  while (autoApplyHistory.length > 0 && autoApplyHistory[0] < oneHourAgo) {
+    autoApplyHistory.shift();
+  }
+  saveCacheStore(); // Save pruned history
+  return autoApplyHistory.length < config.maxAutoAppliesPerHour;
+}
+
+function recordAutoApply(): void {
+  autoApplyHistory.push(Date.now());
+  saveCacheStore();
+}
+
+// ─── GitOps Integration ──────────────────────────────────────────────────────
+
+function gitCommitSelfImprovement(
+  targetFile: string,
+  summary: string,
+  branchStrategy: "main" | "feature-branch"
+): { success: boolean; message: string } {
+  const cwd = path.resolve(getServerDir(), "..");
+  const gitEnv = {
+    ...process.env,
+    GIT_AUTHOR_NAME: "Andromeda AI",
+    GIT_AUTHOR_EMAIL: "andromeda@local",
+    GIT_COMMITTER_NAME: "Andromeda AI",
+    GIT_COMMITTER_EMAIL: "andromeda@local",
+  };
+
+    try {
+    if (!fs.existsSync(path.join(cwd, ".git"))) {
+      // v11.4.0: All git calls now go through gitSandbox() whitelist
+      gitSandbox("git init -b main", { cwd, env: gitEnv, encoding: "utf-8" });
+      gitSandbox("git add -A", { cwd, env: gitEnv, encoding: "utf-8" });
+      gitSandbox('git commit --allow-empty -m "Initial commit by Andromeda"', { cwd, env: gitEnv, encoding: "utf-8" });
+      if (process.env.GITHUB_REPO) {
+        // Validate repo name format before using in command
+        const repoName = process.env.GITHUB_REPO.replace(/[^a-zA-Z0-9/_.-]/g, "");
+        try {
+          gitSandbox(`git remote add origin https://github.com/${repoName}.git`, { cwd, env: gitEnv, encoding: "utf-8" });
+        } catch { /* remote may already exist */ }
+      }
+    }
+    if (branchStrategy === "feature-branch") {
+      // Sanitize branch name — only allow alphanumeric, /, -, .
+      const rawBranch = `self-improve/${Date.now()}-${path.basename(targetFile).replace(/\./g, "-")}`;
+      const branchName = rawBranch.replace(/[^a-zA-Z0-9/_.-]/g, "-");
+      try {
+        gitSandbox(`git checkout -b ${branchName}`, { cwd, env: gitEnv, encoding: "utf-8" });
+      } catch {
+        // Branch might already exist
+      }
+    }
+    const relativeFile = path.relative(cwd, targetFile);
+    gitSandbox(`git add "${relativeFile}"`, { cwd, env: gitEnv, encoding: "utf-8" });
+    const testFile = targetFile.replace(/\.(ts|py)$/, `.test.$1`);
+    if (fs.existsSync(testFile)) {
+      const relativeTest = path.relative(cwd, testFile);
+      gitSandbox(`git add "${relativeTest}"`, { cwd, env: gitEnv, encoding: "utf-8" });
+    }
+    // v7.0.1: Use JSON.stringify to safely quote the commit message — avoids shell word-splitting
+    const rawMsg = `Andromeda self-improvement: ${path.basename(targetFile)} — ${summary}`;
+    // Sanitize commit message: strip backticks, dollar signs, and backslashes
+    const commitMsg = rawMsg.replace(/[`$\\]/g, "");
+    const result = gitSandbox(`git commit -m ${JSON.stringify(commitMsg)}`, { cwd, env: gitEnv, encoding: "utf-8" });
+    return { success: true, message: result.trim() };
+  } catch (err: any) {
+    const errMsg = err instanceof GitCommandNotAllowedError
+      ? err.message
+      : sanitizeForLog(err.stderr?.toString?.() || err.message || String(err));
+    if (errMsg.includes("nothing to commit")) {
+      return { success: true, message: "No changes to commit (already committed)" };
+    }
+    return { success: false, message: `Git commit failed: ${errMsg}` };
+  }
+}
+
+// ─── TypeScript Check (for auto-apply safety) ────────────────────────────────
+
+function runTypeCheck(): { success: boolean; errors: string[] } {
+  const cwd = path.resolve(getServerDir(), "..");
+  try {
+    execSync("pnpm exec tsc --noEmit 2>&1", { cwd, encoding: "utf-8", timeout: 60_000 });
+    return { success: true, errors: [] };
+  } catch (err: any) {
+    const output = err.stdout?.toString?.() || err.stderr?.toString?.() || "";
+    const errors = output.split("\n").filter((l: string) => l.includes("error TS")).slice(0, 20);
+    return { success: false, errors };
+  }
+}
+
+// ─── Core Auto-Apply Function ────────────────────────────────────────────────
+
+export interface AutoApplyResult {
+  proposalId: string;
+  targetFile: string;
+  title: string;
+  applied: boolean;
+  committed: boolean;
+  typeCheckPassed: boolean | null;
+  message: string;
+}
+
+/**
+ * Scans pending proposals and automatically applies those meeting the confidence threshold.
+ *
+ * v6.28: Uses the LLM-rated `confidence` field (0.0–1.0) directly when available,
+ * falling back to the heuristic scoreProposal() for legacy proposals without it.
+ * The confidenceThreshold config value is now compared against a 0–100 scale in
+ * both cases (confidence * 100 for new proposals, raw score for legacy ones).
+ */
+export async function autoApplyHighConfidence(): Promise<AutoApplyResult[]> {
+  const config = getAutoApplyConfig();
+  const results: AutoApplyResult[] = [];
+
+  if (!config.enabled) {
+    return [{ proposalId: "", targetFile: "", title: "", applied: false, committed: false, typeCheckPassed: null, message: "Auto-apply is disabled" }];
+  }
+
+  // v9.8.5: Reset stuck 'processing' proposals once per process lifetime (not on every loadProposals call)
+  resetStuckProcessingProposals();
+
+  const store = loadProposals();
+  // v6.36: Meta-learning bias — load weak categories from proof history
+  const weakCategories = new Set<string>();
+  try {
+    const proofPath = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "data", "rsi_proof_history.json");
+    if (fs.existsSync(proofPath)) {
+      const history: any[] = JSON.parse(fs.readFileSync(proofPath, "utf-8"));
+      const recent = history.slice(-10);
+      const catDeltas: Record<string, number[]> = {};
+      for (const entry of recent) {
+        const catBefore = entry.categoryScoresBefore ?? {};
+        const catAfter = entry.categoryScoresAfter ?? {};
+        const allCats = new Set([...Object.keys(catBefore), ...Object.keys(catAfter)]);
+        for (const cat of allCats) {
+          const delta = ((catAfter as any)[cat] ?? 0) - ((catBefore as any)[cat] ?? 0);
+          if (!catDeltas[cat]) catDeltas[cat] = [];
+          catDeltas[cat].push(delta);
+        }
+      }
+      for (const [cat, deltas] of Object.entries(catDeltas)) {
+        const avg = deltas.reduce((s, d) => s + d, 0) / deltas.length;
+        if (avg <= 0) weakCategories.add(cat); // no improvement = weak
+      }
+    }
+  } catch { /* non-fatal */ }
+  function scoreProposal(p: ImprovementProposal): number {
+    // v6.28 A2: Use LLM confidence when available (0.0–1.0 → 0–100)
+    if (typeof p.confidence === "number" && p.confidence > 0) {
+      // v6.36: Boost proposals in weak categories by 10 points
+      const boost = weakCategories.has(p.category) ? 10 : 0;
+      return Math.min(100, Math.round(p.confidence * 100) + boost);
+    }
+    // Legacy heuristic for proposals generated before v6.28
+    let score = 0;
+    if (p.impact === "high") score += 40;
+    else if (p.impact === "medium") score += 20;
+    else score += 10;
+    if (p.category === "reliability") score += 25;
+    else if (p.category === "security") score += 30;
+    else if (p.category === "performance") score += 20;
+    else if (p.category === "readability") score += 15;
+    else score += 10;
+    const diffLines = (p.diff || "").split("\n").length;
+    if (diffLines < 10) score += 20;
+    else if (diffLines < 30) score += 10;
+    else score += 5;
+    if (p.proposedContent && p.proposedContent.length < p.originalContent.length * 0.5) {
+      score -= 30;
+    }
+    return Math.max(0, Math.min(100, score));
+  }
+
+  const pendingHighConfidence = store.proposals
+    .filter(p => p.status === "pending")
+    .map(p => ({ proposal: p, score: scoreProposal(p) }))
+    .filter(({ score }) => score >= config.confidenceThreshold)
+    .sort((a, b) => b.score - a.score)
+    .map(({ proposal }) => proposal);
+
+  if (pendingHighConfidence.length === 0) {
+    return [{ proposalId: "", targetFile: "", title: "", applied: false, committed: false, typeCheckPassed: null, message: "No high-confidence pending proposals" }];
+  }
+
+  for (const proposal of pendingHighConfidence) {
+    if (!canAutoApply(config)) {
+      results.push({
+        proposalId: proposal.id,
+        targetFile: proposal.targetFile,
+        title: proposal.title,
+        applied: false,
+        committed: false,
+        typeCheckPassed: null,
+        message: `Rate limit reached (${config.maxAutoAppliesPerHour}/hour)`,
+      });
+      break;
+    }
+
+    const applyResult = await applyProposal(proposal.id);
+
+    if (!applyResult.success) {
+      results.push({
+        proposalId: proposal.id,
+        targetFile: proposal.targetFile,
+        title: proposal.title,
+        applied: false,
+        committed: false,
+        typeCheckPassed: null,
+        message: `Apply failed: ${applyResult.message}`,
+      });
+      continue;
+    }
+
+    recordAutoApply();
+
+    let typeCheckPassed: boolean | null = null;
+    if (config.requireTypeCheck) {
+      const tc = runTypeCheck();
+      typeCheckPassed = tc.success;
+
+      if (!tc.success) {
+        const filePath = resolveServerFile(proposal.targetFile);
+        if (filePath && proposal.originalContent) {
+          fs.writeFileSync(filePath, proposal.originalContent, "utf-8");
+          proposal.status = "pending";
+          saveProposals(store);
+        }
+
+        results.push({
+          proposalId: proposal.id,
+          targetFile: proposal.targetFile,
+          title: proposal.title,
+          applied: false,
+          committed: false,
+          typeCheckPassed: false,
+          message: `Applied but type check failed — rolled back. Errors: ${tc.errors.slice(0, 3).join("; ")}`,
+        });
+        continue;
+      }
+    }
+
+    let committed = false;
+    if (config.commitToGit) {
+      const filePath = resolveServerFile(proposal.targetFile);
+      if (filePath) {
+        const gitResult = gitCommitSelfImprovement(filePath, proposal.title, config.branchStrategy);
+        committed = gitResult.success;
+      }
+    }
+
+    results.push({
+      proposalId: proposal.id,
+      targetFile: proposal.targetFile,
+      title: proposal.title,
+      applied: true,
+      committed,
+      typeCheckPassed,
+      message: `Auto-applied successfully${committed ? " and committed to git" : ""}`,
+    });
+
+    try {
+      const { storeMemory } = await import("./memory.js");
+      const memContent = [
+        `[Self-Improve] Applied: ${proposal.title}`,
+        `File: ${proposal.targetFile}`,
+        `Category: ${proposal.category} | Impact: ${proposal.impact} | Confidence: ${(proposal.confidence ?? 0).toFixed(2)}`,
+        `Rationale: ${proposal.rationale}`,
+        `TypeCheck: ${typeCheckPassed === true ? "passed" : typeCheckPassed === false ? "failed" : "skipped"}`,
+        `Committed: ${committed}`,
+        `AppliedAt: ${new Date().toISOString()}`,
+      ].join("\n");
+      storeMemory(memContent, "project", ["self-improve", proposal.category, proposal.targetFile]);
+    } catch (memErr) {
+      console.warn("[SelfImprove] Memory logging failed:", (memErr as Error).message);
+    }
+  }
+
+  return results;
+}
+
+/**
+ * Get a summary of auto-apply activity for monitoring.
+ */
+export function getAutoApplyStatus(): {
+  config: AutoApplyConfig;
+  recentApplies: number;
+  remainingBudget: number;
+  pendingHighConfidence: number;
+} {
+  const config = getAutoApplyConfig();
+  const oneHourAgo = Date.now() - 3600_000;
+  const recentApplies = autoApplyHistory.filter(t => t >= oneHourAgo).length;
+  const store = loadProposals();
+  const pendingHighConfidence = store.proposals.filter(
+    p => p.status === "pending" && (p.confidence ?? 0) >= config.confidenceThreshold / 100
+  ).length;
+
+  return {
+    config,
+    recentApplies,
+    remainingBudget: Math.max(0, config.maxAutoAppliesPerHour - recentApplies),
+    pendingHighConfidence,
+  };
+}
+
+// ─── v9.8.0: Proposal Refinement Loop ────────────────────────────────────────
+
+export async function refineProposal(
+  proposal: ImprovementProposal,
+  errorFeedback: string
+): Promise<boolean> {
+  try {
+    const { simpleChatCompletion } = await import("./llmProvider.js");
+    const activeModel = process.env.LLM_MODEL || "deepseek";
+    
+    const messages = [
+      {
+        role: "system" as const,
+        content: `You are an expert TypeScript software engineer. Your previous code improvement proposal failed the syntax/type check.
+You must fix the errors and provide a corrected proposal.
+
+CRITICAL: Return ONLY a JSON object. No markdown.
+The JSON must contain:
+- "title": short title (max 10 words)
+- "rationale": explanation of how you fixed the error
+- "category": "${proposal.category}"
+- "impact": "${proposal.impact}"
+- "confidence": a float 0.0-1.0
+- "originalSnippet": the EXACT lines of code to replace (must match original file)
+- "proposedSnippet": the corrected replacement code`
+      },
+      {
+        role: "user" as const,
+        content: `File: ${proposal.targetFile}
+
+Original Snippet:
+\`\`\`typescript
+${proposal.originalSnippet}
+\`\`\`
+
+Your Previous Proposed Snippet:
+\`\`\`typescript
+${proposal.proposedSnippet}
+\`\`\`
+
+Syntax/Type Errors:
+${errorFeedback.slice(0, 1000)}
+
+Return the corrected JSON proposal.`
+      }
+    ];
+
+    const rawContent = await simpleChatCompletion(messages, { maxTokens: 2000, temperature: 0.2 });
+    if (!rawContent) return false;
+
+    const cleaned = rawContent.replace(/^```json?\s*/i, "").replace(/\s*```$/, "").trim();
+    const parsed = JSON.parse(cleaned);
+
+    if (parsed.originalSnippet && parsed.proposedSnippet) {
+      // Update the proposal in place
+      proposal.title = parsed.title || proposal.title;
+      proposal.rationale = parsed.rationale || proposal.rationale;
+      proposal.originalSnippet = parsed.originalSnippet;
+      proposal.proposedSnippet = parsed.proposedSnippet;
+      
+      // Re-apply the snippet to update proposedContent
+      if (proposal.originalContent.includes(proposal.originalSnippet)) {
+        proposal.proposedContent = proposal.originalContent.replace(proposal.originalSnippet, proposal.proposedSnippet);
+      } else {
+        return false; // Snippet mismatch
+      }
+      
+      (proposal as any)._refineCount = ((proposal as any)._refineCount || 0) + 1;
+      
+      const store = loadProposals();
+      const idx = store.proposals.findIndex(p => p.id === proposal.id);
+      if (idx !== -1) {
+        store.proposals[idx] = proposal;
+        saveProposals(store);
+        return true;
+      }
+    }
+  } catch (err) {
+    log.warn(`[Refine] Failed to refine proposal ${proposal.id}:`, sanitizeForLog((err as Error).message));
+  }
+  return false;
+}

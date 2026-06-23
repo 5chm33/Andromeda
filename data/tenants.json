@@ -1,0 +1,22 @@
+{
+  "default": {
+    "id": "default",
+    "name": "Default Tenant",
+    "description": "Default single-tenant configuration",
+    "quota": {
+      "rsiCyclesPerDay": 999999,
+      "evalRunsPerDay": 999999,
+      "apiCallsPerMinute": 999999,
+      "autoAppliesPerDay": 999999,
+      "maxActiveGoals": 999999,
+      "maxStoredProposals": 999999
+    },
+    "allowedModules": [],
+    "blockedModules": [],
+    "constitutionalAiEnabled": true,
+    "goalDecompositionEnabled": true,
+    "active": true,
+    "createdAt": 1782251746854,
+    "updatedAt": 1782251746854
+  }
+}

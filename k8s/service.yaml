@@ -1,0 +1,48 @@
+# ─── Andromeda v6.37 — Kubernetes Service ─────────────────────────────────────
+apiVersion: v1
+kind: Service
+metadata:
+  name: andromeda
+  namespace: default
+  labels:
+    app: andromeda
+spec:
+  selector:
+    app: andromeda
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3000
+      protocol: TCP
+  type: ClusterIP
+---
+# ─── Ingress (nginx) ──────────────────────────────────────────────────────────
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: andromeda
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    # SSE requires buffering disabled
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - andromeda.yourdomain.com
+      secretName: andromeda-tls
+  rules:
+    - host: andromeda.yourdomain.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: andromeda
+                port:
+                  number: 80

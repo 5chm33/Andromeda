@@ -1,0 +1,9 @@
+{
+  "testPassRate": 0.3,
+  "benchmarkDelta": 0.2,
+  "latencyScore": 0.1,
+  "tokenEfficiency": 0.1,
+  "safetyScore": 0.2,
+  "noveltyScore": 0.05,
+  "stabilityScore": 0.05
+}

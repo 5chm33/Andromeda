@@ -1,0 +1,62 @@
+{
+  "security": {
+    "category": "security",
+    "sampleCount": 1,
+    "meanReward": 0.05,
+    "acceptRate": 0,
+    "rejectRate": 0,
+    "editRate": 0,
+    "topFiles": [
+      "server/auth.ts"
+    ],
+    "bottomFiles": [
+      "server/auth.ts"
+    ],
+    "lastUpdated": "2026-06-23T14:27:07.883Z"
+  },
+  "performance": {
+    "category": "performance",
+    "sampleCount": 1,
+    "meanReward": -0.01,
+    "acceptRate": 0,
+    "rejectRate": 0,
+    "editRate": 0,
+    "topFiles": [
+      "server/db.ts"
+    ],
+    "bottomFiles": [
+      "server/db.ts"
+    ],
+    "lastUpdated": "2026-06-23T14:27:07.883Z"
+  },
+  "readability": {
+    "category": "readability",
+    "sampleCount": 1,
+    "meanReward": -0.01,
+    "acceptRate": 0,
+    "rejectRate": 0,
+    "editRate": 0,
+    "topFiles": [
+      "server/api.ts"
+    ],
+    "bottomFiles": [
+      "server/api.ts"
+    ],
+    "lastUpdated": "2026-06-23T14:27:07.883Z"
+  },
+  "helpfulness": {
+    "category": "helpfulness",
+    "sampleCount": 200,
+    "meanReward": 0.4343999999999999,
+    "acceptRate": 0.755,
+    "rejectRate": 0.245,
+    "editRate": 0,
+    "topFiles": [
+      "hhrlhf_eval"
+    ],
+    "bottomFiles": [
+      "hhrlhf_eval"
+    ],
+    "lastUpdated": "2026-06-23T21:55:40.476Z"
+  }
+}

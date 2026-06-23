@@ -1,0 +1,15 @@
+packages:
+  - '.'
+# allowBuilds: Approve build scripts for native addons (pnpm 11+).
+# Uses package NAME (not version) so it covers ALL versions including transitive
+# deps like esbuild@0.18.x and esbuild@0.21.x pulled in by vite/rollup.
+# IMPORTANT: This file is protected in andromeda-constitution.json —
+# the RSI system must NOT modify it.
+allowBuilds:
+  '@tailwindcss/oxide': true
+  better-sqlite3: true
+  canvas: true
+  esbuild: true
+  node-pty: true
+patchedDependencies:
+  wouter@3.7.1: patches/wouter@3.7.1.patch

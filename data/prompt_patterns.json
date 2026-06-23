@@ -1,0 +1,50 @@
+{
+  "47f9aa02": {
+    "id": "47f9aa02",
+    "taskType": "self_improvement",
+    "pattern": "test prompt fragment",
+    "successRate": 1,
+    "useCount": 11,
+    "avgResponseQuality": 0.9000000000000002,
+    "lastUsed": "2026-06-23T21:55:38.213Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "204b166f": {
+    "id": "204b166f",
+    "taskType": "coding",
+    "pattern": "another prompt fragment",
+    "successRate": 0,
+    "useCount": 11,
+    "avgResponseQuality": 0.2999999999999999,
+    "lastUsed": "2026-06-23T21:55:38.214Z",
+    "tags": [
+      "coding"
+    ]
+  },
+  "5e64e313": {
+    "id": "5e64e313",
+    "taskType": "analysis",
+    "pattern": "partial prompt fragment",
+    "successRate": 0,
+    "useCount": 11,
+    "avgResponseQuality": 0.5999999999999998,
+    "lastUsed": "2026-06-23T21:55:38.214Z",
+    "tags": [
+      "analysis"
+    ]
+  },
+  "7360a848": {
+    "id": "7360a848",
+    "taskType": "research",
+    "pattern": "unique fragment xyz",
+    "successRate": 1,
+    "useCount": 11,
+    "avgResponseQuality": 0.8499999999999998,
+    "lastUsed": "2026-06-23T21:55:38.215Z",
+    "tags": [
+      "research"
+    ]
+  }
+}

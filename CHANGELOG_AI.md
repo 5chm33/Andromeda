@@ -1,0 +1,1077 @@
+# CHANGELOG_AI.md — Andromeda Self-Improvement Log
+
+This file is automatically maintained by Andromeda's Recursive Self-Improvement (RSI) engine.
+Every entry represents a code change that Andromeda proposed, validated, and applied to itself.
+
+---
+
+## [11.7.0] 2026-06-23 21:55:42 — `ai.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test feature
+
+> Rationale for feature.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 21:55:42 — `ai.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test readability
+
+> Rationale for readability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 21:55:42 — `ai.ts`
+
+**Category:** security | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test security
+
+> Rationale for security.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 21:55:42 — `ai.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test reliability
+
+> Rationale for reliability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 21:55:42 — `ai.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test performance
+
+> Rationale for performance.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 21:55:42 — `b.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry B
+
+> Rationale B.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 21:55:42 — `a.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry A
+
+> Rationale A.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 21:55:42 — `testTarget.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Audit 11 test entry
+
+> Test rationale.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 21:55:42 — `selfImprove.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Improved error handling
+
+> Better null checks.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 21:46:51 — `ai.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test feature
+
+> Rationale for feature.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 21:46:51 — `ai.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test readability
+
+> Rationale for readability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 21:46:51 — `ai.ts`
+
+**Category:** security | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test security
+
+> Rationale for security.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 21:46:51 — `ai.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test reliability
+
+> Rationale for reliability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 21:46:51 — `ai.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test performance
+
+> Rationale for performance.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 21:46:51 — `b.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry B
+
+> Rationale B.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 21:46:51 — `a.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry A
+
+> Rationale A.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 21:46:51 — `testTarget.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Audit 11 test entry
+
+> Test rationale.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 21:46:51 — `selfImprove.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Improved error handling
+
+> Better null checks.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:46:19 — `ai.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test feature
+
+> Rationale for feature.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:46:19 — `ai.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test readability
+
+> Rationale for readability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:46:19 — `ai.ts`
+
+**Category:** security | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test security
+
+> Rationale for security.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:46:19 — `ai.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test reliability
+
+> Rationale for reliability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:46:19 — `ai.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test performance
+
+> Rationale for performance.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:46:19 — `b.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry B
+
+> Rationale B.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:46:19 — `a.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry A
+
+> Rationale A.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:46:19 — `testTarget.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Audit 11 test entry
+
+> Test rationale.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:46:19 — `selfImprove.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Improved error handling
+
+> Better null checks.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:44:37 — `ai.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test feature
+
+> Rationale for feature.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:44:37 — `ai.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test readability
+
+> Rationale for readability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:44:37 — `ai.ts`
+
+**Category:** security | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test security
+
+> Rationale for security.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:44:37 — `ai.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test reliability
+
+> Rationale for reliability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:44:37 — `ai.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test performance
+
+> Rationale for performance.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:44:37 — `b.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry B
+
+> Rationale B.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:44:37 — `a.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry A
+
+> Rationale A.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:44:37 — `testTarget.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Audit 11 test entry
+
+> Test rationale.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:44:37 — `selfImprove.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Improved error handling
+
+> Better null checks.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:52 — `ai.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test feature
+
+> Rationale for feature.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:52 — `ai.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test readability
+
+> Rationale for readability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:52 — `ai.ts`
+
+**Category:** security | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test security
+
+> Rationale for security.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:52 — `ai.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test reliability
+
+> Rationale for reliability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:52 — `ai.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test performance
+
+> Rationale for performance.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:52 — `b.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry B
+
+> Rationale B.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:52 — `a.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry A
+
+> Rationale A.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:52 — `testTarget.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Audit 11 test entry
+
+> Test rationale.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:52 — `selfImprove.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Improved error handling
+
+> Better null checks.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:06 — `Test feature`
+
+**Category:** general | **Impact:** medium | **Confidence:** NaN%
+**Change:** feature
+
+> v11.19.0.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:06 — `Test readability`
+
+**Category:** general | **Impact:** medium | **Confidence:** NaN%
+**Change:** readability
+
+> v11.19.0.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:06 — `Test security`
+
+**Category:** general | **Impact:** medium | **Confidence:** NaN%
+**Change:** security
+
+> v11.19.0.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:06 — `Test reliability`
+
+**Category:** general | **Impact:** medium | **Confidence:** NaN%
+**Change:** reliability
+
+> v11.19.0.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:06 — `Test performance`
+
+**Category:** general | **Impact:** medium | **Confidence:** NaN%
+**Change:** performance
+
+> v11.19.0.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:06 — `Change 9`
+
+**Category:** general | **Impact:** medium | **Confidence:** NaN%
+**Change:** readability
+
+> v11.19.0.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:06 — `Change 8`
+
+**Category:** general | **Impact:** medium | **Confidence:** NaN%
+**Change:** readability
+
+> v11.19.0.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:06 — `Change 7`
+
+**Category:** general | **Impact:** medium | **Confidence:** NaN%
+**Change:** readability
+
+> v11.19.0.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:06 — `Change 6`
+
+**Category:** general | **Impact:** medium | **Confidence:** NaN%
+**Change:** readability
+
+> v11.19.0.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:06 — `Change 5`
+
+**Category:** general | **Impact:** medium | **Confidence:** NaN%
+**Change:** readability
+
+> v11.19.0.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:06 — `Change 4`
+
+**Category:** general | **Impact:** medium | **Confidence:** NaN%
+**Change:** readability
+
+> v11.19.0.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:06 — `Change 3`
+
+**Category:** general | **Impact:** medium | **Confidence:** NaN%
+**Change:** readability
+
+> v11.19.0.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:06 — `Change 2`
+
+**Category:** general | **Impact:** medium | **Confidence:** NaN%
+**Change:** readability
+
+> v11.19.0.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:06 — `Change 1`
+
+**Category:** general | **Impact:** medium | **Confidence:** NaN%
+**Change:** readability
+
+> v11.19.0.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:06 — `Change 0`
+
+**Category:** general | **Impact:** medium | **Confidence:** NaN%
+**Change:** readability
+
+> v11.19.0.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:06 — `Audit 11 test entry`
+
+**Category:** general | **Impact:** medium | **Confidence:** NaN%
+**Change:** performance
+
+> v11.19.0.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 16:43:06 — `Improved error handling`
+
+**Category:** general | **Impact:** medium | **Confidence:** NaN%
+**Change:** reliability
+
+> v11.19.0.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 14:25:02 — `dummy.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** 80%
+**Change:** Fix B
+
+> No rationale provided.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.7.0] 2026-06-23 14:25:02 — `dummy.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** 90%
+**Change:** Fix A
+
+> No rationale provided.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [11.6.0] 2026-06-23 05:32:10 — `browser.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** 95%
+**Change:** Extract duplicate browser launch logic into helper function
+
+> The browser launch logic is duplicated in browseUrl and getOrCreateSession, making the code harder to maintain and increasing the risk of inconsistencies.
+> Extracting it into a shared helper improves readability and reduces duplication.
+
+```diff
+- async function getOrCreateSession(sessionId?: string): Promise<{ session: BrowserSession; id: string }> {
+-   if (sessionId && sessions.has(sessionId)) {
+-     return { session: sessions.get(sessionId)!, id: sessionId };
+-   }
+-   const browser = await chromium.launch({
+-     executablePath: getChromiumPath(),
+-     headless: true,
+-     args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+-   });
+-   const context = await browser.newContext({
+-     userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+-     viewport: { width: 1280, height: 720 },
+-   });
+-   const page = await context.newPage();
+-   const id = sessionId ?? `session-${++sessionCounter}`;
+-   const session: BrowserSession = { browser, context, page, url: "about:blank", createdAt: Date.now() };
+-   sessions.set(id, session);
+-   return { session, id };
+- }
+---
++ async function createBrowserSession(): Promise<BrowserSession> {
++   const browser = await chromium.launch({
++     executablePath: getChromiumPath(),
++     headless: true,
++     args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
++   });
++   const context = await browser.newContext({
++     userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
++     viewport: { width: 1280, height: 720 },
++   });
++   const page = await context.newPage();
++   return { browser, context, page, url: "about:blank", createdAt: Date.now() };
++ }
+  
++ async function getOrCreateSession(sessionId?: string): Promise<{ session: BrowserSession; id: string }> {
++   if (sessionId && sessions.has(sessionId)) {
++     return { session: sessions.get(sessionId)!, id: sessionId };
++   }
++   const session = await createBrowserSession();
++   const id = sessionId ?? `session-${++sessionCounter}`;
++ ... (3 more lines)
+```
+
+---
+
+## [11.6.0] 2026-06-23 05:28:18 — `dependencyResolver.ts`
+
+**Category:** readability | **Impact:** low | **Confidence:** 100%
+**Change:** Extract duplicate whitelist check into helper function
+
+> The whitelist validation logic is duplicated in execSandbox and execAsyncSandbox.
+> Extracting it into a shared helper improves readability and reduces the chance of inconsistencies.
+
+```diff
+- function execSandbox(cmd: string, opts?: Parameters<typeof execSync>[1]): string {
+-   const trimmed = cmd.trim();
+-   const allowed = EXEC_WHITELIST.some(pattern => pattern.test(trimmed));
+-   if (!allowed) {
+-     throw new Error(
+-       `[execSandbox] BLOCKED: Command not in whitelist: "${trimmed.slice(0, 120)}"\n` +
+-       `Only npm/pnpm/yarn/pip3/python3-import/node-require/which/apt-get commands are permitted.`
+-     );
+-   }
+-   return execSync(cmd, opts as any);
+- }
+  
+- /**
+-  * v5.8: Sandboxed execAsync — async variant of execSandbox.
+-  */
+- async function execAsyncSandbox(cmd: string, opts?: Parameters<typeof execAsync>[1]): Promise<{ stdout: string; stderr: string }> {
+-   const trimmed = cmd.trim();
+-   const allowed = EXEC_WHITELIST.some(pattern => pattern.test(trimmed));
+-   if (!allowed) {
+-     throw new Error(
+- ... (7 more lines)
+---
++ function assertCommandAllowed(cmd: string): void {
++   const trimmed = cmd.trim();
++   const allowed = EXEC_WHITELIST.some(pattern => pattern.test(trimmed));
++   if (!allowed) {
++     throw new Error(
++       `[execSandbox] BLOCKED: Command not in whitelist: "${trimmed.slice(0, 120)}"\n` +
++       `Only npm/pnpm/yarn/pip3/python3-import/node-require/which/apt-get commands are permitted.`
++     );
++   }
++ }
+  
++ function execSandbox(cmd: string, opts?: Parameters<typeof execSync>[1]): string {
++   assertCommandAllowed(cmd);
++   return execSync(cmd, opts as any);
++ }
+  
++ /**
++  * v5.8: Sandboxed execAsync — async variant of execSandbox.
++  */
++ async function execAsyncSandbox(cmd: string, opts?: Parameters<typeof execAsync>[1]): Promise<{ stdout: string; stderr: string }> {
++ ... (4 more lines)
+```
+
+---
+

@@ -1,0 +1,55 @@
+{
+  "nodeRegistry": {
+    "peer-1": {
+      "nodeId": "peer-1",
+      "endpoint": "http://peer1:3001",
+      "capabilities": [
+        "rsi"
+      ],
+      "registeredAt": 1782230111954,
+      "lastSeenAt": 1782251735329,
+      "healthy": true,
+      "trustScore": 0.7200000000000002,
+      "contributionCount": 11
+    },
+    "peer-list": {
+      "nodeId": "peer-list",
+      "endpoint": "http://peer2:3001",
+      "capabilities": [],
+      "registeredAt": 1782230111955,
+      "lastSeenAt": 1782251735331,
+      "healthy": true,
+      "trustScore": 0.5,
+      "contributionCount": 0
+    },
+    "peer-health": {
+      "nodeId": "peer-health",
+      "endpoint": "http://peer3:3001",
+      "capabilities": [],
+      "registeredAt": 1782230111957,
+      "lastSeenAt": 1782251735333,
+      "healthy": true,
+      "trustScore": 0.5,
+      "contributionCount": 0
+    }
+  },
+  "receivedProposals": {
+    "undefined": {
+      "id": "prop-fed-1",
+      "sourceNodeId": "peer-1",
+      "targetFile": "server/test.ts",
+      "category": "readability",
+      "rationale": "improve readability",
+      "confidence": 0.9,
+      "proposedContent": "export function test() {}",
+      "originalContent": "export function test() { return 1; }",
+      "createdAt": 1782251735338,
+      "locallyValidated": false,
+      "locallyApplied": false,
+      "receivedAt": 1782251735338
+    }
+  },
+  "sharedProposalIds": [],
+  "lastSyncAt": null,
+  "savedAt": 1782251735338
+}
