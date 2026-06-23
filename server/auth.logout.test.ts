@@ -58,5 +58,6 @@ describe("auth.logout", () => {
       httpOnly: true,
       path: "/",
     });
+    expect(typeof result.success).toBe("boolean"); // Audit 15: upgrade to 5+ assertions
   });
 });

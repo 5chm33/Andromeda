@@ -658,6 +658,27 @@ async function runImprovementCycle(): Promise<CycleResult> {
     });
   }
 
+  // v11.23.0 Audit 15 Fix A: Wire clearAllCaches so memory footprint stays stable during long RSI runs
+  // Run every 100 cycles to completely clear all non-essential caches
+  if (totalCycles % 100 === 0) {
+    try {
+      const { clearAllCaches } = await import("./cache.js");
+      clearAllCaches();
+      console.log(`[ContinuousImprover] Cleared all caches at cycle #${totalCycles} to prevent OOM.`);
+    } catch { /* non-fatal */ }
+  }
+
+  // v11.23.0 Audit 15 Fix B: Wire triggerCycle from autonomyOrchestrator to ensure deep self-reflection
+  // Run every 12 cycles to trigger a full autonomy cycle which analyzes logs and updates goals
+  if (totalCycles % 12 === 0) {
+    setImmediate(async () => {
+      try {
+        const { triggerCycle } = await import("./autonomyOrchestrator.js");
+        await triggerCycle();
+      } catch { /* non-fatal */ }
+    });
+  }
+
   // v11.20.0 Audit 12 Fix A: Wire recordRsiCycle so telemetry DB receives every RSI cycle sample
   try {
     const { recordRsiCycle } = await import("./telemetry.js");

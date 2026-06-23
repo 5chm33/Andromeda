@@ -831,6 +831,16 @@ export async function analyzeAndPropose(
     }
   } catch { /* non-fatal */ }
 
+  // v11.23.0 Audit 15 Fix C: Wire findSimilarIssue so selfKnowledgeBase prevents repeating mistakes
+  let knownLimitations = "";
+  try {
+    const { findSimilarIssue } = await import("./selfKnowledgeBase.js");
+    const similar = findSimilarIssue(targetFile);
+    if (similar && similar.length > 0) {
+      knownLimitations = `\n\nKNOWN ISSUES/LIMITATIONS (from selfKnowledgeBase):\n` + similar.map((s: any) => `- ${s.description}: ${s.lesson}`).join("\n");
+    }
+  } catch { /* non-fatal */ }
+
   const constitution = getConstitutionConstraints();
   const constitutionBlock = constitution.files.length > 0 || constitution.patterns.length > 0
     ? `\n\nCONSTITUTION CONSTRAINTS (you MUST NOT violate these):\n` +
@@ -882,7 +892,9 @@ export async function analyzeAndPropose(
       role: "system",
       content: `You are an expert TypeScript software engineer performing a targeted code improvement.
 You will receive source code and must identify the SINGLE BEST improvement to make.
-${knowledgeContext ? `\nArchitecture decisions and known issues for this file:\n${knowledgeContext}` : ""}${patternContext ? `\nCross-agent learned patterns for this file:\n${patternContext}` : ""}${longTermMemoryContext}${systemHealthContext}${previousAttempts}${metaLearningContext}${episodicContext}${rlhfContext}${rejectionContext}${constitutionBlock}${importGraphContext}
+${knowledgeContext ? `\nArchitecture decisions and known issues for this file:\n${knowledgeContext}` : ""}${patternContext ? `\nCross-agent learned patterns for this file:\n${patternContext}` : ""}${longTermMemoryContext}${systemHealthContext}${previousAttempts}${metaLearningContext}${episodicContext}${rlhfContext}${longTermMemoryContext}
+${knownLimitations}
+${constitutionBlock}${importGraphContext}
 
 CRITICAL: Return ONLY a JSON object. No markdown. No explanation outside the JSON.
 The JSON must contain:
