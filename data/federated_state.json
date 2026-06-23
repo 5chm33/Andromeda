@@ -7,17 +7,17 @@
         "rsi"
       ],
       "registeredAt": 1782230111954,
-      "lastSeenAt": 1782251735329,
+      "lastSeenAt": 1782255132915,
       "healthy": true,
-      "trustScore": 0.7200000000000002,
-      "contributionCount": 11
+      "trustScore": 0.9400000000000004,
+      "contributionCount": 22
     },
     "peer-list": {
       "nodeId": "peer-list",
       "endpoint": "http://peer2:3001",
       "capabilities": [],
       "registeredAt": 1782230111955,
-      "lastSeenAt": 1782251735331,
+      "lastSeenAt": 1782255132919,
       "healthy": true,
       "trustScore": 0.5,
       "contributionCount": 0
@@ -27,7 +27,7 @@
       "endpoint": "http://peer3:3001",
       "capabilities": [],
       "registeredAt": 1782230111957,
-      "lastSeenAt": 1782251735333,
+      "lastSeenAt": 1782255132920,
       "healthy": true,
       "trustScore": 0.5,
       "contributionCount": 0
@@ -43,13 +43,13 @@
       "confidence": 0.9,
       "proposedContent": "export function test() {}",
       "originalContent": "export function test() { return 1; }",
-      "createdAt": 1782251735338,
+      "createdAt": 1782255132925,
       "locallyValidated": false,
       "locallyApplied": false,
-      "receivedAt": 1782251735338
+      "receivedAt": 1782255132925
     }
   },
   "sharedProposalIds": [],
   "lastSyncAt": null,
-  "savedAt": 1782251735338
+  "savedAt": 1782255132925
 }

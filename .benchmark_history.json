@@ -1,0 +1,38 @@
+[
+  {
+    "timestamp": "2026-06-23T22:39:33.652Z",
+    "durationMs": 15316,
+    "metrics": [
+      {
+        "name": "typescript_compilation_time",
+        "category": "latency",
+        "value": 7548,
+        "unit": "ms",
+        "threshold": 30000,
+        "timestamp": "2026-06-23T22:39:25.884Z"
+      },
+      {
+        "name": "lines_of_code",
+        "category": "quality",
+        "value": 133608,
+        "unit": "lines",
+        "timestamp": "2026-06-23T22:39:26.044Z"
+      },
+      {
+        "name": "typescript_errors",
+        "category": "error_rate",
+        "value": 0,
+        "unit": "errors",
+        "threshold": 0,
+        "timestamp": "2026-06-23T22:39:33.652Z"
+      }
+    ],
+    "regressions": [],
+    "summary": {
+      "total": 3,
+      "passed": 3,
+      "warnings": 0,
+      "regressions": 0
+    }
+  }
+]

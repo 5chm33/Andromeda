@@ -1,0 +1,36 @@
+{
+  "config": {
+    "authEnabled": true,
+    "globalRateLimit": 120,
+    "auditEnabled": true,
+    "ipAllowlist": [],
+    "ipBlocklist": [],
+    "publicPaths": [
+      "/",
+      "/api/health",
+      "/api/manifest",
+      "/assets"
+    ],
+    "requireHttps": false,
+    "maxAuditEntries": 5000
+  },
+  "apiKeys": [
+    {
+      "id": "key_1782254349678_dqncrk",
+      "keyHash": "71486a8729daf6ef4889e2752bbfb3e9a832b248dcdf12253e31be865f84f50c",
+      "keyPrefix": "and_dac7c23a",
+      "createdAt": "2026-06-23T22:39:09.679Z",
+      "rateLimit": 0,
+      "isActive": true
+    },
+    {
+      "id": "key_1782254349688_ui3na1",
+      "keyHash": "fb09a1639e208d0728e9ab2e6387bc3098352f689cce6df8ab86169c94066eea",
+      "keyPrefix": "and_73a37c5c",
+      "createdAt": "2026-06-23T22:39:09.688Z",
+      "rateLimit": 0,
+      "isActive": true
+    }
+  ],
+  "auditLog": []
+}

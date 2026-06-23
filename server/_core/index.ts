@@ -53,6 +53,8 @@ import { registerCoreRoutes } from "./initRoutes";
 import { initModules } from "./initModules";
 import { startDaemons } from "./initDaemons";
 import { runBootIntegrityCheck, clearCrashFlag } from "./initSafety";
+import { securityMiddleware } from "../security"; // Audit 14A: wire securityMiddleware
+import { disconnectAll } from "../mcpClient"; // Audit 14B: wire disconnectAll
 
 // ── Port utilities ────────────────────────────────────────────────────────────
 function isPortAvailable(port: number): Promise<boolean> {
@@ -110,6 +112,9 @@ async function startServer(): Promise<void> {
     });
     next();
   });
+
+  // Audit 14A: Apply security middleware (API key auth, IP blocklist, rate limiting)
+  app.use(securityMiddleware());
 
   // v5.8: Security headers
   app.use((_req, res, next) => {
@@ -187,6 +192,7 @@ async function startServer(): Promise<void> {
   const shutdown = (signal: string) => {
     console.log(`\n[${signal}] Shutting down gracefully...`);
     clearCrashFlag();
+    try { disconnectAll(); } catch {} // Audit 14B: disconnect all MCP clients on shutdown
     server.close(() => {
       console.log("All connections drained. Goodbye.");
       process.exit(0);
