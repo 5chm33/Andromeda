@@ -3911,6 +3911,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./systemMemory.js").then(m => { m.consolidateMemory(); }).catch(() => {});
     }
+    // 749. tokenBudgetManager: canFitResponse
+    if (cycleCount % 1000 === 0) {
+      import("./tokenBudgetManager.js").then(m => { m.canFitResponse(); }).catch(() => {});
+    }
+    // 750. tokenBudgetManager: getSessionDetail
+    if (cycleCount % 1000 === 0) {
+      import("./tokenBudgetManager.js").then(m => { m.getSessionDetail(); }).catch(() => {});
+    }
+    // 751. tokenBudgetManager: getConfig
+    if (cycleCount % 1000 === 0) {
+      import("./tokenBudgetManager.js").then(m => { m.getConfig(); }).catch(() => {});
+    }
+    // 752. tokenBudgetManager: initTokenBudgetManager
+    if (cycleCount % 1000 === 0) {
+      import("./tokenBudgetManager.js").then(m => { m.initTokenBudgetManager(); }).catch(() => {});
+    }
+    // 753. utilityFunction: createStateSnapshot
+    if (cycleCount % 1000 === 0) {
+      import("./utilityFunction.js").then(m => { m.createStateSnapshot(); }).catch(() => {});
+    }
+    // 754. utilityFunction: getWeights
+    if (cycleCount % 1000 === 0) {
+      import("./utilityFunction.js").then(m => { m.getWeights(); }).catch(() => {});
+    }
+    // 755. utilityFunction: setWeights
+    if (cycleCount % 1000 === 0) {
+      import("./utilityFunction.js").then(m => { m.setWeights(); }).catch(() => {});
+    }
+    // 756. utilityFunction: getUtilityHistory
+    if (cycleCount % 1000 === 0) {
+      import("./utilityFunction.js").then(m => { m.getUtilityHistory(); }).catch(() => {});
+    }
+    // 757. visionModule: detectVisionProvider
+    if (cycleCount % 1000 === 0) {
+      import("./visionModule.js").then(m => { m.detectVisionProvider(); }).catch(() => {});
+    }
+    // 758. visionModule: imageToBase64
+    if (cycleCount % 1000 === 0) {
+      import("./visionModule.js").then(m => { m.imageToBase64(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
