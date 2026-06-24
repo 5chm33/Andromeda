@@ -8191,6 +8191,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./cache.js").then(m => { m.setCachedBrowse(); }).catch(() => {});
     }
+    // 1819. federatedLearning: registerNode
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLearning.js").then(m => { m.registerNode(); }).catch(() => {});
+    }
+    // 1820. federatedLearning: getNode
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLearning.js").then(m => { m.getNode(); }).catch(() => {});
+    }
+    // 1821. federatedLearning: listNodes
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLearning.js").then(m => { m.listNodes(); }).catch(() => {});
+    }
+    // 1822. federatedLearning: markNodeHealthy
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLearning.js").then(m => { m.markNodeHealthy(); }).catch(() => {});
+    }
+    // 1823. federatedLearning: markNodeUnhealthy
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLearning.js").then(m => { m.markNodeUnhealthy(); }).catch(() => {});
+    }
+    // 1824. federatedLearning: receiveProposal
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLearning.js").then(m => { m.receiveProposal(); }).catch(() => {});
+    }
+    // 1825. federatedLearning: getReceivedProposals
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLearning.js").then(m => { m.getReceivedProposals(); }).catch(() => {});
+    }
+    // 1826. federatedLearning: markProposalValidated
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLearning.js").then(m => { m.markProposalValidated(); }).catch(() => {});
+    }
+    // 1827. federatedLearning: markProposalApplied
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLearning.js").then(m => { m.markProposalApplied(); }).catch(() => {});
+    }
+    // 1828. federatedLearning: computeFederatedAvgScore
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLearning.js").then(m => { m.computeFederatedAvgScore(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
