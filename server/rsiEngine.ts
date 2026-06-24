@@ -8951,6 +8951,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./dependencyGraph.js").then(m => { m.findCircularDeps(); }).catch(() => {});
     }
+    // 2009. fileEngineTypes: getModelContextMaxOutput
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineTypes.js").then(m => { m.getModelContextMaxOutput(); }).catch(() => {});
+    }
+    // 2010. fileEngineTypes: getFileEngineProviderHeaders
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineTypes.js").then(m => { m.getFileEngineProviderHeaders(); }).catch(() => {});
+    }
+    // 2011. fileEngineTypes: getFileEngineApiUrl
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineTypes.js").then(m => { m.getFileEngineApiUrl(); }).catch(() => {});
+    }
+    // 2012. fileEngineTypes: resolveApiUrlFromKey
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineTypes.js").then(m => { m.resolveApiUrlFromKey(); }).catch(() => {});
+    }
+    // 2013. fileEngineTypes: extractSignatures
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineTypes.js").then(m => { m.extractSignatures(); }).catch(() => {});
+    }
+    // 2014. fileEngineTypes: categorizeFile
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineTypes.js").then(m => { m.categorizeFile(); }).catch(() => {});
+    }
+    // 2015. fileEngineTypes: compressFile
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineTypes.js").then(m => { m.compressFile(); }).catch(() => {});
+    }
+    // 2016. goalManager: addSubGoal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.addSubGoal(); }).catch(() => {});
+    }
+    // 2017. goalManager: completeSubGoal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.completeSubGoal(); }).catch(() => {});
+    }
+    // 2018. goalManager: failSubGoal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.failSubGoal("test-id", "sub-id", "test"); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
