@@ -3591,6 +3591,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./dependencyResolver.js").then(m => { m.setResolverConfig(); }).catch(() => {});
     }
+    // 669. docGenerator: runDocGeneration
+    if (cycleCount % 1000 === 0) {
+      import("./docGenerator.js").then(m => { m.runDocGeneration(); }).catch(() => {});
+    }
+    // 670. docGenerator: startDocGenerator
+    if (cycleCount % 1000 === 0) {
+      import("./docGenerator.js").then(m => { m.startDocGenerator(); }).catch(() => {});
+    }
+    // 671. docGenerator: stopDocGenerator
+    if (cycleCount % 1000 === 0) {
+      import("./docGenerator.js").then(m => { m.stopDocGenerator(); }).catch(() => {});
+    }
+    // 672. docGenerator: getLastDocReport
+    if (cycleCount % 1000 === 0) {
+      import("./docGenerator.js").then(m => { m.getLastDocReport(); }).catch(() => {});
+    }
+    // 673. edgeLLMRouter: isOllamaAvailable
+    if (cycleCount % 1000 === 0) {
+      import("./edgeLLMRouter.js").then(m => { m.isOllamaAvailable(); }).catch(() => {});
+    }
+    // 674. edgeLLMRouter: getLocalModels
+    if (cycleCount % 1000 === 0) {
+      import("./edgeLLMRouter.js").then(m => { m.getLocalModels(); }).catch(() => {});
+    }
+    // 675. edgeLLMRouter: routeRequest
+    if (cycleCount % 1000 === 0) {
+      import("./edgeLLMRouter.js").then(m => { m.routeRequest(); }).catch(() => {});
+    }
+    // 676. edgeLLMRouter: infer
+    if (cycleCount % 1000 === 0) {
+      import("./edgeLLMRouter.js").then(m => { m.infer(); }).catch(() => {});
+    }
+    // 677. federatedLearning: prepareSyncPayload
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLearning.js").then(m => { m.prepareSyncPayload(); }).catch(() => {});
+    }
+    // 678. federatedLearning: getFederatedStats
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLearning.js").then(m => { m.getFederatedStats(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
