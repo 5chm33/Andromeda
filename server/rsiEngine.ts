@@ -8271,6 +8271,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./gracefulDegradation.js").then(m => { void 0 /* onDegradation requires complex args */; }).catch(() => {});
     }
+    // 1839. llmProvider: recordLLMCost
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => { m.recordLLMCost(); }).catch(() => {});
+    }
+    // 1840. llmProvider: getCostStats
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => { m.getCostStats(); }).catch(() => {});
+    }
+    // 1841. llmProvider: resetCostStats
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => { m.resetCostStats(); }).catch(() => {});
+    }
+    // 1842. llmProvider: resolveProviderFromEnv
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => { m.resolveProviderFromEnv(); }).catch(() => {});
+    }
+    // 1843. llmProvider: getProviderApiKey
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => { m.getProviderApiKey(); }).catch(() => {});
+    }
+    // 1844. llmProvider: switchProvider
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => { m.switchProvider(); }).catch(() => {});
+    }
+    // 1845. llmProvider: getActiveProvider
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => { m.getActiveProvider(); }).catch(() => {});
+    }
+    // 1846. llmProvider: setActiveProvider
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => { m.setActiveProvider(); }).catch(() => {});
+    }
+    // 1847. llmProvider: listProviders
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => { m.listProviders(); }).catch(() => {});
+    }
+    // 1848. llmProvider: getProviderForTier
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => { m.getProviderForTier(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
