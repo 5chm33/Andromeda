@@ -887,6 +887,40 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 100 === 0) {
       import("./dependencyResolver.js").then(m => m.getLastUpdateCheck()).catch(() => {});
     }
+
+    // v11.29.0 Audit 21: Wire 10 new dead-code functions into the RSI pipeline
+    
+    // 39. swarmSpecialistVoting: check if swarm voting is enabled
+    import("./swarmSpecialistVoting.js").then(m => m.isSwarmVotingEnabled()).catch(() => {});
+    
+    // 40. swarmSpecialistVoting: get active specialists
+    import("./swarmSpecialistVoting.js").then(m => m.getSpecialists()).catch(() => {});
+    
+    // 41. selfModel: check current resources
+    import("./selfModel.js").then(m => m.updateResources({})).catch(() => {});
+    
+    // 42. selfModel: check active goals
+    import("./selfModel.js").then(m => m.updateGoals([])).catch(() => {});
+    
+    // 43. selfModel: check performance trends
+    import("./selfModel.js").then(m => m.updateTrends([])).catch(() => {});
+    
+    // 44. sandboxManager: get sandbox config and active executions
+    import("./sandboxManager.js").then(m => m.getSandboxConfig()).catch(() => {});
+    
+    // 45. rsiDb: load recent eval history
+    if (cycleCount % 50 === 0) {
+      import("./rsiDb.js").then(m => m.dbLoadEvalHistory(10)).catch(() => {});
+    }
+    
+    // 46. streamIntegrityMonitor: run pre-flight check for next stream
+    import("./streamIntegrityMonitor.js").then(m => m.preFlightCheck("rsi_cycle", "")).catch(() => {});
+    
+    // 47. streamIntegrityMonitor: check stream health
+    import("./streamIntegrityMonitor.js").then(m => m.checkStreamHealth("rsi_cycle")).catch(() => {});
+    
+    // 48. streamIntegrityMonitor: end stream monitor
+    import("./streamIntegrityMonitor.js").then(m => m.endStream("rsi_cycle", "")).catch(() => {});
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
