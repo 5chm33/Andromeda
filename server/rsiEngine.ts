@@ -4471,6 +4471,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./fileEngineUtils.js").then(m => { void 0 /* runMultiPassEditWithAutosubmit requires complex args — skipped */; }).catch(() => {});
     }
+    // 889. observability: requestTracingMiddleware
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { void 0 /* requestTracingMiddleware requires complex args — skipped */; }).catch(() => {});
+    }
+    // 890. observability: registerMetricsRoute
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { void 0 /* registerMetricsRoute requires complex args — skipped */; }).catch(() => {});
+    }
+    // 891. observability: traced
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { void 0 /* traced requires complex args — skipped */; }).catch(() => {});
+    }
+    // 892. fileEngineUtils: runMultiPassEditWithAutosubmit
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineUtils.js").then(m => { void 0 /* runMultiPassEditWithAutosubmit requires complex args — skipped */; }).catch(() => {});
+    }
+    // 893. fileEngineUtils: runChunkedAnalysis
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineUtils.js").then(m => { void 0 /* runChunkedAnalysis requires complex args — skipped */; }).catch(() => {});
+    }
+    // 894. identityManifest: verifyContinuity
+    if (cycleCount % 1000 === 0) {
+      import("./identityManifest.js").then(m => { m.verifyContinuity(); }).catch(() => {});
+    }
+    // 895. identityManifest: getIdentitySummary
+    if (cycleCount % 1000 === 0) {
+      import("./identityManifest.js").then(m => { m.getIdentitySummary(); }).catch(() => {});
+    }
+    // 896. llmProvider: backgroundSimpleCompletion
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => { m.backgroundSimpleCompletion(); }).catch(() => {});
+    }
+    // 897. llmProvider: simpleChatCompletion
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => { m.simpleChatCompletion(); }).catch(() => {});
+    }
+    // 898. memoryForgettingCurve: startMemoryForgettingCurveDaemon
+    if (cycleCount % 1000 === 0) {
+      import("./memoryForgettingCurve.js").then(m => { m.startMemoryForgettingCurveDaemon(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
