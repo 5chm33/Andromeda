@@ -10231,6 +10231,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./selfDocumentation.js").then(m => { m.getChangelog(); }).catch(() => {});
     }
+    // 2329. selfHeal: getHealStatus
+    if (cycleCount % 1000 === 0) {
+      import("./selfHeal.js").then(m => { m.getHealStatus(); }).catch(() => {});
+    }
+    // 2330. selfHeal: setHealConfig
+    if (cycleCount % 1000 === 0) {
+      import("./selfHeal.js").then(m => { m.setHealConfig(); }).catch(() => {});
+    }
+    // 2331. selfHeal: registerHealthCheck
+    if (cycleCount % 1000 === 0) {
+      import("./selfHeal.js").then(m => { m.registerHealthCheck(); }).catch(() => {});
+    }
+    // 2332. selfHeal: getProactiveAlerts
+    if (cycleCount % 1000 === 0) {
+      import("./selfHeal.js").then(m => { m.getProactiveAlerts(); }).catch(() => {});
+    }
+    // 2333. selfImprove: setAutoApplyConfig
+    if (cycleCount % 1000 === 0) {
+      import("./selfImprove.js").then(m => { m.setAutoApplyConfig(); }).catch(() => {});
+    }
+    // 2334. selfImprove: autoApplyHighConfidence
+    if (cycleCount % 1000 === 0) {
+      import("./selfImprove.js").then(m => { m.autoApplyHighConfidence(); }).catch(() => {});
+    }
+    // 2335. selfImprove: getAutoApplyStatus
+    if (cycleCount % 1000 === 0) {
+      import("./selfImprove.js").then(m => { m.getAutoApplyStatus(); }).catch(() => {});
+    }
+    // 2336. selfImprove: refineProposal
+    if (cycleCount % 1000 === 0) {
+      import("./selfImprove.js").then(m => { m.refineProposal(); }).catch(() => {});
+    }
+    // 2337. selfModel: updateResources
+    if (cycleCount % 1000 === 0) {
+      import("./selfModel.js").then(m => { m.updateResources(); }).catch(() => {});
+    }
+    // 2338. selfModel: updateGoals
+    if (cycleCount % 1000 === 0) {
+      import("./selfModel.js").then(m => { m.updateGoals(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
