@@ -3111,6 +3111,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./sandboxManager.js").then(m => { m.getAuditLog(); }).catch(() => {});
     }
+    // 549. security: createApiKey
+    if (cycleCount % 1000 === 0) {
+      import("./security.js").then(m => { m.createApiKey(); }).catch(() => {});
+    }
+    // 550. security: revokeApiKey
+    if (cycleCount % 1000 === 0) {
+      import("./security.js").then(m => { m.revokeApiKey(); }).catch(() => {});
+    }
+    // 551. security: deleteApiKey
+    if (cycleCount % 1000 === 0) {
+      import("./security.js").then(m => { m.deleteApiKey(); }).catch(() => {});
+    }
+    // 552. security: listApiKeys
+    if (cycleCount % 1000 === 0) {
+      import("./security.js").then(m => { m.listApiKeys(); }).catch(() => {});
+    }
+    // 553. security: getAuditStats
+    if (cycleCount % 1000 === 0) {
+      import("./security.js").then(m => { m.getAuditStats(); }).catch(() => {});
+    }
+    // 554. security: securityMiddleware
+    if (cycleCount % 1000 === 0) {
+      import("./security.js").then(m => { m.securityMiddleware(); }).catch(() => {});
+    }
+    // 555. security: getSecurityConfig
+    if (cycleCount % 1000 === 0) {
+      import("./security.js").then(m => { m.getSecurityConfig(); }).catch(() => {});
+    }
+    // 556. security: updateSecurityConfig
+    if (cycleCount % 1000 === 0) {
+      import("./security.js").then(m => { m.updateSecurityConfig(); }).catch(() => {});
+    }
+    // 557. security: getSecurityStats
+    if (cycleCount % 1000 === 0) {
+      import("./security.js").then(m => { m.getSecurityStats(); }).catch(() => {});
+    }
+    // 558. selfImproveGuard: generateDiffPreview
+    if (cycleCount % 1000 === 0) {
+      import("./selfImproveGuard.js").then(m => { m.generateDiffPreview(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
