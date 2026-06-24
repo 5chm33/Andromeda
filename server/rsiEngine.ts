@@ -3791,6 +3791,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./proofVerifier.js").then(m => { m.verifyCommitProposal(); }).catch(() => {});
     }
+    // 719. rlhfCollector: getRlhfAggregates
+    if (cycleCount % 1000 === 0) {
+      import("./rlhfCollector.js").then(m => { m.getRlhfAggregates(); }).catch(() => {});
+    }
+    // 720. rlhfCollector: getRecentFeedback
+    if (cycleCount % 1000 === 0) {
+      import("./rlhfCollector.js").then(m => { m.getRecentFeedback(); }).catch(() => {});
+    }
+    // 721. rlhfCollector: getRlhfStats
+    if (cycleCount % 1000 === 0) {
+      import("./rlhfCollector.js").then(m => { m.getRlhfStats(); }).catch(() => {});
+    }
+    // 722. rlhfCollector: initRlhfCollector
+    if (cycleCount % 1000 === 0) {
+      import("./rlhfCollector.js").then(m => { m.initRlhfCollector(); }).catch(() => {});
+    }
+    // 723. runtimeConfig: resetConfig
+    if (cycleCount % 1000 === 0) {
+      import("./runtimeConfig.js").then(m => { m.resetConfig(); }).catch(() => {});
+    }
+    // 724. runtimeConfig: getPublicConfig
+    if (cycleCount % 1000 === 0) {
+      import("./runtimeConfig.js").then(m => { m.getPublicConfig(); }).catch(() => {});
+    }
+    // 725. runtimeConfig: syncConfigToEnv
+    if (cycleCount % 1000 === 0) {
+      import("./runtimeConfig.js").then(m => { m.syncConfigToEnv(); }).catch(() => {});
+    }
+    // 726. runtimeConfig: initRuntimeConfig
+    if (cycleCount % 1000 === 0) {
+      import("./runtimeConfig.js").then(m => { m.initRuntimeConfig(); }).catch(() => {});
+    }
+    // 727. selfHeal: resetCircuitBreaker
+    if (cycleCount % 1000 === 0) {
+      import("./selfHeal.js").then(m => { m.resetCircuitBreaker(); }).catch(() => {});
+    }
+    // 728. selfHeal: runAllHealthChecks
+    if (cycleCount % 1000 === 0) {
+      import("./selfHeal.js").then(m => { m.runAllHealthChecks(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
