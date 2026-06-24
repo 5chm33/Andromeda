@@ -423,21 +423,23 @@ async function runHealthCheck(): Promise<void> {
   }
 
   const overallHealth = anyCriticalFailed ? "critical" : anyFailed ? "degraded" : "healthy";
-  if (overallHealth !== "healthy") {
-    log.warn(`[watchdog] System health: ${overallHealth}`);
-    // v11.6.0: Trigger autoHealing when system is degraded or critical
-    try {
-      const { executeHealingAction } = await import("./autoHealing.js");
-      const failedModules = Array.from(moduleStates.entries())
-        .filter(([, s]) => s.health === "failed" || s.health === "degraded")
-        .map(([name]) => name);
-      if (failedModules.length > 0) {
-        const action = overallHealth === "critical" ? "restart_service" : "clear_tmp_files";
-        log.info(`[watchdog] Triggering autoHealing (${action}) for: ${failedModules.join(", ")}`);
-        executeHealingAction(action, `watchdog:${failedModules.join(",")}`);
-      }
-    } catch { /* non-fatal — autoHealing is best-effort */ }
+  if (overallHealth === "healthy") {
+    scheduleNextCheck();
+    return;
   }
+  log.warn(`[watchdog] System health: ${overallHealth}`);
+  // v11.6.0: Trigger autoHealing when system is degraded or critical
+  try {
+    const { executeHealingAction } = await import("./autoHealing.js");
+    const failedModules = Array.from(moduleStates.entries())
+      .filter(([, s]) => s.health === "failed" || s.health === "degraded")
+      .map(([name]) => name);
+    if (failedModules.length > 0) {
+      const action = overallHealth === "critical" ? "restart_service" : "clear_tmp_files";
+      log.info(`[watchdog] Triggering autoHealing (${action}) for: ${failedModules.join(", ")}`);
+      executeHealingAction(action, `watchdog:${failedModules.join(",")}`);
+    }
+  } catch { /* non-fatal — autoHealing is best-effort */ }
 
   // v11.6.0: Collect OS metrics and warn on resource pressure
   try {
