@@ -9591,6 +9591,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./tieredContextManager.js").then(m => { m.getIsolatedContext(); }).catch(() => {});
     }
+    // 2169. toolSynthesis: generateToolSource
+    if (cycleCount % 1000 === 0) {
+      import("./toolSynthesis.js").then(m => { m.generateToolSource(); }).catch(() => {});
+    }
+    // 2170. toolSynthesis: validateToolSource
+    if (cycleCount % 1000 === 0) {
+      import("./toolSynthesis.js").then(m => { m.validateToolSource(); }).catch(() => {});
+    }
+    // 2171. toolSynthesis: synthesizeTool
+    if (cycleCount % 1000 === 0) {
+      import("./toolSynthesis.js").then(m => { m.synthesizeTool(); }).catch(() => {});
+    }
+    // 2172. toolSynthesis: loadSynthesizedTools
+    if (cycleCount % 1000 === 0) {
+      import("./toolSynthesis.js").then(m => { m.loadSynthesizedTools(); }).catch(() => {});
+    }
+    // 2173. toolSynthesis: listSynthesizedTools
+    if (cycleCount % 1000 === 0) {
+      import("./toolSynthesis.js").then(m => { m.listSynthesizedTools(); }).catch(() => {});
+    }
+    // 2174. toolSynthesis: deleteSynthesizedTool
+    if (cycleCount % 1000 === 0) {
+      import("./toolSynthesis.js").then(m => { m.deleteSynthesizedTool(); }).catch(() => {});
+    }
+    // 2175. transactionLog: commitTransaction
+    if (cycleCount % 1000 === 0) {
+      import("./transactionLog.js").then(m => { m.commitTransaction(); }).catch(() => {});
+    }
+    // 2176. transactionLog: rollbackTransaction
+    if (cycleCount % 1000 === 0) {
+      import("./transactionLog.js").then(m => { m.rollbackTransaction(); }).catch(() => {});
+    }
+    // 2177. transactionLog: getTransaction
+    if (cycleCount % 1000 === 0) {
+      import("./transactionLog.js").then(m => { m.getTransaction(); }).catch(() => {});
+    }
+    // 2178. transactionLog: getTransactionHistory
+    if (cycleCount % 1000 === 0) {
+      import("./transactionLog.js").then(m => { m.getTransactionHistory(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
