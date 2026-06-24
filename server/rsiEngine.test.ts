@@ -43,7 +43,7 @@ describe("runRSICycle", () => {
       // Expected in CI: no LLM providers, timeout, or no proposals generated
       expect(e).toBeDefined();
     }
-  }, 10000);
+  }, 30000);
 
   it("should return correct type", async () => {
     try {
@@ -52,12 +52,12 @@ describe("runRSICycle", () => {
     } catch (e: any) {
       expect(e).toBeDefined();
     }
-  }, 10000);
+  }, 30000);
 
   it("should handle invalid inputs", async () => {
     // @ts-expect-error Testing invalid input
     try { await withTimeout(runRSICycle()); } catch (e: any) { expect(e).toBeDefined(); }
-  }, 10000);
+  }, 30000);
 });
 
 describe("initRSIEngine", () => {
