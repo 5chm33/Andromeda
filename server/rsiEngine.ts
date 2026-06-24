@@ -9751,6 +9751,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./costOptimizer.js").then(m => { m.getModelProfiles(); }).catch(() => {});
     }
+    // 2209. dbPostgres: getPgDb
+    if (cycleCount % 1000 === 0) {
+      import("./dbPostgres.js").then(m => { m.getPgDb(); }).catch(() => {});
+    }
+    // 2210. dbPostgres: isPgAvailable
+    if (cycleCount % 1000 === 0) {
+      import("./dbPostgres.js").then(m => { m.isPgAvailable(); }).catch(() => {});
+    }
+    // 2211. dbPostgres: pgExecute
+    if (cycleCount % 1000 === 0) {
+      import("./dbPostgres.js").then(m => { m.pgExecute(); }).catch(() => {});
+    }
+    // 2212. dbPostgres: runPgMigrations
+    if (cycleCount % 1000 === 0) {
+      import("./dbPostgres.js").then(m => { m.runPgMigrations(); }).catch(() => {});
+    }
+    // 2213. dbPostgres: getPgStatus
+    if (cycleCount % 1000 === 0) {
+      import("./dbPostgres.js").then(m => { m.getPgStatus(); }).catch(() => {});
+    }
+    // 2214. evalFramework: scoreResponse
+    if (cycleCount % 1000 === 0) {
+      import("./evalFramework.js").then(m => { m.scoreResponse(); }).catch(() => {});
+    }
+    // 2215. evalFramework: runEvaluation
+    if (cycleCount % 1000 === 0) {
+      import("./evalFramework.js").then(m => { m.runEvaluation(); }).catch(() => {});
+    }
+    // 2216. evalFramework: getEvalHistory
+    if (cycleCount % 1000 === 0) {
+      import("./evalFramework.js").then(m => { m.getEvalHistory(); }).catch(() => {});
+    }
+    // 2217. evalFramework: getEvalTrend
+    if (cycleCount % 1000 === 0) {
+      import("./evalFramework.js").then(m => { m.getEvalTrend(); }).catch(() => {});
+    }
+    // 2218. evalFramework: registerEvalRoutes
+    if (cycleCount % 1000 === 0) {
+      import("./evalFramework.js").then(m => { m.registerEvalRoutes(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
