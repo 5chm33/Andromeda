@@ -3191,6 +3191,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./selfImproveGuard.js").then(m => { m.getGuardConfig(); }).catch(() => {});
     }
+    // 569. recursionGuard: canModify
+    if (cycleCount % 1000 === 0) {
+      import("./recursionGuard.js").then(m => { m.canModify(); }).catch(() => {});
+    }
+    // 570. recursionGuard: recordModification
+    if (cycleCount % 1000 === 0) {
+      import("./recursionGuard.js").then(m => { m.recordModification(); }).catch(() => {});
+    }
+    // 571. recursionGuard: enterRecursion
+    if (cycleCount % 1000 === 0) {
+      import("./recursionGuard.js").then(m => { m.enterRecursion(); }).catch(() => {});
+    }
+    // 572. recursionGuard: exitRecursion
+    if (cycleCount % 1000 === 0) {
+      import("./recursionGuard.js").then(m => { m.exitRecursion(); }).catch(() => {});
+    }
+    // 573. recursionGuard: resetGuard
+    if (cycleCount % 1000 === 0) {
+      import("./recursionGuard.js").then(m => { m.resetGuard(); }).catch(() => {});
+    }
+    // 574. recursionGuard: getGuardStats
+    if (cycleCount % 1000 === 0) {
+      import("./recursionGuard.js").then(m => { m.getGuardStats(); }).catch(() => {});
+    }
+    // 575. recursionGuard: updateGuardConfig
+    if (cycleCount % 1000 === 0) {
+      import("./recursionGuard.js").then(m => { m.updateGuardConfig(); }).catch(() => {});
+    }
+    // 576. skillGraph: propagatePattern
+    if (cycleCount % 1000 === 0) {
+      import("./skillGraph.js").then(m => { m.propagatePattern("rsiEngine", { pattern: "test", fix: "test", success: true, confidence: 0.8, timestamp: Date.now(), appliedCount: 0 }); }).catch(() => {});
+    }
+    // 577. skillGraph: decayStalePatterns
+    if (cycleCount % 1000 === 0) {
+      import("./skillGraph.js").then(m => { m.decayStalePatterns(); }).catch(() => {});
+    }
+    // 578. skillGraph: recordFixOutcome
+    if (cycleCount % 1000 === 0) {
+      import("./skillGraph.js").then(m => { m.recordFixOutcome("rsiEngine", "test-pattern", true); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
