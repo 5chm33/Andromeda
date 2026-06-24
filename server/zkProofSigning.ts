@@ -319,6 +319,11 @@ export function updatePeerTrust(
  * Check if a proposal from a peer should be accepted based on trust score.
  * Proposals from unknown peers are always rejected.
  */
+/**
+ * Check if a proposal from a peer should be accepted based on trust score.
+ * Proposals from unknown peers or with insufficient trust score are rejected.
+ * Also rejects proposals older than 5 minutes.
+ */
 export function shouldAcceptProposal(
   commitment: ProposalCommitment,
   minTrustScore = 0.3
@@ -326,10 +331,9 @@ export function shouldAcceptProposal(
   const registry = loadTrustRegistry();
   const peer = registry.trustedPeers[commitment.instanceId];
 
-  if (!peer) return false;
-  if (peer.trustScore < minTrustScore) return false;
+  if (!peer || peer.trustScore < minTrustScore) return false;
 
-  // Check timestamp freshness (reject proposals older than 5 minutes)
+  // Reject proposals older than 5 minutes
   const ageMs = Date.now() - commitment.timestamp;
   if (ageMs > 5 * 60 * 1000) return false;
 
