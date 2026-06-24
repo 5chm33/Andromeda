@@ -10311,6 +10311,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./telemetry.js").then(m => { m.recordRsiCycle(); }).catch(() => {});
     }
+    // 2349. testGenerator: generateTests
+    if (cycleCount % 1000 === 0) {
+      import("./testGenerator.js").then(m => { m.generateTests(); }).catch(() => {});
+    }
+    // 2350. testGenerator: runTest
+    if (cycleCount % 1000 === 0) {
+      import("./testGenerator.js").then(m => { m.runTest(); }).catch(() => {});
+    }
+    // 2351. testGenerator: analyzeCoverageGaps
+    if (cycleCount % 1000 === 0) {
+      import("./testGenerator.js").then(m => { m.analyzeCoverageGaps(); }).catch(() => {});
+    }
+    // 2352. testGenerator: getGeneratedTests
+    if (cycleCount % 1000 === 0) {
+      import("./testGenerator.js").then(m => { m.getGeneratedTests(); }).catch(() => {});
+    }
+    // 2353. z3ProofLayer: verifyProposal
+    if (cycleCount % 1000 === 0) {
+      import("./z3ProofLayer.js").then(m => { m.verifyProposal(); }).catch(() => {});
+    }
+    // 2354. z3ProofLayer: getProofStats
+    if (cycleCount % 1000 === 0) {
+      import("./z3ProofLayer.js").then(m => { m.getProofStats(); }).catch(() => {});
+    }
+    // 2355. z3ProofLayer: resetProofCache
+    if (cycleCount % 1000 === 0) {
+      import("./z3ProofLayer.js").then(m => { m.resetProofCache(); }).catch(() => {});
+    }
+    // 2356. z3ProofLayer: verifyProposalProof
+    if (cycleCount % 1000 === 0) {
+      import("./z3ProofLayer.js").then(m => { m.verifyProposalProof(); }).catch(() => {});
+    }
+    // 2357. zkProofSigning: generateChallenge
+    if (cycleCount % 1000 === 0) {
+      import("./zkProofSigning.js").then(m => { m.generateChallenge(); }).catch(() => {});
+    }
+    // 2358. zkProofSigning: respondToChallenge
+    if (cycleCount % 1000 === 0) {
+      import("./zkProofSigning.js").then(m => { m.respondToChallenge(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
