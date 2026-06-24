@@ -193,10 +193,11 @@ async function runRebuild(proposalIds: string[]): Promise<RebuildRecord> {
     } catch (rollbackErr) {
       log.warn(`Rollback after failed rebuild also failed (non-fatal): ${(rollbackErr as Error).message}`);
     }
+    return record;
   }
 
   // Hot-reload: if enabled and build succeeded, signal the process to reload
-  if (success && _config.hotReload) {
+  if (_config.hotReload) {
     try {
       await triggerHotReload();
     } catch (reloadErr) {
