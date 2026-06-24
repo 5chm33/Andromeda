@@ -9911,6 +9911,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./proofAssistant.js").then(m => { m.getProofStats(); }).catch(() => {});
     }
+    // 2249. rsiDb: dbSaveCycle
+    if (cycleCount % 1000 === 0) {
+      import("./rsiDb.js").then(m => { m.dbSaveCycle(); }).catch(() => {});
+    }
+    // 2250. rsiDb: dbSaveEvalRun
+    if (cycleCount % 1000 === 0) {
+      import("./rsiDb.js").then(m => { m.dbSaveEvalRun(); }).catch(() => {});
+    }
+    // 2251. rsiDb: dbLoadEvalHistory
+    if (cycleCount % 1000 === 0) {
+      import("./rsiDb.js").then(m => { m.dbLoadEvalHistory(); }).catch(() => {});
+    }
+    // 2252. rsiDb: runRsiDbMigration
+    if (cycleCount % 1000 === 0) {
+      import("./rsiDb.js").then(m => { m.runRsiDbMigration(); }).catch(() => {});
+    }
+    // 2253. rsiDb: getRsiDbStatus
+    if (cycleCount % 1000 === 0) {
+      import("./rsiDb.js").then(m => { m.getRsiDbStatus(); }).catch(() => {});
+    }
+    // 2254. skillGraph: learnFromError
+    if (cycleCount % 1000 === 0) {
+      import("./skillGraph.js").then(m => { m.learnFromError(); }).catch(() => {});
+    }
+    // 2255. skillGraph: suggestFix
+    if (cycleCount % 1000 === 0) {
+      import("./skillGraph.js").then(m => { m.suggestFix(); }).catch(() => {});
+    }
+    // 2256. skillGraph: getSkillsForModule
+    if (cycleCount % 1000 === 0) {
+      import("./skillGraph.js").then(m => { m.getSkillsForModule(); }).catch(() => {});
+    }
+    // 2257. skillGraph: getGraphStats
+    if (cycleCount % 1000 === 0) {
+      import("./skillGraph.js").then(m => { m.getGraphStats(); }).catch(() => {});
+    }
+    // 2258. skillGraph: recordAppliedSuggestion
+    if (cycleCount % 1000 === 0) {
+      import("./skillGraph.js").then(m => { m.recordAppliedSuggestion(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
