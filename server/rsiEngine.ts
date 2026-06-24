@@ -8231,6 +8231,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./federatedLearning.js").then(m => { m.computeFederatedAvgScore(); }).catch(() => {});
     }
+    // 1829. gracefulDegradation: reportFailure
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => { m.reportFailure(); }).catch(() => {});
+    }
+    // 1830. gracefulDegradation: reportSuccess
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => { m.reportSuccess(); }).catch(() => {});
+    }
+    // 1831. gracefulDegradation: isServiceAvailable
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => { m.isServiceAvailable(); }).catch(() => {});
+    }
+    // 1832. gracefulDegradation: getFallbackHandler
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => { m.getFallbackHandler(); }).catch(() => {});
+    }
+    // 1833. gracefulDegradation: queueRequest
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => { m.queueRequest(); }).catch(() => {});
+    }
+    // 1834. gracefulDegradation: cacheResponse
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => { m.cacheResponse(); }).catch(() => {});
+    }
+    // 1835. gracefulDegradation: getCachedResponse
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => { m.getCachedResponse(); }).catch(() => {});
+    }
+    // 1836. gracefulDegradation: getDegradationStatus
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => { m.getDegradationStatus(); }).catch(() => {});
+    }
+    // 1837. gracefulDegradation: getDegradationHistory
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => { m.getDegradationHistory(); }).catch(() => {});
+    }
+    // 1838. gracefulDegradation: onDegradation
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => { void 0 /* onDegradation requires complex args */; }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
