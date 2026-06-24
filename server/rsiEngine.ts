@@ -7991,6 +7991,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./andromedaDb.js").then(m => { m.recordEval(); }).catch(() => {});
     }
+    // 1769. dependencyResolver: parseErrorForDependencies
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyResolver.js").then(m => { m.parseErrorForDependencies(); }).catch(() => {});
+    }
+    // 1770. dependencyResolver: scanImportsForDependencies
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyResolver.js").then(m => { m.scanImportsForDependencies(); }).catch(() => {});
+    }
+    // 1771. dependencyResolver: diffManifestDependencies
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyResolver.js").then(m => { m.diffManifestDependencies(); }).catch(() => {});
+    }
+    // 1772. dependencyResolver: installDependency
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyResolver.js").then(m => { m.installDependency(); }).catch(() => {});
+    }
+    // 1773. dependencyResolver: installBatch
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyResolver.js").then(m => { m.installBatch(); }).catch(() => {});
+    }
+    // 1774. dependencyResolver: addPendingRequest
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyResolver.js").then(m => { m.addPendingRequest(); }).catch(() => {});
+    }
+    // 1775. dependencyResolver: getPendingRequests
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyResolver.js").then(m => { m.getPendingRequests(); }).catch(() => {});
+    }
+    // 1776. dependencyResolver: clearPendingRequests
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyResolver.js").then(m => { m.clearPendingRequests(); }).catch(() => {});
+    }
+    // 1777. dependencyResolver: autoResolve
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyResolver.js").then(m => { m.autoResolve(); }).catch(() => {});
+    }
+    // 1778. dependencyResolver: rollbackAll
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyResolver.js").then(m => { m.rollbackAll(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
