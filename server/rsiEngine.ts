@@ -10431,6 +10431,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./cloudProvisioning.js").then(m => { m.detectAvailableProviders(); }).catch(() => {});
     }
+    // 2379. contextCompressionDaemon: registerActiveContext
+    if (cycleCount % 1000 === 0) {
+      import("./contextCompressionDaemon.js").then(m => { m.registerActiveContext(); }).catch(() => {});
+    }
+    // 2380. contextCompressionDaemon: unregisterActiveContext
+    if (cycleCount % 1000 === 0) {
+      import("./contextCompressionDaemon.js").then(m => { m.unregisterActiveContext(); }).catch(() => {});
+    }
+    // 2381. contextCompressionDaemon: getCompressionStats
+    if (cycleCount % 1000 === 0) {
+      import("./contextCompressionDaemon.js").then(m => { m.getCompressionStats(); }).catch(() => {});
+    }
+    // 2382. epistemicBeliefModel: getEpistemicOperator
+    if (cycleCount % 1000 === 0) {
+      import("./epistemicBeliefModel.js").then(m => { m.getEpistemicOperator(); }).catch(() => {});
+    }
+    // 2383. epistemicBeliefModel: getEpistemicModel
+    if (cycleCount % 1000 === 0) {
+      import("./epistemicBeliefModel.js").then(m => { m.getEpistemicModel(); }).catch(() => {});
+    }
+    // 2384. epistemicBeliefModel: resetEpistemicModel
+    if (cycleCount % 1000 === 0) {
+      import("./epistemicBeliefModel.js").then(m => { m.resetEpistemicModel(); }).catch(() => {});
+    }
+    // 2385. evalGoalDiscovery: discoverGoalsFromEval
+    if (cycleCount % 1000 === 0) {
+      import("./evalGoalDiscovery.js").then(m => { m.discoverGoalsFromEval(); }).catch(() => {});
+    }
+    // 2386. evalGoalDiscovery: getDiscoveryHistory
+    if (cycleCount % 1000 === 0) {
+      import("./evalGoalDiscovery.js").then(m => { m.getDiscoveryHistory(); }).catch(() => {});
+    }
+    // 2387. evalGoalDiscovery: getRecentDiscoveries
+    if (cycleCount % 1000 === 0) {
+      import("./evalGoalDiscovery.js").then(m => { m.getRecentDiscoveries(); }).catch(() => {});
+    }
+    // 2388. federatedRsiNetwork: registerPeer
+    if (cycleCount % 1000 === 0) {
+      import("./federatedRsiNetwork.js").then(m => { m.registerPeer(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
