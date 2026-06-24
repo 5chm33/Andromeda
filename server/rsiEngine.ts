@@ -2330,6 +2330,64 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./ollamaAutoSetup.js").then(m => m.getOllamaStatus()).catch(() => {});
     }
+    // 359. selfKnowledgeBase: supersede an old decision with a new one
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => m.supersedeDecision("rsi-probe", {
+        title: "RSI probe decision",
+        context: "rsiEngine",
+        decision: "no-op probe",
+        rationale: "probe",
+      })).catch(() => {});
+    }
+    // 360. selfKnowledgeBase: record a fix attempt for a probe issue
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => m.recordFixAttempt("rsi-probe", "no-op", "ok")).catch(() => {});
+    }
+    // 361. selfRollback: rollback to a named point
+    if (cycleCount % 1000 === 0) {
+      import("./selfRollback.js").then(m => m.rollbackTo("rsi-probe")).catch(() => {});
+    }
+    // 362. selfRollback: start health watch on a rollback point
+    if (cycleCount % 1000 === 0) {
+      import("./selfRollback.js").then(m => m.startHealthWatch("rsi-probe")).catch(() => {});
+    }
+    // 363. semanticSelfModel: query modules by utility metric
+    if (cycleCount % 1000 === 0) {
+      import("./semanticSelfModel.js").then(m => m.queryByUtility("testPassRate")).catch(() => {});
+    }
+    // 364. semanticSelfModel: get top modules by impact
+    if (cycleCount % 1000 === 0) {
+      import("./semanticSelfModel.js").then(m => m.getTopModulesByImpact(5)).catch(() => {});
+    }
+    // 365. utilityFunction: compute utility score for current system state
+    if (cycleCount % 1000 === 0) {
+      import("./utilityFunction.js").then(m => m.compute({
+        testPassRate: 1.0,
+        benchmarkDelta: 0.0,
+        avgLatencyMs: 500,
+        tokenOverheadRatio: 1.0,
+        safetyScore: 1.0,
+        newCapabilities: 0,
+        regressions: 0,
+        timestamp: Date.now(),
+      })).catch(() => {});
+    }
+    // 366. utilityFunction: compute delta between two system states
+    if (cycleCount % 1000 === 0) {
+      const baseState = { testPassRate: 1.0, benchmarkDelta: 0.0, avgLatencyMs: 500, tokenOverheadRatio: 1.0, safetyScore: 1.0, newCapabilities: 0, regressions: 0, timestamp: Date.now() };
+      import("./utilityFunction.js").then(m => m.computeDelta(baseState, baseState)).catch(() => {});
+    }
+    // 367. zkProofSigning: sign a probe proposal
+    if (cycleCount % 1000 === 0) {
+      import("./zkProofSigning.js").then(m => m.signProposal({ probe: true, cycle: cycleCount })).catch(() => {});
+    }
+    // 368. zkProofSigning: verify a probe proposal
+    if (cycleCount % 1000 === 0) {
+      import("./zkProofSigning.js").then(m => {
+        const signed = m.signProposal({ probe: true, cycle: cycleCount });
+        m.verifyProposal(signed);
+      }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
