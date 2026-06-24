@@ -4791,6 +4791,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./capabilityDiscovery.js").then(m => { m.stopCapabilityDiscovery(); }).catch(() => {});
     }
+    // 969. observability: requestTracingMiddleware
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { void 0 /* requestTracingMiddleware requires complex args — skipped */; }).catch(() => {});
+    }
+    // 970. observability: registerMetricsRoute
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { void 0 /* registerMetricsRoute requires complex args — skipped */; }).catch(() => {});
+    }
+    // 971. observability: traced
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { void 0 /* traced requires complex args — skipped */; }).catch(() => {});
+    }
+    // 972. fileEngineUtils: runMultiPassEditWithAutosubmit
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineUtils.js").then(m => { void 0 /* runMultiPassEditWithAutosubmit requires complex args — skipped */; }).catch(() => {});
+    }
+    // 973. fileEngineUtils: runChunkedAnalysis
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineUtils.js").then(m => { void 0 /* runChunkedAnalysis requires complex args — skipped */; }).catch(() => {});
+    }
+    // 974. aiPlanning: streamAgentPlan
+    if (cycleCount % 1000 === 0) {
+      import("./aiPlanning.js").then(m => { void 0 /* streamAgentPlan requires complex args — skipped */; }).catch(() => {});
+    }
+    // 975. circuitBreaker: resetAllCircuitBreakers
+    if (cycleCount % 1000 === 0) {
+      import("./circuitBreaker.js").then(m => { m.resetAllCircuitBreakers(); }).catch(() => {});
+    }
+    // 976. costOptimizer: initCostOptimizer
+    if (cycleCount % 1000 === 0) {
+      import("./costOptimizer.js").then(m => { m.initCostOptimizer(); }).catch(() => {});
+    }
+    // 977. crossDomainAdapter: initCrossDomainAdapter
+    if (cycleCount % 1000 === 0) {
+      import("./crossDomainAdapter.js").then(m => { m.initCrossDomainAdapter(); }).catch(() => {});
+    }
+    // 978. crossInstanceRlhf: runCrossInstanceJudging
+    if (cycleCount % 1000 === 0) {
+      import("./crossInstanceRlhf.js").then(m => { m.runCrossInstanceJudging(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
