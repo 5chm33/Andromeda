@@ -58,6 +58,9 @@ function getOpenRouterKey(): string { return process.env.OPENROUTER_API_KEY || "
 const OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1";
 function getDeepSeekKey(): string { return process.env.DEEPSEEK_API_KEY || ""; }
 const DEEPSEEK_API_URL = process.env.LLM_API_URL || process.env.DEEPSEEK_API_URL || "https://api.deepseek.com/v1";
+// v5.39: Kimi as third provider fallback
+function getKimiKey(): string { return process.env.KIMI_API_KEY || ""; }
+const KIMI_API_URL = "https://api.moonshot.ai/v1";
 
 // Rate limiting
 const MAX_CHECKS_PER_HOUR = 20;
@@ -137,6 +140,16 @@ async function queryDeepSeek(prompt: string): Promise<{ content: string; latency
     _scGetActiveProvider().apiUrl,
     getDeepSeekKey(),
     process.env.LLM_DEFAULT_MODEL || "deepseek/deepseek-chat"
+  );
+}
+
+// v5.39: Kimi (moonshot-v1-8k) as third consistency provider
+async function queryKimi(prompt: string): Promise<{ content: string; latencyMs: number }> {
+  return queryProvider(
+    prompt,
+    `${KIMI_API_URL}/chat/completions`,
+    getKimiKey(),
+    "moonshot-v1-8k"
   );
 }
 
@@ -292,12 +305,42 @@ export async function checkSelfConsistency(check: ConsistencyCheck): Promise<Con
     })());
   }
 
+  // v5.39: Kimi as third provider (fallback when DeepSeek/OpenRouter unavailable)
+  if (getKimiKey()) {
+    providerPromises.push((async () => {
+      try {
+        const result = await queryKimi(prompt);
+        const parsed = parseEvaluation(result.content);
+        evaluations.push({
+          provider: "kimi",
+          model: "moonshot-v1-8k",
+          agrees: parsed.agrees,
+          confidence: parsed.confidence,
+          explanation: parsed.explanation,
+          latencyMs: result.latencyMs,
+        });
+      } catch (err) {
+        evaluations.push({
+          provider: "kimi",
+          model: "moonshot-v1-8k",
+          agrees: false,
+          confidence: 0.1,
+          explanation: "Provider unavailable — defaulting to disagree for safety",
+          latencyMs: 0,
+          error: (err as Error).message,
+        });
+      }
+    })());
+  }
+
   await Promise.all(providerPromises);
 
   // ── Calculate consensus ──
   const validEvals = evaluations.filter(e => !e.error);
   const agreeing = validEvals.filter(e => e.agrees).length;
-  const consensus = validEvals.length > 0 ? agreeing / validEvals.length : 1;
+  // v5.39: When ALL providers fail (all errored), default to proceed with low confidence
+  // rather than blocking all proposals. This prevents total paralysis when APIs are down.
+  const consensus = validEvals.length > 0 ? agreeing / validEvals.length : 0.7;
 
   // Weighted confidence
   const totalWeight = validEvals.reduce((sum, e) => sum + e.confidence, 0);

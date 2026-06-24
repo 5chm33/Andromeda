@@ -71,7 +71,7 @@ function SkinThumb({ skin, isActive, videoSrc, onSelect }: SkinThumbProps) {
       <div
         className="h-16 relative overflow-hidden"
         style={{
-          backgroundImage: `url(${skin.bgImage})`,
+          backgroundImage: `url(${skin.bgImage}), ${skin.previewGradient}`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
