@@ -9471,6 +9471,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./modelRegistry.js").then(m => { m.listModels(); }).catch(() => {});
     }
+    // 2139. osGrounding: getMemoryMetrics
+    if (cycleCount % 1000 === 0) {
+      import("./osGrounding.js").then(m => { m.getMemoryMetrics(); }).catch(() => {});
+    }
+    // 2140. osGrounding: getCpuMetrics
+    if (cycleCount % 1000 === 0) {
+      import("./osGrounding.js").then(m => { m.getCpuMetrics(); }).catch(() => {});
+    }
+    // 2141. osGrounding: listDockerContainers
+    if (cycleCount % 1000 === 0) {
+      import("./osGrounding.js").then(m => { m.listDockerContainers(); }).catch(() => {});
+    }
+    // 2142. osGrounding: removeStoppedContainers
+    if (cycleCount % 1000 === 0) {
+      import("./osGrounding.js").then(m => { m.removeStoppedContainers(); }).catch(() => {});
+    }
+    // 2143. osGrounding: getSystemHealth
+    if (cycleCount % 1000 === 0) {
+      import("./osGrounding.js").then(m => { m.getSystemHealth(); }).catch(() => {});
+    }
+    // 2144. osGrounding: triggerGarbageCollection
+    if (cycleCount % 1000 === 0) {
+      import("./osGrounding.js").then(m => { m.triggerGarbageCollection(); }).catch(() => {});
+    }
+    // 2145. roboticsIoTAdapter: registerRoboticsArtifact
+    if (cycleCount % 1000 === 0) {
+      import("./roboticsIoTAdapter.js").then(m => { m.registerRoboticsArtifact(); }).catch(() => {});
+    }
+    // 2146. roboticsIoTAdapter: generateRoboticsProposal
+    if (cycleCount % 1000 === 0) {
+      import("./roboticsIoTAdapter.js").then(m => { m.generateRoboticsProposal(); }).catch(() => {});
+    }
+    // 2147. roboticsIoTAdapter: evaluateRoboticsProposal
+    if (cycleCount % 1000 === 0) {
+      import("./roboticsIoTAdapter.js").then(m => { m.evaluateRoboticsProposal(); }).catch(() => {});
+    }
+    // 2148. roboticsIoTAdapter: approveRoboticsProposal
+    if (cycleCount % 1000 === 0) {
+      import("./roboticsIoTAdapter.js").then(m => { m.approveRoboticsProposal(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
