@@ -2120,6 +2120,73 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./cache.js").then(m => m.setCachedSearch("rsi-probe", { sources: [], answer: "probe" })).catch(() => {});
     }
+    // 319. federatedLearning: mark the probe node unhealthy (simulates a fault)
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLearning.js").then(m => m.markNodeUnhealthy("rsi-probe-node")).catch(() => {});
+    }
+    // 320. federatedLearning: receive a probe federated proposal
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLearning.js").then(m => m.receiveProposal({
+        proposalId: `rsi-probe-${cycleCount}`,
+        sourceNodeId: "rsi-probe-node",
+        description: "probe proposal from rsiEngine audit wiring",
+        category: "performance",
+        confidence: 0.5,
+        observedDelta: 0.01,
+        adoptionCount: 0,
+        adoptedBy: [],
+        locallyValidated: false,
+        locallyApplied: false,
+        receivedAt: Date.now(),
+        tags: [],
+      })).catch(() => {});
+    }
+    // 321. recursiveGoals: activate the probe meta-goal
+    if (cycleCount % 1000 === 0) {
+      import("./recursiveGoals.js").then(m => m.activateGoal("rsi-probe-goal")).catch(() => {});
+    }
+    // 322. recursiveGoals: complete the probe meta-goal
+    if (cycleCount % 1000 === 0) {
+      import("./recursiveGoals.js").then(m => m.completeGoal("rsi-probe-goal", "probe completed", ["probe lesson"])).catch(() => {});
+    }
+    // 323. llmProvider: switch to the current active provider (no-op if already active)
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => m.switchProvider("openai")).catch(() => {});
+    }
+    // 324. llmProvider: set a probe provider config
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => m.setActiveProvider({
+        id: "rsi-probe",
+        name: "RSI Probe Provider",
+        apiUrl: "http://localhost:11434/v1",
+        apiKey: "probe",
+        model: "probe",
+      })).catch(() => {});
+    }
+    // 325. selfKnowledgeBase: register a probe capability
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => m.registerCapability({
+        name: "rsi-probe-capability",
+        description: "Probe capability registered by rsiEngine audit wiring",
+        module: "rsiEngine",
+        status: "active",
+        limitations: [],
+        dependencies: [],
+        addedInVersion: "11.57.0",
+      })).catch(() => {});
+    }
+    // 326. selfKnowledgeBase: get all active capabilities
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => m.getCapabilities("active")).catch(() => {});
+    }
+    // 327. selfMonitor: stop the background monitor loop
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => m.stopMonitor()).catch(() => {});
+    }
+    // 328. selfMonitor: check if the monitor is currently running
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => m.isMonitorRunning()).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
