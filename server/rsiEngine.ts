@@ -8351,6 +8351,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./recursiveGoals.js").then(m => { m.getImprovementProgress(); }).catch(() => {});
     }
+    // 1859. taskDecomposer: analyzeComplexity
+    if (cycleCount % 1000 === 0) {
+      import("./taskDecomposer.js").then(m => { m.analyzeComplexity(); }).catch(() => {});
+    }
+    // 1860. taskDecomposer: decomposeQuery
+    if (cycleCount % 1000 === 0) {
+      import("./taskDecomposer.js").then(m => { m.decomposeQuery(); }).catch(() => {});
+    }
+    // 1861. taskDecomposer: getReadySubTasks
+    if (cycleCount % 1000 === 0) {
+      import("./taskDecomposer.js").then(m => { m.getReadySubTasks(); }).catch(() => {});
+    }
+    // 1862. taskDecomposer: completeSubTask
+    if (cycleCount % 1000 === 0) {
+      import("./taskDecomposer.js").then(m => { m.completeSubTask(); }).catch(() => {});
+    }
+    // 1863. taskDecomposer: failSubTask
+    if (cycleCount % 1000 === 0) {
+      import("./taskDecomposer.js").then(m => { m.failSubTask(); }).catch(() => {});
+    }
+    // 1864. taskDecomposer: getDecomposerConfig
+    if (cycleCount % 1000 === 0) {
+      import("./taskDecomposer.js").then(m => { m.getDecomposerConfig(); }).catch(() => {});
+    }
+    // 1865. taskDecomposer: setDecomposerConfig
+    if (cycleCount % 1000 === 0) {
+      import("./taskDecomposer.js").then(m => { m.setDecomposerConfig(); }).catch(() => {});
+    }
+    // 1866. taskDecomposer: getDecomposedQuery
+    if (cycleCount % 1000 === 0) {
+      import("./taskDecomposer.js").then(m => { m.getDecomposedQuery(); }).catch(() => {});
+    }
+    // 1867. taskDecomposer: listDecomposedQueries
+    if (cycleCount % 1000 === 0) {
+      import("./taskDecomposer.js").then(m => { m.listDecomposedQueries(); }).catch(() => {});
+    }
+    // 1868. taskDecomposer: getDecomposerStats
+    if (cycleCount % 1000 === 0) {
+      import("./taskDecomposer.js").then(m => { m.getDecomposerStats(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
