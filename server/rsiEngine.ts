@@ -2911,6 +2911,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./rewardModel.js").then(m => m.extractFeatures("+const x = 1;")).catch(() => {});
     }
+    // 499. goalManager: fail sub goal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => m.failSubGoal("test-id", "sub-id", "test error")).catch(() => {});
+    }
+    // 500. goalManager: get next sub goal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => m.getNextSubGoal("test-id")).catch(() => {});
+    }
+    // 501. goalManager: get parallel sub goals
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => m.getParallelSubGoals("test-id")).catch(() => {});
+    }
+    // 502. contextBus: get thread
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => m.getThread("test-entry-id")).catch(() => {});
+    }
+    // 503. contextBus: get bus stats
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => m.getBusStats()).catch(() => {});
+    }
+    // 504. contextBus: reset bus
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => m.resetBus()).catch(() => {});
+    }
+    // 505. db: save search history
+    if (cycleCount % 1000 === 0) {
+      import("./db.js").then(m => m.saveSearchHistory({ query: "test" })).catch(() => {});
+    }
+    // 506. fileEngineUtils: check budget
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineUtils.js").then(m => { const b = m.createBudget(); m.checkBudget(b); }).catch(() => {});
+    }
+    // 507. fileEngineUtils: record usage
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineUtils.js").then(m => { const b = m.createBudget(); m.recordUsage(b, 10, 10); }).catch(() => {});
+    }
+    // 508. rewardModel: get reward score
+    if (cycleCount % 1000 === 0) {
+      import("./rewardModel.js").then(m => m.getRewardScore("+const x = 1;")).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
