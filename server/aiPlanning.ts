@@ -569,7 +569,7 @@ export async function generateExecutionPlan(goal: string): Promise<ExecutionPlan
   try {
     const { getActivePlan, failStep } = await import("./taskPlanner.js");
     const activePlans = getActivePlan("system-default"); // Example plan ID
-    if (activePlans && activePlans.status === "in_progress") {
+    if (activePlans && activePlans.status === "executing") {
       // We already have a plan running, log it
       console.log(`[aiPlanning] Note: generateExecutionPlan called while system-default is active`);
     }
@@ -686,7 +686,7 @@ Format: Write a single flowing summary paragraph followed by a ## Key Points sec
 interface TodoItem {
   id: string;
   content: string;
-  status: "pending" | "in_progress" | "done" | "cancelled";
+  status: "pending" | "executing" | "done" | "cancelled";
   priority: "high" | "medium" | "low";
   createdAt: string;
   updatedAt: string;

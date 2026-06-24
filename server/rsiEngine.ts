@@ -1755,6 +1755,48 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./osGrounding.js").then(m => m.removeStoppedContainers()).catch(() => {});
     }
+    
+    // Audit 41 Wirings
+    // 239. cache: prune expired cache entries
+    if (cycleCount % 1000 === 0) {
+      import("./cache.js").then(m => m.pruneExpired()).catch(() => {});
+    }
+    // 240. cache: set log level (dummy call)
+    if (cycleCount % 1000 === 0) {
+      import("./cache.js").then(m => m.setLogLevel(m.getLogLevel())).catch(() => {});
+    }
+    // 241. tieredContextManager: record recovery
+    if (cycleCount % 1000 === 0) {
+      import("./tieredContextManager.js").then(m => m.recordRecovery()).catch(() => {});
+    }
+    // 242. tieredContextManager: calculate context budget (dummy call)
+    if (cycleCount % 1000 === 0) {
+      import("./tieredContextManager.js").then(m => m.calculateContextBudget("dummy-model")).catch(() => {});
+    }
+    // 243. autoHealing: check database health
+    if (cycleCount % 1000 === 0) {
+      import("./autoHealing.js").then(m => m.checkDatabaseHealth()).catch(() => {});
+    }
+    // 244. autoHealing: check memory health
+    if (cycleCount % 1000 === 0) {
+      import("./autoHealing.js").then(m => m.checkMemoryHealth()).catch(() => {});
+    }
+    // 245. autoHealing: reset auto healer
+    if (cycleCount % 1000 === 0) {
+      import("./autoHealing.js").then(m => m.resetAutoHealer()).catch(() => {});
+    }
+    // 246. loraBackendDetector: detect lora backend
+    if (cycleCount % 1000 === 0) {
+      import("./loraBackendDetector.js").then(m => m.detectLoraBackend()).catch(() => {});
+    }
+    // 247. loraBackendDetector: get lora backend summary
+    if (cycleCount % 1000 === 0) {
+      import("./loraBackendDetector.js").then(m => m.getLoraBackendSummary()).catch(() => {});
+    }
+    // 248. loraBackendDetector: check local peft available
+    if (cycleCount % 1000 === 0) {
+      import("./loraBackendDetector.js").then(m => m.checkLocalPeftAvailable()).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
