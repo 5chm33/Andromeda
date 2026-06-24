@@ -5,6 +5,7 @@
  */
 
 export type SkinId =
+  | "andromeda"
   | "aurora"
   | "goth"
   | "nature"
@@ -35,6 +36,17 @@ export interface SkinMeta {
 }
 
 export const SKINS: SkinMeta[] = [
+  {
+    id: "andromeda",
+    name: "Andromeda",
+    description: "AI-generated cinematic space station — the home of Andromeda",
+    bgImage: "/skins/andromeda.jpg",
+    accent: "oklch(0.68 0.22 220)",
+    overlayColor: "rgba(0,5,20,0.25)",
+    animClass: "skin-andromeda",
+    previewGradient: "linear-gradient(135deg, #000514 0%, #001028 50%, #000a1e 100%)",
+    labelColor: "#38bdf8",
+  },
   {
     id: "aurora",
     name: "Aurora",
@@ -154,7 +166,7 @@ export function getSavedSkin(): SkinId {
     const v = localStorage.getItem(STORAGE_KEY) as SkinId | null;
     if (v && SKINS.find((s) => s.id === v)) return v;
   } catch { /* ignore */ }
-  return "aurora";
+  return "andromeda";
 }
 
 export function saveSkin(id: SkinId): void {
