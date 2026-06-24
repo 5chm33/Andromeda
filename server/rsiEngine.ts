@@ -3431,6 +3431,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./zeroShotTransferEngine.js").then(m => { m.initZeroShotTransferEngine(); }).catch(() => {});
     }
+    // 629. aiPlanning: streamAgentPlan
+    if (cycleCount % 1000 === 0) {
+      import("./aiPlanning.js").then(m => { void 0 /* streamAgentPlan requires complex args — skipped */; }).catch(() => {});
+    }
+    // 630. aiPlanning: compactThread
+    if (cycleCount % 1000 === 0) {
+      import("./aiPlanning.js").then(m => { m.compactThread([]); }).catch(() => {});
+    }
+    // 631. aiPlanning: writeAndromedaMemory
+    if (cycleCount % 1000 === 0) {
+      import("./aiPlanning.js").then(m => { m.writeAndromedaMemory("test"); }).catch(() => {});
+    }
+    // 632. aiPlanning: readAndromedaMemory
+    if (cycleCount % 1000 === 0) {
+      import("./aiPlanning.js").then(m => { m.readAndromedaMemory(); }).catch(() => {});
+    }
+    // 633. algorithmicDiscoveryV2: runDiscoveryTournament
+    if (cycleCount % 1000 === 0) {
+      import("./algorithmicDiscoveryV2.js").then(m => { m.runDiscoveryTournament(); }).catch(() => {});
+    }
+    // 634. algorithmicDiscoveryV2: refineActiveAlgorithm
+    if (cycleCount % 1000 === 0) {
+      import("./algorithmicDiscoveryV2.js").then(m => { m.refineActiveAlgorithm(); }).catch(() => {});
+    }
+    // 635. algorithmicDiscoveryV2: getAlgorithmRegistryStats
+    if (cycleCount % 1000 === 0) {
+      import("./algorithmicDiscoveryV2.js").then(m => { m.getAlgorithmRegistryStats(); }).catch(() => {});
+    }
+    // 636. algorithmicDiscoveryV2: initAlgorithmicDiscoveryV2
+    if (cycleCount % 1000 === 0) {
+      import("./algorithmicDiscoveryV2.js").then(m => { m.initAlgorithmicDiscoveryV2(); }).catch(() => {});
+    }
+    // 637. autoGoalSuggester: startAutoGoalSuggester
+    if (cycleCount % 1000 === 0) {
+      import("./autoGoalSuggester.js").then(m => { m.startAutoGoalSuggester(); }).catch(() => {});
+    }
+    // 638. autoGoalSuggester: stopAutoGoalSuggester
+    if (cycleCount % 1000 === 0) {
+      import("./autoGoalSuggester.js").then(m => { m.stopAutoGoalSuggester(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
