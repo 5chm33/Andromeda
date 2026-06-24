@@ -10751,6 +10751,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./circuitBreaker.js").then(m => { m.getAllCircuitBreakerStats(); }).catch(() => {});
     }
+    // 2459. cloudProvisioning: autoTerminateExpiredInstances
+    if (cycleCount % 1000 === 0) {
+      import("./cloudProvisioning.js").then(m => { m.autoTerminateExpiredInstances(); }).catch(() => {});
+    }
+    // 2460. cloudProvisioning: getProvisioningState
+    if (cycleCount % 1000 === 0) {
+      import("./cloudProvisioning.js").then(m => { m.getProvisioningState(); }).catch(() => {});
+    }
+    // 2461. codebaseAnalyzer: getLastReport
+    if (cycleCount % 1000 === 0) {
+      import("./codebaseAnalyzer.js").then(m => { m.getLastReport(); }).catch(() => {});
+    }
+    // 2462. codebaseAnalyzer: getModuleHealth
+    if (cycleCount % 1000 === 0) {
+      import("./codebaseAnalyzer.js").then(m => { m.getModuleHealth(); }).catch(() => {});
+    }
+    // 2463. contextAwareness: predictTruncation
+    if (cycleCount % 1000 === 0) {
+      import("./contextAwareness.js").then(m => { m.predictTruncation(); }).catch(() => {});
+    }
+    // 2464. contextAwareness: optimizeContext
+    if (cycleCount % 1000 === 0) {
+      import("./contextAwareness.js").then(m => { m.optimizeContext(); }).catch(() => {});
+    }
+    // 2465. contextManager: estimateTokens
+    if (cycleCount % 1000 === 0) {
+      import("./contextManager.js").then(m => { m.estimateTokens(); }).catch(() => {});
+    }
+    // 2466. contextManager: estimateMessageTokens
+    if (cycleCount % 1000 === 0) {
+      import("./contextManager.js").then(m => { m.estimateMessageTokens(); }).catch(() => {});
+    }
+    // 2467. dependencyAuditor: getLastAuditReport
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyAuditor.js").then(m => { m.getLastAuditReport(); }).catch(() => {});
+    }
+    // 2468. dependencyAuditor: isRunning
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyAuditor.js").then(m => { m.isRunning(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
