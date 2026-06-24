@@ -7871,6 +7871,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./goalManager.js").then(m => { m.failGoal(); }).catch(() => {});
     }
+    // 1739. selfKnowledgeBase: recordDecision
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => { m.recordDecision(); }).catch(() => {});
+    }
+    // 1740. selfKnowledgeBase: supersedeDecision
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => { m.supersedeDecision(); }).catch(() => {});
+    }
+    // 1741. selfKnowledgeBase: queryDecisions
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => { m.queryDecisions(); }).catch(() => {});
+    }
+    // 1742. selfKnowledgeBase: listDecisions
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => { m.listDecisions(); }).catch(() => {});
+    }
+    // 1743. selfKnowledgeBase: reportIssue
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => { m.reportIssue(); }).catch(() => {});
+    }
+    // 1744. selfKnowledgeBase: recordFixAttempt
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => { m.recordFixAttempt(); }).catch(() => {});
+    }
+    // 1745. selfKnowledgeBase: resolveIssue
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => { m.resolveIssue(); }).catch(() => {});
+    }
+    // 1746. selfKnowledgeBase: getOpenIssues
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => { m.getOpenIssues(); }).catch(() => {});
+    }
+    // 1747. selfKnowledgeBase: findSimilarIssue
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => { m.findSimilarIssue(); }).catch(() => {});
+    }
+    // 1748. selfKnowledgeBase: recordLearning
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => { m.recordLearning(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
