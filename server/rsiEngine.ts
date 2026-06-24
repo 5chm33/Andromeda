@@ -4031,6 +4031,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./capabilityDiscovery.js").then(m => { m.recordCapabilityGap(); }).catch(() => {});
     }
+    // 779. ciRegressionGuard: recordMetrics
+    if (cycleCount % 1000 === 0) {
+      import("./ciRegressionGuard.js").then(m => { m.recordMetrics(); }).catch(() => {});
+    }
+    // 780. ciRegressionGuard: checkForRegressions
+    if (cycleCount % 1000 === 0) {
+      import("./ciRegressionGuard.js").then(m => { m.checkForRegressions(); }).catch(() => {});
+    }
+    // 781. ciRegressionGuard: resetRegressionGuard
+    if (cycleCount % 1000 === 0) {
+      import("./ciRegressionGuard.js").then(m => { m.resetRegressionGuard(); }).catch(() => {});
+    }
+    // 782. constitutionalConstraints: checkConstitution
+    if (cycleCount % 1000 === 0) {
+      import("./constitutionalConstraints.js").then(m => { m.checkConstitution(); }).catch(() => {});
+    }
+    // 783. constitutionalConstraints: addConstitutionRule
+    if (cycleCount % 1000 === 0) {
+      import("./constitutionalConstraints.js").then(m => { m.addConstitutionRule(); }).catch(() => {});
+    }
+    // 784. constitutionalConstraints: resetConstitutionRules
+    if (cycleCount % 1000 === 0) {
+      import("./constitutionalConstraints.js").then(m => { m.resetConstitutionRules(); }).catch(() => {});
+    }
+    // 785. contextAwareness: recordContextUsage
+    if (cycleCount % 1000 === 0) {
+      import("./contextAwareness.js").then(m => { m.recordContextUsage(); }).catch(() => {});
+    }
+    // 786. contextAwareness: getCurrentUsage
+    if (cycleCount % 1000 === 0) {
+      import("./contextAwareness.js").then(m => { m.getCurrentUsage(); }).catch(() => {});
+    }
+    // 787. contextAwareness: getContextAwarenessStats
+    if (cycleCount % 1000 === 0) {
+      import("./contextAwareness.js").then(m => { m.getContextAwarenessStats(); }).catch(() => {});
+    }
+    // 788. crossDomainAdapter: getEvaluation
+    if (cycleCount % 1000 === 0) {
+      import("./crossDomainAdapter.js").then(m => { m.getEvaluation(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
