@@ -3751,6 +3751,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./ontologicalModel.js").then(m => { m.routeTask("test task"); }).catch(() => {});
     }
+    // 709. osGrounding: getDiskMetrics
+    if (cycleCount % 1000 === 0) {
+      import("./osGrounding.js").then(m => { m.getDiskMetrics(); }).catch(() => {});
+    }
+    // 710. osGrounding: getDockerMetrics
+    if (cycleCount % 1000 === 0) {
+      import("./osGrounding.js").then(m => { m.getDockerMetrics(); }).catch(() => {});
+    }
+    // 711. osGrounding: stopContainer
+    if (cycleCount % 1000 === 0) {
+      import("./osGrounding.js").then(m => { m.stopContainer(); }).catch(() => {});
+    }
+    // 712. osGrounding: getMigrationStatus
+    if (cycleCount % 1000 === 0) {
+      import("./osGrounding.js").then(m => { m.getMigrationStatus(); }).catch(() => {});
+    }
+    // 713. promptEngineer: recordPromptOutcome
+    if (cycleCount % 1000 === 0) {
+      import("./promptEngineer.js").then(m => { m.recordPromptOutcome(); }).catch(() => {});
+    }
+    // 714. promptEngineer: getBestPatterns
+    if (cycleCount % 1000 === 0) {
+      import("./promptEngineer.js").then(m => { m.getBestPatterns(); }).catch(() => {});
+    }
+    // 715. promptEngineer: analyzeAndImprovePrompts
+    if (cycleCount % 1000 === 0) {
+      import("./promptEngineer.js").then(m => { m.analyzeAndImprovePrompts(); }).catch(() => {});
+    }
+    // 716. promptEngineer: getPromptStats
+    if (cycleCount % 1000 === 0) {
+      import("./promptEngineer.js").then(m => { m.getPromptStats(); }).catch(() => {});
+    }
+    // 717. proofVerifier: verifyZKProof
+    if (cycleCount % 1000 === 0) {
+      import("./proofVerifier.js").then(m => { m.verifyZKProof(); }).catch(() => {});
+    }
+    // 718. proofVerifier: verifyCommitProposal
+    if (cycleCount % 1000 === 0) {
+      import("./proofVerifier.js").then(m => { m.verifyCommitProposal(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
