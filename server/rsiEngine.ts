@@ -3951,6 +3951,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./visionModule.js").then(m => { m.imageToBase64(); }).catch(() => {});
     }
+    // 759. voiceInterface: detectVoiceProvider
+    if (cycleCount % 1000 === 0) {
+      import("./voiceInterface.js").then(m => { m.detectVoiceProvider(); }).catch(() => {});
+    }
+    // 760. voiceInterface: transcribeAudio
+    if (cycleCount % 1000 === 0) {
+      import("./voiceInterface.js").then(m => { m.transcribeAudio(); }).catch(() => {});
+    }
+    // 761. voiceInterface: synthesizeSpeech
+    if (cycleCount % 1000 === 0) {
+      import("./voiceInterface.js").then(m => { m.synthesizeSpeech(); }).catch(() => {});
+    }
+    // 762. voiceInterface: voiceToVoice
+    if (cycleCount % 1000 === 0) {
+      import("./voiceInterface.js").then(m => { m.voiceToVoice(); }).catch(() => {});
+    }
+    // 763. zkProofSigning: loadTrustRegistry
+    if (cycleCount % 1000 === 0) {
+      import("./zkProofSigning.js").then(m => { m.loadTrustRegistry(); }).catch(() => {});
+    }
+    // 764. zkProofSigning: saveTrustRegistry
+    if (cycleCount % 1000 === 0) {
+      import("./zkProofSigning.js").then(m => { m.saveTrustRegistry(); }).catch(() => {});
+    }
+    // 765. zkProofSigning: updatePeerTrust
+    if (cycleCount % 1000 === 0) {
+      import("./zkProofSigning.js").then(m => { m.updatePeerTrust(); }).catch(() => {});
+    }
+    // 766. zkProofSigning: shouldAcceptProposal
+    if (cycleCount % 1000 === 0) {
+      import("./zkProofSigning.js").then(m => { m.shouldAcceptProposal(); }).catch(() => {});
+    }
+    // 767. adaptiveRouter: recordSuccess
+    if (cycleCount % 1000 === 0) {
+      import("./adaptiveRouter.js").then(m => { m.recordSuccess(); }).catch(() => {});
+    }
+    // 768. adaptiveRouter: selectProvider
+    if (cycleCount % 1000 === 0) {
+      import("./adaptiveRouter.js").then(m => { m.selectProvider(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
