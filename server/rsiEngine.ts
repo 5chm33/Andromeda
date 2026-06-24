@@ -10591,6 +10591,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./selfConsistency.js").then(m => { m.checkSelfConsistency(); }).catch(() => {});
     }
+    // 2419. selfIntrospect: introspectSelf
+    if (cycleCount % 1000 === 0) {
+      import("./selfIntrospect.js").then(m => { m.introspectSelf(); }).catch(() => {});
+    }
+    // 2420. selfIntrospect: getQuickStats
+    if (cycleCount % 1000 === 0) {
+      import("./selfIntrospect.js").then(m => { m.getQuickStats(); }).catch(() => {});
+    }
+    // 2421. selfIntrospect: initSelfIntrospect
+    if (cycleCount % 1000 === 0) {
+      import("./selfIntrospect.js").then(m => { m.initSelfIntrospect(); }).catch(() => {});
+    }
+    // 2422. swarmOrchestrator: loadPeers
+    if (cycleCount % 1000 === 0) {
+      import("./swarmOrchestrator.js").then(m => { m.loadPeers(); }).catch(() => {});
+    }
+    // 2423. swarmOrchestrator: registerPeer
+    if (cycleCount % 1000 === 0) {
+      import("./swarmOrchestrator.js").then(m => { m.registerPeer(); }).catch(() => {});
+    }
+    // 2424. swarmOrchestrator: getSwarmHealth
+    if (cycleCount % 1000 === 0) {
+      import("./swarmOrchestrator.js").then(m => { m.getSwarmHealth(); }).catch(() => {});
+    }
+    // 2425. swarmSpecialistVoting: runSpecialistVoting
+    if (cycleCount % 1000 === 0) {
+      import("./swarmSpecialistVoting.js").then(m => { m.runSpecialistVoting(); }).catch(() => {});
+    }
+    // 2426. swarmSpecialistVoting: isSwarmVotingEnabled
+    if (cycleCount % 1000 === 0) {
+      import("./swarmSpecialistVoting.js").then(m => { m.isSwarmVotingEnabled(); }).catch(() => {});
+    }
+    // 2427. swarmSpecialistVoting: getSpecialists
+    if (cycleCount % 1000 === 0) {
+      import("./swarmSpecialistVoting.js").then(m => { m.getSpecialists(); }).catch(() => {});
+    }
+    // 2428. sweBenchHarness: runBaseline
+    if (cycleCount % 1000 === 0) {
+      import("./sweBenchHarness.js").then(m => { m.runBaseline(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
