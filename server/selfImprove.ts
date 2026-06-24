@@ -836,8 +836,8 @@ export async function analyzeAndPropose(
   try {
     const { findSimilarIssue } = await import("./selfKnowledgeBase.js");
     const similar = findSimilarIssue(targetFile);
-    if (similar && similar.length > 0) {
-      knownLimitations = `\n\nKNOWN ISSUES/LIMITATIONS (from selfKnowledgeBase):\n` + similar.map((s: any) => `- ${s.description}: ${s.lesson}`).join("\n");
+    if (similar && (Array.isArray(similar) ? similar.length : 0) > 0) {
+      knownLimitations = `\n\nKNOWN ISSUES/LIMITATIONS (from selfKnowledgeBase):\n` + (Array.isArray(similar) ? similar : []).map((s: any) => `- ${s.description}: ${s.lesson}`).join("\n");
     }
   } catch { /* non-fatal */ }
 
