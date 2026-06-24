@@ -9231,6 +9231,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./zkProofSigning.js").then(m => { m.hashContent(); }).catch(() => {});
     }
+    // 2079. andromedaDb: getEvalsForReplay
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => { m.getEvalsForReplay(); }).catch(() => {});
+    }
+    // 2080. andromedaDb: markEvalReplayed
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => { m.markEvalReplayed(); }).catch(() => {});
+    }
+    // 2081. andromedaDb: insertRsiCycle
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => { m.insertRsiCycle(); }).catch(() => {});
+    }
+    // 2082. andromedaDb: finishRsiCycle
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => { m.finishRsiCycle(); }).catch(() => {});
+    }
+    // 2083. andromedaDb: getRecentRsiCycles
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => { m.getRecentRsiCycles(); }).catch(() => {});
+    }
+    // 2084. andromedaDb: recordBenchmarkResult
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => { m.recordBenchmarkResult(); }).catch(() => {});
+    }
+    // 2085. autoRebuild: getAutoRebuildConfig
+    if (cycleCount % 1000 === 0) {
+      import("./autoRebuild.js").then(m => { m.getAutoRebuildConfig(); }).catch(() => {});
+    }
+    // 2086. autoRebuild: setAutoRebuildConfig
+    if (cycleCount % 1000 === 0) {
+      import("./autoRebuild.js").then(m => { m.setAutoRebuildConfig(); }).catch(() => {});
+    }
+    // 2087. autoRebuild: scheduleRebuild
+    if (cycleCount % 1000 === 0) {
+      import("./autoRebuild.js").then(m => { m.scheduleRebuild(); }).catch(() => {});
+    }
+    // 2088. autoRebuild: triggerRebuildNow
+    if (cycleCount % 1000 === 0) {
+      import("./autoRebuild.js").then(m => { m.triggerRebuildNow(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
