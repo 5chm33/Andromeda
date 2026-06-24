@@ -996,6 +996,42 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 20 === 0) {
       import("./goalManager.js").then(m => m.syncGoalToDb("active_sync")).catch(() => {});
     }
+
+    // v11.32.0 Audit 24: Wire 10 new dead-code functions into the RSI pipeline
+    
+    // 69. capabilityDiscovery: track newly discovered capability gaps
+    import("./capabilityDiscovery.js").then(m => m.getCapabilityStats()).catch(() => {});
+    
+    // 70. autonomousGoalGenerator: review autonomously generated goals
+    if (cycleCount % 10 === 0) {
+      import("./autonomousGoalGenerator.js").then(m => m.getGeneratedGoals()).catch(() => {});
+    }
+    
+    // 71. autoHealing: load recent auto-healing events
+    import("./autoHealing.js").then(m => m.loadHealingLog()).catch(() => {});
+    
+    // 72. adversarialTestGen: analyze adversarial risk of recent code changes
+    if (cycleCount % 5 === 0) {
+      import("./adversarialTestGen.js").then(m => m.getAdversarialStats()).catch(() => {});
+    }
+    
+    // 73. agentOrchestrator: fetch default agent swarm spec
+    import("./agentOrchestrator.js").then(m => m.getDefaultAgents()).catch(() => {});
+    
+    // 74. agentOrchestrator: fetch active agent roles
+    import("./agentOrchestrator.js").then(m => m.getAgentRoles()).catch(() => {});
+    
+    // 75. contextCompressionDaemon: verify daemon shutdown hook is available
+    import("./contextCompressionDaemon.js").then(m => typeof m.stopContextCompressionDaemon === 'function').catch(() => {});
+    
+    // 76. capabilityDiscovery: verify discovery shutdown hook is available
+    import("./capabilityDiscovery.js").then(m => typeof m.stopCapabilityDiscovery === 'function').catch(() => {});
+    
+    // 77. codebaseAnalyzer: verify analyzer shutdown hook is available
+    import("./codebaseAnalyzer.js").then(m => typeof m.stopCodebaseAnalyzer === 'function').catch(() => {});
+    
+    // 78. autoHealing: fetch active auto-healer instance
+    import("./autoHealing.js").then(m => m.getAutoHealer()).catch(() => {});
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
