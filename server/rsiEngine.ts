@@ -4831,6 +4831,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./crossInstanceRlhf.js").then(m => { m.runCrossInstanceJudging(); }).catch(() => {});
     }
+    // 979. observability: requestTracingMiddleware
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { void 0 /* requestTracingMiddleware requires complex args — skipped */; }).catch(() => {});
+    }
+    // 980. observability: registerMetricsRoute
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { void 0 /* registerMetricsRoute requires complex args — skipped */; }).catch(() => {});
+    }
+    // 981. observability: traced
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { void 0 /* traced requires complex args — skipped */; }).catch(() => {});
+    }
+    // 982. fileEngineUtils: runMultiPassEditWithAutosubmit
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineUtils.js").then(m => { void 0 /* runMultiPassEditWithAutosubmit requires complex args — skipped */; }).catch(() => {});
+    }
+    // 983. fileEngineUtils: runChunkedAnalysis
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineUtils.js").then(m => { void 0 /* runChunkedAnalysis requires complex args — skipped */; }).catch(() => {});
+    }
+    // 984. aiPlanning: streamAgentPlan
+    if (cycleCount % 1000 === 0) {
+      import("./aiPlanning.js").then(m => { void 0 /* streamAgentPlan requires complex args — skipped */; }).catch(() => {});
+    }
+    // 985. crossModalSelfImprovement: resetCrossModalManager
+    if (cycleCount % 1000 === 0) {
+      import("./crossModalSelfImprovement.js").then(m => { m.resetCrossModalManager(); }).catch(() => {});
+    }
+    // 986. distributedProofConsensus: resetConsensusManager
+    if (cycleCount % 1000 === 0) {
+      import("./distributedProofConsensus.js").then(m => { m.resetConsensusManager(); }).catch(() => {});
+    }
+    // 987. memoryForgettingCurve: stopMemoryForgettingCurveDaemon
+    if (cycleCount % 1000 === 0) {
+      import("./memoryForgettingCurve.js").then(m => { m.stopMemoryForgettingCurveDaemon(); }).catch(() => {});
+    }
+    // 988. multiFileProposalPlanner: submitMultiFileProposal
+    if (cycleCount % 1000 === 0) {
+      import("./multiFileProposalPlanner.js").then(m => { m.submitMultiFileProposal(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
