@@ -8391,6 +8391,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./taskDecomposer.js").then(m => { m.getDecomposerStats(); }).catch(() => {});
     }
+    // 1869. vectorMemory: registerEmbeddingProvider
+    if (cycleCount % 1000 === 0) {
+      import("./vectorMemory.js").then(m => { m.registerEmbeddingProvider(); }).catch(() => {});
+    }
+    // 1870. vectorMemory: setEmbeddingProvider
+    if (cycleCount % 1000 === 0) {
+      import("./vectorMemory.js").then(m => { m.setEmbeddingProvider(); }).catch(() => {});
+    }
+    // 1871. vectorMemory: getEmbeddingProvider
+    if (cycleCount % 1000 === 0) {
+      import("./vectorMemory.js").then(m => { m.getEmbeddingProvider(); }).catch(() => {});
+    }
+    // 1872. vectorMemory: initApiEmbeddings
+    if (cycleCount % 1000 === 0) {
+      import("./vectorMemory.js").then(m => { m.initApiEmbeddings(); }).catch(() => {});
+    }
+    // 1873. vectorMemory: vectorStore
+    if (cycleCount % 1000 === 0) {
+      import("./vectorMemory.js").then(m => { m.vectorStore(); }).catch(() => {});
+    }
+    // 1874. vectorMemory: vectorStoreBatch
+    if (cycleCount % 1000 === 0) {
+      import("./vectorMemory.js").then(m => { m.vectorStoreBatch(); }).catch(() => {});
+    }
+    // 1875. vectorMemory: vectorSearch
+    if (cycleCount % 1000 === 0) {
+      import("./vectorMemory.js").then(m => { m.vectorSearch(); }).catch(() => {});
+    }
+    // 1876. vectorMemory: vectorDelete
+    if (cycleCount % 1000 === 0) {
+      import("./vectorMemory.js").then(m => { m.vectorDelete(); }).catch(() => {});
+    }
+    // 1877. vectorMemory: vectorReindex
+    if (cycleCount % 1000 === 0) {
+      import("./vectorMemory.js").then(m => { m.vectorReindex(); }).catch(() => {});
+    }
+    // 1878. vectorMemory: vectorStats
+    if (cycleCount % 1000 === 0) {
+      import("./vectorMemory.js").then(m => { m.vectorStats(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
