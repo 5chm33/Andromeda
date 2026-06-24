@@ -10391,6 +10391,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./autoRollback.js").then(m => { m.createSnapshot(); }).catch(() => {});
     }
+    // 2369. autonomousGoalGenerator: getGeneratedGoals
+    if (cycleCount % 1000 === 0) {
+      import("./autonomousGoalGenerator.js").then(m => { m.getGeneratedGoals(); }).catch(() => {});
+    }
+    // 2370. autonomousGoalGenerator: approveGoal
+    if (cycleCount % 1000 === 0) {
+      import("./autonomousGoalGenerator.js").then(m => { m.approveGoal(); }).catch(() => {});
+    }
+    // 2371. autonomousGoalGenerator: rejectGoal
+    if (cycleCount % 1000 === 0) {
+      import("./autonomousGoalGenerator.js").then(m => { m.rejectGoal(); }).catch(() => {});
+    }
+    // 2372. capabilityDiscovery: storeCapabilityProposal
+    if (cycleCount % 1000 === 0) {
+      import("./capabilityDiscovery.js").then(m => { m.storeCapabilityProposal(); }).catch(() => {});
+    }
+    // 2373. capabilityDiscovery: getCapabilityProposals
+    if (cycleCount % 1000 === 0) {
+      import("./capabilityDiscovery.js").then(m => { m.getCapabilityProposals(); }).catch(() => {});
+    }
+    // 2374. capabilityDiscovery: getCapabilityStats
+    if (cycleCount % 1000 === 0) {
+      import("./capabilityDiscovery.js").then(m => { m.getCapabilityStats(); }).catch(() => {});
+    }
+    // 2375. ciPipeline: runCiPipeline
+    if (cycleCount % 1000 === 0) {
+      import("./ciPipeline.js").then(m => { m.runCiPipeline(); }).catch(() => {});
+    }
+    // 2376. ciPipeline: getCiStatus
+    if (cycleCount % 1000 === 0) {
+      import("./ciPipeline.js").then(m => { m.getCiStatus(); }).catch(() => {});
+    }
+    // 2377. ciPipeline: getCiHistory
+    if (cycleCount % 1000 === 0) {
+      import("./ciPipeline.js").then(m => { m.getCiHistory(); }).catch(() => {});
+    }
+    // 2378. cloudProvisioning: detectAvailableProviders
+    if (cycleCount % 1000 === 0) {
+      import("./cloudProvisioning.js").then(m => { m.detectAvailableProviders(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
