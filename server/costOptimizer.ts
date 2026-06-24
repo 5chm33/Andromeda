@@ -187,6 +187,8 @@ export function selectCostOptimalModel(
 /**
  * Record actual token usage and cost after an LLM call.
  */
+const MODEL_PROFILE_MAP = new Map(MODEL_PROFILES.map(p => [p.modelId, p]));
+
 export function recordCost(
   modelId: string,
   inputTokens: number,
@@ -194,7 +196,7 @@ export function recordCost(
   proposalId?: string,
   area?: string,
 ): void {
-  const profile = MODEL_PROFILES.find(m => m.modelId === modelId);
+  const profile = MODEL_PROFILE_MAP.get(modelId);
   if (!profile) return;
 
   const costUsd = (inputTokens / 1000) * profile.costPer1kInputTokens
