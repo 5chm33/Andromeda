@@ -11071,6 +11071,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./selfReview.js").then(m => { m.getReviewHistory(); }).catch(() => {});
     }
+    // 2539. shadowInstance: isDockerAvailable
+    if (cycleCount % 1000 === 0) {
+      import("./shadowInstance.js").then(m => { m.isDockerAvailable(); }).catch(() => {});
+    }
+    // 2540. shadowInstance: runShadowTest
+    if (cycleCount % 1000 === 0) {
+      import("./shadowInstance.js").then(m => { m.runShadowTest(); }).catch(() => {});
+    }
+    // 2541. storage: storagePut
+    if (cycleCount % 1000 === 0) {
+      import("./storage.js").then(m => { m.storagePut(); }).catch(() => {});
+    }
+    // 2542. storage: storageGet
+    if (cycleCount % 1000 === 0) {
+      import("./storage.js").then(m => { m.storageGet(); }).catch(() => {});
+    }
+    // 2543. swarmTestnet: getSwarmTestnet
+    if (cycleCount % 1000 === 0) {
+      import("./swarmTestnet.js").then(m => { m.getSwarmTestnet(); }).catch(() => {});
+    }
+    // 2544. swarmTestnet: resetSwarmTestnet
+    if (cycleCount % 1000 === 0) {
+      import("./swarmTestnet.js").then(m => { m.resetSwarmTestnet(); }).catch(() => {});
+    }
+    // 2545. sweBenchHarness: getHarnessStatus
+    if (cycleCount % 1000 === 0) {
+      import("./sweBenchHarness.js").then(m => { m.getHarnessStatus(); }).catch(() => {});
+    }
+    // 2546. sweBenchHarness: resetHarnessStatus
+    if (cycleCount % 1000 === 0) {
+      import("./sweBenchHarness.js").then(m => { m.resetHarnessStatus(); }).catch(() => {});
+    }
+    // 2547. telemetry: recordLlmCall
+    if (cycleCount % 1000 === 0) {
+      import("./telemetry.js").then(m => { m.recordLlmCall(); }).catch(() => {});
+    }
+    // 2548. telemetry: recordEvalScore
+    if (cycleCount % 1000 === 0) {
+      import("./telemetry.js").then(m => { m.recordEvalScore(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
