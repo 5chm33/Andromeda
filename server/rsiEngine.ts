@@ -9551,6 +9551,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./selfReview.js").then(m => { m.setReviewConfig(); }).catch(() => {});
     }
+    // 2159. streamIntegrityMonitor: recordChunk
+    if (cycleCount % 1000 === 0) {
+      import("./streamIntegrityMonitor.js").then(m => { m.recordChunk(); }).catch(() => {});
+    }
+    // 2160. streamIntegrityMonitor: checkStreamHealth
+    if (cycleCount % 1000 === 0) {
+      import("./streamIntegrityMonitor.js").then(m => { m.checkStreamHealth(); }).catch(() => {});
+    }
+    // 2161. streamIntegrityMonitor: endStream
+    if (cycleCount % 1000 === 0) {
+      import("./streamIntegrityMonitor.js").then(m => { m.endStream(); }).catch(() => {});
+    }
+    // 2162. streamIntegrityMonitor: preFlightCheck
+    if (cycleCount % 1000 === 0) {
+      import("./streamIntegrityMonitor.js").then(m => { m.preFlightCheck(); }).catch(() => {});
+    }
+    // 2163. streamIntegrityMonitor: recordContinuation
+    if (cycleCount % 1000 === 0) {
+      import("./streamIntegrityMonitor.js").then(m => { m.recordContinuation(); }).catch(() => {});
+    }
+    // 2164. streamIntegrityMonitor: getMonitorStats
+    if (cycleCount % 1000 === 0) {
+      import("./streamIntegrityMonitor.js").then(m => { m.getMonitorStats(); }).catch(() => {});
+    }
+    // 2165. tieredContextManager: recordTierUsage
+    if (cycleCount % 1000 === 0) {
+      import("./tieredContextManager.js").then(m => { m.recordTierUsage(); }).catch(() => {});
+    }
+    // 2166. tieredContextManager: createIsolatedContext
+    if (cycleCount % 1000 === 0) {
+      import("./tieredContextManager.js").then(m => { m.createIsolatedContext(); }).catch(() => {});
+    }
+    // 2167. tieredContextManager: appendToIsolatedContext
+    if (cycleCount % 1000 === 0) {
+      import("./tieredContextManager.js").then(m => { m.appendToIsolatedContext(); }).catch(() => {});
+    }
+    // 2168. tieredContextManager: getIsolatedContext
+    if (cycleCount % 1000 === 0) {
+      import("./tieredContextManager.js").then(m => { m.getIsolatedContext(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
