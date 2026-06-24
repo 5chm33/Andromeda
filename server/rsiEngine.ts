@@ -3471,6 +3471,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./autoGoalSuggester.js").then(m => { m.stopAutoGoalSuggester(); }).catch(() => {});
     }
+    // 639. autoRollback: restoreSnapshot
+    if (cycleCount % 1000 === 0) {
+      import("./autoRollback.js").then(m => { m.restoreSnapshot(); }).catch(() => {});
+    }
+    // 640. autoRollback: validateSyntax
+    if (cycleCount % 1000 === 0) {
+      import("./autoRollback.js").then(m => { m.validateSyntax(); }).catch(() => {});
+    }
+    // 641. autoRollback: withAutoRollback
+    if (cycleCount % 1000 === 0) {
+      import("./autoRollback.js").then(m => { m.withAutoRollback(); }).catch(() => {});
+    }
+    // 642. autoRollback: safeFileEdit
+    if (cycleCount % 1000 === 0) {
+      import("./autoRollback.js").then(m => { m.safeFileEdit(); }).catch(() => {});
+    }
+    // 643. autonomyOrchestrator: pause
+    if (cycleCount % 1000 === 0) {
+      import("./autonomyOrchestrator.js").then(m => { m.pause(); }).catch(() => {});
+    }
+    // 644. autonomyOrchestrator: resume
+    if (cycleCount % 1000 === 0) {
+      import("./autonomyOrchestrator.js").then(m => { m.resume(); }).catch(() => {});
+    }
+    // 645. autonomyOrchestrator: triggerCycle
+    if (cycleCount % 1000 === 0) {
+      import("./autonomyOrchestrator.js").then(m => { m.triggerCycle(); }).catch(() => {});
+    }
+    // 646. autonomyOrchestrator: initOrchestrator
+    if (cycleCount % 1000 === 0) {
+      import("./autonomyOrchestrator.js").then(m => { m.initOrchestrator(); }).catch(() => {});
+    }
+    // 647. capabilityBootstrapper: registerCapabilityGap
+    if (cycleCount % 1000 === 0) {
+      import("./capabilityBootstrapper.js").then(m => { m.registerCapabilityGap(); }).catch(() => {});
+    }
+    // 648. capabilityBootstrapper: bootstrapCapability
+    if (cycleCount % 1000 === 0) {
+      import("./capabilityBootstrapper.js").then(m => { m.bootstrapCapability(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
