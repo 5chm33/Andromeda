@@ -8551,6 +8551,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./memory.js").then(m => { m.storeMemory(); }).catch(() => {});
     }
+    // 1909. selfRollback: createRollbackPoint
+    if (cycleCount % 1000 === 0) {
+      import("./selfRollback.js").then(m => { m.createRollbackPoint(); }).catch(() => {});
+    }
+    // 1910. selfRollback: rollbackTo
+    if (cycleCount % 1000 === 0) {
+      import("./selfRollback.js").then(m => { m.rollbackTo(); }).catch(() => {});
+    }
+    // 1911. selfRollback: rollbackToLatest
+    if (cycleCount % 1000 === 0) {
+      import("./selfRollback.js").then(m => { m.rollbackToLatest(); }).catch(() => {});
+    }
+    // 1912. selfRollback: rollbackToLastHealthy
+    if (cycleCount % 1000 === 0) {
+      import("./selfRollback.js").then(m => { m.rollbackToLastHealthy(); }).catch(() => {});
+    }
+    // 1913. selfRollback: startHealthWatch
+    if (cycleCount % 1000 === 0) {
+      import("./selfRollback.js").then(m => { m.startHealthWatch(); }).catch(() => {});
+    }
+    // 1914. selfRollback: stopHealthWatch
+    if (cycleCount % 1000 === 0) {
+      import("./selfRollback.js").then(m => { m.stopHealthWatch(); }).catch(() => {});
+    }
+    // 1915. selfRollback: startDegradationWatch
+    if (cycleCount % 1000 === 0) {
+      import("./selfRollback.js").then(m => { m.startDegradationWatch(); }).catch(() => {});
+    }
+    // 1916. selfRollback: getRollbackStatus
+    if (cycleCount % 1000 === 0) {
+      import("./selfRollback.js").then(m => { m.getRollbackStatus(); }).catch(() => {});
+    }
+    // 1917. selfRollback: setRollbackConfig
+    if (cycleCount % 1000 === 0) {
+      import("./selfRollback.js").then(m => { m.setRollbackConfig(); }).catch(() => {});
+    }
+    // 1918. tieredContextManager: calculateContextBudget
+    if (cycleCount % 1000 === 0) {
+      import("./tieredContextManager.js").then(m => { m.calculateContextBudget(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
