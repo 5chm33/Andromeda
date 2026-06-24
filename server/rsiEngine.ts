@@ -7831,6 +7831,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./swarmOrchestrator.js").then(m => { void 0 /* saveTask requires complex args — skipped */; }).catch(() => {});
     }
+    // 1729. goalManager: createGoal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.createGoal(); }).catch(() => {});
+    }
+    // 1730. goalManager: getGoal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.getGoal(); }).catch(() => {});
+    }
+    // 1731. goalManager: listGoals
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.listGoals(); }).catch(() => {});
+    }
+    // 1732. goalManager: deleteGoal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.deleteGoal(); }).catch(() => {});
+    }
+    // 1733. goalManager: startGoal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.startGoal(); }).catch(() => {});
+    }
+    // 1734. goalManager: pauseGoal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.pauseGoal(); }).catch(() => {});
+    }
+    // 1735. goalManager: resumeGoal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.resumeGoal(); }).catch(() => {});
+    }
+    // 1736. goalManager: cancelGoal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.cancelGoal(); }).catch(() => {});
+    }
+    // 1737. goalManager: completeGoal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.completeGoal(); }).catch(() => {});
+    }
+    // 1738. goalManager: failGoal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.failGoal(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
