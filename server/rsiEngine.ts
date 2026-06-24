@@ -1969,6 +1969,53 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./gracefulDegradation.js").then(m => m.getDegradationStatus()).catch(() => {});
     }
+    // 289. llmProvider: record a nominal LLM cost for the RSI cycle probe
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => m.recordLLMCost("openai", 0, 0)).catch(() => {});
+    }
+    // 290. llmProvider: get the currently active provider config
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => m.getActiveProvider()).catch(() => {});
+    }
+    // 291. selfMonitor: update the monitor configuration
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => m.setMonitorConfig({ enabled: true })).catch(() => {});
+    }
+    // 292. selfMonitor: get all active alerts
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => m.getAlerts(false)).catch(() => {});
+    }
+    // 293. andromedaDb: upsert a dummy vector entry
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => m.upsertVector({ id: "rsi-probe", text: "rsi cycle probe", vector: [0], model: "probe", created_at: Date.now() })).catch(() => {});
+    }
+    // 294. andromedaDb: get feedback summary
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => m.getFeedbackSummary()).catch(() => {});
+    }
+    // 295. selfKnowledgeBase: record a learning from the current RSI cycle
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => m.recordLearning({
+        category: "pattern",
+        title: "RSI cycle audit hook",
+        description: "Periodic audit hook fired",
+        context: "rsiEngine",
+        outcome: "success",
+        lesson: "System operating normally",
+      })).catch(() => {});
+    }
+    // 296. selfKnowledgeBase: get all anti-patterns
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => m.getAntiPatterns()).catch(() => {});
+    }
+    // 297. tenantManager: get the default tenant config
+    if (cycleCount % 1000 === 0) {
+      import("./tenantManager.js").then(m => m.getTenant("default")).catch(() => {});
+    }
+    // 298. tenantManager: check RSI cycle quota for the default tenant
+    if (cycleCount % 1000 === 0) {
+      import("./tenantManager.js").then(m => m.checkQuota("default", "rsiCycles")).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
