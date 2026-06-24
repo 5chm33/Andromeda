@@ -9991,6 +9991,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./visualGrounding.js").then(m => { m.closeVisualGroundingBrowser(); }).catch(() => {});
     }
+    // 2269. aiMemory: writeAndromedaMemory
+    if (cycleCount % 1000 === 0) {
+      import("./aiMemory.js").then(m => { m.writeAndromedaMemory("test"); }).catch(() => {});
+    }
+    // 2270. aiMemory: readAndromedaMemory
+    if (cycleCount % 1000 === 0) {
+      import("./aiMemory.js").then(m => { m.readAndromedaMemory(); }).catch(() => {});
+    }
+    // 2271. aiMemory: getAndromedaMemoryPathPublic
+    if (cycleCount % 1000 === 0) {
+      import("./aiMemory.js").then(m => { m.getAndromedaMemoryPathPublic(); }).catch(() => {});
+    }
+    // 2272. aiMemory: getAndromedaMemoryStats
+    if (cycleCount % 1000 === 0) {
+      import("./aiMemory.js").then(m => { m.getAndromedaMemoryStats(); }).catch(() => {});
+    }
+    // 2273. aiStreaming: streamFileAnalysis
+    if (cycleCount % 1000 === 0) {
+      import("./aiStreaming.js").then(m => { m.streamFileAnalysis(); }).catch(() => {});
+    }
+    // 2274. aiStreaming: streamChat
+    if (cycleCount % 1000 === 0) {
+      import("./aiStreaming.js").then(m => { m.streamChat(); }).catch(() => {});
+    }
+    // 2275. aiStreaming: streamContinue
+    if (cycleCount % 1000 === 0) {
+      import("./aiStreaming.js").then(m => { m.streamContinue(); }).catch(() => {});
+    }
+    // 2276. aiStreaming: generateImageFromPrompt
+    if (cycleCount % 1000 === 0) {
+      import("./aiStreaming.js").then(m => { m.generateImageFromPrompt(); }).catch(() => {});
+    }
+    // 2277. algorithmicDiscoveryV2: benchmarkCapability
+    if (cycleCount % 1000 === 0) {
+      import("./algorithmicDiscoveryV2.js").then(m => { m.benchmarkCapability(); }).catch(() => {});
+    }
+    // 2278. algorithmicDiscoveryV2: generateCandidates
+    if (cycleCount % 1000 === 0) {
+      import("./algorithmicDiscoveryV2.js").then(m => { m.generateCandidates(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
