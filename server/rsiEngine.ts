@@ -9671,6 +9671,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./behavioralRegressionEngine.js").then(m => { m.initBehavioralRegressionEngine(); }).catch(() => {});
     }
+    // 2189. biasDetector: getKnownBiasProfile
+    if (cycleCount % 1000 === 0) {
+      import("./biasDetector.js").then(m => { m.getKnownBiasProfile(); }).catch(() => {});
+    }
+    // 2190. biasDetector: annotateSources
+    if (cycleCount % 1000 === 0) {
+      import("./biasDetector.js").then(m => { m.annotateSources(); }).catch(() => {});
+    }
+    // 2191. biasDetector: analyzeDiversity
+    if (cycleCount % 1000 === 0) {
+      import("./biasDetector.js").then(m => { m.analyzeDiversity(); }).catch(() => {});
+    }
+    // 2192. biasDetector: detectCensorshipSignals
+    if (cycleCount % 1000 === 0) {
+      import("./biasDetector.js").then(m => { m.detectCensorshipSignals(); }).catch(() => {});
+    }
+    // 2193. biasDetector: buildHonestyPromptAddendum
+    if (cycleCount % 1000 === 0) {
+      import("./biasDetector.js").then(m => { m.buildHonestyPromptAddendum(); }).catch(() => {});
+    }
+    // 2194. codeIntel: readPackageJson
+    if (cycleCount % 1000 === 0) {
+      import("./codeIntel.js").then(m => { m.readPackageJson(); }).catch(() => {});
+    }
+    // 2195. codeIntel: resolveDependencies
+    if (cycleCount % 1000 === 0) {
+      import("./codeIntel.js").then(m => { m.resolveDependencies(); }).catch(() => {});
+    }
+    // 2196. codeIntel: diagnoseError
+    if (cycleCount % 1000 === 0) {
+      import("./codeIntel.js").then(m => { m.diagnoseError(); }).catch(() => {});
+    }
+    // 2197. codeIntel: searchWorkspaceCode
+    if (cycleCount % 1000 === 0) {
+      import("./codeIntel.js").then(m => { m.searchWorkspaceCode(); }).catch(() => {});
+    }
+    // 2198. codeIntel: generateUnifiedDiff
+    if (cycleCount % 1000 === 0) {
+      import("./codeIntel.js").then(m => { m.generateUnifiedDiff(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
