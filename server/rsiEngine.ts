@@ -11271,6 +11271,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./localLora.js").then(m => { m.runLocalLoraTraining(); }).catch(() => {});
     }
+    // 2589. logger: createLogger
+    if (cycleCount % 1000 === 0) {
+      import("./logger.js").then(m => { m.createLogger(); }).catch(() => {});
+    }
+    // 2590. multiAgent: runTeamAgent
+    if (cycleCount % 1000 === 0) {
+      import("./multiAgent.js").then(m => { m.runTeamAgent(); }).catch(() => {});
+    }
+    // 2591. multiFileProposalPlanner: findRelatedFiles
+    if (cycleCount % 1000 === 0) {
+      import("./multiFileProposalPlanner.js").then(m => { m.findRelatedFiles(); }).catch(() => {});
+    }
+    // 2592. nativeVlm: analyzeRawScreenshot
+    if (cycleCount % 1000 === 0) {
+      import("./nativeVlm.js").then(m => { m.analyzeRawScreenshot(); }).catch(() => {});
+    }
+    // 2593. prGenerator: createPRForBranch
+    if (cycleCount % 1000 === 0) {
+      import("./prGenerator.js").then(m => { m.createPRForBranch(); }).catch(() => {});
+    }
+    // 2594. promptEngineer: getOptimizedPromptAddendum
+    if (cycleCount % 1000 === 0) {
+      import("./promptEngineer.js").then(m => { m.getOptimizedPromptAddendum(); }).catch(() => {});
+    }
+    // 2595. reactEngine: streamAgentToSSE
+    if (cycleCount % 1000 === 0) {
+      import("./reactEngine.js").then(m => { m.streamAgentToSSE(); }).catch(() => {});
+    }
+    // 2596. recursionGuard: getGuardConfig
+    if (cycleCount % 1000 === 0) {
+      import("./recursionGuard.js").then(m => { m.getGuardConfig(); }).catch(() => {});
+    }
+    // 2597. recursiveGoals: getGoalStats
+    if (cycleCount % 1000 === 0) {
+      import("./recursiveGoals.js").then(m => { m.getGoalStats(); }).catch(() => {});
+    }
+    // 2598. redisLock: getLockStatus
+    if (cycleCount % 1000 === 0) {
+      import("./redisLock.js").then(m => { m.getLockStatus(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
