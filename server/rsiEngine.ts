@@ -3511,6 +3511,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./capabilityBootstrapper.js").then(m => { m.bootstrapCapability(); }).catch(() => {});
     }
+    // 649. codebaseAnalyzer: runFullAnalysis
+    if (cycleCount % 1000 === 0) {
+      import("./codebaseAnalyzer.js").then(m => { m.runFullAnalysis(); }).catch(() => {});
+    }
+    // 650. codebaseAnalyzer: startCodebaseAnalyzer
+    if (cycleCount % 1000 === 0) {
+      import("./codebaseAnalyzer.js").then(m => { m.startCodebaseAnalyzer(); }).catch(() => {});
+    }
+    // 651. codebaseAnalyzer: stopCodebaseAnalyzer
+    if (cycleCount % 1000 === 0) {
+      import("./codebaseAnalyzer.js").then(m => { m.stopCodebaseAnalyzer(); }).catch(() => {});
+    }
+    // 652. codebaseAnalyzer: isRunning
+    if (cycleCount % 1000 === 0) {
+      import("./codebaseAnalyzer.js").then(m => { m.isRunning(); }).catch(() => {});
+    }
+    // 653. contextCompressionDaemon: compressContext
+    if (cycleCount % 1000 === 0) {
+      import("./contextCompressionDaemon.js").then(m => { m.compressContext(); }).catch(() => {});
+    }
+    // 654. contextCompressionDaemon: startContextCompressionDaemon
+    if (cycleCount % 1000 === 0) {
+      import("./contextCompressionDaemon.js").then(m => { m.startContextCompressionDaemon(); }).catch(() => {});
+    }
+    // 655. contextCompressionDaemon: stopContextCompressionDaemon
+    if (cycleCount % 1000 === 0) {
+      import("./contextCompressionDaemon.js").then(m => { m.stopContextCompressionDaemon(); }).catch(() => {});
+    }
+    // 656. contextCompressionDaemon: isRunning
+    if (cycleCount % 1000 === 0) {
+      import("./contextCompressionDaemon.js").then(m => { m.isRunning(); }).catch(() => {});
+    }
+    // 657. continuousImprover: startContinuousImprover
+    if (cycleCount % 1000 === 0) {
+      import("./continuousImprover.js").then(m => { m.startContinuousImprover(); }).catch(() => {});
+    }
+    // 658. continuousImprover: stopContinuousImprover
+    if (cycleCount % 1000 === 0) {
+      import("./continuousImprover.js").then(m => { m.stopContinuousImprover(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
