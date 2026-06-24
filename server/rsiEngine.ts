@@ -11311,6 +11311,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./redisLock.js").then(m => { m.getLockStatus(); }).catch(() => {});
     }
+    // 2599. rlaifJudge: generateRlaifPairs
+    if (cycleCount % 1000 === 0) {
+      import("./rlaifJudge.js").then(m => { m.generateRlaifPairs(); }).catch(() => {});
+    }
+    // 2600. sandboxVerifier: verifySandboxed
+    if (cycleCount % 1000 === 0) {
+      import("./sandboxVerifier.js").then(m => { m.verifySandboxed(); }).catch(() => {});
+    }
+    // 2601. scheduler: createTask
+    if (cycleCount % 1000 === 0) {
+      import("./scheduler.js").then(m => { m.createTask({ type: "test", payload: {} }); }).catch(() => {});
+    }
+    // 2602. security: getAuditLog
+    if (cycleCount % 1000 === 0) {
+      import("./security.js").then(m => { m.getAuditLog(); }).catch(() => {});
+    }
+    // 2603. selfTestGenerator: generateBehavioralTest
+    if (cycleCount % 1000 === 0) {
+      import("./selfTestGenerator.js").then(m => { m.generateBehavioralTest(); }).catch(() => {});
+    }
+    // 2604. selfTestPipeline: validateProposal
+    if (cycleCount % 1000 === 0) {
+      import("./selfTestPipeline.js").then(m => { m.validateProposal(); }).catch(() => {});
+    }
+    // 2605. streamRouter: registerStreamRoutes
+    if (cycleCount % 1000 === 0) {
+      import("./streamRouter.js").then(m => { m.registerStreamRoutes(); }).catch(() => {});
+    }
+    // 2606. taskDecomposer: shouldAutoDecompose
+    if (cycleCount % 1000 === 0) {
+      import("./taskDecomposer.js").then(m => { m.shouldAutoDecompose(); }).catch(() => {});
+    }
+    // 2607. vectorMemory: hybridSearch
+    if (cycleCount % 1000 === 0) {
+      import("./vectorMemory.js").then(m => { m.hybridSearch(); }).catch(() => {});
+    }
+    // 2608. voiceInterface: getSupportedFormats
+    if (cycleCount % 1000 === 0) {
+      import("./voiceInterface.js").then(m => { m.getSupportedFormats(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
