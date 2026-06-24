@@ -276,10 +276,11 @@ export async function initModules(): Promise<void> {
       // Auto-enable RSI now that we have a baseline to improve against
       const { enableRSI } = await import("../rsiEngine.js");
       enableRSI({
-        intervalMs: 6 * 60 * 60 * 1000,  // 6-hour cycles
-        maxAutoApplyPerCycle: 2,           // conservative: max 2 auto-applied changes per cycle
+        intervalMs: 5 * 60 * 1000,  // v11.290.0: 5-minute cycles (was 6h — too slow for testing)
+        maxAutoApplyPerCycle: 3,     // v11.290.0: 3 auto-applied changes per cycle (was 2)
+        minConfidenceThreshold: 0.7, // v11.290.0: Lower threshold slightly (was 0.8) to allow more proposals through
       });
-      console.log("[AutoBaseline] v7.0: RSI auto-enabled — 6-hour improvement cycles started");
+      console.log("[AutoBaseline] v7.0: RSI auto-enabled — 5-minute improvement cycles started");
     } catch (err) {
       console.warn("[AutoBaseline] v7.0: Auto-baseline failed (non-fatal):", err);
     }

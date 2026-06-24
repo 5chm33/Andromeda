@@ -39,7 +39,7 @@ const log = createLogger("rsiScheduler");
 
 const RSI_TASK_NAME = "andromeda-rsi-auto-trigger";
 const RSI_TASK_TAG  = "rsi-auto";
-const DEFAULT_HOURS = parseInt(process.env.RSI_SCHEDULE_HOURS ?? "6", 10) || 6;
+const DEFAULT_HOURS = parseFloat(process.env.RSI_SCHEDULE_HOURS ?? "6") || 6; // v11.290.0: parseFloat supports fractional hours (e.g. 0.083 = 5 min)
 
 // ─── Schedule log ─────────────────────────────────────────────────────────────
 

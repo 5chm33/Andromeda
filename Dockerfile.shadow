@@ -1,0 +1,25 @@
+# ─── Andromeda v11.290.0 — Shadow Test Dockerfile ───────────────────────────
+#
+# Optimized for ultra-fast RSI shadow testing.
+# - Copies the existing node_modules from the host to avoid install time
+# - Only includes the bare minimum needed to run Vitest
+# - Uses the host's pnpm version
+# ─────────────────────────────────────────────────────────────────────────────
+
+FROM node:22-alpine
+
+# Install pnpm matching the lockfile version
+RUN corepack enable && corepack prepare pnpm@11.5.2 --activate
+
+# Native build tools required by some deps
+RUN apk add --no-cache python3 make g++ cairo-dev pango-dev jpeg-dev giflib-dev git
+
+WORKDIR /app
+
+# The host will mount the entire workspace into /workspace
+# The shadowInstance script will:
+# 1. Copy /workspace to /app
+# 2. Copy the proposed file over the target file
+# 3. Run the targeted test
+
+CMD ["sh", "-c", "echo 'Shadow container ready' && sleep 300"]

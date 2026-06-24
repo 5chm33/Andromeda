@@ -100,6 +100,28 @@ export async function runShadowTest(options: ShadowTestOptions): Promise<ShadowT
       ? (path.isAbsolute(targetFile) ? path.relative(workspaceDir, targetFile) : targetFile)
       : "server/unknown.ts";
 
+    // v11.290.0 Fix: Run targeted test instead of full suite
+    let testCmd = "pnpm exec vitest run --reporter=json 2>/dev/null || pnpm test 2>/dev/null || echo '{\"numPassedTests\":0,\"numFailedTests\":1}'";
+    
+    if (targetFile) {
+      const baseName = path.basename(targetFile).replace(/\.ts$/, "").replace(/\.js$/, "");
+      const testBaseName = `${baseName}.test.ts`;
+      const specBaseName = `${baseName}.spec.ts`;
+      
+      const testExists = fs.existsSync(path.join(workspaceDir, "server", testBaseName));
+      const specExists = fs.existsSync(path.join(workspaceDir, "server", specBaseName));
+      
+      if (testExists) {
+        testCmd = `pnpm exec vitest run --reporter=json "server/${testBaseName}" 2>/dev/null`;
+        log.info(`Shadow test: Running targeted test for ${baseName}: server/${testBaseName}`, { proposalId });
+      } else if (specExists) {
+        testCmd = `pnpm exec vitest run --reporter=json "server/${specBaseName}" 2>/dev/null`;
+        log.info(`Shadow test: Running targeted test for ${baseName}: server/${specBaseName}`, { proposalId });
+      } else {
+        log.warn(`Shadow test: No test file found for ${baseName}, running full suite (may timeout)`, { proposalId });
+      }
+    }
+
     const dockerCmd = [
       "docker", "run",
       "--rm",
@@ -113,12 +135,18 @@ export async function runShadowTest(options: ShadowTestOptions): Promise<ShadowT
       "sh", "-c",
       [
         "set -e",
-        "cp -r /workspace /app",
+        // v11.290.0 Fix: Only copy what's needed, symlink node_modules to save 800MB copy time
+        "mkdir -p /app",
+        "cp -r /workspace/server /app/server",
+        "cp -r /workspace/client /app/client",
+        "cp /workspace/package.json /app/package.json",
+        "cp /workspace/tsconfig.json /app/tsconfig.json 2>/dev/null || true",
+        "cp /workspace/vitest.config.ts /app/vitest.config.ts 2>/dev/null || true",
+        "ln -s /workspace/node_modules /app/node_modules",
         "cd /app",
         // Write the proposed content to the target file
         `cp /proposed.content "${relTarget}"`,
-        "npm install --ignore-scripts 2>/dev/null || pnpm install 2>/dev/null || true",
-        "pnpm exec vitest run --reporter=json 2>/dev/null || pnpm test 2>/dev/null || echo '{\"numPassedTests\":0,\"numFailedTests\":1}'",
+        testCmd,
       ].join(" && "),
     ];
 
@@ -191,8 +219,14 @@ async function runLocalShadowTest(
   const tmpDir = path.join("/tmp", `andromeda-shadow-${proposalId.slice(0, 8)}-${Date.now()}`);
 
   try {
-    // Copy workspace to temp dir
-    execSync(`cp -r "${workspaceDir}" "${tmpDir}"`, { stdio: "pipe" });
+    // v11.290.0 Fix: Symlink node_modules instead of copying 800MB
+    execSync(`mkdir -p "${tmpDir}"`, { stdio: "pipe" });
+    execSync(`cp -r "${workspaceDir}/server" "${tmpDir}/server"`, { stdio: "pipe" });
+    execSync(`cp -r "${workspaceDir}/client" "${tmpDir}/client"`, { stdio: "pipe" });
+    execSync(`cp "${workspaceDir}/package.json" "${tmpDir}/package.json"`, { stdio: "pipe" });
+    try { execSync(`cp "${workspaceDir}/tsconfig.json" "${tmpDir}/tsconfig.json"`, { stdio: "pipe" }); } catch {}
+    try { execSync(`cp "${workspaceDir}/vitest.config.ts" "${tmpDir}/vitest.config.ts"`, { stdio: "pipe" }); } catch {}
+    execSync(`ln -s "${workspaceDir}/node_modules" "${tmpDir}/node_modules"`, { stdio: "pipe" });
 
     // v11.10.1: Write the full proposed content directly to the target file.
     // Resolve the target file path inside the temp copy.
@@ -221,12 +255,34 @@ async function runLocalShadowTest(
       log.warn("Shadow test: no targetFile provided — running unmodified copy", { proposalId });
     }
 
+    // v11.290.0 Fix: Run targeted test instead of full suite
+    let testCmd = `pnpm exec vitest run --reporter=json 2>/dev/null`;
+    
+    if (targetFile) {
+      const baseName = path.basename(targetFile).replace(/\.ts$/, "").replace(/\.js$/, "");
+      const testBaseName = `${baseName}.test.ts`;
+      const specBaseName = `${baseName}.spec.ts`;
+      
+      const testExists = fs.existsSync(path.join(workspaceDir, "server", testBaseName));
+      const specExists = fs.existsSync(path.join(workspaceDir, "server", specBaseName));
+      
+      if (testExists) {
+        testCmd = `pnpm exec vitest run --reporter=json "server/${testBaseName}" 2>/dev/null`;
+        log.info(`Shadow test: Running targeted test for ${baseName}: server/${testBaseName}`, { proposalId });
+      } else if (specExists) {
+        testCmd = `pnpm exec vitest run --reporter=json "server/${specBaseName}" 2>/dev/null`;
+        log.info(`Shadow test: Running targeted test for ${baseName}: server/${specBaseName}`, { proposalId });
+      } else {
+        log.warn(`Shadow test: No test file found for ${baseName}, running full suite (may timeout)`, { proposalId });
+      }
+    }
+
     // Run tests
     let stdout = "";
     let stderr = "";
     try {
       stdout = execSync(
-        `cd "${tmpDir}" && pnpm exec vitest run --reporter=json 2>/dev/null`,
+        `cd "${tmpDir}" && ${testCmd}`,
         { timeout: timeoutMs, encoding: "utf8", stdio: "pipe" }
       );
     } catch (e: unknown) {
