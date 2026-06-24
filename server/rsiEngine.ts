@@ -9631,6 +9631,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./transactionLog.js").then(m => { m.getTransactionHistory(); }).catch(() => {});
     }
+    // 2179. autoHealing: checkDatabaseHealth
+    if (cycleCount % 1000 === 0) {
+      import("./autoHealing.js").then(m => { m.checkDatabaseHealth(); }).catch(() => {});
+    }
+    // 2180. autoHealing: checkMemoryHealth
+    if (cycleCount % 1000 === 0) {
+      import("./autoHealing.js").then(m => { m.checkMemoryHealth(); }).catch(() => {});
+    }
+    // 2181. autoHealing: getAutoHealer
+    if (cycleCount % 1000 === 0) {
+      import("./autoHealing.js").then(m => { m.getAutoHealer(); }).catch(() => {});
+    }
+    // 2182. autoHealing: resetAutoHealer
+    if (cycleCount % 1000 === 0) {
+      import("./autoHealing.js").then(m => { m.resetAutoHealer(); }).catch(() => {});
+    }
+    // 2183. autoHealing: loadHealingLog
+    if (cycleCount % 1000 === 0) {
+      import("./autoHealing.js").then(m => { m.loadHealingLog(); }).catch(() => {});
+    }
+    // 2184. behavioralRegressionEngine: extractContracts
+    if (cycleCount % 1000 === 0) {
+      import("./behavioralRegressionEngine.js").then(m => { m.extractContracts(); }).catch(() => {});
+    }
+    // 2185. behavioralRegressionEngine: runTargetedTests
+    if (cycleCount % 1000 === 0) {
+      import("./behavioralRegressionEngine.js").then(m => { m.runTargetedTests(); }).catch(() => {});
+    }
+    // 2186. behavioralRegressionEngine: runBehavioralRegressionStage
+    if (cycleCount % 1000 === 0) {
+      import("./behavioralRegressionEngine.js").then(m => { m.runBehavioralRegressionStage(); }).catch(() => {});
+    }
+    // 2187. behavioralRegressionEngine: getBehavioralRegressionStats
+    if (cycleCount % 1000 === 0) {
+      import("./behavioralRegressionEngine.js").then(m => { m.getBehavioralRegressionStats(); }).catch(() => {});
+    }
+    // 2188. behavioralRegressionEngine: initBehavioralRegressionEngine
+    if (cycleCount % 1000 === 0) {
+      import("./behavioralRegressionEngine.js").then(m => { m.initBehavioralRegressionEngine(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
