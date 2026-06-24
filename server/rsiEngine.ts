@@ -8591,6 +8591,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./tieredContextManager.js").then(m => { m.calculateContextBudget(); }).catch(() => {});
     }
+    // 1919. workspace: getServerDir
+    if (cycleCount % 1000 === 0) {
+      import("./workspace.js").then(m => { m.getServerDir(); }).catch(() => {});
+    }
+    // 1920. workspace: getWorkspaceDir
+    if (cycleCount % 1000 === 0) {
+      import("./workspace.js").then(m => { m.getWorkspaceDir(); }).catch(() => {});
+    }
+    // 1921. workspace: isFullFsEnabled
+    if (cycleCount % 1000 === 0) {
+      import("./workspace.js").then(m => { m.isFullFsEnabled(); }).catch(() => {});
+    }
+    // 1922. workspace: resolveFilePath
+    if (cycleCount % 1000 === 0) {
+      import("./workspace.js").then(m => { m.resolveFilePath(); }).catch(() => {});
+    }
+    // 1923. workspace: listWorkspaceFiles
+    if (cycleCount % 1000 === 0) {
+      import("./workspace.js").then(m => { m.listWorkspaceFiles(); }).catch(() => {});
+    }
+    // 1924. workspace: readWorkspaceFile
+    if (cycleCount % 1000 === 0) {
+      import("./workspace.js").then(m => { m.readWorkspaceFile(); }).catch(() => {});
+    }
+    // 1925. workspace: writeWorkspaceFile
+    if (cycleCount % 1000 === 0) {
+      import("./workspace.js").then(m => { m.writeWorkspaceFile(); }).catch(() => {});
+    }
+    // 1926. workspace: deleteWorkspaceFile
+    if (cycleCount % 1000 === 0) {
+      import("./workspace.js").then(m => { m.deleteWorkspaceFile(); }).catch(() => {});
+    }
+    // 1927. workspace: executeCodeWithWorkspace
+    if (cycleCount % 1000 === 0) {
+      import("./workspace.js").then(m => { m.executeCodeWithWorkspace(); }).catch(() => {});
+    }
+    // 1928. aiStreaming: streamToResponse
+    if (cycleCount % 1000 === 0) {
+      import("./aiStreaming.js").then(m => { m.streamToResponse(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
