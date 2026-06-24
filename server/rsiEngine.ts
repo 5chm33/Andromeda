@@ -3671,6 +3671,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./llmProvider.js").then(m => { m.backgroundChatCompletion(); }).catch(() => {});
     }
+    // 689. loraBackendDetector: checkOllamaAvailable
+    if (cycleCount % 1000 === 0) {
+      import("./loraBackendDetector.js").then(m => { m.checkOllamaAvailable(); }).catch(() => {});
+    }
+    // 690. loraBackendDetector: checkHuggingFaceAvailable
+    if (cycleCount % 1000 === 0) {
+      import("./loraBackendDetector.js").then(m => { m.checkHuggingFaceAvailable(); }).catch(() => {});
+    }
+    // 691. loraBackendDetector: checkReplicateAvailable
+    if (cycleCount % 1000 === 0) {
+      import("./loraBackendDetector.js").then(m => { m.checkReplicateAvailable(); }).catch(() => {});
+    }
+    // 692. loraBackendDetector: routeLoraTraining
+    if (cycleCount % 1000 === 0) {
+      import("./loraBackendDetector.js").then(m => { m.routeLoraTraining(); }).catch(() => {});
+    }
+    // 693. loraDpoPipeline: splitTrainEval
+    if (cycleCount % 1000 === 0) {
+      import("./loraDpoPipeline.js").then(m => { m.splitTrainEval(); }).catch(() => {});
+    }
+    // 694. loraDpoPipeline: checkOllamaAvailability
+    if (cycleCount % 1000 === 0) {
+      import("./loraDpoPipeline.js").then(m => { m.checkOllamaAvailability(); }).catch(() => {});
+    }
+    // 695. loraDpoPipeline: evaluateRewardAccuracy
+    if (cycleCount % 1000 === 0) {
+      import("./loraDpoPipeline.js").then(m => { m.evaluateRewardAccuracy(); }).catch(() => {});
+    }
+    // 696. loraDpoPipeline: onPipelineEvent
+    if (cycleCount % 1000 === 0) {
+      import("./loraDpoPipeline.js").then(m => { m.onPipelineEvent(); }).catch(() => {});
+    }
+    // 697. memoryForgettingCurve: getMemoriesDueForReview
+    if (cycleCount % 1000 === 0) {
+      import("./memoryForgettingCurve.js").then(m => { m.getMemoriesDueForReview(); }).catch(() => {});
+    }
+    // 698. memoryForgettingCurve: getAtRiskMemories
+    if (cycleCount % 1000 === 0) {
+      import("./memoryForgettingCurve.js").then(m => { m.getAtRiskMemories(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
