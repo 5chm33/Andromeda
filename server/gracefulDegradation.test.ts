@@ -101,4 +101,27 @@ describe('gracefulDegradation', () => {
     const listener = vi.fn();
     expect(() => Module.onDegradation(listener)).not.toThrow();
   });
+
+  it('startHealthMonitoring is defined', () => {
+    expect(typeof Module.startHealthMonitoring).toBe('function');
+  });
+
+  it('startHealthMonitoring does not throw', () => {
+    expect(() => Module.startHealthMonitoring()).not.toThrow();
+  });
+
+  it('startHealthMonitoring is idempotent', () => {
+    expect(() => Module.startHealthMonitoring()).not.toThrow();
+    expect(() => Module.startHealthMonitoring()).not.toThrow();
+  });
+
+  it('reportSuccess is defined', () => {
+    expect(typeof Module.reportSuccess).toBe('function');
+  });
+
+  it('reportSuccess returns a ServiceState', () => {
+    const state = Module.reportSuccess('llm');
+    expect(state).toBeDefined();
+    expect(state).toHaveProperty('status');
+  });
 });

@@ -94,4 +94,23 @@ describe('ragPipeline', () => {
     }
   });
 
+  it('chunkDocument is defined', () => {
+    expect(typeof Module.chunkDocument).toBe('function');
+  });
+
+  it('chunkDocument returns an array for short content', () => {
+    const result = Module.chunkDocument('hello world');
+    expect(Array.isArray(result)).toBe(true);
+  });
+
+  it('chunkDocument handles empty string', () => {
+    const result = Module.chunkDocument('');
+    expect(Array.isArray(result)).toBe(true);
+  });
+
+  it('chunkDocument accepts source parameter', () => {
+    const result = Module.chunkDocument('some content', 'test-source');
+    expect(Array.isArray(result)).toBe(true);
+  });
+
 });

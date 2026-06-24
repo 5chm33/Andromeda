@@ -1,0 +1,27 @@
+[
+  {
+    "cycleId": "rsi-1782269385068-hs8v24",
+    "completedAt": "2026-06-24T02:49:57.496Z",
+    "durationMs": 12428,
+    "proposalsApplied": 0,
+    "proposalsRejected": 0,
+    "scoreBefore": 40,
+    "scoreAfter": 40,
+    "scoreDelta": 0,
+    "appliedFiles": [],
+    "benchmarkBefore": {
+      "ts": 5,
+      "pq": 10,
+      "tc": 20,
+      "mr": 5,
+      "gc": 0
+    },
+    "benchmarkAfter": {
+      "ts": 5,
+      "pq": 10,
+      "tc": 20,
+      "mr": 5,
+      "gc": 0
+    }
+  }
+]
