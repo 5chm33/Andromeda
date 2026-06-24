@@ -10551,6 +10551,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./proofVerifier.js").then(m => { m.checkPropositional(); }).catch(() => {});
     }
+    // 2409. qualityToRSI: feedQualityToRSI
+    if (cycleCount % 1000 === 0) {
+      import("./qualityToRSI.js").then(m => { m.feedQualityToRSI(); }).catch(() => {});
+    }
+    // 2410. qualityToRSI: feedDocGapsToRSI
+    if (cycleCount % 1000 === 0) {
+      import("./qualityToRSI.js").then(m => { m.feedDocGapsToRSI(); }).catch(() => {});
+    }
+    // 2411. qualityToRSI: runQualityToRSI
+    if (cycleCount % 1000 === 0) {
+      import("./qualityToRSI.js").then(m => { m.runQualityToRSI(); }).catch(() => {});
+    }
+    // 2412. ragContextOptimizer: buildRagContext
+    if (cycleCount % 1000 === 0) {
+      import("./ragContextOptimizer.js").then(m => { m.buildRagContext(); }).catch(() => {});
+    }
+    // 2413. ragContextOptimizer: getRagContextStats
+    if (cycleCount % 1000 === 0) {
+      import("./ragContextOptimizer.js").then(m => { m.getRagContextStats(); }).catch(() => {});
+    }
+    // 2414. ragContextOptimizer: initRagContextOptimizer
+    if (cycleCount % 1000 === 0) {
+      import("./ragContextOptimizer.js").then(m => { m.initRagContextOptimizer(); }).catch(() => {});
+    }
+    // 2415. sandboxManager: getSandboxConfig
+    if (cycleCount % 1000 === 0) {
+      import("./sandboxManager.js").then(m => { m.getSandboxConfig(); }).catch(() => {});
+    }
+    // 2416. sandboxManager: updateSandboxConfig
+    if (cycleCount % 1000 === 0) {
+      import("./sandboxManager.js").then(m => { m.updateSandboxConfig(); }).catch(() => {});
+    }
+    // 2417. sandboxManager: logExecution
+    if (cycleCount % 1000 === 0) {
+      import("./sandboxManager.js").then(m => { m.logExecution(); }).catch(() => {});
+    }
+    // 2418. selfConsistency: checkSelfConsistency
+    if (cycleCount % 1000 === 0) {
+      import("./selfConsistency.js").then(m => { m.checkSelfConsistency(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
