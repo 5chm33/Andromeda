@@ -8071,6 +8071,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./memoryConsolidation.js").then(m => { m.stopConsolidation(); }).catch(() => {});
     }
+    // 1789. contextBus: createChannel
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => { m.createChannel(); }).catch(() => {});
+    }
+    // 1790. contextBus: listChannels
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => { m.listChannels(); }).catch(() => {});
+    }
+    // 1791. contextBus: deleteChannel
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => { m.deleteChannel(); }).catch(() => {});
+    }
+    // 1792. contextBus: publish
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => { m.publish(); }).catch(() => {});
+    }
+    // 1793. contextBus: unsubscribeAgent
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => { m.unsubscribeAgent(); }).catch(() => {});
+    }
+    // 1794. contextBus: markRead
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => { m.markRead(); }).catch(() => {});
+    }
+    // 1795. contextBus: getUnreadCount
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => { m.getUnreadCount(); }).catch(() => {});
+    }
+    // 1796. contextBus: claimWork
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => { m.claimWork(); }).catch(() => {});
+    }
+    // 1797. contextBus: releaseWork
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => { m.releaseWork(); }).catch(() => {});
+    }
+    // 1798. contextBus: getActiveClaims
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => { m.getActiveClaims(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
