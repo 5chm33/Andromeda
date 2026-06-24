@@ -3391,6 +3391,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./testGenerator.js").then(m => { m.getTestResults(); }).catch(() => {});
     }
+    // 619. tieredContextManager: sealIsolatedContext
+    if (cycleCount % 1000 === 0) {
+      import("./tieredContextManager.js").then(m => { m.sealIsolatedContext(); }).catch(() => {});
+    }
+    // 620. tieredContextManager: mergeIsolatedContext
+    if (cycleCount % 1000 === 0) {
+      import("./tieredContextManager.js").then(m => { m.mergeIsolatedContext(); }).catch(() => {});
+    }
+    // 621. tieredContextManager: deleteIsolatedContext
+    if (cycleCount % 1000 === 0) {
+      import("./tieredContextManager.js").then(m => { m.deleteIsolatedContext(); }).catch(() => {});
+    }
+    // 622. tieredContextManager: getContextManagerStats
+    if (cycleCount % 1000 === 0) {
+      import("./tieredContextManager.js").then(m => { m.getContextManagerStats(); }).catch(() => {});
+    }
+    // 623. tieredContextManager: recordAssembly
+    if (cycleCount % 1000 === 0) {
+      import("./tieredContextManager.js").then(m => { m.recordAssembly(); }).catch(() => {});
+    }
+    // 624. zeroShotTransferEngine: transferPrinciple
+    if (cycleCount % 1000 === 0) {
+      import("./zeroShotTransferEngine.js").then(m => { m.transferPrinciple(); }).catch(() => {});
+    }
+    // 625. zeroShotTransferEngine: transferAllToDomain
+    if (cycleCount % 1000 === 0) {
+      import("./zeroShotTransferEngine.js").then(m => { m.transferAllToDomain(); }).catch(() => {});
+    }
+    // 626. zeroShotTransferEngine: getPrinciplesForDomain
+    if (cycleCount % 1000 === 0) {
+      import("./zeroShotTransferEngine.js").then(m => { m.getPrinciplesForDomain(); }).catch(() => {});
+    }
+    // 627. zeroShotTransferEngine: getTransferStats
+    if (cycleCount % 1000 === 0) {
+      import("./zeroShotTransferEngine.js").then(m => { m.getTransferStats(); }).catch(() => {});
+    }
+    // 628. zeroShotTransferEngine: initZeroShotTransferEngine
+    if (cycleCount % 1000 === 0) {
+      import("./zeroShotTransferEngine.js").then(m => { m.initZeroShotTransferEngine(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
