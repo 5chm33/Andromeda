@@ -246,10 +246,12 @@ export function optimizeContext(
   const result1 = summarizeAssistantMessages(optimized, targetTokenReduction - tokensFreed);
   tokensFreed += result1.tokensFreed;
   actions.push(...result1.actions);
+  if (tokensFreed >= targetTokenReduction) return { optimized, tokensFreed, actions };
 
   const result2 = pruneToolResults(optimized, targetTokenReduction - tokensFreed);
   tokensFreed += result2.tokensFreed;
   actions.push(...result2.actions);
+  if (tokensFreed >= targetTokenReduction) return { optimized, tokensFreed, actions };
 
   const result3 = removeRedundantSystemMessages(optimized);
   tokensFreed += result3.tokensFreed;
