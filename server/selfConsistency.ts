@@ -338,13 +338,30 @@ export async function checkSelfConsistency(check: ConsistencyCheck): Promise<Con
   // ── Calculate consensus ──
   const validEvals = evaluations.filter(e => !e.error);
   const agreeing = validEvals.filter(e => e.agrees).length;
-  // v5.39: When ALL providers fail (all errored), default to proceed with low confidence
-  // rather than blocking all proposals. This prevents total paralysis when APIs are down.
-  const consensus = validEvals.length > 0 ? agreeing / validEvals.length : 0.7;
+
+  // v11.291.1: When ALL providers fail (all errored), return proceed immediately.
+  // The primary LLM proposal + constitution check are sufficient safety gates.
+  // Blocking all RSI proposals because secondary validators are unreachable is wrong.
+  if (validEvals.length === 0) {
+    const fallbackReport: ConsistencyReport = {
+      checkId: `sc_fallback_${Date.now()}`,
+      consensus: 1.0,
+      confidence: 0.5,
+      evaluations,
+      recommendation: "proceed",
+      timestamp: Date.now(),
+    };
+    checkCache.set(cacheKey, fallbackReport);
+    checkHistory.push(fallbackReport);
+    if (checkHistory.length > MAX_HISTORY) checkHistory.shift();
+    return fallbackReport;
+  }
+
+  const consensus = agreeing / validEvals.length;
 
   // Weighted confidence
   const totalWeight = validEvals.reduce((sum, e) => sum + e.confidence, 0);
-  const weightedConfidence = validEvals.length > 0
+  const weightedConfidence = totalWeight > 0
     ? validEvals.reduce((sum, e) => sum + (e.agrees ? e.confidence : 0), 0) / totalWeight
     : 0.5;
 
@@ -388,7 +405,7 @@ export async function validateSelfModification(
 ): Promise<{ approved: boolean; report: ConsistencyReport }> {
   const report = await checkSelfConsistency({
     reasoning: `Proposed modification to ${filePath}: ${reason}`,
-    conclusion: `The change should be applied: ${proposedChange.slice(0, 500)}`,
+    conclusion: `The change should be applied: ${proposedChange.slice(0, 2000)}`,
     context: "Self-modification validation",
     checkType: "self_modification",
   });

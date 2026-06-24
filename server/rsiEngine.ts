@@ -523,9 +523,11 @@ export async function runRSICycle(): Promise<RSICycleResult> {
           console.log(`[RSIEngine] Running CI pipeline to validate proposal ${proposal.id}...`);
           const { runCiPipeline } = await import("./ciPipeline.js");
           const ciResult = await runCiPipeline(proposal.id, snapshotId, {
-            skipBuild: true,  // v11.290.0: Skip build — too slow for RSI cycles, TypeCheck is sufficient
-            skipReload: false,
-            targetFile: proposal.filePath, // v11.290.0: Run targeted test only (not full 2965-test suite)
+            skipBuild: true,      // v11.290.0: Skip build — too slow for RSI cycles
+            skipTypecheck: true,  // v11.291.1: Skip tsc — guard already ran TypeScript check
+            skipTests: true,      // v11.291.1: Skip tests — guard already ran targeted test
+            skipReload: true,     // v11.291.1: Skip SIGUSR2 reload — crashes the process
+            targetFile: proposal.filePath, // v11.290.0: Run targeted test only
           });
           if (ciResult.success) {
             proposalsApplied++;

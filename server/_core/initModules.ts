@@ -245,7 +245,15 @@ export async function initModules(): Promise<void> {
           const stored = JSON.parse(fs.readFileSync(baselineFile, "utf-8"));
           const pct = typeof stored.percentage === "number" ? stored.percentage : 0;
           if (pct >= 5) {
-            console.log(`[AutoBaseline] v7.0: Valid baseline exists (${pct.toFixed(1)}%) — skipping auto-capture`);
+            console.log(`[AutoBaseline] v7.0: Valid baseline exists (${pct.toFixed(1)}%) — skipping capture, auto-enabling RSI`);
+            // v11.291.1: Auto-enable RSI even when baseline already exists
+            const { enableRSI } = await import("../rsiEngine.js");
+            enableRSI({
+              intervalMs: 5 * 60 * 1000,
+              maxAutoApplyPerCycle: 3,
+              minConfidenceThreshold: 0.7,
+            });
+            console.log("[AutoBaseline] v11.291.1: RSI auto-enabled from existing baseline — 5-minute cycles started");
             return;
           }
           console.log(`[AutoBaseline] v7.0: Stored baseline score is ${pct.toFixed(1)}% (< 5%) — likely a failed run. Re-running baseline capture...`);

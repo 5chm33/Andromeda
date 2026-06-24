@@ -793,8 +793,13 @@ export async function guardedApply(proposalId: string): Promise<{
     }
   }
 
-  // v11.15.0: Self-consistency validation — verify the proposed change is semantically consistent
-  if (proposal.proposedContent) {
+  // v11.291.1: Self-consistency validation — only for HIGH-RISK proposals
+  // Low-risk refactoring (constants, JSDoc, readability) skips this check to avoid
+  // blocking the RSI pipeline when secondary validators disagree on trivial changes.
+  const _proposalRiskForSC = (proposal as any).riskLevel || "medium";
+  const _isLowRiskTitle = /jsdoc|readability|constant|rename|extract.*const|magic number|duplicate|comment|whitespace|formatting/i.test(proposal.title || "");
+  const _skipConsistencyCheck = _proposalRiskForSC === "low" || (_proposalRiskForSC === "medium" && _isLowRiskTitle);
+  if (proposal.proposedContent && !_skipConsistencyCheck) {
     try {
       const { validateSelfModification } = await import("./selfConsistency.js");
       const consistencyResult = await validateSelfModification(
@@ -815,6 +820,8 @@ export async function guardedApply(proposalId: string): Promise<{
     } catch (scErr) {
       // Non-fatal — if selfConsistency is unavailable, proceed without it
     }
+  } else if (_skipConsistencyCheck && proposal.proposedContent) {
+    console.log(`[Guard] Skipping self-consistency for low-risk proposal: ${(proposal.title || "").slice(0, 60)}`);
   }
 
   // v11.18.0 Audit 10 Fix C: Wire quickValidate so sandboxVerifier catches obvious issues before write

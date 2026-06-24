@@ -65,8 +65,10 @@ const DEFAULT_CONFIG: RollbackConfig = {
   enabled: true,
   maxRollbackPoints: 50,
   autoRollbackOnHealthFail: true,
-  healthCheckUrl: `http://localhost:${process.env.PORT ?? 3000}/health`,
-  healthCheckInterval: 10_000,
+  // v11.291.1: Use /api/health (the actual endpoint), 60s interval to avoid
+  // false positives while CI pipeline is running (which takes 20-30s).
+  healthCheckUrl: `http://localhost:${process.env.PORT ?? 3000}/api/health`,
+  healthCheckInterval: 60_000,
   retentionDays: 7,
   storageDir: path.resolve(PROJECT_DIR, "workspace", ".rollback_history"),
 };
@@ -282,7 +284,8 @@ export function startHealthWatch(pointId: string): void {
 
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
+      // v11.291.1: 15s timeout (was 5s) — server may be busy during CI pipeline
+      const timeout = setTimeout(() => controller.abort(), 15_000);
       const resp = await fetch(config.healthCheckUrl, { signal: controller.signal });
       clearTimeout(timeout);
 

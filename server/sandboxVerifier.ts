@@ -303,18 +303,9 @@ export function quickValidate(content: string, filePath: string): { valid: boole
       issues.push(`Unbalanced braces: ${openBraces} open, ${closeBraces} close`);
     }
 
-    // Check for unclosed strings
-    const lines = content.split("\n");
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      // Skip template literals
-      if (line.includes("`")) continue;
-      const singleQuotes = (line.match(/(?<!\\)'/g) || []).length;
-      const _doubleQuotes = (line.match(/(?<!\\)"/g) || []).length;
-      if (singleQuotes % 2 !== 0 && !line.includes("//") && !line.includes("`")) {
-        issues.push(`Possible unclosed string at line ${i + 1}`);
-      }
-    }
+    // v11.291.1: Removed unclosed-string heuristic — produces too many false positives
+    // on TypeScript files with apostrophes in JSDoc comments, template literals spanning
+    // multiple lines, or regex patterns. tsc --noEmit is the authoritative syntax check.
 
     // Check for empty file
     if (content.trim().length === 0) {
