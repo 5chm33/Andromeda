@@ -243,6 +243,7 @@ export class PrivilegeSeparationManager {
       for (const pattern of dangerousPatterns) {
         if (pattern.test(change.stagedContent)) {
           errors.push(`Dangerous pattern detected in ${change.filePath}: ${pattern}`);
+          break; // Early exit: one dangerous pattern is enough to reject
         }
       }
 
