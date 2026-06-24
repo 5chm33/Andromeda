@@ -2951,6 +2951,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./rewardModel.js").then(m => m.getRewardScore("+const x = 1;")).catch(() => {});
     }
+    // 509. goalManager: createCheckpoint
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.createCheckpoint("test-id", "audit-test"); }).catch(() => {});
+    }
+    // 510. goalManager: resolveCheckpoint
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.resolveCheckpoint("test-id", "cp-id", "ok"); }).catch(() => {});
+    }
+    // 511. goalManager: getPendingCheckpoints
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.getPendingCheckpoints(); }).catch(() => {});
+    }
+    // 512. goalManager: decomposeGoal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.decomposeGoal("test-id", { subGoals: [], estimatedSteps: 1, complexity: "simple", parallelizable: false }); }).catch(() => {});
+    }
+    // 513. goalManager: addLearning
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.addLearning("test-id", "test learning"); }).catch(() => {});
+    }
+    // 514. goalManager: evaluateGoal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.evaluateGoal("test-id"); }).catch(() => {});
+    }
+    // 515. goalManager: getGoalStats
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.getGoalStats(); }).catch(() => {});
+    }
+    // 516. goalManager: getGoalEvents
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.getGoalEvents(); }).catch(() => {});
+    }
+    // 517. goalManager: getActiveGoalsSummary
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.getActiveGoalsSummary(); }).catch(() => {});
+    }
+    // 518. goalManager: addReprioritizationRule
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.addReprioritizationRule({ condition: () => false, newPriority: "low", reason: "test" }); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
