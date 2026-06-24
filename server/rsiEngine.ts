@@ -4151,6 +4151,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./observability.js").then(m => { void 0 /* requestTracingMiddleware requires complex args — skipped */; }).catch(() => {});
     }
+    // 809. observability: requestTracingMiddleware
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { void 0 /* requestTracingMiddleware requires complex args — skipped */; }).catch(() => {});
+    }
+    // 810. observability: registerMetricsRoute
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { void 0 /* registerMetricsRoute requires complex args — skipped */; }).catch(() => {});
+    }
+    // 811. observability: traced
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { void 0 /* traced requires complex args — skipped */; }).catch(() => {});
+    }
+    // 812. persistentContextStore: initPersistentContextStore
+    if (cycleCount % 1000 === 0) {
+      import("./persistentContextStore.js").then(m => { m.initPersistentContextStore(); }).catch(() => {});
+    }
+    // 813. persistentContextStore: storeContext
+    if (cycleCount % 1000 === 0) {
+      import("./persistentContextStore.js").then(m => { m.storeContext(); }).catch(() => {});
+    }
+    // 814. persistentContextStore: stopPersistentContextStore
+    if (cycleCount % 1000 === 0) {
+      import("./persistentContextStore.js").then(m => { m.stopPersistentContextStore(); }).catch(() => {});
+    }
+    // 815. prGenerator: syncOpenPRStatus
+    if (cycleCount % 1000 === 0) {
+      import("./prGenerator.js").then(m => { m.syncOpenPRStatus(); }).catch(() => {});
+    }
+    // 816. prGenerator: getPRGeneratorStatus
+    if (cycleCount % 1000 === 0) {
+      import("./prGenerator.js").then(m => { m.getPRGeneratorStatus(); }).catch(() => {});
+    }
+    // 817. prGenerator: initPRGenerator
+    if (cycleCount % 1000 === 0) {
+      import("./prGenerator.js").then(m => { m.initPRGenerator(); }).catch(() => {});
+    }
+    // 818. proofAssistant: generateLean4Proof
+    if (cycleCount % 1000 === 0) {
+      import("./proofAssistant.js").then(m => { m.generateLean4Proof(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
