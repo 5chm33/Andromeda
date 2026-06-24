@@ -9151,6 +9151,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./selfMonitor.js").then(m => { m.resetMonitor(); }).catch(() => {});
     }
+    // 2059. semanticSelfModel: queryByUtility
+    if (cycleCount % 1000 === 0) {
+      import("./semanticSelfModel.js").then(m => { m.queryByUtility(); }).catch(() => {});
+    }
+    // 2060. semanticSelfModel: getTopModulesByImpact
+    if (cycleCount % 1000 === 0) {
+      import("./semanticSelfModel.js").then(m => { m.getTopModulesByImpact(); }).catch(() => {});
+    }
+    // 2061. semanticSelfModel: getHighRiskModules
+    if (cycleCount % 1000 === 0) {
+      import("./semanticSelfModel.js").then(m => { m.getHighRiskModules(); }).catch(() => {});
+    }
+    // 2062. semanticSelfModel: impactPredict
+    if (cycleCount % 1000 === 0) {
+      import("./semanticSelfModel.js").then(m => { m.impactPredict(); }).catch(() => {});
+    }
+    // 2063. semanticSelfModel: getModuleInfo
+    if (cycleCount % 1000 === 0) {
+      import("./semanticSelfModel.js").then(m => { m.getModuleInfo(); }).catch(() => {});
+    }
+    // 2064. semanticSelfModel: reloadState
+    if (cycleCount % 1000 === 0) {
+      import("./semanticSelfModel.js").then(m => { m.reloadState(); }).catch(() => {});
+    }
+    // 2065. semanticSelfModel: warmPromptCache
+    if (cycleCount % 1000 === 0) {
+      import("./semanticSelfModel.js").then(m => { m.warmPromptCache(); }).catch(() => {});
+    }
+    // 2066. systemMemory: recordSystemLearning
+    if (cycleCount % 1000 === 0) {
+      import("./systemMemory.js").then(m => { m.recordSystemLearning(); }).catch(() => {});
+    }
+    // 2067. systemMemory: queryLearnings
+    if (cycleCount % 1000 === 0) {
+      import("./systemMemory.js").then(m => { m.queryLearnings(); }).catch(() => {});
+    }
+    // 2068. systemMemory: updateBaseline
+    if (cycleCount % 1000 === 0) {
+      import("./systemMemory.js").then(m => { m.updateBaseline(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
