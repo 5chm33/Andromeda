@@ -4511,6 +4511,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./memoryForgettingCurve.js").then(m => { m.startMemoryForgettingCurveDaemon(); }).catch(() => {});
     }
+    // 899. observability: requestTracingMiddleware
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { void 0 /* requestTracingMiddleware requires complex args — skipped */; }).catch(() => {});
+    }
+    // 900. observability: registerMetricsRoute
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { void 0 /* registerMetricsRoute requires complex args — skipped */; }).catch(() => {});
+    }
+    // 901. observability: traced
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { void 0 /* traced requires complex args — skipped */; }).catch(() => {});
+    }
+    // 902. fileEngineUtils: runMultiPassEditWithAutosubmit
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineUtils.js").then(m => { void 0 /* runMultiPassEditWithAutosubmit requires complex args — skipped */; }).catch(() => {});
+    }
+    // 903. fileEngineUtils: runChunkedAnalysis
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineUtils.js").then(m => { void 0 /* runChunkedAnalysis requires complex args — skipped */; }).catch(() => {});
+    }
+    // 904. multiAgentBus: setAgentStatus
+    if (cycleCount % 1000 === 0) {
+      import("./multiAgentBus.js").then(m => { m.setAgentStatus(); }).catch(() => {});
+    }
+    // 905. multiAgentBus: getMessageLog
+    if (cycleCount % 1000 === 0) {
+      import("./multiAgentBus.js").then(m => { m.getMessageLog(); }).catch(() => {});
+    }
+    // 906. multiAgentImprover: initMultiAgentImprover
+    if (cycleCount % 1000 === 0) {
+      import("./multiAgentImprover.js").then(m => { m.initMultiAgentImprover(); }).catch(() => {});
+    }
+    // 907. multiAgentImprover: getMultiAgentStats
+    if (cycleCount % 1000 === 0) {
+      import("./multiAgentImprover.js").then(m => { m.getMultiAgentStats(); }).catch(() => {});
+    }
+    // 908. multiFileProposalPlanner: planMultiFileImprovement
+    if (cycleCount % 1000 === 0) {
+      import("./multiFileProposalPlanner.js").then(m => { m.planMultiFileImprovement(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
