@@ -8031,6 +8031,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./dependencyResolver.js").then(m => { m.rollbackAll(); }).catch(() => {});
     }
+    // 1779. memoryConsolidation: trackMemory
+    if (cycleCount % 1000 === 0) {
+      import("./memoryConsolidation.js").then(m => { m.trackMemory(); }).catch(() => {});
+    }
+    // 1780. memoryConsolidation: recordAccess
+    if (cycleCount % 1000 === 0) {
+      import("./memoryConsolidation.js").then(m => { m.recordAccess(); }).catch(() => {});
+    }
+    // 1781. memoryConsolidation: runConsolidation
+    if (cycleCount % 1000 === 0) {
+      import("./memoryConsolidation.js").then(m => { m.runConsolidation(); }).catch(() => {});
+    }
+    // 1782. memoryConsolidation: getConsolidationConfig
+    if (cycleCount % 1000 === 0) {
+      import("./memoryConsolidation.js").then(m => { m.getConsolidationConfig(); }).catch(() => {});
+    }
+    // 1783. memoryConsolidation: setConsolidationConfig
+    if (cycleCount % 1000 === 0) {
+      import("./memoryConsolidation.js").then(m => { m.setConsolidationConfig(); }).catch(() => {});
+    }
+    // 1784. memoryConsolidation: getConsolidationStats
+    if (cycleCount % 1000 === 0) {
+      import("./memoryConsolidation.js").then(m => { m.getConsolidationStats(); }).catch(() => {});
+    }
+    // 1785. memoryConsolidation: getScoredMemories
+    if (cycleCount % 1000 === 0) {
+      import("./memoryConsolidation.js").then(m => { m.getScoredMemories(); }).catch(() => {});
+    }
+    // 1786. memoryConsolidation: getMemoryScore
+    if (cycleCount % 1000 === 0) {
+      import("./memoryConsolidation.js").then(m => { m.getMemoryScore(); }).catch(() => {});
+    }
+    // 1787. memoryConsolidation: startConsolidation
+    if (cycleCount % 1000 === 0) {
+      import("./memoryConsolidation.js").then(m => { m.startConsolidation(); }).catch(() => {});
+    }
+    // 1788. memoryConsolidation: stopConsolidation
+    if (cycleCount % 1000 === 0) {
+      import("./memoryConsolidation.js").then(m => { m.stopConsolidation(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
