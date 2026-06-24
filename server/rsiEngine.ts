@@ -7911,6 +7911,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./selfKnowledgeBase.js").then(m => { m.recordLearning(); }).catch(() => {});
     }
+    // 1749. selfMonitor: recordMetric
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => { m.recordMetric(); }).catch(() => {});
+    }
+    // 1750. selfMonitor: recordRequestOutcome
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => { m.recordRequestOutcome(); }).catch(() => {});
+    }
+    // 1751. selfMonitor: getMonitorConfig
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => { m.getMonitorConfig(); }).catch(() => {});
+    }
+    // 1752. selfMonitor: setMonitorConfig
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => { m.setMonitorConfig(); }).catch(() => {});
+    }
+    // 1753. selfMonitor: getHealthReport
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => { m.getHealthReport(); }).catch(() => {});
+    }
+    // 1754. selfMonitor: getAlerts
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => { m.getAlerts(); }).catch(() => {});
+    }
+    // 1755. selfMonitor: resolveAlert
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => { m.resolveAlert(); }).catch(() => {});
+    }
+    // 1756. selfMonitor: getMetricHistory
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => { m.getMetricHistory(); }).catch(() => {});
+    }
+    // 1757. selfMonitor: getMonitorSummary
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => { m.getMonitorSummary(); }).catch(() => {});
+    }
+    // 1758. selfMonitor: startMonitor
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => { m.startMonitor(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
