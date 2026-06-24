@@ -9871,6 +9871,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./observability.js").then(m => { m.startSpan(); }).catch(() => {});
     }
+    // 2239. ollamaAutoSetup: checkOllamaHealth
+    if (cycleCount % 1000 === 0) {
+      import("./ollamaAutoSetup.js").then(m => { m.checkOllamaHealth(); }).catch(() => {});
+    }
+    // 2240. ollamaAutoSetup: pullOllamaModel
+    if (cycleCount % 1000 === 0) {
+      import("./ollamaAutoSetup.js").then(m => { m.pullOllamaModel(); }).catch(() => {});
+    }
+    // 2241. ollamaAutoSetup: autoSetupOllama
+    if (cycleCount % 1000 === 0) {
+      import("./ollamaAutoSetup.js").then(m => { m.autoSetupOllama(); }).catch(() => {});
+    }
+    // 2242. ollamaAutoSetup: trackLocalTokenUsage
+    if (cycleCount % 1000 === 0) {
+      import("./ollamaAutoSetup.js").then(m => { m.trackLocalTokenUsage(); }).catch(() => {});
+    }
+    // 2243. ollamaAutoSetup: getOllamaStatus
+    if (cycleCount % 1000 === 0) {
+      import("./ollamaAutoSetup.js").then(m => { m.getOllamaStatus(); }).catch(() => {});
+    }
+    // 2244. proofAssistant: detectProverBackend
+    if (cycleCount % 1000 === 0) {
+      import("./proofAssistant.js").then(m => { m.detectProverBackend(); }).catch(() => {});
+    }
+    // 2245. proofAssistant: analyzeCodeSafety
+    if (cycleCount % 1000 === 0) {
+      import("./proofAssistant.js").then(m => { m.analyzeCodeSafety(); }).catch(() => {});
+    }
+    // 2246. proofAssistant: computeSafetyScore
+    if (cycleCount % 1000 === 0) {
+      import("./proofAssistant.js").then(m => { m.computeSafetyScore(); }).catch(() => {});
+    }
+    // 2247. proofAssistant: loadProofLog
+    if (cycleCount % 1000 === 0) {
+      import("./proofAssistant.js").then(m => { m.loadProofLog(); }).catch(() => {});
+    }
+    // 2248. proofAssistant: getProofStats
+    if (cycleCount % 1000 === 0) {
+      import("./proofAssistant.js").then(m => { m.getProofStats(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
