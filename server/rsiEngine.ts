@@ -9351,6 +9351,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./importGraph.js").then(m => { m.validateRefactoring(); }).catch(() => {});
     }
+    // 2109. knowledgeTransfer: learnFromAppliedProposal
+    if (cycleCount % 1000 === 0) {
+      import("./knowledgeTransfer.js").then(m => { m.learnFromAppliedProposal(); }).catch(() => {});
+    }
+    // 2110. knowledgeTransfer: exportKnowledgePackage
+    if (cycleCount % 1000 === 0) {
+      import("./knowledgeTransfer.js").then(m => { m.exportKnowledgePackage(); }).catch(() => {});
+    }
+    // 2111. knowledgeTransfer: importKnowledgePackage
+    if (cycleCount % 1000 === 0) {
+      import("./knowledgeTransfer.js").then(m => { m.importKnowledgePackage(); }).catch(() => {});
+    }
+    // 2112. knowledgeTransfer: getPatternContextForFile
+    if (cycleCount % 1000 === 0) {
+      import("./knowledgeTransfer.js").then(m => { m.getPatternContextForFile(); }).catch(() => {});
+    }
+    // 2113. knowledgeTransfer: getKnowledgeTransferStatus
+    if (cycleCount % 1000 === 0) {
+      import("./knowledgeTransfer.js").then(m => { m.getKnowledgeTransferStatus(); }).catch(() => {});
+    }
+    // 2114. knowledgeTransfer: initKnowledgeTransfer
+    if (cycleCount % 1000 === 0) {
+      import("./knowledgeTransfer.js").then(m => { m.initKnowledgeTransfer(); }).catch(() => {});
+    }
+    // 2115. learnedConstraints: recordRejection
+    if (cycleCount % 1000 === 0) {
+      import("./learnedConstraints.js").then(m => { m.recordRejection(); }).catch(() => {});
+    }
+    // 2116. learnedConstraints: addLearnedConstraint
+    if (cycleCount % 1000 === 0) {
+      import("./learnedConstraints.js").then(m => { m.addLearnedConstraint(); }).catch(() => {});
+    }
+    // 2117. learnedConstraints: getLearnedConstraints
+    if (cycleCount % 1000 === 0) {
+      import("./learnedConstraints.js").then(m => { m.getLearnedConstraints(); }).catch(() => {});
+    }
+    // 2118. learnedConstraints: getAllConstraints
+    if (cycleCount % 1000 === 0) {
+      import("./learnedConstraints.js").then(m => { m.getAllConstraints(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
