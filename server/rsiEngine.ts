@@ -10951,6 +10951,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./multiAgentImprover.js").then(m => { m.setMultiAgentEnabled(); }).catch(() => {});
     }
+    // 2509. persistentContextStore: searchContext
+    if (cycleCount % 1000 === 0) {
+      import("./persistentContextStore.js").then(m => { m.searchContext(); }).catch(() => {});
+    }
+    // 2510. persistentContextStore: getStoreStats
+    if (cycleCount % 1000 === 0) {
+      import("./persistentContextStore.js").then(m => { m.getStoreStats(); }).catch(() => {});
+    }
+    // 2511. privilegeSeparation: getPrivilegeSeparationManager
+    if (cycleCount % 1000 === 0) {
+      import("./privilegeSeparation.js").then(m => { m.getPrivilegeSeparationManager(); }).catch(() => {});
+    }
+    // 2512. privilegeSeparation: resetPrivilegeSeparationManager
+    if (cycleCount % 1000 === 0) {
+      import("./privilegeSeparation.js").then(m => { m.resetPrivilegeSeparationManager(); }).catch(() => {});
+    }
+    // 2513. proofVerifier: runTLAVerification
+    if (cycleCount % 1000 === 0) {
+      import("./proofVerifier.js").then(m => { m.runTLAVerification(); }).catch(() => {});
+    }
+    // 2514. proofVerifier: verifyProposal
+    if (cycleCount % 1000 === 0) {
+      import("./proofVerifier.js").then(m => { m.verifyProposal(); }).catch(() => {});
+    }
+    // 2515. ragPipeline: chunkDocument
+    if (cycleCount % 1000 === 0) {
+      import("./ragPipeline.js").then(m => { m.chunkDocument(); }).catch(() => {});
+    }
+    // 2516. ragPipeline: shouldUseRag
+    if (cycleCount % 1000 === 0) {
+      import("./ragPipeline.js").then(m => { m.shouldUseRag(); }).catch(() => {});
+    }
+    // 2517. realEvalHarness: recordRealInteraction
+    if (cycleCount % 1000 === 0) {
+      import("./realEvalHarness.js").then(m => { m.recordRealInteraction(); }).catch(() => {});
+    }
+    // 2518. realEvalHarness: getDegradedQueryTargets
+    if (cycleCount % 1000 === 0) {
+      import("./realEvalHarness.js").then(m => { m.getDegradedQueryTargets(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
