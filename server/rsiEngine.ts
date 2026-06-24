@@ -2016,6 +2016,59 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./tenantManager.js").then(m => m.checkQuota("default", "rsiCycles")).catch(() => {});
     }
+    // 299. federatedLearning: register a probe node for the local RSI instance
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLearning.js").then(m => m.registerNode({
+        nodeId: "rsi-probe-node",
+        url: "http://localhost:3000",
+        version: "11.55.0",
+        capabilityScore: 1.0,
+        contributionCount: 0,
+      })).catch(() => {});
+    }
+    // 300. federatedLearning: get the probe node record
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLearning.js").then(m => m.getNode("rsi-probe-node")).catch(() => {});
+    }
+    // 301. selfMonitor: resolve any open alerts
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => m.resolveAlert("rsi-probe-alert")).catch(() => {});
+    }
+    // 302. selfMonitor: get a human-readable monitor summary
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => m.getMonitorSummary()).catch(() => {});
+    }
+    // 303. andromedaDb: record a neutral feedback entry for the RSI cycle
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => m.recordFeedback({
+        sessionId: "rsi-probe",
+        messageId: `rsi-${cycleCount}`,
+        query: "rsi cycle probe",
+        response: "ok",
+        rating: 1,
+        module: "rsiEngine",
+      })).catch(() => {});
+    }
+    // 304. andromedaDb: get the lowest-rated modules
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => m.getLowRatedModules(5)).catch(() => {});
+    }
+    // 305. llmProvider: list all configured providers
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => m.listProviders()).catch(() => {});
+    }
+    // 306. llmProvider: get the provider assigned to the standard tier
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => m.getProviderForTier("standard")).catch(() => {});
+    }
+    // 307. selfKnowledgeBase: query learnings relevant to rsiEngine
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => m.queryLearnings("rsiEngine")).catch(() => {});
+    }
+    // 308. selfKnowledgeBase: get all success patterns
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => m.getSuccessPatterns()).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
