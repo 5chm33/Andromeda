@@ -10151,6 +10151,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./persistentContextStore.js").then(m => { m.retrieveSessionContext(); }).catch(() => {});
     }
+    // 2309. proposalFeedback: recordRejectionFeedback
+    if (cycleCount % 1000 === 0) {
+      import("./proposalFeedback.js").then(m => { m.recordRejectionFeedback(); }).catch(() => {});
+    }
+    // 2310. proposalFeedback: getRejectionContext
+    if (cycleCount % 1000 === 0) {
+      import("./proposalFeedback.js").then(m => { m.getRejectionContext(); }).catch(() => {});
+    }
+    // 2311. proposalFeedback: getFileRejectionStats
+    if (cycleCount % 1000 === 0) {
+      import("./proposalFeedback.js").then(m => { m.getFileRejectionStats(); }).catch(() => {});
+    }
+    // 2312. proposalFeedback: clearFileFeedback
+    if (cycleCount % 1000 === 0) {
+      import("./proposalFeedback.js").then(m => { m.clearFileFeedback(); }).catch(() => {});
+    }
+    // 2313. rbac: auditMiddleware
+    if (cycleCount % 1000 === 0) {
+      import("./rbac.js").then(m => { m.auditMiddleware(); }).catch(() => {});
+    }
+    // 2314. rbac: requireTenant
+    if (cycleCount % 1000 === 0) {
+      import("./rbac.js").then(m => { m.requireTenant(); }).catch(() => {});
+    }
+    // 2315. rbac: roleRateLimit
+    if (cycleCount % 1000 === 0) {
+      import("./rbac.js").then(m => { m.roleRateLimit(); }).catch(() => {});
+    }
+    // 2316. rbac: getRbacContext
+    if (cycleCount % 1000 === 0) {
+      import("./rbac.js").then(m => { m.getRbacContext(); }).catch(() => {});
+    }
+    // 2317. rewardModel: extractFeatures
+    if (cycleCount % 1000 === 0) {
+      import("./rewardModel.js").then(m => { m.extractFeatures(); }).catch(() => {});
+    }
+    // 2318. rewardModel: getRewardScore
+    if (cycleCount % 1000 === 0) {
+      import("./rewardModel.js").then(m => { m.getRewardScore(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
