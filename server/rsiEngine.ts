@@ -2631,6 +2631,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./osGrounding.js").then(m => m.getCpuMetrics()).catch(() => {});
     }
+    // 429. contextBus: delete a channel
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => m.deleteChannel("rsi-probe")).catch(() => {});
+    }
+    // 430. contextBus: subscribe an agent to a channel
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => m.subscribe({ agentId: "rsi-probe", channel: "default" })).catch(() => {});
+    }
+    // 431. proofVerifier: check propositional proof
+    if (cycleCount % 1000 === 0) {
+      import("./proofVerifier.js").then(m => m.checkPropositional({ proposalId: "rsi-probe", filePath: "rsiEngine.ts", rationale: "probe", proposedContent: "", preConditions: {}, postConditions: {}, expectedUtilityDelta: 0 })).catch(() => {});
+    }
+    // 432. proofVerifier: run TLA verification
+    if (cycleCount % 1000 === 0) {
+      import("./proofVerifier.js").then(m => m.runTLAVerification({ proposalId: "rsi-probe", filePath: "rsiEngine.ts", rationale: "probe", proposedContent: "", preConditions: {}, postConditions: {}, expectedUtilityDelta: 0 })).catch(() => {});
+    }
+    // 433. rlhfCollector: record implicit feedback
+    if (cycleCount % 1000 === 0) {
+      import("./rlhfCollector.js").then(m => m.recordImplicitFeedback([], 0)).catch(() => {});
+    }
+    // 434. rlhfCollector: get RLHF context
+    if (cycleCount % 1000 === 0) {
+      import("./rlhfCollector.js").then(m => m.getRlhfContext()).catch(() => {});
+    }
+    // 435. runtimeConfig: load config
+    if (cycleCount % 1000 === 0) {
+      import("./runtimeConfig.js").then(m => m.loadConfig()).catch(() => {});
+    }
+    // 436. runtimeConfig: save config (no-op update)
+    if (cycleCount % 1000 === 0) {
+      import("./runtimeConfig.js").then(m => m.saveConfig({}, "system")).catch(() => {});
+    }
+    // 437. selfKnowledgeBase: find similar issue
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => m.findSimilarIssue("rsi-probe")).catch(() => {});
+    }
+    // 438. selfKnowledgeBase: get improvement context
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => m.getImprovementContext()).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
