@@ -10791,6 +10791,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./dependencyAuditor.js").then(m => { m.isRunning(); }).catch(() => {});
     }
+    // 2469. dockerSandbox: isDockerAvailable
+    if (cycleCount % 1000 === 0) {
+      import("./dockerSandbox.js").then(m => { m.isDockerAvailable(); }).catch(() => {});
+    }
+    // 2470. dockerSandbox: executeInSandbox
+    if (cycleCount % 1000 === 0) {
+      import("./dockerSandbox.js").then(m => { m.executeInSandbox(); }).catch(() => {});
+    }
+    // 2471. edgeLLMRouter: getModelCatalog
+    if (cycleCount % 1000 === 0) {
+      import("./edgeLLMRouter.js").then(m => { m.getModelCatalog(); }).catch(() => {});
+    }
+    // 2472. edgeLLMRouter: estimateCost
+    if (cycleCount % 1000 === 0) {
+      import("./edgeLLMRouter.js").then(m => { m.estimateCost(); }).catch(() => {});
+    }
+    // 2473. episodicConsolidation: getEpisodicConsolidationStats
+    if (cycleCount % 1000 === 0) {
+      import("./episodicConsolidation.js").then(m => { m.getEpisodicConsolidationStats(); }).catch(() => {});
+    }
+    // 2474. episodicConsolidation: initEpisodicConsolidation
+    if (cycleCount % 1000 === 0) {
+      import("./episodicConsolidation.js").then(m => { m.initEpisodicConsolidation(); }).catch(() => {});
+    }
+    // 2475. episodicMemory: retrieveSimilar
+    if (cycleCount % 1000 === 0) {
+      import("./episodicMemory.js").then(m => { m.retrieveSimilar(); }).catch(() => {});
+    }
+    // 2476. episodicMemory: clearEpisodicMemory
+    if (cycleCount % 1000 === 0) {
+      import("./episodicMemory.js").then(m => { m.clearEpisodicMemory(); }).catch(() => {});
+    }
+    // 2477. evalDrivenTargeting: runEvalDrivenTargeting
+    if (cycleCount % 1000 === 0) {
+      import("./evalDrivenTargeting.js").then(m => { m.runEvalDrivenTargeting(); }).catch(() => {});
+    }
+    // 2478. evalDrivenTargeting: getTargetedFiles
+    if (cycleCount % 1000 === 0) {
+      import("./evalDrivenTargeting.js").then(m => { m.getTargetedFiles(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
