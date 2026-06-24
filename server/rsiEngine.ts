@@ -11231,6 +11231,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./crossInstanceRlhf.js").then(m => { m.getRlhfStats(); }).catch(() => {});
     }
+    // 2579. crossModalSelfImprovement: getCrossModalManager
+    if (cycleCount % 1000 === 0) {
+      import("./crossModalSelfImprovement.js").then(m => { m.getCrossModalManager(); }).catch(() => {});
+    }
+    // 2580. distributedProofConsensus: getConsensusManager
+    if (cycleCount % 1000 === 0) {
+      import("./distributedProofConsensus.js").then(m => { m.getConsensusManager(); }).catch(() => {});
+    }
+    // 2581. docGenerator: isRunning
+    if (cycleCount % 1000 === 0) {
+      import("./docGenerator.js").then(m => { m.isRunning(); }).catch(() => {});
+    }
+    // 2582. ebpfGrounding: getEbpfMonitor
+    if (cycleCount % 1000 === 0) {
+      import("./ebpfGrounding.js").then(m => { m.getEbpfMonitor(); }).catch(() => {});
+    }
+    // 2583. evalSeed: seedAdaptiveBenchmarks
+    if (cycleCount % 1000 === 0) {
+      import("./evalSeed.js").then(m => { m.seedAdaptiveBenchmarks(); }).catch(() => {});
+    }
+    // 2584. evolutionarySearch: runEvolutionaryGeneration
+    if (cycleCount % 1000 === 0) {
+      import("./evolutionarySearch.js").then(m => { m.runEvolutionaryGeneration(); }).catch(() => {});
+    }
+    // 2585. formalVerification: verifyModule
+    if (cycleCount % 1000 === 0) {
+      import("./formalVerification.js").then(m => { m.verifyModule(); }).catch(() => {});
+    }
+    // 2586. identityManifest: checkPrincipleViolation
+    if (cycleCount % 1000 === 0) {
+      import("./identityManifest.js").then(m => { m.checkPrincipleViolation(); }).catch(() => {});
+    }
+    // 2587. knowledgeBaseConsolidation: getKBConsolidationSummary
+    if (cycleCount % 1000 === 0) {
+      import("./knowledgeBaseConsolidation.js").then(m => { m.getKBConsolidationSummary(); }).catch(() => {});
+    }
+    // 2588. localLora: runLocalLoraTraining
+    if (cycleCount % 1000 === 0) {
+      import("./localLora.js").then(m => { m.runLocalLoraTraining(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
