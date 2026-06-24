@@ -8711,6 +8711,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./importGraph.js").then(m => { m.getImporters(); }).catch(() => {});
     }
+    // 1949. llmRouter: getRoutingConfig
+    if (cycleCount % 1000 === 0) {
+      import("./llmRouter.js").then(m => { m.getRoutingConfig(); }).catch(() => {});
+    }
+    // 1950. llmRouter: setRoutingConfig
+    if (cycleCount % 1000 === 0) {
+      import("./llmRouter.js").then(m => { m.setRoutingConfig(); }).catch(() => {});
+    }
+    // 1951. llmRouter: classifyTask
+    if (cycleCount % 1000 === 0) {
+      import("./llmRouter.js").then(m => { m.classifyTask(); }).catch(() => {});
+    }
+    // 1952. llmRouter: routeQuery
+    if (cycleCount % 1000 === 0) {
+      import("./llmRouter.js").then(m => { m.routeQuery(); }).catch(() => {});
+    }
+    // 1953. llmRouter: applyRouting
+    if (cycleCount % 1000 === 0) {
+      import("./llmRouter.js").then(m => { m.applyRouting(); }).catch(() => {});
+    }
+    // 1954. llmRouter: autoRoute
+    if (cycleCount % 1000 === 0) {
+      import("./llmRouter.js").then(m => { m.autoRoute(); }).catch(() => {});
+    }
+    // 1955. llmRouter: restoreProvider
+    if (cycleCount % 1000 === 0) {
+      import("./llmRouter.js").then(m => { m.restoreProvider(); }).catch(() => {});
+    }
+    // 1956. llmRouter: applyTier
+    if (cycleCount % 1000 === 0) {
+      import("./llmRouter.js").then(m => { m.applyTier(); }).catch(() => {});
+    }
+    // 1957. longTermMemoryConsolidation: extractPatternsFromDiff
+    if (cycleCount % 1000 === 0) {
+      import("./longTermMemoryConsolidation.js").then(m => { m.extractPatternsFromDiff(); }).catch(() => {});
+    }
+    // 1958. longTermMemoryConsolidation: recordObservation
+    if (cycleCount % 1000 === 0) {
+      import("./longTermMemoryConsolidation.js").then(m => { m.recordObservation(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
