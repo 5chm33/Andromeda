@@ -3631,6 +3631,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./federatedLearning.js").then(m => { m.getFederatedStats(); }).catch(() => {});
     }
+    // 679. federatedLoraSharing: receiveLoraPackage
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLoraSharing.js").then(m => { m.receiveLoraPackage(); }).catch(() => {});
+    }
+    // 680. federatedLoraSharing: receiveToolProposal
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLoraSharing.js").then(m => { m.receiveToolProposal(); }).catch(() => {});
+    }
+    // 681. federatedLoraSharing: computeFederatedAverageScore
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLoraSharing.js").then(m => { m.computeFederatedAverageScore(); }).catch(() => {});
+    }
+    // 682. federatedLoraSharing: getFederatedLoraState
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLoraSharing.js").then(m => { m.getFederatedLoraState(); }).catch(() => {});
+    }
+    // 683. grounding: computeConfidenceScore
+    if (cycleCount % 1000 === 0) {
+      import("./grounding.js").then(m => { m.computeConfidenceScore(); }).catch(() => {});
+    }
+    // 684. grounding: groundAnswer
+    if (cycleCount % 1000 === 0) {
+      import("./grounding.js").then(m => { m.groundAnswer(); }).catch(() => {});
+    }
+    // 685. grounding: verifyFactFromEvidence
+    if (cycleCount % 1000 === 0) {
+      import("./grounding.js").then(m => { m.verifyFactFromEvidence(); }).catch(() => {});
+    }
+    // 686. grounding: getGroundingSystemPromptAddendum
+    if (cycleCount % 1000 === 0) {
+      import("./grounding.js").then(m => { m.getGroundingSystemPromptAddendum(); }).catch(() => {});
+    }
+    // 687. llmProvider: getBackgroundProvider
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => { m.getBackgroundProvider(); }).catch(() => {});
+    }
+    // 688. llmProvider: backgroundChatCompletion
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => { m.backgroundChatCompletion(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
