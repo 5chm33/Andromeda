@@ -2671,6 +2671,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./selfKnowledgeBase.js").then(m => m.getImprovementContext()).catch(() => {});
     }
+    // 439. selfModel: describe self
+    if (cycleCount % 1000 === 0) {
+      import("./selfModel.js").then(m => m.describeSelf()).catch(() => {});
+    }
+    // 440. selfModel: refresh self model
+    if (cycleCount % 1000 === 0) {
+      import("./selfModel.js").then(m => m.refreshSelfModel()).catch(() => {});
+    }
+    // 441. selfMonitor: recalculate baselines
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => m.recalculateBaselines()).catch(() => {});
+    }
+    // 442. selfMonitor: check if provider is degraded
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => m.isProviderDegraded("default")).catch(() => {});
+    }
+    // 443. selfRollback: stop health watch
+    if (cycleCount % 1000 === 0) {
+      import("./selfRollback.js").then(m => m.stopHealthWatch()).catch(() => {});
+    }
+    // 444. selfRollback: start degradation watch
+    if (cycleCount % 1000 === 0) {
+      import("./selfRollback.js").then(m => m.startDegradationWatch()).catch(() => {});
+    }
+    // 445. semanticSelfModel: get high risk modules
+    if (cycleCount % 1000 === 0) {
+      import("./semanticSelfModel.js").then(m => m.getHighRiskModules()).catch(() => {});
+    }
+    // 446. semanticSelfModel: impact predict
+    if (cycleCount % 1000 === 0) {
+      import("./semanticSelfModel.js").then(m => m.impactPredict("rsiEngine", "optimize")).catch(() => {});
+    }
+    // 447. systemMemory: record system learning
+    if (cycleCount % 1000 === 0) {
+      import("./systemMemory.js").then(m => m.recordSystemLearning({ category: "performance", title: "rsi-probe", content: "probe", context: "rsiEngine" })).catch(() => {});
+    }
+    // 448. systemMemory: get degrading metrics
+    if (cycleCount % 1000 === 0) {
+      import("./systemMemory.js").then(m => m.getDegradingMetrics()).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
