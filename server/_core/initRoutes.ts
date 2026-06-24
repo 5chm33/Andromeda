@@ -256,11 +256,41 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
         `git log --format='%H|%s|%an|%ai' -${limit}`,
         { cwd: process.cwd(), encoding: "utf-8", timeout: 5000 }
       ).trim();
+      // v11.291.0: Determine which commits have been pushed to remote
+      let pushedHashes = new Set<string>();
+      try {
+        const remoteLog = execSync(
+          "git log --format='%H' origin/main",
+          { cwd: process.cwd(), encoding: "utf-8", timeout: 5000 }
+        ).trim();
+        remoteLog.split("\n").filter(Boolean).forEach(h => pushedHashes.add(h.trim()));
+      } catch { /* remote may not be reachable — non-fatal */ }
+      // v11.291.0: Get remote sync status
+      let syncStatus = "unknown";
+      let aheadCount = 0;
+      try {
+        const revList = execSync(
+          "git rev-list --count --left-right HEAD...origin/main",
+          { cwd: process.cwd(), encoding: "utf-8", timeout: 5000 }
+        ).trim();
+        const [ahead, behind] = revList.split("\t").map(Number);
+        aheadCount = ahead || 0;
+        syncStatus = ahead === 0 ? "synced" : `${ahead} ahead`;
+      } catch { syncStatus = "unknown"; }
       const commits = raw.split("\n").filter(Boolean).map(line => {
         const parts = line.split("|");
-        return { hash: parts[0]?.slice(0, 8), subject: parts[1], author: parts[2], date: parts[3] };
+        const fullHash = parts[0] || "";
+        return {
+          hash: fullHash.slice(0, 8),
+          fullHash,
+          subject: parts[1],
+          author: parts[2],
+          date: parts[3],
+          pushed: pushedHashes.has(fullHash),
+          isRsiCommit: /andromeda self-improvement|rsi|autonomous|self-improv/i.test(parts[1] || ""),
+        };
       });
-      res.json({ commits });
+      res.json({ commits, syncStatus, aheadCount });
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });
 

@@ -1941,7 +1941,36 @@ function gitCommitSelfImprovement(
     // Sanitize commit message: strip backticks, dollar signs, and backslashes
     const commitMsg = rawMsg.replace(/[`$\\]/g, "");
     const result = gitSandbox(`git commit -m ${JSON.stringify(commitMsg)}`, { cwd, env: gitEnv, encoding: "utf-8" });
-    return { success: true, message: result.trim() };
+    const commitSha = result.trim();
+
+    // v11.291.0: Auto-push to GitHub after every successful commit.
+    // The agent commits and pushes its own improvements autonomously — no human push required.
+    // Uses GITHUB_TOKEN + GITHUB_REPO from .env.local. Falls back gracefully if not configured.
+    let pushMessage = "";
+    try {
+      const token = process.env.GITHUB_TOKEN || "";
+      const repo = process.env.GITHUB_REPO || "";
+      const currentBranch = branchStrategy === "feature-branch"
+        ? (() => { try { return gitSandbox("git rev-parse --abbrev-ref HEAD", { cwd, env: gitEnv, encoding: "utf-8" }).trim(); } catch { return "main"; } })()
+        : "main";
+      if (token && repo) {
+        // Authenticated push URL — token embedded, no interactive prompt needed
+        const pushUrl = `https://${token}@github.com/${repo}.git`;
+        gitSandbox(`git push "${pushUrl}" ${currentBranch}`, { cwd, env: gitEnv, encoding: "utf-8", timeout: 30_000 });
+        pushMessage = ` | pushed to github.com/${repo}`;
+        console.log(`[selfImprove] Auto-pushed to GitHub: ${repo} (${currentBranch})`);
+      } else {
+        // No token configured — commit is local only, still safe
+        pushMessage = " | no GITHUB_TOKEN — local commit only";
+        console.log(`[selfImprove] Committed locally. Set GITHUB_TOKEN + GITHUB_REPO in .env.local to auto-push.`);
+      }
+    } catch (pushErr: any) {
+      // Push failure is non-fatal — the commit is already safe on disk
+      pushMessage = ` | push failed: ${sanitizeForLog(pushErr.message?.slice(0, 80) || String(pushErr))}`;
+      console.warn(`[selfImprove] Auto-push failed (non-fatal, commit is local): ${pushErr.message?.slice(0, 120)}`);
+    }
+
+    return { success: true, message: commitSha + pushMessage };
   } catch (err: any) {
     const errMsg = err instanceof GitCommandNotAllowedError
       ? err.message

@@ -64,9 +64,12 @@ interface RsiStatus {
 
 interface GitCommit {
   hash: string;
+  fullHash?: string;
   subject: string;
   author: string;
   date: string;
+  pushed?: boolean;
+  isRsiCommit?: boolean;
 }
 
 interface VectorStats {
@@ -196,23 +199,30 @@ function CycleHistoryTable() {
 
 function GitCommitFeed() {
   const [commits, setCommits] = useState<GitCommit[]>([]);
+  const [syncStatus, setSyncStatus] = useState<string>("unknown");
+  const [aheadCount, setAheadCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const r = await fetch("/api/git/log?limit=30");
+        const r = await fetch("/api/git/log?limit=40");
         if (r.ok) {
           const data = await r.json();
           setCommits(data.commits ?? []);
+          setSyncStatus(data.syncStatus ?? "unknown");
+          setAheadCount(data.aheadCount ?? 0);
         }
       } catch { /* non-fatal */ }
       finally { setLoading(false); }
     };
     load();
-    const interval = setInterval(load, 60_000);
+    // v11.291.0: Poll every 15s so new autonomous commits appear quickly
+    const interval = setInterval(load, 15_000);
     return () => clearInterval(interval);
   }, []);
+
+  const rsiCommitCount = commits.filter(c => c.isRsiCommit || isRSICommit(c.subject)).length;
 
   if (loading) return (
     <div className="flex items-center justify-center h-32 text-slate-400 text-sm">Loading commit log…</div>
@@ -222,26 +232,61 @@ function GitCommitFeed() {
   );
 
   return (
-    <div className="overflow-y-auto max-h-72 divide-y divide-slate-800">
-      {commits.map((c) => (
-        <div key={c.hash} className="flex items-start gap-3 px-4 py-2.5 hover:bg-slate-800/40 transition-colors">
-          <div className="flex-shrink-0 mt-0.5">
-            {isRSICommit(c.subject) ? (
-              <span className="inline-flex items-center justify-center w-5 h-5 rounded bg-violet-900/60 text-violet-300 text-[9px] font-bold">AI</span>
-            ) : (
-              <span className="inline-flex items-center justify-center w-5 h-5 rounded bg-slate-700 text-slate-400 text-[9px] font-bold">GIT</span>
-            )}
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className={`text-xs truncate ${isRSICommit(c.subject) ? "text-violet-200 font-medium" : "text-slate-300"}`}>
-              {c.subject}
-            </p>
-            <p className="text-[10px] text-slate-500 mt-0.5 font-mono">
-              {c.hash} · {c.date ? new Date(c.date).toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) : ""}
-            </p>
-          </div>
+    <div>
+      {/* Sync status bar */}
+      <div className="flex items-center gap-3 px-4 py-2 border-b border-slate-800 bg-slate-900/60">
+        <div className={`flex items-center gap-1.5 text-[10px] font-mono ${
+          syncStatus === "synced" ? "text-emerald-400" :
+          syncStatus === "unknown" ? "text-slate-500" :
+          "text-amber-400"
+        }`}>
+          <span className={`w-1.5 h-1.5 rounded-full inline-block ${
+            syncStatus === "synced" ? "bg-emerald-400" :
+            syncStatus === "unknown" ? "bg-slate-500" :
+            "bg-amber-400 animate-pulse"
+          }`} />
+          GitHub: {syncStatus === "synced" ? "fully synced" : syncStatus === "unknown" ? "checking…" : `${aheadCount} commit${aheadCount !== 1 ? "s" : ""} ahead`}
         </div>
-      ))}
+        {rsiCommitCount > 0 && (
+          <span className="text-[10px] text-violet-400 font-mono ml-auto">
+            {rsiCommitCount} AI commit{rsiCommitCount !== 1 ? "s" : ""} in view
+          </span>
+        )}
+      </div>
+      <div className="overflow-y-auto max-h-64 divide-y divide-slate-800">
+        {commits.map((c) => {
+          const isAi = c.isRsiCommit || isRSICommit(c.subject);
+          return (
+            <div key={c.hash} className={`flex items-start gap-3 px-4 py-2.5 hover:bg-slate-800/40 transition-colors ${
+              isAi ? "border-l-2 border-violet-700" : ""
+            }`}>
+              <div className="flex-shrink-0 mt-0.5">
+                {isAi ? (
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded bg-violet-900/60 text-violet-300 text-[9px] font-bold">AI</span>
+                ) : (
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded bg-slate-700 text-slate-400 text-[9px] font-bold">GIT</span>
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className={`text-xs truncate ${isAi ? "text-violet-200 font-medium" : "text-slate-300"}`}>
+                  {c.subject}
+                </p>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="text-[10px] text-slate-500 font-mono">
+                    {c.hash} · {c.date ? new Date(c.date).toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) : ""}
+                  </span>
+                  {c.pushed === true && (
+                    <span className="text-[9px] text-emerald-500 font-mono">✓ pushed</span>
+                  )}
+                  {c.pushed === false && (
+                    <span className="text-[9px] text-amber-500 font-mono">⟳ local</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -430,7 +475,7 @@ export default function RsiDashboard() {
               Recursive Self-Improvement Dashboard
             </h1>
             <p className="text-xs text-slate-400">
-              Andromeda v11.4.0 — Real-time RSI monitoring, proposal review, neural memory, and autonomous commit feed
+              Andromeda v11.291.0 — Fully autonomous RSI: commits + pushes to GitHub every cycle, no manual intervention needed
             </p>
           </div>
           <div className="ml-auto">
