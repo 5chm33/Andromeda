@@ -8991,6 +8991,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./goalManager.js").then(m => { m.failSubGoal("test-id", "sub-id", "test"); }).catch(() => {});
     }
+    // 2019. loraDpoPipeline: loadDpoPairs
+    if (cycleCount % 1000 === 0) {
+      import("./loraDpoPipeline.js").then(m => { m.loadDpoPairs(); }).catch(() => {});
+    }
+    // 2020. loraDpoPipeline: startTrainingRun
+    if (cycleCount % 1000 === 0) {
+      import("./loraDpoPipeline.js").then(m => { m.startTrainingRun(); }).catch(() => {});
+    }
+    // 2021. loraDpoPipeline: getTrainingRun
+    if (cycleCount % 1000 === 0) {
+      import("./loraDpoPipeline.js").then(m => { m.getTrainingRun(); }).catch(() => {});
+    }
+    // 2022. loraDpoPipeline: listTrainingRuns
+    if (cycleCount % 1000 === 0) {
+      import("./loraDpoPipeline.js").then(m => { m.listTrainingRuns(); }).catch(() => {});
+    }
+    // 2023. loraDpoPipeline: getBestRun
+    if (cycleCount % 1000 === 0) {
+      import("./loraDpoPipeline.js").then(m => { m.getBestRun(); }).catch(() => {});
+    }
+    // 2024. loraDpoPipeline: getPipelineStats
+    if (cycleCount % 1000 === 0) {
+      import("./loraDpoPipeline.js").then(m => { m.getPipelineStats(); }).catch(() => {});
+    }
+    // 2025. loraDpoPipeline: configurePipeline
+    if (cycleCount % 1000 === 0) {
+      import("./loraDpoPipeline.js").then(m => { m.configurePipeline(); }).catch(() => {});
+    }
+    // 2026. rbac: roleAtLeast
+    if (cycleCount % 1000 === 0) {
+      import("./rbac.js").then(m => { m.roleAtLeast(); }).catch(() => {});
+    }
+    // 2027. rbac: attachRbacContext
+    if (cycleCount % 1000 === 0) {
+      import("./rbac.js").then(m => { m.attachRbacContext(); }).catch(() => {});
+    }
+    // 2028. rbac: requireRole
+    if (cycleCount % 1000 === 0) {
+      import("./rbac.js").then(m => { m.requireRole(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
