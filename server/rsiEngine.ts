@@ -11111,6 +11111,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./telemetry.js").then(m => { m.recordEvalScore(); }).catch(() => {});
     }
+    // 2549. testCoverageAnalyzer: getLastCoverageReport
+    if (cycleCount % 1000 === 0) {
+      import("./testCoverageAnalyzer.js").then(m => { m.getLastCoverageReport(); }).catch(() => {});
+    }
+    // 2550. testCoverageAnalyzer: isRunning
+    if (cycleCount % 1000 === 0) {
+      import("./testCoverageAnalyzer.js").then(m => { m.isRunning(); }).catch(() => {});
+    }
+    // 2551. tieredContextManager: getIsolatedContextStats
+    if (cycleCount % 1000 === 0) {
+      import("./tieredContextManager.js").then(m => { m.getIsolatedContextStats(); }).catch(() => {});
+    }
+    // 2552. tieredContextManager: recordRecovery
+    if (cycleCount % 1000 === 0) {
+      import("./tieredContextManager.js").then(m => { m.recordRecovery(); }).catch(() => {});
+    }
+    // 2553. transactionLog: getTransactionStats
+    if (cycleCount % 1000 === 0) {
+      import("./transactionLog.js").then(m => { m.getTransactionStats(); }).catch(() => {});
+    }
+    // 2554. transactionLog: loadTransactionLog
+    if (cycleCount % 1000 === 0) {
+      import("./transactionLog.js").then(m => { m.loadTransactionLog(); }).catch(() => {});
+    }
+    // 2555. truncationDetector: repairTruncatedCode
+    if (cycleCount % 1000 === 0) {
+      import("./truncationDetector.js").then(m => { m.repairTruncatedCode(); }).catch(() => {});
+    }
+    // 2556. truncationDetector: scanForTruncation
+    if (cycleCount % 1000 === 0) {
+      import("./truncationDetector.js").then(m => { m.scanForTruncation(); }).catch(() => {});
+    }
+    // 2557. twoPhaseCommit: getActiveCommits
+    if (cycleCount % 1000 === 0) {
+      import("./twoPhaseCommit.js").then(m => { m.getActiveCommits(); }).catch(() => {});
+    }
+    // 2558. twoPhaseCommit: getPerformanceRegressionReport
+    if (cycleCount % 1000 === 0) {
+      import("./twoPhaseCommit.js").then(m => { m.getPerformanceRegressionReport(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
