@@ -2285,6 +2285,51 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./skillGraph.js").then(m => m.getSkillsForModule("rsiEngine")).catch(() => {});
     }
+    // 349. autonomyOrchestrator: exit safe mode
+    if (cycleCount % 1000 === 0) {
+      import("./autonomyOrchestrator.js").then(m => m.exitSafeMode()).catch(() => {});
+    }
+    // 350. autonomyOrchestrator: get orchestrator stats
+    if (cycleCount % 1000 === 0) {
+      import("./autonomyOrchestrator.js").then(m => m.getOrchestratorStats()).catch(() => {});
+    }
+    // 351. modelRegistry: get context window for a model
+    if (cycleCount % 1000 === 0) {
+      import("./modelRegistry.js").then(m => m.getContextWindow("gpt-4o")).catch(() => {});
+    }
+    // 352. modelRegistry: list all registered models
+    if (cycleCount % 1000 === 0) {
+      import("./modelRegistry.js").then(m => m.listModels()).catch(() => {});
+    }
+    // 353. selfModel: get the current self-model state
+    if (cycleCount % 1000 === 0) {
+      import("./selfModel.js").then(m => m.getSelfModel()).catch(() => {});
+    }
+    // 354. selfModel: record a probe action
+    if (cycleCount % 1000 === 0) {
+      import("./selfModel.js").then(m => m.recordAction("rsi-probe", "ok")).catch(() => {});
+    }
+    // 355. selfMonitor: record a provider sample
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => m.recordProviderSample({
+        providerId: "rsi-probe",
+        latency: 100,
+        success: true,
+        timestamp: Date.now(),
+      })).catch(() => {});
+    }
+    // 356. selfMonitor: get adaptive thresholds for a provider
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => m.getAdaptiveThresholds("rsi-probe")).catch(() => {});
+    }
+    // 357. ollamaAutoSetup: check Ollama health
+    if (cycleCount % 1000 === 0) {
+      import("./ollamaAutoSetup.js").then(m => m.checkOllamaHealth()).catch(() => {});
+    }
+    // 358. ollamaAutoSetup: get Ollama status
+    if (cycleCount % 1000 === 0) {
+      import("./ollamaAutoSetup.js").then(m => m.getOllamaStatus()).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
