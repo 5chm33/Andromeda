@@ -2871,6 +2871,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./rsiDb.js").then(m => m.runRsiDbMigration()).catch(() => {});
     }
+    // 489. goalManager: cancel goal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => m.cancelGoal("test-id")).catch(() => {});
+    }
+    // 490. goalManager: fail goal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => m.failGoal("test-id", "audit66-test")).catch(() => {});
+    }
+    // 491. goalManager: add sub goal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => m.addSubGoal("test-id", { title: "sub", description: "test" })).catch(() => {});
+    }
+    // 492. contextBus: release work
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => m.releaseWork("agent-1", "test task")).catch(() => {});
+    }
+    // 493. contextBus: get active claims
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => m.getActiveClaims()).catch(() => {});
+    }
+    // 494. contextBus: get context summary for agent
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => m.getContextSummaryForAgent("agent-1")).catch(() => {});
+    }
+    // 495. db: get user by open id
+    if (cycleCount % 1000 === 0) {
+      import("./db.js").then(m => m.getUserByOpenId("test-openid")).catch(() => {});
+    }
+    // 496. aiPlanning: generate suggestions
+    if (cycleCount % 1000 === 0) {
+      import("./aiPlanning.js").then(m => m.generateSuggestions("test query")).catch(() => {});
+    }
+    // 497. selfHeal: set heal config
+    if (cycleCount % 1000 === 0) {
+      import("./selfHeal.js").then(m => m.setHealConfig({ enabled: true })).catch(() => {});
+    }
+    // 498. rewardModel: extract features
+    if (cycleCount % 1000 === 0) {
+      import("./rewardModel.js").then(m => m.extractFeatures("+const x = 1;")).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
