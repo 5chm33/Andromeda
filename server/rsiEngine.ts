@@ -9111,6 +9111,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./selfModel.js").then(m => { m.recordAction(); }).catch(() => {});
     }
+    // 2049. selfModify: restoreFromBackup
+    if (cycleCount % 1000 === 0) {
+      import("./selfModify.js").then(m => { m.restoreFromBackup(); }).catch(() => {});
+    }
+    // 2050. selfModify: selfModify
+    if (cycleCount % 1000 === 0) {
+      import("./selfModify.js").then(m => { m.selfModify(); }).catch(() => {});
+    }
+    // 2051. selfModify: selfModifyBatch
+    if (cycleCount % 1000 === 0) {
+      import("./selfModify.js").then(m => { m.selfModifyBatch(); }).catch(() => {});
+    }
+    // 2052. selfModify: getModificationStats
+    if (cycleCount % 1000 === 0) {
+      import("./selfModify.js").then(m => { m.getModificationStats(); }).catch(() => {});
+    }
+    // 2053. selfModify: setEnabled
+    if (cycleCount % 1000 === 0) {
+      import("./selfModify.js").then(m => { m.setEnabled(); }).catch(() => {});
+    }
+    // 2054. selfModify: isEnabled
+    if (cycleCount % 1000 === 0) {
+      import("./selfModify.js").then(m => { m.isEnabled(); }).catch(() => {});
+    }
+    // 2055. selfModify: initSelfModify
+    if (cycleCount % 1000 === 0) {
+      import("./selfModify.js").then(m => { m.initSelfModify(); }).catch(() => {});
+    }
+    // 2056. selfMonitor: stopMonitor
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => { m.stopMonitor(); }).catch(() => {});
+    }
+    // 2057. selfMonitor: isMonitorRunning
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => { m.isMonitorRunning(); }).catch(() => {});
+    }
+    // 2058. selfMonitor: resetMonitor
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => { m.resetMonitor(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
