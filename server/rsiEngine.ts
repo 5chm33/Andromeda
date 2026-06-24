@@ -2428,6 +2428,49 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./federatedLearning.js").then(m => m.computeFederatedAvgScore()).catch(() => {});
     }
+    // 379. gracefulDegradation: cache a response
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => m.cacheResponse("rsi-probe", "ok")).catch(() => {});
+    }
+    // 380. gracefulDegradation: get degradation history
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => m.getDegradationHistory(10)).catch(() => {});
+    }
+    // 381. hotReload: hot-reload a specific module
+    if (cycleCount % 1000 === 0) {
+      import("./hotReload.js").then(m => m.hotReloadModule("rsiEngine")).catch(() => {});
+    }
+    // 382. hotReload: hot-reload all modified modules
+    if (cycleCount % 1000 === 0) {
+      import("./hotReload.js").then(m => m.hotReloadModified()).catch(() => {});
+    }
+    // 383. observability: increment a counter metric
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => m.incrementCounter("rsi.cycles", { module: "rsiEngine" })).catch(() => {});
+    }
+    // 384. observability: record a histogram metric
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => m.recordHistogram("rsi.duration", 0, { module: "rsiEngine" })).catch(() => {});
+    }
+    // 385. ontologicalModel: load the self model
+    if (cycleCount % 1000 === 0) {
+      import("./ontologicalModel.js").then(m => m.loadSelfModel()).catch(() => {});
+    }
+    // 386. ontologicalModel: save the self model
+    if (cycleCount % 1000 === 0) {
+      import("./ontologicalModel.js").then(m => {
+        const model = m.loadSelfModel();
+        m.saveSelfModel(model);
+      }).catch(() => {});
+    }
+    // 387. recursiveGoals: complete a sub-goal
+    if (cycleCount % 1000 === 0) {
+      import("./recursiveGoals.js").then(m => m.completeSubGoal("rsi-probe", "rsi-probe-sub", "ok")).catch(() => {});
+    }
+    // 388. recursiveGoals: get improvement progress
+    if (cycleCount % 1000 === 0) {
+      import("./recursiveGoals.js").then(m => m.getImprovementProgress()).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
