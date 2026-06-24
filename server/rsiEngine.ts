@@ -10031,6 +10031,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./algorithmicDiscoveryV2.js").then(m => { m.generateCandidates(); }).catch(() => {});
     }
+    // 2279. contextBus: getContextSummaryForAgent
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => { m.getContextSummaryForAgent(); }).catch(() => {});
+    }
+    // 2280. contextBus: getThread
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => { m.getThread(); }).catch(() => {});
+    }
+    // 2281. contextBus: getBusStats
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => { m.getBusStats(); }).catch(() => {});
+    }
+    // 2282. contextBus: resetBus
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => { m.resetBus(); }).catch(() => {});
+    }
+    // 2283. dependencyGraph: getGraphStats
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyGraph.js").then(m => { m.getGraphStats(); }).catch(() => {});
+    }
+    // 2284. dependencyGraph: getDependencyTree
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyGraph.js").then(m => { m.getDependencyTree("rsiEngine"); }).catch(() => {});
+    }
+    // 2285. dependencyGraph: getNode
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyGraph.js").then(m => { m.getNode(); }).catch(() => {});
+    }
+    // 2286. dependencyGraph: isStale
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyGraph.js").then(m => { m.isStale("rsiEngine"); }).catch(() => {});
+    }
+    // 2287. episodicConsolidation: consolidateEpisodicMemory
+    if (cycleCount % 1000 === 0) {
+      import("./episodicConsolidation.js").then(m => { m.consolidateEpisodicMemory(); }).catch(() => {});
+    }
+    // 2288. episodicConsolidation: getConsolidatedLessons
+    if (cycleCount % 1000 === 0) {
+      import("./episodicConsolidation.js").then(m => { m.getConsolidatedLessons(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
