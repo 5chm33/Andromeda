@@ -4,9 +4,9 @@
       "id": "lc_1782228556577_txs9s",
       "pattern": "process.exit(",
       "reason": "Never call process.exit in server code",
-      "rejectionCount": 288,
+      "rejectionCount": 289,
       "firstSeenAt": 1782228556577,
-      "lastSeenAt": 1782302871642,
+      "lastSeenAt": 1782302968200,
       "active": true
     },
     {
@@ -22,29 +22,29 @@
       "id": "lc_1782228556589_wroku",
       "pattern": "__dangerousHook__",
       "reason": "test constraint to disable",
-      "rejectionCount": 288,
+      "rejectionCount": 289,
       "firstSeenAt": 1782228556589,
-      "lastSeenAt": 1782302871646,
+      "lastSeenAt": 1782302968204,
       "active": false
     },
     {
       "id": "lc_1782228556591_bk9mn",
       "pattern": "delete fs.rmSync",
       "reason": "rmSync is too destructive",
-      "rejectionCount": 287,
+      "rejectionCount": 288,
       "firstSeenAt": 1782228556591,
-      "lastSeenAt": 1782302871647,
+      "lastSeenAt": 1782302968205,
       "active": true
     },
     {
       "id": "lc_1782228756734_gnlpg",
       "pattern": "UNSAFE_EVAL_MARKER",
       "reason": "unsafe eval marker for testing",
-      "rejectionCount": 283,
+      "rejectionCount": 284,
       "firstSeenAt": 1782228756734,
-      "lastSeenAt": 1782302871645,
+      "lastSeenAt": 1782302968202,
       "active": true
     }
   ],
-  "lastUpdatedAt": 1782302871647
+  "lastUpdatedAt": 1782302968205
 }
