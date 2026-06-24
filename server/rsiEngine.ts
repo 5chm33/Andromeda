@@ -2511,6 +2511,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./telemetry.js").then(m => m.recordRsiCycle({ cycleId: `rsi-${cycleCount}`, durationMs: 0, proposalsGenerated: 0, proposalsApplied: 0, evalScore: null })).catch(() => {});
     }
+    // 399. tenantManager: get or default a tenant config
+    if (cycleCount % 1000 === 0) {
+      import("./tenantManager.js").then(m => m.getOrDefaultTenant("rsi-probe")).catch(() => {});
+    }
+    // 400. tenantManager: list all tenants
+    if (cycleCount % 1000 === 0) {
+      import("./tenantManager.js").then(m => m.listTenants()).catch(() => {});
+    }
+    // 401. testGenerator: generate tests for a probe snippet
+    if (cycleCount % 1000 === 0) {
+      import("./testGenerator.js").then(m => m.generateTests("export function probe() {}", "probe.ts")).catch(() => {});
+    }
+    // 402. testGenerator: run a test by id
+    if (cycleCount % 1000 === 0) {
+      import("./testGenerator.js").then(m => m.runTest("rsi-probe")).catch(() => {});
+    }
+    // 403. tieredContextManager: append to isolated context
+    if (cycleCount % 1000 === 0) {
+      import("./tieredContextManager.js").then(m => m.appendToIsolatedContext("rsi-probe", { role: "user", content: "rsi-probe" })).catch(() => {});
+    }
+    // 404. tieredContextManager: get isolated context
+    if (cycleCount % 1000 === 0) {
+      import("./tieredContextManager.js").then(m => m.getIsolatedContext("rsi-probe")).catch(() => {});
+    }
+    // 405. tokenBudgetManager: get budget for a session
+    if (cycleCount % 1000 === 0) {
+      import("./tokenBudgetManager.js").then(m => m.getBudget("rsi-probe")).catch(() => {});
+    }
+    // 406. tokenBudgetManager: allocate tokens for a session
+    if (cycleCount % 1000 === 0) {
+      import("./tokenBudgetManager.js").then(m => m.allocateTokens("rsi-probe", 100)).catch(() => {});
+    }
+    // 407. algorithmicDiscoveryV2: benchmark a capability
+    if (cycleCount % 1000 === 0) {
+      import("./algorithmicDiscoveryV2.js").then(m => m.benchmarkCapability("context_compression")).catch(() => {});
+    }
+    // 408. algorithmicDiscoveryV2: generate algorithm candidates
+    if (cycleCount % 1000 === 0) {
+      import("./algorithmicDiscoveryV2.js").then(m => m.generateCandidates("context_compression", 1)).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
