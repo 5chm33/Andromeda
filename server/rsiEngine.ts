@@ -8671,6 +8671,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./episodicMemory.js").then(m => { m.getEpisodicMemory(); }).catch(() => {});
     }
+    // 1939. fsWatcher: initFsWatcher
+    if (cycleCount % 1000 === 0) {
+      import("./fsWatcher.js").then(m => { m.initFsWatcher(); }).catch(() => {});
+    }
+    // 1940. fsWatcher: startWatch
+    if (cycleCount % 1000 === 0) {
+      import("./fsWatcher.js").then(m => { m.startWatch(); }).catch(() => {});
+    }
+    // 1941. fsWatcher: stopWatch
+    if (cycleCount % 1000 === 0) {
+      import("./fsWatcher.js").then(m => { m.stopWatch(); }).catch(() => {});
+    }
+    // 1942. fsWatcher: listWatches
+    if (cycleCount % 1000 === 0) {
+      import("./fsWatcher.js").then(m => { m.listWatches(); }).catch(() => {});
+    }
+    // 1943. fsWatcher: getRecentEvents
+    if (cycleCount % 1000 === 0) {
+      import("./fsWatcher.js").then(m => { m.getRecentEvents(); }).catch(() => {});
+    }
+    // 1944. fsWatcher: getWatchStats
+    if (cycleCount % 1000 === 0) {
+      import("./fsWatcher.js").then(m => { m.getWatchStats(); }).catch(() => {});
+    }
+    // 1945. fsWatcher: onFileChange
+    if (cycleCount % 1000 === 0) {
+      import("./fsWatcher.js").then(m => { m.onFileChange(); }).catch(() => {});
+    }
+    // 1946. fsWatcher: stopAllWatches
+    if (cycleCount % 1000 === 0) {
+      import("./fsWatcher.js").then(m => { m.stopAllWatches(); }).catch(() => {});
+    }
+    // 1947. importGraph: buildImportGraph
+    if (cycleCount % 1000 === 0) {
+      import("./importGraph.js").then(m => { m.buildImportGraph(); }).catch(() => {});
+    }
+    // 1948. importGraph: getImporters
+    if (cycleCount % 1000 === 0) {
+      import("./importGraph.js").then(m => { m.getImporters(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
