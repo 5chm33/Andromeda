@@ -10871,6 +10871,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./goalManager.js").then(m => { m.syncGoalDeletion(); }).catch(() => {});
     }
+    // 2489. gracefulDegradation: setDegradationConfig
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => { m.setDegradationConfig({}); }).catch(() => {});
+    }
+    // 2490. gracefulDegradation: startHealthMonitoring
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => { m.startHealthMonitoring(); }).catch(() => {});
+    }
+    // 2491. importGraph: getGraphSummary
+    if (cycleCount % 1000 === 0) {
+      import("./importGraph.js").then(m => { m.getGraphSummary(); }).catch(() => {});
+    }
+    // 2492. importGraph: getExportedSymbols
+    if (cycleCount % 1000 === 0) {
+      import("./importGraph.js").then(m => { m.getExportedSymbols(); }).catch(() => {});
+    }
+    // 2493. learnedConstraints: checkLearnedConstraints
+    if (cycleCount % 1000 === 0) {
+      import("./learnedConstraints.js").then(m => { m.checkLearnedConstraints(); }).catch(() => {});
+    }
+    // 2494. learnedConstraints: disableConstraint
+    if (cycleCount % 1000 === 0) {
+      import("./learnedConstraints.js").then(m => { m.disableConstraint(); }).catch(() => {});
+    }
+    // 2495. llmProvider: tierForArea
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => { m.tierForArea(); }).catch(() => {});
+    }
+    // 2496. llmProvider: chatCompletion
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => { m.chatCompletion(); }).catch(() => {});
+    }
+    // 2497. loraBackendDetector: detectLoraBackend
+    if (cycleCount % 1000 === 0) {
+      import("./loraBackendDetector.js").then(m => { m.detectLoraBackend(); }).catch(() => {});
+    }
+    // 2498. loraBackendDetector: getLoraBackendSummary
+    if (cycleCount % 1000 === 0) {
+      import("./loraBackendDetector.js").then(m => { m.getLoraBackendSummary(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
