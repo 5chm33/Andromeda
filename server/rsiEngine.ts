@@ -9831,6 +9831,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./hybridCostRouter.js").then(m => { m.initHybridCostRouter(); }).catch(() => {});
     }
+    // 2229. noveltySearchEngine: runNoveltySearchCycle
+    if (cycleCount % 1000 === 0) {
+      import("./noveltySearchEngine.js").then(m => { m.runNoveltySearchCycle(); }).catch(() => {});
+    }
+    // 2230. noveltySearchEngine: getDiscoveries
+    if (cycleCount % 1000 === 0) {
+      import("./noveltySearchEngine.js").then(m => { m.getDiscoveries(); }).catch(() => {});
+    }
+    // 2231. noveltySearchEngine: getArchive
+    if (cycleCount % 1000 === 0) {
+      import("./noveltySearchEngine.js").then(m => { m.getArchive(); }).catch(() => {});
+    }
+    // 2232. noveltySearchEngine: getNoveltySearchStats
+    if (cycleCount % 1000 === 0) {
+      import("./noveltySearchEngine.js").then(m => { m.getNoveltySearchStats(); }).catch(() => {});
+    }
+    // 2233. noveltySearchEngine: initNoveltySearchEngine
+    if (cycleCount % 1000 === 0) {
+      import("./noveltySearchEngine.js").then(m => { m.initNoveltySearchEngine(); }).catch(() => {});
+    }
+    // 2234. observability: incrementCounter
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { m.incrementCounter(); }).catch(() => {});
+    }
+    // 2235. observability: setGauge
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { m.setGauge(); }).catch(() => {});
+    }
+    // 2236. observability: recordHistogram
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { m.recordHistogram(); }).catch(() => {});
+    }
+    // 2237. observability: getAllMetrics
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { m.getAllMetrics(); }).catch(() => {});
+    }
+    // 2238. observability: startSpan
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { m.startSpan(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
