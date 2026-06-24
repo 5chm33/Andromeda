@@ -3551,6 +3551,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./continuousImprover.js").then(m => { m.stopContinuousImprover(); }).catch(() => {});
     }
+    // 659. benchmarkRunner: runBenchmarks
+    if (cycleCount % 1000 === 0) {
+      import("./benchmarkRunner.js").then(m => { m.runBenchmarks(); }).catch(() => {});
+    }
+    // 660. benchmarkRunner: startBenchmarkRunner
+    if (cycleCount % 1000 === 0) {
+      import("./benchmarkRunner.js").then(m => { m.startBenchmarkRunner(); }).catch(() => {});
+    }
+    // 661. benchmarkRunner: stopBenchmarkRunner
+    if (cycleCount % 1000 === 0) {
+      import("./benchmarkRunner.js").then(m => { m.stopBenchmarkRunner(); }).catch(() => {});
+    }
+    // 662. benchmarkRunner: getLastBenchmarkReport
+    if (cycleCount % 1000 === 0) {
+      import("./benchmarkRunner.js").then(m => { m.getLastBenchmarkReport(); }).catch(() => {});
+    }
+    // 663. codeQualityMonitor: runQualityAnalysis
+    if (cycleCount % 1000 === 0) {
+      import("./codeQualityMonitor.js").then(m => { m.runQualityAnalysis(); }).catch(() => {});
+    }
+    // 664. codeQualityMonitor: startCodeQualityMonitor
+    if (cycleCount % 1000 === 0) {
+      import("./codeQualityMonitor.js").then(m => { m.startCodeQualityMonitor(); }).catch(() => {});
+    }
+    // 665. codeQualityMonitor: stopCodeQualityMonitor
+    if (cycleCount % 1000 === 0) {
+      import("./codeQualityMonitor.js").then(m => { m.stopCodeQualityMonitor(); }).catch(() => {});
+    }
+    // 666. codeQualityMonitor: getLastQualityReport
+    if (cycleCount % 1000 === 0) {
+      import("./codeQualityMonitor.js").then(m => { m.getLastQualityReport(); }).catch(() => {});
+    }
+    // 667. dependencyResolver: rollbackInstall
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyResolver.js").then(m => { m.rollbackInstall(); }).catch(() => {});
+    }
+    // 668. dependencyResolver: setResolverConfig
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyResolver.js").then(m => { m.setResolverConfig(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
