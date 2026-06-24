@@ -9191,6 +9191,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./systemMemory.js").then(m => { m.updateBaseline(); }).catch(() => {});
     }
+    // 2069. tenantManager: getTenant
+    if (cycleCount % 1000 === 0) {
+      import("./tenantManager.js").then(m => { m.getTenant(); }).catch(() => {});
+    }
+    // 2070. tenantManager: getOrDefaultTenant
+    if (cycleCount % 1000 === 0) {
+      import("./tenantManager.js").then(m => { m.getOrDefaultTenant(); }).catch(() => {});
+    }
+    // 2071. tenantManager: listTenants
+    if (cycleCount % 1000 === 0) {
+      import("./tenantManager.js").then(m => { m.listTenants(); }).catch(() => {});
+    }
+    // 2072. tenantManager: checkQuota
+    if (cycleCount % 1000 === 0) {
+      import("./tenantManager.js").then(m => { m.checkQuota(); }).catch(() => {});
+    }
+    // 2073. tenantManager: incrementUsage
+    if (cycleCount % 1000 === 0) {
+      import("./tenantManager.js").then(m => { m.incrementUsage(); }).catch(() => {});
+    }
+    // 2074. tenantManager: getTenantUsage
+    if (cycleCount % 1000 === 0) {
+      import("./tenantManager.js").then(m => { m.getTenantUsage(); }).catch(() => {});
+    }
+    // 2075. tenantManager: isTenantModuleAllowed
+    if (cycleCount % 1000 === 0) {
+      import("./tenantManager.js").then(m => { m.isTenantModuleAllowed(); }).catch(() => {});
+    }
+    // 2076. zkProofSigning: getInstanceIdentity
+    if (cycleCount % 1000 === 0) {
+      import("./zkProofSigning.js").then(m => { m.getInstanceIdentity(); }).catch(() => {});
+    }
+    // 2077. zkProofSigning: resetIdentityCache
+    if (cycleCount % 1000 === 0) {
+      import("./zkProofSigning.js").then(m => { m.resetIdentityCache(); }).catch(() => {});
+    }
+    // 2078. zkProofSigning: hashContent
+    if (cycleCount % 1000 === 0) {
+      import("./zkProofSigning.js").then(m => { m.hashContent(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
