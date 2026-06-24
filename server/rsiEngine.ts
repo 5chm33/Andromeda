@@ -8111,6 +8111,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./contextBus.js").then(m => { m.getActiveClaims(); }).catch(() => {});
     }
+    // 1799. selfImprove: loadProposals
+    if (cycleCount % 1000 === 0) {
+      import("./selfImprove.js").then(m => { m.loadProposals(); }).catch(() => {});
+    }
+    // 1800. selfImprove: resetStuckProcessingProposals
+    if (cycleCount % 1000 === 0) {
+      import("./selfImprove.js").then(m => { m.resetStuckProcessingProposals(); }).catch(() => {});
+    }
+    // 1801. selfImprove: saveProposals
+    if (cycleCount % 1000 === 0) {
+      import("./selfImprove.js").then(m => { m.saveProposals(); }).catch(() => {});
+    }
+    // 1802. selfImprove: resolveServerFile
+    if (cycleCount % 1000 === 0) {
+      import("./selfImprove.js").then(m => { m.resolveServerFile(); }).catch(() => {});
+    }
+    // 1803. selfImprove: analyzeAndPropose
+    if (cycleCount % 1000 === 0) {
+      import("./selfImprove.js").then(m => { m.analyzeAndPropose(); }).catch(() => {});
+    }
+    // 1804. selfImprove: applyProposal
+    if (cycleCount % 1000 === 0) {
+      import("./selfImprove.js").then(m => { m.applyProposal(); }).catch(() => {});
+    }
+    // 1805. selfImprove: rejectProposal
+    if (cycleCount % 1000 === 0) {
+      import("./selfImprove.js").then(m => { m.rejectProposal(); }).catch(() => {});
+    }
+    // 1806. selfImprove: listProposals
+    if (cycleCount % 1000 === 0) {
+      import("./selfImprove.js").then(m => { m.listProposals(); }).catch(() => {});
+    }
+    // 1807. selfImprove: getAnalyzableFiles
+    if (cycleCount % 1000 === 0) {
+      import("./selfImprove.js").then(m => { m.getAnalyzableFiles(); }).catch(() => {});
+    }
+    // 1808. selfImprove: getAutoApplyConfig
+    if (cycleCount % 1000 === 0) {
+      import("./selfImprove.js").then(m => { m.getAutoApplyConfig(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
