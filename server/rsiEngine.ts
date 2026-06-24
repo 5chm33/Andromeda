@@ -10271,6 +10271,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./selfModel.js").then(m => { m.updateGoals(); }).catch(() => {});
     }
+    // 2339. selfMonitor: recordProviderSample
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => { m.recordProviderSample(); }).catch(() => {});
+    }
+    // 2340. selfMonitor: recalculateBaselines
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => { m.recalculateBaselines(); }).catch(() => {});
+    }
+    // 2341. selfMonitor: getAdaptiveThresholds
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => { m.getAdaptiveThresholds(); }).catch(() => {});
+    }
+    // 2342. selfMonitor: isProviderDegraded
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => { m.isProviderDegraded(); }).catch(() => {});
+    }
+    // 2343. systemMemory: getBaselines
+    if (cycleCount % 1000 === 0) {
+      import("./systemMemory.js").then(m => { m.getBaselines(); }).catch(() => {});
+    }
+    // 2344. systemMemory: getDegradingMetrics
+    if (cycleCount % 1000 === 0) {
+      import("./systemMemory.js").then(m => { m.getDegradingMetrics(); }).catch(() => {});
+    }
+    // 2345. systemMemory: recordErrorPattern
+    if (cycleCount % 1000 === 0) {
+      import("./systemMemory.js").then(m => { m.recordErrorPattern(); }).catch(() => {});
+    }
+    // 2346. systemMemory: getSystemMemoryStats
+    if (cycleCount % 1000 === 0) {
+      import("./systemMemory.js").then(m => { m.getSystemMemoryStats(); }).catch(() => {});
+    }
+    // 2347. telemetry: recordLatency
+    if (cycleCount % 1000 === 0) {
+      import("./telemetry.js").then(m => { m.recordLatency(); }).catch(() => {});
+    }
+    // 2348. telemetry: recordRsiCycle
+    if (cycleCount % 1000 === 0) {
+      import("./telemetry.js").then(m => { m.recordRsiCycle(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
