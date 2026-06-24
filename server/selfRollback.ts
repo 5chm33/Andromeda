@@ -17,6 +17,8 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { createLogger } from "./logger.js";
+const log = createLogger("rollback");
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -117,7 +119,7 @@ export function createRollbackPoint(
       const existingId = rollbackPointsByProposal.get(proposalId)!;
       const existing = rollbackPoints.find(p => p.id === existingId);
       if (existing) {
-        console.log(`[Rollback] Reusing existing point ${existingId} for proposal ${proposalId} (dedup)`);
+        log.info(`Reusing existing point ${existingId} for proposal ${proposalId} (dedup)`);
         return existing;
       }
     }
@@ -170,7 +172,7 @@ export function createRollbackPoint(
   // Persist to disk
   persistPoint(point);
 
-  console.log(`[Rollback] Created point ${point.id}: "${description}" (${files.length} files)`);
+  log.info(`Created point ${point.id}: "${description}" (${files.length} files)`);
   return point;
 }
 
@@ -210,7 +212,7 @@ export async function rollbackTo(pointId: string): Promise<RollbackResult> {
     ? `Rolled back to "${point.description}" — ${restored} files restored`
     : `Partial rollback: ${restored}/${point.files.length} files restored. Errors: ${errors.join("; ")}`;
 
-  console.log(`[Rollback] ${message}`);
+  log.info(`${message}`);
 
   // v5.27: Document rollback in changelog
   try {
@@ -296,17 +298,17 @@ export function startHealthWatch(pointId: string): void {
         if (checksCompleted >= maxChecks) {
           // All checks passed — stop monitoring
           stopHealthWatch();
-          console.log(`[Rollback] Health stable after change. Monitoring complete.`);
+          log.info(`Health stable after change. Monitoring complete.`);
         }
       } else {
         // Health degraded — auto-rollback!
-        console.error(`[Rollback] Health check FAILED (status ${resp.status}). Auto-rolling back!`);
+        log.error(`Health check FAILED (status ${resp.status}). Auto-rolling back!`);
         stopHealthWatch();
         rollbackToLastHealthy();
       }
     } catch (err: any) {
       // Health check failed — auto-rollback!
-      console.error(`[Rollback] Health check ERROR: ${err.message}. Auto-rolling back!`);
+      log.error(`Health check ERROR: ${err.message}. Auto-rolling back!`);
       stopHealthWatch();
       rollbackToLastHealthy();
     }
@@ -364,17 +366,17 @@ export function startDegradationWatch(): void {
     // memory during a cycle. Only trigger on extreme degradation (5x memory or 10x event loop lag).
     // Also require at least 5 samples before triggering to avoid false positives on startup.
     if (degradationHistory.length >= 5 && (memoryIncrease > 5.0 || lagIncrease > 10.0)) {
-      console.error(`[Rollback] Runtime degradation detected! Memory: ${memoryIncrease.toFixed(1)}x, Lag: ${lagIncrease.toFixed(1)}x`);
+      log.error(`Runtime degradation detected! Memory: ${memoryIncrease.toFixed(1)}x, Lag: ${lagIncrease.toFixed(1)}x`);
       stopDegradationWatch();
 
       // Auto-rollback if we have a healthy point
       if (lastHealthyPointId) {
-        console.error(`[Rollback] Auto-rolling back to last healthy point: ${lastHealthyPointId}`);
+        log.error(`Auto-rolling back to last healthy point: ${lastHealthyPointId}`);
         await rollbackToLastHealthy();
       }
     } else if (memoryIncrease > 2.0 || lagIncrease > 5.0) {
       // Log warning but don't kill the server
-      console.warn(`[Rollback] Memory elevated (${memoryIncrease.toFixed(1)}x) — monitoring, not rolling back`);
+      log.warn(`Memory elevated (${memoryIncrease.toFixed(1)}x) — monitoring, not rolling back`);
     }
   }, 15_000); // Check every 15 seconds
 }
@@ -405,7 +407,7 @@ function persistPoint(point: RollbackPoint): void {
     const filePath = path.join(config.storageDir, `${point.id}.json`);
     fs.writeFileSync(filePath, JSON.stringify(point, null, 2));
   } catch (err: any) {
-    console.warn(`[Rollback] Failed to persist point: ${err.message}`);
+    log.warn(`Failed to persist point: ${err.message}`);
   }
 }
 
@@ -441,9 +443,9 @@ function loadPersistedPoints(): void {
       }
     }
 
-    console.log(`[Rollback] Loaded ${rollbackPoints.length} persisted rollback points`);
+    log.info(`Loaded ${rollbackPoints.length} persisted rollback points`);
   } catch (err: any) {
-    console.warn(`[Rollback] Failed to load persisted points: ${err.message}`);
+    log.warn(`Failed to load persisted points: ${err.message}`);
   }
 }
 
@@ -525,5 +527,5 @@ export function setRollbackConfig(updates: Partial<RollbackConfig>): RollbackCon
  */
 export function initRollback(): void {
   loadPersistedPoints();
-  console.log(`[Rollback] Initialized. ${rollbackPoints.length} points loaded. Enabled: ${config.enabled}`);
+  log.info(`Initialized. ${rollbackPoints.length} points loaded. Enabled: ${config.enabled}`);
 }

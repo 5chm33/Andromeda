@@ -353,31 +353,53 @@ function VectorMemoryStats() {
 function RsiStatusBanner() {
   const [status, setStatus] = useState<RsiStatus | null>(null);
   const [health, setHealth] = useState<any>(null);
+  const [schedulerPaused, setSchedulerPaused] = useState(false);
+  const [pauseLoading, setPauseLoading] = useState(false);
+
+  const refreshStatus = async () => {
+    try {
+      const [sr, hr] = await Promise.allSettled([
+        fetch("/api/rsi/status").then(r => r.ok ? r.json() : null),
+        fetch("/api/rsi/health").then(r => r.ok ? r.json() : null),
+      ]);
+      if (sr.status === "fulfilled" && sr.value) {
+        setStatus(sr.value);
+        setSchedulerPaused(sr.value?.schedulerPaused === true || sr.value?.phase === "paused");
+      }
+      if (hr.status === "fulfilled" && hr.value) setHealth(hr.value);
+    } catch { /* non-fatal */ }
+  };
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        const [sr, hr] = await Promise.allSettled([
-          fetch("/api/rsi/status").then(r => r.ok ? r.json() : null),
-          fetch("/api/rsi/health").then(r => r.ok ? r.json() : null),
-        ]);
-        if (sr.status === "fulfilled" && sr.value) setStatus(sr.value);
-        if (hr.status === "fulfilled" && hr.value) setHealth(hr.value);
-      } catch { /* non-fatal */ }
-    };
-    load();
-    const interval = setInterval(load, 15_000);
+    refreshStatus();
+    const interval = setInterval(refreshStatus, 15_000);
     return () => clearInterval(interval);
   }, []);
 
   const handleTrigger = async () => {
     try {
       await fetch("/api/rsi/trigger", { method: "POST" });
-      setTimeout(async () => {
-        const r = await fetch("/api/rsi/status");
-        if (r.ok) setStatus(await r.json());
-      }, 1000);
+      setTimeout(refreshStatus, 1000);
     } catch { /* non-fatal */ }
+  };
+
+  const handleTogglePause = async () => {
+    setPauseLoading(true);
+    try {
+      const endpoint = schedulerPaused ? "/api/rsi/scheduler/resume" : "/api/rsi/scheduler/pause";
+      // Try with admin key from localStorage if available
+      const adminKey = typeof localStorage !== "undefined" ? (localStorage.getItem("andromeda_admin_key") ?? "") : "";
+      const r = await fetch(endpoint, {
+        method: "POST",
+        headers: { "x-admin-key": adminKey, "Content-Type": "application/json" },
+      });
+      if (r.ok) {
+        setSchedulerPaused(!schedulerPaused);
+        setTimeout(refreshStatus, 500);
+      }
+    } catch { /* non-fatal */ } finally {
+      setPauseLoading(false);
+    }
   };
 
   const proposals = health?.proposals?.byStatus ?? {};
@@ -445,12 +467,27 @@ function RsiStatusBanner() {
         </div>
       )}
 
-      <div className="ml-auto">
+      <div className="ml-auto flex items-center gap-2">
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={handleTogglePause}
+          disabled={pauseLoading}
+          className={`text-xs px-3 ${
+            schedulerPaused
+              ? "border-emerald-700 text-emerald-300 hover:bg-emerald-900/40"
+              : "border-amber-700 text-amber-300 hover:bg-amber-900/40"
+          }`}
+          title={schedulerPaused ? "Resume autonomous RSI cycles" : "Pause autonomous RSI cycles (server keeps running, no new cycles will start)"}
+        >
+          {pauseLoading ? "…" : schedulerPaused ? "▶ Resume RSI" : "⏸ Pause RSI"}
+        </Button>
         <Button
           size="sm"
           variant="outline"
           onClick={handleTrigger}
-          className="text-xs border-slate-600 text-slate-300 hover:bg-slate-700"
+          disabled={schedulerPaused}
+          className="text-xs border-slate-600 text-slate-300 hover:bg-slate-700 disabled:opacity-40"
         >
           Trigger Now
         </Button>

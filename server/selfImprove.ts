@@ -1022,11 +1022,23 @@ export async function analyzeAndPropose(
   }
   const { simpleChatCompletion, getProviderForTier: getProviderForTier_fn, tierForArea: tierForArea_fn } = await import("./llmProvider.js");
   const providerChain = buildProviderFallbackChain(area);
+
+  // v11.292.0: Load project goals from ANDROMEDA.md to guide proposal priorities
+  let projectGoals = "";
+  try {
+    const goalsPath = path.join(process.cwd(), "ANDROMEDA.md");
+    if (fs.existsSync(goalsPath)) {
+      const goalsRaw = fs.readFileSync(goalsPath, "utf-8");
+      // Extract just the goals section (first 2000 chars to keep prompt lean)
+      projectGoals = `\n\nProject improvement priorities (read ANDROMEDA.md for full context):\n${goalsRaw.slice(0, 2000)}`;
+    }
+  } catch { /* non-fatal — goals file is optional */ }
+
   const llmMessages = [
     {
       role: "system",
       content: `You are an expert TypeScript software engineer performing a targeted code improvement.
-You will receive source code and must identify the SINGLE BEST improvement to make.
+You will receive source code and must identify the SINGLE BEST improvement to make.${projectGoals}
 ${knowledgeContext ? `\nArchitecture decisions and known issues for this file:\n${knowledgeContext}` : ""}${patternContext ? `\nCross-agent learned patterns for this file:\n${patternContext}` : ""}${longTermMemoryContext}${systemHealthContext}${previousAttempts}${metaLearningContext}${episodicContext}${rlhfContext}${longTermMemoryContext}
 ${knownLimitations}
 ${constitutionBlock}${importGraphContext}

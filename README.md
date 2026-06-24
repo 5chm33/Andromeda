@@ -1,141 +1,163 @@
-<div align="center">
-  <img src="https://raw.githubusercontent.com/5chm33/Andromeda/main/client/public/vite.svg" alt="Andromeda Logo" width="120" />
-</div>
+# Andromeda v11.292.0
 
-<h1 align="center">Andromeda RSI</h1>
-
-<div align="center">
-  <strong>The first open-source, fully autonomous Recursive Self-Improvement (RSI) engine.</strong>
-</div>
-<br />
-
-<div align="center">
-  <a href="#overview">Overview</a> •
-  <a href="#how-it-works">How it Works</a> •
-  <a href="#benchmarks">Benchmarks</a> •
-  <a href="#getting-started">Getting Started</a> •
-  <a href="#architecture">Architecture</a> •
-  <a href="#roadmap">Roadmap</a>
-</div>
-<br />
-
-Andromeda is a State-of-the-Art (SOTA) autonomous AI system that writes its own code, runs its own tests, and iteratively improves its own architecture without human intervention. 
-
-Unlike standard coding assistants (Copilot, Cursor) or agentic frameworks (AutoGPT), Andromeda implements a **closed-loop evolutionary algorithm** bounded by a strict, LLM-enforced Constitution and a 2,700+ suite of CI regression tests.
-
-It is designed to run locally, securely, and continuously.
+> **Fully autonomous recursive self-improvement AI agent** — commits and pushes its own code improvements to GitHub every 5 minutes, unsupervised.
 
 ---
 
-## Overview
+## What This Is
 
-At its core, Andromeda is an AI system that treats its own source code as its environment. It analyzes its own bottlenecks, proposes algorithmic improvements, writes the code, validates it against a massive test suite, and applies the changes if they mathematically improve the system's performance score.
+Andromeda is a production-grade AI agent server that **modifies and improves its own source code** using a multi-stage RSI (Recursive Self-Improvement) pipeline. It is not a demo or a proof of concept — it has made over 200 autonomous commits to its own codebase, including real security fixes, performance improvements, and architectural refactors.
 
-### Key Capabilities
+The agent runs 24/7, analyzes its own modules, proposes improvements, validates them through a guard pipeline (shadow tests, TypeScript check, targeted vitest), commits the passing changes, and pushes them to GitHub — all without human intervention.
 
-- **Autonomous Proposal Generation**: Continuously analyzes the codebase to find optimization opportunities (e.g., O(N^2) to O(N) refactors, memory leaks, missing abstractions).
-- **Hybrid Cost Routing**: Intelligently routes tasks across a 3-tier model architecture. Uses local Ollama models (FREE) for pre-screening, OpenRouter (Gemini Flash/DeepSeek V3) for routine tasks, and premium models (Claude Opus/DeepSeek R1) only for high-impact architectural changes.
-- **Constitutional Guardrails**: All self-modifications must pass a strict `andromeda-constitution.json` check to prevent the system from lobotomizing its own safety checks, weakening test assertions, or modifying forbidden core files.
-- **Behavioral Regression Engine**: CI Stage 2.5 runs targeted contract tests on modified functions *before* the full test suite, ensuring the AI doesn't break existing behavioral contracts.
-- **RAG Context Optimizer**: Injects past failure history, dependency graphs, and behavioral contracts into the AI's prompt during proposal generation, dramatically reducing hallucination rates.
-
-## How it Works
-
-Andromeda runs as a background daemon (the `ContinuousImprover` and `RSIEngine`). Every cycle follows a strict 6-stage pipeline:
-
-1. **Analyze**: The system selects a target file based on cyclomatic complexity and historical bug density.
-2. **Contextualize**: The RAG Optimizer pulls dependency graphs and past failure history for the target file.
-3. **Propose**: The Hybrid Router selects the optimal LLM (based on task complexity and cost) to generate a concrete code modification.
-4. **Constitution Check**: A separate, isolated LLM instance verifies the proposed diff against the strict system Constitution.
-5. **CI Validation**: The proposal is applied in a sandbox. The system runs the TypeScript compiler, the Behavioral Regression tests, and the full 2,700+ Vitest suite.
-6. **Apply or Rollback**: If all tests pass and the capability score improves, the change is committed. If anything fails, the system rolls back instantly and stores the failure in its Long-Term Memory to avoid repeating the mistake.
-
-## Benchmarks
-
-Andromeda is evaluated on its ability to autonomously improve its own codebase without human intervention.
-
-| Metric | v1.0.0 (Baseline) | v11.1.0 (Current) |
-|--------|-------------------|-------------------|
-| Test Suite Size | 1,200 tests | 2,772 tests |
-| Autonomous Success Rate | 12% | **85%** |
-| Cost per RSI Cycle | $0.45 | **$0.02** (Hybrid) |
-| Self-Healing Latency | Manual | < 120 seconds |
-
-## Getting Started
-
-### Prerequisites
-- Node.js (v20+)
-- pnpm (v9+)
-- Optional but recommended: [Ollama](https://ollama.com/) for zero-cost local execution
-
-### Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/your-username/Andromeda.git
-   cd Andromeda
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   pnpm install
-   ```
-
-3. **Configure environment:**
-   ```bash
-   cp .env.local.example .env.local
-   ```
-   Edit `.env.local` and add your preferred API keys. You only need ONE of the following:
-   - `OPENAI_API_KEY`
-   - `OPENROUTER_API_KEY`
-   - `DEEPSEEK_API_KEY`
-   - `OLLAMA_BASE_URL` (for local-only execution)
-
-4. **Build and Start:**
-   ```bash
-   pnpm build
-   pnpm start
-   ```
-
-5. **Access the Dashboard:**
-   Open `http://localhost:3000` in your browser to view the real-time RSI Dashboard, Swarm Voting metrics, and Cost Optimization stats.
+---
 
 ## Architecture
 
-Andromeda is built on a modular, multi-agent architecture:
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        Andromeda Server                             │
+│                                                                     │
+│  ┌──────────────┐   ┌──────────────┐   ┌──────────────────────┐   │
+│  │  RSI Engine  │──▶│  Guard Layer │──▶│  Git Auto-Commit     │   │
+│  │  (propose)   │   │  (validate)  │   │  + GitHub Push       │   │
+│  └──────────────┘   └──────────────┘   └──────────────────────┘   │
+│         │                  │                       │               │
+│  ┌──────▼──────┐   ┌───────▼──────┐   ┌──────────▼───────────┐   │
+│  │  LLM Tier   │   │  Shadow Test │   │  RLHF Feedback Loop  │   │
+│  │  Routing    │   │  (in-place   │   │  (reward model)      │   │
+│  │  flash/pro  │   │   vitest)    │   │                      │   │
+│  └─────────────┘   └─────────────┘   └──────────────────────┘   │
+│                                                                     │
+│  ┌──────────────────────────────────────────────────────────────┐  │
+│  │                    207 Analyzable Modules                    │  │
+│  │  Each has a .test.ts file · Targeted tests run in ~440ms    │  │
+│  └──────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
-- **Swarm Specialist Voting**: Proposals are evaluated by a panel of specialist agents (Security, Performance, Architecture). A proposal requires consensus to proceed.
-- **Episodic & Long-Term Memory**: The system remembers every failed proposal. Over weeks, it consolidates these episodic failures into abstract architectural principles (e.g., "Never use `execSync` without a timeout").
-- **Algorithmic Discovery V2**: A dedicated engine that actively searches for novel capabilities and algorithmic optimizations outside the bounds of predefined benchmarks.
-- **Cross-Domain Adapters**: While currently focused on its own TypeScript codebase, the architecture is domain-agnostic. Adapters exist for Robotics/IoT actuation and Zero-Shot Knowledge Transfer.
+### RSI Pipeline (per cycle)
 
-## Safety & Security
+1. **ANALYZE** — Select a file from 207 analyzable modules, read its content and test file
+2. **PROPOSE** — Generate an improvement using DeepSeek v4-flash (or v4-pro for core RSI files)
+3. **SHADOW TEST** — Write proposed content to disk, run `vitest` on the target test file in-place, restore original if tests fail
+4. **GUARD** — TypeScript check, syntax validation, self-consistency check (skipped for low-risk proposals)
+5. **APPLY** — Write the new content to the live source file
+6. **COMMIT** — `git commit` with structured message, then `git push` to GitHub
+7. **RLHF** — Record the improvement in `data/rlhf_feedback.jsonl` for reward model training
 
-Allowing an AI to write and execute its own code is inherently dangerous. Andromeda mitigates this through:
+---
 
-1. **The Constitution**: A hardcoded JSON ruleset that the AI cannot modify. It explicitly forbids weakening test assertions, modifying the constitution itself, or accessing the host filesystem outside the project directory.
-2. **Immutable Test Suite**: The AI is strictly forbidden from modifying test files (enforced at the git diff level). It can only modify source code to pass the tests.
-3. **Execution Sandbox**: All proposals are evaluated in an isolated CI pipeline before being applied to the active runtime.
+## Quick Start
 
-## Roadmap
+```bash
+# 1. Clone
+git clone https://github.com/5chm33/Andromeda.git
+cd Andromeda
 
-- [x] Phase 1: Core RSI Engine & CI Pipeline
-- [x] Phase 2: Swarm Consensus & Long-Term Memory
-- [x] Phase 3: Hybrid Cost Routing & Behavioral Regression Tests
-- [x] Phase 4: Full Multi-Node Federated Learning (v11.0+)
-- [ ] Phase 5: Zero-Shot Transfer to non-code domains (Q4 2026)
+# 2. Install
+pnpm install
+
+# 3. Configure — copy and fill in your keys
+cp .env.example .env.local
+# Required: DEEPSEEK_API_KEY, OPENROUTER_API_KEY, GITHUB_TOKEN
+# Optional: KIMI_API_KEY, ANTHROPIC_API_KEY
+
+# 4. Build
+pnpm run build
+
+# 5. Run
+node dist/_core/index.js
+```
+
+The server starts on port 3000. RSI auto-enables within 30 seconds and begins cycling every 5 minutes.
+
+---
+
+## Environment Variables
+
+| Variable | Required | Description |
+|---|---|---|
+| `DEEPSEEK_API_KEY` | Yes | Primary LLM for proposals (flash + pro tiers) |
+| `OPENROUTER_API_KEY` | Yes | Self-consistency validation (Claude, GPT-4o) |
+| `GITHUB_TOKEN` | Yes | Auto-push commits to GitHub |
+| `ANDROMEDA_ADMIN_KEY` | Auto-generated | Dashboard admin access (printed on startup) |
+| `RSI_SCHEDULE_HOURS` | No | Cycle interval in hours (default: `0.083` = 5 min) |
+| `AUTO_REBUILD` | No | Rebuild dist after each apply (default: `false`) |
+| `DAILY_CAP_USD` | No | Daily LLM spend cap in USD (default: `5.00`) |
+
+---
+
+## RSI Dashboard
+
+Navigate to `http://localhost:3000/rsi` for the live dashboard:
+
+- **⏸ Pause RSI / ▶ Resume RSI** — Real one-click toggle that actually pauses/resumes the scheduler (not just the UI)
+- **Trigger Now** — Fire a cycle immediately (disabled while paused)
+- **Autonomous Commit Feed** — Live feed of every AI commit with GitHub sync status
+- **Cycle History** — Eval score before/after for every cycle
+- **Cost Optimization Panel** — Live spend tracking by provider
+
+---
+
+## Model Tier Routing
+
+The agent uses a tiered model system to minimize costs:
+
+| Tier | Model | Used For |
+|---|---|---|
+| `eco` | deepseek-v4-flash | 178 standard modules (refactoring, tests, utilities) |
+| `standard` | deepseek-v4-flash | 17 mid-complexity modules |
+| `pro` | deepseek-v4-pro | 12 core RSI engine files (self-modification) |
+
+At 5-minute cycles, expect ~2–4 pro calls per hour and ~8–12 flash calls per hour.
+
+---
+
+## Test Suite
+
+```bash
+# Run all 2,969 tests (301 test files)
+pnpm test
+
+# Run a single targeted test (how RSI validates proposals)
+pnpm exec vitest run server/selfMonitor.test.ts
+```
+
+All 301 test files pass. Zero unhandled errors. Zero vitest worker timeouts.
+
+---
+
+## Key Files
+
+| File | Purpose |
+|---|---|
+| `server/rsiEngine.ts` | RSI cycle orchestrator |
+| `server/selfImprove.ts` | Proposal generation + git commit + auto-push |
+| `server/selfImproveGuard.ts` | Guard pipeline (shadow test, tsc, self-consistency) |
+| `server/shadowInstance.ts` | In-place shadow test runner |
+| `server/rsiScheduler.ts` | 5-minute autonomous cycle scheduler |
+| `server/ciPipeline.ts` | CI pipeline (skipTests/skipTypecheck/skipReload/skipBuild) |
+| `server/selfConsistency.ts` | Multi-provider consensus validation |
+| `data/rlhf_feedback.jsonl` | RLHF reward signal for all applied proposals |
+
+---
+
+## Codebase Health (as of v11.292.0)
+
+| Metric | Value | Grade |
+|---|---|---|
+| Test files | 301 (100% coverage of analyzable modules) | A+ |
+| Test pass rate | 2,969/2,969 (100%) | A+ |
+| Unhandled test errors | 0 | A+ |
+| TypeScript errors | 0 | A+ |
+| Dead code (unused exports) | ~12 minor | A |
+| Empty catch blocks (silent) | ~180 non-fatal UI handlers | B+ |
+| God modules | rsiEngine.ts (split in progress) | B |
+| Overall | | **A-** |
+
+---
 
 ## License
 
-MIT License - See [LICENSE](LICENSE) for details.
-
----
-*Built autonomously by Andromeda.*
-
-## v11.6.0 SOTA Upgrades
-- **RLHF 119k Injection:** The proposal generation prompt is now wired to 119,756 validated DPO pairs, feeding past successes and failures directly into the AI's context window.
-- **Total Sandbox Security:** `cloudProvisioning.ts`, `dependencyResolver.ts`, and all Git commands are now strictly sandboxed via regex whitelists.
-- **GC Score Fixed:** The Goal Completion dimension of the RSI benchmark now accurately scores empty states, unlocking the 100/100 cap.
-- **Live Cost Tracking:** Real-time per-provider USD tracking with a daily spending cap.
-- **Ollama Zero-Cost Routing:** Background RSI cycles automatically route to local Ollama if available.
-- **Forever-Run Daemon:** Built-in PM2 ecosystem config and systemd templates for headless deployment.
+MIT — See [LICENSE](LICENSE)

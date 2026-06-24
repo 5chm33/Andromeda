@@ -77,6 +77,8 @@ import {
   type ImprovementProposal,
 } from "./selfImprove";
 import { checkFailurePattern } from "./failurePatternMemory.js";
+import { createLogger } from "./logger.js";
+const log = createLogger("guard");
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -375,7 +377,7 @@ function runSyntaxCheck(filename: string, proposedContent: string, originalSnipp
       const isTscMissing = /ENOENT|command not found|not recognized as an internal or external command/i.test(tscOutput);
       if (isTscMissing) {
         if (!(global as any)._tscWarningEmitted) {
-          console.warn(`[Guard] tsc binary not found — using lightweight JS syntax fallback`);
+          log.warn("tsc binary not found — using lightweight JS syntax fallback");
           (global as any)._tscWarningEmitted = true;
         }
         return runLightweightSyntaxCheck(proposedContent);
@@ -396,7 +398,7 @@ function runSyntaxCheck(filename: string, proposedContent: string, originalSnipp
       const isTscMissing = /ENOENT|command not found|not recognized as an internal or external command/i.test(tscOutput);
       if (isTscMissing) {
         if (!(global as any)._tscWarningEmitted) {
-          console.warn(`[Guard] tsc binary not found — using lightweight JS syntax fallback`);
+          log.warn("tsc binary not found — using lightweight JS syntax fallback");
           (global as any)._tscWarningEmitted = true;
         }
         return runLightweightSyntaxCheck(proposedContent);
@@ -526,12 +528,12 @@ function runTests(targetFile?: string): { pass: boolean; output: string } {
         // A bare basename like "foo.test.ts" does NOT substring-match "server\foo.test.ts".
         // Prefixing with "server/" works on both platforms because vitest normalises slashes.
         testFileArg = `server/${testBaseName}`;
-        console.log(`[Guard] Running targeted tests for ${baseName}: ${testFileArg}`);
+        log.info(`Running targeted tests for ${baseName}: ${testFileArg}`);
       } else if (specExists) {
         testFileArg = `server/${specBaseName}`;
-        console.log(`[Guard] Running targeted tests for ${baseName}: ${testFileArg}`);
+        log.info(`Running targeted tests for ${baseName}: ${testFileArg}`);
       } else {
-        console.log(`[Guard] No test file found for ${baseName}, running full suite`);
+        log.info(`No test file found for ${baseName}, running full suite`);
       }
     }
 
@@ -545,16 +547,16 @@ function runTests(targetFile?: string): { pass: boolean; output: string } {
       ? ["cmd.exe", ["/c", vitestCmd], { shell: false, timeout: 300000, encoding: "utf-8", cwd: _guardProjectRoot, stdio: "pipe" }]
       : ["sh", ["-c", vitestCmd], { shell: false, timeout: 300000, encoding: "utf-8", cwd: _guardProjectRoot, stdio: "pipe" }];
 
-    console.log(`[Guard] Running tests: ${vitestCmd} (cwd: ${_guardProjectRoot})`);
+    log.info(`Running tests: ${vitestCmd}`);
     const result = _spawnSync(...spawnArgs);
 
     // Handle spawn failure
     if (result.error) {
       const errMsg = `Test runner spawn failed: ${result.error.message}`;
-      console.error(`[Guard] ${errMsg}`);
+      log.error(`Test runner error: ${errMsg}`);
       // ETIMEDOUT = tests took too long. Don't block the proposal — log and pass.
       if ((result.error as NodeJS.ErrnoException).code === "ETIMEDOUT") {
-        console.warn(`[Guard] Test timeout — treating as pass to avoid blocking valid proposals`);
+        log.warn("Test timeout — treating as pass");
         return { pass: true, output: `Tests timed out after 300s — treated as pass` };
       }
       return { pass: false, output: errMsg };
@@ -565,19 +567,19 @@ function runTests(targetFile?: string): { pass: boolean; output: string } {
     const output = (stdout + stderr).slice(-6000);
 
     // Log the full output so it appears in the user's terminal
-    if (output) console.log(`[Guard] Test output:\n${output.slice(-2000)}`);
-    console.log(`[Guard] Test exit code: ${result.status} | signal: ${result.signal}`);
+    if (output) log.debug(`Test output:\n${output.slice(-500)}`);
+    log.info(`Test exit code: ${result.status} | signal: ${result.signal}`);
 
     // null status = killed/timed out — treat as pass to avoid blocking valid proposals
     if (result.status === null) {
-      console.warn(`[Guard] Tests killed (signal: ${result.signal}) — treating as pass`);
+      log.warn(`Tests killed (signal: ${result.signal}) — treating as pass`);
       return { pass: true, output: `Tests killed by signal ${result.signal} — treated as pass` };
     }
 
     return { pass: result.status === 0, output };
   } catch (err: any) {
     const msg = (err.stdout ?? err.message ?? "").slice(-2000);
-    console.error(`[Guard] runTests exception: ${msg}`);
+    log.error(`runTests exception: ${msg}`);
     return { pass: false, output: msg };
   }
 }
@@ -645,7 +647,7 @@ export async function guardedApply(proposalId: string): Promise<{
         if (blockCount >= 2) {
           rejectProposal(proposalId);
           addAudit("expire", "success", `Auto-expired: constitution-blocked ${blockCount + 1} times (pattern: '${matchedPattern}')`, proposalId, proposal.targetFile);
-          console.log(`[Guard] Auto-expired proposal ${proposalId} after ${blockCount + 1} constitution blocks`);
+          log.info(`Auto-expired proposal ${proposalId} after ${blockCount + 1} constitution blocks`);
           return { success: false, message: `Proposal auto-expired: constitution-blocked ${blockCount + 1} times for pattern '${matchedPattern}'.` };
         }
         return { success: false, message: `Constitution blocked: proposed content contains forbidden pattern '${matchedPattern}'.` };
@@ -656,10 +658,10 @@ export async function guardedApply(proposalId: string): Promise<{
         addAudit("apply", "blocked", `Constitution: rationale too short (${proposal.rationale?.length || 0} chars, min ${minRationaleLen})`, proposalId, proposal.targetFile);
         return { success: false, message: `Constitution requires a rationale of at least ${minRationaleLen} characters.` };
       }
-      console.log(`[Guard] Constitution check passed for ${proposal.targetFile}`);
+      log.info(`Constitution check passed for ${proposal.targetFile}`);
     }
   } catch (constitutionErr) {
-    console.warn("[Guard] Constitution check unavailable (non-fatal):", (constitutionErr as Error).message);
+    log.warn(`Constitution check unavailable: ${(constitutionErr as Error).message}`);
   }
 
   // v5.25: Meta-mode guard — immune system files require explicit environment unlock
@@ -669,7 +671,7 @@ export async function guardedApply(proposalId: string): Promise<{
       addAudit("apply", "blocked", `Meta-guard: ${proposal.targetFile} requires META_MODIFY_UNLOCK=true`, proposalId, proposal.targetFile);
       return { success: false, message: `Meta-guard active: '${proposal.targetFile}' is an immune system file. Set META_MODIFY_UNLOCK=true to allow modification.` };
     }
-    console.warn(`[Guard] ⚠️ META_MODIFY_UNLOCK active: allowing modification of immune system file ${proposal.targetFile}`);
+    log.warn(`META_MODIFY_UNLOCK active: allowing modification of ${proposal.targetFile}`);
   }
 
   // Check blocked files
@@ -701,7 +703,7 @@ export async function guardedApply(proposalId: string): Promise<{
         try {
           const { refineProposal } = await import("./selfImprove.js") as any;
           if (typeof refineProposal === "function") {
-            console.log(`[Guard] Syntax check failed for ${proposalId}, initiating refinement loop (${refineCount + 1}/2)`);
+            log.info(`Syntax check failed for ${proposalId}, initiating refinement loop (${refineCount + 1}/2)`);
             const refined = await refineProposal(proposal, syntaxResult.errors);
             if (refined) {
               addAudit("apply", "failure", `Refined proposal ${proposalId} after syntax error`, proposalId, proposal.targetFile);
@@ -712,13 +714,13 @@ export async function guardedApply(proposalId: string): Promise<{
               const retrySyntax = runSyntaxCheck(proposal.targetFile, proposal.proposedContent, proposal.originalSnippet, proposal.proposedSnippet);
               
               if (retrySyntax.pass) {
-                console.log(`[Guard] Refinement successful for ${proposalId}. Syntax check passed.`);
+                log.info(`Refinement successful for ${proposalId}`);
                 addAudit("apply", "success", `Refinement fixed syntax errors for ${proposalId}`, proposalId, proposal.targetFile);
                 // The syntax check passed, so we can break out of the failure block and continue
                 // the apply process (e.g. consensus check, rollback point creation, etc.)
                 syntaxResult = retrySyntax;
               } else {
-                console.log(`[Guard] Refinement failed to fix syntax for ${proposalId}. Queued for another try.`);
+                log.warn(`Refinement failed to fix syntax for ${proposalId}`);
                 return { success: false, message: "Syntax check failed — proposal refined but still has errors (queued for retry)", syntaxCheck: retrySyntax };
               }
             } else {
@@ -727,7 +729,7 @@ export async function guardedApply(proposalId: string): Promise<{
             }
           }
         } catch (err) {
-          console.warn("[Guard] Refinement loop failed:", (err as Error).message);
+          log.warn(`Refinement loop failed: ${(err as Error).message}`);
           return { success: false, message: "Syntax check failed — refinement threw an error", syntaxCheck: syntaxResult };
         }
       } else {
@@ -764,11 +766,11 @@ export async function guardedApply(proposalId: string): Promise<{
         return { success: false, message: `Multi-model consensus rejected this proposal (${approvalPct}% approval)` };
       }
       const approvalPct = ((consensusResult.approvalCount / Math.max(consensusResult.totalModels, 1)) * 100).toFixed(0);
-      console.log(`[Guard] Consensus approved for ${proposal.targetFile} (${approvalPct}% approval, confidence: ${consensusResult.consensusConfidence.toFixed(2)})`);
+      log.info(`Consensus approved for ${proposal.targetFile} (${approvalPct}% approval, confidence: ${consensusResult.consensusConfidence.toFixed(2)})`);
     }
   } catch (consensusErr) {
     // Non-fatal — if consensus engine is unavailable, proceed without it
-    console.warn("[Guard] Consensus check unavailable (non-fatal):", (consensusErr as Error).message);
+    log.warn(`Consensus check unavailable: ${(consensusErr as Error).message}`);
   }
 
   // v11.12.0: Check failure pattern memory before writing — reject if this content previously caused failures
@@ -780,16 +782,16 @@ export async function guardedApply(proposalId: string): Promise<{
         rationale: proposal.title || "RSI proposal",
       });
       if (failureCheck.severity === "block") {
-        const msg = `[Guard] Blocked by failure pattern memory: ${failureCheck.matchedPattern}. Previous error: ${failureCheck.previousError}`;
-        console.warn(msg);
+        const msg = `Blocked by failure pattern memory: ${failureCheck.matchedPattern}. Previous error: ${failureCheck.previousError}`;
+        log.warn(msg);
         addAudit("apply", "blocked", msg, proposalId, proposal.targetFile);
         return { success: false, message: msg, syntaxCheck: syntaxResult, backup: undefined };
       }
       if (failureCheck.severity === "warn") {
-        console.warn(`[Guard] Failure pattern warning for ${proposal.targetFile}: ${failureCheck.matchedPattern} (${failureCheck.similarFailureCount} recent failures)`);
+        log.warn(`Failure pattern warning for ${proposal.targetFile}: ${failureCheck.matchedPattern} (${failureCheck.similarFailureCount} recent failures)`);
       }
     } catch (fpErr) {
-      console.warn("[Guard] Failure pattern check unavailable (non-fatal):", (fpErr as Error).message);
+      log.warn(`Failure pattern check unavailable: ${(fpErr as Error).message}`);
     }
   }
 
@@ -809,19 +811,19 @@ export async function guardedApply(proposalId: string): Promise<{
       );
       if (!consistencyResult.approved && consistencyResult.report?.recommendation === "reject") {
         const topReason = consistencyResult.report?.evaluations?.[0]?.explanation?.slice(0, 200) || "consistency check failed";
-        const msg = `[Guard] Self-consistency validation rejected proposal (consensus=${consistencyResult.report?.consensus?.toFixed(2)}): ${topReason}`.slice(0, 300);
-        console.warn(msg);
+        const msg = `Self-consistency validation rejected proposal (consensus=${consistencyResult.report?.consensus?.toFixed(2)}): ${topReason}`.slice(0, 300);
+        log.warn(msg);
         addAudit("apply", "blocked", msg, proposalId, proposal.targetFile);
         return { success: false, message: msg, syntaxCheck: syntaxResult, backup: undefined };
       }
       if (!consistencyResult.approved) {
-        console.warn(`[Guard] Self-consistency warning for ${proposal.targetFile}: recommendation=${consistencyResult.report?.recommendation}, consensus=${consistencyResult.report?.consensus?.toFixed(2)}`);
+        log.warn(`Self-consistency warning for ${proposal.targetFile}: recommendation=${consistencyResult.report?.recommendation}, consensus=${consistencyResult.report?.consensus?.toFixed(2)}`);
       }
     } catch (scErr) {
       // Non-fatal — if selfConsistency is unavailable, proceed without it
     }
   } else if (_skipConsistencyCheck && proposal.proposedContent) {
-    console.log(`[Guard] Skipping self-consistency for low-risk proposal: ${(proposal.title || "").slice(0, 60)}`);
+    log.info(`Skipping self-consistency for low-risk proposal: ${(proposal.title || "").slice(0, 60)}`);
   }
 
   // v11.18.0 Audit 10 Fix C: Wire quickValidate so sandboxVerifier catches obvious issues before write
@@ -830,8 +832,8 @@ export async function guardedApply(proposalId: string): Promise<{
       const { quickValidate } = await import("./sandboxVerifier.js");
       const qv = quickValidate(proposal.proposedContent, proposal.targetFile);
       if (!qv.valid) {
-        const msg = `[Guard] sandboxVerifier.quickValidate rejected proposal: ${qv.issues.slice(0, 3).join("; ")}`;
-        console.warn(msg);
+        const msg = `sandboxVerifier.quickValidate rejected proposal: ${qv.issues.slice(0, 3).join("; ")}`;
+        log.warn(msg);
         addAudit("apply", "blocked", msg, proposalId, proposal.targetFile);
         return { success: false, message: msg, syntaxCheck: syntaxResult, backup: undefined };
       }
@@ -856,7 +858,7 @@ export async function guardedApply(proposalId: string): Promise<{
   }
   try {
     fs.writeFileSync(targetFilePath, proposal.proposedContent, "utf-8");
-    console.log(`[Guard] Wrote ${proposal.proposedContent.length} bytes to ${proposal.targetFile}`);
+    log.info(`Wrote ${proposal.proposedContent.length} bytes to ${proposal.targetFile}`);
   } catch (writeErr) {
     const msg = `Failed to write ${proposal.targetFile}: ${(writeErr as Error).message}`;
     addAudit("apply", "failure", msg, proposalId, proposal.targetFile);
@@ -939,7 +941,7 @@ function syncEnvToConfig(): void {
   if (store.config.requireApproval !== desired) {
     store.config.requireApproval = desired;
     saveStore(store);
-    console.log(`[SelfImproveGuard] v7.1.7: Synced AUTONOMY_REQUIRE_APPROVAL=${envVal} from env — guard approval ${desired ? "enabled" : "disabled"}`);
+    log.info(`Synced AUTONOMY_REQUIRE_APPROVAL=${envVal} — guard approval ${desired ? "enabled" : "disabled"}`);
   }
 }
 

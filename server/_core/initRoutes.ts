@@ -180,9 +180,11 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
     try {
       const { getRSIStatus } = await import("../rsiEngine.js");
       const { getCostStats } = await import("../llmProvider.js");
+      const { getRsiSchedulerStatus } = await import("../rsiScheduler.js");
       const rsiStatus = getRSIStatus();
-      // v6.22: Attach live cost tracking data to the RSI status response
-      res.json({ ...rsiStatus, costStats: getCostStats() });
+      const schedulerStatus = getRsiSchedulerStatus();
+      // v11.292.0: Attach live cost tracking + scheduler paused state to the RSI status response
+      res.json({ ...rsiStatus, costStats: getCostStats(), schedulerPaused: schedulerStatus.paused ?? false });
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });
   app.post("/api/rsi/enable", requireAdminAuth, validateBody(rsiEnableSchema), async (req, res) => {

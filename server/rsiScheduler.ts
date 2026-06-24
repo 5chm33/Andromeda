@@ -250,6 +250,7 @@ function _wireSchedulerHook(): void {
 export function getRsiSchedulerStatus(): {
   taskId: string | null;
   status: string;
+  paused: boolean;
   intervalHours: number;
   nextRunAt: string | null;
   runCount: number;
@@ -268,6 +269,7 @@ export function getRsiSchedulerStatus(): {
   return {
     taskId: task?.id ?? null,
     status: task?.status ?? "not-initialized",
+    paused: task?.status === "paused",
     intervalHours: task ? Math.round((task.intervalSeconds ?? DEFAULT_HOURS * 3600) / 3600) : DEFAULT_HOURS,
     nextRunAt: task?.nextRunAt ?? null,
     runCount: task?.runCount ?? 0,
