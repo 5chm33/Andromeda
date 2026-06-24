@@ -9711,6 +9711,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./codeIntel.js").then(m => { m.generateUnifiedDiff(); }).catch(() => {});
     }
+    // 2199. consensusEngine: getConsensus
+    if (cycleCount % 1000 === 0) {
+      import("./consensusEngine.js").then(m => { m.getConsensus(); }).catch(() => {});
+    }
+    // 2200. consensusEngine: requiresConsensus
+    if (cycleCount % 1000 === 0) {
+      import("./consensusEngine.js").then(m => { m.requiresConsensus(); }).catch(() => {});
+    }
+    // 2201. consensusEngine: getConsensusStats
+    if (cycleCount % 1000 === 0) {
+      import("./consensusEngine.js").then(m => { m.getConsensusStats(); }).catch(() => {});
+    }
+    // 2202. consensusEngine: updateConsensusConfig
+    if (cycleCount % 1000 === 0) {
+      import("./consensusEngine.js").then(m => { m.updateConsensusConfig(); }).catch(() => {});
+    }
+    // 2203. consensusEngine: initConsensusEngine
+    if (cycleCount % 1000 === 0) {
+      import("./consensusEngine.js").then(m => { m.initConsensusEngine(); }).catch(() => {});
+    }
+    // 2204. costOptimizer: scoreProposalComplexity
+    if (cycleCount % 1000 === 0) {
+      import("./costOptimizer.js").then(m => { m.scoreProposalComplexity(); }).catch(() => {});
+    }
+    // 2205. costOptimizer: selectCostOptimalModel
+    if (cycleCount % 1000 === 0) {
+      import("./costOptimizer.js").then(m => { m.selectCostOptimalModel(); }).catch(() => {});
+    }
+    // 2206. costOptimizer: recordCost
+    if (cycleCount % 1000 === 0) {
+      import("./costOptimizer.js").then(m => { m.recordCost(); }).catch(() => {});
+    }
+    // 2207. costOptimizer: getCostStats
+    if (cycleCount % 1000 === 0) {
+      import("./costOptimizer.js").then(m => { m.getCostStats(); }).catch(() => {});
+    }
+    // 2208. costOptimizer: getModelProfiles
+    if (cycleCount % 1000 === 0) {
+      import("./costOptimizer.js").then(m => { m.getModelProfiles(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
