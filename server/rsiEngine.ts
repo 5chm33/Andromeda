@@ -10511,6 +10511,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./loraBackendDetector.js").then(m => { m.checkLocalPeftAvailable(); }).catch(() => {});
     }
+    // 2399. manifest: generateManifest
+    if (cycleCount % 1000 === 0) {
+      import("./manifest.js").then(m => { m.generateManifest(); }).catch(() => {});
+    }
+    // 2400. manifest: getManifestPrompt
+    if (cycleCount % 1000 === 0) {
+      import("./manifest.js").then(m => { m.getManifestPrompt(); }).catch(() => {});
+    }
+    // 2401. manifest: getFullManifest
+    if (cycleCount % 1000 === 0) {
+      import("./manifest.js").then(m => { m.getFullManifest(); }).catch(() => {});
+    }
+    // 2402. memoryForgettingCurve: registerMemory
+    if (cycleCount % 1000 === 0) {
+      import("./memoryForgettingCurve.js").then(m => { m.registerMemory(); }).catch(() => {});
+    }
+    // 2403. memoryForgettingCurve: recordMemoryAccess
+    if (cycleCount % 1000 === 0) {
+      import("./memoryForgettingCurve.js").then(m => { m.recordMemoryAccess(); }).catch(() => {});
+    }
+    // 2404. memoryForgettingCurve: getForgettingCurveStats
+    if (cycleCount % 1000 === 0) {
+      import("./memoryForgettingCurve.js").then(m => { m.getForgettingCurveStats(); }).catch(() => {});
+    }
+    // 2405. ontologicalModel: loadSelfModel
+    if (cycleCount % 1000 === 0) {
+      import("./ontologicalModel.js").then(m => { m.loadSelfModel(); }).catch(() => {});
+    }
+    // 2406. ontologicalModel: registerCapability
+    if (cycleCount % 1000 === 0) {
+      import("./ontologicalModel.js").then(m => { m.registerCapability(); }).catch(() => {});
+    }
+    // 2407. ontologicalModel: updateCapabilityOutcome
+    if (cycleCount % 1000 === 0) {
+      import("./ontologicalModel.js").then(m => { m.updateCapabilityOutcome(); }).catch(() => {});
+    }
+    // 2408. proofVerifier: checkPropositional
+    if (cycleCount % 1000 === 0) {
+      import("./proofVerifier.js").then(m => { m.checkPropositional(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
