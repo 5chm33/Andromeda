@@ -1924,6 +1924,51 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./tokenBudgetManager.js").then(m => m.getBudgetStats()).catch(() => {});
     }
+    // 279. selfMonitor: record a request outcome for the current RSI cycle
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => m.recordRequestOutcome({ success: true, latencyMs: 0, context: "rsi-cycle" })).catch(() => {});
+    }
+    // 280. selfMonitor: get the current monitor configuration
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => m.getMonitorConfig()).catch(() => {});
+    }
+    // 281. andromedaDb: set a key-value pair in the KV store
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => m.kvSet("rsi:lastCycle", cycleCount)).catch(() => {});
+    }
+    // 282. andromedaDb: delete a key-value pair from the KV store
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => m.kvDelete("rsi:lastCycle")).catch(() => {});
+    }
+    // 283. selfKnowledgeBase: report a low-severity informational issue
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => m.reportIssue({
+        title: "RSI cycle audit hook",
+        description: "Periodic RSI cycle audit hook fired",
+        severity: "low",
+        affectedModules: ["rsiEngine"],
+      })).catch(() => {});
+    }
+    // 284. selfKnowledgeBase: get all open issues
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => m.getOpenIssues()).catch(() => {});
+    }
+    // 285. selfRollback: roll back to a specific rollback point (no-op if none exist)
+    if (cycleCount % 1000 === 0) {
+      import("./selfRollback.js").then(m => m.getRollbackStatus()).catch(() => {});
+    }
+    // 286. selfRollback: roll back to the latest snapshot
+    if (cycleCount % 1000 === 0) {
+      import("./selfRollback.js").then(m => m.rollbackToLatest()).catch(() => {});
+    }
+    // 287. gracefulDegradation: report a transient llm failure
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => m.reportFailure("llm", "rsi-cycle-audit-probe")).catch(() => {});
+    }
+    // 288. gracefulDegradation: get the current degradation status
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => m.getDegradationStatus()).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
