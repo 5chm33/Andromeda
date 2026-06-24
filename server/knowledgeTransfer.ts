@@ -342,11 +342,12 @@ export function getPatternContextForFile(targetFile: string, category: string): 
     .filter(p =>
       p.category === category ||
       basename.toLowerCase().includes(p.targetFilePattern.replace(/\*/g, "").toLowerCase())
-    )
-    .sort((a, b) => b.successRate * b.sampleCount - a.successRate * a.sampleCount)
-    .slice(0, 3);
+    );
 
   if (relevant.length === 0) return "";
+
+  relevant.sort((a, b) => b.successRate * b.sampleCount - a.successRate * a.sampleCount)
+    .slice(0, 3);
 
   const lines = relevant.map(p =>
     `- "${p.exampleTitle}" (success rate: ${(p.successRate * 100).toFixed(0)}%, n=${p.sampleCount}): ${p.exampleRationale.slice(0, 100)}`
