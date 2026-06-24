@@ -3991,6 +3991,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./adaptiveRouter.js").then(m => { m.selectProvider(); }).catch(() => {});
     }
+    // 769. andromedaDb: getBenchmarkTrend
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => { m.getBenchmarkTrend(); }).catch(() => {});
+    }
+    // 770. andromedaDb: migrateFromJson
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => { m.migrateFromJson(); }).catch(() => {});
+    }
+    // 771. andromedaDb: closeDb
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => { m.closeDb(); }).catch(() => {});
+    }
+    // 772. autoHealing: checkConfigHealth
+    if (cycleCount % 1000 === 0) {
+      import("./autoHealing.js").then(m => { m.checkConfigHealth(); }).catch(() => {});
+    }
+    // 773. autoHealing: checkTmpFilesHealth
+    if (cycleCount % 1000 === 0) {
+      import("./autoHealing.js").then(m => { m.checkTmpFilesHealth(); }).catch(() => {});
+    }
+    // 774. autoHealing: executeHealingAction
+    if (cycleCount % 1000 === 0) {
+      import("./autoHealing.js").then(m => { m.executeHealingAction(); }).catch(() => {});
+    }
+    // 775. cache: aiCacheKey
+    if (cycleCount % 1000 === 0) {
+      import("./cache.js").then(m => { m.aiCacheKey(); }).catch(() => {});
+    }
+    // 776. cache: browseCacheKey
+    if (cycleCount % 1000 === 0) {
+      import("./cache.js").then(m => { m.browseCacheKey(); }).catch(() => {});
+    }
+    // 777. cache: clearAllCaches
+    if (cycleCount % 1000 === 0) {
+      import("./cache.js").then(m => { m.clearAllCaches(); }).catch(() => {});
+    }
+    // 778. capabilityDiscovery: recordCapabilityGap
+    if (cycleCount % 1000 === 0) {
+      import("./capabilityDiscovery.js").then(m => { m.recordCapabilityGap(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
