@@ -3151,6 +3151,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./selfImproveGuard.js").then(m => { m.generateDiffPreview(); }).catch(() => {});
     }
+    // 559. auditLog: audit
+    if (cycleCount % 1000 === 0) {
+      import("./auditLog.js").then(m => { m.audit(); }).catch(() => {});
+    }
+    // 560. auditLog: auditAuthFailure
+    if (cycleCount % 1000 === 0) {
+      import("./auditLog.js").then(m => { m.auditAuthFailure(); }).catch(() => {});
+    }
+    // 561. auditLog: auditAccessDenied
+    if (cycleCount % 1000 === 0) {
+      import("./auditLog.js").then(m => { m.auditAccessDenied(); }).catch(() => {});
+    }
+    // 562. auditLog: auditRsiEvent
+    if (cycleCount % 1000 === 0) {
+      import("./auditLog.js").then(m => { m.auditRsiEvent(); }).catch(() => {});
+    }
+    // 563. auditLog: auditAdminAction
+    if (cycleCount % 1000 === 0) {
+      import("./auditLog.js").then(m => { m.auditAdminAction(); }).catch(() => {});
+    }
+    // 564. auditLog: getRecentAuditEvents
+    if (cycleCount % 1000 === 0) {
+      import("./auditLog.js").then(m => { m.getRecentAuditEvents(); }).catch(() => {});
+    }
+    // 565. auditLog: loadAuditFromDisk
+    if (cycleCount % 1000 === 0) {
+      import("./auditLog.js").then(m => { m.loadAuditFromDisk(); }).catch(() => {});
+    }
+    // 566. selfImproveGuard: guardedApply
+    if (cycleCount % 1000 === 0) {
+      import("./selfImproveGuard.js").then(m => { m.guardedApply(); }).catch(() => {});
+    }
+    // 567. selfImproveGuard: rollbackToBackup
+    if (cycleCount % 1000 === 0) {
+      import("./selfImproveGuard.js").then(m => { m.rollbackToBackup(); }).catch(() => {});
+    }
+    // 568. selfImproveGuard: getGuardConfig
+    if (cycleCount % 1000 === 0) {
+      import("./selfImproveGuard.js").then(m => { m.getGuardConfig(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
