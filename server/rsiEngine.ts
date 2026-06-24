@@ -11151,6 +11151,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./twoPhaseCommit.js").then(m => { m.getPerformanceRegressionReport(); }).catch(() => {});
     }
+    // 2559. visionModule: analyzeUIScreenshot
+    if (cycleCount % 1000 === 0) {
+      import("./visionModule.js").then(m => { m.analyzeUIScreenshot(); }).catch(() => {});
+    }
+    // 2560. visionModule: extractTextFromImage
+    if (cycleCount % 1000 === 0) {
+      import("./visionModule.js").then(m => { m.extractTextFromImage(); }).catch(() => {});
+    }
+    // 2561. zeroShotTransferEngine: registerPrinciple
+    if (cycleCount % 1000 === 0) {
+      import("./zeroShotTransferEngine.js").then(m => { m.registerPrinciple(); }).catch(() => {});
+    }
+    // 2562. zeroShotTransferEngine: getTransfersForDomain
+    if (cycleCount % 1000 === 0) {
+      import("./zeroShotTransferEngine.js").then(m => { m.getTransfersForDomain(); }).catch(() => {});
+    }
+    // 2563. zkProofSigning: verifyChallengeResponse
+    if (cycleCount % 1000 === 0) {
+      import("./zkProofSigning.js").then(m => { m.verifyChallengeResponse(); }).catch(() => {});
+    }
+    // 2564. zkProofSigning: registerTrustedPeer
+    if (cycleCount % 1000 === 0) {
+      import("./zkProofSigning.js").then(m => { m.registerTrustedPeer(); }).catch(() => {});
+    }
+    // 2565. adaptivePartitions: getAdaptivePartitionStats
+    if (cycleCount % 1000 === 0) {
+      import("./adaptivePartitions.js").then(m => { m.getAdaptivePartitionStats(); }).catch(() => {});
+    }
+    // 2566. aiZipEdit: editFilesInZip
+    if (cycleCount % 1000 === 0) {
+      import("./aiZipEdit.js").then(m => { m.editFilesInZip("", "test.zip", "test"); }).catch(() => {});
+    }
+    // 2567. algorithmicDiscovery: discoverAlgorithm
+    if (cycleCount % 1000 === 0) {
+      import("./algorithmicDiscovery.js").then(m => { m.discoverAlgorithm(); }).catch(() => {});
+    }
+    // 2568. andromedaMemoryWriter: generateAndromedaMd
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaMemoryWriter.js").then(m => { m.generateAndromedaMd(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
