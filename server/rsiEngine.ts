@@ -8871,6 +8871,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./transactionLog.js").then(m => { m.recordChange(); }).catch(() => {});
     }
+    // 1989. aiPlanning: generateSubQueries
+    if (cycleCount % 1000 === 0) {
+      import("./aiPlanning.js").then(m => { m.generateSubQueries(); }).catch(() => {});
+    }
+    // 1990. aiPlanning: generateSuggestions
+    if (cycleCount % 1000 === 0) {
+      import("./aiPlanning.js").then(m => { m.generateSuggestions(); }).catch(() => {});
+    }
+    // 1991. aiPlanning: todoCreate
+    if (cycleCount % 1000 === 0) {
+      import("./aiPlanning.js").then(m => { m.todoCreate(); }).catch(() => {});
+    }
+    // 1992. aiPlanning: todoUpdate
+    if (cycleCount % 1000 === 0) {
+      import("./aiPlanning.js").then(m => { m.todoUpdate(); }).catch(() => {});
+    }
+    // 1993. aiPlanning: todoList
+    if (cycleCount % 1000 === 0) {
+      import("./aiPlanning.js").then(m => { m.todoList(); }).catch(() => {});
+    }
+    // 1994. aiPlanning: todoDelete
+    if (cycleCount % 1000 === 0) {
+      import("./aiPlanning.js").then(m => { m.todoDelete(); }).catch(() => {});
+    }
+    // 1995. aiPlanning: todoClear
+    if (cycleCount % 1000 === 0) {
+      import("./aiPlanning.js").then(m => { m.todoClear(); }).catch(() => {});
+    }
+    // 1996. aiStreaming: streamAIResponse
+    if (cycleCount % 1000 === 0) {
+      import("./aiStreaming.js").then(m => { m.streamAIResponse(); }).catch(() => {});
+    }
+    // 1997. aiStreaming: streamAIResponseWithContext
+    if (cycleCount % 1000 === 0) {
+      import("./aiStreaming.js").then(m => { m.streamAIResponseWithContext(); }).catch(() => {});
+    }
+    // 1998. aiStreaming: streamDeepResearch
+    if (cycleCount % 1000 === 0) {
+      import("./aiStreaming.js").then(m => { m.streamDeepResearch(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
