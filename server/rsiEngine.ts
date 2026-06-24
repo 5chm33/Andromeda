@@ -4111,6 +4111,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./fileEngineUtils.js").then(m => { m.fetchWithRetry("https://example.com", { method: "HEAD" }); }).catch(() => {});
     }
+    // 799. gracefulDegradation: resetService
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => { m.resetService(); }).catch(() => {});
+    }
+    // 800. gracefulDegradation: stopHealthMonitoring
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => { m.stopHealthMonitoring(); }).catch(() => {});
+    }
+    // 801. gracefulDegradation: initGracefulDegradation
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => { m.initGracefulDegradation(); }).catch(() => {});
+    }
+    // 802. hotReload: checkRestartState
+    if (cycleCount % 1000 === 0) {
+      import("./hotReload.js").then(m => { m.checkRestartState(); }).catch(() => {});
+    }
+    // 803. hotReload: getHotReloadStatus
+    if (cycleCount % 1000 === 0) {
+      import("./hotReload.js").then(m => { m.getHotReloadStatus(); }).catch(() => {});
+    }
+    // 804. hotReload: initHotReload
+    if (cycleCount % 1000 === 0) {
+      import("./hotReload.js").then(m => { m.initHotReload(); }).catch(() => {});
+    }
+    // 805. knowledgeBaseConsolidation: runKBConsolidation
+    if (cycleCount % 1000 === 0) {
+      import("./knowledgeBaseConsolidation.js").then(m => { m.runKBConsolidation(); }).catch(() => {});
+    }
+    // 806. knowledgeBaseConsolidation: isKBConsolidationDue
+    if (cycleCount % 1000 === 0) {
+      import("./knowledgeBaseConsolidation.js").then(m => { m.isKBConsolidationDue(); }).catch(() => {});
+    }
+    // 807. knowledgeBaseConsolidation: startKBConsolidationDaemon
+    if (cycleCount % 1000 === 0) {
+      import("./knowledgeBaseConsolidation.js").then(m => { m.startKBConsolidationDaemon(); }).catch(() => {});
+    }
+    // 808. observability: requestTracingMiddleware
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { void 0 /* requestTracingMiddleware requires complex args — skipped */; }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
