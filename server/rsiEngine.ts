@@ -9311,6 +9311,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./episodicMemory.js").then(m => { m.storeEpisode(); }).catch(() => {});
     }
+    // 2099. hotReload: hotReloadModule
+    if (cycleCount % 1000 === 0) {
+      import("./hotReload.js").then(m => { m.hotReloadModule(); }).catch(() => {});
+    }
+    // 2100. hotReload: hotReloadModified
+    if (cycleCount % 1000 === 0) {
+      import("./hotReload.js").then(m => { m.hotReloadModified(); }).catch(() => {});
+    }
+    // 2101. hotReload: gracefulRestart
+    if (cycleCount % 1000 === 0) {
+      import("./hotReload.js").then(m => { m.gracefulRestart({ preserveState: true }); }).catch(() => {});
+    }
+    // 2102. hotReload: getReloadHistory
+    if (cycleCount % 1000 === 0) {
+      import("./hotReload.js").then(m => { m.getReloadHistory(); }).catch(() => {});
+    }
+    // 2103. hotReload: registerReloadableModule
+    if (cycleCount % 1000 === 0) {
+      import("./hotReload.js").then(m => { m.registerReloadableModule(); }).catch(() => {});
+    }
+    // 2104. hotReload: scanAndRegisterNewModules
+    if (cycleCount % 1000 === 0) {
+      import("./hotReload.js").then(m => { m.scanAndRegisterNewModules(); }).catch(() => {});
+    }
+    // 2105. importGraph: getImportees
+    if (cycleCount % 1000 === 0) {
+      import("./importGraph.js").then(m => { m.getImportees(); }).catch(() => {});
+    }
+    // 2106. importGraph: findSymbolUsages
+    if (cycleCount % 1000 === 0) {
+      import("./importGraph.js").then(m => { m.findSymbolUsages(); }).catch(() => {});
+    }
+    // 2107. importGraph: getTransitiveImporters
+    if (cycleCount % 1000 === 0) {
+      import("./importGraph.js").then(m => { m.getTransitiveImporters(); }).catch(() => {});
+    }
+    // 2108. importGraph: validateRefactoring
+    if (cycleCount % 1000 === 0) {
+      import("./importGraph.js").then(m => { m.validateRefactoring(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
