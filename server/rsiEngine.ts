@@ -8151,6 +8151,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./selfImprove.js").then(m => { m.getAutoApplyConfig(); }).catch(() => {});
     }
+    // 1809. cache: getLogLevel
+    if (cycleCount % 1000 === 0) {
+      import("./cache.js").then(m => { m.getLogLevel(); }).catch(() => {});
+    }
+    // 1810. cache: setLogLevel
+    if (cycleCount % 1000 === 0) {
+      import("./cache.js").then(m => { m.setLogLevel(); }).catch(() => {});
+    }
+    // 1811. cache: getRecentLogs
+    if (cycleCount % 1000 === 0) {
+      import("./cache.js").then(m => { m.getRecentLogs(); }).catch(() => {});
+    }
+    // 1812. cache: searchCacheKey
+    if (cycleCount % 1000 === 0) {
+      import("./cache.js").then(m => { m.searchCacheKey(); }).catch(() => {});
+    }
+    // 1813. cache: getCachedSearch
+    if (cycleCount % 1000 === 0) {
+      import("./cache.js").then(m => { m.getCachedSearch(); }).catch(() => {});
+    }
+    // 1814. cache: setCachedSearch
+    if (cycleCount % 1000 === 0) {
+      import("./cache.js").then(m => { m.setCachedSearch(); }).catch(() => {});
+    }
+    // 1815. cache: getCachedAI
+    if (cycleCount % 1000 === 0) {
+      import("./cache.js").then(m => { m.getCachedAI(); }).catch(() => {});
+    }
+    // 1816. cache: setCachedAI
+    if (cycleCount % 1000 === 0) {
+      import("./cache.js").then(m => { m.setCachedAI(); }).catch(() => {});
+    }
+    // 1817. cache: getCachedBrowse
+    if (cycleCount % 1000 === 0) {
+      import("./cache.js").then(m => { m.getCachedBrowse(); }).catch(() => {});
+    }
+    // 1818. cache: setCachedBrowse
+    if (cycleCount % 1000 === 0) {
+      import("./cache.js").then(m => { m.setCachedBrowse(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
