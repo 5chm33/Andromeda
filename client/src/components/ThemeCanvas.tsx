@@ -19,6 +19,7 @@ interface SkinAssets {
 
 const SKIN_ASSETS: Record<SkinId, SkinAssets> = {
   andromeda:     { poster: "/skins/andromeda.jpg",       video: "/skins/videos/andromeda.mp4"     },
+  andromeda2:    { poster: "/skins/andromeda2.jpg",      video: "/skins/videos/andromeda2.mp4"    },
   aurora:        { poster: "/skins/aurora.jpg",          video: "/skins/videos/aurora.mp4"        },
   goth:          { poster: "/skins/goth.jpg",            video: "/skins/videos/goth.mp4"          },
   nature:        { poster: "/skins/nature_forest.jpg",   video: "/skins/videos/nature.mp4"        },

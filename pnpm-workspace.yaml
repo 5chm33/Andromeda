@@ -15,7 +15,7 @@ patchedDependencies:
   wouter@3.7.1: patches/wouter@3.7.1.patch
 overrides:
   fast-xml-parser: '>=5.3.5'
-  path-to-regexp: '>=8.2.0'
+  path-to-regexp@0.1.12: '0.1.13'
 minimumReleaseAgeExclude:
   - esbuild@0.24.3
   - vite@7.1.11 || 7.3.2 || 7.3.5

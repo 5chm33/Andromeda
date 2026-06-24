@@ -6,6 +6,7 @@
 
 export type SkinId =
   | "andromeda"
+  | "andromeda2"
   | "aurora"
   | "goth"
   | "nature"
@@ -46,6 +47,17 @@ export const SKINS: SkinMeta[] = [
     animClass: "skin-andromeda",
     previewGradient: "linear-gradient(135deg, #000514 0%, #001028 50%, #000a1e 100%)",
     labelColor: "#38bdf8",
+  },
+  {
+    id: "andromeda2",
+    name: "Andromeda II",
+    description: "AI-generated cinematic deep-space data rings — the neural core of Andromeda",
+    bgImage: "/skins/andromeda2.jpg",
+    accent: "oklch(0.65 0.25 210)",
+    overlayColor: "rgba(0,3,18,0.22)",
+    animClass: "skin-andromeda2",
+    previewGradient: "linear-gradient(135deg, #000312 0%, #000820 50%, #00051a 100%)",
+    labelColor: "#22d3ee",
   },
   {
     id: "aurora",
