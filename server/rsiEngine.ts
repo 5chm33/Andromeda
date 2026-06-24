@@ -9511,6 +9511,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./roboticsIoTAdapter.js").then(m => { m.approveRoboticsProposal(); }).catch(() => {});
     }
+    // 2149. rsiScheduler: initRsiScheduler
+    if (cycleCount % 1000 === 0) {
+      import("./rsiScheduler.js").then(m => { m.initRsiScheduler(); }).catch(() => {});
+    }
+    // 2150. rsiScheduler: getRsiSchedulerStatus
+    if (cycleCount % 1000 === 0) {
+      import("./rsiScheduler.js").then(m => { m.getRsiSchedulerStatus(); }).catch(() => {});
+    }
+    // 2151. rsiScheduler: setRsiScheduleHours
+    if (cycleCount % 1000 === 0) {
+      import("./rsiScheduler.js").then(m => { m.setRsiScheduleHours(); }).catch(() => {});
+    }
+    // 2152. rsiScheduler: pauseRsiScheduler
+    if (cycleCount % 1000 === 0) {
+      import("./rsiScheduler.js").then(m => { m.pauseRsiScheduler(); }).catch(() => {});
+    }
+    // 2153. rsiScheduler: resumeRsiScheduler
+    if (cycleCount % 1000 === 0) {
+      import("./rsiScheduler.js").then(m => { m.resumeRsiScheduler(); }).catch(() => {});
+    }
+    // 2154. rsiScheduler: triggerRsiNow
+    if (cycleCount % 1000 === 0) {
+      import("./rsiScheduler.js").then(m => { m.triggerRsiNow(); }).catch(() => {});
+    }
+    // 2155. selfReview: reviewCode
+    if (cycleCount % 1000 === 0) {
+      import("./selfReview.js").then(m => { m.reviewCode(); }).catch(() => {});
+    }
+    // 2156. selfReview: reviewAndGate
+    if (cycleCount % 1000 === 0) {
+      import("./selfReview.js").then(m => { m.reviewAndGate(); }).catch(() => {});
+    }
+    // 2157. selfReview: getReviewConfig
+    if (cycleCount % 1000 === 0) {
+      import("./selfReview.js").then(m => { m.getReviewConfig(); }).catch(() => {});
+    }
+    // 2158. selfReview: setReviewConfig
+    if (cycleCount % 1000 === 0) {
+      import("./selfReview.js").then(m => { m.setReviewConfig(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
