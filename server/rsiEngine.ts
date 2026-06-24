@@ -8431,6 +8431,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./vectorMemory.js").then(m => { m.vectorStats(); }).catch(() => {});
     }
+    // 1879. aiTokens: getAndromedaMemory
+    if (cycleCount % 1000 === 0) {
+      import("./aiTokens.js").then(m => { m.getAndromedaMemory(); }).catch(() => {});
+    }
+    // 1880. aiTokens: getApiUrl
+    if (cycleCount % 1000 === 0) {
+      import("./aiTokens.js").then(m => { m.getApiUrl(); }).catch(() => {});
+    }
+    // 1881. aiTokens: getActiveModel
+    if (cycleCount % 1000 === 0) {
+      import("./aiTokens.js").then(m => { m.getActiveModel(); }).catch(() => {});
+    }
+    // 1882. aiTokens: resolveProviderOnce
+    if (cycleCount % 1000 === 0) {
+      import("./aiTokens.js").then(m => { m.resolveProviderOnce(); }).catch(() => {});
+    }
+    // 1883. aiTokens: getApiKey
+    if (cycleCount % 1000 === 0) {
+      import("./aiTokens.js").then(m => { m.getApiKey(); }).catch(() => {});
+    }
+    // 1884. aiTokens: getProviderHeaders
+    if (cycleCount % 1000 === 0) {
+      import("./aiTokens.js").then(m => { m.getProviderHeaders(); }).catch(() => {});
+    }
+    // 1885. aiTokens: calculateMaxTokens
+    if (cycleCount % 1000 === 0) {
+      import("./aiTokens.js").then(m => { m.calculateMaxTokens(); }).catch(() => {});
+    }
+    // 1886. aiTokens: setModel
+    if (cycleCount % 1000 === 0) {
+      import("./aiTokens.js").then(m => { m.setModel(); }).catch(() => {});
+    }
+    // 1887. aiTokens: getModel
+    if (cycleCount % 1000 === 0) {
+      import("./aiTokens.js").then(m => { m.getModel(); }).catch(() => {});
+    }
+    // 1888. aiTokens: getAvailableModels
+    if (cycleCount % 1000 === 0) {
+      import("./aiTokens.js").then(m => { m.getAvailableModels(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
