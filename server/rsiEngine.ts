@@ -8511,6 +8511,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./browser.js").then(m => { m.listBrowserSessions(); }).catch(() => {});
     }
+    // 1899. adaptiveEval: analyzeGaps
+    if (cycleCount % 1000 === 0) {
+      import("./adaptiveEval.js").then(m => { m.analyzeGaps(); }).catch(() => {});
+    }
+    // 1900. adaptiveEval: generateBenchmarks
+    if (cycleCount % 1000 === 0) {
+      import("./adaptiveEval.js").then(m => { m.generateBenchmarks(); }).catch(() => {});
+    }
+    // 1901. adaptiveEval: evolveBenchmarks
+    if (cycleCount % 1000 === 0) {
+      import("./adaptiveEval.js").then(m => { m.evolveBenchmarks(); }).catch(() => {});
+    }
+    // 1902. adaptiveEval: runAdaptiveEval
+    if (cycleCount % 1000 === 0) {
+      import("./adaptiveEval.js").then(m => { m.runAdaptiveEval(); }).catch(() => {});
+    }
+    // 1903. adaptiveEval: getBenchmarkEvolutionStats
+    if (cycleCount % 1000 === 0) {
+      import("./adaptiveEval.js").then(m => { m.getBenchmarkEvolutionStats(); }).catch(() => {});
+    }
+    // 1904. adaptiveEval: getAdaptiveBenchmarks
+    if (cycleCount % 1000 === 0) {
+      import("./adaptiveEval.js").then(m => { m.getAdaptiveBenchmarks(); }).catch(() => {});
+    }
+    // 1905. adaptiveEval: getAdaptiveEvalHistory
+    if (cycleCount % 1000 === 0) {
+      import("./adaptiveEval.js").then(m => { m.getAdaptiveEvalHistory(); }).catch(() => {});
+    }
+    // 1906. adaptiveEval: getLatestGapAnalysis
+    if (cycleCount % 1000 === 0) {
+      import("./adaptiveEval.js").then(m => { m.getLatestGapAnalysis(); }).catch(() => {});
+    }
+    // 1907. adaptiveEval: initAdaptiveEval
+    if (cycleCount % 1000 === 0) {
+      import("./adaptiveEval.js").then(m => { m.initAdaptiveEval(); }).catch(() => {});
+    }
+    // 1908. memory: storeMemory
+    if (cycleCount % 1000 === 0) {
+      import("./memory.js").then(m => { m.storeMemory(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
