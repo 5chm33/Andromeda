@@ -357,10 +357,10 @@
   "durationMs": 37266,
   "storedAt": 1782141974959,
   "autoCapture": true,
-  "memory_keyword_search": 150,
-  "tool_registry_lookup": 5,
-  "file_write_10kb": 5,
-  "file_read_10kb": 5,
-  "context_token_estimation_50msg": 5,
-  "json_parse_large_object": 5
+  "memory_keyword_search": 4.67,
+  "tool_registry_lookup": 0.01,
+  "file_write_10kb": 0.1,
+  "file_read_10kb": 0.03,
+  "context_token_estimation_50msg": 0.01,
+  "json_parse_large_object": 0.1
 }

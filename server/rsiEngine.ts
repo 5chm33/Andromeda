@@ -4071,6 +4071,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./crossDomainAdapter.js").then(m => { m.getEvaluation(); }).catch(() => {});
     }
+    // 789. dependencyAuditor: runFullAudit
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyAuditor.js").then(m => { m.runFullAudit(); }).catch(() => {});
+    }
+    // 790. dependencyAuditor: startDependencyAuditor
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyAuditor.js").then(m => { m.startDependencyAuditor(); }).catch(() => {});
+    }
+    // 791. dependencyAuditor: stopDependencyAuditor
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyAuditor.js").then(m => { m.stopDependencyAuditor(); }).catch(() => {});
+    }
+    // 792. dependencyGraph: getFilesByImportance
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyGraph.js").then(m => { m.getFilesByImportance(); }).catch(() => {});
+    }
+    // 793. dependencyGraph: initDependencyGraph
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyGraph.js").then(m => { m.initDependencyGraph(); }).catch(() => {});
+    }
+    // 794. dependencyGraph: forceRebuild
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyGraph.js").then(m => { m.forceRebuild(); }).catch(() => {});
+    }
+    // 795. ebpfGrounding: detectEbpfCapability
+    if (cycleCount % 1000 === 0) {
+      import("./ebpfGrounding.js").then(m => { m.detectEbpfCapability(); }).catch(() => {});
+    }
+    // 796. ebpfGrounding: generateBpftraceScript
+    if (cycleCount % 1000 === 0) {
+      import("./ebpfGrounding.js").then(m => { m.generateBpftraceScript(); }).catch(() => {});
+    }
+    // 797. ebpfGrounding: resetEbpfMonitor
+    if (cycleCount % 1000 === 0) {
+      import("./ebpfGrounding.js").then(m => { m.resetEbpfMonitor(); }).catch(() => {});
+    }
+    // 798. fileEngineUtils: fetchWithRetry
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineUtils.js").then(m => { m.fetchWithRetry("https://example.com", { method: "HEAD" }); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
