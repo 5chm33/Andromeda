@@ -100,54 +100,57 @@ let _healthCheckInterval: ReturnType<typeof setInterval> | null = null;
  * Returns null if detection fails (CPU-only or permission denied).
  */
 async function detectVramGb(): Promise<number | null> {
+  let execSync: typeof import("child_process").execSync;
   try {
-    const { execSync } = await import("child_process");
-    // Try nvidia-smi first (Linux/Windows NVIDIA)
-    try {
-      const output = execSync(
-        "nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits",
-        { timeout: 5000, encoding: "utf-8", stdio: "pipe" }
-      ).trim();
-      const freeMb = parseInt(output.split("\n")[0].trim(), 10);
-      if (!isNaN(freeMb) && freeMb > 0) {
-        const freeGb = Math.round(freeMb / 1024);
-        log.info(`[OllamaAutoSetup] Detected NVIDIA GPU: ${freeMb}MB free VRAM (~${freeGb}GB)`);
-        return freeGb;
-      }
-    } catch { /* nvidia-smi not available */ }
+    execSync = (await import("child_process")).execSync;
+  } catch {
+    log.info("[OllamaAutoSetup] VRAM detection unavailable — defaulting to CPU-friendly model");
+    return null;
+  }
 
-    // Try rocm-smi (AMD GPUs on Linux)
-    try {
-      const output = execSync(
-        "rocm-smi --showmeminfo vram --csv 2>/dev/null | grep -i 'free' | head -1",
-        { timeout: 5000, encoding: "utf-8", stdio: "pipe" }
-      ).trim();
-      const match = output.match(/(\d+)/);
-      if (match) {
-        const freeMb = parseInt(match[1], 10);
-        const freeGb = Math.round(freeMb / 1024);
-        log.info(`[OllamaAutoSetup] Detected AMD GPU: ${freeMb}MB free VRAM (~${freeGb}GB)`);
-        return freeGb;
-      }
-    } catch { /* rocm-smi not available */ }
+  // Try nvidia-smi first (Linux/Windows NVIDIA)
+  try {
+    const output = execSync(
+      "nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits",
+      { timeout: 5000, encoding: "utf-8", stdio: "pipe" }
+    ).trim();
+    const freeMb = parseInt(output.split("\n")[0].trim(), 10);
+    if (!isNaN(freeMb) && freeMb > 0) {
+      const freeGb = Math.round(freeMb / 1024);
+      log.info(`[OllamaAutoSetup] Detected NVIDIA GPU: ${freeMb}MB free VRAM (~${freeGb}GB)`);
+      return freeGb;
+    }
+  } catch { /* nvidia-smi not available */ }
 
-    // Try system_profiler (macOS — Apple Silicon unified memory)
-    try {
-      const output = execSync(
-        "system_profiler SPHardwareDataType 2>/dev/null | grep 'Memory:'",
-        { timeout: 5000, encoding: "utf-8", stdio: "pipe" }
-      ).trim();
-      const match = output.match(/(\d+)\s*GB/i);
-      if (match) {
-        const totalGb = parseInt(match[1], 10);
-        // Apple Silicon shares memory — use 60% of total as available for model
-        const availableGb = Math.floor(totalGb * 0.6);
-        log.info(`[OllamaAutoSetup] Detected Apple Silicon: ${totalGb}GB unified memory (~${availableGb}GB available for model)`);
-        return availableGb;
-      }
-    } catch { /* system_profiler not available */ }
+  // Try rocm-smi (AMD GPUs on Linux)
+  try {
+    const output = execSync(
+      "rocm-smi --showmeminfo vram --csv 2>/dev/null | grep -i 'free' | head -1",
+      { timeout: 5000, encoding: "utf-8", stdio: "pipe" }
+    ).trim();
+    const match = output.match(/(\d+)/);
+    if (match) {
+      const freeMb = parseInt(match[1], 10);
+      const freeGb = Math.round(freeMb / 1024);
+      log.info(`[OllamaAutoSetup] Detected AMD GPU: ${freeMb}MB free VRAM (~${freeGb}GB)`);
+      return freeGb;
+    }
+  } catch { /* rocm-smi not available */ }
 
-  } catch { /* detection failed */ }
+  // Try system_profiler (macOS — Apple Silicon unified memory)
+  try {
+    const output = execSync(
+      "system_profiler SPHardwareDataType 2>/dev/null | grep 'Memory:'",
+      { timeout: 5000, encoding: "utf-8", stdio: "pipe" }
+    ).trim();
+    const match = output.match(/(\d+)\s*GB/i);
+    if (match) {
+      const totalGb = parseInt(match[1], 10);
+      const availableGb = Math.floor(totalGb * 0.6);
+      log.info(`[OllamaAutoSetup] Detected Apple Silicon: ${totalGb}GB unified memory (~${availableGb}GB available for model)`);
+      return availableGb;
+    }
+  } catch { /* system_profiler not available */ }
 
   log.info("[OllamaAutoSetup] VRAM detection unavailable — defaulting to CPU-friendly model");
   return null;
