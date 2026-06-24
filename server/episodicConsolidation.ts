@@ -93,9 +93,15 @@ function saveJSON(filePath: string, data: unknown): void {
 }
 
 function loadEpisodes(): Episode[] {
-  const raw = loadJSON<string>(EPISODES_FILE, "");
-  if (!raw) return [];
-  return raw.split("\n").filter(l => l.trim()).map(l => JSON.parse(l) as Episode);
+  ensureDir();
+  if (!existsSync(EPISODES_FILE)) return [];
+  try {
+    const raw = readFileSync(EPISODES_FILE, "utf8");
+    if (!raw.trim()) return [];
+    return raw.split("\n").filter(l => l.trim()).map(l => JSON.parse(l) as Episode);
+  } catch {
+    return [];
+  }
 }
 
 function saveEpisodes(episodes: Episode[]): void {
