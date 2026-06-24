@@ -8471,6 +8471,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./aiTokens.js").then(m => { m.getAvailableModels(); }).catch(() => {});
     }
+    // 1889. browser: browseUrl
+    if (cycleCount % 1000 === 0) {
+      import("./browser.js").then(m => { m.browseUrl(); }).catch(() => {});
+    }
+    // 1890. browser: browserNavigate
+    if (cycleCount % 1000 === 0) {
+      import("./browser.js").then(m => { m.browserNavigate(); }).catch(() => {});
+    }
+    // 1891. browser: browserClick
+    if (cycleCount % 1000 === 0) {
+      import("./browser.js").then(m => { m.browserClick(); }).catch(() => {});
+    }
+    // 1892. browser: browserClickVision
+    if (cycleCount % 1000 === 0) {
+      import("./browser.js").then(m => { m.browserClickVision(); }).catch(() => {});
+    }
+    // 1893. browser: browserType
+    if (cycleCount % 1000 === 0) {
+      import("./browser.js").then(m => { m.browserType(); }).catch(() => {});
+    }
+    // 1894. browser: browserScreenshot
+    if (cycleCount % 1000 === 0) {
+      import("./browser.js").then(m => { m.browserScreenshot(); }).catch(() => {});
+    }
+    // 1895. browser: browserExtractData
+    if (cycleCount % 1000 === 0) {
+      import("./browser.js").then(m => { m.browserExtractData(); }).catch(() => {});
+    }
+    // 1896. browser: browserEval
+    if (cycleCount % 1000 === 0) {
+      import("./browser.js").then(m => { m.browserEval(); }).catch(() => {});
+    }
+    // 1897. browser: closeBrowser
+    if (cycleCount % 1000 === 0) {
+      import("./browser.js").then(m => { m.closeBrowser(); }).catch(() => {});
+    }
+    // 1898. browser: listBrowserSessions
+    if (cycleCount % 1000 === 0) {
+      import("./browser.js").then(m => { m.listBrowserSessions(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
