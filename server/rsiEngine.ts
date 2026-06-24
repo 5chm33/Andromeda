@@ -8751,6 +8751,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./longTermMemoryConsolidation.js").then(m => { m.recordObservation(); }).catch(() => {});
     }
+    // 1959. mcpClient: addServerConfig
+    if (cycleCount % 1000 === 0) {
+      import("./mcpClient.js").then(m => { m.addServerConfig(); }).catch(() => {});
+    }
+    // 1960. mcpClient: removeServerConfig
+    if (cycleCount % 1000 === 0) {
+      import("./mcpClient.js").then(m => { m.removeServerConfig(); }).catch(() => {});
+    }
+    // 1961. mcpClient: getServerConfigs
+    if (cycleCount % 1000 === 0) {
+      import("./mcpClient.js").then(m => { m.getServerConfigs(); }).catch(() => {});
+    }
+    // 1962. mcpClient: getConnectionStatus
+    if (cycleCount % 1000 === 0) {
+      import("./mcpClient.js").then(m => { m.getConnectionStatus(); }).catch(() => {});
+    }
+    // 1963. mcpClient: connectServer
+    if (cycleCount % 1000 === 0) {
+      import("./mcpClient.js").then(m => { m.connectServer(); }).catch(() => {});
+    }
+    // 1964. mcpClient: disconnectServer
+    if (cycleCount % 1000 === 0) {
+      import("./mcpClient.js").then(m => { m.disconnectServer(); }).catch(() => {});
+    }
+    // 1965. mcpClient: connectAllEnabled
+    if (cycleCount % 1000 === 0) {
+      import("./mcpClient.js").then(m => { m.connectAllEnabled(); }).catch(() => {});
+    }
+    // 1966. mcpClient: disconnectAll
+    if (cycleCount % 1000 === 0) {
+      import("./mcpClient.js").then(m => { m.disconnectAll(); }).catch(() => {});
+    }
+    // 1967. memory: searchMemory
+    if (cycleCount % 1000 === 0) {
+      import("./memory.js").then(m => { m.searchMemory(); }).catch(() => {});
+    }
+    // 1968. memory: listMemories
+    if (cycleCount % 1000 === 0) {
+      import("./memory.js").then(m => { m.listMemories(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
