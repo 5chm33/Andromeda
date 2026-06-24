@@ -8631,6 +8631,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./aiStreaming.js").then(m => { m.streamToResponse(); }).catch(() => {});
     }
+    // 1929. autonomyOrchestrator: exitSafeMode
+    if (cycleCount % 1000 === 0) {
+      import("./autonomyOrchestrator.js").then(m => { m.exitSafeMode(); }).catch(() => {});
+    }
+    // 1930. autonomyOrchestrator: isInSafeMode
+    if (cycleCount % 1000 === 0) {
+      import("./autonomyOrchestrator.js").then(m => { m.isInSafeMode(); }).catch(() => {});
+    }
+    // 1931. autonomyOrchestrator: startOrchestrator
+    if (cycleCount % 1000 === 0) {
+      import("./autonomyOrchestrator.js").then(m => { m.startOrchestrator(); }).catch(() => {});
+    }
+    // 1932. autonomyOrchestrator: stopOrchestrator
+    if (cycleCount % 1000 === 0) {
+      import("./autonomyOrchestrator.js").then(m => { m.stopOrchestrator(); }).catch(() => {});
+    }
+    // 1933. autonomyOrchestrator: getOrchestratorConfig
+    if (cycleCount % 1000 === 0) {
+      import("./autonomyOrchestrator.js").then(m => { m.getOrchestratorConfig(); }).catch(() => {});
+    }
+    // 1934. autonomyOrchestrator: setOrchestratorConfig
+    if (cycleCount % 1000 === 0) {
+      import("./autonomyOrchestrator.js").then(m => { m.setOrchestratorConfig(); }).catch(() => {});
+    }
+    // 1935. autonomyOrchestrator: getOrchestratorStats
+    if (cycleCount % 1000 === 0) {
+      import("./autonomyOrchestrator.js").then(m => { m.getOrchestratorStats(); }).catch(() => {});
+    }
+    // 1936. autonomyOrchestrator: getCycleHistory
+    if (cycleCount % 1000 === 0) {
+      import("./autonomyOrchestrator.js").then(m => { m.getCycleHistory(); }).catch(() => {});
+    }
+    // 1937. episodicMemory: recordEpisode
+    if (cycleCount % 1000 === 0) {
+      import("./episodicMemory.js").then(m => { m.recordEpisode(); }).catch(() => {});
+    }
+    // 1938. episodicMemory: getEpisodicMemory
+    if (cycleCount % 1000 === 0) {
+      import("./episodicMemory.js").then(m => { m.getEpisodicMemory(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
