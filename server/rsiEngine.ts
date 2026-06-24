@@ -8911,6 +8911,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./aiStreaming.js").then(m => { m.streamDeepResearch(); }).catch(() => {});
     }
+    // 1999. crossDomainAdapter: registerArtifact
+    if (cycleCount % 1000 === 0) {
+      import("./crossDomainAdapter.js").then(m => { m.registerArtifact(); }).catch(() => {});
+    }
+    // 2000. crossDomainAdapter: generateDomainProposal
+    if (cycleCount % 1000 === 0) {
+      import("./crossDomainAdapter.js").then(m => { m.generateDomainProposal(); }).catch(() => {});
+    }
+    // 2001. crossDomainAdapter: evaluateDomainProposal
+    if (cycleCount % 1000 === 0) {
+      import("./crossDomainAdapter.js").then(m => { m.evaluateDomainProposal(); }).catch(() => {});
+    }
+    // 2002. crossDomainAdapter: getCrossDomainStats
+    if (cycleCount % 1000 === 0) {
+      import("./crossDomainAdapter.js").then(m => { m.getCrossDomainStats(); }).catch(() => {});
+    }
+    // 2003. crossDomainAdapter: getArtifact
+    if (cycleCount % 1000 === 0) {
+      import("./crossDomainAdapter.js").then(m => { m.getArtifact(); }).catch(() => {});
+    }
+    // 2004. crossDomainAdapter: getProposal
+    if (cycleCount % 1000 === 0) {
+      import("./crossDomainAdapter.js").then(m => { m.getProposal(); }).catch(() => {});
+    }
+    // 2005. crossDomainAdapter: getDomainAdapters
+    if (cycleCount % 1000 === 0) {
+      import("./crossDomainAdapter.js").then(m => { m.getDomainAdapters(); }).catch(() => {});
+    }
+    // 2006. dependencyGraph: buildGraph
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyGraph.js").then(m => { m.buildGraph(); }).catch(() => {});
+    }
+    // 2007. dependencyGraph: analyzeImpact
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyGraph.js").then(m => { m.analyzeImpact(); }).catch(() => {});
+    }
+    // 2008. dependencyGraph: findCircularDeps
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyGraph.js").then(m => { m.findCircularDeps(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
