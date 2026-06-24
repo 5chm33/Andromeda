@@ -146,4 +146,4 @@ setInterval(() => {
   if (clients.size > 0) {
     emitRsiEvent("heartbeat", { clientCount: clients.size });
   }
-}, 30_000);
+}, 30_000).unref();

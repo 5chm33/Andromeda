@@ -585,7 +585,7 @@ export function loadPersistedBus(): number {
 // Auto-persist every 5 minutes
 setInterval(() => {
   if (entries.length > 0) persistBus();
-}, 5 * 60 * 1000);
+}, 5 * 60 * 1000).unref();
 
 // v5.27: Crash-safe persistence — persist on process exit signals
 try {

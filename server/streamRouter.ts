@@ -46,7 +46,7 @@ setInterval(() => {
     const st = engine.getState();
     if (st === "completed" || st === "interrupted") activeAgentSessions.delete(id);
   }
-}, 5 * 60_000);
+}, 5 * 60_000).unref();
 
 // ── Rate limiters ──────────────────────────────────────────────────────────────
 

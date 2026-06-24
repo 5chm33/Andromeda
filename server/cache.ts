@@ -72,9 +72,6 @@ export function log(level: LogLevel, module: string, message: string, context?: 
   }
 }
 
-/** Returns the current minimum log level. Logs below this level are suppressed. */
-/** Returns the current minimum log level. Logs below this level are suppressed. */
-/** Returns the current minimum log level. Logs below this level are suppressed. */
 /** Returns the current log level for the application.
  * @returns {string} The current log level (e.g. 'info', 'debug', 'warn', 'error')
  */
@@ -311,7 +308,8 @@ export function pruneExpired(): { search: number; ai: number; browse: number } {
   return result;
 }
 
-// Auto-prune every 5 minutes
+// Auto-prune every 5 minutes. .unref() prevents this timer from keeping the
+// Node.js event loop alive in test environments (fixes vitest worker timeout).
 setInterval(() => {
   pruneExpired();
-}, 5 * 60 * 1000);
+}, 5 * 60 * 1000).unref();

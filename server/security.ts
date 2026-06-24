@@ -175,7 +175,7 @@ setInterval(() => {
   for (const [key, entry] of Array.from(rateLimitWindows)) {
     if (now - entry.windowStart > 120000) rateLimitWindows.delete(key);
   }
-}, 60000);
+}, 60000).unref();
 
 // ─── API Key Management ───────────────────────────────────────────────────────
 

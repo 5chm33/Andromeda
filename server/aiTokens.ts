@@ -109,8 +109,6 @@ export function getApiKey(): string {
   } catch { /* fallback */ }
   return process.env.DEEPSEEK_API_KEY || process.env.LLM_API_KEY || "";
 }
-const __API_KEY_ENV = ""; // DEPRECATED: use getApiKey() instead
-
 // v6.15.3: Always read from active provider — supports tier switching
 export function getProviderHeaders(): Record<string, string> {
   try {
