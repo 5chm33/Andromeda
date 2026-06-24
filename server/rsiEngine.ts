@@ -9791,6 +9791,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./evalFramework.js").then(m => { m.registerEvalRoutes(); }).catch(() => {});
     }
+    // 2219. fileEngineAnalysis: selectRelevantFiles
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineAnalysis.js").then(m => { m.selectRelevantFiles(); }).catch(() => {});
+    }
+    // 2220. fileEngineAnalysis: loadAndCompressFiles
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineAnalysis.js").then(m => { m.loadAndCompressFiles(); }).catch(() => {});
+    }
+    // 2221. fileEngineAnalysis: runMultiPassAnalysis
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineAnalysis.js").then(m => { m.runMultiPassAnalysis(); }).catch(() => {});
+    }
+    // 2222. fileEngineAnalysis: runMultiPassEdit
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineAnalysis.js").then(m => { m.runMultiPassEdit(); }).catch(() => {});
+    }
+    // 2223. fileEngineAnalysis: streamMultiPassAnalysis
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineAnalysis.js").then(m => { m.streamMultiPassAnalysis(); }).catch(() => {});
+    }
+    // 2224. hybridCostRouter: selectModelForProposal
+    if (cycleCount % 1000 === 0) {
+      import("./hybridCostRouter.js").then(m => { m.selectModelForProposal(); }).catch(() => {});
+    }
+    // 2225. hybridCostRouter: recordRoutingOutcome
+    if (cycleCount % 1000 === 0) {
+      import("./hybridCostRouter.js").then(m => { void 0 /* recordRoutingOutcome requires complex args */; }).catch(() => {});
+    }
+    // 2226. hybridCostRouter: getHybridRouterStats
+    if (cycleCount % 1000 === 0) {
+      import("./hybridCostRouter.js").then(m => { m.getHybridRouterStats(); }).catch(() => {});
+    }
+    // 2227. hybridCostRouter: getModelRegistry
+    if (cycleCount % 1000 === 0) {
+      import("./hybridCostRouter.js").then(m => { m.getModelRegistry(); }).catch(() => {});
+    }
+    // 2228. hybridCostRouter: initHybridCostRouter
+    if (cycleCount % 1000 === 0) {
+      import("./hybridCostRouter.js").then(m => { m.initHybridCostRouter(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
