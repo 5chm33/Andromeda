@@ -126,8 +126,8 @@ async function analyzePerformanceMetrics(): Promise<GoalSuggestion[]> {
 }
 
 async function analyzeRecurringIssues(): Promise<GoalSuggestion[]> {
-  const results: GoalSuggestion[] = [];
-  try {
+  return handleAnalysisError(async () => {
+    const results: GoalSuggestion[] = [];
     const { getCrossSessionInsights } = await import("./selfKnowledgeBase");
     const insights = getCrossSessionInsights();
     if (insights.totalAttempts > 5 && insights.successRate < 0.5) {
@@ -142,8 +142,8 @@ async function analyzeRecurringIssues(): Promise<GoalSuggestion[]> {
         autoExecute: false,
       });
     }
-  } catch (err) { console.warn("[AutoGoalSuggester] analyzeRecurringIssues failed:", (err as Error).message); }
-  return results;
+    return results;
+  }, "analyzeRecurringIssues");
 }
 
 // ── Core Suggestion Cycle ────────────────────────────────────────────────────
