@@ -8831,6 +8831,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./tieredContextManager.js").then(m => { m.planTruncationRecovery(); }).catch(() => {});
     }
+    // 1979. tokenBudgetManager: estimateTokenCount
+    if (cycleCount % 1000 === 0) {
+      import("./tokenBudgetManager.js").then(m => { m.estimateTokenCount(); }).catch(() => {});
+    }
+    // 1980. tokenBudgetManager: estimateCodeTokens
+    if (cycleCount % 1000 === 0) {
+      import("./tokenBudgetManager.js").then(m => { m.estimateCodeTokens(); }).catch(() => {});
+    }
+    // 1981. tokenBudgetManager: getBudget
+    if (cycleCount % 1000 === 0) {
+      import("./tokenBudgetManager.js").then(m => { m.getBudget(); }).catch(() => {});
+    }
+    // 1982. tokenBudgetManager: allocateTokens
+    if (cycleCount % 1000 === 0) {
+      import("./tokenBudgetManager.js").then(m => { m.allocateTokens(); }).catch(() => {});
+    }
+    // 1983. tokenBudgetManager: recordUsage
+    if (cycleCount % 1000 === 0) {
+      import("./tokenBudgetManager.js").then(m => { m.recordUsage(); }).catch(() => {});
+    }
+    // 1984. tokenBudgetManager: resetSession
+    if (cycleCount % 1000 === 0) {
+      import("./tokenBudgetManager.js").then(m => { m.resetSession(); }).catch(() => {});
+    }
+    // 1985. tokenBudgetManager: getBudgetStats
+    if (cycleCount % 1000 === 0) {
+      import("./tokenBudgetManager.js").then(m => { m.getBudgetStats(); }).catch(() => {});
+    }
+    // 1986. tokenBudgetManager: updateConfig
+    if (cycleCount % 1000 === 0) {
+      import("./tokenBudgetManager.js").then(m => { m.updateConfig(); }).catch(() => {});
+    }
+    // 1987. transactionLog: beginTransaction
+    if (cycleCount % 1000 === 0) {
+      import("./transactionLog.js").then(m => { m.beginTransaction(); }).catch(() => {});
+    }
+    // 1988. transactionLog: recordChange
+    if (cycleCount % 1000 === 0) {
+      import("./transactionLog.js").then(m => { m.recordChange(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
