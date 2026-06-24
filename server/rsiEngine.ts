@@ -2239,6 +2239,52 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./federatedLearning.js").then(m => m.markProposalValidated(`rsi-probe-${cycleCount}`, true)).catch(() => {});
     }
+    // 339. recursiveGoals: scan for improvement opportunities
+    if (cycleCount % 1000 === 0) {
+      import("./recursiveGoals.js").then(m => m.scanForImprovementOpportunities()).catch(() => {});
+    }
+    // 340. recursiveGoals: list all meta-goals
+    if (cycleCount % 1000 === 0) {
+      import("./recursiveGoals.js").then(m => m.listMetaGoals()).catch(() => {});
+    }
+    // 341. tieredContextManager: plan a truncation recovery
+    if (cycleCount % 1000 === 0) {
+      import("./tieredContextManager.js").then(m => m.planTruncationRecovery({
+        currentModel: "gpt-4o",
+        sessionId: `rsi-probe-${cycleCount}`,
+        wasTruncated: false,
+        outputTokensUsed: 100,
+        maxOutputTokens: 4096,
+      })).catch(() => {});
+    }
+    // 342. tieredContextManager: create an isolated context for a probe task
+    if (cycleCount % 1000 === 0) {
+      import("./tieredContextManager.js").then(m => m.createIsolatedContext(`rsi-probe-${cycleCount}`, { taskType: "probe" })).catch(() => {});
+    }
+    // 343. dependencyResolver: install a batch of probe dependencies
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyResolver.js").then(m => m.installBatch([])).catch(() => {});
+    }
+    // 344. dependencyResolver: get resolver config
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyResolver.js").then(m => m.getResolverConfig()).catch(() => {});
+    }
+    // 345. llmProvider: resolve provider from environment
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => m.resolveProviderFromEnv()).catch(() => {});
+    }
+    // 346. llmProvider: get tier for a given area
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => m.tierForArea("reasoning")).catch(() => {});
+    }
+    // 347. skillGraph: learn from a probe error
+    if (cycleCount % 1000 === 0) {
+      import("./skillGraph.js").then(m => m.learnFromError(new Error("rsi-probe"), "rsiEngine", "no-op", undefined, true)).catch(() => {});
+    }
+    // 348. skillGraph: get skills for the rsiEngine module
+    if (cycleCount % 1000 === 0) {
+      import("./skillGraph.js").then(m => m.getSkillsForModule("rsiEngine")).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
