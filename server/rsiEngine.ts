@@ -10911,6 +10911,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./loraBackendDetector.js").then(m => { m.getLoraBackendSummary(); }).catch(() => {});
     }
+    // 2499. mctsPlan: mctsPlan
+    if (cycleCount % 1000 === 0) {
+      import("./mctsPlan.js").then(m => { m.mctsPlan(); }).catch(() => {});
+    }
+    // 2500. mctsPlan: planFromGoal
+    if (cycleCount % 1000 === 0) {
+      import("./mctsPlan.js").then(m => { m.planFromGoal(); }).catch(() => {});
+    }
+    // 2501. mctsPlanningEngine: planWithMCTS
+    if (cycleCount % 1000 === 0) {
+      import("./mctsPlanningEngine.js").then(m => { m.planWithMCTS(); }).catch(() => {});
+    }
+    // 2502. mctsPlanningEngine: comparePlans
+    if (cycleCount % 1000 === 0) {
+      import("./mctsPlanningEngine.js").then(m => { m.comparePlans(); }).catch(() => {});
+    }
+    // 2503. memory: autoExtractMemories
+    if (cycleCount % 1000 === 0) {
+      import("./memory.js").then(m => { m.autoExtractMemories(); }).catch(() => {});
+    }
+    // 2504. memory: seedInitialMemoriesIfEmpty
+    if (cycleCount % 1000 === 0) {
+      import("./memory.js").then(m => { m.seedInitialMemoriesIfEmpty(); }).catch(() => {});
+    }
+    // 2505. modelRegistry: calculateAvailableTokens
+    if (cycleCount % 1000 === 0) {
+      import("./modelRegistry.js").then(m => { m.calculateAvailableTokens(); }).catch(() => {});
+    }
+    // 2506. modelRegistry: registerModel
+    if (cycleCount % 1000 === 0) {
+      import("./modelRegistry.js").then(m => { m.registerModel(); }).catch(() => {});
+    }
+    // 2507. multiAgentImprover: reviewWithAgents
+    if (cycleCount % 1000 === 0) {
+      import("./multiAgentImprover.js").then(m => { m.reviewWithAgents(); }).catch(() => {});
+    }
+    // 2508. multiAgentImprover: setMultiAgentEnabled
+    if (cycleCount % 1000 === 0) {
+      import("./multiAgentImprover.js").then(m => { m.setMultiAgentEnabled(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
