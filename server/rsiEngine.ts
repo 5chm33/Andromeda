@@ -11191,6 +11191,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./andromedaMemoryWriter.js").then(m => { m.generateAndromedaMd(); }).catch(() => {});
     }
+    // 2569. auditLog: getAuditStats
+    if (cycleCount % 1000 === 0) {
+      import("./auditLog.js").then(m => { m.getAuditStats(); }).catch(() => {});
+    }
+    // 2570. autoGoalSuggester: getSuggestions
+    if (cycleCount % 1000 === 0) {
+      import("./autoGoalSuggester.js").then(m => { m.getSuggestions(); }).catch(() => {});
+    }
+    // 2571. benchmarkRunner: isRunning
+    if (cycleCount % 1000 === 0) {
+      import("./benchmarkRunner.js").then(m => { m.isRunning(); }).catch(() => {});
+    }
+    // 2572. capabilityBootstrapper: getBootstrapSummary
+    if (cycleCount % 1000 === 0) {
+      import("./capabilityBootstrapper.js").then(m => { m.getBootstrapSummary(); }).catch(() => {});
+    }
+    // 2573. codeQualityMonitor: isRunning
+    if (cycleCount % 1000 === 0) {
+      import("./codeQualityMonitor.js").then(m => { m.isRunning(); }).catch(() => {});
+    }
+    // 2574. codeRunner: executeCode
+    if (cycleCount % 1000 === 0) {
+      import("./codeRunner.js").then(m => { m.executeCode(); }).catch(() => {});
+    }
+    // 2575. constitutionalConstraints: getConstitutionRules
+    if (cycleCount % 1000 === 0) {
+      import("./constitutionalConstraints.js").then(m => { m.getConstitutionRules(); }).catch(() => {});
+    }
+    // 2576. continuousFineTuning: runNightlyFineTuningCycle
+    if (cycleCount % 1000 === 0) {
+      import("./continuousFineTuning.js").then(m => { m.runNightlyFineTuningCycle(); }).catch(() => {});
+    }
+    // 2577. continuousImprover: updateImproverConfig
+    if (cycleCount % 1000 === 0) {
+      import("./continuousImprover.js").then(m => { m.updateImproverConfig(); }).catch(() => {});
+    }
+    // 2578. crossInstanceRlhf: getRlhfStats
+    if (cycleCount % 1000 === 0) {
+      import("./crossInstanceRlhf.js").then(m => { m.getRlhfStats(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
