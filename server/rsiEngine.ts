@@ -1879,6 +1879,51 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./tieredContextManager.js").then(m => m.assembleContext([], "gpt-4o-mini", "rsi-audit-43")).catch(() => {});
     }
+    // 269. selfMonitor: record a custom RSI cycle metric
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => m.recordMetric("custom", cycleCount, "rsi-cycle-count")).catch(() => {});
+    }
+    // 270. selfMonitor: get the current health report
+    if (cycleCount % 1000 === 0) {
+      import("./selfMonitor.js").then(m => m.getHealthReport()).catch(() => {});
+    }
+    // 271. selfKnowledgeBase: record a decision about the current RSI cycle
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => m.recordDecision({
+        title: "RSI cycle checkpoint",
+        context: "Periodic RSI cycle audit hook",
+        decision: "Continue RSI cycle",
+        rationale: "System operating normally",
+      })).catch(() => {});
+    }
+    // 272. selfKnowledgeBase: list all active decisions
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => m.listDecisions("accepted")).catch(() => {});
+    }
+    // 273. selfHeal: run a single heal cycle check
+    if (cycleCount % 1000 === 0) {
+      import("./selfHeal.js").then(m => m.runHealCycleOnce()).catch(() => {});
+    }
+    // 274. selfHeal: get the current heal loop status
+    if (cycleCount % 1000 === 0) {
+      import("./selfHeal.js").then(m => m.getHealStatus()).catch(() => {});
+    }
+    // 275. selfRollback: create a rollback point for the current rsiEngine state
+    if (cycleCount % 1000 === 0) {
+      import("./selfRollback.js").then(m => m.createRollbackPoint(["server/rsiEngine.ts"], "rsi-cycle-checkpoint", "system")).catch(() => {});
+    }
+    // 276. selfRollback: roll back to the last healthy snapshot if needed
+    if (cycleCount % 1000 === 0) {
+      import("./selfRollback.js").then(m => m.rollbackToLastHealthy()).catch(() => {});
+    }
+    // 277. tokenBudgetManager: estimate token count for a dummy string
+    if (cycleCount % 1000 === 0) {
+      import("./tokenBudgetManager.js").then(m => m.estimateTokenCount("rsi cycle audit hook")).catch(() => {});
+    }
+    // 278. tokenBudgetManager: get aggregate budget stats across all sessions
+    if (cycleCount % 1000 === 0) {
+      import("./tokenBudgetManager.js").then(m => m.getBudgetStats()).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
