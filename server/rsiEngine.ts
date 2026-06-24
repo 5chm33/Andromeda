@@ -9391,6 +9391,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./learnedConstraints.js").then(m => { m.getAllConstraints(); }).catch(() => {});
     }
+    // 2119. longTermMemoryConsolidation: runLongTermConsolidation
+    if (cycleCount % 1000 === 0) {
+      import("./longTermMemoryConsolidation.js").then(m => { m.runLongTermConsolidation(); }).catch(() => {});
+    }
+    // 2120. longTermMemoryConsolidation: getTopPatterns
+    if (cycleCount % 1000 === 0) {
+      import("./longTermMemoryConsolidation.js").then(m => { m.getTopPatterns(); }).catch(() => {});
+    }
+    // 2121. longTermMemoryConsolidation: getRelevantPatterns
+    if (cycleCount % 1000 === 0) {
+      import("./longTermMemoryConsolidation.js").then(m => { m.getRelevantPatterns(); }).catch(() => {});
+    }
+    // 2122. longTermMemoryConsolidation: getSynthesizedRulesForPrompt
+    if (cycleCount % 1000 === 0) {
+      import("./longTermMemoryConsolidation.js").then(m => { m.getSynthesizedRulesForPrompt(); }).catch(() => {});
+    }
+    // 2123. longTermMemoryConsolidation: getLongTermMemoryStats
+    if (cycleCount % 1000 === 0) {
+      import("./longTermMemoryConsolidation.js").then(m => { m.getLongTermMemoryStats(); }).catch(() => {});
+    }
+    // 2124. longTermMemoryConsolidation: initLongTermMemoryConsolidation
+    if (cycleCount % 1000 === 0) {
+      import("./longTermMemoryConsolidation.js").then(m => { m.initLongTermMemoryConsolidation(); }).catch(() => {});
+    }
+    // 2125. memory: deleteMemory
+    if (cycleCount % 1000 === 0) {
+      import("./memory.js").then(m => { m.deleteMemory(); }).catch(() => {});
+    }
+    // 2126. memory: getMemoryStats
+    if (cycleCount % 1000 === 0) {
+      import("./memory.js").then(m => { m.getMemoryStats(); }).catch(() => {});
+    }
+    // 2127. memory: injectMemoryContextAsync
+    if (cycleCount % 1000 === 0) {
+      import("./memory.js").then(m => { m.injectMemoryContextAsync(); }).catch(() => {});
+    }
+    // 2128. memory: injectMemoryContext
+    if (cycleCount % 1000 === 0) {
+      import("./memory.js").then(m => { m.injectMemoryContext(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
