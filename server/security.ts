@@ -233,20 +233,32 @@ export function listApiKeys(): Omit<ApiKey, "keyHash">[] {
 function validateApiKey(plaintext: string): ApiKey | null {
   const store = loadStore();
   const hash = hashKey(plaintext);
-  const key = store.apiKeys.find(k => k.keyHash === hash && k.isActive);
-  if (!key) return null;
+  const hashBuffer = Buffer.from(hash, 'hex');
+  
+  let matchedKey: ApiKey | null = null;
+  for (const k of store.apiKeys) {
+    if (k.isActive) {
+      const keyHashBuffer = Buffer.from(k.keyHash, 'hex');
+      if (hashBuffer.length === keyHashBuffer.length && crypto.timingSafeEqual(hashBuffer, keyHashBuffer)) {
+        matchedKey = k;
+        break;
+      }
+    }
+  }
+  
+  if (!matchedKey) return null;
 
   // Check expiry
-  if (key.expiresAt && new Date(key.expiresAt).getTime() < Date.now()) {
-    key.isActive = false;
+  if (matchedKey.expiresAt && new Date(matchedKey.expiresAt).getTime() < Date.now()) {
+    matchedKey.isActive = false;
     saveStore(store);
     return null;
   }
 
   // Update last used
-  key.lastUsedAt = new Date().toISOString();
+  matchedKey.lastUsedAt = new Date().toISOString();
   saveStore(store);
-  return key;
+  return matchedKey;
 }
 
 // ─── Scope Checking ───────────────────────────────────────────────────────────
