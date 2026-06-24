@@ -3711,6 +3711,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./memoryForgettingCurve.js").then(m => { m.getAtRiskMemories(); }).catch(() => {});
     }
+    // 699. modelRegistry: getOptimalConfig
+    if (cycleCount % 1000 === 0) {
+      import("./modelRegistry.js").then(m => { m.getOptimalConfig(); }).catch(() => {});
+    }
+    // 700. modelRegistry: recordPerformance
+    if (cycleCount % 1000 === 0) {
+      import("./modelRegistry.js").then(m => { m.recordPerformance(); }).catch(() => {});
+    }
+    // 701. modelRegistry: getPerformanceStats
+    if (cycleCount % 1000 === 0) {
+      import("./modelRegistry.js").then(m => { m.getPerformanceStats(); }).catch(() => {});
+    }
+    // 702. modelRegistry: initModelRegistry
+    if (cycleCount % 1000 === 0) {
+      import("./modelRegistry.js").then(m => { m.initModelRegistry(); }).catch(() => {});
+    }
+    // 703. ollamaAutoSetup: getSetupGuide
+    if (cycleCount % 1000 === 0) {
+      import("./ollamaAutoSetup.js").then(m => { m.getSetupGuide(); }).catch(() => {});
+    }
+    // 704. ollamaAutoSetup: getRecommendedModels
+    if (cycleCount % 1000 === 0) {
+      import("./ollamaAutoSetup.js").then(m => { m.getRecommendedModels(); }).catch(() => {});
+    }
+    // 705. ollamaAutoSetup: triggerModelPull
+    if (cycleCount % 1000 === 0) {
+      import("./ollamaAutoSetup.js").then(m => { m.triggerModelPull(); }).catch(() => {});
+    }
+    // 706. ollamaAutoSetup: initOllamaAutoSetup
+    if (cycleCount % 1000 === 0) {
+      import("./ollamaAutoSetup.js").then(m => { m.initOllamaAutoSetup(); }).catch(() => {});
+    }
+    // 707. ontologicalModel: extractTaskContext
+    if (cycleCount % 1000 === 0) {
+      import("./ontologicalModel.js").then(m => { m.extractTaskContext("test task"); }).catch(() => {});
+    }
+    // 708. ontologicalModel: routeTask
+    if (cycleCount % 1000 === 0) {
+      import("./ontologicalModel.js").then(m => { m.routeTask("test task"); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
