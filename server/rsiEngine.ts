@@ -10071,6 +10071,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./episodicConsolidation.js").then(m => { m.getConsolidatedLessons(); }).catch(() => {});
     }
+    // 2289. failurePatternMemory: recordFailure
+    if (cycleCount % 1000 === 0) {
+      import("./failurePatternMemory.js").then(m => { m.recordFailure(); }).catch(() => {});
+    }
+    // 2290. failurePatternMemory: checkFailurePattern
+    if (cycleCount % 1000 === 0) {
+      import("./failurePatternMemory.js").then(m => { m.checkFailurePattern(); }).catch(() => {});
+    }
+    // 2291. failurePatternMemory: getFailureStats
+    if (cycleCount % 1000 === 0) {
+      import("./failurePatternMemory.js").then(m => { m.getFailureStats(); }).catch(() => {});
+    }
+    // 2292. failurePatternMemory: pruneOldFailures
+    if (cycleCount % 1000 === 0) {
+      import("./failurePatternMemory.js").then(m => { m.pruneOldFailures(); }).catch(() => {});
+    }
+    // 2293. federatedLoraSharing: packageLocalLoraWeights
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLoraSharing.js").then(m => { m.packageLocalLoraWeights(); }).catch(() => {});
+    }
+    // 2294. federatedLoraSharing: shareToolProposal
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLoraSharing.js").then(m => { m.shareToolProposal(); }).catch(() => {});
+    }
+    // 2295. federatedLoraSharing: getTopToolProposals
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLoraSharing.js").then(m => { m.getTopToolProposals(); }).catch(() => {});
+    }
+    // 2296. federatedLoraSharing: getAvailableLoraPackages
+    if (cycleCount % 1000 === 0) {
+      import("./federatedLoraSharing.js").then(m => { m.getAvailableLoraPackages(); }).catch(() => {});
+    }
+    // 2297. goalManager: getNextSubGoal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.getNextSubGoal("test-id"); }).catch(() => {});
+    }
+    // 2298. goalManager: getParallelSubGoals
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => { m.getParallelSubGoals("test-id"); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
