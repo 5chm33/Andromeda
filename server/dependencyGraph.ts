@@ -448,8 +448,8 @@ export function getNode(filePath: string): DependencyNode | undefined {
  * nothing actually changed). We also add a 2s grace period to absorb clock skew.
  */
 export function isStale(): boolean {
-  if (lastBuildTime === 0) return true;
-  if (graph.size === 0) return true;
+  // Early exit: graph never built or empty
+  if (lastBuildTime === 0 || graph.size === 0) return true;
 
   // Use the mtime captured at build time — avoids re-statting 264 files every 60s
   // and eliminates false positives from NTFS timestamp precision on Windows.
