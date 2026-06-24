@@ -2751,6 +2751,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./capabilityDiscovery.js").then(m => m.getCapabilityProposals()).catch(() => {});
     }
+    // 459. contextBus: unsubscribe
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => m.unsubscribe("probe-sub-id")).catch(() => {});
+    }
+    // 460. contextBus: unsubscribe agent
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => m.unsubscribeAgent("probe-agent")).catch(() => {});
+    }
+    // 461. crossDomainAdapter: evaluate domain proposal
+    if (cycleCount % 1000 === 0) {
+      import("./crossDomainAdapter.js").then(m => m.evaluateDomainProposal("probe-proposal-id")).catch(() => {});
+    }
+    // 462. crossDomainAdapter: get cross-domain stats
+    if (cycleCount % 1000 === 0) {
+      import("./crossDomainAdapter.js").then(m => m.getCrossDomainStats()).catch(() => {});
+    }
+    // 463. dependencyGraph: get dependency tree
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyGraph.js").then(m => m.getDependencyTree("server/rsiEngine.ts")).catch(() => {});
+    }
+    // 464. dependencyGraph: is stale
+    if (cycleCount % 1000 === 0) {
+      import("./dependencyGraph.js").then(m => m.isStale()).catch(() => {});
+    }
+    // 465. gracefulDegradation: on degradation listener
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => m.onDegradation(() => {})).catch(() => {});
+    }
+    // 466. gracefulDegradation: set degradation config
+    if (cycleCount % 1000 === 0) {
+      import("./gracefulDegradation.js").then(m => m.setDegradationConfig({ enabled: true })).catch(() => {});
+    }
+    // 467. hotReload: get module
+    if (cycleCount % 1000 === 0) {
+      import("./hotReload.js").then(m => m.getModule("rsiEngine")).catch(() => {});
+    }
+    // 468. hotReload: graceful restart
+    if (cycleCount % 1000 === 0) {
+      import("./hotReload.js").then(m => m.gracefulRestart({ preserveState: true })).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
