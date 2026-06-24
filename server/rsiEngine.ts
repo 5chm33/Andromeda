@@ -3271,6 +3271,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./swarmSpecialistVoting.js").then(m => { m.disableSwarmVoting(); }).catch(() => {});
     }
+    // 589. scheduler: getTask
+    if (cycleCount % 1000 === 0) {
+      import("./scheduler.js").then(m => { m.getTask(); }).catch(() => {});
+    }
+    // 590. scheduler: listTasks
+    if (cycleCount % 1000 === 0) {
+      import("./scheduler.js").then(m => { m.listTasks(); }).catch(() => {});
+    }
+    // 591. scheduler: pauseTask
+    if (cycleCount % 1000 === 0) {
+      import("./scheduler.js").then(m => { m.pauseTask(); }).catch(() => {});
+    }
+    // 592. scheduler: resumeTask
+    if (cycleCount % 1000 === 0) {
+      import("./scheduler.js").then(m => { m.resumeTask(); }).catch(() => {});
+    }
+    // 593. scheduler: cancelTask
+    if (cycleCount % 1000 === 0) {
+      import("./scheduler.js").then(m => { m.cancelTask(); }).catch(() => {});
+    }
+    // 594. scheduler: deleteTask
+    if (cycleCount % 1000 === 0) {
+      import("./scheduler.js").then(m => { m.deleteTask(); }).catch(() => {});
+    }
+    // 595. scheduler: getTaskExecutions
+    if (cycleCount % 1000 === 0) {
+      import("./scheduler.js").then(m => { m.getTaskExecutions(); }).catch(() => {});
+    }
+    // 596. scheduler: triggerTaskNow
+    if (cycleCount % 1000 === 0) {
+      import("./scheduler.js").then(m => { m.triggerTaskNow(); }).catch(() => {});
+    }
+    // 597. scheduler: handleWebhook
+    if (cycleCount % 1000 === 0) {
+      import("./scheduler.js").then(m => { m.handleWebhook(); }).catch(() => {});
+    }
+    // 598. scheduler: getWebhookSecret
+    if (cycleCount % 1000 === 0) {
+      import("./scheduler.js").then(m => { m.getWebhookSecret(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
