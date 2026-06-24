@@ -10471,6 +10471,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./federatedRsiNetwork.js").then(m => { m.registerPeer(); }).catch(() => {});
     }
+    // 2389. fileEngineChunking: extractFunctionBoundaries
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineChunking.js").then(m => { m.extractFunctionBoundaries(); }).catch(() => {});
+    }
+    // 2390. fileEngineChunking: smartChunkFile
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineChunking.js").then(m => { m.smartChunkFile(); }).catch(() => {});
+    }
+    // 2391. fileEngineChunking: buildFileIndex
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineChunking.js").then(m => { m.buildFileIndex(); }).catch(() => {});
+    }
+    // 2392. fileEngineUtils: createBudget
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineUtils.js").then(m => { m.createBudget(); }).catch(() => {});
+    }
+    // 2393. fileEngineUtils: getContextWindowState
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineUtils.js").then(m => { m.getContextWindowState(); }).catch(() => {});
+    }
+    // 2394. fileEngineUtils: scoreFileRelevance
+    if (cycleCount % 1000 === 0) {
+      import("./fileEngineUtils.js").then(m => { m.scoreFileRelevance(); }).catch(() => {});
+    }
+    // 2395. grounding: extractFactualClaims
+    if (cycleCount % 1000 === 0) {
+      import("./grounding.js").then(m => { m.extractFactualClaims(); }).catch(() => {});
+    }
+    // 2396. grounding: checkClaimAgainstSources
+    if (cycleCount % 1000 === 0) {
+      import("./grounding.js").then(m => { m.checkClaimAgainstSources(); }).catch(() => {});
+    }
+    // 2397. grounding: analyzeCitationDensity
+    if (cycleCount % 1000 === 0) {
+      import("./grounding.js").then(m => { m.analyzeCitationDensity(); }).catch(() => {});
+    }
+    // 2398. loraBackendDetector: checkLocalPeftAvailable
+    if (cycleCount % 1000 === 0) {
+      import("./loraBackendDetector.js").then(m => { m.checkLocalPeftAvailable(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
