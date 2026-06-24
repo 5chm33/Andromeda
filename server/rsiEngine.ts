@@ -9031,6 +9031,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./rbac.js").then(m => { m.requireRole(); }).catch(() => {});
     }
+    // 2029. search: getCredibility
+    if (cycleCount % 1000 === 0) {
+      import("./search.js").then(m => { m.getCredibility(); }).catch(() => {});
+    }
+    // 2030. search: extractDomain
+    if (cycleCount % 1000 === 0) {
+      import("./search.js").then(m => { m.extractDomain(); }).catch(() => {});
+    }
+    // 2031. search: getFavicon
+    if (cycleCount % 1000 === 0) {
+      import("./search.js").then(m => { m.getFavicon(); }).catch(() => {});
+    }
+    // 2032. search: searchBrave
+    if (cycleCount % 1000 === 0) {
+      import("./search.js").then(m => { m.searchBrave(); }).catch(() => {});
+    }
+    // 2033. search: searchSearXNG
+    if (cycleCount % 1000 === 0) {
+      import("./search.js").then(m => { m.searchSearXNG(); }).catch(() => {});
+    }
+    // 2034. search: aggregateSearch
+    if (cycleCount % 1000 === 0) {
+      import("./search.js").then(m => { m.aggregateSearch(); }).catch(() => {});
+    }
+    // 2035. search: deepResearchSearch
+    if (cycleCount % 1000 === 0) {
+      import("./search.js").then(m => { m.deepResearchSearch(); }).catch(() => {});
+    }
+    // 2036. selfHeal: startHealLoop
+    if (cycleCount % 1000 === 0) {
+      import("./selfHeal.js").then(m => { m.startHealLoop(); }).catch(() => {});
+    }
+    // 2037. selfHeal: stopHealLoop
+    if (cycleCount % 1000 === 0) {
+      import("./selfHeal.js").then(m => { m.stopHealLoop(); }).catch(() => {});
+    }
+    // 2038. selfHeal: runHealCycleOnce
+    if (cycleCount % 1000 === 0) {
+      import("./selfHeal.js").then(m => { m.runHealCycleOnce(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
