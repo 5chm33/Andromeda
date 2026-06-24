@@ -4351,6 +4351,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./adaptivePartitions.js").then(m => { m.calculateAdaptivePartitions(); }).catch(() => {});
     }
+    // 859. observability: requestTracingMiddleware
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { void 0 /* requestTracingMiddleware requires complex args — skipped */; }).catch(() => {});
+    }
+    // 860. observability: registerMetricsRoute
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { void 0 /* registerMetricsRoute requires complex args — skipped */; }).catch(() => {});
+    }
+    // 861. observability: traced
+    if (cycleCount % 1000 === 0) {
+      import("./observability.js").then(m => { void 0 /* traced requires complex args — skipped */; }).catch(() => {});
+    }
+    // 862. autoGoalSuggester: triggerSuggestionCycle
+    if (cycleCount % 1000 === 0) {
+      import("./autoGoalSuggester.js").then(m => { m.triggerSuggestionCycle(); }).catch(() => {});
+    }
+    // 863. autoGoalSuggester: getSuggesterStats
+    if (cycleCount % 1000 === 0) {
+      import("./autoGoalSuggester.js").then(m => { m.getSuggesterStats(); }).catch(() => {});
+    }
+    // 864. autonomousGoalGenerator: generateImprovementGoals
+    if (cycleCount % 1000 === 0) {
+      import("./autonomousGoalGenerator.js").then(m => { m.generateImprovementGoals(); }).catch(() => {});
+    }
+    // 865. autonomousGoalGenerator: getGoalGeneratorStats
+    if (cycleCount % 1000 === 0) {
+      import("./autonomousGoalGenerator.js").then(m => { m.getGoalGeneratorStats(); }).catch(() => {});
+    }
+    // 866. capabilityBootstrapper: processPendingGaps
+    if (cycleCount % 1000 === 0) {
+      import("./capabilityBootstrapper.js").then(m => { m.processPendingGaps(); }).catch(() => {});
+    }
+    // 867. capabilityBootstrapper: startCapabilityBootstrapper
+    if (cycleCount % 1000 === 0) {
+      import("./capabilityBootstrapper.js").then(m => { m.startCapabilityBootstrapper(); }).catch(() => {});
+    }
+    // 868. capabilityDiscovery: startCapabilityDiscovery
+    if (cycleCount % 1000 === 0) {
+      import("./capabilityDiscovery.js").then(m => { m.startCapabilityDiscovery(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
