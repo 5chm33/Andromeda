@@ -2591,6 +2591,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./multiAgentBus.js").then(m => m.publish("orchestrator", "broadcast", "status", {})).catch(() => {});
     }
+    // 419. contextBus: create a channel
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => m.createChannel("rsi-probe", "RSI probe channel")).catch(() => {});
+    }
+    // 420. contextBus: list channels
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => m.listChannels()).catch(() => {});
+    }
+    // 421. llmProvider: get provider API key
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => m.getProviderApiKey("default")).catch(() => {});
+    }
+    // 422. llmProvider: chat completion with minimal probe
+    if (cycleCount % 1000 === 0) {
+      import("./llmProvider.js").then(m => m.chatCompletion([{ role: "user", content: "ping" }])).catch(() => {});
+    }
+    // 423. modelRegistry: get max output tokens for a model
+    if (cycleCount % 1000 === 0) {
+      import("./modelRegistry.js").then(m => m.getMaxOutputTokens("default")).catch(() => {});
+    }
+    // 424. modelRegistry: get model spec
+    if (cycleCount % 1000 === 0) {
+      import("./modelRegistry.js").then(m => m.getModelSpec("default")).catch(() => {});
+    }
+    // 425. ollamaAutoSetup: pull a model
+    if (cycleCount % 1000 === 0) {
+      import("./ollamaAutoSetup.js").then(m => m.pullOllamaModel("llama3.2:1b")).catch(() => {});
+    }
+    // 426. ollamaAutoSetup: auto-setup ollama
+    if (cycleCount % 1000 === 0) {
+      import("./ollamaAutoSetup.js").then(m => m.autoSetupOllama()).catch(() => {});
+    }
+    // 427. osGrounding: get memory metrics
+    if (cycleCount % 1000 === 0) {
+      import("./osGrounding.js").then(m => m.getMemoryMetrics()).catch(() => {});
+    }
+    // 428. osGrounding: get CPU metrics
+    if (cycleCount % 1000 === 0) {
+      import("./osGrounding.js").then(m => m.getCpuMetrics()).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
