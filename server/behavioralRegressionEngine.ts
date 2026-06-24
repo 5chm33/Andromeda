@@ -233,6 +233,8 @@ function parseViolations(
   testOutput: string,
   contracts: BehavioralContract[],
 ): BehavioralViolation[] {
+  if (contracts.length === 0) return [];
+
   const violations: BehavioralViolation[] = [];
 
   // Find FAIL lines
