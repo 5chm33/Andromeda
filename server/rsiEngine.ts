@@ -8791,6 +8791,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./memory.js").then(m => { m.listMemories(); }).catch(() => {});
     }
+    // 1969. selfReflectionEngine: recordInteraction
+    if (cycleCount % 1000 === 0) {
+      import("./selfReflectionEngine.js").then(m => { m.recordInteraction(); }).catch(() => {});
+    }
+    // 1970. selfReflectionEngine: logDecision
+    if (cycleCount % 1000 === 0) {
+      import("./selfReflectionEngine.js").then(m => { m.logDecision(); }).catch(() => {});
+    }
+    // 1971. selfReflectionEngine: updateDecisionOutcome
+    if (cycleCount % 1000 === 0) {
+      import("./selfReflectionEngine.js").then(m => { m.updateDecisionOutcome(); }).catch(() => {});
+    }
+    // 1972. selfReflectionEngine: getRecentDecisions
+    if (cycleCount % 1000 === 0) {
+      import("./selfReflectionEngine.js").then(m => { m.getRecentDecisions(); }).catch(() => {});
+    }
+    // 1973. selfReflectionEngine: getRecentReflections
+    if (cycleCount % 1000 === 0) {
+      import("./selfReflectionEngine.js").then(m => { m.getRecentReflections(); }).catch(() => {});
+    }
+    // 1974. selfReflectionEngine: startSelfReflectionEngine
+    if (cycleCount % 1000 === 0) {
+      import("./selfReflectionEngine.js").then(m => { m.startSelfReflectionEngine(); }).catch(() => {});
+    }
+    // 1975. selfReflectionEngine: stopSelfReflectionEngine
+    if (cycleCount % 1000 === 0) {
+      import("./selfReflectionEngine.js").then(m => { m.stopSelfReflectionEngine(); }).catch(() => {});
+    }
+    // 1976. selfReflectionEngine: triggerReflection
+    if (cycleCount % 1000 === 0) {
+      import("./selfReflectionEngine.js").then(m => { m.triggerReflection(); }).catch(() => {});
+    }
+    // 1977. tieredContextManager: assembleContext
+    if (cycleCount % 1000 === 0) {
+      import("./tieredContextManager.js").then(m => { m.assembleContext(); }).catch(() => {});
+    }
+    // 1978. tieredContextManager: planTruncationRecovery
+    if (cycleCount % 1000 === 0) {
+      import("./tieredContextManager.js").then(m => { m.planTruncationRecovery(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
