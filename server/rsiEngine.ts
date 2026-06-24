@@ -9071,6 +9071,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./selfHeal.js").then(m => { m.runHealCycleOnce(); }).catch(() => {});
     }
+    // 2039. selfKnowledgeBase: queryLearnings
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => { m.queryLearnings(); }).catch(() => {});
+    }
+    // 2040. selfKnowledgeBase: getAntiPatterns
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => { m.getAntiPatterns(); }).catch(() => {});
+    }
+    // 2041. selfKnowledgeBase: getSuccessPatterns
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => { m.getSuccessPatterns(); }).catch(() => {});
+    }
+    // 2042. selfKnowledgeBase: registerCapability
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => { m.registerCapability(); }).catch(() => {});
+    }
+    // 2043. selfKnowledgeBase: getCapabilities
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => { m.getCapabilities(); }).catch(() => {});
+    }
+    // 2044. selfKnowledgeBase: getLimitations
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => { m.getLimitations(); }).catch(() => {});
+    }
+    // 2045. selfKnowledgeBase: getImprovementContext
+    if (cycleCount % 1000 === 0) {
+      import("./selfKnowledgeBase.js").then(m => { m.getImprovementContext(); }).catch(() => {});
+    }
+    // 2046. selfModel: getSelfModel
+    if (cycleCount % 1000 === 0) {
+      import("./selfModel.js").then(m => { m.getSelfModel(); }).catch(() => {});
+    }
+    // 2047. selfModel: describeSelf
+    if (cycleCount % 1000 === 0) {
+      import("./selfModel.js").then(m => { m.describeSelf(); }).catch(() => {});
+    }
+    // 2048. selfModel: recordAction
+    if (cycleCount % 1000 === 0) {
+      import("./selfModel.js").then(m => { m.recordAction(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
