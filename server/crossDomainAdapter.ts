@@ -77,6 +77,9 @@ export interface DomainAdapter {
 }
 
 // ─── Domain Adapter Definitions ────────────────────────────────────────────────
+const PROPOSAL_RESPONSE_FORMAT = `Respond with JSON: { "title": "...", "description": "...", "proposedContent": "...", "improvementType": "...", "estimatedImpact": "low|medium|high", "confidence": 0.0-1.0 }`;
+const EVALUATOR_RESPONSE_FORMAT = `Respond with JSON: { "score": 0-100, "dimensions": {...}, "reasoning": "...", "approved": boolean }`;
+
 const DOMAIN_ADAPTERS: DomainAdapter[] = [
   {
     domain: "legal",
@@ -89,14 +92,14 @@ const DOMAIN_ADAPTERS: DomainAdapter[] = [
 - Improve enforceability of key clauses
 - Modernize outdated language
 - Add missing standard protections
-Respond with JSON: { "title": "...", "description": "...", "proposedContent": "...", "improvementType": "...", "estimatedImpact": "low|medium|high", "confidence": 0.0-1.0 }`,
+${PROPOSAL_RESPONSE_FORMAT}`,
     evaluatorPrompt: `Evaluate this legal document improvement on a scale of 0-100 for each dimension:
 - clarity (0-100): How much clearer is the proposed version?
 - completeness (0-100): How much more complete is the coverage?
 - risk_coverage (0-100): How much better are risks mitigated?
 - enforceability (0-100): How much more enforceable are the clauses?
 - readability (0-100): How much more readable is the document?
-Respond with JSON: { "score": 0-100, "dimensions": {...}, "reasoning": "...", "approved": boolean }`,
+${EVALUATOR_RESPONSE_FORMAT}`,
   },
   {
     domain: "scientific",
