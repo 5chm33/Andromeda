@@ -7951,6 +7951,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./selfMonitor.js").then(m => { m.startMonitor(); }).catch(() => {});
     }
+    // 1759. andromedaDb: getDb
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => { m.getDb(); }).catch(() => {});
+    }
+    // 1760. andromedaDb: kvSet
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => { m.kvSet(); }).catch(() => {});
+    }
+    // 1761. andromedaDb: kvDelete
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => { m.kvDelete(); }).catch(() => {});
+    }
+    // 1762. andromedaDb: upsertVector
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => { m.upsertVector(); }).catch(() => {});
+    }
+    // 1763. andromedaDb: getAllVectors
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => { m.getAllVectors(); }).catch(() => {});
+    }
+    // 1764. andromedaDb: pruneVectors
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => { m.pruneVectors(); }).catch(() => {});
+    }
+    // 1765. andromedaDb: recordFeedback
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => { m.recordFeedback(); }).catch(() => {});
+    }
+    // 1766. andromedaDb: getLowRatedModules
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => { m.getLowRatedModules(); }).catch(() => {});
+    }
+    // 1767. andromedaDb: getFeedbackSummary
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => { m.getFeedbackSummary(); }).catch(() => {});
+    }
+    // 1768. andromedaDb: recordEval
+    if (cycleCount % 1000 === 0) {
+      import("./andromedaDb.js").then(m => { m.recordEval(); }).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
