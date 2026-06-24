@@ -108,11 +108,10 @@ export async function getEpisodicMemory(goal: string, topK: number = 5): Promise
 
   const goalTokens = tokenize(goal);
 
-  const goalTokensArr = [...goalTokens];  // v6.22: Set has no .filter() — convert to array first
   const scored = episodes.map(ep => {
     const epTokens = tokenize(ep.goal + " " + ep.summary + " " + (ep.failedStep ?? ""));
-    const overlap = goalTokensArr.filter(t => epTokens.has(t)).length;
-    const score = overlap / Math.max(goalTokensArr.length, 1);
+    const overlap = [...goalTokens].filter(t => epTokens.has(t)).length;
+    const score = overlap / Math.max(goalTokens.size, 1);
     return { ep, score };
   });
 
