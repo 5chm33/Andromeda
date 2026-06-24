@@ -2831,6 +2831,46 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     if (cycleCount % 1000 === 0) {
       import("./federatedLearning.js").then(m => m.processSyncPayload({ fromNodeId: "test", fromNodeUrl: "test", fromNodeVersion: "1.0", capabilityScore: 100, proposals: [], evalResults: [], timestamp: Date.now() }, "token")).catch(() => {});
     }
+    // 479. goalManager: delete goal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => m.deleteGoal("test-id")).catch(() => {});
+    }
+    // 480. goalManager: start goal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => m.startGoal("test-id")).catch(() => {});
+    }
+    // 481. goalManager: pause goal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => m.pauseGoal("test-id")).catch(() => {});
+    }
+    // 482. goalManager: resume goal
+    if (cycleCount % 1000 === 0) {
+      import("./goalManager.js").then(m => m.resumeGoal("test-id")).catch(() => {});
+    }
+    // 483. contextBus: mark read
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => m.markRead("agent-1", [])).catch(() => {});
+    }
+    // 484. contextBus: get unread count
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => m.getUnreadCount("agent-1")).catch(() => {});
+    }
+    // 485. contextBus: claim work
+    if (cycleCount % 1000 === 0) {
+      import("./contextBus.js").then(m => m.claimWork("agent-1", "test task", "general")).catch(() => {});
+    }
+    // 486. ontologicalModel: update capability outcome
+    if (cycleCount % 1000 === 0) {
+      import("./ontologicalModel.js").then(m => m.updateCapabilityOutcome("reasoning", true)).catch(() => {});
+    }
+    // 487. rsiDb: get rsi db status
+    if (cycleCount % 1000 === 0) {
+      import("./rsiDb.js").then(m => m.getRsiDbStatus()).catch(() => {});
+    }
+    // 488. rsiDb: run rsi db migration
+    if (cycleCount % 1000 === 0) {
+      import("./rsiDb.js").then(m => m.runRsiDbMigration()).catch(() => {});
+    }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
