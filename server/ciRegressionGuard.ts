@@ -50,7 +50,7 @@ function saveHistory(): void {
 
 export function recordMetrics(cycleId: string, metrics: Record<string, number>): void {
   for (const [key, value] of Object.entries(metrics)) {
-    if (!history[key]) history[key] = [];
+    if (!Array.isArray(history[key])) history[key] = [];
     history[key].push(value);
   }
   
