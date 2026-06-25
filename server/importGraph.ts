@@ -112,7 +112,7 @@ function resolveImportPath(fromFile: string, importSpecifier: string): string | 
   }
 
   for (const c of candidates) {
-    if (fs.existsSync(c)) return c;
+    if (c && fs.existsSync(c)) return c;
   }
   return null;
 }
