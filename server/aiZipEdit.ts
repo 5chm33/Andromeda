@@ -70,9 +70,11 @@ Format:
   ]
 }`;
 
+  const MAX_MANIFEST_ENTRIES = 50;
+
   const userPrompt = `ZIP file: ${fileName}
 Files in ZIP:
-${manifest.slice(0, 50).join("\n")}${manifest.length > 50 ? `\n... and ${manifest.length - 50} more` : ""}
+${manifest.slice(0, MAX_MANIFEST_ENTRIES).join("\n")}${manifest.length > MAX_MANIFEST_ENTRIES ? `\n... and ${manifest.length - MAX_MANIFEST_ENTRIES} more` : ""}
 
 Instructions: ${instructions}`;
 
