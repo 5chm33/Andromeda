@@ -435,7 +435,7 @@ export function startMonitor(): void {
 
   monitorStartTime = Date.now();
   monitorInterval = setInterval(() => {
-    runHealthCheck().catch(() => {}); // Swallow errors in background check
+    runHealthCheck().catch((err) => console.warn(`[SelfMonitor] Health check error: ${(err as Error).message}`));
   }, config.checkIntervalMs);
 
   // v5.32: Start periodic persistence
@@ -444,7 +444,7 @@ export function startMonitor(): void {
   }, PERSIST_INTERVAL_MS);
 
   // Run an immediate check
-  runHealthCheck().catch(() => {});
+  runHealthCheck().catch((err) => console.warn(`[SelfMonitor] Initial health check error: ${(err as Error).message}`));
 }
 
 export function stopMonitor(): void {
