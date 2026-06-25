@@ -198,7 +198,7 @@ export function analyzeCodeSafety(
     // ── Network safety checks ───────────────────────────────────────────────
     // Detect hardcoded external URLs that aren't in the allowlist
     const urlMatch = line.match(/https?:\/\/([a-zA-Z0-9.-]+)/);
-    if (urlMatch && config.allowedHosts.length > 0) {
+    if (urlMatch && config.allowedHosts && config.allowedHosts.length > 0) {
       const host = urlMatch[1];
       if (!config.allowedHosts.some((allowed) => host.endsWith(allowed))) {
         violations.push({
