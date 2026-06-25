@@ -339,8 +339,8 @@ function parseVitestOutput(stdout: string, proposalId: string, durationMs: numbe
   } catch { /* fall through */ }
 
   // Fallback: parse text output
-  const passedMatch = stdout.match(/(\d+)\s+passed/);
-  const failedMatch = stdout.match(/(\d+)\s+failed/);
+  const passedMatch = stdout?.match(/(\d+)\s+passed/);
+  const failedMatch = stdout?.match(/(\d+)\s+failed/);
   const testsPassed = passedMatch ? parseInt(passedMatch[1], 10) : 0;
   const testsFailed = failedMatch ? parseInt(failedMatch[1], 10) : 0;
 
