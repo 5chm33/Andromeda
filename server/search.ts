@@ -308,7 +308,7 @@ export async function aggregateSearch(
 
       // DDG instant answer API returns RelatedTopics for general queries
       const topics: any[] = ddgData?.RelatedTopics ?? [];
-      const flatTopics = topics.flatMap((t: any) => {
+      const flatTopics = (topics ?? []).flatMap((t: any) => {
         if (t.Topics) return t.Topics; // nested topic group
         return [t];
       });
