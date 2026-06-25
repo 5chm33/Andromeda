@@ -71,7 +71,9 @@ function loadGoals(): void {
     if (fs.existsSync(goalsPath)) {
       generatedGoals = JSON.parse(fs.readFileSync(goalsPath, "utf-8"));
     }
-  } catch { /* start fresh */ }
+  } catch (err) {
+    console.warn(`[AutoGoalGen] Failed to load goals: ${(err as Error).message}`);
+  }
 }
 
 function saveGoals(): void {
