@@ -207,9 +207,9 @@ function buildAnalysisPrompt(filePath: string, content: string, language: string
   const ext = path.extname(filePath).toLowerCase();
   const langLabel = ext === ".py" ? "Python" : ext === ".ts" || ext === ".tsx" ? "TypeScript" : "JavaScript";
 
-  // Truncate very large files to first 8000 chars
-  const contentForAnalysis = content.length > 8000
-    ? content.slice(0, 8000) + "\n\n// ... (file truncated for analysis)"
+  // Truncate very large files to first 20000 chars (enough for ~500 lines)
+  const contentForAnalysis = content.length > 20000
+    ? content.slice(0, 20000) + "\n\n// ... (file truncated for analysis)"
     : content;
 
   return [
