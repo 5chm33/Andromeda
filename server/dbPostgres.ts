@@ -38,9 +38,9 @@ async function createPgDb() {
   const postgres = (await import("postgres")).default;
   const url = process.env.POSTGRES_URL!;
   const client = postgres(url, {
-    max: 10,
-    idle_timeout: 30,
-    connect_timeout: 10,
+    max: 10, // Maximum connections in the pool
+    idle_timeout: 30, // Seconds before closing an idle connection
+    connect_timeout: 10, // Seconds before a connection attempt times out
     ssl: url.includes("sslmode=require") || url.includes("neon.tech") || url.includes("supabase.co")
       ? { rejectUnauthorized: false }
       : undefined,
