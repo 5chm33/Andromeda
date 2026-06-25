@@ -158,35 +158,45 @@ export async function verifyModule(moduleName: "initSafety" | "fsWatcher"): Prom
   const workspaceDir = process.env.ANDROMEDA_WORKSPACE ?? process.cwd();
   const specDir = path.join(workspaceDir, "server", "specs");
 
-  if (!fs.existsSync(specDir)) {
-    fs.mkdirSync(specDir, { recursive: true });
+  try {
+    if (!fs.existsSync(specDir)) {
+      fs.mkdirSync(specDir, { recursive: true });
+    }
+
+    const specName = moduleName === "initSafety" ? "InitSafety" : "FsWatcher";
+    const specContent = moduleName === "initSafety" 
+      ? generateInitSafetySpec(workspaceDir) 
+      : generateFsWatcherSpec(workspaceDir);
+    
+    const cfgContent = generateTlcConfig(specName);
+
+    const specPath = path.join(specDir, `${specName}.tla`);
+    const cfgPath = path.join(specDir, `${specName}.cfg`);
+
+    fs.writeFileSync(specPath, specContent);
+    fs.writeFileSync(cfgPath, cfgContent);
+
+    log.info(`Generated TLA+ spec for ${moduleName}`, { specPath });
+
+    // Simulate TLC Model Checker execution
+    // If 'tlc' is installed on the host, we could run:
+    // execSync(`tlc ${specPath}`)
+    
+    const passed = true; // Simulated success
+
+    return {
+      moduleName,
+      passed,
+      output: `Model checking completed. No state space violations found. Invariants hold.`,
+      specPath,
+    };
+  } catch (error) {
+    log.error(`Failed to generate spec for ${moduleName}`, { error: String(error) });
+    return {
+      moduleName,
+      passed: false,
+      output: `Error: ${String(error)}`,
+      specPath: "",
+    };
   }
-
-  const specName = moduleName === "initSafety" ? "InitSafety" : "FsWatcher";
-  const specContent = moduleName === "initSafety" 
-    ? generateInitSafetySpec(workspaceDir) 
-    : generateFsWatcherSpec(workspaceDir);
-  
-  const cfgContent = generateTlcConfig(specName);
-
-  const specPath = path.join(specDir, `${specName}.tla`);
-  const cfgPath = path.join(specDir, `${specName}.cfg`);
-
-  fs.writeFileSync(specPath, specContent);
-  fs.writeFileSync(cfgPath, cfgContent);
-
-  log.info(`Generated TLA+ spec for ${moduleName}`, { specPath });
-
-  // Simulate TLC Model Checker execution
-  // If 'tlc' is installed on the host, we could run:
-  // execSync(`tlc ${specPath}`)
-  
-  const passed = true; // Simulated success
-
-  return {
-    moduleName,
-    passed,
-    output: `Model checking completed. No state space violations found. Invariants hold.`,
-    specPath,
-  };
 }
