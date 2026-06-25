@@ -194,7 +194,8 @@ function summarizeAssistantMessages(optimized: Array<{ role: string; content: st
   let tokensFreed = 0;
   const actions: string[] = [];
   for (let i = 0; i < optimized.length - 4 && tokensFreed < targetTokenReduction; i++) {
-    if (optimized[i].role === "assistant" && optimized[i].content.length > 500) {
+    const msg = optimized[i];
+    if (msg && msg.role === "assistant" && msg.content.length > 500) {
       const { content, tokensFreed: freed } = summarizeAssistantMessage(optimized[i]);
       optimized[i] = { ...optimized[i], content };
       tokensFreed += freed;
