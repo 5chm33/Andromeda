@@ -281,16 +281,23 @@ ${proposedContent.slice(0, 2000)}
 Focus areas: ${specialist.focusAreas.join(", ")}
 Respond with JSON only.`;
 
-    const response = await client.chat.completions.create({
-      model: process.env.SWARM_SPECIALIST_MODEL || "gpt-4.1-mini",
-      messages: [
-        { role: "system", content: specialist.systemPrompt },
-        { role: "user", content: userMessage },
-      ],
-      temperature: 0.1,
-      max_tokens: 600,
-      response_format: { type: "json_object" },
-    });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
+    let response;
+    try {
+      response = await client.chat.completions.create({
+        model: process.env.SWARM_SPECIALIST_MODEL || "gpt-4.1-mini",
+        messages: [
+          { role: "system", content: specialist.systemPrompt },
+          { role: "user", content: userMessage },
+        ],
+        temperature: 0.1,
+        max_tokens: 600,
+        response_format: { type: "json_object" },
+      }, { signal: controller.signal });
+    } finally {
+      clearTimeout(timeoutId);
+    }
 
     const raw = response.choices[0]?.message?.content || "{}";
     const parsed = JSON.parse(raw);
