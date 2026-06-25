@@ -139,7 +139,3 @@ data/vector_memory.json
 .data/skill_graph.json
 data/andromeda.db-wal
 data/andromeda.db-shm
-data/rlhf_feedback.jsonl
-client/public/skins/*.jpg
-client/public/skins/*.png
-client/public/skins/videos/*.mp4
