@@ -105,7 +105,14 @@ async function runWorker(group: string, files: string[], maxProposals: number): 
 
     // Pick a random subset to analyze (avoid analyzing all files every cycle)
     const sampleSize = Math.min(maxProposals * 2, validFiles.length);
-    const shuffled = [...validFiles].sort(() => Math.random() - 0.5);
+    const shuffled = [...validFiles];
+    // Fisher-Yates shuffle using crypto.randomBytes for unbiased randomness
+    const { randomBytes } = await import('crypto');
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const rand = randomBytes(4).readUInt32BE(0) / 0xFFFFFFFF;
+      const j = Math.floor(rand * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
     const toAnalyze = shuffled.slice(0, sampleSize);
 
     // Analyze each file and collect proposals
