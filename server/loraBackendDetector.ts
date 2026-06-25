@@ -72,7 +72,7 @@ export async function checkOllamaAvailable(): Promise<BackendStatus> {
     });
     if (response.ok) {
       const data = (await response.json()) as { models?: unknown[] };
-      const modelCount = data.models?.length ?? 0;
+      const modelCount = data?.models?.length ?? 0;
       return {
         backend: "ollama",
         available: true,
