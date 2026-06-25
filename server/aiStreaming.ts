@@ -172,11 +172,14 @@ async function _streamToResponseCore(
   const apiKey = getApiKey();
   if (!apiKey) throw new Error("DEEPSEEK_API_KEY or LLM_API_KEY not configured");
 
+  const LARGE_ANALYSIS_TIMEOUT_MS = 180_000;
+  const STANDARD_QUERY_TIMEOUT_MS = 90_000;
+
   // Timeout: 180s for file/deep analysis, 90s for standard queries
   const isLargeAnalysis = messages.some(m =>
     typeof m.content === "string" && (m.content.includes("ZIP Archive:") || m.content.includes("Parallel Search Results"))
   );
-  const timeoutMs = isLargeAnalysis ? 180_000 : 90_000;
+  const timeoutMs = isLargeAnalysis ? LARGE_ANALYSIS_TIMEOUT_MS : STANDARD_QUERY_TIMEOUT_MS;
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
