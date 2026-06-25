@@ -112,7 +112,7 @@ workspace/.andromeda_proposals.json
 .data/context_store/
 .~lock.*
 .env.local.sandbox
-workspace/
+# workspace/
 data/tla_tmp/
 # data/rlhf_feedback.jsonl  -- tracked (RLHF training data)
 # data/rlhf_aggregates.json  -- tracked (RLHF aggregates)
@@ -126,10 +126,10 @@ data/failure_patterns.jsonl
 data/history.json
 data/proof_verify_log.jsonl
 data/rebuild_history.json
-data/self_model.json
+# data/self_model.json
 data/semantic_self_model.json
 data/system_memory.json
-data/vector_memory.json
+# data/vector_memory.json
 .andromeda/
 .data/benchmark_baselines.json
 .data/benchmark_report.json

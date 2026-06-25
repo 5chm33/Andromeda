@@ -1,0 +1,122 @@
+{
+  "goals": [
+    {
+      "id": "mgoal_1782318049320_srrhne",
+      "type": "meta",
+      "title": "Improve the Self-Improvement Pipeline",
+      "description": "Make the self-improvement system faster, safer, and more autonomous",
+      "rationale": "The self-improvement pipeline is the foundation of autonomy. Improving it has compounding returns.",
+      "priority": 10,
+      "status": "active",
+      "recursive": true,
+      "createdAt": 1782318049320,
+      "subGoals": [
+        {
+          "id": "sg_mgoal_1782318049320_srrhne_1782318054327_98k0",
+          "parentId": "mgoal_1782318049320_srrhne",
+          "title": "Analyze selfModel.ts for meta improvements",
+          "description": "Make the self-improvement system faster, safer, and more autonomous — focus on selfModel.ts",
+          "targetFile": "selfModel.ts",
+          "estimatedEffort": "medium",
+          "status": "in_progress"
+        }
+      ],
+      "metrics": [],
+      "startedAt": 1782318176789
+    },
+    {
+      "id": "mgoal_1782318049320_5oazdk",
+      "type": "performance",
+      "title": "Reduce Response Latency",
+      "description": "Optimize LLM calls, caching, and processing to reduce end-to-end response time",
+      "rationale": "Faster responses improve user experience and enable more iterations per session",
+      "priority": 8,
+      "status": "planned",
+      "recursive": false,
+      "createdAt": 1782318049320,
+      "subGoals": [],
+      "metrics": []
+    },
+    {
+      "id": "mgoal_1782318049320_ha0oqv",
+      "type": "reliability",
+      "title": "Achieve Zero-Downtime Self-Modification",
+      "description": "Ensure self-improvements can be applied without service interruption",
+      "rationale": "Downtime during self-improvement breaks the autonomous loop",
+      "priority": 9,
+      "status": "planned",
+      "recursive": true,
+      "createdAt": 1782318049320,
+      "subGoals": [],
+      "metrics": []
+    },
+    {
+      "id": "mgoal_1782318049320_cstkei",
+      "type": "capability",
+      "title": "Expand Tool Coverage",
+      "description": "Add new tools and capabilities based on usage patterns and user needs",
+      "rationale": "More tools = more problems solvable = higher utility",
+      "priority": 7,
+      "status": "planned",
+      "recursive": false,
+      "createdAt": 1782318049320,
+      "subGoals": [],
+      "metrics": []
+    },
+    {
+      "id": "mgoal_1782318049321_kbcus8",
+      "type": "self_improvement",
+      "title": "Reduce TypeScript Errors After Self-Modification",
+      "description": "Improve the proposal generation to produce changes that pass type checking on first attempt",
+      "rationale": "Type errors after self-modification waste cycles and reduce confidence in auto-apply",
+      "priority": 8,
+      "status": "planned",
+      "recursive": true,
+      "createdAt": 1782318049321,
+      "subGoals": [],
+      "metrics": []
+    },
+    {
+      "id": "mgoal_1782318049321_wszowy",
+      "type": "reliability",
+      "title": "Improve Test Coverage for Critical Paths",
+      "description": "Generate and maintain tests for all critical system paths",
+      "rationale": "Higher test coverage enables more confident auto-application of changes",
+      "priority": 7,
+      "status": "planned",
+      "recursive": false,
+      "createdAt": 1782318049321,
+      "subGoals": [],
+      "metrics": []
+    },
+    {
+      "id": "mgoal_1782318049321_s5mhzd",
+      "type": "performance",
+      "title": "Optimize Context Window Utilization",
+      "description": "Ensure maximum useful information per token in LLM context",
+      "rationale": "Better context utilization = better responses with same cost",
+      "priority": 6,
+      "status": "planned",
+      "recursive": false,
+      "createdAt": 1782318049321,
+      "subGoals": [],
+      "metrics": []
+    },
+    {
+      "id": "mgoal_1782318049321_didolu",
+      "type": "meta",
+      "title": "Improve Goal Decomposition Quality",
+      "description": "Make the goal decomposition system produce more actionable, well-scoped sub-goals",
+      "rationale": "Better decomposition leads to better execution of all other goals",
+      "priority": 9,
+      "status": "planned",
+      "recursive": true,
+      "createdAt": 1782318049321,
+      "subGoals": [],
+      "metrics": []
+    }
+  ],
+  "scans": [],
+  "_version": "5.17.0",
+  "_lastUpdated": "2026-06-24T16:22:56.789Z"
+}
