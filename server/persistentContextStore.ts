@@ -236,6 +236,7 @@ export function getStoreStats(): { sessions: number; totalEntries: number; oldes
   let oldestEntry = Date.now();
 
   for (const entries of _index.values()) {
+    if (!entries) continue;
     totalEntries += entries.length;
     for (const e of entries as IndexEntry[]) {
       if (e.timestamp < oldestEntry) oldestEntry = e.timestamp;
