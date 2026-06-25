@@ -350,6 +350,8 @@ const AGENT_FEATURES: ManifestSection[] = [
 export function generateManifest(): SystemManifest {
   const tools = getAllTools();
   const active = getActiveProvider();
+  const routing = getRoutingConfig();
+  const mcpStatus = getConnectionStatus();
   const memStats = getMemoryStats() as any;
   const vecStats = vectorStats();
 
