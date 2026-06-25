@@ -1,20 +1,24 @@
 /**
- * ProposalTreeGraph.tsx — v12.2.0 — SOTA Intelligence Command Center
+ * ProposalTreeGraph.tsx — v12.2.3 — SOTA Intelligence Command Center
  *
- * Completely redesigned from scratch. New layout:
+ * v12.2.3 changes:
+ *   - Added thumbs-up / thumbs-down RLHF rating buttons to:
+ *     1. Live Activity feed (timeline tab) — rate each event inline
+ *     2. Proposal Graph nodes — click a node to rate it
+ *   - RLHF ratings submit to POST /api/v71/rlhf/feedback
+ *   - Visual feedback: rated items show the rating with a glow animation
+ *   - Added "RLHF" tab showing aggregate stats from the grading session
+ *
+ * Layout:
  *   ┌─────────────────────────────────────────────────────────────┐
  *   │  HEADER: Brand + Live indicator + GitHub Fixer + Close      │
  *   ├──────────┬──────────┬──────────┬──────────┬────────────────┤
  *   │  CYCLES  │  SCORE   │  PHASE   │  COST    │  TOGGLE+TRIGGER│
- *   │  (hero)  │  (hero)  │  (hero)  │  (hero)  │  (controls)    │
- *   ├──────────────────────────────────┬────────────────────────┤
- *   │                                  │  LIVE ACTIVITY FEED    │
- *   │   PROPOSAL GRAPH (React Flow)    │  (timeline cards)      │
- *   │   Radial/orbital layout          │                        │
- *   │   Glassmorphism node cards       │                        │
- *   │   Animated gradient edges        │                        │
- *   │                                  │                        │
- *   └──────────────────────────────────┴────────────────────────┘
+ *   ├──────────────────────────────────────────────────────────────┤
+ *   │  TABS: [Proposal Graph] [Live Activity ★] [RLHF Stats]      │
+ *   ├──────────────────────────────────────────────────────────────┤
+ *   │  Graph / Activity feed (with thumbs) / RLHF stats           │
+ *   └──────────────────────────────────────────────────────────────┘
  */
 import {
   ReactFlow,
@@ -52,6 +56,9 @@ import {
   Cpu,
   FlaskConical,
   BarChart3,
+  ThumbsUp,
+  ThumbsDown,
+  Star,
 } from "lucide-react";
 
 const ExternalRepoFixer = lazy(() =>
@@ -89,6 +96,17 @@ interface LiveEvent {
   type: string;
   timestamp: number;
   data: Record<string, unknown>;
+  rlhfRating?: "accept" | "reject" | null;
+}
+
+interface RlhfStats {
+  totalSignals: number;
+  acceptRate: number;
+  rejectRate: number;
+  editRate: number;
+  implicitRate: number;
+  meanReward: number;
+  categoryCount: number;
 }
 
 // ─── Design Tokens ────────────────────────────────────────────────────────────
@@ -138,7 +156,7 @@ function ScoreRing({ score, color, size = 44 }: { score: number; color: string; 
   );
 }
 
-// ─── Proposal Node Card ───────────────────────────────────────────────────────
+// ─── Proposal Node Card (with inline RLHF rating) ─────────────────────────────
 
 function ProposalNodeCard({ data }: { data: Record<string, unknown> }) {
   const p = data as unknown as ProposalNode;
@@ -146,19 +164,44 @@ function ProposalNodeCard({ data }: { data: Record<string, unknown> }) {
   const score = p.score != null ? Math.round(p.score * 100) : null;
   const isRunning = p.status === "running";
   const isAdopted = p.status === "adopted";
+  const [rlhfRating, setRlhfRating] = useState<"accept" | "reject" | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  const submitRlhf = useCallback(async (feedbackType: "accept" | "reject") => {
+    if (submitting || p.isRoot) return;
+    setSubmitting(true);
+    try {
+      await fetch("/api/v71/rlhf/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          proposalId: p.id,
+          targetFile: p.files?.[0] ?? "unknown",
+          category: "user_rating",
+          title: p.title,
+          feedbackType,
+          rawRating: feedbackType === "accept" ? 1.0 : -1.0,
+          comment: `User ${feedbackType === "accept" ? "approved" : "rejected"} proposal from RSI graph`,
+        }),
+      });
+      setRlhfRating(feedbackType);
+    } catch { /* non-fatal */ } finally {
+      setSubmitting(false);
+    }
+  }, [p, submitting]);
 
   return (
     <div style={{
       background: `linear-gradient(145deg, #0f0f12 0%, ${cfg.bg} 100%)`,
-      border: `1px solid ${cfg.border}`,
-      boxShadow: `${cfg.glow}, inset 0 1px 0 rgba(255,255,255,0.04)`,
+      border: `1px solid ${rlhfRating === "accept" ? "#34d39960" : rlhfRating === "reject" ? "#fb718560" : cfg.border}`,
+      boxShadow: `${rlhfRating === "accept" ? "0 0 20px #34d39930" : rlhfRating === "reject" ? "0 0 20px #fb718530" : cfg.glow}, inset 0 1px 0 rgba(255,255,255,0.04)`,
       borderRadius: 16,
       width: 280,
       padding: "14px 16px 14px",
       position: "relative",
       overflow: "hidden",
       fontFamily: "Inter, system-ui, sans-serif",
-      transition: "box-shadow 0.3s ease",
+      transition: "box-shadow 0.3s ease, border-color 0.3s ease",
     }}>
       {/* Shimmer top accent for adopted/running */}
       {(isAdopted || isRunning) && (
@@ -230,13 +273,55 @@ function ProposalNodeCard({ data }: { data: Record<string, unknown> }) {
 
       {/* Files */}
       {p.files && p.files.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 2, marginBottom: 10 }}>
           {p.files.slice(0, 2).map((f, i) => (
             <div key={i} style={{ fontSize: 10, color: "#52525b", fontFamily: "'JetBrains Mono', 'Fira Code', monospace", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", lineHeight: 1.5, padding: "1px 6px", background: "#111113", borderRadius: 4 }}>
               {f.split("/").slice(-2).join("/")}
             </div>
           ))}
           {p.files.length > 2 && <div style={{ fontSize: 10, color: "#3f3f46", paddingLeft: 6 }}>+{p.files.length - 2} more</div>}
+        </div>
+      )}
+
+      {/* RLHF Rating Buttons — shown for non-root proposals */}
+      {!p.isRoot && (
+        <div style={{ display: "flex", gap: 6, marginTop: 4 }}>
+          <button
+            onClick={(e) => { e.stopPropagation(); submitRlhf("accept"); }}
+            disabled={submitting || rlhfRating !== null}
+            title="Good improvement — teach RSI to do more of this"
+            style={{
+              flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 5,
+              padding: "5px 0", borderRadius: 8,
+              background: rlhfRating === "accept" ? "rgba(16,185,129,0.2)" : "rgba(16,185,129,0.06)",
+              border: `1px solid ${rlhfRating === "accept" ? "rgba(16,185,129,0.6)" : "rgba(16,185,129,0.2)"}`,
+              color: rlhfRating === "accept" ? "#34d399" : "#52525b",
+              fontSize: 11, fontWeight: 600, cursor: (submitting || rlhfRating !== null) ? "default" : "pointer",
+              transition: "all 0.2s ease",
+              boxShadow: rlhfRating === "accept" ? "0 0 8px rgba(16,185,129,0.3)" : "none",
+            }}
+          >
+            <ThumbsUp style={{ width: 11, height: 11 }} />
+            {rlhfRating === "accept" ? "Rated ✓" : "Good"}
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); submitRlhf("reject"); }}
+            disabled={submitting || rlhfRating !== null}
+            title="Poor improvement — teach RSI to avoid this"
+            style={{
+              flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 5,
+              padding: "5px 0", borderRadius: 8,
+              background: rlhfRating === "reject" ? "rgba(244,63,94,0.2)" : "rgba(244,63,94,0.06)",
+              border: `1px solid ${rlhfRating === "reject" ? "rgba(244,63,94,0.6)" : "rgba(244,63,94,0.2)"}`,
+              color: rlhfRating === "reject" ? "#fb7185" : "#52525b",
+              fontSize: 11, fontWeight: 600, cursor: (submitting || rlhfRating !== null) ? "default" : "pointer",
+              transition: "all 0.2s ease",
+              boxShadow: rlhfRating === "reject" ? "0 0 8px rgba(244,63,94,0.3)" : "none",
+            }}
+          >
+            <ThumbsDown style={{ width: 11, height: 11 }} />
+            {rlhfRating === "reject" ? "Rated ✗" : "Poor"}
+          </button>
         </div>
       )}
 
@@ -258,7 +343,6 @@ function proposalsToFlow(proposals: ProposalNode[]): { nodes: Node[]; edges: Edg
   }];
   const edges: Edge[] = [];
 
-  // Build tree structure
   const children: Record<string, string[]> = { root: [] };
   for (const p of proposals) {
     const pid = p.parentId ?? "root";
@@ -267,7 +351,6 @@ function proposalsToFlow(proposals: ProposalNode[]): { nodes: Node[]; edges: Edg
     if (!children[p.id]) children[p.id] = [];
   }
 
-  // BFS layout: each level is a row, nodes spread horizontally
   const levelNodes: string[][] = [["root"]];
   const visited = new Set(["root"]);
   while (true) {
@@ -283,7 +366,7 @@ function proposalsToFlow(proposals: ProposalNode[]): { nodes: Node[]; edges: Edg
   }
 
   const NODE_W = 300;
-  const NODE_H = 220;
+  const NODE_H = 240;
   const H_GAP = 40;
   const V_GAP = 80;
 
@@ -346,7 +429,6 @@ function HeroStat({
       display: "flex", flexDirection: "column", gap: 6,
       position: "relative", overflow: "hidden",
     }}>
-      {/* Subtle background glow */}
       <div style={{ position: "absolute", top: -20, right: -10, width: 80, height: 80, borderRadius: "50%", background: glow ?? `${color}08`, filter: "blur(20px)", pointerEvents: "none" }} />
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
         <Icon style={{ width: 13, height: 13, color, opacity: 0.8 }} />
@@ -362,21 +444,25 @@ function HeroStat({
   );
 }
 
-// ─── Activity Event Row ───────────────────────────────────────────────────────
+// ─── Activity Event Row (with RLHF thumbs) ────────────────────────────────────
 
-function EventRow({ ev }: { ev: LiveEvent }) {
+function EventRow({ ev, onRate }: { ev: LiveEvent; onRate: (id: string, rating: "accept" | "reject") => void }) {
   const cfg = EVENT_CFG[ev.type] ?? { icon: "·", color: "#52525b", label: ev.type, bg: "#52525b10" };
-  const title = String(ev.data.title ?? ev.data.description ?? ev.data.phase ?? cfg.label).slice(0, 45);
+  const title = String(ev.data.title ?? ev.data.description ?? ev.data.phase ?? cfg.label).slice(0, 55);
   const time = new Date(ev.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  const isRatable = ev.type === "proposal:applied" || ev.type === "proposal:new";
+  const rated = ev.rlhfRating;
+
   return (
     <div style={{
       display: "flex", gap: 10, padding: "8px 14px",
       borderBottom: "1px solid #0f0f12",
-      background: "transparent",
+      background: rated === "accept" ? "rgba(16,185,129,0.04)" : rated === "reject" ? "rgba(244,63,94,0.04)" : "transparent",
       transition: "background 0.15s",
+      alignItems: "center",
     }}
-      onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = "#111113"; }}
-      onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = "transparent"; }}
+      onMouseEnter={e => { if (!rated) (e.currentTarget as HTMLDivElement).style.background = "#111113"; }}
+      onMouseLeave={e => { if (!rated) (e.currentTarget as HTMLDivElement).style.background = "transparent"; }}
     >
       <div style={{
         width: 28, height: 28, borderRadius: 8,
@@ -391,6 +477,150 @@ function EventRow({ ev }: { ev: LiveEvent }) {
         <div style={{ fontSize: 12, color: "#d4d4d8", fontWeight: 500, lineHeight: 1.4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{title}</div>
         <div style={{ fontSize: 10, color: "#3f3f46", fontVariantNumeric: "tabular-nums", marginTop: 2 }}>{time}</div>
       </div>
+
+      {/* RLHF Rating Buttons */}
+      {isRatable && (
+        <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
+          <button
+            onClick={() => !rated && onRate(ev.id, "accept")}
+            title="Good — teach RSI to do more like this"
+            style={{
+              width: 28, height: 28, borderRadius: 7,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              background: rated === "accept" ? "rgba(16,185,129,0.25)" : "rgba(16,185,129,0.07)",
+              border: `1px solid ${rated === "accept" ? "rgba(16,185,129,0.7)" : "rgba(16,185,129,0.2)"}`,
+              color: rated === "accept" ? "#34d399" : "#3f3f46",
+              cursor: rated ? "default" : "pointer",
+              transition: "all 0.2s ease",
+              boxShadow: rated === "accept" ? "0 0 8px rgba(16,185,129,0.25)" : "none",
+            }}
+          >
+            <ThumbsUp style={{ width: 11, height: 11 }} />
+          </button>
+          <button
+            onClick={() => !rated && onRate(ev.id, "reject")}
+            title="Poor — teach RSI to avoid this type of change"
+            style={{
+              width: 28, height: 28, borderRadius: 7,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              background: rated === "reject" ? "rgba(244,63,94,0.25)" : "rgba(244,63,94,0.07)",
+              border: `1px solid ${rated === "reject" ? "rgba(244,63,94,0.7)" : "rgba(244,63,94,0.2)"}`,
+              color: rated === "reject" ? "#fb7185" : "#3f3f46",
+              cursor: rated ? "default" : "pointer",
+              transition: "all 0.2s ease",
+              boxShadow: rated === "reject" ? "0 0 8px rgba(244,63,94,0.25)" : "none",
+            }}
+          >
+            <ThumbsDown style={{ width: 11, height: 11 }} />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── RLHF Stats Panel ─────────────────────────────────────────────────────────
+
+function RlhfStatsPanel() {
+  const [stats, setStats] = useState<RlhfStats | null>(null);
+  const [aggregates, setAggregates] = useState<Array<{ category: string; meanReward: number; sampleCount: number; acceptRate: number }>>([]);
+  const [loading, setLoading] = useState(true);
+
+  const load = useCallback(async () => {
+    try {
+      const r = await fetch("/api/v71/rlhf/stats");
+      if (r.ok) {
+        const d = await r.json();
+        setStats(d.data?.stats ?? null);
+        setAggregates(d.data?.aggregates ?? []);
+      }
+    } catch { /* ignore */ } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  if (loading) return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", gap: 8 }}>
+      <Loader2 style={{ width: 16, height: 16, color: "#52525b", animation: "spin 1s linear infinite" }} />
+      <span style={{ fontSize: 13, color: "#52525b" }}>Loading RLHF stats…</span>
+    </div>
+  );
+
+  if (!stats) return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "#52525b", fontSize: 13 }}>
+      No RLHF data yet. Rate proposals to build training signal.
+    </div>
+  );
+
+  const acceptPct = Math.round(stats.acceptRate * 100);
+  const rejectPct = Math.round(stats.rejectRate * 100);
+  const rewardColor = stats.meanReward > 0.6 ? "#34d399" : stats.meanReward > 0.3 ? "#fbbf24" : "#fb7185";
+
+  return (
+    <div style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
+      {/* Summary cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 16 }}>
+        {[
+          { label: "Total Signals", value: stats.totalSignals.toString(), color: "#818cf8" },
+          { label: "Accept Rate", value: `${acceptPct}%`, color: "#34d399" },
+          { label: "Mean Reward", value: stats.meanReward.toFixed(3), color: rewardColor },
+        ].map(({ label, value, color }) => (
+          <div key={label} style={{ padding: "12px 14px", background: "#111113", borderRadius: 10, border: "1px solid #1a1a1e" }}>
+            <div style={{ fontSize: 10, color: "#52525b", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>{label}</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color, letterSpacing: "-0.03em" }}>{value}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Accept/Reject bar */}
+      <div style={{ marginBottom: 16 }}>
+        <div style={{ fontSize: 11, color: "#52525b", fontWeight: 600, marginBottom: 6, letterSpacing: "0.06em", textTransform: "uppercase" }}>Accept vs Reject</div>
+        <div style={{ height: 8, background: "#1a1a1e", borderRadius: 4, overflow: "hidden", display: "flex" }}>
+          <div style={{ width: `${acceptPct}%`, background: "linear-gradient(90deg, #10b981, #34d399)", transition: "width 0.8s ease" }} />
+          <div style={{ width: `${rejectPct}%`, background: "linear-gradient(90deg, #f43f5e, #fb7185)", transition: "width 0.8s ease" }} />
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
+          <span style={{ fontSize: 10, color: "#34d399" }}>✓ {acceptPct}% accepted</span>
+          <span style={{ fontSize: 10, color: "#fb7185" }}>✗ {rejectPct}% rejected</span>
+        </div>
+      </div>
+
+      {/* Category breakdown */}
+      {aggregates.length > 0 && (
+        <div>
+          <div style={{ fontSize: 11, color: "#52525b", fontWeight: 600, marginBottom: 8, letterSpacing: "0.06em", textTransform: "uppercase" }}>By Category</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            {aggregates.slice(0, 12).map(agg => {
+              const barColor = agg.meanReward > 0.5 ? "#34d399" : agg.meanReward > 0 ? "#fbbf24" : "#fb7185";
+              return (
+                <div key={agg.category} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 10px", background: "#111113", borderRadius: 8 }}>
+                  <div style={{ fontSize: 11, color: "#a1a1aa", flex: 1, fontWeight: 500 }}>{agg.category}</div>
+                  <div style={{ width: 60, height: 4, background: "#1a1a1e", borderRadius: 2, overflow: "hidden" }}>
+                    <div style={{ width: `${Math.max(0, Math.min(100, agg.acceptRate * 100))}%`, height: "100%", background: barColor, borderRadius: 2 }} />
+                  </div>
+                  <div style={{ fontSize: 10, color: barColor, fontVariantNumeric: "tabular-nums", width: 40, textAlign: "right" }}>
+                    {agg.meanReward.toFixed(2)}
+                  </div>
+                  <div style={{ fontSize: 10, color: "#3f3f46", width: 24, textAlign: "right" }}>×{agg.sampleCount}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <button
+        onClick={load}
+        style={{
+          marginTop: 14, width: "100%", padding: "8px", borderRadius: 8,
+          background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.3)",
+          color: "#a78bfa", fontSize: 12, fontWeight: 600, cursor: "pointer",
+        }}
+      >
+        Refresh Stats
+      </button>
     </div>
   );
 }
@@ -408,7 +638,7 @@ export function ProposalTreeGraph() {
   const [sseConnected, setSseConnected] = useState(false);
   const [toggling, setToggling] = useState(false);
   const [triggering, setTriggering] = useState(false);
-  const [activeTab, setActiveTab] = useState<"graph" | "timeline">("graph");
+  const [activeTab, setActiveTab] = useState<"graph" | "timeline" | "rlhf">("graph");
 
   const sseRef = useRef<EventSource | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -420,9 +650,9 @@ export function ProposalTreeGraph() {
     ? { "Content-Type": "application/json", "X-Admin-Key": adminKey }
     : { "Content-Type": "application/json" };
 
-  // v12.2.1: Auto-fetch admin key from server (localhost only) so GitHub Repo Fixer works
+  // Auto-fetch admin key from server (localhost only)
   useEffect(() => {
-    if (adminKey) return; // already have it
+    if (adminKey) return;
     fetch("/api/admin/local-key")
       .then(r => r.ok ? r.json() : null)
       .then((d: { key?: string } | null) => {
@@ -436,7 +666,6 @@ export function ProposalTreeGraph() {
 
   const loadProposals = useCallback(async () => {
     try {
-      // v12.2.1: correct endpoint is /api/self/proposals (not /api/rsi/proposals)
       const r = await fetch("/api/self/proposals?limit=60");
       if (!r.ok) throw new Error("unavailable");
       const d = await r.json();
@@ -479,13 +708,41 @@ export function ProposalTreeGraph() {
   const triggerNow = useCallback(async () => {
     setTriggering(true);
     try {
-      // v12.2.1: correct trigger endpoint is /api/rsi/trigger (not /api/rsi/scheduler/trigger)
       await fetch("/api/rsi/trigger", { method: "POST", headers: authHeaders });
       await loadProposals();
     } finally {
       setTimeout(() => setTriggering(false), 2000);
     }
   }, [authHeaders, loadProposals]);
+
+  // RLHF rating handler for timeline events
+  const handleEventRate = useCallback(async (eventId: string, rating: "accept" | "reject") => {
+    // Optimistically update UI
+    setEvents(prev => prev.map(ev => ev.id === eventId ? { ...ev, rlhfRating: rating } : ev));
+
+    // Find the event to get proposal details
+    const ev = events.find(e => e.id === eventId);
+    if (!ev) return;
+
+    const proposalId = String(ev.data.proposalId ?? ev.data.id ?? eventId);
+    const title = String(ev.data.title ?? ev.data.description ?? ev.type);
+
+    try {
+      await fetch("/api/v71/rlhf/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          proposalId,
+          targetFile: String(ev.data.file ?? ev.data.targetFile ?? "unknown"),
+          category: "user_rating",
+          title,
+          feedbackType: rating,
+          rawRating: rating === "accept" ? 1.0 : -1.0,
+          comment: `User ${rating === "accept" ? "approved" : "rejected"} via live activity feed`,
+        }),
+      });
+    } catch { /* non-fatal — UI already updated */ }
+  }, [events]);
 
   useEffect(() => {
     if (proposals.length === 0) return;
@@ -512,7 +769,7 @@ export function ProposalTreeGraph() {
         try {
           const parsed = JSON.parse(e.data) as { type: string; timestamp: number; data: Record<string, unknown> };
           if (parsed.type === "heartbeat") return;
-          setEvents(prev => [{ id: `${Date.now()}-${Math.random()}`, type: parsed.type, timestamp: parsed.timestamp, data: parsed.data }, ...prev].slice(0, 120));
+          setEvents(prev => [{ id: `${Date.now()}-${Math.random()}`, type: parsed.type, timestamp: parsed.timestamp, data: parsed.data, rlhfRating: null }, ...prev].slice(0, 120));
         } catch { /* ignore */ }
         if (type !== "heartbeat") { loadProposals(); loadStatus(); }
       };
@@ -545,6 +802,7 @@ export function ProposalTreeGraph() {
   const scoreDelta = avgScore != null && prevAvg != null ? avgScore - prevAvg : null;
   const costPct = Math.min((cost / dailyCap) * 100, 100);
   const statusCounts = proposals.reduce<Record<string, number>>((acc, p) => { acc[p.status] = (acc[p.status] ?? 0) + 1; return acc; }, {});
+  const ratedCount = events.filter(e => e.rlhfRating !== null).length;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", background: "#09090b", borderRadius: 12, overflow: "hidden", fontFamily: "Inter, system-ui, sans-serif" }}>
@@ -601,7 +859,7 @@ export function ProposalTreeGraph() {
 
         <div style={{ flex: 1 }} />
 
-        {/* GitHub Repo Fixer — always visible here */}
+        {/* GitHub Repo Fixer */}
         <Suspense fallback={null}>
           <ExternalRepoFixer />
         </Suspense>
@@ -703,7 +961,7 @@ export function ProposalTreeGraph() {
           TAB BAR
       ══════════════════════════════════════════════════════════════ */}
       <div style={{ display: "flex", background: "#0a0a0d", borderBottom: "1px solid #1a1a1e", flexShrink: 0 }}>
-        {(["graph", "timeline"] as const).map(tab => (
+        {(["graph", "timeline", "rlhf"] as const).map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -720,10 +978,13 @@ export function ProposalTreeGraph() {
               display: "flex", alignItems: "center", gap: 6,
             }}
           >
-            {tab === "graph" ? <GitBranch style={{ width: 12, height: 12 }} /> : <Radio style={{ width: 12, height: 12 }} />}
-            {tab === "graph" ? "Proposal Graph" : "Live Activity"}
+            {tab === "graph" ? <GitBranch style={{ width: 12, height: 12 }} /> : tab === "timeline" ? <Radio style={{ width: 12, height: 12 }} /> : <Star style={{ width: 12, height: 12 }} />}
+            {tab === "graph" ? "Proposal Graph" : tab === "timeline" ? "Live Activity" : "RLHF Stats"}
             {tab === "timeline" && events.length > 0 && (
               <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 10, background: "rgba(124,58,237,0.2)", color: "#a78bfa" }}>{events.length}</span>
+            )}
+            {tab === "timeline" && ratedCount > 0 && (
+              <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 10, background: "rgba(16,185,129,0.15)", color: "#34d399" }}>★{ratedCount}</span>
             )}
           </button>
         ))}
@@ -770,6 +1031,15 @@ export function ProposalTreeGraph() {
               <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#a78bfa", boxShadow: "0 0 6px #a78bfa", animation: "pulse 2s ease-in-out infinite" }} />
               <span style={{ fontSize: 12, color: "#a1a1aa", fontWeight: 600 }}>Real-time event stream</span>
               <span style={{ fontSize: 11, color: "#3f3f46", marginLeft: "auto" }}>{events.length} events</span>
+              {ratedCount > 0 && (
+                <span style={{ fontSize: 11, color: "#34d399", padding: "2px 8px", borderRadius: 10, background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.2)" }}>
+                  ★ {ratedCount} rated
+                </span>
+              )}
+              <div style={{ fontSize: 10, color: "#52525b", display: "flex", alignItems: "center", gap: 4 }}>
+                <ThumbsUp style={{ width: 10, height: 10 }} />/<ThumbsDown style={{ width: 10, height: 10 }} />
+                <span>rate proposals to train RSI</span>
+              </div>
             </div>
             <div style={{ flex: 1, overflowY: "auto" }}>
               {events.length === 0 ? (
@@ -777,11 +1047,24 @@ export function ProposalTreeGraph() {
                   <Radio style={{ width: 28, height: 28, color: "#27272a" }} />
                   <div style={{ fontSize: 13, color: "#3f3f46" }}>Waiting for RSI events…</div>
                   <div style={{ fontSize: 11, color: "#27272a" }}>Events will appear here when RSI cycles run</div>
+                  <div style={{ fontSize: 11, color: "#27272a" }}>Use 👍/👎 buttons to rate proposals and train RSI</div>
                 </div>
               ) : (
-                events.map(ev => <EventRow key={ev.id} ev={ev} />)
+                events.map(ev => <EventRow key={ev.id} ev={ev} onRate={handleEventRate} />)
               )}
             </div>
+          </div>
+        )}
+
+        {/* RLHF Stats tab */}
+        {activeTab === "rlhf" && (
+          <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+            <div style={{ padding: "10px 16px", borderBottom: "1px solid #1a1a1e", display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+              <Star style={{ width: 13, height: 13, color: "#fbbf24" }} />
+              <span style={{ fontSize: 12, color: "#a1a1aa", fontWeight: 600 }}>RLHF Training Signal</span>
+              <span style={{ fontSize: 11, color: "#52525b", marginLeft: "auto" }}>Shapes future RSI proposals</span>
+            </div>
+            <RlhfStatsPanel />
           </div>
         )}
       </div>

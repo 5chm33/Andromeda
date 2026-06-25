@@ -457,6 +457,8 @@ export async function runOrchestration(
       bus.send({ id: `msg_${Date.now()}`, from: architect.id, to: "broadcast", type: "artifact", content: architecture, timestamp: Date.now() });
 
       emit({ type: "agent_output", agentId: architect.id, agentName: architect.name, agentEmoji: architect.emoji, data: { output: architecture.slice(0, 1000) }, timestamp: Date.now() });
+    } else {
+      emit({ type: "agent_error", data: { error: "Architect agent not found, cannot proceed with architecture phase" }, timestamp: Date.now() });
     }
 
     // Phase 3: Debate on architecture (if enabled)
