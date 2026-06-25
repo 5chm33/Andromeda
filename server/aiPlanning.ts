@@ -22,6 +22,10 @@ export async function generateSubQueries(mainQuery: string): Promise<string[]> {
   if (!apiKey) return [];
 
   try {
+    const SUB_QUERY_COUNT = 4;
+    const MAX_TOKENS_SUB_QUERY = 200;
+    const TEMPERATURE_SUB_QUERY = 0.7;
+
     const response = await fetch(getApiUrl(), {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", ...getProviderHeaders() },
@@ -31,15 +35,15 @@ export async function generateSubQueries(mainQuery: string): Promise<string[]> {
           {
             role: "system",
             content:
-              'You generate search sub-queries for deep research. Return exactly 4 specific, diverse sub-queries as JSON: {"queries": ["...", "...", "...", "..."]}. No explanation.',
+              `You generate search sub-queries for deep research. Return exactly ${SUB_QUERY_COUNT} specific, diverse sub-queries as JSON: {"queries": ["...", "...", "...", "..."]}. No explanation.`,
           },
           {
             role: "user",
-            content: `Generate 4 parallel search sub-queries to deeply research: "${mainQuery}"`,
+            content: `Generate ${SUB_QUERY_COUNT} parallel search sub-queries to deeply research: "${mainQuery}"`,
           },
         ],
-        max_tokens: 200,
-        temperature: 0.7,
+        max_tokens: MAX_TOKENS_SUB_QUERY,
+        temperature: TEMPERATURE_SUB_QUERY,
         response_format: { type: "json_object" },
       }),
     });
