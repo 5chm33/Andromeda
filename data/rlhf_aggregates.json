@@ -12,7 +12,7 @@
     "bottomFiles": [
       "security.ts"
     ],
-    "lastUpdated": "2026-06-25T03:22:58.525Z"
+    "lastUpdated": "2026-06-25T04:15:28.767Z"
   },
   "performance": {
     "category": "performance",
@@ -29,7 +29,7 @@
       "costOptimizer.ts",
       "behavioralRegressionEngine.ts"
     ],
-    "lastUpdated": "2026-06-25T03:22:58.525Z"
+    "lastUpdated": "2026-06-25T04:15:28.767Z"
   },
   "readability": {
     "category": "readability",
@@ -48,7 +48,7 @@
       "watchdog.ts",
       "zkProofSigning.ts"
     ],
-    "lastUpdated": "2026-06-25T03:22:58.525Z"
+    "lastUpdated": "2026-06-25T04:15:28.766Z"
   },
   "helpfulness": {
     "category": "helpfulness",
@@ -80,7 +80,7 @@
       "zkProofSigning.ts",
       "ai.ts"
     ],
-    "lastUpdated": "2026-06-25T03:22:58.525Z"
+    "lastUpdated": "2026-06-25T04:15:28.766Z"
   },
   "refactoring": {
     "category": "refactoring",
@@ -99,6 +99,6 @@
       "contextAwareness.ts",
       "privilegeSeparation.ts"
     ],
-    "lastUpdated": "2026-06-25T03:22:58.525Z"
+    "lastUpdated": "2026-06-25T04:15:28.767Z"
   }
 }

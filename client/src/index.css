@@ -744,3 +744,9 @@
   outline: 2px solid rgba(124,58,237,0.5);
   outline-offset: 2px;
 }
+
+/* ── RSI Dashboard v12 — shimmer-line animation ─────────────────────────── */
+@keyframes shimmer-line {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
