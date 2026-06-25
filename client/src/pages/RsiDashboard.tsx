@@ -1,16 +1,15 @@
 /**
- * RsiDashboard.tsx — v12.0.0 — SOTA Command Center Redesign
+ * RsiDashboard.tsx — v12.4.0 — Clean Command Center Redesign
  *
- * Complete rebuild inspired by Linear's issue graph, Vercel's deployment
- * timeline, and Resend's real-time activity feed.
- *
- * Key improvements over v11.294:
- * - Two-column layout: main content + persistent live activity stream
- * - Command center hero header with live RSI phase, score delta, cost
- * - Cycle history as a vertical timeline (not a raw table)
- * - Live SSE activity stream replacing the terminal
- * - Sidebar with live badge counts
- * - ProposalTreeGraph promoted to full-screen first-class view
+ * What changed from v12.3.x:
+ * - Default tab is now "File Improvements" (not the broken flow graph)
+ * - ProposalTreeGraph completely removed from the main view
+ * - ProposalFileList is the primary content: clean vertical table, no horizontal scrolling
+ * - Stats bar at top: cycles, proposals applied, success rate, cost
+ * - Live activity feed always visible on the right sidebar
+ * - "Fix Any GitHub Repo" button stays in top-right
+ * - Pause/Trigger Cycle controls always visible in header
+ * - Version bumped to v12.4.0
  */
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,7 +19,6 @@ import { CapabilityGrowthChart } from "@/components/rsi/CapabilityGrowthChart";
 import { CostOptimizationPanel } from "@/components/rsi/CostOptimizationPanel";
 import { SwarmVotingPanel } from "@/components/rsi/SwarmVotingPanel";
 import { AlgorithmRegistryPanel } from "@/components/rsi/AlgorithmRegistryPanel";
-import { ProposalTreeGraph } from "@/components/rsi/ProposalTreeGraph";
 import { ProposalFileList } from "@/components/rsi/ProposalFileList";
 import { ExternalRepoFixer } from "@/components/rsi/ExternalRepoFixer";
 import {
@@ -29,6 +27,7 @@ import {
   RefreshCw, Play, Pause, TrendingUp, GitMerge, AlertTriangle,
   CheckCircle2, XCircle, Clock, Layers, Radio, Terminal,
   ChevronRight, Circle, Loader2, Network, FileCode2, ThumbsUp, ThumbsDown,
+  Wrench,
 } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -47,7 +46,7 @@ interface RsiStatus {
     byProvider: Record<string, { calls: number; totalUsd: number }>;
   };
 }
-interface GitCommit {
+interface GitCommitItem {
   hash: string; fullHash?: string; subject: string; author: string;
   date: string; pushed?: boolean; isRsiCommit?: boolean;
 }
@@ -57,7 +56,7 @@ interface LiveEvent {
   timestamp: number;
   data: Record<string, unknown>;
 }
-type NavSection = "overview" | "graph" | "proposals" | "commits" | "memory" | "cost" | "swarm" | "algorithms";
+type NavSection = "improvements" | "overview" | "proposals" | "commits" | "memory" | "cost" | "swarm" | "algorithms";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function formatTs(ts: number): string {
@@ -82,7 +81,7 @@ function isRSICommit(subject: string): boolean {
 function deltaBadge(before?: number, after?: number) {
   if (before == null || after == null) return <span className="text-[#52525b] text-[10px]">—</span>;
   const delta = ((after - before) / before) * 100;
-  if (Math.abs(delta) < 0.01) return <span className="text-[#52525b] text-[10px]">±0.00%</span>;
+  if (Math.abs(delta) < 0.01) return <span className="pill pill-emerald text-[10px]">±0.00%</span>;
   if (delta > 0) return <span className="pill pill-emerald text-[10px]">+{delta.toFixed(2)}%</span>;
   return <span className="pill pill-rose text-[10px]">{delta.toFixed(2)}%</span>;
 }
@@ -94,7 +93,6 @@ function useRsiEvents() {
   const esRef = useRef<EventSource | null>(null);
 
   useEffect(() => {
-    // Load history first
     fetch("/api/rsi/events/history?limit=30")
       .then(r => r.ok ? r.json() : { events: [] })
       .then(d => {
@@ -104,27 +102,21 @@ function useRsiEvents() {
       })
       .catch(() => {});
 
-    // Connect SSE
     const es = new EventSource("/api/rsi/events");
     esRef.current = es;
 
     const eventTypes = ["proposal:new","proposal:applied","proposal:rejected","cycle:start","cycle:complete","parallel:start","parallel:complete","heartbeat","connected"];
     eventTypes.forEach(type => {
       es.addEventListener(type, (e: MessageEvent) => {
-        if (type === "heartbeat" || type === "connected") {
-          setConnected(true);
-          return;
-        }
+        if (type === "heartbeat" || type === "connected") { setConnected(true); return; }
         try {
           const data = JSON.parse(e.data);
           setEvents(prev => [{ ...data, id: `live-${Date.now()}-${Math.random()}` }, ...prev].slice(0, 80));
         } catch { /* non-fatal */ }
       });
     });
-
     es.onopen = () => setConnected(true);
     es.onerror = () => setConnected(false);
-
     return () => { es.close(); esRef.current = null; };
   }, []);
 
@@ -134,18 +126,18 @@ function useRsiEvents() {
 // ─── Event Icon & Color ───────────────────────────────────────────────────────
 function eventMeta(type: string) {
   switch (type) {
-    case "cycle:start":     return { icon: Play,         color: "#a78bfa", label: "Cycle started",    bg: "rgba(124,58,237,0.08)" };
-    case "cycle:complete":  return { icon: CheckCircle2, color: "#34d399", label: "Cycle complete",   bg: "rgba(16,185,129,0.08)" };
-    case "proposal:new":    return { icon: Brain,        color: "#22d3ee", label: "Proposal created", bg: "rgba(6,182,212,0.08)"  };
-    case "proposal:applied":return { icon: GitMerge,     color: "#34d399", label: "Proposal applied", bg: "rgba(16,185,129,0.08)" };
-    case "proposal:rejected":return { icon: XCircle,     color: "#fb7185", label: "Proposal rejected",bg: "rgba(244,63,94,0.08)"  };
-    case "parallel:start":  return { icon: Layers,       color: "#fbbf24", label: "Parallel workers", bg: "rgba(245,158,11,0.08)" };
-    case "parallel:complete":return { icon: CheckCircle2,color: "#34d399", label: "Workers done",     bg: "rgba(16,185,129,0.08)" };
-    default:                return { icon: Activity,     color: "#71717a", label: type,               bg: "rgba(113,113,122,0.06)" };
+    case "cycle:start":      return { icon: Play,         color: "#a78bfa", label: "Cycle started",    bg: "rgba(124,58,237,0.08)" };
+    case "cycle:complete":   return { icon: CheckCircle2, color: "#34d399", label: "Cycle complete",   bg: "rgba(16,185,129,0.08)" };
+    case "proposal:new":     return { icon: Brain,        color: "#22d3ee", label: "Proposal created", bg: "rgba(6,182,212,0.08)"  };
+    case "proposal:applied": return { icon: GitMerge,     color: "#34d399", label: "Proposal applied", bg: "rgba(16,185,129,0.08)" };
+    case "proposal:rejected":return { icon: XCircle,      color: "#fb7185", label: "Proposal rejected",bg: "rgba(244,63,94,0.08)"  };
+    case "parallel:start":   return { icon: Layers,       color: "#fbbf24", label: "Parallel workers", bg: "rgba(245,158,11,0.08)" };
+    case "parallel:complete":return { icon: CheckCircle2, color: "#34d399", label: "Workers done",     bg: "rgba(16,185,129,0.08)" };
+    default:                 return { icon: Activity,     color: "#71717a", label: type,               bg: "rgba(113,113,122,0.06)" };
   }
 }
 
-// ─── Live Event RLHF mini-thumbs ────────────────────────────────────────────
+// ─── RLHF mini-thumbs for live feed ─────────────────────────────────────────
 function LiveEventRlhf({ proposalId, targetFile, title }: { proposalId: string; targetFile: string; title: string }) {
   const [rated, setRated] = React.useState<"up" | "down" | null>(null);
   const adminKey = typeof localStorage !== "undefined" ? (localStorage.getItem("andromeda_admin_key") ?? "") : "";
@@ -164,50 +156,39 @@ function LiveEventRlhf({ proposalId, targetFile, title }: { proposalId: string; 
 
   return (
     <div className="flex items-center gap-0.5 flex-shrink-0">
-      <button
-        onClick={(e) => { e.stopPropagation(); submit("accept"); }}
-        disabled={!!rated}
-        title="Good improvement"
+      <button onClick={(e) => { e.stopPropagation(); submit("accept"); }} disabled={!!rated} title="Good"
         className="w-5 h-5 rounded flex items-center justify-center transition-all disabled:opacity-30"
-        style={{ color: rated === "up" ? "#34d399" : "#3f3f46" }}
-      >
+        style={{ color: rated === "up" ? "#34d399" : "#3f3f46" }}>
         <ThumbsUp className="w-2.5 h-2.5" />
       </button>
-      <button
-        onClick={(e) => { e.stopPropagation(); submit("reject"); }}
-        disabled={!!rated}
-        title="Poor improvement"
+      <button onClick={(e) => { e.stopPropagation(); submit("reject"); }} disabled={!!rated} title="Poor"
         className="w-5 h-5 rounded flex items-center justify-center transition-all disabled:opacity-30"
-        style={{ color: rated === "down" ? "#fb7185" : "#3f3f46" }}
-      >
+        style={{ color: rated === "down" ? "#fb7185" : "#3f3f46" }}>
         <ThumbsDown className="w-2.5 h-2.5" />
       </button>
     </div>
   );
 }
 
-// ─── Live Activity Feed Panel ─────────────────────────────────────────────────
+// ─── Live Activity Feed ───────────────────────────────────────────────────────
 function LiveActivityFeed() {
   const { events, connected } = useRsiEvents();
-  const feedRef = useRef<HTMLDivElement>(null);
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-[#1f1f23] flex-shrink-0">
         <div className="flex items-center gap-2">
-          <Terminal className="w-3.5 h-3.5 text-[#52525b]" />
+          <Radio className="w-3.5 h-3.5 text-[#52525b]" />
           <span className="text-xs font-semibold text-[#e4e4e7]">Live Activity</span>
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 relative">
           <span className={`w-1.5 h-1.5 rounded-full ${connected ? "bg-[#34d399]" : "bg-[#52525b]"}`} />
           {connected && <span className="absolute w-1.5 h-1.5 rounded-full bg-[#34d399] animate-ping opacity-60" />}
-          <span className="text-[10px] text-[#52525b] font-mono">{connected ? "SSE" : "polling"}</span>
+          <span className="text-[10px] text-[#52525b] font-mono">{connected ? "live" : "offline"}</span>
         </div>
       </div>
 
-      {/* Events */}
-      <div ref={feedRef} className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto">
         {events.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-32 text-[#52525b]">
             <Radio className="w-5 h-5 mb-2 opacity-30" />
@@ -251,251 +232,172 @@ function LiveActivityFeed() {
   );
 }
 
-// ─── Stat Card ────────────────────────────────────────────────────────────────
-function StatCard({ label, value, sub, icon: Icon, color = "violet", trend, loading = false }: {
-  label: string; value: string | number; sub?: string;
-  icon: React.ElementType; color?: "violet"|"emerald"|"cyan"|"amber"|"rose";
-  trend?: "up"|"down"|"neutral"; loading?: boolean;
-}) {
-  const colorMap = {
-    violet:  { bg: "rgba(124,58,237,0.1)",  text: "#a78bfa", border: "rgba(124,58,237,0.2)" },
-    emerald: { bg: "rgba(16,185,129,0.1)",  text: "#34d399", border: "rgba(16,185,129,0.2)" },
-    cyan:    { bg: "rgba(6,182,212,0.1)",   text: "#22d3ee", border: "rgba(6,182,212,0.2)"  },
-    amber:   { bg: "rgba(245,158,11,0.1)",  text: "#fbbf24", border: "rgba(245,158,11,0.2)" },
-    rose:    { bg: "rgba(244,63,94,0.1)",   text: "#fb7185", border: "rgba(244,63,94,0.2)"  },
-  };
-  const c = colorMap[color];
-  return (
-    <motion.div className="stat-card" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} whileHover={{ y: -2 }} transition={{ duration: 0.3 }}>
-      <div className="flex items-start justify-between mb-3">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: c.bg, border: `1px solid ${c.border}` }}>
-          <Icon className="w-4 h-4" style={{ color: c.text }} />
-        </div>
-        {trend && <span className={`text-[10px] font-medium ${trend === "up" ? "text-[#34d399]" : trend === "down" ? "text-[#fb7185]" : "text-[#71717a]"}`}>{trend === "up" ? "↑" : trend === "down" ? "↓" : "→"}</span>}
-      </div>
-      {loading ? (
-        <div className="space-y-1.5 mt-1"><div className="h-6 w-16 rounded bg-[#27272a] shimmer" /><div className="h-3 w-24 rounded bg-[#1f1f23] shimmer" /></div>
-      ) : (
-        <>
-          <p className="text-2xl font-bold text-[#fafafa]" style={{ letterSpacing: "-0.03em" }}>{value}</p>
-          <p className="text-xs font-medium text-[#a1a1aa] mt-0.5">{label}</p>
-          {sub && <p className="text-[11px] text-[#52525b] mt-0.5">{sub}</p>}
-        </>
-      )}
-    </motion.div>
-  );
-}
-
-// ─── Panel ────────────────────────────────────────────────────────────────────
-function Panel({ title, subtitle, children, badge, action, className = "", noPad = false }: {
-  title: string; subtitle?: string; children: React.ReactNode;
-  badge?: React.ReactNode; action?: React.ReactNode; className?: string; noPad?: boolean;
-}) {
-  return (
-    <motion.div className={`rounded-xl border border-[#27272a] bg-[#111113] overflow-hidden ${className}`}
-      initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-      <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(124,58,237,0.5) 40%, rgba(99,102,241,0.3) 70%, transparent 100%)' }} />
-      <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#1f1f23]">
-        <div className="flex items-center gap-2.5">
-          <div>
-            <h3 className="text-sm font-semibold text-[#e4e4e7]" style={{ letterSpacing: '-0.02em' }}>{title}</h3>
-            {subtitle && <p className="text-[11px] text-[#52525b] mt-0.5">{subtitle}</p>}
-          </div>
-          {badge}
-        </div>
-        {action}
-      </div>
-      <div className={noPad ? "" : ""}>{children}</div>
-    </motion.div>
-  );
-}
-
-// ─── Command Center Hero ──────────────────────────────────────────────────────
-function CommandHero() {
+// ─── Stats Bar ────────────────────────────────────────────────────────────────
+function StatsBar() {
   const [status, setStatus] = useState<RsiStatus | null>(null);
-  const [schedulerPaused, setSchedulerPaused] = useState(false);
-  const [toggling, setToggling] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [cycles, setCycles] = useState<RsiCycle[]>([]);
+  const [proposalCounts, setProposalCounts] = useState({ total: 0, applied: 0, rejected: 0, pending: 0 });
 
-  const load = useCallback(async () => {
-    try {
-      const [statusRes, schedRes, histRes] = await Promise.all([
-        fetch("/api/rsi/status"),
-        fetch("/api/rsi/scheduler"),
-        fetch("/api/rsi/history"),
-      ]);
-      if (statusRes.ok) setStatus(await statusRes.json());
-      if (schedRes.ok) { const d = await schedRes.json(); setSchedulerPaused(d.paused ?? false); }
-      if (histRes.ok) { const d = await histRes.json(); setCycles(Array.isArray(d) ? d : d.cycles ?? []); }
-    } catch { /* non-fatal */ }
-    finally { setLoading(false); }
+  useEffect(() => {
+    const loadStatus = () => {
+      fetch("/api/rsi/status").then(r => r.ok ? r.json() : null).then(d => { if (d) setStatus(d); }).catch(() => {});
+    };
+    const loadProposals = () => {
+      fetch("/api/self/proposals?limit=500")
+        .then(r => r.ok ? r.json() : null)
+        .then(d => {
+          if (!d) return;
+          const list: { status: string }[] = d.proposals ?? (Array.isArray(d) ? d : []);
+          setProposalCounts({
+            total: list.length,
+            applied: list.filter(p => p.status === "applied" || p.status === "adopted" || p.status === "committed").length,
+            rejected: list.filter(p => p.status === "rejected" || p.status === "failed").length,
+            pending: list.filter(p => p.status === "pending" || p.status === "processing").length,
+          });
+        })
+        .catch(() => {});
+    };
+    loadStatus(); loadProposals();
+    const i1 = setInterval(loadStatus, 10_000);
+    const i2 = setInterval(loadProposals, 20_000);
+    return () => { clearInterval(i1); clearInterval(i2); };
   }, []);
 
-  useEffect(() => { load(); const i = setInterval(load, 10_000); return () => clearInterval(i); }, [load]);
+  const successRate = proposalCounts.total > 0
+    ? Math.round((proposalCounts.applied / proposalCounts.total) * 100)
+    : 0;
+  const cost = status?.costStats?.totalSpentUsd ?? 0;
+  const isRunning = status?.phase === "running" || status?.phase === "improving";
 
-  const toggleScheduler = async () => {
-    setToggling(true);
-    try {
-      await fetch(schedulerPaused ? "/api/rsi/scheduler/resume" : "/api/rsi/scheduler/pause", { method: "POST" });
-      setSchedulerPaused(!schedulerPaused);
-    } catch { /* non-fatal */ }
-    finally { setToggling(false); }
-  };
+  const stats = [
+    {
+      label: "Cycles Run",
+      value: status?.cycleCount != null ? `#${status.cycleCount}` : "—",
+      icon: Zap,
+      color: "#a78bfa",
+      bg: "rgba(124,58,237,0.1)",
+      border: "rgba(124,58,237,0.2)",
+      sub: isRunning ? "● Running" : "● Idle",
+      subColor: isRunning ? "#34d399" : "#52525b",
+    },
+    {
+      label: "Committed",
+      value: proposalCounts.applied.toLocaleString(),
+      icon: CheckCircle2,
+      color: "#34d399",
+      bg: "rgba(16,185,129,0.1)",
+      border: "rgba(16,185,129,0.2)",
+      sub: `${proposalCounts.total} total proposals`,
+      subColor: "#52525b",
+    },
+    {
+      label: "Success Rate",
+      value: proposalCounts.total > 0 ? `${successRate}%` : "—",
+      icon: TrendingUp,
+      color: "#22d3ee",
+      bg: "rgba(6,182,212,0.1)",
+      border: "rgba(6,182,212,0.2)",
+      sub: `${proposalCounts.rejected} rejected`,
+      subColor: "#52525b",
+    },
+    {
+      label: "Total Cost",
+      value: `$${cost.toFixed(3)}`,
+      icon: DollarSign,
+      color: "#fbbf24",
+      bg: "rgba(245,158,11,0.1)",
+      border: "rgba(245,158,11,0.2)",
+      sub: status?.costStats?.dailyCapExceeded ? "Cap exceeded" : `$${(status?.costStats?.dailyCapUsd ?? 10).toFixed(0)} daily cap`,
+      subColor: status?.costStats?.dailyCapExceeded ? "#fb7185" : "#52525b",
+    },
+  ];
+
+  return (
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+      {stats.map((s, i) => (
+        <motion.div
+          key={s.label}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: i * 0.05 }}
+          className="rounded-xl p-4 border"
+          style={{ background: "#0d0d10", borderColor: "#1f1f23" }}
+        >
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: s.bg, border: `1px solid ${s.border}` }}>
+              <s.icon className="w-4 h-4" style={{ color: s.color }} />
+            </div>
+          </div>
+          <p className="text-2xl font-bold text-[#fafafa]" style={{ letterSpacing: "-0.03em" }}>{s.value}</p>
+          <p className="text-xs font-medium text-[#a1a1aa] mt-0.5">{s.label}</p>
+          {s.sub && <p className="text-[10px] mt-0.5" style={{ color: s.subColor }}>{s.sub}</p>}
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+// ─── RSI Controls (Pause / Trigger) ──────────────────────────────────────────
+function RsiControls({ adminKey }: { adminKey: string }) {
+  const [status, setStatus] = useState<RsiStatus | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const load = () => fetch("/api/rsi/status").then(r => r.ok ? r.json() : null).then(d => { if (d) setStatus(d); }).catch(() => {});
+    load();
+    const i = setInterval(load, 10_000);
+    return () => clearInterval(i);
+  }, []);
 
   const isRunning = status?.phase === "running" || status?.phase === "improving";
-  const phaseColor = isRunning ? "#34d399" : schedulerPaused ? "#fbbf24" : "#71717a";
-  const latestCycle = cycles.find(c => c.evalScoreAfter != null);
-  const avgDelta = cycles.filter(c => c.evalScoreBefore != null && c.evalScoreAfter != null)
-    .reduce((sum, c) => sum + ((c.evalScoreAfter! - c.evalScoreBefore!) / c.evalScoreBefore!) * 100, 0) / Math.max(1, cycles.filter(c => c.evalScoreBefore != null && c.evalScoreAfter != null).length);
+
+  const togglePause = async () => {
+    setLoading(true);
+    try {
+      const endpoint = isRunning ? "/api/rsi/pause" : "/api/rsi/resume";
+      await fetch(endpoint, { method: "POST", headers: { "X-Admin-Key": adminKey } });
+      setTimeout(() => {
+        fetch("/api/rsi/status").then(r => r.ok ? r.json() : null).then(d => { if (d) setStatus(d); }).catch(() => {});
+      }, 1000);
+    } catch { /* non-fatal */ }
+    finally { setLoading(false); }
+  };
+
+  const triggerCycle = async () => {
+    setLoading(true);
+    try {
+      await fetch("/api/rsi/trigger", { method: "POST", headers: { "X-Admin-Key": adminKey } });
+    } catch { /* non-fatal */ }
+    finally { setLoading(false); }
+  };
 
   return (
-    <motion.div
-      className="rounded-xl border overflow-hidden"
-      style={{ borderColor: isRunning ? "rgba(52,211,153,0.2)" : "#27272a", background: "#0d0d10" }}
-      initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
-    >
-      {/* Animated top line */}
-      <div className="h-0.5 w-full" style={{
-        background: isRunning
-          ? "linear-gradient(90deg, transparent, #34d399, #6366f1, transparent)"
-          : "linear-gradient(90deg, transparent, #7c3aed, transparent)",
-        opacity: isRunning ? 1 : 0.5,
-        animation: isRunning ? "shimmer-line 2s linear infinite" : undefined,
-      }} />
-
-      <div className="px-6 py-5">
-        <div className="flex flex-wrap items-center gap-6">
-          {/* Status indicator */}
-          <div className="flex items-center gap-3">
-            <div className="relative flex-shrink-0">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ background: isRunning ? "rgba(52,211,153,0.1)" : "rgba(124,58,237,0.1)", border: `1px solid ${isRunning ? "rgba(52,211,153,0.2)" : "rgba(124,58,237,0.2)"}` }}>
-                {isRunning
-                  ? <Loader2 className="w-5 h-5 text-[#34d399] animate-spin" />
-                  : schedulerPaused
-                  ? <Pause className="w-5 h-5 text-[#fbbf24]" />
-                  : <Cpu className="w-5 h-5 text-[#a78bfa]" />}
-              </div>
-              {isRunning && <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#34d399] border-2 border-[#0d0d10]"><span className="absolute inset-0 rounded-full bg-[#34d399] animate-ping opacity-60" /></span>}
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-base font-bold text-[#fafafa]" style={{ letterSpacing: "-0.025em" }}>RSI Engine</span>
-                <span className="pill text-[10px]" style={{
-                  background: isRunning ? "rgba(52,211,153,0.1)" : schedulerPaused ? "rgba(245,158,11,0.1)" : "rgba(113,113,122,0.1)",
-                  color: phaseColor,
-                  border: `1px solid ${isRunning ? "rgba(52,211,153,0.2)" : schedulerPaused ? "rgba(245,158,11,0.2)" : "rgba(113,113,122,0.2)"}`,
-                }}>
-                  {isRunning ? "Running" : schedulerPaused ? "Paused" : status?.phase ?? "Idle"}
-                </span>
-              </div>
-              <p className="text-[11px] text-[#52525b] mt-0.5">
-                {status?.cycleCount ?? 0} cycles total
-                {status?.lastCycleAt ? ` · last ${formatTimeAgo(status.lastCycleAt)}` : ""}
-              </p>
-            </div>
-          </div>
-
-          {/* Divider */}
-          <div className="hidden lg:block w-px h-10 bg-[#27272a]" />
-
-          {/* Score */}
-          <div className="flex items-center gap-4">
-            <div>
-              <p className="text-[10px] text-[#52525b] uppercase tracking-wider mb-0.5">Latest Score</p>
-              <p className="text-lg font-bold text-[#fafafa]" style={{ letterSpacing: "-0.03em" }}>
-                {loading ? "—" : latestCycle?.evalScoreAfter != null ? `${(latestCycle.evalScoreAfter * 100).toFixed(1)}%` : "—"}
-              </p>
-            </div>
-            <div>
-              <p className="text-[10px] text-[#52525b] uppercase tracking-wider mb-0.5">Avg Δ</p>
-              <p className={`text-lg font-bold ${avgDelta > 0 ? "text-[#34d399]" : avgDelta < 0 ? "text-[#fb7185]" : "text-[#71717a]"}`} style={{ letterSpacing: "-0.03em" }}>
-                {loading ? "—" : cycles.length > 0 ? `${avgDelta > 0 ? "+" : ""}${avgDelta.toFixed(2)}%` : "—"}
-              </p>
-            </div>
-          </div>
-
-          {/* Divider */}
-          <div className="hidden lg:block w-px h-10 bg-[#27272a]" />
-
-          {/* Cost */}
-          {status?.costStats && (
-            <div className="flex items-center gap-4">
-              <div>
-                <p className="text-[10px] text-[#52525b] uppercase tracking-wider mb-0.5">Session Cost</p>
-                <p className="text-lg font-bold text-[#fafafa]" style={{ letterSpacing: "-0.03em" }}>
-                  ${status.costStats.sessionSpentUsd.toFixed(4)}
-                </p>
-              </div>
-              <div>
-                <p className="text-[10px] text-[#52525b] uppercase tracking-wider mb-0.5">Daily Cap</p>
-                <p className="text-lg font-bold text-[#fafafa]" style={{ letterSpacing: "-0.03em" }}>
-                  ${status.costStats.dailyCapUsd.toFixed(2)}
-                </p>
-              </div>
-              {status.costStats.dailyCapExceeded && <span className="pill pill-amber">Cap exceeded</span>}
-            </div>
-          )}
-
-          {/* Controls — pushed right */}
-          <div className="flex items-center gap-2 ml-auto">
-            <button
-              onClick={toggleScheduler} disabled={toggling}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all border"
-              style={{
-                background: schedulerPaused ? "rgba(52,211,153,0.1)" : "rgba(251,191,36,0.1)",
-                color: schedulerPaused ? "#34d399" : "#fbbf24",
-                borderColor: schedulerPaused ? "rgba(52,211,153,0.25)" : "rgba(251,191,36,0.25)",
-              }}
-            >
-              {toggling ? <Loader2 className="w-3 h-3 animate-spin" /> : schedulerPaused ? <Play className="w-3 h-3" /> : <Pause className="w-3 h-3" />}
-              {schedulerPaused ? "Resume" : "Pause"}
-            </button>
-            <button
-              onClick={() => fetch("/api/rsi/trigger", { method: "POST" }).catch(() => {})}
-              disabled={schedulerPaused}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold border border-[#27272a] text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#18181b] transition-all disabled:opacity-40"
-            >
-              <Zap className="w-3 h-3" />Trigger
-            </button>
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-// ─── Overview Stats ───────────────────────────────────────────────────────────
-function OverviewStats() {
-  const [status, setStatus] = useState<RsiStatus | null>(null);
-  const [cycles, setCycles] = useState<RsiCycle[]>([]);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const [s, c] = await Promise.all([
-          fetch("/api/rsi/status").then(r => r.ok ? r.json() : null),
-          fetch("/api/rsi/history").then(r => r.ok ? r.json() : []),
-        ]);
-        if (s) setStatus(s);
-        if (Array.isArray(c)) setCycles(c);
-        else if (c?.cycles) setCycles(c.cycles);
-      } catch { /* non-fatal */ }
-      finally { setLoading(false); }
-    };
-    load(); const i = setInterval(load, 15_000); return () => clearInterval(i);
-  }, []);
-  const completedCycles = cycles.filter(c => c.phase === "completed").length;
-  const totalProposals = cycles.reduce((a, c) => a + (c.proposalsGenerated || 0), 0);
-  const appliedProposals = cycles.reduce((a, c) => a + (c.proposalsApplied || 0), 0);
-  const latestScore = cycles.find(c => c.evalScoreAfter != null)?.evalScoreAfter;
-  return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <StatCard loading={loading} label="Total Cycles" value={status?.cycleCount ?? 0} sub={`${completedCycles} completed`} icon={Activity} color="violet" trend="up" />
-      <StatCard loading={loading} label="Proposals Generated" value={totalProposals} sub={`${appliedProposals} applied`} icon={Brain} color="cyan" trend="up" />
-      <StatCard loading={loading} label="Latest Eval Score" value={latestScore != null ? `${(latestScore * 100).toFixed(1)}%` : "—"} sub="recursive improvement" icon={TrendingUp} color="emerald" trend={latestScore != null && latestScore > 0.8 ? "up" : "neutral"} />
-      <StatCard loading={loading} label="Session Cost" value={status?.costStats ? `$${status.costStats.sessionSpentUsd.toFixed(4)}` : "$0.0000"} sub={`cap: $${status?.costStats?.dailyCapUsd?.toFixed(2) ?? "—"}`} icon={DollarSign} color="amber" trend="neutral" />
+    <div className="flex items-center gap-2">
+      <button
+        onClick={togglePause}
+        disabled={loading}
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all disabled:opacity-50"
+        style={{
+          background: isRunning ? "rgba(251,113,133,0.12)" : "rgba(52,211,153,0.12)",
+          border: `1px solid ${isRunning ? "rgba(251,113,133,0.25)" : "rgba(52,211,153,0.25)"}`,
+          color: isRunning ? "#fb7185" : "#34d399",
+        }}
+      >
+        {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : isRunning ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+        {isRunning ? "Pause RSI" : "Resume RSI"}
+      </button>
+      <button
+        onClick={triggerCycle}
+        disabled={loading}
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all disabled:opacity-50"
+        style={{
+          background: "rgba(124,58,237,0.12)",
+          border: "1px solid rgba(124,58,237,0.25)",
+          color: "#a78bfa",
+        }}
+      >
+        <Zap className="w-3 h-3" />
+        Trigger Cycle
+      </button>
     </div>
   );
 }
@@ -519,7 +421,7 @@ function CycleTimeline() {
 
   if (loading) return (
     <div className="p-5 space-y-3">
-      {[...Array(5)].map((_, i) => <div key={i} className="h-14 rounded-lg bg-[#18181b] shimmer" />)}
+      {[...Array(5)].map((_, i) => <div key={i} className="h-14 rounded-lg bg-[#18181b] animate-pulse" />)}
     </div>
   );
   if (cycles.length === 0) return (
@@ -533,14 +435,12 @@ function CycleTimeline() {
   return (
     <div className="p-5">
       <div className="relative">
-        {/* Vertical timeline line */}
         <div className="absolute left-[15px] top-2 bottom-2 w-px bg-[#27272a]" />
-
         <div className="space-y-1">
           {cycles.slice().reverse().slice(0, 30).map((cycle, i) => {
             const isError = !!cycle.error;
-            const isComplete = cycle.phase === "completed";
             const isRunning = !cycle.completedAt;
+            const isComplete = cycle.phase === "completed";
             const dotColor = isError ? "#fb7185" : isRunning ? "#a78bfa" : isComplete ? "#34d399" : "#71717a";
             const isExpanded = expanded === cycle.id;
 
@@ -550,11 +450,9 @@ function CycleTimeline() {
                   className="w-full text-left pl-9 pr-3 py-2.5 rounded-lg hover:bg-[#18181b] transition-colors group relative"
                   onClick={() => setExpanded(isExpanded ? null : cycle.id)}
                 >
-                  {/* Timeline dot */}
                   <div className="absolute left-[11px] top-1/2 -translate-y-1/2 w-2 h-2 rounded-full border-2 border-[#09090b]" style={{ background: dotColor }}>
                     {isRunning && <span className="absolute inset-0 rounded-full animate-ping" style={{ background: dotColor, opacity: 0.5 }} />}
                   </div>
-
                   <div className="flex items-center gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
@@ -572,13 +470,9 @@ function CycleTimeline() {
                     <ChevronRight className={`w-3 h-3 text-[#3f3f46] flex-shrink-0 transition-transform ${isExpanded ? "rotate-90" : ""}`} />
                   </div>
                 </button>
-
                 <AnimatePresence>
                   {isExpanded && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.2 }} className="overflow-hidden"
-                    >
+                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
                       <div className="ml-9 mr-3 mb-2 p-3 rounded-lg bg-[#0f0f12] border border-[#1f1f23] text-[11px] space-y-1.5">
                         <div className="grid grid-cols-2 gap-x-4 gap-y-1">
                           {[
@@ -586,8 +480,8 @@ function CycleTimeline() {
                             ["Duration", formatDuration(cycle.startedAt, cycle.completedAt)],
                             ["Score before", cycle.evalScoreBefore != null ? `${(cycle.evalScoreBefore*100).toFixed(1)}%` : "—"],
                             ["Score after", cycle.evalScoreAfter != null ? `${(cycle.evalScoreAfter*100).toFixed(1)}%` : "—"],
-                            ["Proposals generated", String(cycle.proposalsGenerated)],
-                            ["Proposals applied", String(cycle.proposalsApplied)],
+                            ["Generated", String(cycle.proposalsGenerated)],
+                            ["Applied", String(cycle.proposalsApplied)],
                           ].map(([k, v]) => (
                             <div key={k} className="flex items-center justify-between">
                               <span className="text-[#52525b]">{k}</span>
@@ -611,10 +505,11 @@ function CycleTimeline() {
 
 // ─── Git Commit Feed ──────────────────────────────────────────────────────────
 function GitCommitFeed() {
-  const [commits, setCommits] = useState<GitCommit[]>([]);
+  const [commits, setCommits] = useState<GitCommitItem[]>([]);
   const [syncStatus, setSyncStatus] = useState<string>("unknown");
   const [aheadCount, setAheadCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const load = async () => {
       try {
@@ -625,13 +520,13 @@ function GitCommitFeed() {
     };
     load(); const i = setInterval(load, 15_000); return () => clearInterval(i);
   }, []);
+
   const rsiCount = commits.filter(c => c.isRsiCommit || isRSICommit(c.subject)).length;
 
-  if (loading) return <div className="p-4 space-y-2">{[...Array(5)].map((_, i) => <div key={i} className="h-12 rounded-lg bg-[#18181b] shimmer" />)}</div>;
+  if (loading) return <div className="p-4 space-y-2">{[...Array(5)].map((_, i) => <div key={i} className="h-12 rounded-lg bg-[#18181b] animate-pulse" />)}</div>;
 
   return (
     <div>
-      {/* Sync status bar */}
       <div className="flex items-center gap-3 px-4 py-2.5 border-b border-[#1f1f23] bg-[#0f0f12]">
         <div className={`flex items-center gap-1.5 text-[10px] font-mono ${syncStatus === "synced" ? "text-[#34d399]" : syncStatus === "unknown" ? "text-[#52525b]" : "text-[#fbbf24]"}`}>
           <span className={`w-1.5 h-1.5 rounded-full inline-block ${syncStatus === "synced" ? "bg-[#34d399]" : syncStatus === "unknown" ? "bg-[#52525b]" : "bg-[#fbbf24] animate-pulse"}`} />
@@ -639,7 +534,6 @@ function GitCommitFeed() {
         </div>
         {rsiCount > 0 && <span className="ml-auto pill pill-violet">{rsiCount} AI commit{rsiCount !== 1 ? "s" : ""}</span>}
       </div>
-
       <div className="overflow-y-auto max-h-80 divide-y divide-[#1a1a1d]">
         {commits.map((c, i) => {
           const isAi = c.isRsiCommit || isRSICommit(c.subject);
@@ -674,7 +568,7 @@ function VectorMemoryStats() {
     const load = async () => { try { const r = await fetch("/api/memory/vector-stats"); if (r.ok) setStats(await r.json()); } catch { /* non-fatal */ } };
     load(); const i = setInterval(load, 60_000); return () => clearInterval(i);
   }, []);
-  if (!stats) return <div className="p-6 space-y-2">{[...Array(3)].map((_, i) => <div key={i} className="h-8 rounded bg-[#18181b] shimmer" />)}</div>;
+  if (!stats) return <div className="p-6 space-y-2">{[...Array(3)].map((_, i) => <div key={i} className="h-8 rounded bg-[#18181b] animate-pulse" />)}</div>;
   const { vector, memory, neuralActive } = stats;
   return (
     <div className="p-5 space-y-4">
@@ -717,25 +611,56 @@ function VectorMemoryStats() {
   );
 }
 
+// ─── Panel wrapper ────────────────────────────────────────────────────────────
+function Panel({ title, subtitle, children, badge, action }: {
+  title: string; subtitle?: string; children: React.ReactNode;
+  badge?: React.ReactNode; action?: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-xl border border-[#1f1f23] overflow-hidden" style={{ background: "#0d0d10" }}>
+      <div className="flex items-center justify-between px-5 py-4 border-b border-[#1f1f23]">
+        <div>
+          <div className="flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-[#fafafa]">{title}</h3>
+            {badge}
+          </div>
+          {subtitle && <p className="text-xs text-[#71717a] mt-0.5">{subtitle}</p>}
+        </div>
+        {action && <div>{action}</div>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+// ─── Section Header ───────────────────────────────────────────────────────────
+function SectionHeader({ title, subtitle }: { title: string; subtitle: string }) {
+  return (
+    <div className="mb-5">
+      <h2 className="text-xl font-bold text-[#fafafa]" style={{ letterSpacing: "-0.03em" }}>{title}</h2>
+      <p className="text-sm text-[#71717a] mt-0.5">{subtitle}</p>
+    </div>
+  );
+}
+
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
-const NAV_ITEMS: { id: NavSection; label: string; icon: React.ElementType; badge?: string }[] = [
-  { id: "overview",    label: "Overview",      icon: BarChart3  },
-  { id: "graph",       label: "File Improvements", icon: FileCode2 },
-  { id: "proposals",   label: "Proposals",     icon: Brain      },
-  { id: "commits",     label: "Commit Feed",   icon: GitCommit  },
-  { id: "memory",      label: "Memory",        icon: Database   },
-  { id: "cost",        label: "Cost",          icon: DollarSign },
-  { id: "swarm",       label: "Swarm Voting",  icon: Users      },
-  { id: "algorithms",  label: "Algorithms",    icon: FlaskConical },
+const NAV_ITEMS: { id: NavSection; label: string; icon: React.ElementType }[] = [
+  { id: "improvements", label: "File Improvements", icon: FileCode2  },
+  { id: "overview",     label: "Overview",          icon: BarChart3  },
+  { id: "proposals",    label: "Proposals",         icon: Brain      },
+  { id: "commits",      label: "Commit Feed",       icon: GitCommit  },
+  { id: "memory",       label: "Memory",            icon: Database   },
+  { id: "cost",         label: "Cost",              icon: DollarSign },
+  { id: "swarm",        label: "Swarm Voting",      icon: Users      },
+  { id: "algorithms",   label: "Algorithms",        icon: FlaskConical },
 ];
 
 function Sidebar({ active, onChange }: { active: NavSection; onChange: (s: NavSection) => void }) {
   const [status, setStatus] = useState<RsiStatus | null>(null);
   useEffect(() => {
-    fetch("/api/rsi/status").then(r => r.ok ? r.json() : null).then(d => { if (d) setStatus(d); }).catch(() => {});
-    const i = setInterval(() => {
-      fetch("/api/rsi/status").then(r => r.ok ? r.json() : null).then(d => { if (d) setStatus(d); }).catch(() => {});
-    }, 10_000);
+    const load = () => fetch("/api/rsi/status").then(r => r.ok ? r.json() : null).then(d => { if (d) setStatus(d); }).catch(() => {});
+    load();
+    const i = setInterval(load, 10_000);
     return () => clearInterval(i);
   }, []);
 
@@ -751,12 +676,12 @@ function Sidebar({ active, onChange }: { active: NavSection; onChange: (s: NavSe
           </div>
           <div>
             <p className="text-xs font-bold text-[#fafafa]" style={{ letterSpacing: "-0.02em" }}>Andromeda</p>
-            <p className="text-[9px] text-[#52525b]">RSI Dashboard</p>
+            <p className="text-[9px] text-[#52525b]">RSI v12.4.0</p>
           </div>
         </div>
       </div>
 
-      {/* Live status pill */}
+      {/* Live status */}
       <div className="px-3 py-2 border-b border-[#1a1a1d]">
         <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg" style={{ background: isRunning ? "rgba(52,211,153,0.06)" : "rgba(113,113,122,0.04)" }}>
           <div className="relative">
@@ -794,24 +719,14 @@ function Sidebar({ active, onChange }: { active: NavSection; onChange: (s: NavSe
   );
 }
 
-// ─── Section Header ───────────────────────────────────────────────────────────
-function SectionHeader({ title, subtitle }: { title: string; subtitle: string }) {
-  return (
-    <div className="mb-5">
-      <h2 className="text-xl font-bold text-[#fafafa]" style={{ letterSpacing: "-0.03em" }}>{title}</h2>
-      <p className="text-sm text-[#71717a] mt-0.5">{subtitle}</p>
-    </div>
-  );
-}
-
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 export default function RsiDashboard() {
   const [, navigate] = useLocation();
-  const [activeSection, setActiveSection] = useState<NavSection>("overview");
+  const [activeSection, setActiveSection] = useState<NavSection>("improvements");
   const [adminKey, setAdminKey] = React.useState<string>(
     typeof localStorage !== "undefined" ? (localStorage.getItem("andromeda_admin_key") ?? "") : ""
   );
-  // Auto-fetch admin key from server (localhost only)
+
   React.useEffect(() => {
     if (adminKey) return;
     fetch("/api/admin/local-key")
@@ -830,8 +745,11 @@ export default function RsiDashboard() {
       <Sidebar active={activeSection} onChange={setActiveSection} />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Top bar */}
-        <header className="flex-shrink-0 flex items-center justify-between px-6 py-3 border-b border-[#1f1f23]" style={{ background: "rgba(9,9,11,0.8)", backdropFilter: "blur(20px)" }}>
+        {/* ── Top bar ── */}
+        <header
+          className="flex-shrink-0 flex items-center justify-between px-6 py-3 border-b border-[#1f1f23]"
+          style={{ background: "rgba(9,9,11,0.9)", backdropFilter: "blur(20px)" }}
+        >
           <div className="flex items-center gap-3">
             <button onClick={() => navigate("/")} className="flex items-center gap-1.5 text-xs text-[#71717a] hover:text-[#fafafa] transition-colors">
               <ArrowLeft className="w-3.5 h-3.5" />
@@ -843,120 +761,147 @@ export default function RsiDashboard() {
             </span>
           </div>
           <div className="flex items-center gap-3">
+            <RsiControls adminKey={adminKey} />
             <ExternalRepoFixer adminKey={adminKey} />
-            <span className="pill pill-violet text-[10px]">v12.3.0</span>
           </div>
         </header>
 
-        {/* Main content area */}
+        {/* ── Main content + right sidebar ── */}
         <div className="flex-1 flex overflow-hidden">
           {/* Scrollable content */}
           <main className="flex-1 overflow-y-auto min-w-0">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeSection}
-                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.2 }}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.18 }}
                 className="p-6 space-y-5 max-w-screen-xl"
               >
-                {/* ── Overview ─────────────────────────────────────────── */}
-                {activeSection === "overview" && (<>
-                  <CommandHero />
-                  <OverviewStats />
-                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
-                    <Panel title="Eval Score Trend" subtitle="Recursive improvement over time" badge={<span className="pill pill-violet ml-2 text-[10px]">Live</span>}>
-                      <EvalTrendChart />
+
+                {/* ── File Improvements (default) ────────────────────── */}
+                {activeSection === "improvements" && (
+                  <>
+                    <div className="flex items-center justify-between mb-1">
+                      <div>
+                        <h2 className="text-xl font-bold text-[#fafafa]" style={{ letterSpacing: "-0.03em" }}>File Improvements</h2>
+                        <p className="text-sm text-[#71717a] mt-0.5">Every file the RSI engine has touched — click any row to see the diff</p>
+                      </div>
+                    </div>
+                    <StatsBar />
+                    <div
+                      className="rounded-xl border border-[#27272a] overflow-hidden"
+                      style={{ height: "calc(100vh - 310px)", minHeight: 400 }}
+                    >
+                      <ProposalFileList />
+                    </div>
+                  </>
+                )}
+
+                {/* ── Overview ───────────────────────────────────────── */}
+                {activeSection === "overview" && (
+                  <>
+                    <StatsBar />
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
+                      <Panel title="Eval Score Trend" subtitle="Recursive improvement over time" badge={<span className="pill pill-violet ml-2 text-[10px]">Live</span>}>
+                        <EvalTrendChart />
+                      </Panel>
+                      <Panel title="Capability Growth" subtitle="By category">
+                        <CapabilityGrowthChart />
+                      </Panel>
+                    </div>
+                    <Panel
+                      title="Cycle Timeline"
+                      subtitle="Last 30 RSI cycles — click any row to expand"
+                      action={
+                        <button className="flex items-center gap-1.5 text-xs text-[#71717a] hover:text-[#fafafa] transition-colors" onClick={() => window.location.reload()}>
+                          <RefreshCw className="w-3 h-3" />Refresh
+                        </button>
+                      }
+                    >
+                      <CycleTimeline />
                     </Panel>
-                    <Panel title="Capability Growth" subtitle="By category">
-                      <CapabilityGrowthChart />
+                  </>
+                )}
+
+                {/* ── Proposals ──────────────────────────────────────── */}
+                {activeSection === "proposals" && (
+                  <>
+                    <SectionHeader title="Pending Proposals" subtitle="Review and approve AI-generated improvement proposals" />
+                    <Panel title="Proposal Review" subtitle="Diff viewer with approve/reject">
+                      <ProposalReviewPanel />
                     </Panel>
-                  </div>
-                  <Panel
-                    title="Cycle Timeline"
-                    subtitle="Last 30 RSI cycles — click any row to expand"
-                    action={
-                      <button className="flex items-center gap-1.5 text-xs text-[#71717a] hover:text-[#fafafa] transition-colors" onClick={() => window.location.reload()}>
-                        <RefreshCw className="w-3 h-3" />Refresh
-                      </button>
-                    }
-                  >
-                    <CycleTimeline />
-                  </Panel>
-                </>)}
+                  </>
+                )}
 
-                {/* ── File Improvements ─────────────────────────────────── */}
-                {activeSection === "graph" && (<>
-                  <SectionHeader title="File Improvements" subtitle="Every file the RSI engine has touched — click any row to see the diff" />
-                  <div className="rounded-xl border border-[#27272a] overflow-hidden" style={{ height: "calc(100vh - 220px)", minHeight: 500 }}>
-                    <ProposalFileList />
-                  </div>
-                </>)}
-
-                {/* ── Proposals ────────────────────────────────────────── */}
-                {activeSection === "proposals" && (<>
-                  <SectionHeader title="Pending Proposals" subtitle="Review and approve AI-generated improvement proposals" />
-                  <Panel title="Proposal Review" subtitle="Diff viewer with approve/reject">
-                    <ProposalReviewPanel />
-                  </Panel>
-                </>)}
-
-                {/* ── Commits ──────────────────────────────────────────── */}
-                {activeSection === "commits" && (<>
-                  <SectionHeader title="Autonomous Commit Feed" subtitle="Real-time log of AI-authored commits pushed to GitHub" />
-                  <Panel title="Git Log" subtitle="Last 40 commits" badge={<span className="pill pill-emerald ml-2 text-[10px]">Live · 15s</span>}>
-                    <GitCommitFeed />
-                  </Panel>
-                </>)}
-
-                {/* ── Memory ───────────────────────────────────────────── */}
-                {activeSection === "memory" && (<>
-                  <SectionHeader title="Memory System" subtitle="Vector store and episodic memory statistics" />
-                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
-                    <Panel title="Vector Memory" subtitle="Neural embeddings">
-                      <VectorMemoryStats />
+                {/* ── Commits ────────────────────────────────────────── */}
+                {activeSection === "commits" && (
+                  <>
+                    <SectionHeader title="Autonomous Commit Feed" subtitle="Real-time log of AI-authored commits pushed to GitHub" />
+                    <Panel title="Git Log" subtitle="Last 40 commits" badge={<span className="pill pill-emerald ml-2 text-[10px]">Live · 15s</span>}>
+                      <GitCommitFeed />
                     </Panel>
-                    <Panel title="Capability Growth" subtitle="Tracked over cycles">
-                      <CapabilityGrowthChart />
+                  </>
+                )}
+
+                {/* ── Memory ─────────────────────────────────────────── */}
+                {activeSection === "memory" && (
+                  <>
+                    <SectionHeader title="Memory System" subtitle="Vector store and episodic memory statistics" />
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
+                      <Panel title="Vector Memory" subtitle="Neural embeddings">
+                        <VectorMemoryStats />
+                      </Panel>
+                      <Panel title="Capability Growth" subtitle="Tracked over cycles">
+                        <CapabilityGrowthChart />
+                      </Panel>
+                    </div>
+                  </>
+                )}
+
+                {/* ── Cost ───────────────────────────────────────────── */}
+                {activeSection === "cost" && (
+                  <>
+                    <SectionHeader title="Cost Optimization" subtitle="Model routing, spend tracking, and daily cap management" />
+                    <Panel title="Cost Optimization" subtitle="Phase 1 — model routing" badge={<span className="pill pill-emerald ml-2 text-[10px]">Phase 1</span>}>
+                      <CostOptimizationPanel />
                     </Panel>
-                  </div>
-                </>)}
+                  </>
+                )}
 
-                {/* ── Cost ─────────────────────────────────────────────── */}
-                {activeSection === "cost" && (<>
-                  <SectionHeader title="Cost Optimization" subtitle="Model routing, spend tracking, and daily cap management" />
-                  <Panel title="Cost Optimization" subtitle="Phase 1 — model routing" badge={<span className="pill pill-emerald ml-2 text-[10px]">Phase 1</span>}>
-                    <CostOptimizationPanel />
-                  </Panel>
-                </>)}
+                {/* ── Swarm ──────────────────────────────────────────── */}
+                {activeSection === "swarm" && (
+                  <>
+                    <SectionHeader title="Swarm Specialist Voting" subtitle="5-agent consensus system for proposal evaluation" />
+                    <Panel title="Swarm Voting" subtitle="Phase 2 — consensus" badge={<span className="pill pill-cyan ml-2 text-[10px]">Phase 2</span>}>
+                      <SwarmVotingPanel />
+                    </Panel>
+                  </>
+                )}
 
-                {/* ── Swarm ────────────────────────────────────────────── */}
-                {activeSection === "swarm" && (<>
-                  <SectionHeader title="Swarm Specialist Voting" subtitle="5-agent consensus system for proposal evaluation" />
-                  <Panel title="Swarm Voting" subtitle="Phase 2 — consensus" badge={<span className="pill pill-cyan ml-2 text-[10px]">Phase 2</span>}>
-                    <SwarmVotingPanel />
-                  </Panel>
-                </>)}
-
-                {/* ── Algorithms ───────────────────────────────────────── */}
-                {activeSection === "algorithms" && (<>
-                  <SectionHeader title="Algorithm Registry" subtitle="Discovery tournaments and algorithm performance tracking" />
-                  <Panel title="Algorithm Registry" subtitle="Phase 3 — discovery" badge={<span className="pill pill-violet ml-2 text-[10px]">Phase 3</span>}>
-                    <AlgorithmRegistryPanel />
-                  </Panel>
-                </>)}
+                {/* ── Algorithms ─────────────────────────────────────── */}
+                {activeSection === "algorithms" && (
+                  <>
+                    <SectionHeader title="Algorithm Registry" subtitle="Discovery tournaments and algorithm performance tracking" />
+                    <Panel title="Algorithm Registry" subtitle="Phase 3 — discovery" badge={<span className="pill pill-violet ml-2 text-[10px]">Phase 3</span>}>
+                      <AlgorithmRegistryPanel />
+                    </Panel>
+                  </>
+                )}
 
               </motion.div>
             </AnimatePresence>
           </main>
 
           {/* ── Live Activity Stream (right sidebar) ─────────────────── */}
-          {activeSection !== "graph" && (
-            <aside className="w-72 flex-shrink-0 border-l border-[#1f1f23] flex flex-col overflow-hidden" style={{ background: "#0a0a0c" }}>
-              {/* Gradient accent */}
-              <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(124,58,237,0.4), transparent)" }} />
-              <LiveActivityFeed />
-            </aside>
-          )}
+          <aside
+            className="w-72 flex-shrink-0 border-l border-[#1f1f23] flex flex-col overflow-hidden"
+            style={{ background: "#0a0a0c" }}
+          >
+            <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(124,58,237,0.4), transparent)" }} />
+            <LiveActivityFeed />
+          </aside>
         </div>
       </div>
     </div>
