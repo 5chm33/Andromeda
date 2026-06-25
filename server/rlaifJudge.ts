@@ -57,9 +57,12 @@ ${row.query}
 ORIGINAL RESPONSE (To be evaluated):
 ${row.response}
 
-Evaluate the original response on a scale of 1-10. 
-If the score is less than 9, write a significantly better response.
-If the score is 9 or 10, just output "PERFECT" for the improved response.
+      const MIN_SCORE_FOR_IMPROVEMENT = 9;
+      const MAX_SCORE = 10;
+
+      Evaluate the original response on a scale of 1-MAX_SCORE.
+If the score is less than MIN_SCORE_FOR_IMPROVEMENT, write a significantly better response.
+If the score is MIN_SCORE_FOR_IMPROVEMENT or MAX_SCORE, just output "PERFECT" for the improved response.
 
 Respond EXACTLY in this JSON format:
 {
