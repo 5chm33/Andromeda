@@ -184,7 +184,7 @@ async function runSuggestionCycle(): Promise<GoalSuggestion[]> {
           });
           console.log(`[AutoGoalSuggester] Auto-created goal: ${suggestion.title}`);
         }
-      } catch { /* recursiveGoals not available */ }
+      } catch (err) { console.warn(`[AutoGoalSuggester] Failed to create goal: ${(err as Error).message}`); }
     }
   }
 
