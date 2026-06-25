@@ -21,6 +21,7 @@ import { CapabilityGrowthChart } from "@/components/rsi/CapabilityGrowthChart";
 import { CostOptimizationPanel } from "@/components/rsi/CostOptimizationPanel";
 import { SwarmVotingPanel } from "@/components/rsi/SwarmVotingPanel";
 import { AlgorithmRegistryPanel } from "@/components/rsi/AlgorithmRegistryPanel";
+import { ExternalRepoFixer } from "@/components/rsi/ExternalRepoFixer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -512,10 +513,11 @@ export default function RsiDashboard() {
               Recursive Self-Improvement Dashboard
             </h1>
             <p className="text-xs text-slate-400">
-              Andromeda v11.291.0 — Fully autonomous RSI: commits + pushes to GitHub every cycle, no manual intervention needed
+              Andromeda v11.293.0 — Fully autonomous RSI: commits + pushes to GitHub every cycle, no manual intervention needed
             </p>
           </div>
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-3">
+            <ExternalRepoFixer adminKey={typeof localStorage !== "undefined" ? (localStorage.getItem("andromeda_admin_key") ?? "") : ""} />
             <a href="/" className="text-xs text-slate-400 hover:text-slate-200 transition-colors">
               ← Back to Home
             </a>

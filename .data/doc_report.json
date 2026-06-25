@@ -1,6 +1,6 @@
 {
-  "timestamp": 1782311191562,
-  "totalModules": 290,
+  "timestamp": 1782354727782,
+  "totalModules": 291,
   "documentedModules": 186,
   "undocumentedExports": [
     {
@@ -1410,6 +1410,24 @@
     {
       "filePath": "server/evalFramework.ts",
       "exportName": "registerEvalRoutes",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/externalRepoFixer.ts",
+      "exportName": "getJob",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/externalRepoFixer.ts",
+      "exportName": "listJobs",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/externalRepoFixer.ts",
+      "exportName": "startFixJob",
       "exportType": "function",
       "line": 0
     },
@@ -3680,7 +3698,7 @@
     {
       "filePath": "ARCHITECTURE.md",
       "type": "architecture",
-      "content": "Updated: 290 modules, 612 undocumented exports"
+      "content": "Updated: 291 modules, 615 undocumented exports"
     }
   ],
   "architectureUpdated": true

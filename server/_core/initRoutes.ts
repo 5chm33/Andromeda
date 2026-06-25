@@ -775,4 +775,83 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
   });
   console.log('[HybridCostRouter] v11.1.0: /api/hybrid-router/* registered');
 
+  // ─── v11.293.0: Fix Any GitHub Repo endpoints ────────────────────────────────
+  // POST /api/rsi/fix-external-repo — start an autonomous fix job
+  app.post('/api/rsi/fix-external-repo', requireAdminAuth, async (req, res) => {
+    try {
+      const { startFixJob } = await import('../externalRepoFixer.js');
+      const { repoUrl, githubPat, cycles, branchPrefix, prTitle, prBody } = req.body as {
+        repoUrl: string;
+        githubPat?: string;
+        cycles?: number;
+        branchPrefix?: string;
+        prTitle?: string;
+        prBody?: string;
+      };
+      if (!repoUrl || typeof repoUrl !== 'string') {
+        return res.status(400).json({ error: 'repoUrl is required' });
+      }
+      if (!repoUrl.includes('github.com')) {
+        return res.status(400).json({ error: 'Only GitHub repositories are supported' });
+      }
+      const job = await startFixJob({ repoUrl, githubPat, cycles, branchPrefix, prTitle, prBody });
+      res.json({ jobId: job.id, status: job.status, message: 'Fix job started' });
+    } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+  });
+
+  // GET /api/rsi/fix-external-repo/:jobId — get job status
+  app.get('/api/rsi/fix-external-repo/:jobId', requireAdminAuth, async (req, res) => {
+    try {
+      const { getJob } = await import('../externalRepoFixer.js');
+      const job = getJob(req.params.jobId);
+      if (!job) return res.status(404).json({ error: 'Job not found' });
+      const { emitter: _e, ...rest } = job;
+      res.json(rest);
+    } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+  });
+
+  // GET /api/rsi/fix-external-repo/:jobId/stream — SSE stream of job events
+  app.get('/api/rsi/fix-external-repo/:jobId/stream', requireAdminAuth, async (req, res) => {
+    try {
+      const { getJob } = await import('../externalRepoFixer.js');
+      const job = getJob(req.params.jobId);
+      if (!job) return res.status(404).json({ error: 'Job not found' });
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
+      res.flushHeaders();
+      // Send all past events immediately
+      for (const evt of job.events) {
+        res.write(`data: ${JSON.stringify(evt)}\n\n`);
+      }
+      // If already done/failed, close immediately
+      if (job.status === 'done' || job.status === 'failed') {
+        res.end();
+        return;
+      }
+      // Stream future events
+      const onEvent = (evt: unknown) => {
+        res.write(`data: ${JSON.stringify(evt)}\n\n`);
+        const e = evt as { status: string };
+        if (e.status === 'done' || e.status === 'failed') {
+          res.end();
+          job.emitter.off('event', onEvent);
+        }
+      };
+      job.emitter.on('event', onEvent);
+      req.on('close', () => {
+        job.emitter.off('event', onEvent);
+      });
+    } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+  });
+
+  // GET /api/rsi/fix-external-repo — list all jobs
+  app.get('/api/rsi/fix-external-repo', requireAdminAuth, async (_req, res) => {
+    try {
+      const { listJobs } = await import('../externalRepoFixer.js');
+      res.json(listJobs());
+    } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+  });
+
+  console.log('[ExternalRepoFixer] v11.293.0: /api/rsi/fix-external-repo/* registered');
 }

@@ -48,3 +48,29 @@ Last updated: 2026-06-24
 - The CI pipeline runs AFTER apply but with skipTests=true, skipTypecheck=true, skipBuild=true, skipReload=true
 - Auto-push fires after every successful commit — no manual push needed
 - RLHF feedback is in data/rlhf_feedback.jsonl — read it to understand what improvements scored well
+
+## Recent Changes
+
+- **[vv11.17.0]** Jun 25, 2026, 02:32 AM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 02:32 AM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 02:32 AM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 02:32 AM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 02:32 AM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 02:32 AM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 01:56 AM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 01:56 AM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 01:56 AM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 01:56 AM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 01:56 AM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 01:56 AM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]

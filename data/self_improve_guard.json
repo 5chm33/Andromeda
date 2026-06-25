@@ -2173,6 +2173,42 @@
       "result": "failure",
       "details": "Proposal not found",
       "timestamp": "2026-06-23T14:26:02.055Z"
+    },
+    {
+      "id": "audit_1782354447545_ldcbj8",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-25T02:27:27.545Z"
+    },
+    {
+      "id": "audit_1782354447549_rgisjp",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-25T02:27:27.549Z"
+    },
+    {
+      "id": "audit_1782354717349_l56ada",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-25T02:31:57.349Z"
+    },
+    {
+      "id": "audit_1782354717353_9gk4b6",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-25T02:31:57.353Z"
     }
   ]
 }

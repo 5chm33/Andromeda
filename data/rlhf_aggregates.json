@@ -2,47 +2,53 @@
   "security": {
     "category": "security",
     "sampleCount": 1,
-    "meanReward": 0.05,
+    "meanReward": 1,
     "acceptRate": 0,
     "rejectRate": 0,
     "editRate": 0,
     "topFiles": [
-      "server/auth.ts"
+      "security.ts"
     ],
     "bottomFiles": [
-      "server/auth.ts"
+      "security.ts"
     ],
-    "lastUpdated": "2026-06-23T14:27:07.883Z"
+    "lastUpdated": "2026-06-25T02:32:19.248Z"
   },
   "performance": {
     "category": "performance",
-    "sampleCount": 1,
-    "meanReward": -0.01,
+    "sampleCount": 2,
+    "meanReward": 0.825,
     "acceptRate": 0,
     "rejectRate": 0,
     "editRate": 0,
     "topFiles": [
-      "server/db.ts"
+      "costOptimizer.ts",
+      "behavioralRegressionEngine.ts"
     ],
     "bottomFiles": [
-      "server/db.ts"
+      "costOptimizer.ts",
+      "behavioralRegressionEngine.ts"
     ],
-    "lastUpdated": "2026-06-23T14:27:07.883Z"
+    "lastUpdated": "2026-06-25T02:32:19.248Z"
   },
   "readability": {
     "category": "readability",
-    "sampleCount": 1,
-    "meanReward": -0.01,
+    "sampleCount": 6,
+    "meanReward": 0.01,
     "acceptRate": 0,
     "rejectRate": 0,
     "editRate": 0,
     "topFiles": [
-      "server/api.ts"
+      "ai.ts",
+      "contextAwareness.ts",
+      "selfMonitor.ts"
     ],
     "bottomFiles": [
-      "server/api.ts"
+      "privilegeSeparation.ts",
+      "watchdog.ts",
+      "zkProofSigning.ts"
     ],
-    "lastUpdated": "2026-06-23T14:27:07.883Z"
+    "lastUpdated": "2026-06-25T02:32:19.247Z"
   },
   "helpfulness": {
     "category": "helpfulness",
@@ -58,5 +64,41 @@
       "hhrlhf_eval"
     ],
     "lastUpdated": "2026-06-24T01:52:37.261Z"
+  },
+  "documentation": {
+    "category": "documentation",
+    "sampleCount": 2,
+    "meanReward": 0.55,
+    "acceptRate": 0,
+    "rejectRate": 0,
+    "editRate": 0,
+    "topFiles": [
+      "zkProofSigning.ts",
+      "ai.ts"
+    ],
+    "bottomFiles": [
+      "zkProofSigning.ts",
+      "ai.ts"
+    ],
+    "lastUpdated": "2026-06-25T02:32:19.247Z"
+  },
+  "refactoring": {
+    "category": "refactoring",
+    "sampleCount": 9,
+    "meanReward": 0.6722222222222222,
+    "acceptRate": 0,
+    "rejectRate": 0,
+    "editRate": 0,
+    "topFiles": [
+      "crossDomainAdapter.ts",
+      "watchdog.ts",
+      "selfMonitor.ts"
+    ],
+    "bottomFiles": [
+      "dependencyGraph.ts",
+      "contextAwareness.ts",
+      "privilegeSeparation.ts"
+    ],
+    "lastUpdated": "2026-06-25T02:32:19.248Z"
   }
 }
