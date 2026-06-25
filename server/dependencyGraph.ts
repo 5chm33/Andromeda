@@ -359,11 +359,10 @@ export function findCircularDeps(): string[][] {
     inStack.add(node);
 
     const graphNode = graph.get(node);
-    if (graphNode) {
-      for (const imp of graphNode.imports) {
-        if (graph.has(imp)) {
-          dfs(imp, [...pathArr, node]);
-        }
+    if (!graphNode) return;
+    for (const imp of graphNode.imports) {
+      if (graph.has(imp)) {
+        dfs(imp, [...pathArr, node]);
       }
     }
 
