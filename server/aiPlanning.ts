@@ -52,7 +52,13 @@ export async function generateSubQueries(mainQuery: string): Promise<string[]> {
     const data = (await response.json()) as any;
     const content = data.choices?.[0]?.message?.content;
     if (!content) return [mainQuery];
-    const parsed = JSON.parse(content);
+    let parsed: any;
+    try {
+      parsed = JSON.parse(content);
+    } catch {
+      log.warn("Failed to parse sub-queries JSON, falling back to main query");
+      return [mainQuery];
+    }
     const arr = parsed.queries || parsed.sub_queries || parsed.results || Object.values(parsed)[0];
     return Array.isArray(arr) ? [mainQuery, ...arr.slice(0, 3)] : [mainQuery];
   } catch {
