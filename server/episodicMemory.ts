@@ -141,7 +141,7 @@ export function getCausalChain(goal: string): CausalChain {
   }).sort((a, b) => a.timestamp - b.timestamp);
 
   const finalOutcome = related.length === 0 ? "in_progress" :
-    related[related.length - 1].outcome === "success" ? "success" : "failure";
+    (related[related.length - 1]?.outcome === "success" ? "success" : "failure");
 
   // Extract lessons learned from failures
   const failures = related.filter(ep => ep.outcome === "failure" || ep.outcome === "partial_failure");
