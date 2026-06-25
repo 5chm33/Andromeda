@@ -362,10 +362,10 @@ export function startBenchmarkRunner(): void {
   _running = true;
   _baselines = loadBaselines();
 
-  // Run initial benchmark after 60 seconds (let everything boot)
+  const INITIAL_BENCHMARK_DELAY_MS = 60_000; // 60 seconds: let everything boot
   setTimeout(async () => {
     try { await runBenchmarks(); } catch (err) { console.warn("[BenchmarkRunner] Initial run failed:", err); }
-  }, 60_000);
+  }, INITIAL_BENCHMARK_DELAY_MS);
 
   _intervalId = setInterval(async () => {
     try { await runBenchmarks(); } catch (err) { console.warn("[BenchmarkRunner] Run failed:", err); }
