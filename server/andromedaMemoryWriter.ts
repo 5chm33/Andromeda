@@ -260,6 +260,50 @@ const ARCHITECTURE_SUMMARY = `
 - \`dockerSandbox.ts\` — sandbox_execute
 `;
 
+// ─── RSI Improvement Priority Goals (v12.2.2) ──────────────────────────────────
+
+const RSI_PRIORITY_GOALS = `
+## RSI Improvement Goals (v12.2.2 — MANDATORY Priority Order)
+
+**CRITICAL INSTRUCTION FOR RSI ENGINE:**
+You MUST choose the HIGHEST-PRIORITY improvement that exists in the file.
+If a Priority 1, 2, or 3 improvement exists, you MUST propose it — do NOT fall back to Priority 4.
+Only propose Priority 4 (magic numbers, JSDoc) if NO higher-priority improvement exists in the file.
+Prioritize improvements that change BEHAVIOR (error handling, null guards, async safety) over style.
+
+### Priority 1 — Security & Correctness (reward: 1.0) — ALWAYS PREFER THESE
+- Replace any remaining string comparison of secrets with \`crypto.timingSafeEqual()\`
+- Replace any \`Math.random()\` used for security tokens with \`crypto.randomBytes()\`
+- Add input validation to any API route that accepts user-controlled data without validation
+- Fix any \`undefined\` or \`null\` dereference that is not guarded
+- Replace \`as any\` casts that hide real type errors with proper typed alternatives
+- Fix any async function that does not handle rejected promises (missing try/catch or .catch())
+
+### Priority 2 — Reliability & Error Handling (reward: 0.9) — STRONGLY PREFER THESE
+- Replace silent \`} catch { }\` blocks with \`log.warn(...)\` using the file's existing logger
+- Replace \`} catch (e) { console.error(e) }\` with structured \`log.error(...)\` calls
+- Add null/undefined guard before any \`.length\`, \`.map()\`, \`.filter()\` on potentially-undefined values
+- Add timeout to any \`fetch()\` call that has no AbortController/timeout
+- Replace \`JSON.parse(x)\` without try/catch with a safe parse wrapper
+
+### Priority 3 — Performance (reward: 0.8) — PREFER THESE OVER STYLE CHANGES
+- Replace \`.find()\` in hot paths (called >100x/sec) with \`Map.get()\` lookups
+- Replace repeated \`JSON.parse(JSON.stringify(x))\` deep-clone patterns with \`structuredClone(x)\`
+- Add \`.unref()\` to any new \`setInterval\` or \`setTimeout\` calls to prevent vitest worker hangs
+- Replace synchronous \`fs.readFileSync\` inside async request handlers with \`fs.promises.readFile\`
+
+### Priority 4 — Code Quality (reward: 0.5) — ONLY IF NO HIGHER PRIORITY EXISTS
+- Extract magic numbers (timeouts, limits, thresholds) into named constants at the top of the file
+- Replace \`any\` types with proper interfaces where the shape is known
+- Add JSDoc to exported functions that have none
+
+### Do NOT Do (penalized)
+- Do NOT propose magic number extraction if a Priority 1, 2, or 3 improvement exists in the file
+- Do NOT propose the same type of change to the same file twice in a row
+- Do NOT remove existing JSDoc comments
+- Do NOT make changes that require a full rebuild to validate
+`;
+
 // ─── Constitution rules ───────────────────────────────────────────────────────
 
 const CONSTITUTION_RULES = `
@@ -384,6 +428,7 @@ ${ARCHITECTURE_SUMMARY}
 server/
 ${serverTree}\`\`\`
 ${TOOL_CATALOGUE}
+${RSI_PRIORITY_GOALS}
 ${CONSTITUTION_RULES}
 ## Self-Modification Workflow (MANDATORY — follow exactly)
 1. Call \`recall_memory\` to check if this issue has been seen before

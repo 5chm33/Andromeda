@@ -369,10 +369,13 @@ export function resolveProviderFromEnv(): LLMProviderConfig {
     modelId = "deepseek";
   }
   if (!modelId || !DEFAULT_PROVIDERS[modelId]) {
-    if (process.env.DEEPSEEK_API_KEY) {
-      modelId = "deepseek";
-    } else if (process.env.KIMI_API_KEY) {
+    // v12.2.2: Prefer Kimi as default startup provider (free, excellent code quality).
+    // Only fall back to DeepSeek if Kimi is not configured.
+    // This prevents burning DeepSeek Pro tokens on every startup and idle call.
+    if (process.env.KIMI_API_KEY) {
       modelId = "kimi";
+    } else if (process.env.DEEPSEEK_API_KEY) {
+      modelId = "deepseek";
     } else if (process.env.OPENROUTER_API_KEY) {
       modelId = "openrouter-fast";
     } else {
@@ -497,10 +500,11 @@ export function getProviderForTier(tier: LLMTier): string {
 
     switch (effectiveTier) {
     case "eco":
-      // Cheapest available — DeepSeek first, then Kimi
-      if (hasDeepSeek) return "deepseek";
+      // v12.2.2: Kimi first (free, excellent code quality) — only fall back to DeepSeek if Kimi unavailable
+      // This prevents burning DeepSeek Pro tokens on routine proposal generation
       if (hasKimi) return "kimi";
-      if (hasOpenRouter) return "openrouter-fast"; // Gemini Flash
+      if (hasOpenRouter) return "openrouter-fast"; // Gemini Flash via OpenRouter
+      if (hasDeepSeek) return "deepseek";          // DeepSeek Flash as last resort
       return "deepseek"; // fallback (will fail gracefully)
     case "standard":
       // Mid-tier — Kimi k2.6 (best free coding model) or DeepSeek Reasoner

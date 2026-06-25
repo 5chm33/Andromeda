@@ -710,28 +710,24 @@ export async function analyzeAndPropose(
   // This ensures multi-model routing fires automatically without needing a manual area param.
   if (!area) {
     const fn = targetFile.toLowerCase();
-    // v9.10.0: RSI engine files get "security" tier → Claude (Pro) for self-modification
-    // These files control the improvement pipeline itself — highest stakes, best model.
-    if (fn.includes("selfimprove") || fn.includes("selfimproveguard") ||
-        fn.includes("continuousimprover") || fn.includes("rsiengine") ||
-        fn.includes("qualitytorsi") || fn.includes("evaldriventargeting")) {
-      area = "security"; // → Pro tier → Claude
-    } else if (fn.includes("security") || fn.includes("auth") || fn.includes("guard") || fn.includes("constitution")) {
-      area = "security";
-    } else if (fn.includes("llm") || fn.includes("model") || fn.includes("provider") || fn.includes("router")) {
-      area = "architecture";
-    } else if (fn.includes("consensus") || fn.includes("testgenerator")) {
-      area = "architecture"; // → Standard tier → DeepSeek Reasoner
-    } else if (fn.includes("perf") || fn.includes("cache") || fn.includes("optim") || fn.includes("bench")) {
-      area = "performance";
+    // v12.2.2: Only route TRULY security-critical files to Pro tier.
+    // Previously, selfImprove.ts, selfImproveGuard.ts, rsiEngine.ts etc. were
+    // routed to Pro (Claude/DeepSeek Pro) on every cycle — burning expensive tokens
+    // even for trivial readability improvements. Now only auth/constitution files
+    // get Pro; RSI engine files get Standard (Kimi k2.6 is excellent for this).
+    if (fn.includes("auth") || fn.includes("constitution") || fn.includes("adminauth")) {
+      area = "security"; // → Pro tier → Claude/Kimi
+    } else if (fn.includes("selfimprove") || fn.includes("rsiengine") ||
+               fn.includes("continuousimprover") || fn.includes("qualitytorsi")) {
+      area = "performance"; // → Standard tier → Kimi k2.6 (free, excellent code quality)
+    } else if (fn.includes("llm") || fn.includes("model") || fn.includes("provider")) {
+      area = "architecture"; // → Standard tier
+    } else if (fn.includes("perf") || fn.includes("cache") || fn.includes("optim")) {
+      area = "performance"; // → Standard tier
     } else if (fn.includes("test") || fn.includes("eval") || fn.includes("spec")) {
-      area = "reliability";
-    } else if (fn.includes("heal") || fn.includes("recover") || fn.includes("retry")) {
-      area = "reliability";
-    } else if (fn.includes("feature") || fn.includes("agent") || fn.includes("tool")) {
-      area = "feature";
+      area = "reliability"; // → Eco tier → Kimi
     } else {
-      area = "readability"; // safe default → DeepSeek
+      area = "readability"; // safe default → Eco tier → Kimi (free)
     }
   }
 
@@ -1023,14 +1019,23 @@ export async function analyzeAndPropose(
   const { simpleChatCompletion, getProviderForTier: getProviderForTier_fn, tierForArea: tierForArea_fn } = await import("./llmProvider.js");
   const providerChain = buildProviderFallbackChain(area);
 
-  // v11.292.0: Load project goals from ANDROMEDA.md to guide proposal priorities
+  // v12.2.2: Load RSI priority goals from ANDROMEDA.md — extract the Goals section specifically
   let projectGoals = "";
   try {
-    const goalsPath = path.join(process.cwd(), "ANDROMEDA.md");
+    // Try workspace ANDROMEDA.md first (has full priority goals), fall back to project root
+    const workspaceGoalsPath = path.join(process.cwd(), "workspace", "ANDROMEDA.md");
+    const rootGoalsPath = path.join(process.cwd(), "ANDROMEDA.md");
+    const goalsPath = fs.existsSync(workspaceGoalsPath) ? workspaceGoalsPath : rootGoalsPath;
     if (fs.existsSync(goalsPath)) {
       const goalsRaw = fs.readFileSync(goalsPath, "utf-8");
-      // Extract just the goals section (first 2000 chars to keep prompt lean)
-      projectGoals = `\n\nProject improvement priorities (read ANDROMEDA.md for full context):\n${goalsRaw.slice(0, 2000)}`;
+      // v12.2.2: Extract the RSI Goals section specifically — it has the mandatory priority order
+      const goalsMatch = goalsRaw.match(/## RSI Improvement Goals[\s\S]*?(?=\n## [A-Z]|$)/);
+      if (goalsMatch) {
+        projectGoals = `\n\n${goalsMatch[0].slice(0, 3500)}`;
+      } else {
+        // Fallback: take first 2000 chars if section not found
+        projectGoals = `\n\nProject improvement priorities:\n${goalsRaw.slice(0, 2000)}`;
+      }
     }
   } catch { /* non-fatal — goals file is optional */ }
 
@@ -1065,7 +1070,21 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
 3. Internal refactoring (helper functions, variable names, logic flow, error handling) is SAFE.
 4. Adding NEW exports is SAFE. Removing or renaming EXISTING exports is FORBIDDEN.
 5. If you are unsure whether a change preserves backward compatibility, set confidence below 0.8.
-6. Prefer improvements that are purely internal (private helpers, local variables, comments) to minimize CI risk.`,
+6. BANNED IMPROVEMENT TYPES (do NOT propose these — they add zero value):
+   - Extracting magic numbers into named constants (e.g. const TIMEOUT_MS = 5000)
+   - Adding JSDoc comments to existing functions
+   - Renaming variables for readability
+   - Adding blank lines or removing trailing whitespace
+   These are banned because they waste tokens and do not improve system behavior.
+7. PREFERRED improvement types (in priority order):
+   - Add missing null/undefined checks before property access
+   - Add try/catch around async operations that can throw
+   - Fix missing error handling in catch blocks (replace empty catch with log.warn)
+   - Add input validation to functions that receive external data
+   - Fix race conditions in async code
+   - Improve retry logic with exponential backoff
+   - Add timeout guards to fetch/LLM calls
+   If none of these exist in the file, propose a performance or reliability improvement.`,
     },
     {
       role: "user",

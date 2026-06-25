@@ -97,7 +97,7 @@ const DEFAULT_CONFIG: RSIConfig = {
   maxAutoApplyPerCycle: 3,
   requireHumanConfirmAfter: 9,
   targetFiles: [],
-  minConfidenceThreshold: 0.8,
+  minConfidenceThreshold: 0.65, // v12.2.2: lowered from 0.8 — 0.8 was discarding valid proposals with 0.75-0.79 confidence
   verboseLogging: false,
 };
 
@@ -447,13 +447,26 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     let proposals: Array<{ id: string; confidence: number; filePath: string }> = [];
     try {
       const { analyzeAndPropose, listProposals, ANALYZABLE_FILES } = await import("./selfImprove.js");
-      // v11.0.2: Always analyze a file — pick from targetFiles config or randomly from ANALYZABLE_FILES
-      const targetFile = rsiConfig.targetFiles[0] ||
-        (ANALYZABLE_FILES && ANALYZABLE_FILES.length > 0
-          ? ANALYZABLE_FILES[Math.floor(Math.random() * ANALYZABLE_FILES.length)]
-          : null);
-      if (targetFile) {
-        await analyzeAndPropose(targetFile);
+      // v12.2.2: Analyze 3 files per cycle instead of 1 to increase the probability
+      // that at least one proposal passes all rejection gates per cycle.
+      // Uses a rotating index to avoid analyzing the same files repeatedly.
+      const FILES_PER_CYCLE = 3;
+      if (rsiConfig.targetFiles.length > 0) {
+        // User-specified target files — analyze up to FILES_PER_CYCLE of them
+        for (const tf of rsiConfig.targetFiles.slice(0, FILES_PER_CYCLE)) {
+          try { await analyzeAndPropose(tf); } catch { /* non-fatal */ }
+        }
+      } else if (ANALYZABLE_FILES && ANALYZABLE_FILES.length > 0) {
+        // Smart rotation: use cycleCount as seed to pick different files each cycle
+        const offset = (cycleCount * FILES_PER_CYCLE) % ANALYZABLE_FILES.length;
+        const targets = [
+          ANALYZABLE_FILES[offset % ANALYZABLE_FILES.length],
+          ANALYZABLE_FILES[(offset + 1) % ANALYZABLE_FILES.length],
+          ANALYZABLE_FILES[(offset + 2) % ANALYZABLE_FILES.length],
+        ];
+        for (const tf of targets) {
+          try { await analyzeAndPropose(tf); } catch { /* non-fatal */ }
+        }
       }
       const pending = listProposals("pending");
       proposals = pending.map(p => ({

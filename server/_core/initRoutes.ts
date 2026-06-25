@@ -793,10 +793,11 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
   app.post('/api/rsi/fix-external-repo', requireAdminAuth, async (req, res) => {
     try {
       const { startFixJob } = await import('../externalRepoFixer.js');
-      const { repoUrl, githubPat, cycles, branchPrefix, prTitle, prBody } = req.body as {
+      const { repoUrl, githubPat, cycles, maxFiles, branchPrefix, prTitle, prBody } = req.body as {
         repoUrl: string;
         githubPat?: string;
-        cycles?: number;
+        cycles?: number;   // legacy alias for maxFiles
+        maxFiles?: number;
         branchPrefix?: string;
         prTitle?: string;
         prBody?: string;
@@ -807,7 +808,9 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
       if (!repoUrl.includes('github.com')) {
         return res.status(400).json({ error: 'Only GitHub repositories are supported' });
       }
-      const job = await startFixJob({ repoUrl, githubPat, cycles, branchPrefix, prTitle, prBody });
+      // v12.2.2: maxFiles replaces cycles; accept both for backward compat
+      const resolvedMaxFiles = maxFiles ?? cycles ?? 5;
+      const job = await startFixJob({ repoUrl, githubPat, maxFiles: resolvedMaxFiles, branchPrefix, prTitle, prBody });
       res.json({ jobId: job.id, status: job.status, message: 'Fix job started' });
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });

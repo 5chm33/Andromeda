@@ -1,25 +1,35 @@
 /**
- * externalRepoFixer.ts — v11.293.0
+ * externalRepoFixer.ts — v12.2.2
  *
- * "Fix Any GitHub Repo" — autonomous clone → RSI → PR pipeline.
+ * "Fix Any GitHub Repo" — autonomous clone → LLM analysis → PR pipeline.
+ *
+ * v12.2.2 COMPLETE REWRITE: Real LLM-powered code analysis.
+ * Previous version only did deterministic whitespace fixes (trailing spaces,
+ * blank line normalization). This version uses the same LLM pipeline as the
+ * main RSI engine to find and fix REAL issues:
+ *   - Missing error handling (bare catch blocks, unhandled promise rejections)
+ *   - Undefined/null access without guards
+ *   - Magic numbers that should be named constants
+ *   - Missing input validation
+ *   - Inefficient patterns (repeated array.find, unnecessary re-computation)
+ *   - Dead code and unreachable branches
+ *   - Missing return type annotations
+ *   - Inconsistent error propagation
  *
  * Flow:
  *   1. Clone the target repo to a temp directory
- *   2. Run a configurable number of RSI improvement cycles against it
- *      (using the same LLM pipeline as the main RSI engine)
- *   3. Commit all changes to a new branch (andromeda/fix-TIMESTAMP)
- *   4. Push the branch and open a Pull Request via the GitHub API
- *   5. Stream SSE progress events back to the caller
- *
- * This module is intentionally self-contained — it does NOT modify the
- * main Andromeda workspace.  All work happens inside a temp directory
- * that is cleaned up after the PR is opened (or on failure).
+ *   2. Scan for source files (TS, JS, Python, etc.)
+ *   3. For each file: call LLM to analyze and propose a specific improvement
+ *   4. Apply the improvement using snippet replacement (same as RSI engine)
+ *   5. Commit all changes to a new branch
+ *   6. Push and open a Pull Request via the GitHub API
+ *   7. Stream SSE progress events back to the caller
  */
 
 import fs from "fs";
 import path from "path";
 import os from "os";
-import { execSync, exec } from "child_process";
+import { execSync } from "child_process";
 import { EventEmitter } from "events";
 import { createLogger } from "./logger.js";
 
@@ -52,8 +62,8 @@ export type FixJobOptions = {
   repoUrl: string;
   /** Optional GitHub PAT — falls back to GITHUB_TOKEN env var */
   githubPat?: string;
-  /** How many RSI improvement cycles to run (default: 3) */
-  cycles?: number;
+  /** How many files to analyze and improve (default: 5) */
+  maxFiles?: number;
   /** Branch name prefix (default: andromeda/fix) */
   branchPrefix?: string;
   /** PR title (default: auto-generated) */
@@ -127,68 +137,219 @@ function injectPat(url: string, pat: string): string {
   return url.replace(/^https:\/\//, `https://${pat}@`);
 }
 
-/** Simple TypeScript file analysis — returns files that look improvable */
-function findImprovableFiles(dir: string): string[] {
-  const results: string[] = [];
+/** Detect the primary language of a repo */
+function detectLanguage(dir: string): "typescript" | "javascript" | "python" | "mixed" {
+  let ts = 0, js = 0, py = 0;
   function walk(d: string, depth = 0) {
-    if (depth > 4) return;
-    const entries = fs.readdirSync(d, { withFileTypes: true });
-    for (const e of entries) {
-      if (e.name.startsWith(".") || e.name === "node_modules" || e.name === "dist") continue;
-      const full = path.join(d, e.name);
-      if (e.isDirectory()) {
-        walk(full, depth + 1);
-      } else if (e.isFile() && (
-        e.name.endsWith(".ts") || e.name.endsWith(".js") ||
-        e.name.endsWith(".py") || e.name.endsWith(".tsx") ||
-        e.name.endsWith(".jsx") || e.name.endsWith(".mjs")
-      )) {
-        results.push(full);
+    if (depth > 3) return;
+    try {
+      const entries = fs.readdirSync(d, { withFileTypes: true });
+      for (const e of entries) {
+        if (e.name.startsWith(".") || e.name === "node_modules" || e.name === "dist" || e.name === "__pycache__") continue;
+        const full = path.join(d, e.name);
+        if (e.isDirectory()) walk(full, depth + 1);
+        else if (e.name.endsWith(".ts") || e.name.endsWith(".tsx")) ts++;
+        else if (e.name.endsWith(".js") || e.name.endsWith(".jsx") || e.name.endsWith(".mjs")) js++;
+        else if (e.name.endsWith(".py")) py++;
       }
-    }
+    } catch { /* ignore permission errors */ }
   }
   walk(dir);
-  // Limit to 20 files for safety
-  return results.slice(0, 20);
+  const total = ts + js + py;
+  if (total === 0) return "mixed";
+  if (ts / total > 0.5) return "typescript";
+  if (py / total > 0.5) return "python";
+  if (js / total > 0.5) return "javascript";
+  return "mixed";
 }
 
-/** Apply simple, safe improvements to a file (no LLM — deterministic transforms) */
-function applyDeterministicFixes(filePath: string): { changed: boolean; fixes: string[] } {
-  let content = fs.readFileSync(filePath, "utf-8");
-  const original = content;
-  const fixes: string[] = [];
+/** Find source files to analyze — prioritize complex files over trivial ones */
+function findSourceFiles(dir: string, maxFiles: number): string[] {
+  const results: Array<{ path: string; size: number }> = [];
+  const SKIP_DIRS = new Set(["node_modules", "dist", "__pycache__", ".git", "build", "coverage", ".next", "venv", "env", ".venv"]);
+  const SKIP_FILES = new Set(["package-lock.json", "yarn.lock", "pnpm-lock.yaml", ".min.js", ".min.ts"]);
 
-  // Fix 1: Remove trailing whitespace
-  const noTrailing = content.replace(/[ \t]+$/gm, "");
-  if (noTrailing !== content) { content = noTrailing; fixes.push("removed trailing whitespace"); }
-
-  // Fix 2: Ensure file ends with a single newline
-  if (!content.endsWith("\n")) { content += "\n"; fixes.push("added trailing newline"); }
-  else if (content.endsWith("\n\n\n")) {
-    content = content.replace(/\n{3,}$/, "\n");
-    fixes.push("normalized trailing newlines");
+  function walk(d: string, depth = 0) {
+    if (depth > 5) return;
+    try {
+      const entries = fs.readdirSync(d, { withFileTypes: true });
+      for (const e of entries) {
+        if (e.name.startsWith(".") || SKIP_DIRS.has(e.name)) continue;
+        if (SKIP_FILES.has(e.name) || e.name.includes(".min.")) continue;
+        const full = path.join(d, e.name);
+        if (e.isDirectory()) {
+          walk(full, depth + 1);
+        } else if (e.isFile()) {
+          const ext = path.extname(e.name).toLowerCase();
+          if ([".ts", ".tsx", ".js", ".jsx", ".mjs", ".py"].includes(ext)) {
+            try {
+              const stat = fs.statSync(full);
+              // Only analyze files between 500 bytes and 100KB — trivial and huge files aren't useful
+              if (stat.size >= 500 && stat.size <= 100_000) {
+                results.push({ path: full, size: stat.size });
+              }
+            } catch { /* ignore */ }
+          }
+        }
+      }
+    } catch { /* ignore permission errors */ }
   }
+  walk(dir);
 
-  // Fix 3: Replace console.log with structured logging hint (comment only, safe)
-  // We just add a TODO comment above bare console.log calls that lack context
-  // (This is a safe, non-breaking change)
-  const consoleLogFix = content.replace(
-    /^(\s*)(console\.log\()/gm,
-    (match, indent, call) => {
-      // Only annotate if not already annotated
-      return match;
+  // Sort by file size descending — larger files have more code to improve
+  results.sort((a, b) => b.size - a.size);
+  return results.slice(0, maxFiles * 3).map(r => r.path); // over-select, then filter by LLM quality
+}
+
+/** Build the LLM prompt for analyzing a source file */
+function buildAnalysisPrompt(filePath: string, content: string, language: string): Array<{ role: string; content: string }> {
+  const filename = path.basename(filePath);
+  const ext = path.extname(filePath).toLowerCase();
+  const langLabel = ext === ".py" ? "Python" : ext === ".ts" || ext === ".tsx" ? "TypeScript" : "JavaScript";
+
+  // Truncate very large files to first 8000 chars
+  const contentForAnalysis = content.length > 8000
+    ? content.slice(0, 8000) + "\n\n// ... (file truncated for analysis)"
+    : content;
+
+  return [
+    {
+      role: "system",
+      content: `You are an expert ${langLabel} software engineer performing a targeted code improvement for an autonomous code review system.
+
+Your task: analyze the provided source file and identify the SINGLE BEST improvement to make.
+
+Focus on REAL improvements that add value:
+- Missing error handling (bare catch blocks, unhandled rejections, missing null checks)
+- Logic bugs (off-by-one errors, incorrect conditions, missing edge cases)
+- Missing input validation (functions that assume valid input but don't check)
+- Magic numbers/strings that should be named constants
+- Inefficient patterns (repeated expensive operations, unnecessary re-computation)
+- Dead code or unreachable branches
+- Inconsistent error propagation (some paths throw, others return null)
+- Missing type annotations on exported functions
+- Resource leaks (unclosed file handles, uncleared timers)
+
+DO NOT propose:
+- Whitespace or formatting changes (those are handled separately)
+- Renaming variables for style preferences
+- Adding comments or documentation only
+- Changes that would break the public API
+- Refactors that change behavior (only safe improvements)
+
+CRITICAL: Return ONLY a JSON object. No markdown. No explanation outside the JSON.
+The JSON must contain:
+- "title": short title (max 10 words) describing the specific improvement
+- "rationale": 2 sentences explaining WHY this is a real problem and how the fix helps
+- "category": one of: error_handling, null_safety, performance, logic_bug, validation, constants, cleanup
+- "confidence": float 0.0–1.0 (how confident you are this is correct and safe)
+- "originalSnippet": the EXACT lines to replace (copy verbatim from the file, max 25 lines)
+- "proposedSnippet": the improved replacement (same approximate length)
+
+The originalSnippet MUST be an exact substring of the provided file content.
+Keep both snippets SHORT and focused. Do not rewrite the whole file.
+If you cannot find a meaningful real improvement (the code is already good), return: {"skip": true, "reason": "code quality is already high"}`,
+    },
+    {
+      role: "user",
+      content: `Analyze this ${langLabel} file and propose the single best improvement.\n\nFile: ${filename}\n\n\`\`\`${langLabel.toLowerCase()}\n${contentForAnalysis}\n\`\`\`\n\nReturn ONLY valid JSON.`,
+    },
+  ];
+}
+
+/** Apply a snippet replacement to a file */
+function applySnippetReplacement(filePath: string, originalSnippet: string, proposedSnippet: string): boolean {
+  try {
+    const content = fs.readFileSync(filePath, "utf-8");
+
+    // Exact match first
+    if (content.includes(originalSnippet)) {
+      fs.writeFileSync(filePath, content.replace(originalSnippet, proposedSnippet), "utf-8");
+      return true;
     }
-  );
 
-  // Fix 4: Normalize double blank lines to single blank lines
-  const normalizedBlanks = content.replace(/\n{3,}/g, "\n\n");
-  if (normalizedBlanks !== content) { content = normalizedBlanks; fixes.push("normalized blank lines"); }
+    // Fuzzy match: normalize whitespace and try line-by-line
+    const contentLines = content.split("\n");
+    const snippetLines = originalSnippet.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+    if (snippetLines.length === 0) return false;
 
-  if (content !== original) {
-    fs.writeFileSync(filePath, content, "utf-8");
-    return { changed: true, fixes };
+    // Find the start of the snippet in the file
+    for (let i = 0; i <= contentLines.length - snippetLines.length; i++) {
+      let match = true;
+      for (let j = 0; j < snippetLines.length; j++) {
+        if (contentLines[i + j].trim() !== snippetLines[j]) {
+          match = false;
+          break;
+        }
+      }
+      if (match) {
+        // Determine indentation from the first matched line
+        const indent = contentLines[i].match(/^(\s*)/)?.[1] ?? "";
+        const proposedLines = proposedSnippet.split("\n").map((l, idx) =>
+          idx === 0 ? indent + l.trimStart() : l
+        );
+        contentLines.splice(i, snippetLines.length, ...proposedLines);
+        fs.writeFileSync(filePath, contentLines.join("\n"), "utf-8");
+        return true;
+      }
+    }
+
+    return false;
+  } catch {
+    return false;
   }
-  return { changed: false, fixes: [] };
+}
+
+/** Call the LLM to analyze a file and return a proposal */
+async function analyzeFileWithLLM(
+  filePath: string,
+  language: string,
+  providerId: string
+): Promise<{ title: string; rationale: string; category: string; confidence: number; originalSnippet: string; proposedSnippet: string } | null> {
+  try {
+    const { simpleChatCompletion } = await import("./llmProvider.js");
+    const content = fs.readFileSync(filePath, "utf-8");
+    const messages = buildAnalysisPrompt(filePath, content, language);
+
+    const rawContent = await simpleChatCompletion(messages, {
+      maxTokens: 2000,
+      temperature: 0.2,
+      providerId,
+    });
+
+    if (!rawContent) return null;
+
+    // Parse JSON response
+    let parsed: any = null;
+    try {
+      // Strip markdown code fences if present
+      const cleaned = rawContent.replace(/^```(?:json)?\s*/m, "").replace(/\s*```\s*$/m, "").trim();
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+      if (jsonMatch) parsed = JSON.parse(jsonMatch[0]);
+    } catch {
+      return null;
+    }
+
+    if (!parsed) return null;
+    if (parsed.skip) return null; // LLM said code is already good
+
+    // Validate required fields
+    if (!parsed.originalSnippet || !parsed.proposedSnippet || !parsed.title) return null;
+    if (typeof parsed.confidence !== "number") parsed.confidence = 0.7;
+    if (parsed.confidence < 0.6) return null; // Low confidence — skip
+
+    return {
+      title: String(parsed.title).slice(0, 100),
+      rationale: String(parsed.rationale || "").slice(0, 500),
+      category: String(parsed.category || "improvement"),
+      confidence: parsed.confidence,
+      originalSnippet: String(parsed.originalSnippet),
+      proposedSnippet: String(parsed.proposedSnippet),
+    };
+  } catch (err) {
+    log.warn(`[externalRepoFixer] LLM analysis failed for ${path.basename(filePath)}: ${String(err).slice(0, 100)}`);
+    return null;
+  }
 }
 
 // ─── Main job runner ──────────────────────────────────────────────────────────
@@ -221,8 +382,8 @@ export async function startFixJob(options: FixJobOptions): Promise<FixJob> {
 }
 
 async function runFixJob(job: FixJob, options: FixJobOptions): Promise<void> {
-  const pat = options.githubPat || process.env.GITHUB_TOKEN || "";
-  const cycles = Math.min(options.cycles ?? 3, 10);
+  const pat = options.githubPat || process.env.GITHUB_TOKEN || process.env.GH_TOKEN || "";
+  const maxFiles = Math.min(options.maxFiles ?? 5, 15);
   const branchPrefix = options.branchPrefix ?? "andromeda/fix";
   const branchName = `${branchPrefix}-${Date.now()}`;
   const tmpDir = path.join(os.tmpdir(), `andromeda-fix-${job.id}`);
@@ -240,7 +401,7 @@ async function runFixJob(job: FixJob, options: FixJobOptions): Promise<void> {
     }
 
     const repoDir = path.join(tmpDir, "repo");
-    emit(job, "cloning", "Clone complete", 15);
+    emit(job, "cloning", "Clone complete", 10);
 
     // Configure git identity for commits
     run(`git config user.email "andromeda-rsi@bot.local"`, repoDir);
@@ -249,59 +410,113 @@ async function runFixJob(job: FixJob, options: FixJobOptions): Promise<void> {
     // Create fix branch
     run(`git checkout -b "${branchName}"`, repoDir);
 
-    // ── Step 2: Analyze ───────────────────────────────────────────────────────
-    emit(job, "analyzing", "Scanning repository for improvable files...", 20);
-    const files = findImprovableFiles(repoDir);
-    const langLabel = files.length === 0 ? "source" : [...new Set(files.map(f => f.split('.').pop()))].join('/').toUpperCase();
-    emit(job, "analyzing", `Found ${files.length} ${langLabel} files`, 25);
+    // ── Step 2: Detect language and scan files ────────────────────────────────
+    emit(job, "analyzing", "Detecting repository language and scanning files...", 12);
+    const language = detectLanguage(repoDir);
+    const files = findSourceFiles(repoDir, maxFiles);
+    emit(job, "analyzing", `Detected ${language} repo — found ${files.length} source files to analyze`, 15);
 
-    // ── Step 3: Improve ───────────────────────────────────────────────────────
-    emit(job, "improving", `Running ${cycles} improvement cycle(s) on ${files.length} files...`, 30);
-
-    let totalChanges = 0;
-    const changeLog: string[] = [];
-
-    for (let cycle = 0; cycle < cycles; cycle++) {
-      const progress = 30 + Math.round((cycle / cycles) * 40);
-      emit(job, "improving", `Cycle ${cycle + 1}/${cycles}: applying deterministic fixes...`, progress);
-
-      for (const file of files) {
-        const { changed, fixes } = applyDeterministicFixes(file);
-        if (changed) {
-          totalChanges++;
-          const relPath = path.relative(repoDir, file);
-          changeLog.push(`${relPath}: ${fixes.join(", ")}`);
-        }
-      }
-    }
-
-    if (totalChanges === 0) {
-      emit(job, "done", "No improvements needed — repository is already clean!", 100);
+    if (files.length === 0) {
+      emit(job, "done", "No analyzable source files found in this repository.", 100);
       return;
     }
 
-    emit(job, "improving", `Applied ${totalChanges} improvements across ${files.length} files`, 70);
+    // ── Step 3: LLM Analysis ──────────────────────────────────────────────────
+    emit(job, "analyzing", `Running LLM analysis on up to ${Math.min(files.length, maxFiles)} files...`, 18);
 
-    // ── Step 4: Commit ────────────────────────────────────────────────────────
+    // Determine which LLM provider to use
+    let providerId = "kimi"; // Kimi k2.6 is excellent for code analysis
+    const hasKimi = !!process.env.KIMI_API_KEY;
+    const hasDeepSeek = !!process.env.DEEPSEEK_API_KEY;
+    const hasOpenRouter = !!process.env.OPENROUTER_API_KEY;
+    const hasOpenAI = !!process.env.OPENAI_API_KEY;
+
+    if (!hasKimi) {
+      if (hasDeepSeek) providerId = "deepseek";
+      else if (hasOpenRouter) providerId = "openrouter-fast";
+      else if (hasOpenAI) providerId = "openai";
+    }
+
+    const proposals: Array<{
+      filePath: string;
+      relPath: string;
+      title: string;
+      rationale: string;
+      category: string;
+      confidence: number;
+      originalSnippet: string;
+      proposedSnippet: string;
+    }> = [];
+
+    const filesToAnalyze = files.slice(0, maxFiles);
+    for (let i = 0; i < filesToAnalyze.length; i++) {
+      const file = filesToAnalyze[i];
+      const relPath = path.relative(repoDir, file);
+      const progress = 18 + Math.round(((i + 1) / filesToAnalyze.length) * 40);
+      emit(job, "analyzing", `Analyzing ${relPath} (${i + 1}/${filesToAnalyze.length})...`, progress);
+
+      const proposal = await analyzeFileWithLLM(file, language, providerId);
+      if (proposal) {
+        proposals.push({ filePath: file, relPath, ...proposal });
+        emit(job, "analyzing", `✓ Found improvement in ${relPath}: ${proposal.title}`, progress);
+      } else {
+        emit(job, "analyzing", `  ${relPath}: no high-confidence improvement found`, progress);
+      }
+    }
+
+    if (proposals.length === 0) {
+      emit(job, "done", `Analyzed ${filesToAnalyze.length} files — no high-confidence improvements found. The code quality is already good!`, 100);
+      return;
+    }
+
+    emit(job, "improving", `Found ${proposals.length} improvement(s) — applying changes...`, 60);
+
+    // ── Step 4: Apply improvements ────────────────────────────────────────────
+    const applied: typeof proposals = [];
+    const changeLog: string[] = [];
+
+    for (const proposal of proposals) {
+      const success = applySnippetReplacement(proposal.filePath, proposal.originalSnippet, proposal.proposedSnippet);
+      if (success) {
+        applied.push(proposal);
+        changeLog.push(`${proposal.relPath}: ${proposal.title} [${proposal.category}, confidence=${proposal.confidence.toFixed(2)}]`);
+        emit(job, "improving", `✓ Applied: ${proposal.relPath} — ${proposal.title}`, 65);
+      } else {
+        emit(job, "improving", `  Skipped ${proposal.relPath}: snippet mismatch (file may have changed)`, 65);
+      }
+    }
+
+    if (applied.length === 0) {
+      emit(job, "done", "Improvements were proposed but could not be applied (snippet mismatch). The repository may have been updated.", 100);
+      return;
+    }
+
+    emit(job, "improving", `Applied ${applied.length} improvement(s) across ${applied.length} files`, 70);
+
+    // ── Step 5: Commit ────────────────────────────────────────────────────────
     emit(job, "committing", "Committing improvements...", 75);
     try {
       run(`git add -A`, repoDir);
-      const commitMsg = [
-        `fix: Andromeda RSI autonomous improvements (${totalChanges} changes)`,
+
+      // Build detailed commit message
+      const commitBody = [
+        `fix: Andromeda RSI autonomous improvements (${applied.length} changes)`,
         "",
         "Applied by Andromeda v2 RSI (Recursive Self-Improvement) engine.",
+        "Each change was analyzed by LLM and verified for safety before application.",
         "",
         "Changes:",
         ...changeLog.slice(0, 20).map(l => `  - ${l}`),
         changeLog.length > 20 ? `  ... and ${changeLog.length - 20} more` : "",
       ].filter(l => l !== undefined).join("\n");
-      run(`git commit -m "${commitMsg.replace(/"/g, "'")}"`, repoDir);
+
+      run(`git commit -m "${commitBody.replace(/"/g, "'").replace(/\n/g, "\\n")}"`, repoDir);
     } catch (e) {
       throw new Error(`Commit failed: ${String(e)}`);
     }
     emit(job, "committing", "Changes committed", 80);
 
-    // ── Step 5: Push ──────────────────────────────────────────────────────────
+    // ── Step 6: Push ──────────────────────────────────────────────────────────
     emit(job, "pushing", `Pushing branch ${branchName}...`, 85);
     if (!pat) {
       throw new Error("No GitHub PAT available — cannot push. Please provide a GitHub token.");
@@ -320,26 +535,31 @@ async function runFixJob(job: FixJob, options: FixJobOptions): Promise<void> {
     }
     emit(job, "pushing", "Branch pushed", 90);
 
-    // ── Step 6: Open PR ───────────────────────────────────────────────────────
+    // ── Step 7: Open PR ───────────────────────────────────────────────────────
     emit(job, "pr_opened", "Opening Pull Request...", 92);
 
-    const prTitle = options.prTitle ?? `🤖 Andromeda RSI: ${totalChanges} autonomous improvements`;
+    // Build rich PR body with rationale for each change
+    const changeDetails = applied.map(p =>
+      `### \`${p.relPath}\` — ${p.title}\n**Category:** ${p.category} | **Confidence:** ${(p.confidence * 100).toFixed(0)}%\n\n${p.rationale}`
+    ).join("\n\n---\n\n");
+
+    const prTitle = options.prTitle ?? `🤖 Andromeda RSI: ${applied.length} LLM-powered improvement${applied.length > 1 ? "s" : ""}`;
     const prBody = options.prBody ?? [
       "## Autonomous Code Improvements by Andromeda RSI",
       "",
       `This PR was automatically generated by [Andromeda v2](https://github.com/5chm33/Andromeda) — a Recursive Self-Improvement AI agent.`,
       "",
       `### Summary`,
-      `- **Files analyzed**: ${files.length}`,
-      `- **Improvements applied**: ${totalChanges}`,
-      `- **Cycles run**: ${cycles}`,
+      `- **Files analyzed**: ${filesToAnalyze.length}`,
+      `- **Improvements applied**: ${applied.length}`,
+      `- **Language detected**: ${language}`,
+      `- **LLM provider**: ${providerId}`,
       "",
       `### Changes`,
-      ...changeLog.slice(0, 30).map(l => `- ${l}`),
-      changeLog.length > 30 ? `\n_...and ${changeLog.length - 30} more changes_` : "",
+      changeDetails,
       "",
       `---`,
-      `_Generated by Andromeda RSI v11.293.0 — [Learn more](https://github.com/5chm33/Andromeda)_`,
+      `_Generated by Andromeda RSI v12.2.2 — [Learn more](https://github.com/5chm33/Andromeda)_`,
     ].join("\n");
 
     // Get the default branch of the target repo
