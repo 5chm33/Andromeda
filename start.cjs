@@ -46,7 +46,7 @@ function exists(relPath) {
 // ── Banner ────────────────────────────────────────────────────────────────────
 log("");
 log("  ============================================================");
-log("   Andromeda AI  v10.0.0  |  Godel Machine Edition");
+log("   Andromeda AI  v11.294.0  |  Godel Machine Edition");
 log("  ============================================================");
 log("");
 
@@ -84,20 +84,45 @@ if (!exists(".env.local")) {
   }
 }
 log("  [OK] .env.local found");
-// Check for unfilled placeholder values
+
+// ── Check that at least one primary LLM key is filled in ──────────────────
+// We only block startup if the PRIMARY key (DEEPSEEK_API_KEY) is still a
+// placeholder. Optional keys (OpenRouter, Kimi, Tavily, etc.) are allowed
+// to remain as placeholders — the server degrades gracefully without them.
 const envContent = fs.readFileSync(path.join(ROOT, ".env.local"), "utf8");
-const hasPlaceholder = envContent.includes("_api_key_here") || envContent.includes("your_");
-if (hasPlaceholder) {
+
+// Parse key=value pairs from the env file
+function parseEnvKey(content, key) {
+  const match = content.match(new RegExp(`^\\s*${key}\\s*=\\s*(.+)$`, "m"));
+  return match ? match[1].trim() : "";
+}
+
+const isPlaceholder = (v) => !v || v.includes("_api_key_here") || v.includes("your_") || v === "";
+
+// Primary keys — at least one must be filled in
+const primaryKeys = [
+  "DEEPSEEK_API_KEY",
+  "OPENAI_API_KEY",
+  "ANTHROPIC_API_KEY",
+  "OPENROUTER_API_KEY",
+  "KIMI_API_KEY",
+];
+
+const filledPrimary = primaryKeys.find(k => !isPlaceholder(parseEnvKey(envContent, k)));
+
+if (!filledPrimary) {
   err("");
   err("  ============================================================");
-  err("   ACTION REQUIRED: Fill in your API keys in .env.local!");
+  err("   ACTION REQUIRED: Fill in at least one LLM API key!");
   err("  ============================================================");
   err("");
-  err("  Your .env.local still has placeholder values like:");
-  err("    DEEPSEEK_API_KEY=your_deepseek_api_key_here");
+  err("  Open .env.local and add at least one of:");
+  err("    DEEPSEEK_API_KEY=sk-...        (recommended, cheapest)");
+  err("    OPENAI_API_KEY=sk-...          (GPT-4)");
+  err("    ANTHROPIC_API_KEY=sk-ant-...   (Claude)");
+  err("    OPENROUTER_API_KEY=sk-or-...   (multi-model)");
   err("");
-  err("  Replace them with your real API keys, save the file,");
-  err("  then run the launcher again.");
+  err("  Optional keys (Kimi, Tavily, FAL, etc.) can stay as placeholders.");
   err("  Opening .env.local in Notepad now...");
   err("");
   try {
@@ -109,6 +134,7 @@ if (hasPlaceholder) {
   } catch {}
   process.exit(0);
 }
+log(`  [OK] LLM key configured (${filledPrimary})`);
 
 // ── Step 3: pnpm check ────────────────────────────────────────────────────────
 let pnpmCmd = "pnpm";
@@ -189,7 +215,7 @@ setTimeout(() => {
 // ── Step 8: Start server with auto-restart ────────────────────────────────────
 log("");
 log("  ============================================================");
-log("   Andromeda AI v10.0.0  |  http://localhost:3000");
+log("   Andromeda AI v11.294.0  |  http://localhost:3000");
 log("   Press Ctrl+C to stop.");
 log("  ============================================================");
 log("");
