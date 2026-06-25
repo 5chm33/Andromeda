@@ -83,10 +83,11 @@ const STATUS_COLORS: Record<FixJobStatus, string> = {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 interface ExternalRepoFixerProps {
-  adminKey: string;
+  adminKey?: string;
 }
 
-export function ExternalRepoFixer({ adminKey }: ExternalRepoFixerProps) {
+export function ExternalRepoFixer({ adminKey: adminKeyProp }: ExternalRepoFixerProps = {}) {
+  const adminKey = adminKeyProp ?? (typeof localStorage !== "undefined" ? (localStorage.getItem("andromeda_admin_key") ?? "") : "");
   const [open, setOpen] = useState(false);
   const [repoUrl, setRepoUrl] = useState("");
   const [githubPat, setGithubPat] = useState("");
