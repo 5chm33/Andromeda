@@ -133,8 +133,12 @@ function loadState(): void {
   try {
     if (existsSync(DATA_PATH)) {
       const raw = readFileSync(DATA_PATH, "utf-8");
-      const saved = JSON.parse(raw);
-      state = { ...state, ...saved };
+      try {
+        const saved = JSON.parse(raw);
+        state = { ...state, ...saved };
+      } catch {
+        console.warn("[SelfModel] Corrupted state file, starting fresh");
+      }
     }
   } catch { /* start fresh */ }
 }
