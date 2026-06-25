@@ -236,8 +236,9 @@ async function runStartup() {
   const distEntry    = path.join(ROOT, "dist", "_core", "index.js");
   const distFrontend = path.join(ROOT, "dist", "public", "index.html");
 
-  // Rebuild if dist is missing OR if source files are newer than the dist
+  // Rebuild if dist is missing, FORCE_REBUILD env is set, or source files are newer than dist
   function needsBuild() {
+    if (process.env.FORCE_REBUILD === "1") { log("FORCE_REBUILD=1 set — rebuilding…"); return true; }
     if (!fs.existsSync(distEntry) || !fs.existsSync(distFrontend)) return true;
     try {
       const distMtime = fs.statSync(distFrontend).mtimeMs;

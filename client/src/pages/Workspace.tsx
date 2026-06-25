@@ -486,6 +486,7 @@ export default function Workspace() {
   // ── Render ──────────────────────────────────────────────────────────────────
 
   return (
+    <>
     <TooltipProvider delayDuration={400}>
       <div className="flex h-screen overflow-hidden bg-[oklch(0.09_0.012_265)] text-foreground">
         <ThemeCanvas skinId={currentSkin} />
@@ -724,26 +725,7 @@ export default function Workspace() {
                   </div>
                 )}
 
-                {/* RSI Widget inline */}
-                {showRsiWidget && (
-                  <div className="rounded-2xl border border-violet-500/20 overflow-hidden animate-slide-up">
-                    <div className="flex items-center justify-between px-4 py-2.5 bg-violet-500/5 border-b border-violet-500/20">
-                      <div className="flex items-center gap-2">
-                        <GitBranch className="w-4 h-4 text-violet-400" />
-                        <span className="text-sm font-medium text-violet-300">RSI Proposal Graph</span>
-                      </div>
-                      <button
-                        onClick={() => setShowRsiWidget(false)}
-                        className="p-1 rounded text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        <X className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                    <div className="h-80">
-                      <RSIWidgetLazy />
-                    </div>
-                  </div>
-                )}
+                {/* RSI Widget — full-screen modal rendered via portal below */}
 
                 {/* Messages */}
                 {messages.map((msg) => (
@@ -907,6 +889,56 @@ export default function Workspace() {
         </div>
       </div>
     </TooltipProvider>
+
+    {/* ── RSI Full-Screen Modal ── */}
+    {showRsiWidget && (
+      <div
+        style={{
+          position: "fixed", inset: 0, zIndex: 9999,
+          background: "rgba(0,0,0,0.75)",
+          backdropFilter: "blur(8px)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          padding: 24,
+          animation: "fadeIn 0.2s ease",
+        }}
+        onClick={(e) => { if (e.target === e.currentTarget) setShowRsiWidget(false); }}
+      >
+        <div
+          style={{
+            width: "100%", maxWidth: 1200, height: "85vh",
+            background: "#09090b",
+            border: "1px solid #27272a",
+            borderRadius: 16,
+            overflow: "hidden",
+            boxShadow: "0 24px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(124,58,237,0.15)",
+            display: "flex", flexDirection: "column",
+            position: "relative",
+            animation: "slideUp 0.25s cubic-bezier(0.34,1.56,0.64,1)",
+          }}
+        >
+          {/* Close button */}
+          <button
+            onClick={() => setShowRsiWidget(false)}
+            style={{
+              position: "absolute", top: 10, right: 12, zIndex: 10,
+              width: 28, height: 28, borderRadius: 8,
+              background: "rgba(39,39,42,0.8)",
+              border: "1px solid #3f3f46",
+              color: "#71717a", cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 16, lineHeight: 1,
+              transition: "all 0.15s ease",
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = "#f4f4f5"; (e.currentTarget as HTMLButtonElement).style.background = "rgba(63,63,70,0.9)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = "#71717a"; (e.currentTarget as HTMLButtonElement).style.background = "rgba(39,39,42,0.8)"; }}
+          >
+            ×
+          </button>
+          <RSIWidgetLazy />
+        </div>
+      </div>
+    )}
+    </>
   );
 }
 

@@ -2263,6 +2263,24 @@
       "result": "success",
       "details": "Previewed proposal: No change",
       "timestamp": "2026-06-25T04:14:35.855Z"
+    },
+    {
+      "id": "audit_1782362837708_tfsjhm",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-25T04:47:17.708Z"
+    },
+    {
+      "id": "audit_1782362837712_okjphq",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-25T04:47:17.712Z"
     }
   ]
 }
