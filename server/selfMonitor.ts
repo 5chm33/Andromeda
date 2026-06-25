@@ -213,8 +213,12 @@ function calculateMetric(type: MetricType): { current: number; trend: "rising" |
   const current = windowSamples.reduce((sum, s) => sum + s.value, 0) / windowSamples.length;
 
   // Calculate trend by comparing first half vs second half of window
+  const MIN_SAMPLES_FOR_TREND = 2;
+  const TREND_CHANGE_PERCENTAGE = 0.1; // 10%
+  const MIN_ABSOLUTE_TREND_THRESHOLD = 0.01;
+
   const mid = Math.floor(windowSamples.length / 2);
-  if (mid < 2) return { current, trend: "stable", samples: windowSamples.length };
+  if (mid < MIN_SAMPLES_FOR_TREND) return { current, trend: "stable", samples: windowSamples.length };
 
   const firstHalf = windowSamples.slice(0, mid);
   const secondHalf = windowSamples.slice(mid);
@@ -222,7 +226,7 @@ function calculateMetric(type: MetricType): { current: number; trend: "rising" |
   const secondAvg = secondHalf.reduce((sum, s) => sum + s.value, 0) / secondHalf.length;
 
   const delta = secondAvg - firstAvg;
-  const threshold = Math.max(Math.abs(firstAvg) * 0.1, 0.01); // 10% change = trend
+  const threshold = Math.max(Math.abs(firstAvg) * TREND_CHANGE_PERCENTAGE, MIN_ABSOLUTE_TREND_THRESHOLD);
 
   let trend: "rising" | "falling" | "stable" = "stable";
   if (delta > threshold) trend = "rising";
