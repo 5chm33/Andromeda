@@ -1,6 +1,6 @@
 {
   "name": "andromeda",
-  "version": "11.294.0",
+  "version": "12.0.0",
   "type": "module",
   "license": "MIT",
   "scripts": {
@@ -144,6 +144,8 @@
     "autoprefixer": "^10.4.21",
     "cross-env": "^10.1.0",
     "drizzle-kit": "^0.31.5",
+    "electron": "^42.5.0",
+    "electron-builder": "^26.15.3",
     "esbuild": "^0.25.10",
     "pnpm": "^10.34.4",
     "postcss": "^8.5.15",

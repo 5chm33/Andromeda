@@ -46,7 +46,7 @@ function exists(relPath) {
 // ── Banner ────────────────────────────────────────────────────────────────────
 log("");
 log("  ============================================================");
-log("   Andromeda AI  v11.294.0  |  Godel Machine Edition");
+log("   Andromeda AI  v12.0.0  |  Godel Machine Edition");
 log("  ============================================================");
 log("");
 
@@ -215,7 +215,7 @@ setTimeout(() => {
 // ── Step 8: Start server with auto-restart ────────────────────────────────────
 log("");
 log("  ============================================================");
-log("   Andromeda AI v11.294.0  |  http://localhost:3000");
+log("   Andromeda AI v12.0.0  |  http://localhost:3000");
 log("   Press Ctrl+C to stop.");
 log("  ============================================================");
 log("");

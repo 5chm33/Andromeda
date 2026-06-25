@@ -1,5 +1,5 @@
 /**
- * RsiDashboard.tsx — v11.294.0 — SOTA Redesign
+ * RsiDashboard.tsx — v12.0.0 — SOTA Redesign
  *
  * Complete visual overhaul: Linear/Vercel-grade dark UI with:
  * - Sidebar navigation with live status indicators
@@ -442,7 +442,7 @@ export default function RsiDashboard() {
           </div>
           <div className="flex items-center gap-3">
             <ExternalRepoFixer adminKey={adminKey} />
-            <span className="pill pill-violet text-[10px]">v11.294.0</span>
+            <span className="pill pill-violet text-[10px]">v12.0.0</span>
           </div>
         </header>
 

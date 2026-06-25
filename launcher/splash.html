@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Andromeda</title>
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #09090b;
+      --surface:   #111113;
+      --border:    #27272a;
+      --text:      #fafafa;
+      --muted:     #71717a;
+      --subtle:    #3f3f46;
+      --violet:    #7c3aed;
+      --indigo:    #6366f1;
+      --green:     #34d399;
+      --amber:     #fbbf24;
+      --red:       #fb7185;
+      --grad:      linear-gradient(135deg, #7c3aed, #6366f1);
+    }
+
+    html, body {
+      width: 680px; height: 520px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, "Inter", "Segoe UI", system-ui, sans-serif;
+      font-size: 13px;
+      overflow: hidden;
+      user-select: none;
+      -webkit-app-region: drag; /* make window draggable */
+    }
+
+    /* ── Title bar ────────────────────────────────────────────────────────── */
+    .titlebar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      height: 40px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      -webkit-app-region: drag;
+    }
+    .titlebar-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .titlebar-logo {
+      width: 20px; height: 20px;
+      background: var(--grad);
+      border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: #fff;
+    }
+    .titlebar-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+    .titlebar-controls {
+      display: flex;
+      gap: 6px;
+      -webkit-app-region: no-drag;
+    }
+    .wbtn {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .wbtn:hover { opacity: 0.8; }
+    .wbtn-close    { background: #ff5f57; }
+    .wbtn-minimize { background: #febc2e; }
+
+    /* ── Hero ─────────────────────────────────────────────────────────────── */
+    .hero {
+      padding: 32px 40px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -60px; left: 50%;
+      transform: translateX(-50%);
+      width: 400px; height: 200px;
+      background: radial-gradient(ellipse at center, rgba(124,58,237,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(124,58,237,0.3);
+      background: rgba(124,58,237,0.08);
+      font-size: 11px;
+      color: #a78bfa;
+      font-weight: 500;
+      margin-bottom: 14px;
+    }
+    .hero-badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #7c3aed;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.85); }
+    }
+    .hero-title {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      background: linear-gradient(135deg, #fafafa 0%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 6px;
+    }
+    .hero-sub {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    /* ── Steps ────────────────────────────────────────────────────────────── */
+    .steps {
+      padding: 0 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 14px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: transparent;
+      transition: all 0.25s ease;
+    }
+    .step.active {
+      background: rgba(124,58,237,0.06);
+      border-color: rgba(124,58,237,0.2);
+    }
+    .step.done {
+      background: rgba(52,211,153,0.04);
+      border-color: rgba(52,211,153,0.12);
+    }
+    .step.error {
+      background: rgba(251,113,133,0.06);
+      border-color: rgba(251,113,133,0.2);
+    }
+    .step-icon {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      transition: all 0.25s ease;
+    }
+    .step.active  .step-icon { border-color: rgba(124,58,237,0.5); color: #a78bfa; background: rgba(124,58,237,0.1); }
+    .step.done    .step-icon { border-color: rgba(52,211,153,0.4); color: #34d399; background: rgba(52,211,153,0.08); }
+    .step.error   .step-icon { border-color: rgba(251,113,133,0.4); color: #fb7185; background: rgba(251,113,133,0.08); }
+
+    .step-spinner {
+      width: 12px; height: 12px;
+      border: 2px solid rgba(124,58,237,0.3);
+      border-top-color: #7c3aed;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .step-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      transition: color 0.25s;
+    }
+    .step.active .step-label { color: #e4e4e7; }
+    .step.done   .step-label { color: #a1a1aa; }
+    .step.error  .step-label { color: #fb7185; }
+
+    /* ── Log area ─────────────────────────────────────────────────────────── */
+    .log-area {
+      margin: 16px 40px 0;
+      height: 72px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .log-inner {
+      padding: 8px 12px;
+      height: 100%;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .log-inner::-webkit-scrollbar { width: 4px; }
+    .log-inner::-webkit-scrollbar-track { background: transparent; }
+    .log-inner::-webkit-scrollbar-thumb { background: var(--subtle); border-radius: 2px; }
+    .log-line {
+      font-size: 11px;
+      font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+      line-height: 1.5;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .log-line.info  { color: #71717a; }
+    .log-line.warn  { color: #fbbf24; }
+    .log-line.error { color: #fb7185; }
+
+    /* ── Footer ───────────────────────────────────────────────────────────── */
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 40px 0;
+    }
+    .footer-version {
+      font-size: 11px;
+      color: var(--subtle);
+    }
+    .footer-actions {
+      display: flex;
+      gap: 8px;
+      -webkit-app-region: no-drag;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+      -webkit-app-region: no-drag;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #7c3aed, #6366f1);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(124,58,237,0.35);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 0 28px rgba(124,58,237,0.5);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      color: var(--text);
+      border-color: var(--subtle);
+    }
+    .btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    /* ── Ready glow ───────────────────────────────────────────────────────── */
+    .ready-glow {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #7c3aed, #6366f1, #34d399, transparent);
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .ready-glow.visible { opacity: 1; }
+  </style>
+</head>
+<body>
+
+  <!-- Title bar -->
+  <div class="titlebar">
+    <div class="titlebar-left">
+      <div class="titlebar-logo">A</div>
+      <span class="titlebar-title">Andromeda Launcher</span>
+    </div>
+    <div class="titlebar-controls">
+      <button class="wbtn wbtn-minimize" onclick="window.launcher.minimize()" title="Minimize"></button>
+      <button class="wbtn wbtn-close"    onclick="window.launcher.close()"    title="Close"></button>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      v12.0.0 · Gödel Machine Edition
+    </div>
+    <div class="hero-title">Andromeda AI</div>
+    <div class="hero-sub">Recursive self-improving intelligence — initializing…</div>
+  </div>
+
+  <!-- Steps -->
+  <div class="steps">
+    <div class="step" id="step-node">
+      <div class="step-icon" id="icon-node">1</div>
+      <span class="step-label" id="label-node">Node.js runtime</span>
+    </div>
+    <div class="step" id="step-env">
+      <div class="step-icon" id="icon-env">2</div>
+      <span class="step-label" id="label-env">API keys</span>
+    </div>
+    <div class="step" id="step-deps">
+      <div class="step-icon" id="icon-deps">3</div>
+      <span class="step-label" id="label-deps">Dependencies</span>
+    </div>
+    <div class="step" id="step-build">
+      <div class="step-icon" id="icon-build">4</div>
+      <span class="step-label" id="label-build">Build</span>
+    </div>
+    <div class="step" id="step-server">
+      <div class="step-icon" id="icon-server">5</div>
+      <span class="step-label" id="label-server">Server</span>
+    </div>
+  </div>
+
+  <!-- Log -->
+  <div class="log-area">
+    <div class="log-inner" id="log"></div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span class="footer-version">Andromeda v12.0.0</span>
+    <div class="footer-actions">
+      <button class="btn btn-secondary" id="btn-env" style="display:none"
+              onclick="window.launcher.openEnv()">
+        ✏️ Edit .env.local
+      </button>
+      <button class="btn btn-primary" id="btn-open" disabled
+              onclick="window.launcher.openBrowser()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Open Dashboard
+      </button>
+    </div>
+  </div>
+
+  <!-- Ready glow line -->
+  <div class="ready-glow" id="ready-glow"></div>
+
+  <script>
+    const STEP_IDS = ["node", "env", "deps", "build", "server"];
+
+    // ── Step rendering ────────────────────────────────────────────────────────
+    function setStep(id, status, label) {
+      const el    = document.getElementById(`step-${id}`);
+      const icon  = document.getElementById(`icon-${id}`);
+      const lbl   = document.getElementById(`label-${id}`);
+      if (!el) return;
+
+      el.className = `step ${status}`;
+      lbl.textContent = label || lbl.textContent;
+
+      const idx = STEP_IDS.indexOf(id) + 1;
+      if (status === "running") {
+        icon.innerHTML = `<div class="step-spinner"></div>`;
+      } else if (status === "done") {
+        icon.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+      } else if (status === "error") {
+        icon.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fb7185" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+      } else {
+        icon.textContent = idx;
+      }
+    }
+
+    // ── Log rendering ─────────────────────────────────────────────────────────
+    const logEl = document.getElementById("log");
+    function addLog(level, msg) {
+      const line = document.createElement("div");
+      line.className = `log-line ${level}`;
+      line.textContent = msg;
+      logEl.appendChild(line);
+      logEl.scrollTop = logEl.scrollHeight;
+      // Keep last 80 lines
+      while (logEl.children.length > 80) logEl.removeChild(logEl.firstChild);
+    }
+
+    // ── IPC listeners ─────────────────────────────────────────────────────────
+    window.launcher.onLog(({ level, msg }) => addLog(level, msg));
+
+    window.launcher.onStep(({ id, status, label }) => setStep(id, status, label));
+
+    window.launcher.onServerReady(({ url }) => {
+      document.getElementById("btn-open").disabled = false;
+      document.getElementById("ready-glow").classList.add("visible");
+      document.querySelector(".hero-sub").textContent =
+        "Ready — click Open Dashboard to launch";
+    });
+
+    window.launcher.onShowEnvBtn(() => {
+      document.getElementById("btn-env").style.display = "inline-flex";
+    });
+  </script>
+</body>
+</html>

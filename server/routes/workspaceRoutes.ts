@@ -2,7 +2,11 @@
  * workspaceRoutes.ts — Workspace File Management Routes
  * Andromeda v6.19 — extracted from streamRouter.ts
  *
- * Routes:
+ * @deprecated v12.0.0 — All routes here are fully covered by codeRoutes.ts
+ * (registerCodeRoutes, wired via streamRouter.ts). This file is kept for
+ * reference only and is NOT registered anywhere. Do not add new routes here.
+ *
+ * Routes (reference only — served by codeRoutes.ts):
  *  GET  /api/workspace/files         — list workspace files
  *  GET  /api/workspace/file          — read a workspace file
  *  POST /api/workspace/file          — write a workspace file

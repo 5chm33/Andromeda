@@ -9,6 +9,7 @@ allowBuilds:
   '@tailwindcss/oxide': true
   better-sqlite3: true
   canvas: true
+  electron-winstaller: true
   esbuild: true
   node-pty: true
 patchedDependencies:

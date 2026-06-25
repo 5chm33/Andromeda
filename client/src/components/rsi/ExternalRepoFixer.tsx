@@ -1,5 +1,5 @@
 /**
- * ExternalRepoFixer.tsx — v11.293.0
+ * ExternalRepoFixer.tsx — v12.0.0
  *
  * "Fix Any GitHub Repo" — popup modal that lets the user enter a GitHub URL
  * and optionally a PAT, then kicks off an autonomous clone → RSI → PR flow.

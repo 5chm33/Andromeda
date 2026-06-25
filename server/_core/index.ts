@@ -188,6 +188,13 @@ async function startServer(): Promise<void> {
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}/`);
     startDaemons();
+    // v12.0.0: Wire terminal WebSocket PTY server (only when TERMINAL_ENABLED=true)
+    if (process.env.TERMINAL_ENABLED === "true") {
+      import("../routes/terminalRoutes.js").then(m => {
+        m.attachTerminalWss(server);
+        console.log("[Terminal] WebSocket PTY server attached on /api/terminal/ws");
+      }).catch(e => console.warn("[Terminal] Failed to attach WSS:", (e as Error).message));
+    }
   });
 
   // v5.8: Graceful shutdown
