@@ -225,6 +225,7 @@ function scheduleNextRun(task: ScheduledTask): void {
 
 async function executeTask(taskId: string): Promise<void> {
   const store = loadStore();
+  if (!store || !store.tasks) return;
   const task = store.tasks.find(t => t.id === taskId);
   if (!task) return;
 
