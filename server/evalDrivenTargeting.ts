@@ -63,7 +63,7 @@ export async function runEvalDrivenTargeting(): Promise<number> {
       try { persistedBaselines = JSON.parse(fs.readFileSync(baselinePath, "utf-8")); } catch { /* ignore */ }
     }
     
-    if (report && report.results.length > 0) {
+    if (report && Array.isArray(report.results) && report.results.length > 0) {
       let baselinesUpdated = false;
       
       for (const result of report.results) {
