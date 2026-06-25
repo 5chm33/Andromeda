@@ -196,28 +196,34 @@ export async function consolidateEpisodicMemory(options: {
   forceRun?: boolean;
   minClusterSize?: number;
 } = {}): Promise<EpisodicConsolidationResult> {
+  const DEFAULT_OLDER_THAN_DAYS = 7;
+const DEFAULT_MIN_CLUSTER_SIZE = 3;
+const MIN_HOURS_BETWEEN_RUNS = 24;
+const MS_PER_HOUR = 3_600_000;
+const MS_PER_DAY = 86_400_000;
+
   const {
-    olderThanDays  = 7,
+    olderThanDays  = DEFAULT_OLDER_THAN_DAYS,
     forceRun       = false,
-    minClusterSize = 3,
+    minClusterSize = DEFAULT_MIN_CLUSTER_SIZE,
   } = options;
 
   ensureDir();
 
   const state = loadState();
-  const hoursSinceLast = (Date.now() - state.lastRunAt) / 3_600_000;
-  if (!forceRun && hoursSinceLast < 24) {
+  const hoursSinceLast = (Date.now() - state.lastRunAt) / MS_PER_HOUR;
+  if (!forceRun && hoursSinceLast < MIN_HOURS_BETWEEN_RUNS) {
     return {
       consolidated: 0,
       lessonsCreated: 0,
       episodesRemaining: loadEpisodes().length,
       skipped: true,
-      reason: `Last run ${hoursSinceLast.toFixed(1)}h ago (min 24h between runs)`,
+      reason: `Last run ${hoursSinceLast.toFixed(1)}h ago (min ${MIN_HOURS_BETWEEN_RUNS}h between runs)`,
     };
   }
 
   const allEpisodes = loadEpisodes();
-  const cutoff = Date.now() - olderThanDays * 86_400_000;
+  const cutoff = Date.now() - olderThanDays * MS_PER_DAY;
 
   const oldEpisodes  = allEpisodes.filter(e => e.timestamp < cutoff);
   const keepEpisodes = allEpisodes.filter(e => e.timestamp >= cutoff);
