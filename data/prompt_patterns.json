@@ -1,12 +1,24 @@
 {
+  "64203025": {
+    "id": "64203025",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null/undefined guard before exportResult.path",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9103025621626132,
+    "lastUsed": "2026-06-25T18:32:40.328Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
   "47f9aa02": {
     "id": "47f9aa02",
     "taskType": "self_improvement",
     "pattern": "test prompt fragment",
     "successRate": 1,
-    "useCount": 300,
-    "avgResponseQuality": 0.9000000000000027,
-    "lastUsed": "2026-06-25T05:23:16.091Z",
+    "useCount": 304,
+    "avgResponseQuality": 0.9000000000000024,
+    "lastUsed": "2026-06-25T20:17:27.087Z",
     "tags": [
       "self_improvement"
     ]
@@ -16,9 +28,9 @@
     "taskType": "coding",
     "pattern": "another prompt fragment",
     "successRate": 0,
-    "useCount": 300,
+    "useCount": 304,
     "avgResponseQuality": 0.2999999999999986,
-    "lastUsed": "2026-06-25T05:23:16.092Z",
+    "lastUsed": "2026-06-25T20:17:27.088Z",
     "tags": [
       "coding"
     ]
@@ -28,9 +40,9 @@
     "taskType": "analysis",
     "pattern": "partial prompt fragment",
     "successRate": 0,
-    "useCount": 300,
+    "useCount": 304,
     "avgResponseQuality": 0.5999999999999972,
-    "lastUsed": "2026-06-25T05:23:16.092Z",
+    "lastUsed": "2026-06-25T20:17:27.089Z",
     "tags": [
       "analysis"
     ]
@@ -40,9 +52,9 @@
     "taskType": "research",
     "pattern": "unique fragment xyz",
     "successRate": 1,
-    "useCount": 300,
-    "avgResponseQuality": 0.849999999999996,
-    "lastUsed": "2026-06-25T05:23:16.093Z",
+    "useCount": 304,
+    "avgResponseQuality": 0.8499999999999962,
+    "lastUsed": "2026-06-25T20:17:27.089Z",
     "tags": [
       "research"
     ]
@@ -52,9 +64,9 @@
     "taskType": "self_improvement",
     "pattern": "RSI proposal: Extract magic numbers into named constants",
     "successRate": 1,
-    "useCount": 4,
-    "avgResponseQuality": 0.8712079920101168,
-    "lastUsed": "2026-06-25T12:41:29.512Z",
+    "useCount": 7,
+    "avgResponseQuality": 0.8591511256248906,
+    "lastUsed": "2026-06-25T18:42:22.875Z",
     "tags": [
       "self_improvement"
     ]
@@ -64,9 +76,813 @@
     "taskType": "self_improvement",
     "pattern": "RSI proposal: Extract magic numbers into named constants for readability",
     "successRate": 1,
+    "useCount": 3,
+    "avgResponseQuality": 0.8227221836207224,
+    "lastUsed": "2026-06-25T14:26:02.422Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "6604cb1c": {
+    "id": "6604cb1c",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Extract magic number 1500 into named constant",
+    "successRate": 1,
     "useCount": 1,
-    "avgResponseQuality": 0.8625395822159663,
-    "lastUsed": "2026-06-25T12:24:54.326Z",
+    "avgResponseQuality": 0.8308402412899617,
+    "lastUsed": "2026-06-25T13:38:04.636Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "38ffc27d": {
+    "id": "38ffc27d",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add JSDoc to exported functions in aiTokens, aiPrompts, aiStreaming",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8350661145469053,
+    "lastUsed": "2026-06-25T13:38:51.685Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "8d6598d": {
+    "id": "8d6598d",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add JSDoc to exported functions in browser.ts",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8952903071688018,
+    "lastUsed": "2026-06-25T13:54:13.748Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "49f5262a": {
+    "id": "49f5262a",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null check for agent in resolveDebate",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.909898586094095,
+    "lastUsed": "2026-06-25T14:14:07.990Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "8b35b1f": {
+    "id": "8b35b1f",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before Array.from in getWatchdogStatus",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8925512696706663,
+    "lastUsed": "2026-06-25T14:14:24.341Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "3d158e79": {
+    "id": "3d158e79",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard for messages in manageContext",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8893493450492838,
+    "lastUsed": "2026-06-25T14:22:09.264Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "6aa3cdf4": {
+    "id": "6aa3cdf4",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null/undefined guard before .filter() on evaluations",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8318366270516374,
+    "lastUsed": "2026-06-25T14:34:10.896Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "1bd45584": {
+    "id": "1bd45584",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Replace empty catch blocks with log.warn",
+    "successRate": 1,
+    "useCount": 2,
+    "avgResponseQuality": 0.848883120056527,
+    "lastUsed": "2026-06-25T16:04:38.952Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "138cc57d": {
+    "id": "138cc57d",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .slice() on sources in streamAgentPlan",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8345650435797245,
+    "lastUsed": "2026-06-25T14:37:25.820Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "42e4fcf8": {
+    "id": "42e4fcf8",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add try/catch around JSON.parse in loadState",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9081638559719347,
+    "lastUsed": "2026-06-25T14:37:59.786Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "45fbb2d8": {
+    "id": "45fbb2d8",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null/undefined guard before history[key] push",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8331871120606857,
+    "lastUsed": "2026-06-25T14:38:27.720Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "7dd6a124": {
+    "id": "7dd6a124",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Replace empty catch blocks with structured logging",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8747670613704337,
+    "lastUsed": "2026-06-25T14:53:59.552Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "252202f2": {
+    "id": "252202f2",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .filter() on _index.values()",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.7885390661413683,
+    "lastUsed": "2026-06-25T14:54:27.313Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "1b9d2eb2": {
+    "id": "1b9d2eb2",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add try/catch around JSON.parse in generateSubQueries",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8770590653159838,
+    "lastUsed": "2026-06-25T15:03:03.687Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "2aec4c7e": {
+    "id": "2aec4c7e",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null check before accessing metric properties",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8476221611868409,
+    "lastUsed": "2026-06-25T15:03:32.103Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "38cb8930": {
+    "id": "38cb8930",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add JSDoc to exported functions for readability",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8357553711185508,
+    "lastUsed": "2026-06-25T15:09:59.628Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "11be987b": {
+    "id": "11be987b",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before relatedFiles iteration",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8875564849637568,
+    "lastUsed": "2026-06-25T15:19:35.828Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "6baf4000": {
+    "id": "6baf4000",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before stdout.match in parseVitestOutput",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8579330694684119,
+    "lastUsed": "2026-06-25T15:19:59.422Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "572ea4d8": {
+    "id": "572ea4d8",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Remove unused variables in generateManifest",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8851708357245407,
+    "lastUsed": "2026-06-25T15:21:19.964Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "3a487d8c": {
+    "id": "3a487d8c",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add try/catch around fs operations in verifyModule",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.895043493733485,
+    "lastUsed": "2026-06-25T15:21:44.767Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "b3673c8": {
+    "id": "b3673c8",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before report.results.length in getTargetedFiles",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8498244425854997,
+    "lastUsed": "2026-06-25T15:33:08.460Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "1b13801a": {
+    "id": "1b13801a",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before rateLimitWindows.get(key)",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8506864856791436,
+    "lastUsed": "2026-06-25T15:38:00.701Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "e9b3ac": {
+    "id": "e9b3ac",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before JSON.parse in loadHealingLog",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8761929725915417,
+    "lastUsed": "2026-06-25T15:38:21.898Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "6608ea60": {
+    "id": "6608ea60",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before Object.keys on imported module",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8390035673153745,
+    "lastUsed": "2026-06-25T15:44:08.356Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "58b1dc75": {
+    "id": "58b1dc75",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null check for affectedFiles before join",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8471763516632004,
+    "lastUsed": "2026-06-25T15:44:29.553Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "5a5d09ac": {
+    "id": "5a5d09ac",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .split() in rationaleLines",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8839502795935905,
+    "lastUsed": "2026-06-25T15:48:08.059Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "4cfda5df": {
+    "id": "4cfda5df",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard for stackFrames[0] access in diagnoseError",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8493808227464252,
+    "lastUsed": "2026-06-25T15:48:35.103Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "7d1c3ce1": {
+    "id": "7d1c3ce1",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Fix nested function hoisting issue in consolidateEpisodicMemory",
+    "successRate": 1,
+    "useCount": 2,
+    "avgResponseQuality": 0.8851283207162294,
+    "lastUsed": "2026-06-25T16:06:39.143Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "1d377773": {
+    "id": "1d377773",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Fix empty catch block in autoGoalSuggester.ts",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8471763516632004,
+    "lastUsed": "2026-06-25T16:05:00.727Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "4c56d737": {
+    "id": "4c56d737",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null check before fs.existsSync in getChangelogPath",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8140132045895542,
+    "lastUsed": "2026-06-25T16:08:17.610Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "45c58611": {
+    "id": "45c58611",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .push() on stagedChanges",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8665429676530371,
+    "lastUsed": "2026-06-25T16:08:38.765Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "57d040c": {
+    "id": "57d040c",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Replace console.debug with structured log.debug",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.89093150050996,
+    "lastUsed": "2026-06-25T16:16:50.864Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "db02772": {
+    "id": "db02772",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null check before accessing response.body",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8515531641969548,
+    "lastUsed": "2026-06-25T16:17:49.853Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "359793e1": {
+    "id": "359793e1",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null check before accessing group.positive[0]",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8659066170111763,
+    "lastUsed": "2026-06-25T16:18:57.964Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "63a03222": {
+    "id": "63a03222",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null check before accessing record.proposalIds in syncOpenPRStatus",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8769017119653251,
+    "lastUsed": "2026-06-25T16:28:03.510Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "2b3d30ec": {
+    "id": "2b3d30ec",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard for disk metrics parsing",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8710763115284637,
+    "lastUsed": "2026-06-25T16:38:13.200Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "64e2ca": {
+    "id": "64e2ca",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before _inProcessLocks.keys() in getLockStatus",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8660079878356242,
+    "lastUsed": "2026-06-25T16:38:37.563Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "16f4a72f": {
+    "id": "16f4a72f",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before graph.get in findCircularDeps",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8378786715283036,
+    "lastUsed": "2026-06-25T18:19:05.681Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "1b486743": {
+    "id": "1b486743",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add timeout to OpenAI API call in querySpecialist",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8817690984827915,
+    "lastUsed": "2026-06-25T18:33:35.615Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "121b28d6": {
+    "id": "121b28d6",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null/undefined guard before .length on potential undefined",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9011501065749393,
+    "lastUsed": "2026-06-25T18:34:05.448Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "5ab3bd1e": {
+    "id": "5ab3bd1e",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null check for getConsolidatedLessons return value",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9101677027635989,
+    "lastUsed": "2026-06-25T18:41:41.979Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "7628c7ec": {
+    "id": "7628c7ec",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Fix missing null check for config.agentMapping in createSubTask",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9305623440676974,
+    "lastUsed": "2026-06-25T18:42:08.060Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "7d938db7": {
+    "id": "7d938db7",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Fix missing return type and add JSDoc to getMemoryStats",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.930030478198764,
+    "lastUsed": "2026-06-25T18:46:52.345Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "619b16e8": {
+    "id": "619b16e8",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .length in analyzeCodeSafety",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9098969117154512,
+    "lastUsed": "2026-06-25T18:47:24.637Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "267b74aa": {
+    "id": "267b74aa",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null check for recentPerf entries in getOptimalConfig",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9076576666334558,
+    "lastUsed": "2026-06-25T18:50:57.198Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "487c333d": {
+    "id": "487c333d",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .length on remainingChunks",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9109704684823137,
+    "lastUsed": "2026-06-25T18:51:18.283Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "2bd047fb": {
+    "id": "2bd047fb",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before Array.from in getAllCircuitBreakerStats",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9180768975335165,
+    "lastUsed": "2026-06-25T18:57:53.096Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "2cd3e761": {
+    "id": "2cd3e761",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null/undefined guard before .map() calls",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8817892378531309,
+    "lastUsed": "2026-06-25T18:58:25.557Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "4d9592a2": {
+    "id": "4d9592a2",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .find() in disableConstraint",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9247065013174821,
+    "lastUsed": "2026-06-25T19:05:01.261Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "224849c4": {
+    "id": "224849c4",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add .unref() to daemon timers to prevent vitest worker hangs",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9118399177180161,
+    "lastUsed": "2026-06-25T19:05:20.986Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "229f44e2": {
+    "id": "229f44e2",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add timeout to fetch call in browserClickVision",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9187718683029897,
+    "lastUsed": "2026-06-25T19:05:41.353Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "2242a5ac": {
+    "id": "2242a5ac",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null/undefined guard before .filter() on potentially-undefined value",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9242686036281882,
+    "lastUsed": "2026-06-25T19:06:07.630Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "69d12360": {
+    "id": "69d12360",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .filter() in getRoboticsStats",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9098969117154512,
+    "lastUsed": "2026-06-25T19:11:01.049Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "3d728492": {
+    "id": "3d728492",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .length in checkOllamaAvailable",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9249903188973475,
+    "lastUsed": "2026-06-25T19:21:46.744Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "155d3e32": {
+    "id": "155d3e32",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .length in optimizeContext loops",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9112956883574351,
+    "lastUsed": "2026-06-25T19:21:54.846Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "2d0d98cb": {
+    "id": "2d0d98cb",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .map() on searchMemory results",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9098969117154512,
+    "lastUsed": "2026-06-25T19:22:32.441Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "18402b74": {
+    "id": "18402b74",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Replace empty catch with log.warn in generateSubQueries",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9116006599752216,
+    "lastUsed": "2026-06-25T19:23:07.407Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "128769ee": {
+    "id": "128769ee",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .length access in writeAndromedaMemory",
+    "successRate": 1,
+    "useCount": 2,
+    "avgResponseQuality": 0.922324669354118,
+    "lastUsed": "2026-06-25T19:23:34.164Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "4e60b44f": {
+    "id": "4e60b44f",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .slice() on compressibleIndices",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8748969117154513,
+    "lastUsed": "2026-06-25T19:34:05.649Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "4fe54def": {
+    "id": "4fe54def",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .find() in promoteToConstitution",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9635291090043289,
+    "lastUsed": "2026-06-25T19:43:13.929Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "5ca63633": {
+    "id": "5ca63633",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .includes() in transition method",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9644797893175505,
+    "lastUsed": "2026-06-25T19:43:41.928Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "264abdd": {
+    "id": "264abdd",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .find() in runOrchestration",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9144148576603452,
+    "lastUsed": "2026-06-25T19:44:03.799Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "20deb82d": {
+    "id": "20deb82d",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .find() in executeTask",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9194441404862117,
+    "lastUsed": "2026-06-25T19:47:56.709Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "20ac7d13": {
+    "id": "20ac7d13",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null check before .length in browserExtractData",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9137197881219641,
+    "lastUsed": "2026-06-25T19:51:42.111Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "48b36805": {
+    "id": "48b36805",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .find() in recordSystemLearning",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9081788576450058,
+    "lastUsed": "2026-06-25T20:11:18.658Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "24cd2e4f": {
+    "id": "24cd2e4f",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before flatMap on potentially undefined topics",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9628791324428111,
+    "lastUsed": "2026-06-25T20:11:45.967Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "122b0582": {
+    "id": "122b0582",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null check before accessing response.choices[0]",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9098969117154512,
+    "lastUsed": "2026-06-25T20:15:55.076Z",
     "tags": [
       "self_improvement"
     ]

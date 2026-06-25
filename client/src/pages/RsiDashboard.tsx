@@ -21,13 +21,14 @@ import { CostOptimizationPanel } from "@/components/rsi/CostOptimizationPanel";
 import { SwarmVotingPanel } from "@/components/rsi/SwarmVotingPanel";
 import { AlgorithmRegistryPanel } from "@/components/rsi/AlgorithmRegistryPanel";
 import { ProposalTreeGraph } from "@/components/rsi/ProposalTreeGraph";
+import { ProposalFileList } from "@/components/rsi/ProposalFileList";
 import { ExternalRepoFixer } from "@/components/rsi/ExternalRepoFixer";
 import {
   Activity, GitBranch, Zap, Brain, DollarSign, Users, FlaskConical,
   BarChart3, GitCommit, Database, Settings, ArrowLeft, Cpu,
   RefreshCw, Play, Pause, TrendingUp, GitMerge, AlertTriangle,
   CheckCircle2, XCircle, Clock, Layers, Radio, Terminal,
-  ChevronRight, Circle, Loader2, Network,
+  ChevronRight, Circle, Loader2, Network, FileCode2, ThumbsUp, ThumbsDown,
 } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -144,6 +145,47 @@ function eventMeta(type: string) {
   }
 }
 
+// ─── Live Event RLHF mini-thumbs ────────────────────────────────────────────
+function LiveEventRlhf({ proposalId, targetFile, title }: { proposalId: string; targetFile: string; title: string }) {
+  const [rated, setRated] = React.useState<"up" | "down" | null>(null);
+  const adminKey = typeof localStorage !== "undefined" ? (localStorage.getItem("andromeda_admin_key") ?? "") : "";
+
+  const submit = async (type: "accept" | "reject") => {
+    if (rated) return;
+    try {
+      await fetch("/api/v71/rlhf/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Admin-Key": adminKey },
+        body: JSON.stringify({ proposalId, targetFile, category: "unknown", title, feedbackType: type, rawRating: type === "accept" ? 1.0 : 0.0 }),
+      });
+      setRated(type === "accept" ? "up" : "down");
+    } catch { /* non-fatal */ }
+  };
+
+  return (
+    <div className="flex items-center gap-0.5 flex-shrink-0">
+      <button
+        onClick={(e) => { e.stopPropagation(); submit("accept"); }}
+        disabled={!!rated}
+        title="Good improvement"
+        className="w-5 h-5 rounded flex items-center justify-center transition-all disabled:opacity-30"
+        style={{ color: rated === "up" ? "#34d399" : "#3f3f46" }}
+      >
+        <ThumbsUp className="w-2.5 h-2.5" />
+      </button>
+      <button
+        onClick={(e) => { e.stopPropagation(); submit("reject"); }}
+        disabled={!!rated}
+        title="Poor improvement"
+        className="w-5 h-5 rounded flex items-center justify-center transition-all disabled:opacity-30"
+        style={{ color: rated === "down" ? "#fb7185" : "#3f3f46" }}
+      >
+        <ThumbsDown className="w-2.5 h-2.5" />
+      </button>
+    </div>
+  );
+}
+
 // ─── Live Activity Feed Panel ─────────────────────────────────────────────────
 function LiveActivityFeed() {
   const { events, connected } = useRsiEvents();
@@ -196,6 +238,9 @@ function LiveActivityFeed() {
                   <span className="text-[9px] text-[#3f3f46] font-mono flex-shrink-0 mt-0.5 group-hover:text-[#52525b] transition-colors">
                     {formatTimeAgo(event.timestamp)}
                   </span>
+                  {event.type === "proposal:applied" && event.data?.proposalId && (
+                    <LiveEventRlhf proposalId={String(event.data.proposalId)} targetFile={String(event.data?.file ?? "")} title={title} />
+                  )}
                 </motion.div>
               );
             })}
@@ -675,7 +720,7 @@ function VectorMemoryStats() {
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
 const NAV_ITEMS: { id: NavSection; label: string; icon: React.ElementType; badge?: string }[] = [
   { id: "overview",    label: "Overview",      icon: BarChart3  },
-  { id: "graph",       label: "Proposal Graph", icon: Network   },
+  { id: "graph",       label: "File Improvements", icon: FileCode2 },
   { id: "proposals",   label: "Proposals",     icon: Brain      },
   { id: "commits",     label: "Commit Feed",   icon: GitCommit  },
   { id: "memory",      label: "Memory",        icon: Database   },
@@ -763,7 +808,22 @@ function SectionHeader({ title, subtitle }: { title: string; subtitle: string })
 export default function RsiDashboard() {
   const [, navigate] = useLocation();
   const [activeSection, setActiveSection] = useState<NavSection>("overview");
-  const adminKey = typeof localStorage !== "undefined" ? (localStorage.getItem("andromeda_admin_key") ?? "") : "";
+  const [adminKey, setAdminKey] = React.useState<string>(
+    typeof localStorage !== "undefined" ? (localStorage.getItem("andromeda_admin_key") ?? "") : ""
+  );
+  // Auto-fetch admin key from server (localhost only)
+  React.useEffect(() => {
+    if (adminKey) return;
+    fetch("/api/admin/local-key")
+      .then(r => r.ok ? r.json() : null)
+      .then((d: { key?: string } | null) => {
+        if (d?.key) {
+          localStorage.setItem("andromeda_admin_key", d.key);
+          setAdminKey(d.key);
+        }
+      })
+      .catch(() => {});
+  }, [adminKey]);
 
   return (
     <div className="flex h-screen overflow-hidden" style={{ background: "#09090b" }}>
@@ -784,7 +844,7 @@ export default function RsiDashboard() {
           </div>
           <div className="flex items-center gap-3">
             <ExternalRepoFixer adminKey={adminKey} />
-            <span className="pill pill-violet text-[10px]">v12.0.0</span>
+            <span className="pill pill-violet text-[10px]">v12.3.0</span>
           </div>
         </header>
 
@@ -824,11 +884,11 @@ export default function RsiDashboard() {
                   </Panel>
                 </>)}
 
-                {/* ── Proposal Graph ────────────────────────────────────── */}
+                {/* ── File Improvements ─────────────────────────────────── */}
                 {activeSection === "graph" && (<>
-                  <SectionHeader title="Proposal Graph" subtitle="Live evolutionary tree of RSI improvement proposals" />
+                  <SectionHeader title="File Improvements" subtitle="Every file the RSI engine has touched — click any row to see the diff" />
                   <div className="rounded-xl border border-[#27272a] overflow-hidden" style={{ height: "calc(100vh - 220px)", minHeight: 500 }}>
-                    <ProposalTreeGraph />
+                    <ProposalFileList />
                   </div>
                 </>)}
 

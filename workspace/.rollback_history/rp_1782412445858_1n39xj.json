@@ -1,0 +1,8 @@
+{
+  "id": "rp_1782412445858_1n39xj",
+  "description": "Before proposal prop_1782411722620_037tsh: Add null guard before .map() on potential undefined",
+  "timestamp": 1782412445858,
+  "author": "self-improve",
+  "files": [],
+  "metadata": {}
+}

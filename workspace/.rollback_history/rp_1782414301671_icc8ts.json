@@ -1,0 +1,8 @@
+{
+  "id": "rp_1782414301671_icc8ts",
+  "description": "Before proposal prop_1782414201640_6swo1p: Add .unref() to daemon timers to prevent vitest worker hangs",
+  "timestamp": 1782414301671,
+  "author": "self-improve",
+  "files": [],
+  "metadata": {}
+}

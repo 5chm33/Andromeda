@@ -1,7 +1,7 @@
 {
-  "timestamp": 1782391143624,
+  "timestamp": 1782419093061,
   "totalModules": 291,
-  "documentedModules": 186,
+  "documentedModules": 187,
   "undocumentedExports": [
     {
       "filePath": "server/_core/imageGeneration.ts",

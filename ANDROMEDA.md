@@ -67,6 +67,366 @@ Prioritize improvements that change BEHAVIOR (error handling, null guards, async
 
 ## Recent Changes
 
+- **[vv11.17.0]** Jun 25, 2026, 08:17 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 08:17 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 08:17 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 08:17 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 08:17 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 08:17 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 07:53 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 07:53 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 07:53 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 07:53 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 07:53 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 07:53 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 07:45 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 07:45 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 07:45 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 07:45 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 07:45 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 07:45 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 07:35 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 07:35 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 07:35 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 07:35 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 07:35 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 07:35 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 07:25 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 07:25 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 07:25 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 07:25 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 07:25 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 07:25 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 07:07 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 07:07 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 07:07 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 07:07 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 07:07 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 07:07 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 06:52 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 06:52 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 06:52 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 06:52 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 06:52 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 06:52 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 06:35 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 06:35 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 06:35 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 06:35 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 06:35 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 06:35 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 06:19 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 06:19 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 06:19 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 06:19 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 06:19 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 06:19 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:29 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:29 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:29 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 04:29 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 04:29 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:29 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:29 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:29 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:29 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 04:29 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 04:29 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:29 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:25 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:25 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:25 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 04:25 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 04:25 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:25 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:24 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:24 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:24 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 04:24 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 04:24 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:24 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:21 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:21 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:21 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 04:21 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 04:21 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:21 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:20 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:20 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:20 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 04:20 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 04:20 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:20 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:10 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:10 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:10 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 04:10 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 04:10 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:10 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:08 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:08 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:08 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 04:08 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 04:08 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:08 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:02 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:02 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:02 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 04:02 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 04:02 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 04:02 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:50 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:50 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:50 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 03:50 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 03:50 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:50 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:50 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:50 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:50 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 03:50 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 03:50 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:50 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:40 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:40 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:40 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 03:40 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 03:40 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:40 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:31 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:31 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:31 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 03:31 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 03:31 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:31 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:23 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:23 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:23 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 03:23 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 03:23 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:23 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:21 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:21 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:21 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 03:21 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 03:21 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:21 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:11 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:11 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:11 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 03:11 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 03:11 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:11 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:10 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:10 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:10 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 03:10 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 03:10 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:10 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:05 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:05 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:05 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 03:05 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 03:05 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:05 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:03 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:03 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:03 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 03:03 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 03:03 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 03:03 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 02:40 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 02:40 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 02:40 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 02:40 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 02:40 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 02:40 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 02:27 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 02:27 PM — Self-improvement applied: B (`b.ts`) [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 02:27 PM — Self-improvement applied: A (`a.ts`) [auto]
+
+- **[vTest update]** Jun 25, 2026, 02:27 PM — server/selfDocumentation.ts [auto]
+
+- **[vA test system event occurred]** Jun 25, 2026, 02:27 PM — test_event [auto]
+
+- **[vv11.17.0]** Jun 25, 2026, 02:27 PM — Self-improvement applied: Test improvement (`server/selfDocumentation.ts`) [auto]
+
 - **[vv11.17.0]** Jun 25, 2026, 01:41 PM — Self-improvement applied: C improvement (`c.ts`) [auto]
 
 - **[vv11.17.0]** Jun 25, 2026, 01:41 PM — Self-improvement applied: B (`b.ts`) [auto]

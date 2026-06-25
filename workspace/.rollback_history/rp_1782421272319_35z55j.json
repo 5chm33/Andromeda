@@ -1,0 +1,8 @@
+{
+  "id": "rp_1782421272319_35z55j",
+  "description": "Before proposal prop_1782421129730_rphz3i: Add null guard before .filter(Boolean) in getOutEdges and getInEdges",
+  "timestamp": 1782421272319,
+  "author": "self-improve",
+  "files": [],
+  "metadata": {}
+}

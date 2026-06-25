@@ -205,7 +205,7 @@ function appendProofHistory(result: RSICycleResult): void {
     if (fs.existsSync(p)) {
       try { history = JSON.parse(fs.readFileSync(p, "utf8")); } catch { history = []; }
     }
-    const entry = {
+    history.push({
       cycleId: result.cycleId,
       completedAt: result.completedAt,
       durationMs: result.durationMs,
@@ -236,8 +236,7 @@ function appendProofHistory(result: RSICycleResult): void {
       errors: result.errors.length > 0 ? result.errors.slice(0, 3) : undefined,
       categoryScoresBefore: result.categoryScoresBefore,
       categoryScoresAfter: result.categoryScoresAfter,
-    };
-    history.push(entry);
+    });
     // Keep last 200 entries
     if (history.length > 200) history = history.slice(-200);
     fs.writeFileSync(p, JSON.stringify(history, null, 2), "utf8");
@@ -2164,11 +2163,16 @@ export function getRSIStatus(): RSIStatus {
 /**
  * Get full cycle history from disk.
  */
-export function getRSIHistory(): RSICycleResult[] {
+export async function getRSIHistory(): Promise<RSICycleResult[]> {
   try {
     const p = getHistoryPath();
-    if (!fs.existsSync(p)) return [];
-    return fs.readFileSync(p, "utf8")
+    try {
+      await fs.promises.access(p);
+    } catch {
+      return [];
+    }
+    const content = await fs.promises.readFile(p, "utf8");
+    return content
       .split("\n")
       .filter(Boolean)
       .map(line => JSON.parse(line) as RSICycleResult)

@@ -1,0 +1,8 @@
+{
+  "id": "rp_1782414341796_bhlubc",
+  "description": "Before proposal prop_1782414007376_21g2d5: Add null/undefined guard before .filter() on potentially-undefined value",
+  "timestamp": 1782414341796,
+  "author": "self-improve",
+  "files": [],
+  "metadata": {}
+}

@@ -65,12 +65,15 @@ const PROJECT_DIR = process.cwd();
 
 const DEFAULT_CONFIG: RollbackConfig = {
   enabled: true,
+
   maxRollbackPoints: 50,
-  autoRollbackOnHealthFail: true,
-  // v11.291.1: Use /api/health (the actual endpoint), 60s interval to avoid
-  // false positives while CI pipeline is running (which takes 20-30s).
+  // v12.2.3: Disable automatic rollback on health-check failure.
+  // The health check was triggering false-positive rollbacks when the server
+  // was busy under RSI load (CI pipeline takes 20-30s, health check timed out).
+  // Rollbacks are still available manually via the API but will NOT fire automatically.
+  autoRollbackOnHealthFail: false,
   healthCheckUrl: `http://localhost:${process.env.PORT ?? 3000}/api/health`,
-  healthCheckInterval: 60_000,
+  healthCheckInterval: 90_000,
   retentionDays: 7,
   storageDir: path.resolve(PROJECT_DIR, "workspace", ".rollback_history"),
 };

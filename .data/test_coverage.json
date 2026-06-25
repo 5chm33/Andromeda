@@ -1,5 +1,5 @@
 {
-  "timestamp": 1782391113541,
+  "timestamp": 1782426270122,
   "totalModules": 291,
   "testedModules": 288,
   "untestedModules": 3,
@@ -88,26 +88,6 @@
       "exportedFunctions": [],
       "testedFunctions": [],
       "untestedFunctions": [],
-      "coveragePercent": 0
-    },
-    {
-      "filePath": "server/_core/videoGeneration.ts",
-      "fileName": "videoGeneration.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/_core/videoGeneration.test.ts",
-      "exportedFunctions": [
-        "generateVideoFromText",
-        "generateVideoFromImage",
-        "generateImageFal",
-        "isFalAvailable"
-      ],
-      "testedFunctions": [],
-      "untestedFunctions": [
-        "generateVideoFromText",
-        "generateVideoFromImage",
-        "generateImageFal",
-        "isFalAvailable"
-      ],
       "coveragePercent": 0
     },
     {
@@ -3891,6 +3871,27 @@
         "startTrainingRun"
       ],
       "coveragePercent": 73
+    },
+    {
+      "filePath": "server/_core/videoGeneration.ts",
+      "fileName": "videoGeneration.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/_core/videoGeneration.test.ts",
+      "exportedFunctions": [
+        "generateVideoFromText",
+        "generateVideoFromImage",
+        "generateImageFal",
+        "isFalAvailable"
+      ],
+      "testedFunctions": [
+        "generateVideoFromText",
+        "generateVideoFromImage",
+        "isFalAvailable"
+      ],
+      "untestedFunctions": [
+        "generateImageFal"
+      ],
+      "coveragePercent": 75
     },
     {
       "filePath": "server/adversarialTestGen.ts",

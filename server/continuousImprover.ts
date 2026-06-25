@@ -96,7 +96,12 @@ async function runImprovementCycle(): Promise<CycleResult> {
       const files = getAnalyzableFiles();
       if (files.length > 0) {
         // v9.9.0: Analyze 2 files per cycle (was 1) — doubles improvement rate at minimal extra cost
-        const shuffled = [...files].sort(() => Math.random() - 0.5);
+        const shuffled = [...files];
+        const crypto = await import('crypto');
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = crypto.randomBytes(4).readUInt32BE(0) % (i + 1);
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
         const filesToAnalyze = shuffled.slice(0, 2);
         for (const randomFile of filesToAnalyze) {
           await analyzeAndPropose(randomFile);

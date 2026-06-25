@@ -1,0 +1,8 @@
+{
+  "id": "rp_1782405517986_8qpowk",
+  "description": "Before proposal prop_1782405290055_grnuxe: Add null guard before Array.from in findCircularDeps",
+  "timestamp": 1782405517986,
+  "author": "self-improve",
+  "files": [],
+  "metadata": {}
+}

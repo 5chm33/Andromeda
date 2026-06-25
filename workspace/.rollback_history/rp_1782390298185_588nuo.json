@@ -1,8 +1,0 @@
-{
-  "id": "rp_1782390298185_588nuo",
-  "description": "Before proposal prop_1782390122428_8nt0rc: Replace Math.random with crypto.randomBytes for snapshot IDs",
-  "timestamp": 1782390298185,
-  "author": "self-improve",
-  "files": [],
-  "metadata": {}
-}
