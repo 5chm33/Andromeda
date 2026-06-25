@@ -256,6 +256,7 @@ export function getCircuitBreaker(name: string, config?: Partial<CircuitBreakerC
  */
 export function getAllCircuitBreakerStats(): Record<string, CircuitBreakerStats> {
   const stats: Record<string, CircuitBreakerStats> = {};
+  if (breakers.size === 0) return stats;
   for (const [name, breaker] of Array.from(breakers.entries())) {
     stats[name] = breaker.getStats();
   }
