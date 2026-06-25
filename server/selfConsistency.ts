@@ -323,7 +323,7 @@ export async function checkSelfConsistency(check: ConsistencyCheck): Promise<Con
   await Promise.all(providerPromises);
 
   // ── Calculate consensus ──
-  const validEvals = (evaluations || []).filter(e => !e.error);
+  const validEvals = (evaluations ?? []).filter(e => !e.error);
   const agreeing = validEvals.filter(e => e.agrees).length;
 
   // v11.291.1: When ALL providers fail (all errored), return proceed immediately.
