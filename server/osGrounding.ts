@@ -134,6 +134,10 @@ export function getDiskMetrics(): DiskMetrics {
       stdio: "pipe",
     });
     const parts = output.trim().split(/\s+/);
+    if (parts.length < 5) {
+      log.warn("Unexpected df output format", { output: output.trim() });
+      return { workspacePath, totalGb: 0, usedGb: 0, freeGb: 0, usagePercent: 0 };
+    }
     const totalGb = parseInt(parts[1], 10);
     const usedGb = parseInt(parts[2], 10);
     const freeGb = parseInt(parts[3], 10);
@@ -141,6 +145,7 @@ export function getDiskMetrics(): DiskMetrics {
 
     return { workspacePath, totalGb, usedGb, freeGb, usagePercent };
   } catch {
+    log.warn("Failed to get disk metrics", { workspacePath });
     return { workspacePath, totalGb: 0, usedGb: 0, freeGb: 0, usagePercent: 0 };
   }
 }
