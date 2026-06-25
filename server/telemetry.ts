@@ -259,7 +259,7 @@ export function getTelemetrySummary(): TelemetrySummary {
     errorsByModule[e.module] = (errorsByModule[e.module] ?? 0) + 1;
   }
 
-function getMemoryStats() {
+function getMemoryStats(): { heapUsedMb: number; heapTotalMb: number; rssMb: number } {
   const mem = process.memoryUsage();
   const toMb = (b: number) => Math.round(b / 1024 / 1024 * 10) / 10;
   return {
