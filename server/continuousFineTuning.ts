@@ -46,7 +46,7 @@ export async function runNightlyFineTuningCycle(modelId = "mistralai/Mistral-7B-
       throw new Error(`Dataset export failed: ${exportResult.error || "Unknown error"}`);
     }
     
-    if (exportResult.count < 10) {
+    if (exportResult.count == null || exportResult.count < 10) {
       log.warn(`[NightlyCycle] Insufficient data (${exportResult.count} pairs). Aborting training.`);
       return {
         success: false,
