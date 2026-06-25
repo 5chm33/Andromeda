@@ -138,7 +138,7 @@ Respond with ONLY a JSON object:
       };
     } catch (err) {
       lastError = err as Error;
-      // Continue to retry
+      console.warn(`[Consensus] Model ${model} attempt ${attempt + 1}/${maxRetries} failed: ${(err as Error).message}`);
     }
   }
   // All retries exhausted
