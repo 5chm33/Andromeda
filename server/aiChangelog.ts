@@ -119,7 +119,7 @@ function buildEntry(entry: ChangelogEntry): string {
     ? `\n**Also modified:** ${entry.secondaryFilesChanged.join(", ")}`
     : "";
 
-  const rationaleLines = (entry.rationale || "")
+  const rationaleLines = (entry.rationale ?? "")
     .split(". ")
     .filter(Boolean)
     .map(s => `> ${s.trim()}${s.endsWith(".") ? "" : "."}`)
