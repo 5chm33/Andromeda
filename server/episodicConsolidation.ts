@@ -238,60 +238,60 @@ const MS_PER_DAY = 86_400_000;
     };
   }
 
-  // Helper function to process clusters and generate lessons
-  async function processClusters(
-    clusters: Map<string, Episode[]>,
-    minClusterSize: number,
-    keepEpisodes: Episode[]
-  ): Promise<{ newLessons: ConsolidatedLesson[]; consolidatedIds: Set<string> }> {
-    const newLessons: ConsolidatedLesson[] = [];
-    const consolidatedIds = new Set<string>();
+async function processClusters(
+  clusters: Map<string, Episode[]>,
+  minClusterSize: number,
+  keepEpisodes: Episode[]
+): Promise<{ newLessons: ConsolidatedLesson[]; consolidatedIds: Set<string> }> {
+  const newLessons: ConsolidatedLesson[] = [];
+  const consolidatedIds = new Set<string>();
 
-    for (const [clusterKey, clusterEps] of clusters) {
-      if (clusterEps.length < minClusterSize) {
-        keepEpisodes.push(...clusterEps);
-        continue;
-      }
-
-      console.log(`[EpisodicConsolidate] Summarising "${clusterKey}" (${clusterEps.length} episodes)…`);
-      const lesson = await summariseCluster(clusterKey, clusterEps);
-
-      const successCount = clusterEps.filter(e => e.outcome === "success").length;
-      const tagFreq = new Map<string, number>();
-      clusterEps.flatMap(e => e.tags ?? []).forEach(t => tagFreq.set(t, (tagFreq.get(t) ?? 0) + 1));
-      const commonTags = [...tagFreq.entries()]
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5)
-        .map(([t]) => t);
-
-      newLessons.push({
-        id:           `lesson_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-        createdAt:    Date.now(),
-        clusterKey,
-        episodeIds:   clusterEps.map(e => e.id),
-        episodeCount: clusterEps.length,
-        dateRange: {
-          from: Math.min(...clusterEps.map(e => e.timestamp)),
-          to:   Math.max(...clusterEps.map(e => e.timestamp)),
-        },
-        lesson,
-        successRate:  successCount / clusterEps.length,
-        commonTags,
-      });
-
-      clusterEps.forEach(e => consolidatedIds.add(e.id));
+  for (const [clusterKey, clusterEps] of clusters) {
+    if (clusterEps.length < minClusterSize) {
+      keepEpisodes.push(...clusterEps);
+      continue;
     }
 
-    return { newLessons, consolidatedIds };
+    console.log(`[EpisodicConsolidate] Summarising "${clusterKey}" (${clusterEps.length} episodes)…`);
+    const lesson = await summariseCluster(clusterKey, clusterEps);
+
+    const successCount = clusterEps.filter(e => e.outcome === "success").length;
+    const tagFreq = new Map<string, number>();
+    clusterEps.flatMap(e => e.tags ?? []).forEach(t => tagFreq.set(t, (tagFreq.get(t) ?? 0) + 1));
+    const commonTags = [...tagFreq.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([t]) => t);
+
+    newLessons.push({
+      id:           `lesson_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+      createdAt:    Date.now(),
+      clusterKey,
+      episodeIds:   clusterEps.map(e => e.id),
+      episodeCount: clusterEps.length,
+      dateRange: {
+        from: Math.min(...clusterEps.map(e => e.timestamp)),
+        to:   Math.max(...clusterEps.map(e => e.timestamp)),
+      },
+      lesson,
+      successRate:  successCount / clusterEps.length,
+      commonTags,
+    });
+
+    clusterEps.forEach(e => consolidatedIds.add(e.id));
   }
 
-  const clusters = clusterEpisodes(oldEpisodes);
-  const existingLessons = loadLessons();
-  const { newLessons, consolidatedIds } = await processClusters(
-    clusters,
-    minClusterSize,
-    keepEpisodes
-  );
+  return { newLessons, consolidatedIds };
+}
+
+// ... (rest of the consolidateEpisodes function)
+const clusters = clusterEpisodes(oldEpisodes);
+const existingLessons = loadLessons();
+const { newLessons, consolidatedIds } = await processClusters(
+  clusters,
+  minClusterSize,
+  keepEpisodes
+);
 
   saveLessons([...existingLessons, ...newLessons]);
   saveEpisodes(keepEpisodes);
