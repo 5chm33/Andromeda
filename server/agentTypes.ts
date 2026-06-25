@@ -24,6 +24,10 @@ export type AgentEventType =
   | "paused"         // v5.39: Agent is paused, waiting for resume
   | "resumed";       // v5.39: Agent resumed after pause
 
+/**
+ * Represents an event emitted by the agent during execution.
+ * Each event carries a type and optional metadata about the agent's progress.
+ */
 export interface AgentEvent {
   type: AgentEventType;
   step?: number;
