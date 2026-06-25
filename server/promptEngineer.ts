@@ -167,7 +167,7 @@ export async function getOptimizedPromptAddendum(taskType: TaskType): Promise<st
   let memoryContext = "";
   try {
     const results = await searchMemory(`${taskType} prompt improvement success`, 3);
-    memoryContext = results.map((r) => r.entry.content).join("\n");
+    memoryContext = (results || []).map((r) => r.entry.content).join("\n");
   } catch {
     // Non-fatal
   }
