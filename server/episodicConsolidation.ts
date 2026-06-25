@@ -238,14 +238,6 @@ const MS_PER_DAY = 86_400_000;
     };
   }
 
-  const clusters = clusterEpisodes(oldEpisodes);
-  const existingLessons = loadLessons();
-  const { newLessons, consolidatedIds } = await processClusters(
-    clusters,
-    minClusterSize,
-    keepEpisodes
-  );
-
   // Helper function to process clusters and generate lessons
   async function processClusters(
     clusters: Map<string, Episode[]>,
@@ -292,6 +284,14 @@ const MS_PER_DAY = 86_400_000;
 
     return { newLessons, consolidatedIds };
   }
+
+  const clusters = clusterEpisodes(oldEpisodes);
+  const existingLessons = loadLessons();
+  const { newLessons, consolidatedIds } = await processClusters(
+    clusters,
+    minClusterSize,
+    keepEpisodes
+  );
 
   saveLessons([...existingLessons, ...newLessons]);
   saveEpisodes(keepEpisodes);
