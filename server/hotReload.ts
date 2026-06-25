@@ -137,8 +137,8 @@ function typeCheckFile(filePath: string): { success: boolean; errors: string[] }
     });
     return { success: true, errors: [] };
   } catch (err: any) {
-    const output = err.stdout?.toString?.() || err.stderr?.toString?.() || "";
-    const errors = output.split("\n").filter((l: string) => l.includes("error TS")).slice(0, 10);
+    const output = err?.stdout?.toString?.() || err?.stderr?.toString?.() || "";
+    const errors = (output || "").split("\n").filter((l: string) => l.includes("error TS")).slice(0, 10);
     return { success: errors.length === 0, errors };
   }
 }
