@@ -403,7 +403,7 @@ async function _streamToResponseCore(
           }
         } catch (parseErr) {
           // Malformed chunk from LLM stream — log but continue
-          console.debug("[ai.ts] Malformed stream chunk:", (parseErr as Error).message);
+          log.debug("Malformed stream chunk: %s", (parseErr as Error).message);
         }
       }
     }
