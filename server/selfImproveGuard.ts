@@ -180,7 +180,7 @@ function getDefaultConfig(): GuardConfig {
     runTestsBefore: true,
     autoRollbackOnTestFailure: true,
     maxBackupsPerFile: 10,
-    blockedFiles: ["db.ts", "auth.ts", "selfImproveGuard.ts", "selfHeal.ts", "selfRollback.ts", "selfTestPipeline.ts", "videoGeneration.test.ts"],
+    blockedFiles: ["db.ts", "auth.ts", "selfImproveGuard.ts", "selfHeal.ts", "selfRollback.ts", "selfTestPipeline.ts", "videoGeneration.test.ts", "RsiDashboard.tsx", "ProposalFileList.tsx"],
     // v5.25: Meta-mode guard — these files are the "immune system" and cannot be self-modified
     // unless META_MODIFY_UNLOCK=true is set in environment (requires human intervention)
     metaGuardFiles: ["selfImproveGuard.ts", "selfHeal.ts", "selfRollback.ts", "selfTestPipeline.ts"],
