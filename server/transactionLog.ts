@@ -204,7 +204,9 @@ export function loadTransactionLog(): void {
   try {
     if (fs.existsSync(TRANSACTION_LOG_PATH)) {
       const data = JSON.parse(fs.readFileSync(TRANSACTION_LOG_PATH, "utf-8"));
-      console.log(`[TransactionLog] Loaded ${data.length} historical transactions`);
+      if (Array.isArray(data)) {
+        console.log(`[TransactionLog] Loaded ${data.length} historical transactions`);
+      }
     }
   } catch {
     // Non-fatal
