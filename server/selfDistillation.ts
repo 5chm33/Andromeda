@@ -49,12 +49,14 @@ export function extractDpoDataset(minPairs = 10): DpoPair[] {
   // Create pairs
   const dataset: DpoPair[] = [];
   for (const [query, group] of grouped.entries()) {
-    if (group.positive.length > 0 && group.negative.length > 0) {
+    const pos = group.positive[0];
+    const neg = group.negative[0];
+    if (pos && neg) {
       // Pair the most recent positive with the most recent negative
       dataset.push({
         prompt: query,
-        chosen: group.positive[0],
-        rejected: group.negative[0],
+        chosen: pos,
+        rejected: neg,
       });
     }
   }
