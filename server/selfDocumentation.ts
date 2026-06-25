@@ -39,7 +39,11 @@ function getAndromedaMdPath(): string {
 }
 
 function getChangelogPath(): string {
-  const workspaceDir = path.resolve(process.cwd(), "workspace");
+  const cwd = process.cwd();
+  if (!cwd) {
+    throw new Error("process.cwd() returned undefined");
+  }
+  const workspaceDir = path.resolve(cwd, "workspace");
   if (!fs.existsSync(workspaceDir)) fs.mkdirSync(workspaceDir, { recursive: true });
   return path.join(workspaceDir, ".andromeda_changelog.json");
 }
