@@ -65,7 +65,7 @@ export class AgentStateMachine {
   transition(to: AgentState, reason: string): void {
     const from = this._state;
     const allowed = AgentStateMachine.VALID_TRANSITIONS[from];
-    if (!allowed.includes(to)) {
+    if (!allowed || !allowed.includes(to)) {
       throw new Error(`Invalid transition from ${from} to ${to}`);
     }
     this._state = to;
