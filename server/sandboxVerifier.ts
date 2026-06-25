@@ -116,7 +116,7 @@ async function verifyInLocalSandbox(req: VerificationRequest, start: number): Pr
     writeFileSync(targetFile, req.proposedContent);
 
     // Write related files if provided
-    if (req.relatedFiles) {
+    if (req.relatedFiles && req.relatedFiles.length > 0) {
       for (const rf of req.relatedFiles) {
         const rfPath = join(sandboxDir, basename(rf.path));
         writeFileSync(rfPath, rf.content);
