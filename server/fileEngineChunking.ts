@@ -309,7 +309,7 @@ export function smartChunkFile(
   }
 
   const loaded = loadedChunks.map(c => c.body).join("\n\n");
-  const manifest = remainingChunks.length > 0
+  const manifest = remainingChunks && remainingChunks.length > 0
     ? `\n// ─── [${remainingChunks.length} additional sections not loaded — request by name] ───\n` +
       `// Available: ${remainingChunks.map(c => `${c.name} (lines ${c.startLine}-${c.endLine}, ~${c.tokenEstimate} tokens)`).join(", ")}\n` +
       `// Use: loadChunk("${path}", "functionName") to load specific sections`
