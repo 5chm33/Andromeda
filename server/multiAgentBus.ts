@@ -38,6 +38,9 @@ function makeId(): string {
 /**
  * Register an agent with the bus.
  */
+/**
+ * Register an agent with the bus.
+ */
 export function registerAgent(role: AgentRole): void {
   agents.set(role, {
     role,
@@ -52,6 +55,8 @@ export function registerAgent(role: AgentRole): void {
 
 /**
  * Subscribe an agent to incoming messages.
+ * @param role - The agent role to subscribe.
+ * @param handler - The handler function to invoke on incoming messages.
  */
 export function subscribe(role: AgentRole, handler: MessageHandler): void {
   if (!subscribers.has(role)) {
@@ -62,6 +67,12 @@ export function subscribe(role: AgentRole, handler: MessageHandler): void {
 
 /**
  * Publish a message to a specific agent or broadcast to all.
+ * @param from - The sender agent role.
+ * @param to - The target agent role or 'broadcast'.
+ * @param type - The message type.
+ * @param payload - The message payload.
+ * @param correlationId - Optional correlation ID for tracking.
+ * @returns The published message.
  */
 export async function publish(
   from: AgentRole,
@@ -111,6 +122,8 @@ export async function publish(
 
 /**
  * Update an agent's status.
+ * @param role - The agent role.
+ * @param status - The new status.
  */
 export function setAgentStatus(role: AgentRole, status: AgentState['status']): void {
   const state = agents.get(role);
@@ -123,6 +136,7 @@ export function setAgentStatus(role: AgentRole, status: AgentState['status']): v
 
 /**
  * Get all agent states.
+ * @returns An array of agent states.
  */
 export function getAgentStates(): AgentState[] {
   return Array.from(agents.values());
@@ -130,6 +144,8 @@ export function getAgentStates(): AgentState[] {
 
 /**
  * Get message log (for debugging / audit).
+ * @param limit - Maximum number of messages to return (default 50).
+ * @returns An array of recent messages.
  */
 export function getMessageLog(limit = 50): AgentMessage[] {
   return messageLog.slice(-limit);
