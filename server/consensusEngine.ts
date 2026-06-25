@@ -210,7 +210,7 @@ export async function getConsensus(request: ConsensusRequest): Promise<Consensus
   if (approved) totalApproved++;
   else totalRejected++;
 
-  console.log(`[Consensus] ${approved ? "APPROVED" : "REJECTED"} (${approvalCount}/${config.models.length}): ${request.description.slice(0, 80)}`);
+  console.log(`[Consensus] ${approved ? "APPROVED" : "REJECTED"} (${approvalCount}/${config.models.length}): ${(request.description ?? '').slice(0, 80)}`);
   return result;
 }
 
