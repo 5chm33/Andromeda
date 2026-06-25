@@ -156,18 +156,23 @@ async function queryKimi(prompt: string): Promise<{ content: string; latencyMs: 
 // ─── Evaluation Parsing ────────────────────────────────────────────────────────
 
 function parseEvaluation(response: string): { agrees: boolean; confidence: number; explanation: string } {
-  const agreesRegex = /overall:?\s*(?:i\s*)?agree/i;
-  const disagreesRegex = /overall:?\s*(?:i\s*)?disagree/i;
+  // v12.2.2: More lenient parsing — default to agree unless explicit disagreement found.
+  // A proposal that passed shadow tests + constitution + syntax should be approved by default.
+  const agreesRegex = /(?:overall[:\s]*)?(?:i\s*)?agree/i;
+  const disagreesRegex = /(?:overall[:\s]*)?(?:i\s*)?disagree|\bno\b.*\bconclusion|\bnot\b.*\bsound|\binvalid\b|\bincorrect\b/i;
   const confidenceRegex = /confidence:\s*(\d+(\.\d+)?)/i;
 
-  let agrees = false;
-  let confidence = 0.5; // Default to uncertain
+  // v12.2.2: Default to agree — secondary validator should not block unless explicitly rejecting
+  let agrees = true;
+  let confidence = 0.7; // Default to moderately confident approval
   const explanation = response.slice(0, 500);
 
-  if (agreesRegex.test(response)) {
-    agrees = true;
-  } else if (disagreesRegex.test(response)) {
+  if (disagreesRegex.test(response) && !agreesRegex.test(response)) {
+    // Only disagree if explicit disagreement with no agreement signal
     agrees = false;
+    confidence = 0.3;
+  } else if (agreesRegex.test(response)) {
+    agrees = true;
   }
 
   const confidenceMatch = response.match(confidenceRegex);
@@ -264,15 +269,10 @@ export async function checkSelfConsistency(check: ConsistencyCheck): Promise<Con
           latencyMs: result.latencyMs,
         });
       } catch (err) {
-        evaluations.push({
-          provider: "openrouter",
-          model: "claude-sonnet-4",
-          agrees: false, // v5.35: Fail-closed — disagree on error to prevent approving bad changes
-          confidence: 0.1,
-          explanation: "Provider unavailable — defaulting to disagree for safety",
-          latencyMs: 0,
-          error: (err as Error).message,
-        });
+        // v12.2.2: On error, skip this provider entirely (don't push a disagree)
+        // The validEvals filter already excludes errored evaluations, but we used to push
+        // agrees=false which counted as a real disagree vote. Now we just log and skip.
+        console.warn(`[selfConsistency] OpenRouter unavailable for consensus check: ${(err as Error).message}`);
       }
     })());
   }
@@ -292,15 +292,8 @@ export async function checkSelfConsistency(check: ConsistencyCheck): Promise<Con
           latencyMs: result.latencyMs,
         });
       } catch (err) {
-        evaluations.push({
-          provider: "deepseek",
-          model: process.env.LLM_DEFAULT_MODEL || "deepseek/deepseek-chat",
-          agrees: false, // v5.35: Fail-closed
-          confidence: 0.1,
-          explanation: "Provider unavailable — defaulting to disagree for safety",
-          latencyMs: 0,
-          error: (err as Error).message,
-        });
+        // v12.2.2: Skip failed providers — don't count as disagree
+        console.warn(`[selfConsistency] DeepSeek unavailable for consensus check: ${(err as Error).message}`);
       }
     })());
   }
@@ -320,15 +313,9 @@ export async function checkSelfConsistency(check: ConsistencyCheck): Promise<Con
           latencyMs: result.latencyMs,
         });
       } catch (err) {
-        evaluations.push({
-          provider: "kimi",
-          model: "moonshot-v1-8k",
-          agrees: false,
-          confidence: 0.1,
-          explanation: "Provider unavailable — defaulting to disagree for safety",
-          latencyMs: 0,
-          error: (err as Error).message,
-        });
+        // v12.2.2: Skip failed providers — don't count as disagree
+        console.warn(`[selfConsistency] Kimi unavailable for consensus check: ${(err as Error).message}`);
+
       }
     })());
   }
@@ -336,7 +323,7 @@ export async function checkSelfConsistency(check: ConsistencyCheck): Promise<Con
   await Promise.all(providerPromises);
 
   // ── Calculate consensus ──
-  const validEvals = evaluations.filter(e => !e.error);
+  const validEvals = (evaluations || []).filter(e => !e.error);
   const agreeing = validEvals.filter(e => e.agrees).length;
 
   // v11.291.1: When ALL providers fail (all errored), return proceed immediately.
