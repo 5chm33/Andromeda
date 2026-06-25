@@ -543,6 +543,23 @@ export function tierForArea(area?: string): LLMTier {
   return "eco";
 }
 
+// ─── v12.3.1: Provider Fallback Chain ──────────────────────────────────────
+// When the primary provider returns 429 (quota exceeded / suspended) or 402
+// (insufficient balance), automatically retry with the next available provider.
+// Order: Kimi → OpenRouter-fast (Gemini Flash) → Groq → throw
+
+function buildFallbackChain(excludeId: string): LLMProviderConfig[] {
+  const candidates: Array<{ id: string; envKey: string }> = [
+    { id: "kimi",           envKey: "KIMI_API_KEY" },
+    { id: "openrouter-fast", envKey: "OPENROUTER_API_KEY" },
+    { id: "groq",           envKey: "GROQ_API_KEY" },
+    { id: "deepseek",       envKey: "DEEPSEEK_API_KEY" },
+  ];
+  return candidates
+    .filter(c => c.id !== excludeId && process.env[c.envKey])
+    .map(c => ({ ...DEFAULT_PROVIDERS[c.id], apiKey: process.env[c.envKey]! }));
+}
+
 // ─── Non-Streaming Completion ───────────────────────────────────────────────
 
 export async function chatCompletion(
@@ -613,6 +630,33 @@ export async function chatCompletion(
 
   if (!resp.ok) {
     const errText = await resp.text().catch(() => "Unknown error");
+    // v12.3.1: On 429 (quota/rate-limit) or 402 (insufficient balance), try fallback providers
+    if (resp.status === 429 || resp.status === 402) {
+      const fallbacks = buildFallbackChain(provider.id);
+      for (const fb of fallbacks) {
+        log.warn(`[FallbackChain] ${provider.id} returned ${resp.status} — retrying with ${fb.id}`);
+        const fbResp = await fetch(fb.apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${fb.apiKey}`, ...(fb.headers ?? {}) },
+          body: JSON.stringify({ ...body, model: fb.model }),
+          signal: options?.signal,
+        });
+        if (fbResp.ok) {
+          const fbJson = (await fbResp.json()) as any;
+          const fbChoice = fbJson.choices?.[0];
+          const fbMsg = fbChoice?.message;
+          if (fbMsg && (fbMsg as any).reasoning_content !== undefined) delete (fbMsg as any).reasoning_content;
+          const fbUsage = fbJson.usage ?? {};
+          recordLLMCost(fb.id, fbUsage.prompt_tokens ?? 0, fbUsage.completion_tokens ?? 0);
+          return {
+            content: fbMsg?.content ?? null,
+            toolCalls: fbMsg?.tool_calls ?? [],
+            finishReason: fbChoice?.finish_reason ?? "stop",
+            usage: { promptTokens: fbUsage.prompt_tokens ?? 0, completionTokens: fbUsage.completion_tokens ?? 0, totalTokens: fbUsage.total_tokens ?? 0 },
+          };
+        }
+      }
+    }
     throw new Error(`LLM API error ${resp.status}: ${errText}`);
   }
 
@@ -1093,6 +1137,31 @@ export async function backgroundChatCompletion(
   });
   if (!resp.ok) {
     const errText = await resp.text().catch(() => resp.statusText);
+    // v12.3.1: On 429/402, retry with fallback providers
+    if (resp.status === 429 || resp.status === 402) {
+      const fallbacks = buildFallbackChain(provider.id);
+      for (const fb of fallbacks) {
+        log.warn(`[FallbackChain] Background ${provider.id} returned ${resp.status} — retrying with ${fb.id}`);
+        const fbResp = await fetch(fb.apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${fb.apiKey}`, ...(fb.headers ?? {}) },
+          body: JSON.stringify({ ...body, model: fb.model }),
+          signal: options?.signal,
+        });
+        if (fbResp.ok) {
+          const fbData = await fbResp.json() as any;
+          const fbChoice = fbData.choices?.[0];
+          const fbUsage = fbData.usage ?? {};
+          recordLLMCost(fb.id, fbUsage.prompt_tokens ?? 0, fbUsage.completion_tokens ?? 0);
+          return {
+            content: fbChoice?.message?.content ?? null,
+            toolCalls: fbChoice?.message?.tool_calls ?? [],
+            finishReason: fbChoice?.finish_reason ?? "stop",
+            usage: { promptTokens: fbUsage.prompt_tokens ?? 0, completionTokens: fbUsage.completion_tokens ?? 0, totalTokens: fbUsage.total_tokens ?? 0 },
+          };
+        }
+      }
+    }
     throw new Error(`Background LLM API error ${resp.status}: ${errText}`);
   }
   const data = await resp.json() as {
