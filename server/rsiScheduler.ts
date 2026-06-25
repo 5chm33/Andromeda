@@ -63,9 +63,10 @@ function appendScheduleLog(entry: ScheduleLogEntry): void {
   try {
     if (fs.existsSync(p)) entries = JSON.parse(fs.readFileSync(p, "utf8"));
   } catch { /* start fresh */ }
+  const MAX_LOG_ENTRIES = 500;
   entries.push(entry);
-  // Keep last 500 entries
-  if (entries.length > 500) entries = entries.slice(-500);
+  // Keep last MAX_LOG_ENTRIES entries
+  if (entries.length > MAX_LOG_ENTRIES) entries = entries.slice(-MAX_LOG_ENTRIES);
   fs.writeFileSync(p, JSON.stringify(entries, null, 2), "utf8");
 }
 
