@@ -183,8 +183,11 @@ export async function editFilesInZip(
 
   // v5.31: Dynamic model-aware budget replaces hardcoded 80000/20000
   const contextWindow = getContextWindow(model);
-  const MAX_CHARS = Math.floor(contextWindow * 3.5 * 0.6); // 60% of context for file content (chars ≈ tokens * 3.5)
-  const perFileLimit = Math.min(Math.floor(MAX_CHARS / Math.max(sortedPaths.length, 1)), 60000); // distribute evenly, cap at 60K per file
+const CHARS_PER_TOKEN = 3.5;
+const CONTEXT_USAGE_RATIO = 0.6; // 60% of context for file content
+const MAX_CHARS = Math.floor(contextWindow * CHARS_PER_TOKEN * CONTEXT_USAGE_RATIO);
+const PER_FILE_LIMIT = 60000; // cap per file to avoid excessive token usage
+const perFileLimit = Math.min(Math.floor(MAX_CHARS / Math.max(sortedPaths.length, 1)), PER_FILE_LIMIT);
   const parts: string[] = [];
   let totalChars = 0;
   for (const path of sortedPaths) {
