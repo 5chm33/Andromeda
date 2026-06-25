@@ -236,9 +236,38 @@ async function runStartup() {
   const distEntry    = path.join(ROOT, "dist", "_core", "index.js");
   const distFrontend = path.join(ROOT, "dist", "public", "index.html");
 
-  if (!fs.existsSync(distEntry) || !fs.existsSync(distFrontend)) {
+  // Rebuild if dist is missing OR if source files are newer than the dist
+  function needsBuild() {
+    if (!fs.existsSync(distEntry) || !fs.existsSync(distFrontend)) return true;
+    try {
+      const distMtime = fs.statSync(distFrontend).mtimeMs;
+      // Check if any .tsx/.ts/.css source file is newer than the dist
+      const srcDirs = [
+        path.join(ROOT, "client", "src"),
+        path.join(ROOT, "server"),
+      ];
+      function walkNewest(dir) {
+        if (!fs.existsSync(dir)) return 0;
+        let newest = 0;
+        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+          if (entry.name.startsWith(".")) continue;
+          const full = path.join(dir, entry.name);
+          if (entry.isDirectory()) {
+            newest = Math.max(newest, walkNewest(full));
+          } else if (/\.(tsx?|css|html)$/.test(entry.name)) {
+            newest = Math.max(newest, fs.statSync(full).mtimeMs);
+          }
+        }
+        return newest;
+      }
+      const srcMtime = Math.max(...srcDirs.map(walkNewest));
+      return srcMtime > distMtime;
+    } catch { return true; }
+  }
+
+  if (needsBuild()) {
     step("build", "running", "Building Andromeda (~30 sec)…");
-    log("Building — this only happens once…");
+    log("Building latest changes…");
     try {
       execSync("pnpm run build", {
         cwd: ROOT, stdio: "pipe", timeout: 180_000,
@@ -269,10 +298,28 @@ function startServer() {
   }
 
   const serverPath = path.join(ROOT, "dist", "_core", "index.js");
+
+  // Load .env.local variables so the server has all API keys
+  const envVars = { ...process.env };
+  const envCandidates2 = [".env.local", ".env", ".env.production", ".env.development"];
+  const envFile2 = envCandidates2.find(f => fs.existsSync(path.join(ROOT, f)));
+  if (envFile2) {
+    const envLines = fs.readFileSync(path.join(ROOT, envFile2), "utf8").split("\n");
+    for (const line of envLines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      const eqIdx = trimmed.indexOf("=");
+      if (eqIdx < 1) continue;
+      const k = trimmed.slice(0, eqIdx).trim();
+      const v = trimmed.slice(eqIdx + 1).trim().replace(/^["']|["']$/g, "");
+      if (k) envVars[k] = v;
+    }
+  }
+
   serverProcess = spawn("node", [serverPath], {
     cwd: ROOT,
     stdio: ["ignore", "pipe", "pipe"],
-    env: { ...process.env },
+    env: envVars,
   });
 
   serverProcess.stdout.on("data", (data) => {
@@ -291,6 +338,10 @@ function startServer() {
       step("server", "done", `Server running on :${SERVER_PORT}`);
       log(`Andromeda is live at http://localhost:${SERVER_PORT} ✓`);
       send("server-ready", { url: `http://localhost:${SERVER_PORT}` });
+      // Auto-open the browser 1.5 s after server is ready
+      setTimeout(() => {
+        shell.openExternal(`http://localhost:${SERVER_PORT}`);
+      }, 1500);
     } else {
       step("server", "error", "Server did not start in time");
       err("Server did not respond within 60 seconds.");

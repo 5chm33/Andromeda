@@ -1,37 +1,37 @@
 @echo off
-:: Andromeda GUI Launcher v12.0.0
-:: Launches the Electron splash window instead of a raw cmd prompt.
-:: Falls back to the console launcher if Electron is not available.
-::
-:: NOTE: Uses launcher\main.cjs (CommonJS) because package.json has
-::       "type":"module" which would break a plain .js Electron main file.
+:: Andromeda AI Launcher v12.1.0
+:: Uses VBScript for a completely silent launch — no cmd window visible.
+:: The Electron splash screen is the only thing that appears.
 
 cd /d "%~dp0"
 
-:: Try Electron from node_modules first (fastest path after pnpm install)
+:: Launch silently via VBScript (hides all console windows)
+if exist "%~dp0Andromeda Launcher.vbs" (
+    cscript //nologo "%~dp0Andromeda Launcher.vbs"
+    exit /b 0
+)
+
+:: VBScript not found — install Electron if needed, then launch directly
 set ELECTRON_BIN=%~dp0node_modules\.bin\electron.cmd
+if not exist "%ELECTRON_BIN%" (
+    echo Installing Electron (first time only)...
+    call npm install -g electron --quiet 2>nul
+)
+
+:: Try local electron
 if exist "%ELECTRON_BIN%" (
-    "%ELECTRON_BIN%" launcher\main.cjs
-    exit /b
+    start "" /b "%ELECTRON_BIN%" launcher\main.cjs
+    exit /b 0
 )
 
-:: Try electron from PATH (globally installed)
+:: Try global electron
 where electron >nul 2>&1
 if %errorlevel%==0 (
-    electron launcher\main.cjs
-    exit /b
+    start "" /b electron launcher\main.cjs
+    exit /b 0
 )
 
-:: Electron not found — install it globally then launch
-echo [INFO] Electron not found. Installing...
-call npm install -g electron --quiet 2>nul
-where electron >nul 2>&1
-if %errorlevel%==0 (
-    electron launcher\main.cjs
-    exit /b
-)
-
-:: Last resort: fall back to console launcher
+:: Last resort: console mode
 echo [WARN] Could not start GUI launcher. Falling back to console mode.
 node start.cjs
 pause
