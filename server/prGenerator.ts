@@ -312,7 +312,7 @@ export async function syncOpenPRStatus(): Promise<void> {
         // Record negative RLHF feedback for closed (rejected) PRs
         try {
           const { recordFeedback } = await import("./rlhfCollector.js");
-          for (const proposalId of record.proposalIds) {
+          for (const proposalId of record.proposalIds ?? []) {
             recordFeedback(proposalId, record.targetFiles[0] ?? "", "unknown", record.title, "reject", {
               comment: "PR closed without merging",
               actorId: "prGenerator",
