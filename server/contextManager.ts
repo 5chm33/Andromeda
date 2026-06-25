@@ -133,6 +133,7 @@ export class ContextManager {
    * Returns the (possibly compacted) message array.
    */
   async manageContext(messages: ChatMessage[]): Promise<ChatMessage[]> {
+    if (!messages || messages.length === 0) return messages || [];
     const currentTokens = estimateMessageTokens(messages);
     const availableTokens = this.config.maxContextTokens - this.config.reserveForResponse;
     const threshold = availableTokens * this.config.summarizationThreshold;
