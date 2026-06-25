@@ -125,6 +125,9 @@ export function recordSystemLearning(input: {
   };
 
   // Check for duplicates
+  if (!learning.title && !learning.content) {
+    throw new Error('Learning must have a title or content');
+  }
   const existing = store.learnings.find(l =>
     l.title === learning.title || l.content === learning.content
   );
