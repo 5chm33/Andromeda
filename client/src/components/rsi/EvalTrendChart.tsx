@@ -51,20 +51,20 @@ function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   const d = payload[0]?.payload as ChartPoint;
   return (
-    <div className="bg-zinc-900 border border-zinc-700 rounded-lg p-3 text-xs shadow-xl">
-      <div className="text-zinc-400 mb-2">{d.label}</div>
+    <div className="rounded-lg p-3 text-xs shadow-2xl" style={{ background: '#18181b', border: '1px solid #27272a' }}>
+      <div className="mb-2" style={{ color: '#71717a' }}>{d.label}</div>
       {d.before !== null && (
-        <div className="text-zinc-300">Before: <span className="text-sky-400 font-mono">{d.before.toFixed(1)}%</span></div>
+        <div style={{ color: '#a1a1aa' }}>Before: <span className="font-mono" style={{ color: '#38bdf8' }}>{d.before.toFixed(1)}%</span></div>
       )}
       {d.after !== null && (
-        <div className="text-zinc-300">After: <span className="text-emerald-400 font-mono">{d.after.toFixed(1)}%</span></div>
+        <div style={{ color: '#a1a1aa' }}>After: <span className="font-mono" style={{ color: '#34d399' }}>{d.after.toFixed(1)}%</span></div>
       )}
       {d.delta !== null && (
-        <div className={`font-semibold mt-1 ${d.delta >= 0 ? "text-emerald-400" : "text-red-400"}`}>
-          {d.delta >= 0 ? "+" : ""}{d.delta.toFixed(1)}% delta
+        <div className="font-semibold mt-1" style={{ color: d.delta >= 0 ? '#34d399' : '#fb7185' }}>
+          {d.delta >= 0 ? '+' : ''}{d.delta.toFixed(1)}% delta
         </div>
       )}
-      <div className="text-zinc-500 mt-1">{d.applied} proposal{d.applied !== 1 ? "s" : ""} applied</div>
+      <div className="mt-1" style={{ color: '#52525b' }}>{d.applied} proposal{d.applied !== 1 ? 's' : ''} applied</div>
     </div>
   );
 }
@@ -91,9 +91,9 @@ function SummaryStats({ entries }: { entries: ProofEntry[] }) {
         { label: "Best Δ", value: `+${best.toFixed(1)}%`, color: "text-emerald-400" },
         { label: "Applied", value: totalApplied.toString(), color: "text-violet-400" },
       ].map(stat => (
-        <div key={stat.label} className="bg-zinc-900/60 rounded-lg px-3 py-2 border border-zinc-800">
+        <div key={stat.label} className="rounded-lg px-3 py-2" style={{ background: '#18181b', border: '1px solid #27272a' }}>
           <div className={`text-sm font-bold font-mono ${stat.color}`}>{stat.value}</div>
-          <div className="text-xs text-zinc-600 mt-0.5">{stat.label}</div>
+          <div className="text-xs mt-0.5" style={{ color: '#52525b' }}>{stat.label}</div>
         </div>
       ))}
     </div>
@@ -141,39 +141,39 @@ export function EvalTrendChart() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <BarChart2 className="w-4 h-4 text-violet-400" />
-          <span className="text-sm font-semibold text-zinc-200">Eval Score Trend</span>
+          <BarChart2 className="w-4 h-4" style={{ color: '#a78bfa' }} />
+          <span className="text-sm font-semibold" style={{ color: '#e4e4e7', letterSpacing: '-0.02em' }}>Eval Score Trend</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex rounded-md border border-zinc-700 overflow-hidden">
-            {(["score", "delta"] as const).map(v => (
+          <div className="flex rounded-lg overflow-hidden" style={{ border: '1px solid #27272a' }}>
+            {(['score', 'delta'] as const).map(v => (
               <button
                 key={v}
                 onClick={() => setView(v)}
-                className={`px-2 py-0.5 text-xs transition-colors ${
-                  view === v ? "bg-violet-800 text-violet-200" : "text-zinc-500 hover:text-zinc-300"
-                }`}
+                className="px-2.5 py-1 text-xs transition-all"
+                style={view === v
+                  ? { background: 'rgba(124,58,237,0.2)', color: '#c4b5fd' }
+                  : { color: '#52525b' }}
               >
-                {v === "score" ? "Score" : "Delta"}
+                {v === 'score' ? 'Score' : 'Delta'}
               </button>
             ))}
           </div>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="h-6 w-6 p-0 text-zinc-500 hover:text-zinc-300"
+          <button
+            className="p-1 rounded-lg transition-colors"
+            style={{ color: '#52525b' }}
             onClick={fetchHistory}
           >
             <RefreshCw className="w-3 h-3" />
-          </Button>
+          </button>
         </div>
       </div>
 
       {loading ? (
-        <div className="text-xs text-zinc-600 text-center py-8">Loading history…</div>
+        <div className="text-xs text-center py-8" style={{ color: '#52525b' }}>Loading history…</div>
       ) : entries.length === 0 ? (
-        <div className="text-center py-8 text-zinc-600">
-          <BarChart2 className="w-6 h-6 mx-auto mb-2 opacity-40" />
+        <div className="text-center py-8" style={{ color: '#52525b' }}>
+          <BarChart2 className="w-6 h-6 mx-auto mb-2 opacity-30" />
           <div className="text-sm">No proof history yet</div>
           <div className="text-xs mt-1">Score data will appear after the first RSI cycle completes</div>
         </div>
@@ -221,7 +221,7 @@ export function EvalTrendChart() {
             </ResponsiveContainer>
           </div>
 
-          <div className="flex items-center gap-4 text-xs text-zinc-600">
+          <div className="flex items-center gap-4 text-xs" style={{ color: '#52525b' }}>
             {view === "score" && (
               <>
                 <div className="flex items-center gap-1.5"><div className="w-3 h-0.5 bg-sky-400" />Before</div>

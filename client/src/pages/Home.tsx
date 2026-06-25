@@ -593,7 +593,7 @@ export default function Home() {
       </aside>
 
       {/* ── Navigation ──────────────────────────────────────────────────────── */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 glass border-b border-border/40">
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 topbar">
         {/* Left: sidebar toggle + logo */}
         <div className="flex items-center gap-3">
           <button
@@ -613,24 +613,21 @@ export default function Home() {
           <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0" style={{ boxShadow: "0 0 12px rgba(100,150,255,0.4)" }}>
             <img src="/andromeda-icon.png" alt="Andromeda" className="w-full h-full object-cover" />
           </div>
-          <span className="font-semibold text-base tracking-tight">Andromeda</span>
+          <span className="font-semibold text-base" style={{ letterSpacing: '-0.02em' }}>Andromeda</span>
         </div>
 
         {/* Right: nav links + settings gear */}
         <div className="flex items-center gap-1 sm:gap-2">
           {isAuthenticated ? (
             <>
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground px-2 sm:px-3" onClick={() => navigate("/chat")} title="Chat">
-                <MessageSquare className="w-4 h-4 sm:mr-1.5" />
-                <span className="hidden sm:inline">Chat</span>
+              <button onClick={() => navigate("/chat")} className="nav-link hidden sm:block">Chat</button>
+              <button onClick={() => navigate("/rsi")} className="nav-link hidden sm:block">RSI</button>
+              <button onClick={() => navigate("/history")} className="nav-link hidden sm:block">History</button>
+              <Button variant="ghost" size="sm" className="sm:hidden text-muted-foreground hover:text-foreground p-2" onClick={() => navigate("/chat")} title="Chat">
+                <MessageSquare className="w-4 h-4" />
               </Button>
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground px-2 sm:px-3" onClick={() => navigate("/rsi")} title="RSI Dashboard">
-                <Activity className="w-4 h-4 sm:mr-1.5" />
-                <span className="hidden sm:inline">RSI</span>
-              </Button>
-              <Button variant="ghost" size="sm" className="hidden sm:flex text-muted-foreground hover:text-foreground" onClick={() => navigate("/history")}>
-                <History className="w-4 h-4 mr-1.5" />
-                History
+              <Button variant="ghost" size="sm" className="sm:hidden text-muted-foreground hover:text-foreground p-2" onClick={() => navigate("/rsi")} title="RSI">
+                <Activity className="w-4 h-4" />
               </Button>
               <div className="w-7 h-7 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-xs font-medium text-primary">
                 {user?.name?.[0]?.toUpperCase() ?? "U"}
@@ -685,7 +682,7 @@ export default function Home() {
       </nav>
 
       {/* ── Hero ────────────────────────────────────────────────────────────── */}
-      <main className="flex flex-col items-center justify-center min-h-screen px-4 pt-16 relative">
+      <main className="flex flex-col items-center justify-center min-h-screen px-4 pt-16 relative hero-glow">
 
         {/* Background handled by ThemeCanvas — see ThemeCanvas.tsx */}
 
@@ -707,8 +704,8 @@ export default function Home() {
 
         {/* Title + typewriter subtitle */}
         <div className="text-center mb-8 animate-slide-up" style={{ animationDelay: "0.05s" }}>
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-3">
-            <span className="gradient-text">Andromeda</span>
+          <h1 className="text-5xl md:text-7xl font-bold mb-3" style={{ letterSpacing: '-0.04em' }}>
+            <span className="gradient-text-hero">Andromeda</span>
           </h1>
           <div className="flex items-center justify-center gap-4 my-4">
             <div className="h-px flex-1 max-w-[100px] bg-gradient-to-r from-transparent to-primary/30" />
@@ -720,7 +717,7 @@ export default function Home() {
           {/* Typewriter subtitle */}
           <p className="text-base md:text-lg text-muted-foreground max-w-sm mx-auto leading-relaxed min-h-[1.75rem]">
             {typewriterText}
-            <span className="inline-block w-0.5 h-4 bg-primary/70 ml-0.5 animate-pulse align-middle" />
+            <span className="typewriter-cursor" />
           </p>
         </div>
 
@@ -850,17 +847,17 @@ export default function Home() {
         </div>
 
         {/* ── Primary feature cards (4) ───────────────────────────────────── */}
-        <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl w-full animate-slide-up" style={{ animationDelay: "0.3s" }}>
-          {PRIMARY_CARDS.map(({ icon: Icon, title, desc, action, color, bg, hover }) => (
+        <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl w-full">
+          {PRIMARY_CARDS.map(({ icon: Icon, title, desc, action, color, bg }, idx) => (
             <button
               key={title}
               onClick={action}
-              className={`glass rounded-xl p-4 flex flex-col gap-2 border border-border/40 ${hover} transition-all group text-left`}
+              className={`feature-card card-enter card-enter-${idx + 1} flex flex-col gap-2 group`}
             >
-              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
                 <Icon className={`w-4 h-4 ${color}`} />
               </div>
-              <p className="text-sm font-medium text-foreground">{title}</p>
+              <p className="text-sm font-semibold text-foreground">{title}</p>
               <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
             </button>
           ))}
@@ -878,16 +875,16 @@ export default function Home() {
 
           {showMoreCards && (
             <div className="mt-3 grid grid-cols-2 sm:grid-cols-5 gap-3 animate-slide-up">
-              {MORE_CARDS.map(({ icon: Icon, title, desc, action, color, bg, hover }) => (
+              {MORE_CARDS.map(({ icon: Icon, title, desc, action, color, bg }, idx) => (
                 <button
                   key={title}
                   onClick={action}
-                  className={`glass rounded-xl p-3.5 flex flex-col gap-1.5 border border-border/40 ${hover} transition-all group text-left`}
+                  className={`feature-card card-enter card-enter-${idx + 1} flex flex-col gap-1.5 group p-3.5`}
                 >
-                  <div className={`w-7 h-7 rounded-lg ${bg} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                  <div className={`w-7 h-7 rounded-lg ${bg} flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
                     <Icon className={`w-3.5 h-3.5 ${color}`} />
                   </div>
-                  <p className="text-xs font-medium text-foreground">{title}</p>
+                  <p className="text-xs font-semibold text-foreground">{title}</p>
                   <p className="text-[11px] text-muted-foreground leading-relaxed">{desc}</p>
                 </button>
               ))}

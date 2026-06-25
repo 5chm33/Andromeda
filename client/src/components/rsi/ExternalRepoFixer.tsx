@@ -226,13 +226,13 @@ export function ExternalRepoFixer({ adminKey }: ExternalRepoFixerProps) {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="bg-slate-900 border-slate-700 text-slate-100 max-w-lg">
+      <DialogContent className="max-w-lg" style={{ background: '#111113', border: '1px solid #27272a', color: '#e4e4e7' }}>
         <DialogHeader>
-          <DialogTitle className="text-slate-100 flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2" style={{ color: '#fafafa', letterSpacing: '-0.025em' }}>
             <span className="text-xl">🤖</span>
             Fix Any GitHub Repo
           </DialogTitle>
-          <DialogDescription className="text-slate-400">
+          <DialogDescription style={{ color: '#71717a' }}>
             Andromeda will autonomously clone the repository, apply code improvements,
             commit the changes to a new branch, and open a Pull Request — all without
             any human intervention.
@@ -242,7 +242,7 @@ export function ExternalRepoFixer({ adminKey }: ExternalRepoFixerProps) {
         <div className="space-y-4 py-2">
           {/* Repo URL */}
           <div className="space-y-1.5">
-            <Label htmlFor="repo-url" className="text-slate-300 text-xs font-medium">
+            <Label htmlFor="repo-url" className="text-xs font-medium" style={{ color: '#a1a1aa' }}>
               GitHub Repository URL
             </Label>
             <Input
@@ -251,15 +251,16 @@ export function ExternalRepoFixer({ adminKey }: ExternalRepoFixerProps) {
               value={repoUrl}
               onChange={(e) => setRepoUrl(e.target.value)}
               disabled={isRunning}
-              className="bg-slate-800 border-slate-600 text-slate-100 placeholder:text-slate-500 focus:border-violet-500 focus:ring-violet-500/20 font-mono text-sm"
+              className="font-mono text-sm"
+              style={{ background: '#18181b', border: '1px solid #27272a', color: '#e4e4e7' }}
             />
           </div>
 
           {/* GitHub PAT */}
           <div className="space-y-1.5">
-            <Label htmlFor="github-pat" className="text-slate-300 text-xs font-medium">
+            <Label htmlFor="github-pat" className="text-xs font-medium" style={{ color: '#a1a1aa' }}>
               GitHub Token{" "}
-              <span className="text-slate-500 font-normal">(optional — uses server default if blank)</span>
+              <span className="font-normal" style={{ color: '#52525b' }}>(optional — uses server default if blank)</span>
             </Label>
             <Input
               id="github-pat"
@@ -268,14 +269,15 @@ export function ExternalRepoFixer({ adminKey }: ExternalRepoFixerProps) {
               value={githubPat}
               onChange={(e) => setGithubPat(e.target.value)}
               disabled={isRunning}
-              className="bg-slate-800 border-slate-600 text-slate-100 placeholder:text-slate-500 focus:border-violet-500 focus:ring-violet-500/20 font-mono text-sm"
+              className="font-mono text-sm"
+              style={{ background: '#18181b', border: '1px solid #27272a', color: '#e4e4e7' }}
             />
           </div>
 
           {/* Improvement cycles */}
           <div className="space-y-1.5">
-            <Label className="text-slate-300 text-xs font-medium">
-              Improvement Cycles: <span className="text-violet-300 font-semibold">{cycles}</span>
+            <Label className="text-xs font-medium" style={{ color: '#a1a1aa' }}>
+              Improvement Cycles: <span className="font-semibold" style={{ color: '#c4b5fd' }}>{cycles}</span>
             </Label>
             <div className="flex gap-2">
               {[1, 2, 3, 5, 10].map((n) => (
@@ -283,11 +285,10 @@ export function ExternalRepoFixer({ adminKey }: ExternalRepoFixerProps) {
                   key={n}
                   onClick={() => setCycles(n)}
                   disabled={isRunning}
-                  className={`px-3 py-1 rounded text-xs font-medium transition-all duration-150 ${
-                    cycles === n
-                      ? "bg-violet-600 text-white"
-                      : "bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200"
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  className="px-3 py-1 rounded text-xs font-medium transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={cycles === n
+                    ? { background: 'rgba(124,58,237,0.25)', color: '#c4b5fd', border: '1px solid rgba(124,58,237,0.4)' }
+                    : { background: '#18181b', color: '#71717a', border: '1px solid #27272a' }}
                 >
                   {n}
                 </button>
@@ -297,33 +298,32 @@ export function ExternalRepoFixer({ adminKey }: ExternalRepoFixerProps) {
 
           {/* Progress section — shown when job is running or done */}
           {status !== "idle" && (
-            <div className="space-y-2 rounded-lg bg-slate-800/50 border border-slate-700/50 p-3">
+            <div className="space-y-2 rounded-xl p-3" style={{ background: '#0f0f12', border: '1px solid #1f1f23' }}>
               {/* Status badge + progress */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span
-                    className={`inline-block w-2 h-2 rounded-full ${STATUS_COLORS[status]} ${
-                      isRunning ? "animate-pulse" : ""
-                    }`}
-                  />
-                  <span className="text-xs font-medium text-slate-300">
+                  <span className="relative inline-flex">
+                    <span className="inline-block w-2 h-2 rounded-full" style={{ background: isDone ? '#34d399' : isFailed ? '#fb7185' : '#a78bfa' }} />
+                    {isRunning && <span className="absolute inset-0 rounded-full animate-ping" style={{ background: '#a78bfa', opacity: 0.4 }} />}
+                  </span>
+                  <span className="text-xs font-medium" style={{ color: '#e4e4e7' }}>
                     {STATUS_LABELS[status]}
                   </span>
                 </div>
-                <span className="text-xs text-slate-500 font-mono">{progress}%</span>
+                <span className="text-xs font-mono" style={{ color: '#52525b' }}>{progress}%</span>
               </div>
-              <Progress
-                value={progress}
-                className="h-1.5 bg-slate-700"
-              />
+              {/* Custom progress bar */}
+              <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#27272a' }}>
+                <div
+                  className="h-full rounded-full transition-all duration-500"
+                  style={{ width: `${progress}%`, background: isDone ? '#34d399' : isFailed ? '#fb7185' : 'linear-gradient(90deg, #7c3aed, #6366f1)' }}
+                />
+              </div>
 
               {/* Event log */}
-              <div
-                ref={logRef}
-                className="max-h-32 overflow-y-auto space-y-0.5 mt-1"
-              >
+              <div ref={logRef} className="max-h-32 overflow-y-auto space-y-0.5 mt-1">
                 {messages.map((msg, i) => (
-                  <p key={i} className="text-[10px] text-slate-400 font-mono leading-relaxed">
+                  <p key={i} className="text-[10px] font-mono leading-relaxed" style={{ color: '#52525b' }}>
                     {msg}
                   </p>
                 ))}
@@ -335,17 +335,18 @@ export function ExternalRepoFixer({ adminKey }: ExternalRepoFixerProps) {
                   href={prUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-xs text-emerald-400 hover:text-emerald-300 transition-colors mt-1"
+                  className="flex items-center gap-1.5 text-xs transition-colors mt-1"
+                  style={{ color: '#34d399' }}
                 >
                   <span>🎉</span>
                   <span className="underline underline-offset-2">View Pull Request</span>
-                  <span className="text-slate-500">↗</span>
+                  <span style={{ color: '#52525b' }}>↗</span>
                 </a>
               )}
 
               {/* Error */}
               {error && (
-                <p className="text-[10px] text-red-400 font-mono mt-1 break-all">
+                <p className="text-[10px] font-mono mt-1 break-all" style={{ color: '#fb7185' }}>
                   ✗ {error}
                 </p>
               )}
@@ -355,25 +356,24 @@ export function ExternalRepoFixer({ adminKey }: ExternalRepoFixerProps) {
 
         <DialogFooter className="gap-2">
           {(isDone || isFailed) && (
-            <Button
-              variant="outline"
-              size="sm"
+            <button
               onClick={handleReset}
-              className="border-slate-600 text-slate-300 hover:bg-slate-800"
+              className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+              style={{ background: '#18181b', border: '1px solid #27272a', color: '#a1a1aa' }}
             >
               Fix Another Repo
-            </Button>
+            </button>
           )}
           {!isDone && !isFailed && (
-            <Button
+            <button
               onClick={handleSubmit}
               disabled={isRunning || isSubmitting || !repoUrl.trim()}
-              size="sm"
-              className="bg-violet-600 hover:bg-violet-500 text-white disabled:opacity-50 gap-2"
+              className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              style={{ background: 'linear-gradient(135deg, #7c3aed, #6366f1)', color: '#fff' }}
             >
               {isRunning ? (
                 <>
-                  <span className="inline-block w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span className="inline-block w-3 h-3 border-2 rounded-full animate-spin" style={{ borderColor: 'rgba(255,255,255,0.3)', borderTopColor: '#fff' }} />
                   Running...
                 </>
               ) : (
@@ -382,7 +382,7 @@ export function ExternalRepoFixer({ adminKey }: ExternalRepoFixerProps) {
                   Fix Autonomously
                 </>
               )}
-            </Button>
+            </button>
           )}
         </DialogFooter>
       </DialogContent>

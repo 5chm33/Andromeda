@@ -498,12 +498,12 @@ export default function Workspace() {
           }`}
         >
           {/* Sidebar header */}
-          <div className="flex-shrink-0 flex items-center justify-between px-3 py-3 border-b border-border/40">
+          <div className="flex-shrink-0 flex items-center justify-between px-3 py-3 border-b border-[#1f1f23]" style={{ background: '#0a0a0c' }}>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-lg overflow-hidden border border-border/50 bg-card flex-shrink-0">
                 <img src={ENGINEER_LOGO} alt="Andromeda" className="w-full h-full object-cover" style={{ filter: "invert(1) brightness(0.85)" }} />
               </div>
-              <span className="font-semibold text-sm font-display gradient-text">Andromeda</span>
+              <span className="font-semibold text-sm gradient-text-hero" style={{ letterSpacing: '-0.02em' }}>Andromeda</span>
             </div>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -598,7 +598,7 @@ export default function Workspace() {
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
 
           {/* Header */}
-          <header className="flex-shrink-0 flex items-center justify-between px-4 py-2.5 glass border-b border-border/40 z-10">
+          <header className="flex-shrink-0 flex items-center justify-between px-4 py-2.5 topbar z-10">
             <div className="flex items-center gap-3">
               {/* Ambient orb */}
               <AmbientOrb state={orbState} size="sm" />
@@ -827,9 +827,11 @@ export default function Workspace() {
           </div>
 
           {/* ── Bottom Prompt Bar ─────────────────────────────────────────── */}
-          <div className="flex-shrink-0 px-4 pb-4 pt-2 border-t border-border/30 bg-[oklch(0.09_0.012_265/0.95)] backdrop-blur-xl">
+          <div className="flex-shrink-0 px-4 pb-4 pt-2 border-t border-[#1f1f23]" style={{ background: 'rgba(9,9,11,0.97)', backdropFilter: 'blur(20px)' }}>
             <div className="max-w-3xl mx-auto">
-              <div className="relative glass-strong rounded-2xl border border-border/50 focus-within:border-primary/40 focus-within:shadow-[0_0_0_1px_oklch(0.62_0.22_265/0.2)] transition-all">
+              <div className="relative rounded-2xl border transition-all" style={{ background: '#111113', borderColor: '#27272a' }}
+                onFocus={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.4)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 0 0 1px rgba(124,58,237,0.15)'; }}
+                onBlur={(e) => { (e.currentTarget as HTMLElement).style.borderColor = '#27272a'; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}>
                 <textarea
                   ref={inputRef}
                   rows={1}
@@ -848,7 +850,7 @@ export default function Workspace() {
                       : "Ask anything… or 'generate an image of…' (/ to focus)"
                   }
                   disabled={!isAuthenticated || isLoading}
-                  className="w-full bg-transparent px-4 py-3.5 pr-24 text-sm text-foreground placeholder:text-muted-foreground/40 outline-none resize-none overflow-hidden"
+                  className="w-full bg-transparent px-4 py-3.5 pr-24 text-sm text-[#e4e4e7] placeholder:text-[#52525b] outline-none resize-none overflow-hidden"
                   style={{ minHeight: "3rem" }}
                 />
                 <div className="absolute right-2 bottom-2 flex items-center gap-1.5">
@@ -860,7 +862,8 @@ export default function Workspace() {
                       <TooltipTrigger asChild>
                         <button
                           onClick={stopStreaming}
-                          className="p-2 rounded-xl bg-destructive/20 text-destructive hover:bg-destructive/30 transition-colors"
+                          className="p-2 rounded-xl transition-colors"
+                          style={{ background: 'rgba(244,63,94,0.15)', color: '#fb7185' }}
                         >
                           <Square className="w-4 h-4" />
                         </button>
@@ -873,7 +876,8 @@ export default function Workspace() {
                         <button
                           onClick={isAuthenticated ? sendMessage : () => (window.location.href = getLoginUrl())}
                           disabled={isAuthenticated && !input.trim()}
-                          className="p-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                          className="p-2 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                          style={{ background: 'linear-gradient(135deg, #7c3aed, #6366f1)', color: '#fff' }}
                         >
                           {isAuthenticated ? <Send className="w-4 h-4" /> : <LogIn className="w-4 h-4" />}
                         </button>
@@ -886,14 +890,14 @@ export default function Workspace() {
                 </div>
               </div>
               <div className="flex items-center justify-between mt-1.5 px-1">
-                <p className="text-xs text-muted-foreground/30">
+                <p className="text-[11px] text-[#3f3f46]">
                   Enter to send · Shift+Enter for new line · / to focus
                 </p>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground/30">
+                <div className="flex items-center gap-2 text-[11px] text-[#3f3f46]">
                   <ImageIcon className="w-3 h-3" />
                   <span>Image gen</span>
                   <span>·</span>
-                  <span className={model === "deepseek-reasoner" ? "text-amber-400/60" : ""}>
+                  <span className={model === "deepseek-reasoner" ? "text-amber-400/50" : ""}>
                     {model === "deepseek-reasoner" ? "Reasoner" : "Chat"}
                   </span>
                 </div>

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "dimension": 384,
-  "model": "local-hash",
+  "model": "api",
   "entries": [
     {
       "id": "mem_1782318049367_nlor7m",
@@ -1176,7 +1176,7 @@
         0
       ],
       "text": "User-identified capability gap: . Context: ",
-      "model": "local-hash",
+      "model": "api",
       "createdAt": 1782354737041
     }
   ]
