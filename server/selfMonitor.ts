@@ -314,7 +314,7 @@ async function maybeAutoTrigger(alert: MonitorAlert): Promise<boolean> {
         `TriggeredAt: ${new Date().toISOString()}`,
       ].filter(Boolean).join("\n");
       storeMemory(memContent, "project", ["monitor", "auto-fix", alert.type]);
-    } catch { /* non-fatal */ }
+    } catch (memErr) { console.warn(`[SelfMonitor] Failed to store memory: ${(memErr as Error).message}`); }
 
     console.log(`[Monitor->Improve] Auto-trigger complete: ${applyResults.filter(r => r.applied).length} applied, ${applyResults.filter(r => !r.applied).length} skipped`);
   } catch (err) {
