@@ -110,6 +110,10 @@ export async function executeInSandbox(
       ),
     ]);
 
+    if (!result) {
+      throw new Error('SANDBOX_TIMEOUT');
+    }
+
     return {
       stdout: result.stdout,
       stderr: result.stderr,
