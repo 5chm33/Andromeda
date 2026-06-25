@@ -61,7 +61,8 @@ export async function generateSubQueries(mainQuery: string): Promise<string[]> {
     }
     const arr = parsed.queries || parsed.sub_queries || parsed.results || Object.values(parsed)[0];
     return Array.isArray(arr) ? [mainQuery, ...arr.slice(0, 3)] : [mainQuery];
-  } catch {
+  } catch (err) {
+    log.warn("generateSubQueries fetch failed", err);
     return [mainQuery];
   }
 }
