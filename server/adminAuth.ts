@@ -46,9 +46,12 @@ export function requireAdminAuth(req: Request, res: Response, next: NextFunction
   const authHeader = req.headers["authorization"];
   const xAdminKey = req.headers["x-admin-key"] as string | undefined;
 
+  // v12.2.1: also accept ?key= query param for EventSource/SSE streams (which cannot send custom headers)
+  const queryKey = req.query?.key as string | undefined;
   const provided =
     (authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : undefined) ??
     xAdminKey ??
+    queryKey ??
     (req.body as Record<string, unknown>)?.adminKey as string | undefined;
 
   if (!provided || provided !== key) {

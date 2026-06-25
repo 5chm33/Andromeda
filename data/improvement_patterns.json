@@ -43,5 +43,35 @@
     "lastSeen": "2026-06-25T05:23:16.687Z",
     "sourceInstanceId": "andromeda_1782141894352_aat6sxgy",
     "exampleRationale": "Rationale 2"
+  },
+  {
+    "patternId": "readability:selfMonitor",
+    "category": "readability",
+    "targetFilePattern": "*selfMonitor*",
+    "description": "Improvements to selfMonitor in category readability",
+    "successRate": 0.8,
+    "sampleCount": 1,
+    "avgConfidence": 0.8586950571044246,
+    "avgImpact": "low",
+    "exampleTitle": "Extract magic numbers into named constants",
+    "exampleRationale": "Extracting magic numbers into named constants improves readability by giving context to arbitrary values. It also makes future modifications easier and less error-prone.",
+    "firstSeen": "2026-06-25T12:16:05.207Z",
+    "lastSeen": "2026-06-25T12:16:05.207Z",
+    "sourceInstanceId": "andromeda_1782141894352_aat6sxgy"
+  },
+  {
+    "patternId": "readability:rsiScheduler",
+    "category": "readability",
+    "targetFilePattern": "*rsiScheduler*",
+    "description": "Improvements to rsiScheduler in category readability",
+    "successRate": 0.8,
+    "sampleCount": 1,
+    "avgConfidence": 0.8625395822159663,
+    "avgImpact": "low",
+    "exampleTitle": "Extract magic numbers into named constants for readability",
+    "exampleRationale": "Extracting magic numbers like 500 (for log entries) into named constants improves code readability and maintainability. This makes the code's intent clearer and simplifies future modifications.",
+    "firstSeen": "2026-06-25T12:24:54.343Z",
+    "lastSeen": "2026-06-25T12:24:54.343Z",
+    "sourceInstanceId": "andromeda_1782141894352_aat6sxgy"
   }
 ]

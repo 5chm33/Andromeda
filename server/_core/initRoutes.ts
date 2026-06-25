@@ -176,6 +176,19 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
   // ── v5.75: RSI (Recursive Self-Improvement) engine endpoints ──────────────────
   // v6.25: RSI mutation endpoints require admin auth
   const { requireAdminAuth } = await import("../adminAuth.js");
+
+  // v12.2.1: /api/admin/local-key — returns the admin key ONLY for localhost connections
+  // This allows the browser UI to auto-configure auth without the user manually setting it
+  app.get("/api/admin/local-key", (req, res) => {
+    const ip = req.ip || req.socket?.remoteAddress || "";
+    const isLocal = ip === "127.0.0.1" || ip === "::1" || ip === "::ffff:127.0.0.1" || ip.startsWith("172.") || ip.startsWith("10.");
+    if (!isLocal) {
+      res.status(403).json({ error: "Only available from localhost" });
+      return;
+    }
+    const key = process.env.ANDROMEDA_ADMIN_KEY ?? "";
+    res.json({ key });
+  });
   app.get("/api/rsi/status", async (_req, res) => {
     try {
       const { getRSIStatus } = await import("../rsiEngine.js");

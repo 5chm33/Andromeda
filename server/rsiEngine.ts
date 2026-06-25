@@ -141,7 +141,17 @@ function loadPersistedConfig(): void {
     const p = getConfigPath();
     if (fs.existsSync(p)) {
       const saved = JSON.parse(fs.readFileSync(p, "utf8"));
-      rsiConfig = { ...DEFAULT_CONFIG, ...saved };
+      // Restore RSI config (strip any corrupted string-indexed keys)
+      const { cycleCount: savedCycles, totalApplied: savedApplied, totalRejected: savedRejected, lastCycleAt: savedLastCycle, ...configOnly } = saved;
+      rsiConfig = { ...DEFAULT_CONFIG, ...configOnly };
+      // v12.2.1: Restore cycle counters so they survive server restarts
+      if (typeof savedCycles === "number" && savedCycles > 0) {
+        cycleCount = savedCycles;
+        console.log(`[RSIEngine] Restored cycleCount=${cycleCount} from persisted state`);
+      }
+      if (typeof savedApplied === "number" && savedApplied > 0) totalApplied = savedApplied;
+      if (typeof savedRejected === "number" && savedRejected > 0) totalRejected = savedRejected;
+      if (typeof savedLastCycle === "string") lastCycleAt = savedLastCycle;
     }
   } catch {
     // Use defaults
@@ -150,7 +160,15 @@ function loadPersistedConfig(): void {
 
 function saveConfig(): void {
   try {
-    fs.writeFileSync(getConfigPath(), JSON.stringify(rsiConfig, null, 2), "utf8");
+    // v12.2.1: Persist cycle counters alongside config so they survive restarts
+    const payload = {
+      ...rsiConfig,
+      cycleCount,
+      totalApplied,
+      totalRejected,
+      lastCycleAt,
+    };
+    fs.writeFileSync(getConfigPath(), JSON.stringify(payload, null, 2), "utf8");
   } catch {
     // Non-fatal
   }
@@ -403,6 +421,11 @@ export async function runRSICycle(): Promise<RSICycleResult> {
   console.log(`[RSIEngine] Starting cycle ${cycleId} (cycle #${cycleCount + 1})`);
   auditRsiEvent({ action: "cycle_started", cycleId, success: true, details: { cycleNumber: cycleCount + 1 } });
   rsiPhase = "observing";
+  // v12.2.1: Emit cycle:start event to SSE clients for Live Activity feed
+  try {
+    const { emitRsiEvent } = await import("./rsiEventBus.js");
+    emitRsiEvent("cycle:start", { cycleId, cycleNumber: cycleCount + 1, startedAt });
+  } catch { /* non-fatal */ }
 
   try {
     // ── STEP 1: OBSERVE ─────────────────────────────────────────────────────────────────────────────
@@ -664,6 +687,8 @@ export async function runRSICycle(): Promise<RSICycleResult> {
   totalApplied += proposalsApplied;
   totalRejected += proposalsRejected;
   lastCycleAt = startedAt;
+  // v12.2.1: Persist counters immediately so they survive server restarts
+  saveConfig();
 
   const result: RSICycleResult = {
     cycleId,
@@ -709,6 +734,20 @@ export async function runRSICycle(): Promise<RSICycleResult> {
       scoreDelta: result.scoreImprovement,
     },
   });
+  // v12.2.1: Emit cycle:complete event to SSE clients for Live Activity feed
+  try {
+    const { emitRsiEvent } = await import("./rsiEventBus.js");
+    emitRsiEvent("cycle:complete", {
+      cycleId,
+      cycleNumber: cycleCount,
+      durationMs: result.durationMs,
+      proposalsApplied,
+      proposalsRejected,
+      scoreBefore: capabilityScoreBefore,
+      scoreAfter: capabilityScoreAfter,
+      scoreDelta: result.scoreImprovement,
+    });
+  } catch { /* non-fatal */ }
   // v6.39: Update federated learning with our latest capability score
   import("./federatedLearning.js").then(m => m.updateLocalScore(capabilityScoreAfter)).catch(() => {});
 

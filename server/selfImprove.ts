@@ -2230,8 +2230,25 @@ export async function refineProposal(
   errorFeedback: string
 ): Promise<boolean> {
   try {
-    const { simpleChatCompletion } = await import("./llmProvider.js");
-    const activeModel = process.env.LLM_MODEL || "deepseek";
+    const { simpleChatCompletion, getProviderForTier, tierForArea } = await import("./llmProvider.js");
+    
+    // v12.2.1: Use provider fallback chain (same as proposal generation) to avoid
+    // using the dead default provider (DeepSeek 402) for refinement calls.
+    const tier = tierForArea("self-modification");
+    const primary = getProviderForTier(tier);
+    const hasDeepSeek = !!process.env.DEEPSEEK_API_KEY;
+    const hasKimi = !!process.env.KIMI_API_KEY;
+    const hasOpenRouter = !!process.env.OPENROUTER_API_KEY;
+    const hasOpenAI = !!process.env.OPENAI_API_KEY;
+    const refineChain: string[] = [primary];
+    for (const fb of ["kimi", "openrouter-fast", "openrouter", "deepseek", "openai"]) {
+      if (!refineChain.includes(fb)) {
+        if (fb === "kimi" && hasKimi) refineChain.push(fb);
+        else if ((fb === "openrouter-fast" || fb === "openrouter") && hasOpenRouter) refineChain.push(fb);
+        else if (fb === "deepseek" && hasDeepSeek && !_deadProviders.has("deepseek")) refineChain.push(fb);
+        else if (fb === "openai" && hasOpenAI) refineChain.push(fb);
+      }
+    }
     
     const messages = [
       {
@@ -2270,7 +2287,22 @@ Return the corrected JSON proposal.`
       }
     ];
 
-    const rawContent = await simpleChatCompletion(messages, { maxTokens: 2000, temperature: 0.2 });
+    // Try each provider in the chain until one succeeds
+    let rawContent: string | null = null;
+    for (const pid of refineChain) {
+      if (_deadProviders.has(pid)) continue;
+      try {
+        rawContent = await simpleChatCompletion(messages, { maxTokens: 2000, temperature: 0.2, providerId: pid });
+        if (rawContent) break;
+      } catch (provErr: any) {
+        const msg: string = provErr?.message ?? "";
+        if (/40[12]/.test(msg) || /insufficient/i.test(msg) || /invalid.*key/i.test(msg)) {
+          _deadProviders.add(pid);
+          continue;
+        }
+        throw provErr;
+      }
+    }
     if (!rawContent) return false;
 
     const cleaned = rawContent.replace(/^```json?\s*/i, "").replace(/\s*```$/, "").trim();

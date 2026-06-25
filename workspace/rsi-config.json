@@ -10,10 +10,14 @@
   "8": "u",
   "9": "e",
   "enabled": false,
-  "intervalMs": 1800000,
+  "intervalMs": 300000,
   "maxAutoApplyPerCycle": 3,
   "requireHumanConfirmAfter": 9,
   "targetFiles": [],
   "minConfidenceThreshold": 0.8,
-  "verboseLogging": false
+  "verboseLogging": false,
+  "cycleCount": 0,
+  "totalApplied": 0,
+  "totalRejected": 0,
+  "lastCycleAt": null
 }

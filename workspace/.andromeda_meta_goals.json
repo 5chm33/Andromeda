@@ -7,7 +7,7 @@
       "description": "Make the self-improvement system faster, safer, and more autonomous",
       "rationale": "The self-improvement pipeline is the foundation of autonomy. Improving it has compounding returns.",
       "priority": 10,
-      "status": "active",
+      "status": "failed",
       "recursive": true,
       "createdAt": 1782318049320,
       "subGoals": [
@@ -22,7 +22,8 @@
         }
       ],
       "metrics": [],
-      "startedAt": 1782318176789
+      "startedAt": 1782318176789,
+      "outcome": "TTL exceeded (1183min > 240min limit)"
     },
     {
       "id": "mgoal_1782318049320_5oazdk",
@@ -44,11 +45,42 @@
       "description": "Ensure self-improvements can be applied without service interruption",
       "rationale": "Downtime during self-improvement breaks the autonomous loop",
       "priority": 9,
-      "status": "planned",
+      "status": "active",
       "recursive": true,
       "createdAt": 1782318049320,
-      "subGoals": [],
-      "metrics": []
+      "subGoals": [
+        {
+          "id": "sg_mgoal_1782318049320_ha0oqv_1782389138460_g8di",
+          "parentId": "mgoal_1782318049320_ha0oqv",
+          "title": "Analyze selfHeal.ts for reliability improvements",
+          "description": "Ensure self-improvements can be applied without service interruption — focus on selfHeal.ts",
+          "targetFile": "selfHeal.ts",
+          "estimatedEffort": "medium",
+          "status": "in_progress"
+        },
+        {
+          "id": "sg_mgoal_1782318049320_ha0oqv_1782389138460_6yea",
+          "parentId": "mgoal_1782318049320_ha0oqv",
+          "title": "Analyze gracefulDegradation.ts for reliability improvements",
+          "description": "Ensure self-improvements can be applied without service interruption — focus on gracefulDegradation.ts",
+          "targetFile": "gracefulDegradation.ts",
+          "estimatedEffort": "medium",
+          "status": "failed",
+          "result": "Pipeline failed at typecheck: \u001b[96mserver/gracefulDegradation.ts\u001b[0m:\u001b[93m423\u001b[0m:\u001b[93m37\u001b[0m - \u001b[91merror\u001b[0m\u001b[90m TS2339: \u001b[0mProperty 'randomBytes' does not exist on type 'Crypto'.\nFound 1 error in server/gracefulDegradation.ts\u001b[90m:423\u001b[0m"
+        },
+        {
+          "id": "sg_mgoal_1782318049320_ha0oqv_1782389138460_rgrc",
+          "parentId": "mgoal_1782318049320_ha0oqv",
+          "title": "Analyze autoRollback.ts for reliability improvements",
+          "description": "Ensure self-improvements can be applied without service interruption — focus on autoRollback.ts",
+          "targetFile": "autoRollback.ts",
+          "estimatedEffort": "medium",
+          "status": "failed",
+          "result": "Pipeline failed at unittest: \n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\nstdout | server/algorithmicDiscovery.test.ts > algorithmicDiscovery > discoverAlgorithm resolves or rejects gracefully for context_compression\n[2026-06-25T12:09:11.918Z] [INFO ] [algorithmicDiscovery] [Discovery] Initiating algorithmic discovery for capability: context_compression\n[BenchmarkRunner] Running performance benchmarks...\n\nstdout | server/algorithmicDiscovery.test.ts > algorithmicDiscovery > discoverAlgorithm resolves or rejects gracefully for context_compression\n[BenchmarkRunner] ✓ All benchmarks within baseline (score: 100/100, 6 tests)\n\n ✓ server/algorithmicDiscovery.test.ts > algorithmicDiscovery > discoverAlgorithm is exported as a function 3ms\nstdout | server/qualityToRSI.test.ts > feedQualityToRSI > should execute without throwing\n[2026-06-25T12:09:12.169Z] [INFO ] [qualityToRSI] Skipping quality proposal for index.ts — not in RSI allowlist\n[2026-06-25T12:09:12.170Z] [INFO ] [qualityToRSI] Skipping quality proposal for initModules.ts — not in RSI allowlist\n[2026-06-25T12:09:12.171Z] [INFO ] [qualityToRSI] Skipping quality proposal for initRoutes.ts — not in RSI allowlist\n[2026-06-25T12:09:12.172Z] [INFO ] [selfImprove] [v7.1.3] LLM keys present: DeepSeek, OpenRouter, Anthropic, Kimi, OpenAI ✓\n\nstdout | server/continuousImprover.test.ts > startContinuousImprover > should test triggerCycleNow to get coverage\n[2026-06-25T12:09:12.175Z] [INFO ] [selfImprove] [v7.1.3] LLM keys present: DeepSeek, OpenRouter, Anthropic, Kimi, OpenAI ✓\n\nstdout | server/qualityToRSI.test.ts > feedQualityToRSI > should execute without throwing\n[2026-06-25T12:09:14.839Z] [INFO ] [importGraph] [importGraph] Built graph: 594 files, 708 edges in 1804ms\n\nstdout | server/continuousImprover.test.ts > startContinuousImprover > should test triggerCycleNow to get coverage\n[2026-06-25T12:09:14.956Z] [INFO ] [importGraph] [importGraph] Built graph: 594 files, 708 edges in 1938ms\n\nstdout | server/algorithmicDiscovery.test.ts > algorithmicDiscovery > discoverAlgorithm resolves or rejects gracefully for proposal_ranking\n[2026-06-25T12:09:26.923Z] [INFO ] [algorithmicDiscovery] [Discovery] Initiating algorithmic discovery for capability: proposal_ranking\n[BenchmarkRunner] Running performance benchmarks...\n\nstdout | server/algorithmicDiscovery.test.ts > algorithmicDiscovery > discoverAlgorithm resolves or rejects gracefully for proposal_ranking\n[BenchmarkRunner] ✓ All benchmarks within baseline (score: 100/100, 6 tests)\n\n × server/algorithmicDiscovery.test.ts > algorithmicDiscovery > discoverAlgorithm resolves or rejects gracefully for context_compression 15005ms\n   → Test timed out in 15000ms.\nIf this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".\n ✓ server/rsiEngine.test.ts > measureBenchmark > should execute without throwing 8012ms\nstdout | server/dependencyResolver.test.ts > checkForUpdates > should execute without throwing\n[DependencyResolver] Update check complete"
+        }
+      ],
+      "metrics": [],
+      "startedAt": 1782391103438
     },
     {
       "id": "mgoal_1782318049320_cstkei",
@@ -118,5 +150,5 @@
   ],
   "scans": [],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-24T16:22:56.789Z"
+  "_lastUpdated": "2026-06-25T12:38:23.438Z"
 }

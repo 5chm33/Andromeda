@@ -5,6 +5,210 @@ Every entry represents a code change that Andromeda proposed, validated, and app
 
 ---
 
+## [12.2.0] 2026-06-25 12:24:54 — `rsiScheduler.ts`
+
+**Category:** readability | **Impact:** low | **Confidence:** 86%
+**Change:** Extract magic numbers into named constants for readability
+
+> Extracting magic numbers like 500 (for log entries) into named constants improves code readability and maintainability.
+> This makes the code's intent clearer and simplifies future modifications.
+
+```diff
+-   entries.push(entry);
+-   // Keep last 500 entries
+-   if (entries.length > 500) entries = entries.slice(-500);
+-   fs.writeFileSync(p, JSON.stringify(entries, null, 2), "utf8");
+---
++   const MAX_LOG_ENTRIES = 500;
++   entries.push(entry);
++   // Keep last MAX_LOG_ENTRIES entries
++   if (entries.length > MAX_LOG_ENTRIES) entries = entries.slice(-MAX_LOG_ENTRIES);
++   fs.writeFileSync(p, JSON.stringify(entries, null, 2), "utf8");
+```
+
+---
+
+## [12.2.0] 2026-06-25 12:16:05 — `selfMonitor.ts`
+
+**Category:** readability | **Impact:** low | **Confidence:** 86%
+**Change:** Extract magic numbers into named constants
+
+> Extracting magic numbers into named constants improves readability by giving context to arbitrary values.
+> It also makes future modifications easier and less error-prone.
+
+```diff
+-   const mid = Math.floor(windowSamples.length / 2);
+-   if (mid < 2) return { current, trend: "stable", samples: windowSamples.length };
+  
+-   const firstHalf = windowSamples.slice(0, mid);
+-   const secondHalf = windowSamples.slice(mid);
+-   const firstAvg = firstHalf.reduce((sum, s) => sum + s.value, 0) / firstHalf.length;
+-   const secondAvg = secondHalf.reduce((sum, s) => sum + s.value, 0) / secondHalf.length;
+  
+-   const delta = secondAvg - firstAvg;
+-   const threshold = Math.max(Math.abs(firstAvg) * 0.1, 0.01); // 10% change = trend
+  
+-   let trend: "rising" | "falling" | "stable" = "stable";
+-   if (delta > threshold) trend = "rising";
+-   else if (delta < -threshold) trend = "falling";
+---
++   const MIN_SAMPLES_FOR_TREND = 2;
++   const TREND_CHANGE_PERCENTAGE = 0.1; // 10%
++   const MIN_ABSOLUTE_TREND_THRESHOLD = 0.01;
+  
++   const mid = Math.floor(windowSamples.length / 2);
++   if (mid < MIN_SAMPLES_FOR_TREND) return { current, trend: "stable", samples: windowSamples.length };
+  
++   const firstHalf = windowSamples.slice(0, mid);
++   const secondHalf = windowSamples.slice(mid);
++   const firstAvg = firstHalf.reduce((sum, s) => sum + s.value, 0) / firstHalf.length;
++   const secondAvg = secondHalf.reduce((sum, s) => sum + s.value, 0) / secondHalf.length;
+  
++   const delta = secondAvg - firstAvg;
++   const threshold = Math.max(Math.abs(firstAvg) * TREND_CHANGE_PERCENTAGE, MIN_ABSOLUTE_TREND_THRESHOLD);
+  
++   let trend: "rising" | "falling" | "stable" = "stable";
++   if (delta > threshold) trend = "rising";
++   else if (delta < -threshold) trend = "falling";
+```
+
+---
+
+## [12.2.0] 2026-06-25 12:10:17 — `ai.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test feature
+
+> Rationale for feature.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.2.0] 2026-06-25 12:10:17 — `ai.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test readability
+
+> Rationale for readability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.2.0] 2026-06-25 12:10:17 — `ai.ts`
+
+**Category:** security | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test security
+
+> Rationale for security.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.2.0] 2026-06-25 12:10:17 — `ai.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test reliability
+
+> Rationale for reliability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.2.0] 2026-06-25 12:10:17 — `ai.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test performance
+
+> Rationale for performance.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.2.0] 2026-06-25 12:10:17 — `b.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry B
+
+> Rationale B.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.2.0] 2026-06-25 12:10:17 — `a.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry A
+
+> Rationale A.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.2.0] 2026-06-25 12:10:17 — `testTarget.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Audit 11 test entry
+
+> Test rationale.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.2.0] 2026-06-25 12:10:17 — `selfImprove.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Improved error handling
+
+> Better null checks.
+
+```diff
+  
+---
+  
+```
+
+---
+
 ## [12.1.0] 2026-06-25 05:22:56 — `ai.ts`
 
 **Category:** feature | **Impact:** medium | **Confidence:** NaN%

@@ -413,14 +413,31 @@ export function ProposalTreeGraph() {
   const sseRef = useRef<EventSource | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const adminKey = typeof localStorage !== "undefined" ? (localStorage.getItem("andromeda_admin_key") ?? "") : "";
+  const [adminKey, setAdminKey] = useState<string>(
+    typeof localStorage !== "undefined" ? (localStorage.getItem("andromeda_admin_key") ?? "") : ""
+  );
   const authHeaders: Record<string, string> = adminKey
     ? { "Content-Type": "application/json", "X-Admin-Key": adminKey }
     : { "Content-Type": "application/json" };
 
+  // v12.2.1: Auto-fetch admin key from server (localhost only) so GitHub Repo Fixer works
+  useEffect(() => {
+    if (adminKey) return; // already have it
+    fetch("/api/admin/local-key")
+      .then(r => r.ok ? r.json() : null)
+      .then((d: { key?: string } | null) => {
+        if (d?.key) {
+          localStorage.setItem("andromeda_admin_key", d.key);
+          setAdminKey(d.key);
+        }
+      })
+      .catch(() => { /* non-fatal */ });
+  }, [adminKey]);
+
   const loadProposals = useCallback(async () => {
     try {
-      const r = await fetch("/api/rsi/proposals?limit=60");
+      // v12.2.1: correct endpoint is /api/self/proposals (not /api/rsi/proposals)
+      const r = await fetch("/api/self/proposals?limit=60");
       if (!r.ok) throw new Error("unavailable");
       const d = await r.json();
       const list: ProposalNode[] = (d.proposals ?? (Array.isArray(d) ? d : [])).map((p: Record<string, unknown>) => ({
@@ -462,7 +479,8 @@ export function ProposalTreeGraph() {
   const triggerNow = useCallback(async () => {
     setTriggering(true);
     try {
-      await fetch("/api/rsi/scheduler/trigger", { method: "POST", headers: authHeaders });
+      // v12.2.1: correct trigger endpoint is /api/rsi/trigger (not /api/rsi/scheduler/trigger)
+      await fetch("/api/rsi/trigger", { method: "POST", headers: authHeaders });
       await loadProposals();
     } finally {
       setTimeout(() => setTriggering(false), 2000);

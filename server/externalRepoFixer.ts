@@ -138,7 +138,11 @@ function findImprovableFiles(dir: string): string[] {
       const full = path.join(d, e.name);
       if (e.isDirectory()) {
         walk(full, depth + 1);
-      } else if (e.isFile() && (e.name.endsWith(".ts") || e.name.endsWith(".js"))) {
+      } else if (e.isFile() && (
+        e.name.endsWith(".ts") || e.name.endsWith(".js") ||
+        e.name.endsWith(".py") || e.name.endsWith(".tsx") ||
+        e.name.endsWith(".jsx") || e.name.endsWith(".mjs")
+      )) {
         results.push(full);
       }
     }
@@ -248,7 +252,8 @@ async function runFixJob(job: FixJob, options: FixJobOptions): Promise<void> {
     // ── Step 2: Analyze ───────────────────────────────────────────────────────
     emit(job, "analyzing", "Scanning repository for improvable files...", 20);
     const files = findImprovableFiles(repoDir);
-    emit(job, "analyzing", `Found ${files.length} TypeScript/JavaScript files`, 25);
+    const langLabel = files.length === 0 ? "source" : [...new Set(files.map(f => f.split('.').pop()))].join('/').toUpperCase();
+    emit(job, "analyzing", `Found ${files.length} ${langLabel} files`, 25);
 
     // ── Step 3: Improve ───────────────────────────────────────────────────────
     emit(job, "improving", `Running ${cycles} improvement cycle(s) on ${files.length} files...`, 30);

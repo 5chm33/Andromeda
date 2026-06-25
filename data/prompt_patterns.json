@@ -46,5 +46,29 @@
     "tags": [
       "research"
     ]
+  },
+  "4ce4d440": {
+    "id": "4ce4d440",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Extract magic numbers into named constants",
+    "successRate": 1,
+    "useCount": 4,
+    "avgResponseQuality": 0.8712079920101168,
+    "lastUsed": "2026-06-25T12:41:29.512Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "6952419d": {
+    "id": "6952419d",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Extract magic numbers into named constants for readability",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8625395822159663,
+    "lastUsed": "2026-06-25T12:24:54.326Z",
+    "tags": [
+      "self_improvement"
+    ]
   }
 }

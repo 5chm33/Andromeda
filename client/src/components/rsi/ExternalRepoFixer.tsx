@@ -123,7 +123,9 @@ export function ExternalRepoFixer({ adminKey: adminKeyProp }: ExternalRepoFixerP
     if (sseRef.current) {
       sseRef.current.close();
     }
-    const url = `/api/rsi/fix-external-repo/${id}/stream`;
+    // v12.2.1: EventSource cannot send custom headers, so pass admin key as query param
+    const keyParam = adminKey ? `?key=${encodeURIComponent(adminKey)}` : "";
+    const url = `/api/rsi/fix-external-repo/${id}/stream${keyParam}`;
     const es = new EventSource(url);
     sseRef.current = es;
 
@@ -146,7 +148,7 @@ export function ExternalRepoFixer({ adminKey: adminKeyProp }: ExternalRepoFixerP
       es.close();
       sseRef.current = null;
     };
-  }, []);
+  }, [adminKey]);
 
   const handleSubmit = async () => {
     if (!repoUrl.trim()) return;

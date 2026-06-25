@@ -12,7 +12,7 @@
     "bottomFiles": [
       "security.ts"
     ],
-    "lastUpdated": "2026-06-25T05:23:02.271Z"
+    "lastUpdated": "2026-06-25T12:38:18.445Z"
   },
   "performance": {
     "category": "performance",
@@ -29,11 +29,11 @@
       "costOptimizer.ts",
       "behavioralRegressionEngine.ts"
     ],
-    "lastUpdated": "2026-06-25T05:23:02.271Z"
+    "lastUpdated": "2026-06-25T12:38:18.445Z"
   },
   "readability": {
     "category": "readability",
-    "sampleCount": 6,
+    "sampleCount": 8,
     "meanReward": 0.01,
     "acceptRate": 0,
     "rejectRate": 0,
@@ -44,11 +44,11 @@
       "selfMonitor.ts"
     ],
     "bottomFiles": [
-      "privilegeSeparation.ts",
       "watchdog.ts",
-      "zkProofSigning.ts"
+      "zkProofSigning.ts",
+      "rsiScheduler.ts"
     ],
-    "lastUpdated": "2026-06-25T05:23:02.271Z"
+    "lastUpdated": "2026-06-25T12:38:18.444Z"
   },
   "helpfulness": {
     "category": "helpfulness",
@@ -80,7 +80,7 @@
       "zkProofSigning.ts",
       "ai.ts"
     ],
-    "lastUpdated": "2026-06-25T05:23:02.271Z"
+    "lastUpdated": "2026-06-25T12:38:18.445Z"
   },
   "refactoring": {
     "category": "refactoring",
@@ -99,6 +99,6 @@
       "contextAwareness.ts",
       "privilegeSeparation.ts"
     ],
-    "lastUpdated": "2026-06-25T05:23:02.271Z"
+    "lastUpdated": "2026-06-25T12:38:18.445Z"
   }
 }

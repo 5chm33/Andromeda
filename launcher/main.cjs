@@ -340,9 +340,12 @@ function startServer() {
       log(`Andromeda is live at http://localhost:${SERVER_PORT} ✓`);
       send("server-ready", { url: `http://localhost:${SERVER_PORT}` });
       // Auto-open the browser 1.5 s after server is ready
-      setTimeout(() => {
-        shell.openExternal(`http://localhost:${SERVER_PORT}`);
-      }, 1500);
+      // v12.2.1: Only open on first start — not on auto-restarts (prevents multiple tabs)
+      if (restartCount === 0) {
+        setTimeout(() => {
+          shell.openExternal(`http://localhost:${SERVER_PORT}`);
+        }, 1500);
+      }
     } else {
       step("server", "error", "Server did not start in time");
       err("Server did not respond within 60 seconds.");

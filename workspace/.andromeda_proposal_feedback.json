@@ -1,0 +1,335 @@
+{
+  "feedbacks": [
+    {
+      "proposalId": "prop_1782389591113_6h2vul",
+      "targetFile": "watchdog.ts",
+      "title": "Extract magic numbers into named constants",
+      "originalSnippet": "  // First check after 90 seconds (let all modules finish initializing)\n  setTimeout(() => runHealthCheck(), 90_000);",
+      "proposedSnippet": "  // First check after initial delay (let all modules finish initializing)\n  setTimeout(() => runHealthCheck(), INITIAL_CHECK_DELAY_MS);",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782389605551
+    },
+    {
+      "proposalId": "prop_1782389469611_jdt47k",
+      "targetFile": "rewardModel.ts",
+      "title": "Replace silent catch blocks with log.warn",
+      "originalSnippet": "if (fs.existsSync(MODEL_STATE_PATH)) {\n  try {\n    const saved = JSON.parse(fs.readFileSync(MODEL_STATE_PATH, \"utf-8\"));\n    modelState = { ...modelState, ...saved };\n  } catch { /* use defaults */ }\n}",
+      "proposedSnippet": "import { log } from \"./log\";\n\nif (fs.existsSync(MODEL_STATE_PATH)) {\n  try {\n    const saved = JSON.parse(fs.readFileSync(MODEL_STATE_PATH, \"utf-8\"));\n    modelState = { ...modelState, ...saved };\n  } catch (e) {\n    log.warn(`Failed to load reward model state from ${MODEL_STATE_PATH}. Using defaults. Error: ${e}`);\n  }\n}",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782389628685
+    },
+    {
+      "proposalId": "prop_1782389686150_wtfsbu",
+      "targetFile": "andromedaDb.ts",
+      "title": "Extract SQL queries into constants",
+      "originalSnippet": "    db.prepare(\"DELETE FROM vector_memory WHERE created_at < ?\").run(cutoff);\n    // Keep only the most recent maxEntries\n    db.prepare(`\n      DELETE FROM vector_memory WHERE id NOT IN (\n        SELECT id FROM vector_memory ORDER BY created_at DESC LIMIT ?\n      )\n    `).run(maxEntries);",
+      "proposedSnippet": "    const DELETE_OLD_VECTORS_SQL = \"DELETE FROM vector_memory WHERE created_at < ?\";\n    db.prepare(DELETE_OLD_VECTORS_SQL).run(cutoff);\n    // Keep only the most recent maxEntries\n    const DELETE_EXCESS_VECTORS_SQL = `\n      DELETE FROM vector_memory WHERE id NOT IN (\n        SELECT id FROM vector_memory ORDER BY created_at DESC LIMIT ?\n      )\n    `;\n    db.prepare(DELETE_EXCESS_VECTORS_SQL).run(maxEntries);",
+      "rejectionReason": "Constitution blocked: proposed content contains forbidden pattern 'DELETE FROM'.",
+      "rejectionCategory": "constitution",
+      "rejectedAt": 1782389765763
+    },
+    {
+      "proposalId": "prop_1782389686150_wtfsbu",
+      "targetFile": "andromedaDb.ts",
+      "title": "Extract SQL queries into constants",
+      "originalSnippet": "    db.prepare(\"DELETE FROM vector_memory WHERE created_at < ?\").run(cutoff);\n    // Keep only the most recent maxEntries\n    db.prepare(`\n      DELETE FROM vector_memory WHERE id NOT IN (\n        SELECT id FROM vector_memory ORDER BY created_at DESC LIMIT ?\n      )\n    `).run(maxEntries);",
+      "proposedSnippet": "    const DELETE_OLD_VECTORS_SQL = \"DELETE FROM vector_memory WHERE created_at < ?\";\n    db.prepare(DELETE_OLD_VECTORS_SQL).run(cutoff);\n    // Keep only the most recent maxEntries\n    const DELETE_EXCESS_VECTORS_SQL = `\n      DELETE FROM vector_memory WHERE id NOT IN (\n        SELECT id FROM vector_memory ORDER BY created_at DESC LIMIT ?\n      )\n    `;\n    db.prepare(DELETE_EXCESS_VECTORS_SQL).run(maxEntries);",
+      "rejectionReason": "Constitution blocked: proposed content contains forbidden pattern 'DELETE FROM'.",
+      "rejectionCategory": "constitution",
+      "rejectedAt": 1782389765766
+    },
+    {
+      "proposalId": "prop_1782389526086_7iricq",
+      "targetFile": "selfModel.ts",
+      "title": "Extract magic numbers into named constants",
+      "originalSnippet": "  // Keep last 50 actions\n  if (state.recentActions.length > 50) {\n    state.recentActions = state.recentActions.slice(-50);\n  }\n  saveState();\n}\n\n/**\n * Update resource usage metrics.\n */\nexport function updateResources(updates: Partial<ResourceUsage>): void {\n  state.resources = { ...state.resources, ...updates };\n}\n\n/**\n * Update active goals from goal system.\n */\nexport function updateGoals(goals: ActiveGoal[]): void {\n  state.activeGoals = goals;\n}\n\n/**\n * Update performance trends.\n */\nexp",
+      "proposedSnippet": "  // Keep last 50 actions\n  if (state.recentActions.length > MAX_RECENT_ACTIONS) {\n    state.recentActions = state.recentActions.slice(-MAX_RECENT_ACTIONS);\n  }\n  saveState();\n}\n\n/**\n * Update resource usage metrics.\n */\nexport function updateResources(updates: Partial<ResourceUsage>): void {\n  state.resources = { ...state.resources, ...updates };\n}\n\n/**\n * Update active goals from goal system.\n */\nexport function updateGoals(goals: ActiveGoal[]): void {\n  state.activeGoals = goals;\n}\n\n/**\n * Up",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782389775120
+    },
+    {
+      "proposalId": "prop_1782389526086_7iricq",
+      "targetFile": "selfModel.ts",
+      "title": "Extract magic numbers into named constants",
+      "originalSnippet": "  // Keep last 50 actions\n  if (state.recentActions.length > 50) {\n    state.recentActions = state.recentActions.slice(-50);\n  }\n  saveState();\n}\n\n/**\n * Update resource usage metrics.\n */\nexport function updateResources(updates: Partial<ResourceUsage>): void {\n  state.resources = { ...state.resources, ...updates };\n}\n\n/**\n * Update active goals from goal system.\n */\nexport function updateGoals(goals: ActiveGoal[]): void {\n  state.activeGoals = goals;\n}\n\n/**\n * Update performance trends.\n */\nexp",
+      "proposedSnippet": "  // Keep last 50 actions\n  if (state.recentActions.length > MAX_RECENT_ACTIONS) {\n    state.recentActions = state.recentActions.slice(-MAX_RECENT_ACTIONS);\n  }\n  saveState();\n}\n\n/**\n * Update resource usage metrics.\n */\nexport function updateResources(updates: Partial<ResourceUsage>): void {\n  state.resources = { ...state.resources, ...updates };\n}\n\n/**\n * Update active goals from goal system.\n */\nexport function updateGoals(goals: ActiveGoal[]): void {\n  state.activeGoals = goals;\n}\n\n/**\n * Up",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782389775123
+    },
+    {
+      "proposalId": "prop_1782389882251_7spvtf",
+      "targetFile": "skillGraph.ts",
+      "title": "Extract magic numbers into named constants",
+      "originalSnippet": "  const SIMILARITY_THRESHOLD = 0.8;\n  const CONFIDENCE_BOOST = 0.05;\n  const CONFIDENCE_PENALTY = 0.1;\n  const INITIAL_CONFIDENCE_SUCCESS = 0.7;\n  const INITIAL_CONFIDENCE_FAILURE = 0.3;\n  const MAX_PATTERNS_PER_MODULE = 50;\n  const PROPAGATION_CONFIDENCE_MULTIPLIER = 0.5;\n  const MIN_CONFIDENCE_TO_PROPAGATE = 0.7;\n  const PROPAGATION_SIMILARITY_THRESHOLD = 0.8;\n  const DECAY_THRESHOLD_MS = 7 * 24 * 60 * 60 * 1000; // 7 days\n  const DECAY_RATE = 0.95; // 5% decay per cycle\n  const MIN_CONFIDENCE",
+      "proposedSnippet": "  const SIMILARITY_THRESHOLD = 0.8;\n  const CONFIDENCE_BOOST_SUCCESS = 0.05;\n  const CONFIDENCE_PENALTY_FAILURE = 0.1;\n  const INITIAL_CONFIDENCE_SUCCESS = 0.7;\n  const INITIAL_CONFIDENCE_FAILURE = 0.3;\n  const MAX_PATTERNS_PER_MODULE = 50;\n  const PROPAGATION_CONFIDENCE_MULTIPLIER = 0.5;\n  const MIN_CONFIDENCE_TO_PROPAGATE = 0.7;\n  const PROPAGATION_SIMILARITY_THRESHOLD = 0.8;\n  const DECAY_THRESHOLD_MS = 7 * 24 * 60 * 60 * 1000; // 7 days\n  const DECAY_RATE = 0.95; // 5% decay per cycle\n  cons",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782389904743
+    },
+    {
+      "proposalId": "prop_1782389728815_zxf0he",
+      "targetFile": "noveltySearchEngine.ts",
+      "title": "Extract magic numbers into named constants",
+      "originalSnippet": "  if (archive.size === 0) return 100;\n\n  const distances = Array.from(archive.values()).map(b => {\n    const dot = b.behaviorVector.reduce((sum, v, i) => sum + v * (behaviorVector[i] ?? 0), 0);\n    const magA = Math.sqrt(b.behaviorVector.reduce((s, v) => s + v * v, 0));\n    const magB = Math.sqrt(behaviorVector.reduce((s, v) => s + v * v, 0));\n    const cosineSim = (magA > 0 && magB > 0) ? dot / (magA * magB) : 0;\n    return 1 - cosineSim;  // Distance = 1 - similarity\n  });\n\n  distances.sort((a",
+      "proposedSnippet": "const K_NEAREST_NEIGHBORS = 5;\nconst NOVELTY_SCORE_MULTIPLIER = 100;\nconst MIN_NOVELTY_ACCEPTANCE_THRESHOLD = 30;\\nconst INITIAL_VALIDATION_SCORE = 60;\n\nfunction calculateNoveltyScore(behaviorVector: number[]): number {\n  if (archive.size === 0) return NOVELTY_SCORE_MULTIPLIER;\n\n  const distances = Array.from(archive.values()).map(b => {\n    const dot = b.behaviorVector.reduce((sum, v, i) => sum + v * (behaviorVector[i] ?? 0), 0);\n    const magA = Math.sqrt(b.behaviorVector.reduce((s, v) => s + ",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782389943874
+    },
+    {
+      "proposalId": "prop_1782389940889_ck26xs",
+      "targetFile": "browser.ts",
+      "title": "Extract magic numbers into named constants",
+      "originalSnippet": "    // Wait a moment for any JS-rendered content\n    await page.waitForTimeout(1500);",
+      "proposedSnippet": "    const JS_RENDER_WAIT_MS = 1500; // Wait for JavaScript to render content\n    await page.waitForTimeout(JS_RENDER_WAIT_MS);",
+      "rejectionReason": "Proposal not found",
+      "rejectionCategory": "other",
+      "rejectedAt": 1782389943883
+    },
+    {
+      "proposalId": "prop_1782389728815_zxf0he",
+      "targetFile": "noveltySearchEngine.ts",
+      "title": "Extract magic numbers into named constants",
+      "originalSnippet": "  if (archive.size === 0) return 100;\n\n  const distances = Array.from(archive.values()).map(b => {\n    const dot = b.behaviorVector.reduce((sum, v, i) => sum + v * (behaviorVector[i] ?? 0), 0);\n    const magA = Math.sqrt(b.behaviorVector.reduce((s, v) => s + v * v, 0));\n    const magB = Math.sqrt(behaviorVector.reduce((s, v) => s + v * v, 0));\n    const cosineSim = (magA > 0 && magB > 0) ? dot / (magA * magB) : 0;\n    return 1 - cosineSim;  // Distance = 1 - similarity\n  });\n\n  distances.sort((a",
+      "proposedSnippet": "const K_NEAREST_NEIGHBORS = 5;\nconst NOVELTY_SCORE_MULTIPLIER = 100;\nconst MIN_NOVELTY_ACCEPTANCE_THRESHOLD = 30;\\nconst INITIAL_VALIDATION_SCORE = 60;\n\nfunction calculateNoveltyScore(behaviorVector: number[]): number {\n  if (archive.size === 0) return NOVELTY_SCORE_MULTIPLIER;\n\n  const distances = Array.from(archive.values()).map(b => {\n    const dot = b.behaviorVector.reduce((sum, v, i) => sum + v * (behaviorVector[i] ?? 0), 0);\n    const magA = Math.sqrt(b.behaviorVector.reduce((s, v) => s + ",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782389978627
+    },
+    {
+      "proposalId": "prop_1782389628935_xyr1mp",
+      "targetFile": "episodicMemory.ts",
+      "title": "Replace Math.random with crypto.randomBytes",
+      "originalSnippet": "    id: `ep_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,\n    timestamp: Date.now(),\n    goal: data.goal,",
+      "proposedSnippet": "    id: `ep_${Date.now()}_${crypto.randomBytes(3).toString('hex')}`,\n    timestamp: Date.now(),\n    goal: data.goal,",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782390016605
+    },
+    {
+      "proposalId": "prop_1782389628935_xyr1mp",
+      "targetFile": "episodicMemory.ts",
+      "title": "Replace Math.random with crypto.randomBytes",
+      "originalSnippet": "    id: `ep_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,\n    timestamp: Date.now(),\n    goal: data.goal,",
+      "proposedSnippet": "    id: `ep_${Date.now()}_${crypto.randomBytes(3).toString('hex')}`,\n    timestamp: Date.now(),\n    goal: data.goal,",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782390016609
+    },
+    {
+      "proposalId": "prop_1782389526086_7iricq",
+      "targetFile": "selfModel.ts",
+      "title": "Extract magic numbers into named constants",
+      "originalSnippet": "  // Keep last 50 actions\n  if (state.recentActions.length > 50) {\n    state.recentActions = state.recentActions.slice(-50);\n  }\n  saveState();\n}\n\n/**\n * Update resource usage metrics.\n */\nexport function updateResources(updates: Partial<ResourceUsage>): void {\n  state.resources = { ...state.resources, ...updates };\n}\n\n/**\n * Update active goals from goal system.\n */\nexport function updateGoals(goals: ActiveGoal[]): void {\n  state.activeGoals = goals;\n}\n\n/**\n * Update performance trends.\n */\nexp",
+      "proposedSnippet": "  // Keep last 50 actions\n  if (state.recentActions.length > MAX_RECENT_ACTIONS) {\n    state.recentActions = state.recentActions.slice(-MAX_RECENT_ACTIONS);\n  }\n  saveState();\n}\n\n/**\n * Update resource usage metrics.\n */\nexport function updateResources(updates: Partial<ResourceUsage>): void {\n  state.resources = { ...state.resources, ...updates };\n}\n\n/**\n * Update active goals from goal system.\n */\nexport function updateGoals(goals: ActiveGoal[]): void {\n  state.activeGoals = goals;\n}\n\n/**\n * Up",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782390025690
+    },
+    {
+      "proposalId": "prop_1782389526086_7iricq",
+      "targetFile": "selfModel.ts",
+      "title": "Extract magic numbers into named constants",
+      "originalSnippet": "  // Keep last 50 actions\n  if (state.recentActions.length > 50) {\n    state.recentActions = state.recentActions.slice(-50);\n  }\n  saveState();\n}\n\n/**\n * Update resource usage metrics.\n */\nexport function updateResources(updates: Partial<ResourceUsage>): void {\n  state.resources = { ...state.resources, ...updates };\n}\n\n/**\n * Update active goals from goal system.\n */\nexport function updateGoals(goals: ActiveGoal[]): void {\n  state.activeGoals = goals;\n}\n\n/**\n * Update performance trends.\n */\nexp",
+      "proposedSnippet": "  // Keep last 50 actions\n  if (state.recentActions.length > MAX_RECENT_ACTIONS) {\n    state.recentActions = state.recentActions.slice(-MAX_RECENT_ACTIONS);\n  }\n  saveState();\n}\n\n/**\n * Update resource usage metrics.\n */\nexport function updateResources(updates: Partial<ResourceUsage>): void {\n  state.resources = { ...state.resources, ...updates };\n}\n\n/**\n * Update active goals from goal system.\n */\nexport function updateGoals(goals: ActiveGoal[]): void {\n  state.activeGoals = goals;\n}\n\n/**\n * Up",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782390025693
+    },
+    {
+      "proposalId": "prop_1782390260102_862dhv",
+      "targetFile": "episodicConsolidation.ts",
+      "title": "Extract magic numbers into named constants",
+      "originalSnippet": "  const {\n    olderThanDays  = 7,\n    forceRun       = false,\n    minClusterSize = 3,\n  } = options;\n\n  ensureDir();\n\n  const state = loadState();\n  const hoursSinceLast = (Date.now() - state.lastRunAt) / 3_600_000;\n  if (!forceRun && hoursSinceLast < 24) {\n    return {\n      consolidated: 0,\n      lessonsCreated: 0,\n      episodesRemaining: loadEpisodes().length,\n      skipped: true,\n      reason: `Last run ${hoursSinceLast.toFixed(1)}h ago (min 24h between runs)`,\n    };\n  }\n\n  const allEpisod",
+      "proposedSnippet": "const MIN_HOURS_BETWEEN_RUNS = 24;\nconst MILLISECONDS_PER_HOUR = 3_600_000;\nconst MILLISECONDS_PER_DAY = 86_400_000;\n\nexport async function consolidateEpisodicMemory(options: {\n  olderThanDays?: number;\n  forceRun?: boolean;\n  minClusterSize?: number;\n} = {}): Promise<EpisodicConsolidationResult> {\n  const {\n    olderThanDays  = 7,\n    forceRun       = false,\n    minClusterSize = 3,\n  } = options;\n\n  ensureDir();\n\n  const state = loadState();\n  const hoursSinceLast = (Date.now() - state.lastRunA",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782390267404
+    },
+    {
+      "proposalId": "prop_1782390260102_862dhv",
+      "targetFile": "episodicConsolidation.ts",
+      "title": "Extract magic numbers into named constants",
+      "originalSnippet": "  const {\n    olderThanDays  = 7,\n    forceRun       = false,\n    minClusterSize = 3,\n  } = options;\n\n  ensureDir();\n\n  const state = loadState();\n  const hoursSinceLast = (Date.now() - state.lastRunAt) / 3_600_000;\n  if (!forceRun && hoursSinceLast < 24) {\n    return {\n      consolidated: 0,\n      lessonsCreated: 0,\n      episodesRemaining: loadEpisodes().length,\n      skipped: true,\n      reason: `Last run ${hoursSinceLast.toFixed(1)}h ago (min 24h between runs)`,\n    };\n  }\n\n  const allEpisod",
+      "proposedSnippet": "const MIN_HOURS_BETWEEN_RUNS = 24;\nconst MILLISECONDS_PER_HOUR = 3_600_000;\nconst MILLISECONDS_PER_DAY = 86_400_000;\n\nexport async function consolidateEpisodicMemory(options: {\n  olderThanDays?: number;\n  forceRun?: boolean;\n  minClusterSize?: number;\n} = {}): Promise<EpisodicConsolidationResult> {\n  const {\n    olderThanDays  = 7,\n    forceRun       = false,\n    minClusterSize = 3,\n  } = options;\n\n  ensureDir();\n\n  const state = loadState();\n  const hoursSinceLast = (Date.now() - state.lastRunA",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782390267408
+    },
+    {
+      "proposalId": "prop_1782390209335_o0j4v9",
+      "targetFile": "testCoverageAnalyzer.ts",
+      "title": "Replace silent catch blocks with structured logging",
+      "originalSnippet": "  } catch { /* skip */ }\n  return files;\n}\n\nfunction extractExports(filePath: string): string[] {\n  try {\n    const content = readFileSync(filePath, \"utf8\");\n    const exports: string[] = [];\n\n    // Match exported functions\n    const funcMatches = content.matchAll(/export\\s+(?:async\\s+)?function\\s+(\\w+)/g);\n    for (const match of funcMatches) exports.push(match[1]);\n\n    // Match exported const/let (arrow functions or values)\n    const constMatches = content.matchAll(/export\\s+(?:const|let)\\s+",
+      "proposedSnippet": "  } catch (e) { console.warn(\"[TestCoverageAnalyzer] Error reading directory:\", dir, e); }\n  return files;\n}\n\nfunction extractExports(filePath: string): string[] {\n  try {\n    const content = readFileSync(filePath, \"utf8\");\n    const exports: string[] = [];\n\n    // Match exported functions\n    const funcMatches = content.matchAll(/export\\s+(?:async\\s+)?function\\s+(\\w+)/g);\n    for (const match of funcMatches) exports.push(match[1]);\n\n    // Match exported const/let (arrow functions or values)\n  ",
+      "rejectionReason": "Self-consistency validation rejected proposal (consensus=0.00): Provider unavailable — defaulting to disagree for safety",
+      "rejectionCategory": "other",
+      "rejectedAt": 1782390297875
+    },
+    {
+      "proposalId": "prop_1782390209335_o0j4v9",
+      "targetFile": "testCoverageAnalyzer.ts",
+      "title": "Replace silent catch blocks with structured logging",
+      "originalSnippet": "  } catch { /* skip */ }\n  return files;\n}\n\nfunction extractExports(filePath: string): string[] {\n  try {\n    const content = readFileSync(filePath, \"utf8\");\n    const exports: string[] = [];\n\n    // Match exported functions\n    const funcMatches = content.matchAll(/export\\s+(?:async\\s+)?function\\s+(\\w+)/g);\n    for (const match of funcMatches) exports.push(match[1]);\n\n    // Match exported const/let (arrow functions or values)\n    const constMatches = content.matchAll(/export\\s+(?:const|let)\\s+",
+      "proposedSnippet": "  } catch (e) { console.warn(\"[TestCoverageAnalyzer] Error reading directory:\", dir, e); }\n  return files;\n}\n\nfunction extractExports(filePath: string): string[] {\n  try {\n    const content = readFileSync(filePath, \"utf8\");\n    const exports: string[] = [];\n\n    // Match exported functions\n    const funcMatches = content.matchAll(/export\\s+(?:async\\s+)?function\\s+(\\w+)/g);\n    for (const match of funcMatches) exports.push(match[1]);\n\n    // Match exported const/let (arrow functions or values)\n  ",
+      "rejectionReason": "Self-consistency validation rejected proposal (consensus=0.00): Provider unavailable — defaulting to disagree for safety",
+      "rejectionCategory": "other",
+      "rejectedAt": 1782390297879
+    },
+    {
+      "proposalId": "prop_1782390122428_8nt0rc",
+      "targetFile": "autoRollback.ts",
+      "title": "Replace Math.random with crypto.randomBytes for snapshot IDs",
+      "originalSnippet": "  const id = `snap_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;",
+      "proposedSnippet": "  const id = `snap_${Date.now()}_${crypto.randomBytes(3).toString('hex')}`;",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782390306969
+    },
+    {
+      "proposalId": "prop_1782390122428_8nt0rc",
+      "targetFile": "autoRollback.ts",
+      "title": "Replace Math.random with crypto.randomBytes for snapshot IDs",
+      "originalSnippet": "  const id = `snap_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;",
+      "proposedSnippet": "  const id = `snap_${Date.now()}_${crypto.randomBytes(3).toString('hex')}`;",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782390306972
+    },
+    {
+      "proposalId": "prop_1782390209335_o0j4v9",
+      "targetFile": "testCoverageAnalyzer.ts",
+      "title": "Replace silent catch blocks with structured logging",
+      "originalSnippet": "  } catch { /* skip */ }\n  return files;\n}\n\nfunction extractExports(filePath: string): string[] {\n  try {\n    const content = readFileSync(filePath, \"utf8\");\n    const exports: string[] = [];\n\n    // Match exported functions\n    const funcMatches = content.matchAll(/export\\s+(?:async\\s+)?function\\s+(\\w+)/g);\n    for (const match of funcMatches) exports.push(match[1]);\n\n    // Match exported const/let (arrow functions or values)\n    const constMatches = content.matchAll(/export\\s+(?:const|let)\\s+",
+      "proposedSnippet": "  } catch (e) { console.warn(\"[TestCoverageAnalyzer] Error reading directory:\", dir, e); }\n  return files;\n}\n\nfunction extractExports(filePath: string): string[] {\n  try {\n    const content = readFileSync(filePath, \"utf8\");\n    const exports: string[] = [];\n\n    // Match exported functions\n    const funcMatches = content.matchAll(/export\\s+(?:async\\s+)?function\\s+(\\w+)/g);\n    for (const match of funcMatches) exports.push(match[1]);\n\n    // Match exported const/let (arrow functions or values)\n  ",
+      "rejectionReason": "Self-consistency validation rejected proposal (consensus=0.00): Provider unavailable — defaulting to disagree for safety",
+      "rejectionCategory": "other",
+      "rejectedAt": 1782390312572
+    },
+    {
+      "proposalId": "prop_1782390209335_o0j4v9",
+      "targetFile": "testCoverageAnalyzer.ts",
+      "title": "Replace silent catch blocks with structured logging",
+      "originalSnippet": "  } catch { /* skip */ }\n  return files;\n}\n\nfunction extractExports(filePath: string): string[] {\n  try {\n    const content = readFileSync(filePath, \"utf8\");\n    const exports: string[] = [];\n\n    // Match exported functions\n    const funcMatches = content.matchAll(/export\\s+(?:async\\s+)?function\\s+(\\w+)/g);\n    for (const match of funcMatches) exports.push(match[1]);\n\n    // Match exported const/let (arrow functions or values)\n    const constMatches = content.matchAll(/export\\s+(?:const|let)\\s+",
+      "proposedSnippet": "  } catch (e) { console.warn(\"[TestCoverageAnalyzer] Error reading directory:\", dir, e); }\n  return files;\n}\n\nfunction extractExports(filePath: string): string[] {\n  try {\n    const content = readFileSync(filePath, \"utf8\");\n    const exports: string[] = [];\n\n    // Match exported functions\n    const funcMatches = content.matchAll(/export\\s+(?:async\\s+)?function\\s+(\\w+)/g);\n    for (const match of funcMatches) exports.push(match[1]);\n\n    // Match exported const/let (arrow functions or values)\n  ",
+      "rejectionReason": "Self-consistency validation rejected proposal (consensus=0.00): Provider unavailable — defaulting to disagree for safety",
+      "rejectionCategory": "other",
+      "rejectedAt": 1782390312577
+    },
+    {
+      "proposalId": "prop_1782390074317_80pm3q",
+      "targetFile": "z3ProofLayer.ts",
+      "title": "Extract magic numbers into named constants",
+      "originalSnippet": "    const addedLines = lines.filter(l => l.startsWith('+') && !l.startsWith('+++')).length;\n    const removedLines = lines.filter(l => l.startsWith('-') && !l.startsWith('---')).length;\n    \n    const hasTests = diff.includes('test') || diff.includes('expect(');\n    const hasTryCatch = diff.includes('try {') || diff.includes('catch');\n    \n    // Construct proof obligations\n    if (hasTests) {\n      // Adding tests strictly increases utility\n      solver.add(u_after.gt(u_before));\n    } else if ",
+      "proposedSnippet": "    const addedLines = lines.filter(l => l.startsWith(ADDED_LINE_PREFIX) && !l.startsWith(GIT_ADD_FILE_PREFIX)).length;\n    const removedLines = lines.filter(l => l.startsWith(REMOVED_LINE_PREFIX) && !l.startsWith(GIT_REMOVE_FILE_PREFIX)).length;\n    \n    const hasTests = diff.includes(TEST_KEYWORD_1) || diff.includes(TEST_KEYWORD_2);\n    const hasTryCatch = diff.includes(TRY_BLOCK_KEYWORD) || diff.includes(CATCH_BLOCK_KEYWORD);\n    \n    // Construct proof obligations\n    if (hasTests) {\n      /",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782390336330
+    },
+    {
+      "proposalId": "prop_1782390074317_80pm3q",
+      "targetFile": "z3ProofLayer.ts",
+      "title": "Extract magic numbers into named constants",
+      "originalSnippet": "    const addedLines = lines.filter(l => l.startsWith('+') && !l.startsWith('+++')).length;\n    const removedLines = lines.filter(l => l.startsWith('-') && !l.startsWith('---')).length;\n    \n    const hasTests = diff.includes('test') || diff.includes('expect(');\n    const hasTryCatch = diff.includes('try {') || diff.includes('catch');\n    \n    // Construct proof obligations\n    if (hasTests) {\n      // Adding tests strictly increases utility\n      solver.add(u_after.gt(u_before));\n    } else if ",
+      "proposedSnippet": "    const addedLines = lines.filter(l => l.startsWith(ADDED_LINE_PREFIX) && !l.startsWith(GIT_ADD_FILE_PREFIX)).length;\n    const removedLines = lines.filter(l => l.startsWith(REMOVED_LINE_PREFIX) && !l.startsWith(GIT_REMOVE_FILE_PREFIX)).length;\n    \n    const hasTests = diff.includes(TEST_KEYWORD_1) || diff.includes(TEST_KEYWORD_2);\n    const hasTryCatch = diff.includes(TRY_BLOCK_KEYWORD) || diff.includes(CATCH_BLOCK_KEYWORD);\n    \n    // Construct proof obligations\n    if (hasTests) {\n      /",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782390336449
+    },
+    {
+      "proposalId": "prop_1782390122428_8nt0rc",
+      "targetFile": "autoRollback.ts",
+      "title": "Replace Math.random with crypto.randomBytes for snapshot IDs",
+      "originalSnippet": "  const id = `snap_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;",
+      "proposedSnippet": "  const id = `snap_${Date.now()}_${crypto.randomBytes(3).toString('hex')}`;",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782390344360
+    },
+    {
+      "proposalId": "prop_1782390122428_8nt0rc",
+      "targetFile": "autoRollback.ts",
+      "title": "Replace Math.random with crypto.randomBytes for snapshot IDs",
+      "originalSnippet": "  const id = `snap_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;",
+      "proposedSnippet": "  const id = `snap_${Date.now()}_${crypto.randomBytes(3).toString('hex')}`;",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782390344364
+    },
+    {
+      "proposalId": "prop_1782389882251_7spvtf",
+      "targetFile": "skillGraph.ts",
+      "title": "Extract magic numbers into named constants",
+      "originalSnippet": "  const SIMILARITY_THRESHOLD = 0.8;\n  const CONFIDENCE_BOOST = 0.05;\n  const CONFIDENCE_PENALTY = 0.1;\n  const INITIAL_CONFIDENCE_SUCCESS = 0.7;\n  const INITIAL_CONFIDENCE_FAILURE = 0.3;\n  const MAX_PATTERNS_PER_MODULE = 50;\n  const PROPAGATION_CONFIDENCE_MULTIPLIER = 0.5;\n  const MIN_CONFIDENCE_TO_PROPAGATE = 0.7;\n  const PROPAGATION_SIMILARITY_THRESHOLD = 0.8;\n  const DECAY_THRESHOLD_MS = 7 * 24 * 60 * 60 * 1000; // 7 days\n  const DECAY_RATE = 0.95; // 5% decay per cycle\n  const MIN_CONFIDENCE",
+      "proposedSnippet": "  const SIMILARITY_THRESHOLD = 0.8;\n  const CONFIDENCE_BOOST_SUCCESS = 0.05;\n  const CONFIDENCE_PENALTY_FAILURE = 0.1;\n  const INITIAL_CONFIDENCE_SUCCESS = 0.7;\n  const INITIAL_CONFIDENCE_FAILURE = 0.3;\n  const MAX_PATTERNS_PER_MODULE = 50;\n  const PROPAGATION_CONFIDENCE_MULTIPLIER = 0.5;\n  const MIN_CONFIDENCE_TO_PROPAGATE = 0.7;\n  const PROPAGATION_SIMILARITY_THRESHOLD = 0.8;\n  const DECAY_THRESHOLD_MS = 7 * 24 * 60 * 60 * 1000; // 7 days\n  const DECAY_RATE = 0.95; // 5% decay per cycle\n  cons",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782390347511
+    },
+    {
+      "proposalId": "prop_1782389882251_7spvtf",
+      "targetFile": "skillGraph.ts",
+      "title": "Extract magic numbers into named constants",
+      "originalSnippet": "  const SIMILARITY_THRESHOLD = 0.8;\n  const CONFIDENCE_BOOST = 0.05;\n  const CONFIDENCE_PENALTY = 0.1;\n  const INITIAL_CONFIDENCE_SUCCESS = 0.7;\n  const INITIAL_CONFIDENCE_FAILURE = 0.3;\n  const MAX_PATTERNS_PER_MODULE = 50;\n  const PROPAGATION_CONFIDENCE_MULTIPLIER = 0.5;\n  const MIN_CONFIDENCE_TO_PROPAGATE = 0.7;\n  const PROPAGATION_SIMILARITY_THRESHOLD = 0.8;\n  const DECAY_THRESHOLD_MS = 7 * 24 * 60 * 60 * 1000; // 7 days\n  const DECAY_RATE = 0.95; // 5% decay per cycle\n  const MIN_CONFIDENCE",
+      "proposedSnippet": "  const SIMILARITY_THRESHOLD = 0.8;\n  const CONFIDENCE_BOOST_SUCCESS = 0.05;\n  const CONFIDENCE_PENALTY_FAILURE = 0.1;\n  const INITIAL_CONFIDENCE_SUCCESS = 0.7;\n  const INITIAL_CONFIDENCE_FAILURE = 0.3;\n  const MAX_PATTERNS_PER_MODULE = 50;\n  const PROPAGATION_CONFIDENCE_MULTIPLIER = 0.5;\n  const MIN_CONFIDENCE_TO_PROPAGATE = 0.7;\n  const PROPAGATION_SIMILARITY_THRESHOLD = 0.8;\n  const DECAY_THRESHOLD_MS = 7 * 24 * 60 * 60 * 1000; // 7 days\n  const DECAY_RATE = 0.95; // 5% decay per cycle\n  cons",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782390347517
+    },
+    {
+      "proposalId": "prop_1782389628935_xyr1mp",
+      "targetFile": "episodicMemory.ts",
+      "title": "Replace Math.random with crypto.randomBytes",
+      "originalSnippet": "    id: `ep_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,\n    timestamp: Date.now(),\n    goal: data.goal,",
+      "proposedSnippet": "    id: `ep_${Date.now()}_${crypto.randomBytes(3).toString('hex')}`,\n    timestamp: Date.now(),\n    goal: data.goal,",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782390357101
+    },
+    {
+      "proposalId": "prop_1782389628935_xyr1mp",
+      "targetFile": "episodicMemory.ts",
+      "title": "Replace Math.random with crypto.randomBytes",
+      "originalSnippet": "    id: `ep_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,\n    timestamp: Date.now(),\n    goal: data.goal,",
+      "proposedSnippet": "    id: `ep_${Date.now()}_${crypto.randomBytes(3).toString('hex')}`,\n    timestamp: Date.now(),\n    goal: data.goal,",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782390357106
+    },
+    {
+      "proposalId": "prop_1782390074317_80pm3q",
+      "targetFile": "z3ProofLayer.ts",
+      "title": "Extract magic numbers into named constants",
+      "originalSnippet": "    const addedLines = lines.filter(l => l.startsWith('+') && !l.startsWith('+++')).length;\n    const removedLines = lines.filter(l => l.startsWith('-') && !l.startsWith('---')).length;\n    \n    const hasTests = diff.includes('test') || diff.includes('expect(');\n    const hasTryCatch = diff.includes('try {') || diff.includes('catch');\n    \n    // Construct proof obligations\n    if (hasTests) {\n      // Adding tests strictly increases utility\n      solver.add(u_after.gt(u_before));\n    } else if ",
+      "proposedSnippet": "    const addedLines = lines.filter(l => l.startsWith(ADDED_LINE_PREFIX) && !l.startsWith(GIT_ADD_FILE_PREFIX)).length;\n    const removedLines = lines.filter(l => l.startsWith(REMOVED_LINE_PREFIX) && !l.startsWith(GIT_REMOVE_FILE_PREFIX)).length;\n    \n    const hasTests = diff.includes(TEST_KEYWORD_1) || diff.includes(TEST_KEYWORD_2);\n    const hasTryCatch = diff.includes(TRY_BLOCK_KEYWORD) || diff.includes(CATCH_BLOCK_KEYWORD);\n    \n    // Construct proof obligations\n    if (hasTests) {\n      /",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782390358461
+    },
+    {
+      "proposalId": "prop_1782390074317_80pm3q",
+      "targetFile": "z3ProofLayer.ts",
+      "title": "Extract magic numbers into named constants",
+      "originalSnippet": "    const addedLines = lines.filter(l => l.startsWith('+') && !l.startsWith('+++')).length;\n    const removedLines = lines.filter(l => l.startsWith('-') && !l.startsWith('---')).length;\n    \n    const hasTests = diff.includes('test') || diff.includes('expect(');\n    const hasTryCatch = diff.includes('try {') || diff.includes('catch');\n    \n    // Construct proof obligations\n    if (hasTests) {\n      // Adding tests strictly increases utility\n      solver.add(u_after.gt(u_before));\n    } else if ",
+      "proposedSnippet": "    const addedLines = lines.filter(l => l.startsWith(ADDED_LINE_PREFIX) && !l.startsWith(GIT_ADD_FILE_PREFIX)).length;\n    const removedLines = lines.filter(l => l.startsWith(REMOVED_LINE_PREFIX) && !l.startsWith(GIT_REMOVE_FILE_PREFIX)).length;\n    \n    const hasTests = diff.includes(TEST_KEYWORD_1) || diff.includes(TEST_KEYWORD_2);\n    const hasTryCatch = diff.includes(TRY_BLOCK_KEYWORD) || diff.includes(CATCH_BLOCK_KEYWORD);\n    \n    // Construct proof obligations\n    if (hasTests) {\n      /",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782390358465
+    },
+    {
+      "proposalId": "prop_1782391001491_7nabas",
+      "targetFile": "rsiEventBus.ts",
+      "title": "Extract magic number for heartbeat interval",
+      "originalSnippet": "setInterval(() => {\n  if (clients.size > 0) {\n    emitRsiEvent(\"heartbeat\", { clientCount: clients.size });\n  }\n}, 30_000).unref();",
+      "proposedSnippet": "const HEARTBEAT_INTERVAL_MS = 30_000;\n\nsetInterval(() => {\n  if (clients.size > 0) {\n    emitRsiEvent(\"heartbeat\", { clientCount: clients.size });\n  }\n}, HEARTBEAT_MS).unref();",
+      "rejectionReason": "Syntax check failed — refinement generation failed",
+      "rejectionCategory": "syntax",
+      "rejectedAt": 1782391019829
+    }
+  ],
+  "lastUpdatedAt": 1782391289510
+}

@@ -89,7 +89,472 @@
     }
   ],
   "issues": [],
-  "learnings": [],
+  "learnings": [
+    {
+      "id": "learn_1782389461837_popoqf",
+      "category": "antipattern",
+      "title": "Goal execution: Achieve Zero-Downtime Self-Modification",
+      "description": "Processed 2 sub-goals, 0 succeeded",
+      "context": "Goal: Achieve Zero-Downtime Self-Modification (reliability)",
+      "outcome": "no progress",
+      "lesson": "Processed 2 sub-goals, 0 succeeded",
+      "applicableTo": [
+        "recursiveGoals",
+        "selfImprove"
+      ],
+      "confidence": 0.7,
+      "createdAt": 1782389461837,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782389605550_gqxmkl",
+      "category": "antipattern",
+      "title": "Failure: Extract magic numbers into named constants",
+      "description": "Failed to apply \"Extract magic numbers into named constants\" to watchdog.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify watchdog.ts readability",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for watchdog.ts: Extract magic numbers into named constants — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "watchdog.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782389605550,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782389628684_dq2l5g",
+      "category": "antipattern",
+      "title": "Failure: Replace silent catch blocks with log.warn",
+      "description": "Failed to apply \"Replace silent catch blocks with log.warn\" to rewardModel.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify rewardModel.ts reliability",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for rewardModel.ts: Replace silent catch blocks with log.warn — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "rewardModel.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782389628684,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782389757622_zl0awt",
+      "category": "success",
+      "title": "Success: Extract magic numbers into named constants",
+      "description": "Successfully applied \"Extract magic numbers into named constants\" to selfMonitor.ts (readability). Health: improved.",
+      "context": "self-modify selfMonitor.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for selfMonitor.ts: Extract magic numbers into named constants",
+      "applicableTo": [
+        "selfMonitor.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782389757622,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782389765206_cscpmi",
+      "category": "success",
+      "title": "Extract magic numbers into named constants",
+      "description": "RSI commit: readability improvement to selfMonitor.ts",
+      "context": "selfMonitor.ts",
+      "outcome": "Committed with confidence 0.86",
+      "lesson": "RSI applied: Extracting magic numbers into named constants improves readability by giving context to arbitrary values. It also makes future modifications easier and less error-prone.",
+      "applicableTo": [
+        "selfMonitor.ts",
+        "readability"
+      ],
+      "confidence": 0.8586950571044246,
+      "createdAt": 1782389765206,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782389765763_nf5dg0",
+      "category": "antipattern",
+      "title": "Failure: Extract SQL queries into constants",
+      "description": "Failed to apply \"Extract SQL queries into constants\" to andromedaDb.ts. Reason: Constitution blocked: proposed content contains forbidden pattern 'DELETE FROM'.. Avoid similar changes.",
+      "context": "self-modify andromedaDb.ts readability",
+      "outcome": "failure: Constitution blocked: proposed content contains forbidden pattern 'DELETE FROM'.",
+      "lesson": "Avoid for andromedaDb.ts: Extract SQL queries into constants — causes Constitution blocked: proposed content contains forbidden pattern 'DELETE FROM'.",
+      "applicableTo": [
+        "andromedaDb.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782389765763,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782389775120_kq6yq4",
+      "category": "antipattern",
+      "title": "Failure: Extract magic numbers into named constants",
+      "description": "Failed to apply \"Extract magic numbers into named constants\" to selfModel.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify selfModel.ts code quality",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for selfModel.ts: Extract magic numbers into named constants — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "selfModel.ts",
+        "code quality"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782389775120,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782389904740_bur5nx",
+      "category": "antipattern",
+      "title": "Failure: Extract magic numbers into named constants",
+      "description": "Failed to apply \"Extract magic numbers into named constants\" to skillGraph.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify skillGraph.ts readability",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for skillGraph.ts: Extract magic numbers into named constants — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "skillGraph.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782389904740,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782389943873_quwpp0",
+      "category": "antipattern",
+      "title": "Failure: Extract magic numbers into named constants",
+      "description": "Failed to apply \"Extract magic numbers into named constants\" to noveltySearchEngine.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify noveltySearchEngine.ts readability",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for noveltySearchEngine.ts: Extract magic numbers into named constants — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "noveltySearchEngine.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782389943873,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782389943882_l3kkyf",
+      "category": "antipattern",
+      "title": "Failure: Extract magic numbers into named constants",
+      "description": "Failed to apply \"Extract magic numbers into named constants\" to browser.ts. Reason: Proposal not found. Avoid similar changes.",
+      "context": "self-modify browser.ts readability",
+      "outcome": "failure: Proposal not found",
+      "lesson": "Avoid for browser.ts: Extract magic numbers into named constants — causes Proposal not found",
+      "applicableTo": [
+        "browser.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782389943882,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782389978626_foooby",
+      "category": "antipattern",
+      "title": "Failure: Extract magic numbers into named constants",
+      "description": "Failed to apply \"Extract magic numbers into named constants\" to noveltySearchEngine.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify noveltySearchEngine.ts readability",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for noveltySearchEngine.ts: Extract magic numbers into named constants — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "noveltySearchEngine.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782389978626,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782389998961_g819zo",
+      "category": "antipattern",
+      "title": "Failure: Replace Math.random with crypto.randomBytes for Todo ID generation",
+      "description": "Failed to apply \"Replace Math.random with crypto.randomBytes for Todo ID generation\" to aiPlanning.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify aiPlanning.ts security",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for aiPlanning.ts: Replace Math.random with crypto.randomBytes for Todo ID generation — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "aiPlanning.ts",
+        "security"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782389998961,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782390016603_tulp69",
+      "category": "antipattern",
+      "title": "Failure: Replace Math.random with crypto.randomBytes",
+      "description": "Failed to apply \"Replace Math.random with crypto.randomBytes\" to episodicMemory.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify episodicMemory.ts security",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for episodicMemory.ts: Replace Math.random with crypto.randomBytes — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "episodicMemory.ts",
+        "security"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782390016603,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782390025689_hgrl5n",
+      "category": "antipattern",
+      "title": "Failure: Extract magic numbers into named constants",
+      "description": "Failed to apply \"Extract magic numbers into named constants\" to selfModel.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify selfModel.ts code quality",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for selfModel.ts: Extract magic numbers into named constants — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "selfModel.ts",
+        "code quality"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782390025689,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782390267403_1yyp09",
+      "category": "antipattern",
+      "title": "Failure: Extract magic numbers into named constants",
+      "description": "Failed to apply \"Extract magic numbers into named constants\" to episodicConsolidation.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify episodicConsolidation.ts readability",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for episodicConsolidation.ts: Extract magic numbers into named constants — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "episodicConsolidation.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782390267403,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782390285546_02264n",
+      "category": "success",
+      "title": "Success: Extract magic numbers into named constants for readability",
+      "description": "Successfully applied \"Extract magic numbers into named constants for readability\" to rsiScheduler.ts (readability). Health: improved.",
+      "context": "self-modify rsiScheduler.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for rsiScheduler.ts: Extract magic numbers into named constants for readability",
+      "applicableTo": [
+        "rsiScheduler.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782390285546,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782390294342_48jqio",
+      "category": "success",
+      "title": "Extract magic numbers into named constants for readability",
+      "description": "RSI commit: readability improvement to rsiScheduler.ts",
+      "context": "rsiScheduler.ts",
+      "outcome": "Committed with confidence 0.86",
+      "lesson": "RSI applied: Extracting magic numbers like 500 (for log entries) into named constants improves code readability and maintainability. This makes the code's intent clearer and simplifies future modifications.",
+      "applicableTo": [
+        "rsiScheduler.ts",
+        "readability"
+      ],
+      "confidence": 0.8625395822159663,
+      "createdAt": 1782390294342,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782390297875_7bcma1",
+      "category": "antipattern",
+      "title": "Failure: Replace silent catch blocks with structured logging",
+      "description": "Failed to apply \"Replace silent catch blocks with structured logging\" to testCoverageAnalyzer.ts. Reason: Self-consistency validation rejected proposal (consensus=0.00): Provider unavailable — defaulting to disagree for safety. Avoid similar changes.",
+      "context": "self-modify testCoverageAnalyzer.ts reliability",
+      "outcome": "failure: Self-consistency validation rejected proposal (consensus=0.00): Provider unavailable — defaulting to disagree for safety",
+      "lesson": "Avoid for testCoverageAnalyzer.ts: Replace silent catch blocks with structured logging — causes Self-consistency validation rejected proposal (consensus=0.00): Provider unavailable — defaulting to disagree for safety",
+      "applicableTo": [
+        "testCoverageAnalyzer.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782390297875,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782390306968_mmnicg",
+      "category": "antipattern",
+      "title": "Failure: Replace Math.random with crypto.randomBytes for snapshot IDs",
+      "description": "Failed to apply \"Replace Math.random with crypto.randomBytes for snapshot IDs\" to autoRollback.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify autoRollback.ts security",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for autoRollback.ts: Replace Math.random with crypto.randomBytes for snapshot IDs — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "autoRollback.ts",
+        "security"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782390306968,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782390312567_uwcu2u",
+      "category": "antipattern",
+      "title": "Failure: Replace silent catch blocks with structured logging",
+      "description": "Failed to apply \"Replace silent catch blocks with structured logging\" to testCoverageAnalyzer.ts. Reason: Self-consistency validation rejected proposal (consensus=0.00): Provider unavailable — defaulting to disagree for safety. Avoid similar changes.",
+      "context": "self-modify testCoverageAnalyzer.ts reliability",
+      "outcome": "failure: Self-consistency validation rejected proposal (consensus=0.00): Provider unavailable — defaulting to disagree for safety",
+      "lesson": "Avoid for testCoverageAnalyzer.ts: Replace silent catch blocks with structured logging — causes Self-consistency validation rejected proposal (consensus=0.00): Provider unavailable — defaulting to disagree for safety",
+      "applicableTo": [
+        "testCoverageAnalyzer.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782390312567,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782390336307_tqdgda",
+      "category": "antipattern",
+      "title": "Failure: Extract magic numbers into named constants",
+      "description": "Failed to apply \"Extract magic numbers into named constants\" to z3ProofLayer.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify z3ProofLayer.ts readability",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for z3ProofLayer.ts: Extract magic numbers into named constants — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "z3ProofLayer.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782390336308,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782390344359_gaxxa9",
+      "category": "antipattern",
+      "title": "Failure: Replace Math.random with crypto.randomBytes for snapshot IDs",
+      "description": "Failed to apply \"Replace Math.random with crypto.randomBytes for snapshot IDs\" to autoRollback.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify autoRollback.ts security",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for autoRollback.ts: Replace Math.random with crypto.randomBytes for snapshot IDs — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "autoRollback.ts",
+        "security"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782390344359,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782390347510_cwioh1",
+      "category": "antipattern",
+      "title": "Failure: Extract magic numbers into named constants",
+      "description": "Failed to apply \"Extract magic numbers into named constants\" to skillGraph.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify skillGraph.ts readability",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for skillGraph.ts: Extract magic numbers into named constants — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "skillGraph.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782390347510,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782390357100_obvq3i",
+      "category": "antipattern",
+      "title": "Failure: Replace Math.random with crypto.randomBytes",
+      "description": "Failed to apply \"Replace Math.random with crypto.randomBytes\" to episodicMemory.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify episodicMemory.ts security",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for episodicMemory.ts: Replace Math.random with crypto.randomBytes — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "episodicMemory.ts",
+        "security"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782390357100,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782390358460_ji7yci",
+      "category": "antipattern",
+      "title": "Failure: Extract magic numbers into named constants",
+      "description": "Failed to apply \"Extract magic numbers into named constants\" to z3ProofLayer.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify z3ProofLayer.ts readability",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for z3ProofLayer.ts: Extract magic numbers into named constants — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "z3ProofLayer.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782390358460,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782391019827_awhp9c",
+      "category": "antipattern",
+      "title": "Failure: Extract magic number for heartbeat interval",
+      "description": "Failed to apply \"Extract magic number for heartbeat interval\" to rsiEventBus.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify rsiEventBus.ts readability",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for rsiEventBus.ts: Extract magic number for heartbeat interval — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "rsiEventBus.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782391019828,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782391049015_o8sf1a",
+      "category": "success",
+      "title": "Success: Extract magic numbers into named constants",
+      "description": "Successfully applied \"Extract magic numbers into named constants\" to aiStreaming.ts (readability). Health: improved.",
+      "context": "self-modify aiStreaming.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for aiStreaming.ts: Extract magic numbers into named constants",
+      "applicableTo": [
+        "aiStreaming.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782391049015,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782391217175_5rurxz",
+      "category": "success",
+      "title": "Success: Extract magic numbers into named constants",
+      "description": "Successfully applied \"Extract magic numbers into named constants\" to rlaifJudge.ts (readability). Health: improved.",
+      "context": "self-modify rlaifJudge.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for rlaifJudge.ts: Extract magic numbers into named constants",
+      "applicableTo": [
+        "rlaifJudge.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782391217175,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782391283027_5v2ivo",
+      "category": "success",
+      "title": "Success: Extract magic numbers into named constants",
+      "description": "Successfully applied \"Extract magic numbers into named constants\" to aiPlanning.ts (readability). Health: improved.",
+      "context": "self-modify aiPlanning.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for aiPlanning.ts: Extract magic numbers into named constants",
+      "applicableTo": [
+        "aiPlanning.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782391283027,
+      "relatedProposalIds": []
+    }
+  ],
   "capabilities": [
     {
       "name": "web_search",
@@ -230,5 +695,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-25T05:23:07.142Z"
+  "_lastUpdated": "2026-06-25T12:41:23.027Z"
 }

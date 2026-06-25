@@ -1,8 +1,8 @@
 {
-  "timestamp": 1782319296506,
-  "totalModules": 290,
+  "timestamp": 1782391113541,
+  "totalModules": 291,
   "testedModules": 288,
-  "untestedModules": 2,
+  "untestedModules": 3,
   "coveragePercent": 60,
   "moduleDetails": [
     {
@@ -365,6 +365,23 @@
       "testedFunctions": [],
       "untestedFunctions": [
         "runEvolutionaryGeneration"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/externalRepoFixer.ts",
+      "fileName": "externalRepoFixer.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "getJob",
+        "listJobs",
+        "startFixJob"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "getJob",
+        "listJobs",
+        "startFixJob"
       ],
       "coveragePercent": 0
     },
