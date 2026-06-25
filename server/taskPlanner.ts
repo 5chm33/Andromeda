@@ -86,7 +86,7 @@ export async function generatePlan(
   let lessonContext = "";
   try {
     const lessons = getConsolidatedLessons({ limit: 5 });
-    if (lessons.length > 0) {
+    if (lessons && lessons.length > 0) {
       // Find lessons whose cluster key overlaps with the goal keywords
       const goalWords = new Set(goal.toLowerCase().split(/\s+/).filter(w => w.length > 3));
       const relevant = lessons.filter(l =>
