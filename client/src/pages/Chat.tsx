@@ -97,6 +97,12 @@ export default function Chat() {
   const isImageRequest = (text: string) =>
     /^(generate|create|draw|make|paint|show me|render|imagine|visualize)\s+(an?\s+)?(image|picture|photo|illustration|artwork|drawing|painting|portrait|landscape)/i.test(text.trim());
 
+  // v12.3.2: Auto-detect video generation requests and route to fal.ai Kling
+  const isVideoRequest = (text: string) =>
+    /\b(create|generate|make|produce|render)\s+(a\s+)?(short\s+)?(video|clip|animation|movie|film|reel|cinematic)\b/i.test(text.trim()) ||
+    /\b(video|animate|animation)\s+(of|showing|with|featuring)\b/i.test(text.trim()) ||
+    /\b\d+\s*(?:second|sec|s)\s+video\b/i.test(text.trim());
+
   const sendMessage = useCallback(async () => {
     const text = input.trim();
     if (!text || isLoading) return;
@@ -109,6 +115,43 @@ export default function Chat() {
     // Auto-resize textarea back to 1 row
     if (inputRef.current) {
       inputRef.current.style.height = "auto";
+    }
+
+    // Video generation path — auto-routes to fal.ai Kling
+    if (isVideoRequest(text)) {
+      const assistantId = (Date.now() + 1).toString();
+      setMessages((prev) => [
+        ...prev,
+        { id: assistantId, role: "assistant", content: "Generating video with fal.ai Kling… this takes 30–90 seconds.", isStreaming: true },
+      ]);
+      try {
+        const res = await fetch("/api/video/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: text, duration: "5", aspectRatio: "16:9" }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Video generation failed");
+        const videoUrl = data.videoUrl || data.url;
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantId
+              ? { ...m, content: `Here's your generated video:\n\n[Download/View Video](${videoUrl})\n\n*Generated with fal.ai Kling v2.1 — ${text}*`, isStreaming: false }
+              : m
+          )
+        );
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Video generation failed";
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantId ? { ...m, content: `Error: ${msg}\n\nNote: Video generation requires FAL_KEY in .env.local`, isStreaming: false } : m
+          )
+        );
+        toast.error(msg);
+      } finally {
+        setIsLoading(false);
+      }
+      return;
     }
 
     // Image generation path
@@ -480,7 +523,7 @@ export default function Chat() {
                 e.target.style.height = Math.min(e.target.scrollHeight, 160) + "px";
               }}
               onKeyDown={handleKeyDown}
-              placeholder={isAuthenticated ? "Ask anything… or 'generate an image of…'" : "Sign in to chat"}
+              placeholder={isAuthenticated ? "Ask anything… or 'generate an image/video of…'" : "Sign in to chat"}
               disabled={!isAuthenticated || isLoading}
               className="w-full bg-transparent px-4 py-3.5 pr-14 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none resize-none overflow-hidden"
               style={{ minHeight: "3rem" }}
@@ -518,11 +561,11 @@ export default function Chat() {
           </div>
           <div className="flex items-center justify-between mt-2 px-1">
             <p className="text-xs text-muted-foreground/40">
-              Enter to send · Shift+Enter for new line · Say "generate an image of…" for visuals
+              Enter to send · Shift+Enter for new line ·               Say "generate an image of…" or "create a 5 second video of…" for media
             </p>
             <div className="flex items-center gap-1 text-xs text-muted-foreground/40">
               <ImageIcon className="w-3 h-3" />
-              <span>Image gen enabled</span>
+              <span>Image &amp; Video gen enabled</span>
             </div>
           </div>
         </div>

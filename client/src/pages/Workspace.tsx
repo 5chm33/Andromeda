@@ -126,6 +126,15 @@ function isImageRequest(text: string): boolean {
   return /^(generate|create|draw|make|paint|show me|render|imagine|visualize)\s+(an?\s+)?(image|picture|photo|illustration|artwork|drawing|painting|portrait|landscape)/i.test(text.trim());
 }
 
+// v12.3.2: Auto-detect video generation requests and route to fal.ai Kling
+function isVideoRequest(text: string): boolean {
+  return (
+    /\b(create|generate|make|produce|render)\s+(a\s+)?(short\s+)?(video|clip|animation|movie|film|reel|cinematic)\b/i.test(text.trim()) ||
+    /\b(video|animate|animation)\s+(of|showing|with|featuring)\b/i.test(text.trim()) ||
+    /\b\d+\s*(?:second|sec|s)\s+video\b/i.test(text.trim())
+  );
+}
+
 // ── Sub-components ────────────────────────────────────────────────────────────
 
 function ImageMessage({ url }: { url: string }) {
@@ -283,6 +292,47 @@ export default function Workspace() {
     // Auto-resize textarea
     if (inputRef.current) {
       inputRef.current.style.height = "auto";
+    }
+
+    // ── Video generation path — auto-routes to fal.ai Kling ──────────────────
+    if (isVideoRequest(text)) {
+      const assistantId = (Date.now() + 1).toString();
+      updateConversation(convId, conv => ({
+        ...conv,
+        messages: [...conv.messages, { id: assistantId, role: "assistant", content: "Generating video with fal.ai Kling… this takes 30–90 seconds.", isStreaming: true }],
+      }));
+      try {
+        const res = await fetch("/api/video/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: text, duration: "5", aspectRatio: "16:9" }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Video generation failed");
+        const videoUrl = data.videoUrl || data.url;
+        updateConversation(convId, conv => ({
+          ...conv,
+          messages: conv.messages.map(m =>
+            m.id === assistantId
+              ? { ...m, content: `Here's your generated video:\n\n[Download/View Video](${videoUrl})\n\n*Generated with fal.ai Kling v2.1*`, isStreaming: false }
+              : m
+          ),
+          updatedAt: Date.now(),
+        }));
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Video generation failed";
+        updateConversation(convId, conv => ({
+          ...conv,
+          messages: conv.messages.map(m =>
+            m.id === assistantId ? { ...m, content: `Error: ${msg}\n\nNote: Video generation requires FAL_KEY in .env.local`, isStreaming: false } : m
+          ),
+        }));
+        toast.error(msg);
+        setLastError(true);
+      } finally {
+        setIsLoading(false);
+      }
+      return;
     }
 
     // ── Image generation path ───────────────────────────────────────────────

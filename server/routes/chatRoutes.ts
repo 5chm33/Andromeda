@@ -116,6 +116,8 @@ export function registerChatRoutes(
   });
 
   // ── POST /api/image/generate ───────────────────────────────────────────────
+  // v12.3.2: Auto-routes to fal.ai FLUX Pro when FAL_KEY is set (higher quality).
+  // Falls back to HuggingFace FLUX.1-schnell (free) when FAL_KEY is absent.
   app.post("/api/image/generate", heavyLimiter, async (req: Request, res: Response) => {
     const { prompt, model, referenceImageB64, referenceMimeType } = req.body as {
       prompt: string;
@@ -128,8 +130,23 @@ export function registerChatRoutes(
       return;
     }
     try {
+      // Use fal.ai FLUX Pro when FAL_KEY is available (better quality, no watermark)
+      if (process.env.FAL_KEY) {
+        const { generateImageFal, isFalAvailable } = await import("../_core/videoGeneration.js");
+        if (isFalAvailable()) {
+          const result = await generateImageFal({
+            prompt: prompt.trim(),
+            width: 1024,
+            height: 1024,
+            useUltra: false, // FLUX Pro (not Ultra) for standard requests — faster & cheaper
+          });
+          res.json({ url: result.imageUrl, enhancedPrompt: prompt.trim(), usedReference: false, provider: "fal.ai" });
+          return;
+        }
+      }
+      // Fallback: HuggingFace FLUX.1-schnell (free)
       const result = await generateImageFromPrompt(prompt.trim(), model, referenceImageB64, referenceMimeType);
-      res.json({ url: result.url, enhancedPrompt: result.enhancedPrompt, usedReference: result.usedReference ?? false });
+      res.json({ url: result.url, enhancedPrompt: result.enhancedPrompt, usedReference: result.usedReference ?? false, provider: "huggingface" });
     } catch (err) {
       const message = err instanceof Error ? err.message : "Image generation failed";
       res.status(500).json({ error: message });

@@ -291,15 +291,18 @@ export type ModelTier = "auto" | "fast" | "coding" | "max";
 function getAutoProvider(): string {
   const envModel = process.env.LLM_MODEL ?? "";
   if (envModel && !['deepseek','deepseek-chat','deepseek-v3',''].includes(envModel)) return envModel;
+  // v12.3.2: Kimi first for easy/auto tasks (free, fast, good quality)
+  // DeepSeek V4 Pro for harder tasks (standard tier), Claude for hardest (max tier)
+  if (process.env.KIMI_API_KEY) return "kimi";
   if (process.env.DEEPSEEK_API_KEY) return "deepseek";
-  return "openrouter-fast"; // fallback to Gemini Flash if no DeepSeek key
+  return "openrouter-fast"; // fallback to Gemini Flash if no other key
 }
 function getCodingProvider(): string {
-  // Kimi k2.6 is best for code and much cheaper than Claude Opus
+  // v12.3.2: DeepSeek V4 Pro for hard coding tasks (standard tier)
+  // Kimi as fallback (free, excellent code quality)
+  if (process.env.DEEPSEEK_API_KEY) return "deepseek";
   if (process.env.KIMI_API_KEY) return "kimi";
-  // Fall back to Claude via OpenRouter (expensive but capable)
   if (process.env.OPENROUTER_API_KEY) return "openrouter";
-  // Last resort: DeepSeek is still good at code
   return "deepseek";
 }
 function getMaxProvider(): string {
@@ -321,10 +324,10 @@ export const TIER_PROVIDERS: Record<ModelTier, string> = {
 };
 
 export const TIER_LABELS: Record<ModelTier, { label: string; model: string; description: string }> = {
-  auto:   { label: "Auto",   model: "DeepSeek V3",         description: "Smart default — great for most tasks (~$0.14/M)" },
+  auto:   { label: "Auto",   model: "Kimi k2.6",           description: "Smart default — Kimi for easy tasks, fast & free (~$0.00)" },
   fast:   { label: "Fast",   model: "Gemini 2.5 Flash",    description: "Fastest responses, lowest cost (~$0.10/M)" },
-  coding: { label: "Code",   model: "Kimi k2.6 / Claude",  description: "Best for code — uses Kimi if key set, else Claude" },
-  max:    { label: "Max",    model: "Claude Opus 4.6",      description: "Highest quality — uses Claude if OpenRouter key set" },
+  coding: { label: "Code",   model: "DeepSeek V4 Pro",     description: "Hard tasks — DeepSeek V4 Pro for deep reasoning (~$0.28/M)" },
+  max:    { label: "Max",    model: "Claude Opus 4",        description: "Hardest tasks — Claude Opus 4 via OpenRouter (~$15/M)" },
 };
 
 /**
