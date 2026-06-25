@@ -235,8 +235,9 @@ export function diagnoseError(rawError: string): ErrorDiagnosis {
 
   // TypeScript compiler error: "file.ts(line,col): error TSxxxx: message"
   const tsMatch = rawError.match(/(.+\.tsx?)\((\d+),(\d+)\):\s*error\s+TS\d+:\s*(.+)/);
-  const file = tsMatch?.[1] ?? stackFrames[0]?.file;
-  const line = tsMatch ? parseInt(tsMatch[2], 10) : stackFrames[0]?.line;
+  const firstFrame = stackFrames.length > 0 ? stackFrames[0] : undefined;
+  const file = tsMatch?.[1] ?? firstFrame?.file;
+  const line = tsMatch ? parseInt(tsMatch[2], 10) : firstFrame?.line;
   const column = tsMatch ? parseInt(tsMatch[3], 10) : undefined;
 
   // Generate likely cause and fix based on error type and message
