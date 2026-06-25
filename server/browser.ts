@@ -288,6 +288,12 @@ export interface BrowserActionResult {
 /**
  * Navigate to a URL in a browser session.
  */
+/**
+ * Navigate to a URL in a browser session.
+ * @param url - The URL to navigate to
+ * @param sessionId - Optional existing session ID; creates a new session if omitted
+ * @returns BrowserActionResult with success status and session ID
+ */
 export async function browserNavigate(url: string, sessionId?: string): Promise<BrowserActionResult> {
   // SSRF protection
   try {
