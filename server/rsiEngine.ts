@@ -205,7 +205,7 @@ function appendProofHistory(result: RSICycleResult): void {
     if (fs.existsSync(p)) {
       try { history = JSON.parse(fs.readFileSync(p, "utf8")); } catch { history = []; }
     }
-    history.push({
+    const entry = {
       cycleId: result.cycleId,
       completedAt: result.completedAt,
       durationMs: result.durationMs,
@@ -236,7 +236,8 @@ function appendProofHistory(result: RSICycleResult): void {
       errors: result.errors.length > 0 ? result.errors.slice(0, 3) : undefined,
       categoryScoresBefore: result.categoryScoresBefore,
       categoryScoresAfter: result.categoryScoresAfter,
-    });
+    };
+    history.push(entry);
     // Keep last 200 entries
     if (history.length > 200) history = history.slice(-200);
     fs.writeFileSync(p, JSON.stringify(history, null, 2), "utf8");
