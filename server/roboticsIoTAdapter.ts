@@ -291,7 +291,7 @@ export function getRoboticsStats() {
     totalArtifacts: artifacts.size,
     totalProposals: _totalProposals,
     approvedProposals: _approvedProposals,
-    pendingProposals: Array.from(proposals.values()).filter(p => p.status === "pending").length,
+    pendingProposals: proposals ? Array.from(proposals.values()).filter(p => p.status === "pending").length : 0,
     estimatedEnergySavingsKwhPerDay: Math.round(_estimatedEnergySavings * 100) / 100,
     artifactsByType: Object.fromEntries(
       (["ros_node", "gcode", "iot_config", "smart_home_rule", "plc_ladder", "energy_schedule"] as RoboticsArtifactType[])
