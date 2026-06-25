@@ -357,6 +357,8 @@ export async function browserClickVision(
     const model = process.env.VISION_MODEL || "gpt-4.1-mini";
     const prompt = `The image is a browser screenshot (${viewport.width}x${viewport.height} pixels).\nFind the element described as: "${description}"\nReturn ONLY a JSON object with the center pixel coordinates: {"x": <number>, "y": <number>}\nIf the element is not visible, return {"x": -1, "y": -1}.\nNo explanation, no markdown, just the JSON.`;
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
     const response = await fetch(`${baseUrl}/chat/completions`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
@@ -372,7 +374,9 @@ export async function browserClickVision(
         max_tokens: 100,
         temperature: 0,
       }),
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
     if (!response.ok) return { success: false, sessionId, error: `Vision API error: ${response.status}` };
     const data = await response.json() as { choices?: Array<{ message?: { content?: string } }> };
     const raw = data.choices?.[0]?.message?.content?.trim() ?? "";
