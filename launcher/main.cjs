@@ -20,8 +20,33 @@ const fs   = require("fs");
 const path = require("path");
 const net  = require("net");
 
-// ── Root of the Andromeda project (one level up from launcher/) ───────────────
-const ROOT = path.join(__dirname, "..");
+// ── Root of the Andromeda project — robust multi-strategy resolution ─────────
+// When Electron is launched globally (e.g. `electron launcher\main.cjs` from
+// the .bat), __dirname is the launcher/ folder inside the project. But when
+// launched via a globally-installed Electron binary, process.cwd() is the
+// directory the .bat was run from (the project root). We try both.
+function findProjectRoot() {
+  const candidates = [
+    // 1. One level up from launcher/ — correct when __dirname is launcher/
+    path.join(__dirname, ".."),
+    // 2. process.cwd() — correct when .bat sets CWD to project root
+    process.cwd(),
+    // 3. Two levels up (in case Electron resolves __dirname differently)
+    path.join(__dirname, "..", ".."),
+    // 4. Executable path heuristic — walk up from electron binary location
+    path.join(process.execPath, "..", "..", ".."),
+  ];
+  for (const candidate of candidates) {
+    // A valid project root has package.json AND either .env.local or .env.local.example
+    const hasPkg = fs.existsSync(path.join(candidate, "package.json"));
+    const hasEnv = fs.existsSync(path.join(candidate, ".env.local")) ||
+                   fs.existsSync(path.join(candidate, ".env.local.example"));
+    if (hasPkg && hasEnv) return path.resolve(candidate);
+  }
+  // Fallback: return the __dirname parent and hope for the best
+  return path.resolve(path.join(__dirname, ".."));
+}
+const ROOT = findProjectRoot();
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function runCapture(cmd, opts = {}) {
@@ -101,6 +126,11 @@ async function runStartup() {
   // Small delay so the splash renders first
   await sleep(400);
 
+  // Debug: show resolved project root so path issues are immediately visible
+  log(`Project root: ${ROOT}`);
+  const envExists = fs.existsSync(path.join(ROOT, ".env.local"));
+  log(`  .env.local found: ${envExists}`);
+
   // ── Step 1: Node.js version ──────────────────────────────────────────────
   step("node", "running", "Checking Node.js…");
   const nodeVer = runCapture("node --version");
@@ -122,26 +152,36 @@ async function runStartup() {
   step("env", "running", "Checking API keys…");
   await sleep(200);
 
-  if (!exists(".env.local")) {
+  // Check multiple possible env file names in priority order
+  const envCandidates = [".env.local", ".env", ".env.production", ".env.development"];
+  const foundEnvFile = envCandidates.find(f => exists(f));
+  log(`  Env file search: ${envCandidates.map(f => `${f}=${exists(f)}`).join(', ')}`);
+
+  if (!foundEnvFile) {
     if (exists(".env.local.example")) {
+      // Don't overwrite — just open the example so user can fill it in
+      log("No .env.local found. Opening .env.local.example for editing…");
+      // Copy only if truly no env file exists at all
       fs.copyFileSync(
         path.join(ROOT, ".env.local.example"),
         path.join(ROOT, ".env.local")
       );
-      log("Created .env.local from example — opening for editing…");
       shell.openPath(path.join(ROOT, ".env.local"));
       step("env", "error", "API keys required — fill in .env.local");
       err("Fill in at least one LLM key (DEEPSEEK_API_KEY recommended), then relaunch.");
       send("show-env-button", {});
       return;
     } else {
-      step("env", "error", ".env.local.example missing");
-      err("Please re-download Andromeda — .env.local.example is missing.");
+      step("env", "error", ".env.local not found");
+      err(`No .env.local found in: ${ROOT}`);
+      err("Please create .env.local with your API keys and relaunch.");
+      send("show-env-button", {});
       return;
     }
   }
 
-  const envContent = fs.readFileSync(path.join(ROOT, ".env.local"), "utf8");
+  log(`  Using env file: ${foundEnvFile}`);
+  const envContent = fs.readFileSync(path.join(ROOT, foundEnvFile), "utf8");
   const primaryKeys = [
     "DEEPSEEK_API_KEY", "OPENAI_API_KEY", "ANTHROPIC_API_KEY",
     "OPENROUTER_API_KEY", "KIMI_API_KEY",
