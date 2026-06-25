@@ -94,14 +94,29 @@ export default function Chat() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const isImageRequest = (text: string) =>
-    /^(generate|create|draw|make|paint|show me|render|imagine|visualize)\s+(an?\s+)?(image|picture|photo|illustration|artwork|drawing|painting|portrait|landscape)/i.test(text.trim());
+  // v12.3.3: Broad image detection — any phrasing that asks for a picture/image/visual
+  const isImageRequest = (text: string) => {
+    const t = text.toLowerCase().trim();
+    // Direct image keywords anywhere in the message
+    const imageWords = /\b(image|picture|photo|photograph|illustration|artwork|drawing|painting|portrait|landscape|wallpaper|poster|thumbnail|logo|icon|banner|graphic|visual|render|scene|sketch|cartoon|anime|realistic|digital art|concept art|3d render)\b/;
+    // Action verbs that suggest generation
+    const actionWords = /\b(generate|create|make|draw|paint|design|produce|render|show|give me|get me|can you|could you|please|i want|i need|i'd like|imagine|visualize|depict|illustrate|craft|build|compose|produce)\b/;
+    // If it mentions video anywhere, it's NOT an image request
+    if (isVideoRequest(t)) return false;
+    return imageWords.test(t) && actionWords.test(t);
+  };
 
-  // v12.3.2: Auto-detect video generation requests and route to fal.ai Kling
-  const isVideoRequest = (text: string) =>
-    /\b(create|generate|make|produce|render)\s+(a\s+)?(short\s+)?(video|clip|animation|movie|film|reel|cinematic)\b/i.test(text.trim()) ||
-    /\b(video|animate|animation)\s+(of|showing|with|featuring)\b/i.test(text.trim()) ||
-    /\b\d+\s*(?:second|sec|s)\s+video\b/i.test(text.trim());
+  // v12.3.3: Broad video detection — any phrasing that asks for a video/animation/clip
+  const isVideoRequest = (text: string) => {
+    const t = text.toLowerCase().trim();
+    // Direct video keywords
+    const videoWords = /\b(video|clip|animation|animated|movie|film|reel|footage|cinematic|motion|moving image|gif|short film|timelapse|time-lapse|slow motion|slo-mo|flythrough|fly-through|walkthrough|walk-through|pan shot|dolly shot)\b/;
+    // Action verbs that suggest generation
+    const actionWords = /\b(generate|create|make|produce|render|animate|film|shoot|record|show|give me|get me|can you|could you|please|i want|i need|i'd like|build|compose|craft)\b/;
+    // Also catch "X second/minute video" patterns
+    const durationPattern = /\b\d+\s*(?:second|sec|s|minute|min)\b/;
+    return videoWords.test(t) && (actionWords.test(t) || durationPattern.test(t));
+  };
 
   const sendMessage = useCallback(async () => {
     const text = input.trim();

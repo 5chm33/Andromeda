@@ -122,17 +122,23 @@ function relativeTime(ts: number): string {
   return `${Math.floor(h / 24)}d ago`;
 }
 
-function isImageRequest(text: string): boolean {
-  return /^(generate|create|draw|make|paint|show me|render|imagine|visualize)\s+(an?\s+)?(image|picture|photo|illustration|artwork|drawing|painting|portrait|landscape)/i.test(text.trim());
+// v12.3.3: Broad video detection — any phrasing that asks for a video/animation/clip
+function isVideoRequest(text: string): boolean {
+  const t = text.toLowerCase().trim();
+  const videoWords = /\b(video|clip|animation|animated|movie|film|reel|footage|cinematic|motion|moving image|gif|short film|timelapse|time-lapse|slow motion|slo-mo|flythrough|fly-through|walkthrough|walk-through|pan shot|dolly shot)\b/;
+  const actionWords = /\b(generate|create|make|produce|render|animate|film|shoot|record|show|give me|get me|can you|could you|please|i want|i need|i'd like|build|compose|craft)\b/;
+  const durationPattern = /\b\d+\s*(?:second|sec|s|minute|min)\b/;
+  return videoWords.test(t) && (actionWords.test(t) || durationPattern.test(t));
 }
 
-// v12.3.2: Auto-detect video generation requests and route to fal.ai Kling
-function isVideoRequest(text: string): boolean {
-  return (
-    /\b(create|generate|make|produce|render)\s+(a\s+)?(short\s+)?(video|clip|animation|movie|film|reel|cinematic)\b/i.test(text.trim()) ||
-    /\b(video|animate|animation)\s+(of|showing|with|featuring)\b/i.test(text.trim()) ||
-    /\b\d+\s*(?:second|sec|s)\s+video\b/i.test(text.trim())
-  );
+// v12.3.3: Broad image detection — any phrasing that asks for a picture/image/visual
+function isImageRequest(text: string): boolean {
+  const t = text.toLowerCase().trim();
+  const imageWords = /\b(image|picture|photo|photograph|illustration|artwork|drawing|painting|portrait|landscape|wallpaper|poster|thumbnail|logo|icon|banner|graphic|visual|render|scene|sketch|cartoon|anime|realistic|digital art|concept art|3d render)\b/;
+  const actionWords = /\b(generate|create|make|draw|paint|design|produce|render|show|give me|get me|can you|could you|please|i want|i need|i'd like|imagine|visualize|depict|illustrate|craft|build|compose)\b/;
+  // Video takes priority — if it mentions video, don't treat as image
+  if (isVideoRequest(t)) return false;
+  return imageWords.test(t) && actionWords.test(t);
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
