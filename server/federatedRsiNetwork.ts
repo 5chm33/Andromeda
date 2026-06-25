@@ -23,6 +23,7 @@ export function registerPeer(url: string): void {
 }
 
 export async function broadcastProposal(proposal: object): Promise<void> {
+  if (!peers || peers.size === 0) return;
   const promises = Array.from(peers).map(async (peer) => {
     try {
       await axios.post(`${peer}/api/rsi/federation/proposal`, proposal, { timeout: 5000 });
