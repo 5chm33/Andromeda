@@ -258,11 +258,11 @@ export function startParallelRsi(intervalMs = 30 * 60 * 1000): void {
   // Run first cycle after a short delay (let server finish booting)
   setTimeout(() => {
     runParallelCycle().catch(err => console.warn("[ParallelRSI] First cycle failed:", err));
-  }, 5 * 60 * 1000); // 5 min after boot
+  }, 5 * 60 * 1000).unref(); // 5 min after boot
 
   _schedulerTimer = setInterval(() => {
     runParallelCycle().catch(err => console.warn("[ParallelRSI] Scheduled cycle failed:", err));
-  }, intervalMs);
+  }, intervalMs).unref();
 }
 
 /** Stop the parallel RSI scheduler */
