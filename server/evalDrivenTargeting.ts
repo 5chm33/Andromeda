@@ -184,7 +184,7 @@ export async function getTargetedFiles(): Promise<string[]> {
   try {
     const { getLastBenchmarkReport } = await import("./benchmarkRunner.js");
     const report = getLastBenchmarkReport();
-    if (report && report.degradations.length > 0) {
+    if (report && Array.isArray(report.degradations) && report.degradations.length > 0) {
       for (const deg of report.degradations) {
         const category = deg.benchmark.split("_")[0] as string;
         const files = CATEGORY_FILE_MAP[category] || [];
