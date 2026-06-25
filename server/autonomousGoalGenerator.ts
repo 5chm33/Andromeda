@@ -149,8 +149,8 @@ async function analyzeCapabilityGaps(): Promise<GeneratedGoal[]> {
         }
       }
     }
-  } catch {
-    // selfModel not available
+  } catch (err) {
+    console.warn(`[AutoGoalGen] analyzeCapabilityGaps: selfModel not available: ${(err as Error).message}`);
   }
 
   return goals;
