@@ -169,7 +169,7 @@ export async function compressContext(
   const targetTokens = availableTokens * COMPRESSION_TARGET;
   const result = [...messages];
 
-  for (const idx of compressibleIndices.slice(0, MAX_COMPRESS_PER_PASS)) {
+  for (const idx of (compressibleIndices ?? []).slice(0, MAX_COMPRESS_PER_PASS)) {
     if (estimateMessageTokens(result) <= targetTokens) break;
 
     const msg = result[idx];
