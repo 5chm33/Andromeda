@@ -506,7 +506,14 @@ export function loadHealingLog(): HealingEvent[] {
     return readFileSync(HEALING_LOG, "utf-8")
       .split("\n")
       .filter(Boolean)
-      .map((line) => JSON.parse(line) as HealingEvent);
+      .map((line) => {
+        try {
+          return JSON.parse(line) as HealingEvent;
+        } catch {
+          return null;
+        }
+      })
+      .filter((e): e is HealingEvent => e !== null);
   } catch {
     return [];
   }
