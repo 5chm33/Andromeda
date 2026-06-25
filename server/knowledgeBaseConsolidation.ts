@@ -280,14 +280,15 @@ export function startKBConsolidationDaemon(): void {
         console.warn("[KBConsolidation] Daemon run failed:", (err as Error).message)
       );
     }
-    setInterval(() => {
+    const interval = setInterval(() => {
       if (isKBConsolidationDue()) {
         runKBConsolidation().catch(err =>
           console.warn("[KBConsolidation] Daemon run failed:", (err as Error).message)
         );
       }
     }, CHECK_INTERVAL_MS);
-  }, INITIAL_DELAY_MS);
+    interval.unref();
+  }, INITIAL_DELAY_MS).unref();
 
   console.log("[KBConsolidation] Daemon started — checks every 6h, runs weekly");
 }
