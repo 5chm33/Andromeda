@@ -467,7 +467,7 @@ function scheduleNextCheck(): void {
 // ── Status ─────────────────────────────────────────────────────────────────────
 
 export function getWatchdogStatus(): WatchdogStatus {
-  const modules = Array.from(moduleStates.values());
+  const modules = moduleStates.size > 0 ? Array.from(moduleStates.values()) : [];
   const healthy = modules.filter(m => m.health === "healthy").length;
   const degraded = modules.filter(m => m.health === "degraded" || m.health === "recovering").length;
   const failed = modules.filter(m => m.health === "failed" || m.health === "unknown").length;
