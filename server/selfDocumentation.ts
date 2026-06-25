@@ -179,7 +179,8 @@ export function documentSelfImprovement(
       { category, targetFile, automated: true }
     );
   } catch (err) {
-    console.warn("[SelfDoc] Failed to document improvement:", (err as Error).message);
+    const message = err instanceof Error ? err.message : String(err);
+    console.warn("[SelfDoc] Failed to document improvement:", message);
   }
 }
 
