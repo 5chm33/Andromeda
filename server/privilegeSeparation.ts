@@ -188,7 +188,12 @@ export class PrivilegeSeparationManager {
       status: "staged",
     };
 
-    this.stagedChanges.get(contextId)!.push(change);
+    const changes = this.stagedChanges.get(contextId);
+    if (changes) {
+      changes.push(change);
+    } else {
+      this.stagedChanges.set(contextId, [change]);
+    }
 
     this.audit(contextId, "stage_change", {
       filePath,
