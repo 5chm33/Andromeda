@@ -77,10 +77,13 @@ function textSimilarity(a: string, b: string): number {
 function calculateRelevance(content: string, query: string): number {
   const sim = textSimilarity(content, query);
 
+  const EXACT_MATCH_BOOST = 0.3;
+  const KEYWORD_MATCH_BOOST = 0.2;
+
   // Boost for exact substring match
   const lowerContent = content.toLowerCase();
   const lowerQuery = query.toLowerCase();
-  const exactBoost = lowerContent.includes(lowerQuery) ? 0.3 : 0;
+  const exactBoost = lowerContent.includes(lowerQuery) ? EXACT_MATCH_BOOST : 0;
 
   // Boost for keyword matches
   const queryWords = lowerQuery.split(/\s+/).filter(w => w.length > 2);
@@ -88,7 +91,7 @@ function calculateRelevance(content: string, query: string): number {
   for (const word of queryWords) {
     if (lowerContent.includes(word)) keywordHits++;
   }
-  const keywordBoost = queryWords.length > 0 ? (keywordHits / queryWords.length) * 0.2 : 0;
+  const keywordBoost = queryWords.length > 0 ? (keywordHits / queryWords.length) * KEYWORD_MATCH_BOOST : 0;
 
   return Math.min(1, sim + exactBoost + keywordBoost);
 }
