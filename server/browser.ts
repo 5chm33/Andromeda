@@ -162,7 +162,8 @@ export async function browseUrl(url: string): Promise<BrowseResult> {
     });
 
     // Wait a moment for any JS-rendered content
-    await page.waitForTimeout(1500);
+    const POST_LOAD_WAIT_MS = 1500;
+    await page.waitForTimeout(POST_LOAD_WAIT_MS);
 
     const title = await page.title();
 
