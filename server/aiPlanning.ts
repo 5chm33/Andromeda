@@ -455,11 +455,12 @@ export async function streamAgentPlan(query: string, res: Response): Promise<voi
         const { aggregateSearch } = await import("./search");
         // v8.4.0: Agent plan search steps use SearXNG only (free). Brave is NOT used here.
         const sources = await aggregateSearch(step.query ?? query, "all", 8, { useBrave: false });
-        result = sources
+        const safeSources = sources ?? [];
+        result = safeSources
           .slice(0, 6)
           .map((s, idx) => `[${idx + 1}] ${s.title} (${s.domain})\n${s.snippet}`)
           .join("\n\n");
-        sseEvent(res, { type: "step_result", stepIndex: i, result: `Found ${sources.length} sources`, sources: sources.slice(0, 6) });
+        sseEvent(res, { type: "step_result", stepIndex: i, result: `Found ${safeSources.length} sources`, sources: safeSources.slice(0, 6) });
 
       } else if (step.type === "browse") {
         const { browseUrl } = await import("./browser");
