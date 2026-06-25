@@ -107,7 +107,7 @@ async function analyzePerformanceMetrics(): Promise<GoalSuggestion[]> {
     if (status && status.metrics) {
       // Check for degrading metrics
       for (const [key, metric] of Object.entries(status.metrics) as [string, any][]) {
-        if (metric.trend === "degrading" && metric.samples > 5) {
+        if (metric && metric.trend === "degrading" && metric.samples > 5) {
           results.push({
             id: `goal_perf_${key}_${Date.now()}`,
             title: `Improve ${key.replace(/_/g, " ")}`,
