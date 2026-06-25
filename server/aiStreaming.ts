@@ -296,8 +296,11 @@ async function _streamToResponseCore(
     return { content: directContent, truncated: false };
   }
 
-  const reader = response.body?.getReader();
-  if (!reader) { clearTimeout(timeoutId); throw new Error("No response body"); }
+  if (!response.body) {
+    clearTimeout(timeoutId);
+    throw new Error("Response body is null — streaming not supported by provider");
+  }
+  const reader = response.body.getReader();
 
   const decoder = new TextDecoder();
   let fullContent = "";
@@ -403,7 +406,7 @@ async function _streamToResponseCore(
           }
         } catch (parseErr) {
           // Malformed chunk from LLM stream — log but continue
-          log.debug("Malformed stream chunk: %s", (parseErr as Error).message);
+          console.debug("[ai.ts] Malformed stream chunk:", (parseErr as Error).message);
         }
       }
     }
