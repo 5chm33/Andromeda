@@ -361,6 +361,7 @@ export function findCircularDeps(): string[][] {
     const graphNode = graph.get(node);
     if (!graphNode) return;
     for (const imp of graphNode.imports) {
+      if (!graph.has(imp)) continue;
       if (graph.has(imp)) {
         dfs(imp, [...pathArr, node]);
       }
