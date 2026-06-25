@@ -272,7 +272,7 @@ export function decomposeQuery(query: string, complexity?: ComplexityAnalysis): 
       status: "pending",
       createdAt: Date.now(),
       priority: priority,
-      assignedAgent: config.agentMapping[overrides.type],
+      assignedAgent: config.agentMapping[overrides.type] ?? config.agentMapping.synthesis,
       ...overrides,
     };
   }
