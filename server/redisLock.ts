@@ -197,6 +197,6 @@ export function getLockStatus(): {
 } {
   return {
     backend: _redisClient && _redisClient !== "unavailable" ? "redis" : "in-process",
-    activeLocks: Array.from(_inProcessLocks.keys()),
+    activeLocks: _inProcessLocks ? Array.from(_inProcessLocks.keys()) : [],
   };
 }
