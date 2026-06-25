@@ -148,7 +148,8 @@ export async function queryUnifiedKnowledge(options: UnifiedQueryOptions): Promi
       try {
         const { getSkillsForModule } = await import("./skillGraph");
         const skills = getSkillsForModule ? getSkillsForModule(query) : [];
-        const entries = (Array.isArray(skills) ? skills : []).map((s: any) => ({
+        const skillsArray = Array.isArray(skills) ? skills : [];
+        const entries = skillsArray.map((s: any) => ({
           id: `sg_${s.id || s.name || Math.random().toString(36).slice(2)}`,
           source: "skillGraph" as const,
           content: `${s.name || ""}: ${s.description || s.content || JSON.stringify(s)}`,
