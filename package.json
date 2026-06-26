@@ -1,6 +1,6 @@
 {
   "name": "andromeda",
-  "version": "12.2.1",
+  "version": "12.8.0",
   "type": "module",
   "license": "MIT",
   "scripts": {
@@ -87,7 +87,7 @@
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.2",
     "embla-carousel-react": "^8.6.0",
-    "express": "^4.21.2",
+    "express": "^5.2.1",
     "express-rate-limit": "^8.5.2",
     "fast-check": "^4.8.0",
     "framer-motion": "^12.23.22",
@@ -158,5 +158,9 @@
     "vite": "^7.3.5",
     "vite-plugin-manus-runtime": "^0.0.57",
     "vitest": "^3.2.6"
+  },
+  "pnpm": {},
+  "overrides": {
+    "qs": ">=6.15.2"
   }
 }

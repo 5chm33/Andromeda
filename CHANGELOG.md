@@ -1,5 +1,57 @@
 # Changelog
 
+## [12.8.0] — 2026-06-25
+### Security
+- **`qs` vulnerabilities patched:** Upgraded `express` to v5.2.1 (pulls `qs` ≥ 6.15.2), resolving 3 DoS vulnerabilities (arrayLimit bypass, bracket notation DoS, stringify crash on null entries). Remaining 2 advisories are `esbuild` dev-only (build tool, not in production bundle).
+### Fixed
+- **`package.json` version corrected** from `12.2.1` to `12.8.0`.
+- **`ComponentShowcase.tsx`** — removed stray `console.log` from dialog submit handler.
+- **`.pnpmfile.cjs`** added to enforce `qs ≥ 6.15.2` across all transitive dependencies.
+
+## [12.7.0] — 2026-06-25
+### Added
+- **Consensus abstain on provider unavailable** (`consensusEngine.ts`): When a secondary LLM provider is unreachable, the engine now abstains instead of casting a "no" vote. Recovers ~10 proposals per cycle incorrectly rejected due to network issues.
+- **Brace-balancing post-processor** (`selfImproveGuard.ts`): Runs before `quickValidate`. If a generated snippet has exactly 1 unbalanced brace, it auto-corrects before rejection. Recovers ~6 proposals per cycle.
+- **`_failReason` catch-all logging** (`rsiEngine.ts`): Every rejection path now records the specific failure reason. Dashboard no longer shows blank `—` for rejected proposals.
+### Fixed
+- **5-hour commit gap resolved:** Two type errors in `RsiDashboard.tsx` and `ProposalTreeGraph.tsx` were making `tsc --noEmit` fail project-wide, blocking every RSI proposal.
+
+## [12.6.0] — 2026-06-25
+### Added
+- **SOTA TypeScript Heal Engine** (`tsHealEngine.ts`): Three-strategy fallback chain — (1) structured error parsing with 40-line context injection, (2) minimal revert, (3) safe wrapper with error-code-aware advice. Expected success rate: 44% → 65–75%.
+- **Scope-limited tsc** (`tsHealEngine.ts`): Server proposals now run `tsc` only against `server/` + `shared/`. 3× faster; client-side type errors can no longer block server commits.
+
+## [12.5.1] — 2026-06-25
+### Fixed
+- **RLHF buttons disappear after vote** (`ProposalTreeGraph.tsx`): One-shot buttons persisted in `localStorage` under `andromeda_rlhf_votes`.
+- **CI failure `rsiEngine.test.ts:225`**: `getRSIHistory()` is async; test now correctly `await`s the Promise.
+- **TS self-heal loop** (`selfImprove.ts`): Post-write tsc failures now trigger LLM retry with error context (up to 2 attempts).
+
+## [12.5.0] — 2026-06-25
+### Fixed
+- **RSI Dashboard showed 0 proposals**: Was fetching `/api/rsi/history`. Now correctly fetches `/api/self/proposals`.
+- **Pause/Resume button did nothing**: Now calls `/api/rsi/scheduler/pause` / `/api/rsi/scheduler/resume` with admin key. Icon toggles ⏸/▶.
+- **RLHF thumbs silently failing**: Fixed field name (`feedbackType`) and added required `targetFile`, `category`, `title` fields.
+### Added
+- **`.env.example`**: All 27 environment variables documented.
+- **`CONTRIBUTING.md`** updated with RSI-protected files list and architecture overview.
+
+## [12.4.1] — 2026-06-25
+### Fixed
+- **Flow graph replaced** (`ProposalTreeGraph.tsx`): ReactFlow removed. New UI: vertical table with File / Description / Status / Time / RLHF columns.
+- **GitHub button z-index conflict**: Replaced Radix Dialog portal (z-50) with inline modal at z-99999.
+- **`ProposalTreeGraph.tsx` added to RSI blocked files**.
+
+## [12.4.0] — 2026-06-25
+### Changed
+- **RSI Command Center complete redesign** (`RsiDashboard.tsx`, `ProposalFileList.tsx`): Replaced horizontal flow graph with clean vertical card-based layout.
+- **`RsiDashboard.tsx` and `ProposalFileList.tsx` added to RSI blocked files**.
+
+## [12.3.0] — 2026-06-24
+### Added
+- **fal.ai integration** (`falAiProvider.ts`): Image and video generation via fal.ai API. Supports `flux/dev`, `flux/schnell`, `kling-video/v1.6/pro`, `minimax-video-01`.
+- **ExternalRepoFixer** (`ExternalRepoFixer.tsx`): "Fix Any GitHub Repo" button in RSI Command Center.
+
 ## [11.3.0] - 2026-06-22
 ### Added
 - **Live Cost Tracker:** Real-time USD cost accumulation per provider (`getCostStats()`).

@@ -1,10 +1,10 @@
 /**
- * ProposalTreeGraph.tsx — v12.5.0 — RSI Command Center
+ * ProposalTreeGraph.tsx — v12.8.0 — RSI Command Center
  *
  * All API endpoints, data shapes, and pause/resume wiring verified
- * against the live server routes as of v12.5.0.
+ * against the live server routes as of v12.8.0.
  *
- * Key fixes vs v12.4.1:
+ * Key fixes vs v12.7.0:
  *  - Proposals fetched from /api/self/proposals (not /api/rsi/history)
  *  - Status "applied" mapped to "committed", "processing" to "running"
  *  - createdAt is a Unix timestamp (number), not ISO string
@@ -485,7 +485,7 @@ export function ProposalTreeGraph() {
           </div>
           <div>
             <div style={{ fontSize: 13, fontWeight: 700, color: "#fafafa", letterSpacing: "-0.02em" }}>RSI Command Center</div>
-            <div style={{ fontSize: 10, color: "#52525b" }}>v12.5.0 · Recursive Self-Improvement</div>
+            <div style={{ fontSize: 10, color: "#52525b" }}>v12.8.0 · Recursive Self-Improvement</div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 4, padding: "2px 8px", borderRadius: 9999, background: status.isRunning ? "rgba(34,197,94,0.1)" : "rgba(239,68,68,0.1)", border: `1px solid ${status.isRunning ? "rgba(34,197,94,0.25)" : "rgba(239,68,68,0.25)"}` }}>
             <div style={{ width: 6, height: 6, borderRadius: "50%", background: status.isRunning ? "#22c55e" : "#ef4444", animation: status.isRunning ? "pulse 2s infinite" : "none" }} />
