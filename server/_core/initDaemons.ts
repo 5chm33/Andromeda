@@ -86,6 +86,12 @@ import { initResearchPublisher } from "../researchPublisher";
 import { initCrossSystemNegotiation } from "../crossSystemNegotiation";
 import { initTemporalKnowledgeDistillation } from "../temporalKnowledgeDistillation";
 import { initEmergentGoalSynthesis } from "../emergentGoalSynthesis";
+import { initComputeEconomyManager } from "../computeEconomyManager";
+import { initGovernanceConstitution } from "../governanceConstitution";
+import { initLongRangePlanner } from "../longRangePlanner";
+import { initAdversarialRedTeam } from "../adversarialRedTeam";
+import { initTemporalAbstractionEngine } from "../temporalAbstractionEngine";
+import { initAIBootstrapper } from "../aiBootstrapper";
 import { initStakeholderReporting } from "../stakeholderReporting";
 import { initCognitiveLoadBalancer } from "../cognitiveLoadBalancer";
 import { initBootstrapper } from "../capabilityBootstrapper";
@@ -322,6 +328,13 @@ export function startDaemons(): void {
     initCrossSystemNegotiation();
     initTemporalKnowledgeDistillation();
     initEmergentGoalSynthesis();
+    // v33
+    initComputeEconomyManager();
+    initGovernanceConstitution();
+    initLongRangePlanner();
+    initAdversarialRedTeam();
+    initTemporalAbstractionEngine();
+    initAIBootstrapper();
 
 
   initSummarizer();
