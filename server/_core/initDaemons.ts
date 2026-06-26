@@ -273,6 +273,13 @@ import { createSession, addTurn, fillSlot } from "../dialogueManager";
 import { registerProfile, generateContextualResponse } from "../contextualResponder";
 import { encodeMultimodal, computeSimilarity } from "../multimodalEncoder";
 import { adaptStyle } from "../communicationStyleAdapter";
+import { optimizeGradientDescent } from "../gradientDescentOptimizer";
+import { optimizeBayesian } from "../bayesianOptimizer";
+import { optimizeEvolutionary } from "../evolutionaryOptimizer";
+import { optimizeSimulatedAnnealing } from "../simulatedAnnealingEngine";
+import { optimizePSO } from "../particleSwarmOptimizer";
+import { ensembleOptimizers } from "../optimizationEnsembler";
+
 
 
 
