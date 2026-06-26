@@ -99,7 +99,11 @@ Provide a structured analysis of this UI in EXACTLY this JSON format:
       throw new Error("Could not parse JSON from VLM response");
     }
 
-    const parsed = JSON.parse(jsonMatch[1] || jsonMatch[0]) as VlmAnalysisResult;
+    const jsonStr = jsonMatch[1] || jsonMatch[0];
+    if (!jsonStr) {
+      throw new Error('VLM response did not contain valid JSON');
+    }
+    const parsed = JSON.parse(jsonStr) as VlmAnalysisResult;
     log.info(`[VLM] Analysis complete. Found ${parsed.interactableElements.length} elements.`);
     return parsed;
   } catch (err) {
