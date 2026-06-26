@@ -98,6 +98,12 @@ import { initInfiniteHorizonPlanner } from "../infiniteHorizonPlanner";
 import { initSelfHealingArchitecture } from "../selfHealingArchitecture";
 import { initCapabilityExtrapolator } from "../capabilityExtrapolator";
 import { initMetaRewardShaper } from "../metaRewardShaper";
+import { initRecursiveSelfModificationAuditor } from "../recursiveSelfModificationAuditor";
+import { initCapabilitySynthesisEngine } from "../capabilitySynthesisEngine";
+import { initEpistemicUncertaintyQuantifier } from "../epistemicUncertaintyQuantifier";
+import { initFederatedLearningCoordinator } from "../federatedLearningCoordinator";
+import { initCausalReasoningEngine } from "../causalReasoningEngine";
+import { initOmegaConvergenceMonitor } from "../omegaConvergenceMonitor";
 import { initStakeholderReporting } from "../stakeholderReporting";
 import { initCognitiveLoadBalancer } from "../cognitiveLoadBalancer";
 import { initBootstrapper } from "../capabilityBootstrapper";
@@ -348,6 +354,13 @@ export function startDaemons(): void {
     initSelfHealingArchitecture();
     initCapabilityExtrapolator();
     initMetaRewardShaper();
+    // v35
+    initRecursiveSelfModificationAuditor();
+    initCapabilitySynthesisEngine();
+    initEpistemicUncertaintyQuantifier();
+    initFederatedLearningCoordinator();
+    initCausalReasoningEngine();
+    initOmegaConvergenceMonitor();
 
 
   initSummarizer();
