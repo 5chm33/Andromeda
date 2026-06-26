@@ -2072,7 +2072,7 @@ function scheduleNextCycle(): void {
       await runRSICycle();
       scheduleNextCycle(); // Recurse — this is the RSI loop
     }
-  }, rsiConfig.intervalMs);
+  }, rsiConfig.intervalMs).unref();
   console.log(`[RSIEngine] Next RSI cycle scheduled for ${nextCycleAt}`);
 }
 
