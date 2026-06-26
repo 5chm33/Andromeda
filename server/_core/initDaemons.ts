@@ -195,6 +195,12 @@ import { subscribe, publish, getQueueDepth, _resetBusForTest } from "../agentCom
 import { writeMemory, readMemory, grantAccess, _resetMemoryBrokerForTest } from "../agentMemoryBroker.js";
 import { registerCapabilities, findAgentsWithCapability, getRegistryStats, _resetCapabilityRegistryForTest } from "../agentCapabilityRegistry.js";
 import { createPlan, addStep, assignStep, completeStep, getPlan, _resetCoordinatorForTest } from "../agentCoordinator.js";
+import { registerNode, selectAgent, getStats as getLBStats, _resetLoadBalancerForTest } from "../agentLoadBalancer.js";
+import { registerCircuitBreaker, canCall, recordSuccess as recordCBSuccess, recordFailure as recordCBFailure, _resetFaultToleranceForTest } from "../agentFaultTolerance.js";
+import { createSnapshot, rollback as rollbackSnapshot, diffSnapshots, _resetVersionControlForTest } from "../agentVersionControl.js";
+import { setPolicy as setSecurityPolicy, checkCapability, checkTopicAccess, _resetSecuritySandboxForTest } from "../agentSecuritySandbox.js";
+import { recordSample, getReport as getPerfReport, getSLACompliance, _resetProfilerForTest } from "../agentPerformanceProfiler.js";
+import { registerWorkflow, startExecution, recordStageResult, finalizeExecution, _resetOrchestrationEngineForTest } from "../agentOrchestrationEngine.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -549,4 +555,7 @@ export function startDaemons(): void {
 
   // v47 — Sub-Agent Economy II
   console.log("[Init] Sub-Agent Economy II initialized (spawn, lifecycle, bus, memory, registry, coordinator).");
+
+  // v48 — Sub-Agent Economy III
+  console.log("[Init] Sub-Agent Economy III initialized (loadBalancer, faultTolerance, versionControl, securitySandbox, profiler, orchestration).");
 }
