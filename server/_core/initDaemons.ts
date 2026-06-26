@@ -285,6 +285,13 @@ import { signPayload, verifyPayload, hashData } from "../cryptographicVerifier";
 import { defineRole, assignRole, checkAccess } from "../accessControlManager";
 import { logAuditEvent, verifyTrailIntegrity, generateComplianceReport } from "../auditTrailEnforcer";
 import { registerPatch, stagePatch, applyPatch, rollbackPatch } from "../securityPatchApplier";
+import { registerAgent as registerCoordAgent, createCoordinationTask, assignTask, submitResult } from "../multiAgentCoordinator";
+import { createWorkspace, putArtifact, getArtifact } from "../sharedWorkspaceManager";
+import { reportConflict, mediateConflict, resolveConflict } from "../conflictMediationEngine";
+import { makeCollectiveDecision } from "../collectiveDecisionMaker";
+import { publishKnowledge, syncKnowledge, getKnowledge } from "../knowledgeSynchronizer";
+import { addRating, getRecommendations as getCollabRecommendations } from "../collaborativeFilteringEngine";
+
 
 
 
