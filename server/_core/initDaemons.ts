@@ -1,5 +1,5 @@
 /**
- * initDaemons.ts — v17.0.0
+ * initDaemons.ts — v18.0.0
  *
  * Extracted from _core/index.ts (v6.03 refactor).
  * Starts all background analysis and monitoring daemons after the server is listening.
@@ -27,6 +27,12 @@
  *  15. (semanticMergeResolver)     — wired inline in rsiEngine.ts parallel proposal merge
  *  16. (proposalGenerator/Applier/Validator) — selfImprove.ts split into focused sub-modules
  *  17. Fine-tuner threshold lowered from 500 → 100 to activate learning loop sooner
+ * v18.0.0:  Wire five new SOTA systems:
+ *  18. initFineTunerActivation()   — API key scope verification + fine-tuner health check
+ *  19. initConsensusConfig()       — live 3-node peer config with health checks + auto-discovery
+ *  20. (genealogyGuidedGeneration) — self-initializes on import; wired inline in selfImprove.ts
+ *  21. initRewardCalibrator()      — Platt scaling layer to correct reward model confidence
+ *  22. initDependencyUpdateRsi()   — extend RSI to propose/apply package.json dep updates
  */
 
 import { resolve, dirname } from "path";
@@ -61,6 +67,10 @@ import { initBenchmarkRegressionSuite } from "../benchmarkRegressionSuite";
 import { initRsiDashboard, registerDashboardRoutes } from "../rsiDashboard";
 import { initProposalGenealogy } from "../proposalGenealogy";
 import { initRollbackVerifier } from "../rollbackVerifier";
+import { initFineTunerActivation } from "../fineTunerActivation";
+import { initConsensusConfig } from "../consensusConfig";
+import { initRewardCalibrator } from "../rewardCalibrator";
+import { initDependencyUpdateRsi } from "../dependencyUpdateRsi";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -232,5 +242,37 @@ export function startDaemons(): void {
     console.log("[v17.0.0] Rollback verifier initialized");
   } catch (rvErr) {
     console.warn("[v17.0.0] Rollback verifier failed to start:", (rvErr as Error).message);
+  }
+
+  // v18.0.0: Fine-Tuner Activation — verifies API key has fine-tuning scope, emits health check
+  try {
+    initFineTunerActivation();
+    console.log("[v18.0.0] Fine-tuner activation check initialized");
+  } catch (ftaErr) {
+    console.warn("[v18.0.0] Fine-tuner activation failed to start:", (ftaErr as Error).message);
+  }
+
+  // v18.0.0: Consensus Config — live 3-node peer config with health checks + auto-discovery
+  try {
+    initConsensusConfig();
+    console.log("[v18.0.0] Consensus config initialized");
+  } catch (ccErr) {
+    console.warn("[v18.0.0] Consensus config failed to start:", (ccErr as Error).message);
+  }
+
+  // v18.0.0: Reward Calibrator — Platt scaling layer to correct reward model confidence scores
+  try {
+    initRewardCalibrator();
+    console.log("[v18.0.0] Reward calibrator initialized");
+  } catch (rcErr) {
+    console.warn("[v18.0.0] Reward calibrator failed to start:", (rcErr as Error).message);
+  }
+
+  // v18.0.0: Dependency Update RSI — extend RSI to propose/apply package.json dependency updates
+  try {
+    initDependencyUpdateRsi();
+    console.log("[v18.0.0] Dependency update RSI initialized");
+  } catch (durErr) {
+    console.warn("[v18.0.0] Dependency update RSI failed to start:", (durErr as Error).message);
   }
 }
