@@ -1814,6 +1814,25 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         recordPatternOutcome(proposal.title || "unknown", "structure", path.basename(proposal.targetFile), "success");
       } catch { /* non-fatal */ }
 
+      // v17.0.0: Record outcome in proposal genealogy DAG
+      try {
+        const { recordProposalOutcome } = await import("./proposalGenealogy.js");
+        await recordProposalOutcome(proposalId, "applied");
+      } catch (_pgErr) { /* non-fatal */ }
+
+      // v17.0.0: Record success in continuous fine-tuner for learning loop
+      try {
+        const { recordSuccess: _recordFineTunerSuccess } = await import("./continuousFineTuner.js");
+        await _recordFineTunerSuccess({
+          systemPrompt: "RSI improvement cycle",
+          userPrompt: proposal.rationale ?? "",
+          acceptedOutput: proposal.proposedContent ?? proposal.proposedSnippet ?? "",
+          recordedAt: new Date().toISOString(),
+          targetFile: proposal.targetFile,
+          area: proposal.category ?? "general",
+        });
+      } catch (_ftErr) { /* non-fatal */ }
+
       // v14.0.0: Clear self-healing chaos hardening target if this file was flagged
       try {
         const { clearHardeningTarget } = await import("./selfHealingChaos.js");

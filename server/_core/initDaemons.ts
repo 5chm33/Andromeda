@@ -1,5 +1,5 @@
 /**
- * initDaemons.ts — v15.0.0
+ * initDaemons.ts — v17.0.0
  *
  * Extracted from _core/index.ts (v6.03 refactor).
  * Starts all background analysis and monitoring daemons after the server is listening.
@@ -59,6 +59,8 @@ import { initRsiScheduler } from "../rsiScheduler";
 import { initDistributedConsensus } from "../distributedConsensus";
 import { initBenchmarkRegressionSuite } from "../benchmarkRegressionSuite";
 import { initRsiDashboard, registerDashboardRoutes } from "../rsiDashboard";
+import { initProposalGenealogy } from "../proposalGenealogy";
+import { initRollbackVerifier } from "../rollbackVerifier";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -214,5 +216,21 @@ export function startDaemons(): void {
     console.log("[v16.0.0] RSI dashboard initialized — available at /dashboard");
   } catch (dashErr) {
     console.warn("[v16.0.0] RSI dashboard failed to start:", (dashErr as Error).message);
+  }
+
+  // v17.0.0: Proposal Genealogy — DAG tracking of proposal lineage, merges, rollbacks, patterns
+  try {
+    initProposalGenealogy();
+    console.log("[v17.0.0] Proposal genealogy DAG initialized");
+  } catch (pgErr) {
+    console.warn("[v17.0.0] Proposal genealogy failed to start:", (pgErr as Error).message);
+  }
+
+  // v17.0.0: Rollback Verifier — auto-verifies every rollback is clean with TypeScript + test re-run
+  try {
+    initRollbackVerifier();
+    console.log("[v17.0.0] Rollback verifier initialized");
+  } catch (rvErr) {
+    console.warn("[v17.0.0] Rollback verifier failed to start:", (rvErr as Error).message);
   }
 }

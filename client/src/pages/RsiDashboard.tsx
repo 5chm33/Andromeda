@@ -21,6 +21,7 @@ import { SwarmVotingPanel } from "@/components/rsi/SwarmVotingPanel";
 import { AlgorithmRegistryPanel } from "@/components/rsi/AlgorithmRegistryPanel";
 import { ProposalFileList } from "@/components/rsi/ProposalFileList";
 import { ExternalRepoFixer } from "@/components/rsi/ExternalRepoFixer";
+import { GenealogyPanel } from "@/components/rsi/GenealogyPanel";
 import {
   Activity, GitBranch, Zap, Brain, DollarSign, Users, FlaskConical,
   BarChart3, GitCommit, Database, Settings, ArrowLeft, Cpu,
@@ -56,7 +57,7 @@ interface LiveEvent {
   timestamp: number;
   data: Record<string, unknown>;
 }
-type NavSection = "improvements" | "overview" | "proposals" | "commits" | "memory" | "cost" | "swarm" | "algorithms";
+type NavSection = "improvements" | "overview" | "proposals" | "commits" | "memory" | "cost" | "swarm" | "algorithms" | "genealogy";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function formatTs(ts: number): string {

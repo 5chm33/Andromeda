@@ -339,3 +339,159 @@ export function initDistributedConsensus(): void {
     );
   }
 }
+
+// ─── Adaptive Threshold (v17.0.0) ─────────────────────────────────────────────
+
+/**
+ * Critical file patterns that require a higher consensus threshold.
+ * These files are architectural foundations — a bad change here cascades everywhere.
+ */
+const CRITICAL_FILE_PATTERNS = [
+  /selfImprove\.ts$/,
+  /rsiEngine\.ts$/,
+  /llmProvider\.ts$/,
+  /circuitBreaker\.ts$/,
+  /constitutionalConstraints\.ts$/,
+  /z3ProofLayer\.ts$/,
+  /gracefulDegradation\.ts$/,
+  /transactionLog\.ts$/,
+  /_core\/index\.ts$/,
+  /_core\/initDaemons\.ts$/,
+];
+
+/** Threshold for critical files: 100% approval required */
+const CRITICAL_QUORUM_FRACTION = 1.0;
+/** Threshold for safe proposals (high safety score): simple majority */
+const SAFE_QUORUM_FRACTION = 0.51;
+/** Default threshold: 2/3 majority */
+const DEFAULT_QUORUM_FRACTION = 0.667;
+
+export interface AdaptiveThresholdResult {
+  quorumFraction: number;
+  rationale: string;
+  isCriticalFile: boolean;
+  isSafeProposal: boolean;
+}
+
+/**
+ * Compute the adaptive consensus threshold for a proposal.
+ *
+ * Rules:
+ *   - Critical files (rsiEngine, llmProvider, etc.): require 100% approval
+ *   - High semantic safety score (>= 0.85) + low impact radius: simple majority (51%)
+ *   - Everything else: standard 2/3 majority
+ */
+export function computeAdaptiveThreshold(
+  targetFile: string,
+  semanticSafetyScore: number,
+  impactRadius: number
+): AdaptiveThresholdResult {
+  // Check if this is a critical architectural file
+  const isCriticalFile = CRITICAL_FILE_PATTERNS.some(p => p.test(targetFile));
+  if (isCriticalFile) {
+    return {
+      quorumFraction: CRITICAL_QUORUM_FRACTION,
+      rationale: `Critical architectural file — unanimous approval required`,
+      isCriticalFile: true,
+      isSafeProposal: false,
+    };
+  }
+
+  // Check if this is a safe, low-impact proposal
+  const isSafeProposal = semanticSafetyScore >= 0.85 && impactRadius <= 3;
+  if (isSafeProposal) {
+    return {
+      quorumFraction: SAFE_QUORUM_FRACTION,
+      rationale: `High safety score (${semanticSafetyScore.toFixed(2)}) + low impact radius (${impactRadius}) — simple majority sufficient`,
+      isCriticalFile: false,
+      isSafeProposal: true,
+    };
+  }
+
+  return {
+    quorumFraction: DEFAULT_QUORUM_FRACTION,
+    rationale: `Standard proposal — 2/3 majority required`,
+    isCriticalFile: false,
+    isSafeProposal: false,
+  };
+}
+
+/**
+ * Adaptive version of seekConsensus that uses a dynamic quorum threshold.
+ * This is the primary entry point for v17+ consensus checks.
+ */
+export async function seekAdaptiveConsensus(
+  proposal: ConsensusProposal,
+  semanticSafetyScore: number,
+  impactRadius: number
+): Promise<ConsensusResult & { adaptiveThreshold: AdaptiveThresholdResult }> {
+  const threshold = computeAdaptiveThreshold(
+    proposal.targetFile,
+    semanticSafetyScore,
+    impactRadius
+  );
+
+  log.info(
+    `[distributedConsensus] Adaptive threshold for ${proposal.targetFile}: ` +
+    `${(threshold.quorumFraction * 100).toFixed(0)}% — ${threshold.rationale}`
+  );
+
+  const peers = getPeerNodes();
+
+  // Single-node mode
+  if (peers.length === 0) {
+    const localVote = await castLocalVote(proposal);
+    // For critical files in single-node mode, still require local approval
+    const reached = threshold.isCriticalFile ? localVote.approved : localVote.approved;
+    return {
+      reached,
+      totalVotes: 1,
+      approvals: localVote.approved ? 1 : 0,
+      rejections: localVote.approved ? 0 : 1,
+      timeouts: 0,
+      peerVotes: [localVote],
+      singleNodeMode: true,
+      avgApprovalConfidence: localVote.approved ? localVote.confidence : 0,
+      adaptiveThreshold: threshold,
+    };
+  }
+
+  // Multi-node mode with adaptive quorum
+  const [localVote, peerVotes] = await Promise.all([
+    castLocalVote(proposal),
+    _requestPeerVotes(proposal, peers),
+  ]);
+
+  const allVotes = [localVote, ...peerVotes];
+  const approvals = allVotes.filter(v => v.approved).length;
+  const rejections = allVotes.filter(v => !v.approved && v.reason !== "Timeout").length;
+  const timeouts = allVotes.filter(v => v.reason === "Timeout").length;
+  const totalVotes = allVotes.length;
+
+  // Use the adaptive quorum fraction instead of the hardcoded QUORUM_FRACTION
+  const quorumRequired = Math.ceil(totalVotes * threshold.quorumFraction);
+  const reached = approvals >= quorumRequired;
+
+  const approvingVotes = allVotes.filter(v => v.approved);
+  const avgApprovalConfidence = approvingVotes.length > 0
+    ? approvingVotes.reduce((sum, v) => sum + v.confidence, 0) / approvingVotes.length
+    : 0;
+
+  log.info(
+    `[distributedConsensus] Adaptive consensus for ${proposal.proposalId}: ` +
+    `${approvals}/${totalVotes} votes (need ${quorumRequired} at ${(threshold.quorumFraction * 100).toFixed(0)}%) — ` +
+    `${reached ? "REACHED" : "FAILED"}`
+  );
+
+  return {
+    reached,
+    totalVotes,
+    approvals,
+    rejections,
+    timeouts,
+    peerVotes: allVotes,
+    singleNodeMode: false,
+    avgApprovalConfidence,
+    adaptiveThreshold: threshold,
+  };
+}
