@@ -1,5 +1,10 @@
 # Changelog
 
+## [12.8.1] — 2026-06-26
+### Fixed
+- **Express v5 wildcard route crash** (`server/_core/vite.ts`): Express v5 no longer accepts bare `"*"` as a route pattern. Both `app.use("*", ...)` calls replaced with `app.use("/{*path}", ...)`. This was causing Stage 4 CI smoke tests to fail with a startup crash immediately after the v12.8.0 Express upgrade.
+- **Docker lockfile config mismatch** (`Dockerfile`): `.pnpmfile.cjs` (which overrides the `qs` version) must be present *before* `pnpm install --frozen-lockfile` runs. The lockfile checksum was computed with the hook active; omitting it caused `ERR_PNPM_LOCKFILE_CONFIG_MISMATCH` and a failed Docker build. Fix applied to both builder and runner stages.
+
 ## [12.8.0] — 2026-06-25
 ### Security
 - **`qs` vulnerabilities patched:** Upgraded `express` to v5.2.1 (pulls `qs` ≥ 6.15.2), resolving 3 DoS vulnerabilities (arrayLimit bypass, bracket notation DoS, stringify crash on null entries). Remaining 2 advisories are `esbuild` dev-only (build tool, not in production bundle).
