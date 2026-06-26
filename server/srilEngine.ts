@@ -54,6 +54,28 @@ export async function applySrilModule(proposal: SrilProposal, targetDir: string 
 /**
  * Detects capability gaps that could be solved by a new module.
  */
+export async function runSrilCycle(): Promise<void> {
+  console.log(`[SRIL] Running full autonomous cycle...`);
+  const gaps = detectCapabilityGaps();
+  if (gaps.length === 0) return;
+  
+  const proposal = await generateNewRsiModule(gaps[0]);
+  if (proposal && proposal.confidence > 0.9) {
+    await applySrilModule(proposal);
+  }
+}
+
+export function getSrilHistory(): SrilProposal[] {
+  return []; // Mock history
+}
+
+export function initSrilDaemon(): void {
+  console.log(`[SRIL] Initializing daemon...`);
+  setInterval(() => {
+    runSrilCycle().catch(console.error);
+  }, 1000 * 60 * 60); // Every hour
+}
+
 export function detectCapabilityGaps(): string[] {
   // Mock detection
   return [

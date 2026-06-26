@@ -71,6 +71,9 @@ import { initFineTunerActivation } from "../fineTunerActivation";
 import { initConsolidationV2 } from "../episodicConsolidationV2.js";
 import { initUcdDaemon } from "../unsupervisedCodebaseDiscovery.js";
 
+
+import { initSrilDaemon } from "../srilEngine";
+import { initDeploymentDaemon } from "../autonomousDeployment";
 import { initBootstrapper } from "../capabilityBootstrapper";
 import { initStreamingDashboard } from "../streamingDashboard";
 import { initGlobalMemory } from "../persistentGlobalMemory.js";
@@ -284,6 +287,11 @@ export function startDaemons(): void {
     // v28
     initBootstrapper({ operatorEmail: "admin@example.com", enableSystemd: false, enableAutoUpdate: true });
     initStreamingDashboard(8081);
+
+    // v29
+    initSrilDaemon();
+    initDeploymentDaemon();
+
 
   initSummarizer();
 

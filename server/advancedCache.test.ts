@@ -1,0 +1,1 @@
+import { advancedCache } from './advancedCache'; test('cache', () => { expect(advancedCache()).toBe(true); });

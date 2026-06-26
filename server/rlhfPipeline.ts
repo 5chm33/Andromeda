@@ -43,6 +43,22 @@ export function collectHumanPreference(pair: PreferencePair): void {
  * Trains the Bradley-Terry preference model on collected data.
  * Returns the loss after training.
  */
+export function applyReinforcePolicyGradient(rewards: number[], logProbs: number[]): number {
+  console.log(`[RLHF] Applying REINFORCE policy gradient update...`);
+  if (rewards.length !== logProbs.length || rewards.length === 0) return 0;
+  
+  // Baseline subtraction
+  const meanReward = rewards.reduce((a, b) => a + b, 0) / rewards.length;
+  let loss = 0;
+  
+  for (let i = 0; i < rewards.length; i++) {
+    const advantage = rewards[i] - meanReward;
+    loss -= logProbs[i] * advantage; // Policy gradient loss
+  }
+  
+  return loss / rewards.length;
+}
+
 export function trainPreferenceModel(): number {
   ensureDirs();
   console.log(`[RLHF] Training Bradley-Terry preference model...`);
