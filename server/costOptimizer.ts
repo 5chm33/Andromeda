@@ -216,11 +216,13 @@ export function recordCost(
   // Keep last 10000 records in memory
   if (costRecords.length > 10000) costRecords.splice(0, costRecords.length - 10000);
 
-  // Persist to JSONL
-  try {
-    fs.mkdirSync(path.dirname(COST_LOG_FILE), { recursive: true });
-    fs.appendFileSync(COST_LOG_FILE, JSON.stringify(record) + "\n");
-  } catch { /* non-fatal */ }
+  // Persist to JSONL (async, non-blocking)
+  (async () => {
+    try {
+      await fs.promises.mkdir(path.dirname(COST_LOG_FILE), { recursive: true });
+      await fs.promises.appendFile(COST_LOG_FILE, JSON.stringify(record) + "\n");
+    } catch { /* non-fatal */ }
+  })();
 }
 
 /**
