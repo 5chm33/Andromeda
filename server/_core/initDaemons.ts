@@ -92,6 +92,12 @@ import { initLongRangePlanner } from "../longRangePlanner";
 import { initAdversarialRedTeam } from "../adversarialRedTeam";
 import { initTemporalAbstractionEngine } from "../temporalAbstractionEngine";
 import { initAIBootstrapper } from "../aiBootstrapper";
+import { initFormalVerificationEngine } from "../formalVerificationEngine";
+import { initOptimalityTracker } from "../optimalityTracker";
+import { initInfiniteHorizonPlanner } from "../infiniteHorizonPlanner";
+import { initSelfHealingArchitecture } from "../selfHealingArchitecture";
+import { initCapabilityExtrapolator } from "../capabilityExtrapolator";
+import { initMetaRewardShaper } from "../metaRewardShaper";
 import { initStakeholderReporting } from "../stakeholderReporting";
 import { initCognitiveLoadBalancer } from "../cognitiveLoadBalancer";
 import { initBootstrapper } from "../capabilityBootstrapper";
@@ -335,6 +341,13 @@ export function startDaemons(): void {
     initAdversarialRedTeam();
     initTemporalAbstractionEngine();
     initAIBootstrapper();
+    // v34
+    initFormalVerificationEngine();
+    initOptimalityTracker();
+    initInfiniteHorizonPlanner();
+    initSelfHealingArchitecture();
+    initCapabilityExtrapolator();
+    initMetaRewardShaper();
 
 
   initSummarizer();
