@@ -530,6 +530,35 @@ export async function runRSICycle(): Promise<RSICycleResult> {
         proposalsGenerated = proposals.length;
       } catch { /* non-fatal — ranker is advisory */ }
     }
+    // v16.0.0: Semantic Merge Resolver — merge compatible parallel proposals before apply
+    // When the worker pool generates multiple proposals for the same file, merge them
+    // into a single best-of-all proposal instead of discarding all but the top one.
+    if (proposals.length > 1) {
+      try {
+        const { mergeAllProposals } = await import("./semanticMergeResolver.js");
+        const { loadProposals: lpMerge } = await import("./selfImprove.js");
+        const fullState = lpMerge();
+        const mergeable = proposals.map(p => {
+          const full = fullState.proposals.find((fp: any) => fp.id === p.id);
+          return {
+            id: p.id,
+            targetFile: p.filePath,
+            title: (full as any)?.title ?? p.id,
+            originalContent: (full as any)?.originalContent ?? "",
+            proposedContent: (full as any)?.proposedContent ?? "",
+            confidence: p.confidence,
+            area: (full as any)?.area ?? "general",
+          };
+        });
+        const merged = mergeAllProposals(mergeable);
+        // Update proposals list — if a file had multiple proposals, it now has one merged one
+        const mergedIds = new Set(merged.map(m => m.id));
+        proposals = proposals.filter(p => mergedIds.has(p.id));
+        if (rsiConfig.verboseLogging) {
+          console.log(`[RSIEngine] Semantic merge: ${mergeable.length} proposals → ${merged.length} after merge`);
+        }
+      } catch { /* non-fatal — merge is advisory */ }
+    }
     // ── STEP 4: VALIDATE + STEP 5: APPLY ─────────────────────────────────────
     rsiPhase = "validating";
     if (rsiConfig.verboseLogging) console.log(`[RSIEngine] Phase: VALIDATE + APPLY`);

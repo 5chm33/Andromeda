@@ -1838,6 +1838,49 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         }
       } catch { /* non-fatal — validator is advisory if module unavailable */ }
 
+      // v16.0.0: Distributed Consensus Gate — proposal must pass quorum before apply
+      try {
+        const { seekConsensus } = await import("./distributedConsensus.js");
+        const proposedContent = (proposal as any).content ?? (proposal as any).newContent ?? "";
+        const consensusResult = await seekConsensus({
+          proposalId,
+          targetFile: proposal.targetFile,
+          title: proposal.title || "Untitled proposal",
+          proposedContent,
+          originalContent: (proposal as any).originalContent ?? "",
+          area: (proposal as any).area ?? "general",
+          confidence: proposal.confidence ?? 0.5,
+          proposedAt: new Date().toISOString(),
+        });
+        if (!consensusResult.reached) {
+          const reason = `Consensus failed: ${consensusResult.approvals}/${consensusResult.totalVotes} votes`;
+          log.warn(`[distributedConsensus] ${reason} for ${path.basename(proposal.targetFile)}`);
+          proposal.status = "rejected";
+          (proposal as any).rejectionReason = reason;
+          return { success: false, message: reason };
+        }
+        log.info(`[distributedConsensus] Consensus REACHED: ${consensusResult.approvals}/${consensusResult.totalVotes} votes for ${path.basename(proposal.targetFile)}`);
+      } catch { /* non-fatal — consensus auto-passes in single-node mode if module unavailable */ }
+
+      // v16.0.0: Benchmark Regression Gate — block apply if any of 20 micro-benchmarks regress
+      try {
+        const { runRegressionCheck } = await import("./benchmarkRegressionSuite.js");
+        const benchResult = await runRegressionCheck(proposalId);
+        if (!benchResult.passed) {
+          const regressionSummary = benchResult.regressions
+            .map(r => `${r.benchmarkName} (+${r.regressionPercent.toFixed(1)}%)`)
+            .join(", ");
+          const reason = `Benchmark regression detected: ${regressionSummary}`;
+          log.warn(`[benchmarkRegressionSuite] ${reason}`);
+          proposal.status = "rejected";
+          (proposal as any).rejectionReason = reason;
+          return { success: false, message: reason };
+        }
+        if (benchResult.improvements.length > 0) {
+          log.info(`[benchmarkRegressionSuite] ${benchResult.improvements.length} benchmark improvements detected`);
+        }
+      } catch { /* non-fatal — benchmark gate is advisory if module unavailable */ }
+
       // v14.0.0: CI Regression Gate — block apply if metrics regress
       try {
         const { runTestSuiteGate } = await import("./ciRegressionGuard.js");

@@ -18,7 +18,7 @@
  * the acceptance rate from ~85% (zero-shot ceiling) toward 99%.
  *
  * @module continuousFineTuner
- * @version 15.0.0
+ * @version 16.0.0
  */
 
 import fs from "node:fs";
@@ -29,8 +29,11 @@ const log = createLogger("continuousFineTuner");
 
 // ─── Configuration ────────────────────────────────────────────────────────────
 
-/** Number of successful examples required before triggering a fine-tuning job */
-const FINETUNE_THRESHOLD = 500;
+/** Number of successful examples required before triggering a fine-tuning job.
+ * v16: lowered from 500 → 100 to activate the learning loop sooner.
+ * Once the first fine-tuned model is active, this can be raised back to 500
+ * for subsequent rounds (diminishing returns on small batches). */
+const FINETUNE_THRESHOLD = 100;
 
 /** Minimum interval between fine-tuning jobs (24 hours) to avoid runaway costs */
 const MIN_FINETUNE_INTERVAL_MS = 24 * 60 * 60 * 1000;

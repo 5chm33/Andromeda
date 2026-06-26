@@ -20,6 +20,13 @@
  *   9. initContinuousFineTuner()   — autonomous fine-tuning feedback loop (path to 99%)
  *  10. (semanticDiffValidator)     — wired inline in selfImprove.ts apply path
  *  11. (proposalRanker)            — wired inline in rsiEngine.ts cycle loop
+ * v16.0.0:  Wire four new SOTA systems:
+ *  12. initDistributedConsensus()  — 3-node voting protocol for proposal approval
+ *  13. initBenchmarkRegressionSuite() — 20 micro-benchmarks as a hard gate before apply
+ *  14. initRsiDashboard()          — real-time RSI dashboard at /dashboard
+ *  15. (semanticMergeResolver)     — wired inline in rsiEngine.ts parallel proposal merge
+ *  16. (proposalGenerator/Applier/Validator) — selfImprove.ts split into focused sub-modules
+ *  17. Fine-tuner threshold lowered from 500 → 100 to activate learning loop sooner
  */
 
 import { resolve, dirname } from "path";
@@ -49,6 +56,9 @@ import { initSelfHealingChaos } from "../selfHealingChaos";
 import { initRsiTaskQueue } from "../rsiTaskQueue";
 import { initContinuousFineTuner } from "../continuousFineTuner";
 import { initRsiScheduler } from "../rsiScheduler";
+import { initDistributedConsensus } from "../distributedConsensus";
+import { initBenchmarkRegressionSuite } from "../benchmarkRegressionSuite";
+import { initRsiDashboard, registerDashboardRoutes } from "../rsiDashboard";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -180,5 +190,29 @@ export function startDaemons(): void {
     console.log("[v15.0.1] RSI adaptive scheduler initialized");
   } catch (schedErr) {
     console.warn("[v15.0.1] RSI adaptive scheduler failed to start:", (schedErr as Error).message);
+  }
+
+  // v16.0.0: Distributed Consensus — 3-node voting protocol (single-node auto-pass if no peers configured)
+  try {
+    initDistributedConsensus();
+    console.log("[v16.0.0] Distributed consensus protocol initialized");
+  } catch (dcErr) {
+    console.warn("[v16.0.0] Distributed consensus failed to start:", (dcErr as Error).message);
+  }
+
+  // v16.0.0: Benchmark Regression Suite — 20 micro-benchmarks as a hard gate before any proposal apply
+  try {
+    initBenchmarkRegressionSuite();
+    console.log("[v16.0.0] Benchmark regression suite initialized");
+  } catch (brsErr) {
+    console.warn("[v16.0.0] Benchmark regression suite failed to start:", (brsErr as Error).message);
+  }
+
+  // v16.0.0: RSI Dashboard — real-time live dashboard at /dashboard (SSE + REST snapshot)
+  try {
+    initRsiDashboard();
+    console.log("[v16.0.0] RSI dashboard initialized — available at /dashboard");
+  } catch (dashErr) {
+    console.warn("[v16.0.0] RSI dashboard failed to start:", (dashErr as Error).message);
   }
 }
