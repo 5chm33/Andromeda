@@ -1,8 +1,0 @@
-{
-  "id": "rp_1782415389443_qpsqlz",
-  "description": "Before proposal prop_1782415122940_jb6p5q: Add null guard before .length access in writeAndromedaMemory",
-  "timestamp": 1782415389443,
-  "author": "self-improve",
-  "files": [],
-  "metadata": {}
-}

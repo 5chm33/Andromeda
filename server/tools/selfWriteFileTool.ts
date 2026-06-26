@@ -11,7 +11,7 @@ import { existsSync, mkdirSync } from "fs";
 import * as path from "path";
 import { isForbidden, resolveServerPath, getServerDir } from "./selfModifyHelpers.js";
 import { twoPhaseCommit } from "../twoPhaseCommit.js";
-import { generateSmokeTests } from "../selfTestGenerator.js";
+import { generateSmokeTests } from "../testGenerator.js";
 
 /** Maximum content size for self_write_file (prevents LLM truncation corruption). */
 const CONTENT_SIZE_LIMIT = 3000;

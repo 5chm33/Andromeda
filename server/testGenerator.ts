@@ -591,3 +591,36 @@ function generatePythonEmptyValue(type: string): string {
   if (t.includes("list")) return "[]";
   return "None";
 }
+
+
+// ─── Legacy testGenerator.ts Aliases (v15.0.0 cleanup) ────────────────────────
+export async function generateSmokeTests(
+  targetFile: string,
+  targetContent: string
+): Promise<{ success: boolean; testFile: string; content: string }> {
+  const result = generateTests(targetContent, targetFile, "typescript");
+  return {
+    success: true,
+    testFile: result.filePath,
+    content: result.content
+  };
+}
+
+export async function generateBehavioralTest(
+  targetFile: string,
+  targetContent: string,
+  behaviorDescription: string
+): Promise<{ success: boolean; testFile: string; content: string }> {
+  // We use the same underlying generator, but the behaviorDescription would
+  // ideally be passed to an LLM. For now, map to the generic generator.
+  const result = generateTests(targetContent, targetFile, "typescript");
+  return {
+    success: true,
+    testFile: result.filePath,
+    content: result.content
+  };
+}
+
+export function getTestStats(): any {
+  return getTestGenStats();
+}

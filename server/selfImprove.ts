@@ -340,7 +340,7 @@ export const ANALYZABLE_FILES = [
   "episodicConsolidation.ts",
   "autoGoalSuggester.ts",
   "autonomousGoalGenerator.ts",
-  "autoRollback.ts",
+  "selfRollback.ts",
   "autoRebuild.ts",
   "ciPipeline.ts",
   "codeQualityMonitor.ts",
@@ -356,7 +356,7 @@ export const ANALYZABLE_FILES = [
   "selfReflectionEngine.ts",
   "selfReview.ts",
   "selfRollback.ts",
-  "selfTestGenerator.ts",
+  "testGenerator.ts",
   "selfTestPipeline.ts",
   "skillGraph.ts",
   "taskDecomposer.ts",
@@ -1821,6 +1821,23 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         clearHardeningTarget(moduleName);
       } catch { /* non-fatal */ }
 
+      // v15.0.0: Semantic Diff Validator — block apply if public API regresses
+      try {
+        const { validateDiff } = await import("./semanticDiffValidator.js");
+        const beforeSource = fs.readFileSync(resolveServerFile(proposal.targetFile) ?? proposal.targetFile, "utf-8");
+        const afterSource = (proposal as any).content ?? "";
+        if (beforeSource && afterSource) {
+          const diffResult = validateDiff(beforeSource, afterSource, proposal.targetFile);
+          if (!diffResult.safe) {
+            const breakingSummary = diffResult.breakingChanges.map(bc => `${bc.kind}: ${bc.symbol}`).join(", ");
+            log.warn(`[semanticDiffValidator] Blocking proposal "${proposal.title}" — breaking changes: ${breakingSummary}`);
+            proposal.status = "rejected";
+            (proposal as any).rejectionReason = `Semantic diff validation failed: ${breakingSummary}`;
+            return { success: false, message: `Semantic diff validation failed: ${breakingSummary}` };
+          }
+        }
+      } catch { /* non-fatal — validator is advisory if module unavailable */ }
+
       // v14.0.0: CI Regression Gate — block apply if metrics regress
       try {
         const { runTestSuiteGate } = await import("./ciRegressionGuard.js");
@@ -1849,6 +1866,25 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
       } catch { /* non-fatal — gate is advisory if module unavailable */ }
 
       proposal.status = "applied";
+
+      // v15.0.0: Record successful apply as a fine-tuning training example
+      try {
+        const { recordSuccess: recordFineTuneSuccess } = await import("./continuousFineTuner.js");
+        const systemPrompt = (proposal as any)._systemPrompt ?? "";
+        const userPrompt = (proposal as any)._userPrompt ?? "";
+        const acceptedOutput = (proposal as any).content ?? "";
+        if (systemPrompt && userPrompt && acceptedOutput) {
+          void recordFineTuneSuccess({
+            systemPrompt,
+            userPrompt,
+            acceptedOutput,
+            recordedAt: new Date().toISOString(),
+            targetFile: proposal.targetFile,
+            area: (proposal as any).area ?? "general",
+          });
+        }
+      } catch { /* non-fatal */ }
+
       // v12.13.0: Commit transaction on success
       if (_txnId) {
         try {
@@ -2334,7 +2370,7 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
               const rbProp = rbStore.proposals.find(p => p.id === proposalId);
               if (rbProp) {
                 (rbProp as any).status = "auto-rolled-back";
-                (rbProp as any)._autoRollbackAt = new Date().toISOString();
+                (rbProp as any)._selfRollbackAt = new Date().toISOString();
                 saveProposals(rbStore);
               }
             },

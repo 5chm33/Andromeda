@@ -43,7 +43,8 @@ describe("rsiWorkerPool", () => {
 // ─── selfHealingChaos ─────────────────────────────────────────────────────────
 describe("selfHealingChaos", () => {
   beforeEach(async () => {
-    const { initSelfHealingChaos } = await import("./selfHealingChaos.js");
+    const { initSelfHealingChaos, _resetStateForTesting } = await import("./selfHealingChaos.js");
+    _resetStateForTesting();
     initSelfHealingChaos();
   });
 

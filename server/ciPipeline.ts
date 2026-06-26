@@ -236,7 +236,7 @@ async function _runPipelineInternal(
     const rollbackStart = Date.now();
     let rollbackOutput = "";
     try {
-      const { restoreSnapshot } = await import("./autoRollback.js");
+      const { restoreSnapshot } = await import("./selfRollback.js");
       restoreSnapshot(snapshotId);
       rollbackOutput = `Snapshot ${snapshotId} restored successfully`;
       rolledBack = true;

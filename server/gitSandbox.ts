@@ -3,7 +3,7 @@
  *
  * Strict whitelist sandbox for all git execSync calls in the RSI self-improvement loop.
  *
- * Problem: continuousImprover.ts, autoRollback.ts, and selfImprove.ts all call
+ * Problem: continuousImprover.ts, selfRollback.ts, and selfImprove.ts all call
  * execSync() with git commands constructed from runtime variables (file paths,
  * branch names, commit messages). If a proposal ever injected a malicious value
  * into one of those variables, it could execute arbitrary shell commands.

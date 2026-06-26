@@ -1,5 +1,5 @@
 /**
- * initDaemons.ts — v13.0.0
+ * initDaemons.ts — v15.0.0
  *
  * Extracted from _core/index.ts (v6.03 refactor).
  * Starts all background analysis and monitoring daemons after the server is listening.
@@ -10,6 +10,16 @@
  *   1. initSemanticCodebaseGraph() — AST-level symbol graph for impact radius proofs
  *   2. initMultiAgentDebate()      — upstream debate protocol with RLAIF weight persistence
  *   3. initChaosEngineer()         — fault injection + resilience scoring (smoke test at boot)
+ * v14.0.0:  Wire four new systems:
+ *   4. initRsiWorkerPool()         — parallel proposal generation with worker threads
+ *   5. initCiRegressionGuard()     — CI regression gate for proposal apply path
+ *   6. initPatternMemory()         — cross-session architectural pattern memory
+ *   7. initSelfHealingChaos()      — chaos → RSI feedback loop for autonomous hardening
+ * v15.0.0:  Wire four new SOTA systems:
+ *   8. initRsiTaskQueue()          — Redis-backed distributed task queue
+ *   9. initContinuousFineTuner()   — autonomous fine-tuning feedback loop (path to 99%)
+ *  10. (semanticDiffValidator)     — wired inline in selfImprove.ts apply path
+ *  11. (proposalRanker)            — wired inline in rsiEngine.ts cycle loop
  */
 
 import { resolve, dirname } from "path";
@@ -36,6 +46,8 @@ import { initRsiWorkerPool } from "../rsiWorkerPool";
 import { initCiRegressionGuard } from "../ciRegressionGuard";
 import { initPatternMemory } from "../epistemicBeliefModel";
 import { initSelfHealingChaos } from "../selfHealingChaos";
+import { initRsiTaskQueue } from "../rsiTaskQueue";
+import { initContinuousFineTuner } from "../continuousFineTuner";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -142,5 +154,22 @@ export function startDaemons(): void {
     console.log("[v14.0.0] Self-healing chaos loop initialized");
   } catch (shcErr) {
     console.warn("[v14.0.0] Self-healing chaos failed to start:", (shcErr as Error).message);
+  }
+
+  // v15.0.0: RSI Task Queue — Redis-backed distributed task queue (falls back to in-memory)
+  try {
+    initRsiTaskQueue();
+    console.log("[v15.0.0] RSI task queue initialized");
+  } catch (tqErr) {
+    console.warn("[v15.0.0] RSI task queue failed to start:", (tqErr as Error).message);
+  }
+
+  // v15.0.0: Continuous Fine-Tuner — autonomous fine-tuning feedback loop (path to 99% acceptance)
+  // Resumes polling any in-progress fine-tuning jobs from previous sessions.
+  try {
+    initContinuousFineTuner();
+    console.log("[v15.0.0] Continuous fine-tuner initialized");
+  } catch (cftErr) {
+    console.warn("[v15.0.0] Continuous fine-tuner failed to start:", (cftErr as Error).message);
   }
 }

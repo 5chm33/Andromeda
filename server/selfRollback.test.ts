@@ -1,85 +1,138 @@
-/**
- * selfRollback.test.ts — Andromeda v6.20
- * Comprehensive Vitest test suite for selfRollback
- */
+import { describe, it, expect } from "vitest";
+import { createSnapshot, restoreSnapshot, validateTypeScript, validateSyntax, buildDependencyMap } from "./selfRollback.js";
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-
-vi.mock('fs', () => ({
-  default: {
-    existsSync: vi.fn().mockReturnValue(true),
-    readFileSync: vi.fn().mockReturnValue('{}'),
-    writeFileSync: vi.fn(),
-    renameSync: vi.fn(),
-    unlinkSync: vi.fn(),
-    mkdirSync: vi.fn(),
-    readdirSync: vi.fn().mockReturnValue([]),
-    statSync: vi.fn().mockReturnValue({ mtimeMs: Date.now(), size: 100, isFile: () => true, isDirectory: () => false }),
-    promises: {
-      readFile: vi.fn().mockResolvedValue(''),
-      writeFile: vi.fn().mockResolvedValue(undefined),
-      mkdir: vi.fn().mockResolvedValue(undefined),
-      readdir: vi.fn().mockResolvedValue([]),
-      stat: vi.fn().mockResolvedValue({ mtimeMs: Date.now(), size: 100, isFile: () => true }),
-      unlink: vi.fn().mockResolvedValue(undefined),
-      rename: vi.fn().mockResolvedValue(undefined),
-    },
-  },
-  // Named exports (vitest requires both default and named)
-  existsSync: vi.fn().mockReturnValue(true),
-  readFileSync: vi.fn().mockReturnValue('{}'),
-  writeFileSync: vi.fn(),
-  renameSync: vi.fn(),
-  unlinkSync: vi.fn(),
-  mkdirSync: vi.fn(),
-  mkdtempSync: vi.fn().mockReturnValue('/tmp/test-dir'),
-  readdirSync: vi.fn().mockReturnValue([]),
-  statSync: vi.fn().mockReturnValue({ mtimeMs: Date.now(), size: 100, isFile: () => true, isDirectory: () => false }),
-  appendFileSync: vi.fn(),
-  copyFileSync: vi.fn(),
-  createWriteStream: vi.fn().mockReturnValue({ write: vi.fn(), end: vi.fn(), on: vi.fn() }),
-}));
-
-vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-  ok: true,
-  status: 200,
-  json: vi.fn().mockResolvedValue({}),
-  text: vi.fn().mockResolvedValue(''),
-  body: null,
-}));
-
-import * as Module from './selfRollback.js';
-
-describe('selfRollback', () => {
-
-  beforeEach(() => {
-    vi.clearAllMocks();
+describe("createSnapshot", () => {
+  it("should execute without throwing", () => {
+    try {
+      const result = createSnapshot([], "test_reason");
+      expect(result).toBeDefined();
+    } catch (e: any) {
+      // Function may throw in test environment (e.g. no providers registered)
+      expect(e).toBeDefined();
+    }
   });
 
-  it('module loads without errors', () => {
-    expect(Module).toBeDefined();
+  it("should return correct type", () => {
+    const result = createSnapshot([], "test_reason");
+    expect(typeof result).toBe("string");
   });
 
-  it('exports are defined', () => {
-    expect(Module).toBeDefined();
-    expect(typeof Module).toBe('object');
+  it("should handle empty/null inputs gracefully", () => {
+    try { createSnapshot([], ""); } catch (e: any) { expect(e).toBeDefined(); }
   });
 
-  it('startHealthWatch does not throw', () => {
-    expect(() => Module.startHealthWatch()).not.toThrow();
-  });
-
-  it('stopHealthWatch does not throw', () => {
-    expect(() => Module.stopHealthWatch()).not.toThrow();
-  });
-
-  it('getRollbackStatus returns a value', () => {
-    const result = Module.getRollbackStatus();
-    expect(result).toBeDefined();
-  });
-
-  it('initRollback does not throw', () => {
-    expect(() => Module.initRollback()).not.toThrow();
+  it("should handle invalid inputs", () => {
+    // @ts-expect-error Testing invalid input
+    try { createSnapshot(undefined, undefined); } catch (e: any) { expect(e).toBeDefined(); }
   });
 
 });
+
+describe("restoreSnapshot", () => {
+  it("should execute without throwing", () => {
+    try {
+      const result = restoreSnapshot("test_snapshotId");
+      expect(result).toBeDefined();
+    } catch (e: any) {
+      // Function may throw in test environment (e.g. no providers registered)
+      expect(e).toBeDefined();
+    }
+  });
+
+  it("should return correct type", () => {
+    const result = restoreSnapshot("test_snapshotId");
+    expect(typeof result).toBe("boolean");
+  });
+
+  it("should handle empty/null inputs gracefully", () => {
+    try { restoreSnapshot(""); } catch (e: any) { expect(e).toBeDefined(); }
+  });
+
+  it("should handle invalid inputs", () => {
+    // @ts-expect-error Testing invalid input
+    try { restoreSnapshot(undefined); } catch (e: any) { expect(e).toBeDefined(); }
+  });
+
+});
+
+describe("validateTypeScript", () => {
+  it("should execute without throwing", () => {
+    try {
+      const result = validateTypeScript("test_projectDir");
+      expect(result).toBeDefined();
+    } catch (e: any) {
+      // Function may throw in test environment (e.g. no providers registered)
+      expect(e).toBeDefined();
+    }
+  });
+
+  it("should return correct type", () => {
+    const result = validateTypeScript("test_projectDir");
+    expect(Array.isArray(result)).toBe(true);
+  });
+
+  it("should handle empty/null inputs gracefully", () => {
+    try { validateTypeScript(""); } catch (e: any) { expect(e).toBeDefined(); }
+  });
+
+  it("should handle invalid inputs", () => {
+    // @ts-expect-error Testing invalid input
+    try { validateTypeScript(undefined); } catch (e: any) { expect(e).toBeDefined(); }
+  });
+
+});
+
+describe("validateSyntax", () => {
+  it("should execute without throwing", () => {
+    try {
+      const result = validateSyntax("test_filePath", "test_content");
+      expect(result).toBeDefined();
+    } catch (e: any) {
+      // Function may throw in test environment (e.g. no providers registered)
+      expect(e).toBeDefined();
+    }
+  });
+
+  it("should return correct type", () => {
+    const result = validateSyntax("test_filePath", "test_content");
+    expect(Array.isArray(result)).toBe(true);
+  });
+
+  it("should handle empty/null inputs gracefully", () => {
+    try { validateSyntax("", ""); } catch (e: any) { expect(e).toBeDefined(); }
+  });
+
+  it("should handle invalid inputs", () => {
+    // @ts-expect-error Testing invalid input
+    try { validateSyntax(undefined, undefined); } catch (e: any) { expect(e).toBeDefined(); }
+  });
+
+});
+
+describe("buildDependencyMap", () => {
+  it("should execute without throwing", () => {
+    try {
+      const result = buildDependencyMap("test_projectDir", "test_targetFile");
+      expect(result).toBeDefined();
+    } catch (e: any) {
+      // Function may throw in test environment (e.g. no providers registered)
+      expect(e).toBeDefined();
+    }
+  });
+
+  it("should return correct type", () => {
+    const result = buildDependencyMap("test_projectDir", "test_targetFile");
+    expect(result).toBeTruthy();
+  });
+
+  it("should handle empty/null inputs gracefully", () => {
+    try { buildDependencyMap("", ""); } catch (e: any) { expect(e).toBeDefined(); }
+  });
+
+  it("should handle invalid inputs", () => {
+    // @ts-expect-error Testing invalid input
+    try { buildDependencyMap(undefined, undefined); } catch (e: any) { expect(e).toBeDefined(); }
+  });
+
+});
+

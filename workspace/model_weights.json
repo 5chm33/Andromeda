@@ -3,26 +3,26 @@
   "models": {
     "gpt-4o": {
       "modelId": "gpt-4o",
-      "totalVotes": 550,
-      "truePositives": 520,
-      "falsePositives": 30,
+      "totalVotes": 825,
+      "truePositives": 780,
+      "falsePositives": 45,
       "falseNegatives": 0,
       "trueNegatives": 0,
       "weight": 1.9215463041631267,
       "emaAccuracy": 0.9985662020419409,
-      "lastUpdated": 1782484005731
+      "lastUpdated": 1782489912218
     },
     "claude-3-5-sonnet": {
       "modelId": "claude-3-5-sonnet",
-      "totalVotes": 550,
-      "truePositives": 510,
-      "falsePositives": 40,
+      "totalVotes": 825,
+      "truePositives": 765,
+      "falsePositives": 60,
       "falseNegatives": 0,
       "trueNegatives": 0,
       "weight": 1.8950600343053172,
       "emaAccuracy": 0.9978570789521524,
-      "lastUpdated": 1782484005732
+      "lastUpdated": 1782489912218
     }
   },
-  "lastSaved": 1782484005732
+  "lastSaved": 1782489912218
 }

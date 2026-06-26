@@ -570,7 +570,7 @@ export function registerSystemRoutes(app: Express) {
       try { const { getSupervisorStatus } = await import("../safetySupervisor.js"); supervisorStatus = getSupervisorStatus(); } catch {}
       try { const { verifyContinuity } = await import("../identityManifest.js"); continuityReport = verifyContinuity(); } catch {}
       try { const { getFailureStats } = await import("../failurePatternMemory.js"); failureStats = getFailureStats(); } catch {}
-      try { const { getTestStats } = await import("../selfTestGenerator.js"); testStats = getTestStats(); } catch {}
+      try { const { getTestStats } = await import("../testGenerator.js"); testStats = getTestStats(); } catch {}
       // Read version from package.json (v6.03: no more hardcoded version)
       let version = "6.03.0";
       try { version = JSON.parse(readFileSync(join(process.cwd(), "package.json"), "utf-8")).version; } catch {}

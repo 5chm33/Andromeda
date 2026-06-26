@@ -92,7 +92,7 @@ export type GuardConfig = {
   /** Run test suite before applying (if tests exist) */
   runTestsBefore: boolean;
   /** Automatically rollback if tests fail after applying */
-  autoRollbackOnTestFailure: boolean;
+  selfRollbackOnTestFailure: boolean;
   /** Maximum number of backups to keep per file */
   maxBackupsPerFile: number;
   /** Blocked file patterns (never allow self-improvement on these) */
@@ -178,7 +178,7 @@ function getDefaultConfig(): GuardConfig {
     proposalExpiryMs: 24 * 60 * 60 * 1000, // 24 hours
     runSyntaxCheck: true,
     runTestsBefore: true,
-    autoRollbackOnTestFailure: true,
+    selfRollbackOnTestFailure: true,
     maxBackupsPerFile: 10,
     blockedFiles: ["db.ts", "auth.ts", "selfImproveGuard.ts", "selfHeal.ts", "selfRollback.ts", "selfTestPipeline.ts", "videoGeneration.test.ts", "RsiDashboard.tsx", "ProposalFileList.tsx", "ProposalTreeGraph.tsx", "tsHealEngine.ts"],
     // v5.25: Meta-mode guard — these files are the "immune system" and cannot be self-modified
@@ -917,7 +917,7 @@ export async function guardedApply(proposalId: string): Promise<{
     testResult = runTests(proposal.targetFile);
     addAudit("test", testResult.pass ? "success" : "failure", testResult.output.slice(0, 200), proposalId, proposal.targetFile);
 
-    if (!testResult.pass && config.autoRollbackOnTestFailure && backup) {
+    if (!testResult.pass && config.selfRollbackOnTestFailure && backup) {
       // Rollback
       const rollbackResult = rollbackToBackup(backup.id);
       rolledBack = rollbackResult.success;

@@ -4,7 +4,7 @@
  * Tests for critical safety modules:
  * - safetySupervisor: validates self-modification proposals
  * - recursionGuard: prevents infinite self-improvement loops
- * - autoRollback: ensures rollback on failure
+ * - selfRollback: ensures rollback on failure
  *
  * These modules had ZERO tests before v6.18.
  */

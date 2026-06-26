@@ -333,3 +333,18 @@ export async function retestModule(moduleName: string): Promise<boolean> {
     return false;
   }
 }
+
+
+// For testing
+export function _resetStateForTesting(): void {
+  _targets.clear();
+  _events.length = 0;
+  _totalRsiCyclesTriggered = 0;
+  _lastChaosRunAt = 0;
+  _initialized = false;
+  try {
+    const fs = require("fs");
+    const p = getPersistencePath();
+    if (fs.existsSync(p)) fs.unlinkSync(p);
+  } catch {}
+}

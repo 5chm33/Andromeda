@@ -849,7 +849,7 @@ async function decomposeGoalIntoSubGoals(goal: MetaGoal): Promise<void> {
     const typeFileMap: Record<string, string[]> = {
       self_improvement: ["selfImprove.ts", "selfModify.ts", "selfHeal.ts"],
       performance: ["ai.ts", "streamRouter.ts", "tokenBudgetManager.ts"],
-      reliability: ["selfHeal.ts", "gracefulDegradation.ts", "autoRollback.ts"],
+      reliability: ["selfHeal.ts", "gracefulDegradation.ts", "selfRollback.ts"],
       capability: ["reactEngine.ts", "multiAgent.ts", "fileEngine.ts"],
       meta: ["recursiveGoals.ts", "autonomyOrchestrator.ts", "selfModel.ts"],
     };

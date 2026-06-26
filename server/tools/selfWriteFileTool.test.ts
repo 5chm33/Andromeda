@@ -43,8 +43,8 @@ vi.mock("../twoPhaseCommit.js", () => ({
   })
 }));
 
-// Mock selfTestGenerator
-vi.mock("../selfTestGenerator.js", () => ({
+// Mock testGenerator
+vi.mock("../testGenerator.js", () => ({
   generateSmokeTests: vi.fn()
 }));
 

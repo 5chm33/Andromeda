@@ -42,7 +42,7 @@ export interface FileVersion {
 export interface RollbackConfig {
   enabled: boolean;
   maxRollbackPoints: number;      // Max history to keep (default: 50)
-  autoRollbackOnHealthFail: boolean;  // Auto-rollback if health degrades
+  selfRollbackOnHealthFail: boolean;  // Auto-rollback if health degrades
   healthCheckUrl: string;
   healthCheckInterval: number;    // ms between health checks after changes
   retentionDays: number;          // Delete rollback points older than this
@@ -71,7 +71,7 @@ const DEFAULT_CONFIG: RollbackConfig = {
   // The health check was triggering false-positive rollbacks when the server
   // was busy under RSI load (CI pipeline takes 20-30s, health check timed out).
   // Rollbacks are still available manually via the API but will NOT fire automatically.
-  autoRollbackOnHealthFail: false,
+  selfRollbackOnHealthFail: false,
   healthCheckUrl: `http://localhost:${process.env.PORT ?? 3000}/api/health`,
   healthCheckInterval: 90_000,
   retentionDays: 7,
@@ -278,7 +278,7 @@ export async function rollbackToLastHealthy(): Promise<RollbackResult> {
  * If health degrades, auto-rollback to the last healthy point.
  */
 export function startHealthWatch(pointId: string): void {
-  if (!config.autoRollbackOnHealthFail) return;
+  if (!config.selfRollbackOnHealthFail) return;
   if (healthWatchTimer) clearInterval(healthWatchTimer);
 
   let checksCompleted = 0;
@@ -531,4 +531,17 @@ export function setRollbackConfig(updates: Partial<RollbackConfig>): RollbackCon
 export function initRollback(): void {
   loadPersistedPoints();
   log.info(`Initialized. ${rollbackPoints.length} points loaded. Enabled: ${config.enabled}`);
+}
+
+
+// ─── Legacy selfRollback.ts Aliases (v15.0.0 cleanup) ────────────────────────
+export function createSnapshot(files: string[], reason: string): string {
+  const pt = createRollbackPoint("system", reason, files);
+  return pt.id;
+}
+
+export function restoreSnapshot(snapshotId: string): boolean {
+  // Fire-and-forget async wrapper to match sync signature
+  rollbackTo(snapshotId).catch(() => {});
+  return true;
 }

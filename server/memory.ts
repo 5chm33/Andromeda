@@ -646,7 +646,7 @@ const SEED_MEMORIES: Array<{ content: string; type: MemoryType; tags: string[] }
     tags: ["ContinuousImprover", "autonomy", "daemons", "limits"],
   },
   {
-    content: "Forbidden files that can never be modified by self_write_file or self_patch_file: andromeda-constitution.json, server/selfImproveGuard.ts, server/recursionGuard.ts, server/selfRollback.ts, server/autoRollback.ts, server/tools/selfModifyTools.ts.",
+    content: "Forbidden files that can never be modified by self_write_file or self_patch_file: andromeda-constitution.json, server/selfImproveGuard.ts, server/recursionGuard.ts, server/selfRollback.ts, server/selfRollback.ts, server/tools/selfModifyTools.ts.",
     type: "project",
     tags: ["forbidden", "safety", "self-modification"],
   },

@@ -133,7 +133,7 @@ export function verifyContinuity(): ContinuityReport {
   }
 
   // 4. Check rollback mechanism exists
-  const rollbackFiles = ["selfRollback.ts", "autoRollback.ts"];
+  const rollbackFiles = ["selfRollback.ts", "selfRollback.ts"];
   const hasRollback = rollbackFiles.some(f => fs.existsSync(path.resolve(serverDir, f)));
   if (!hasRollback) {
     warnings.push("WARNING: No rollback mechanism found — self-modifications cannot be undone");

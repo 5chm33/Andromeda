@@ -1,0 +1,21 @@
+{
+  "targets": [
+    {
+      "moduleName": "testModuleEpsilon",
+      "moduleFile": "server/testModuleEpsilon.ts",
+      "resilienceScore": 0.2,
+      "escalationLevel": 3,
+      "priority": "critical",
+      "failedFaults": [
+        "disk_io"
+      ],
+      "firstDetectedAt": 1782489904490,
+      "lastUpdatedAt": 1782489904490,
+      "rsiCyclesAttempted": 0,
+      "resolved": false
+    }
+  ],
+  "lastChaosRunAt": 1782489904490,
+  "totalRsiCyclesTriggered": 0,
+  "savedAt": 1782489904491
+}

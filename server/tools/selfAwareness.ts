@@ -157,7 +157,7 @@ registerTool({
       rollback: true,
       testGeneration: true,
       codeReview: true,
-      autoRollbackOnFailure: true, // v5.14
+      selfRollbackOnFailure: true, // v5.14
     };
 
     capabilities.multiAgent = {

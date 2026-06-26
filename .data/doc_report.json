@@ -1,7 +1,7 @@
 {
-  "timestamp": 1782483998264,
-  "totalModules": 313,
-  "documentedModules": 202,
+  "timestamp": 1782489900769,
+  "totalModules": 320,
+  "documentedModules": 210,
   "undocumentedExports": [
     {
       "filePath": "server/_core/imageGeneration.ts",
@@ -1408,6 +1408,24 @@
       "line": 0
     },
     {
+      "filePath": "server/epistemicBeliefModel.ts",
+      "exportName": "initPatternMemory",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/epistemicBeliefModel.ts",
+      "exportName": "buildPatternContext",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/epistemicBeliefModel.ts",
+      "exportName": "getPatternStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/evalDrivenTargeting.ts",
       "exportName": "runEvalDrivenTargeting",
       "exportType": "function",
@@ -2100,6 +2118,30 @@
     {
       "filePath": "server/multiAgent.ts",
       "exportName": "runTeamAgent",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/multiAgentDebate.ts",
+      "exportName": "getDebateStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/multiAgentDebate.ts",
+      "exportName": "updateDebateConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/multiAgentDebate.ts",
+      "exportName": "getDebateConfig",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/multiAgentDebate.ts",
+      "exportName": "initMultiAgentDebate",
       "exportType": "function",
       "line": 0
     },
@@ -2818,6 +2860,12 @@
       "line": 0
     },
     {
+      "filePath": "server/selfHealingChaos.ts",
+      "exportName": "_resetStateForTesting",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/selfImprove.ts",
       "exportName": "resetStuckProcessingProposals",
       "exportType": "function",
@@ -3084,6 +3132,54 @@
     {
       "filePath": "server/selfRollback.ts",
       "exportName": "stopDegradationWatch",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfRollback.ts",
+      "exportName": "createSnapshot",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/selfRollback.ts",
+      "exportName": "restoreSnapshot",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/semanticCodebaseGraph.ts",
+      "exportName": "getGraphStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/semanticCodebaseGraph.ts",
+      "exportName": "getSymbol",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/semanticCodebaseGraph.ts",
+      "exportName": "getCallers",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/semanticCodebaseGraph.ts",
+      "exportName": "getCallees",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/semanticCodebaseGraph.ts",
+      "exportName": "isGraphReady",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/semanticCodebaseGraph.ts",
+      "exportName": "initSemanticCodebaseGraph",
       "exportType": "function",
       "line": 0
     },
@@ -3502,6 +3598,12 @@
       "line": 0
     },
     {
+      "filePath": "server/testGenerator.ts",
+      "exportName": "getTestStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/tieredContextManager.ts",
       "exportName": "getIsolatedContextStats",
       "exportType": "function",
@@ -3782,7 +3884,7 @@
     {
       "filePath": "ARCHITECTURE.md",
       "type": "architecture",
-      "content": "Updated: 313 modules, 629 undocumented exports"
+      "content": "Updated: 320 modules, 646 undocumented exports"
     }
   ],
   "architectureUpdated": true

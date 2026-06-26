@@ -1,6 +1,6 @@
 /**
- * selfTestGenerator.test.ts — Andromeda v6.20
- * Comprehensive Vitest test suite for selfTestGenerator
+ * testGenerator.test.ts — Andromeda v6.20
+ * Comprehensive Vitest test suite for testGenerator
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
@@ -48,9 +48,9 @@ vi.mock('llmProvider.js', () => ({
   getActiveProvider: vi.fn().mockReturnValue({ id: 'deepseek', name: 'DeepSeek' }),
 }));
 
-import * as Module from './selfTestGenerator.js';
+import * as Module from './testGenerator.js';
 
-describe('selfTestGenerator', () => {
+describe('testGenerator', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();

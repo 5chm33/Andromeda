@@ -1,0 +1,254 @@
+[
+  {
+    "patternTitle": "Add null guard before JSON.parse",
+    "category": "structure",
+    "targetFile": "testFile.ts",
+    "outcome": "success",
+    "timestamp": 1782488071836
+  },
+  {
+    "patternTitle": "Rename variable to camelCase",
+    "category": "naming",
+    "targetFile": "testFile.ts",
+    "outcome": "failure",
+    "timestamp": 1782488071836
+  },
+  {
+    "patternTitle": "Add try/catch wrapper",
+    "category": "structure",
+    "targetFile": "mySpecialFile.ts",
+    "outcome": "success",
+    "timestamp": 1782488071837
+  },
+  {
+    "patternTitle": "Add try/catch wrapper",
+    "category": "structure",
+    "targetFile": "mySpecialFile.ts",
+    "outcome": "success",
+    "timestamp": 1782488071837
+  },
+  {
+    "patternTitle": "Add null guard before JSON.parse",
+    "category": "structure",
+    "targetFile": "testFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489329693
+  },
+  {
+    "patternTitle": "Rename variable to camelCase",
+    "category": "naming",
+    "targetFile": "testFile.ts",
+    "outcome": "failure",
+    "timestamp": 1782489329693
+  },
+  {
+    "patternTitle": "Add try/catch wrapper",
+    "category": "structure",
+    "targetFile": "mySpecialFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489329695
+  },
+  {
+    "patternTitle": "Add try/catch wrapper",
+    "category": "structure",
+    "targetFile": "mySpecialFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489329695
+  },
+  {
+    "patternTitle": "Add null guard before JSON.parse",
+    "category": "structure",
+    "targetFile": "testFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489385897
+  },
+  {
+    "patternTitle": "Rename variable to camelCase",
+    "category": "naming",
+    "targetFile": "testFile.ts",
+    "outcome": "failure",
+    "timestamp": 1782489385897
+  },
+  {
+    "patternTitle": "Add try/catch wrapper",
+    "category": "structure",
+    "targetFile": "mySpecialFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489385899
+  },
+  {
+    "patternTitle": "Add try/catch wrapper",
+    "category": "structure",
+    "targetFile": "mySpecialFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489385899
+  },
+  {
+    "patternTitle": "Add null guard before JSON.parse",
+    "category": "structure",
+    "targetFile": "testFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489524201
+  },
+  {
+    "patternTitle": "Rename variable to camelCase",
+    "category": "naming",
+    "targetFile": "testFile.ts",
+    "outcome": "failure",
+    "timestamp": 1782489524201
+  },
+  {
+    "patternTitle": "Add try/catch wrapper",
+    "category": "structure",
+    "targetFile": "mySpecialFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489524202
+  },
+  {
+    "patternTitle": "Add try/catch wrapper",
+    "category": "structure",
+    "targetFile": "mySpecialFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489524202
+  },
+  {
+    "patternTitle": "Add null guard before JSON.parse",
+    "category": "structure",
+    "targetFile": "testFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489587273
+  },
+  {
+    "patternTitle": "Rename variable to camelCase",
+    "category": "naming",
+    "targetFile": "testFile.ts",
+    "outcome": "failure",
+    "timestamp": 1782489587274
+  },
+  {
+    "patternTitle": "Add try/catch wrapper",
+    "category": "structure",
+    "targetFile": "mySpecialFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489587275
+  },
+  {
+    "patternTitle": "Add try/catch wrapper",
+    "category": "structure",
+    "targetFile": "mySpecialFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489587275
+  },
+  {
+    "patternTitle": "Add null guard before JSON.parse",
+    "category": "structure",
+    "targetFile": "testFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489625878
+  },
+  {
+    "patternTitle": "Rename variable to camelCase",
+    "category": "naming",
+    "targetFile": "testFile.ts",
+    "outcome": "failure",
+    "timestamp": 1782489625878
+  },
+  {
+    "patternTitle": "Add try/catch wrapper",
+    "category": "structure",
+    "targetFile": "mySpecialFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489625879
+  },
+  {
+    "patternTitle": "Add try/catch wrapper",
+    "category": "structure",
+    "targetFile": "mySpecialFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489625879
+  },
+  {
+    "patternTitle": "Add null guard before JSON.parse",
+    "category": "structure",
+    "targetFile": "testFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489748851
+  },
+  {
+    "patternTitle": "Rename variable to camelCase",
+    "category": "naming",
+    "targetFile": "testFile.ts",
+    "outcome": "failure",
+    "timestamp": 1782489748852
+  },
+  {
+    "patternTitle": "Add try/catch wrapper",
+    "category": "structure",
+    "targetFile": "mySpecialFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489748853
+  },
+  {
+    "patternTitle": "Add try/catch wrapper",
+    "category": "structure",
+    "targetFile": "mySpecialFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489748853
+  },
+  {
+    "patternTitle": "Add null guard before JSON.parse",
+    "category": "structure",
+    "targetFile": "testFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489831255
+  },
+  {
+    "patternTitle": "Rename variable to camelCase",
+    "category": "naming",
+    "targetFile": "testFile.ts",
+    "outcome": "failure",
+    "timestamp": 1782489831255
+  },
+  {
+    "patternTitle": "Add try/catch wrapper",
+    "category": "structure",
+    "targetFile": "mySpecialFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489831256
+  },
+  {
+    "patternTitle": "Add try/catch wrapper",
+    "category": "structure",
+    "targetFile": "mySpecialFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489831256
+  },
+  {
+    "patternTitle": "Add null guard before JSON.parse",
+    "category": "structure",
+    "targetFile": "testFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489904495
+  },
+  {
+    "patternTitle": "Rename variable to camelCase",
+    "category": "naming",
+    "targetFile": "testFile.ts",
+    "outcome": "failure",
+    "timestamp": 1782489904495
+  },
+  {
+    "patternTitle": "Add try/catch wrapper",
+    "category": "structure",
+    "targetFile": "mySpecialFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489904496
+  },
+  {
+    "patternTitle": "Add try/catch wrapper",
+    "category": "structure",
+    "targetFile": "mySpecialFile.ts",
+    "outcome": "success",
+    "timestamp": 1782489904496
+  }
+]

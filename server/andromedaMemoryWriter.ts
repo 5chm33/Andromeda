@@ -219,7 +219,7 @@ const ARCHITECTURE_SUMMARY = `
 - \`server/twoPhaseCommit.ts\` — Atomic file write with git snapshot + SHA-256 verify + rollback + truncation detection
 - \`server/tools/selfModifyTools.ts\` — self_write_file, self_patch_file, self_read_server_file, self_restart
 - \`server/safetySupervisor.ts\` — Constitution enforcement, validates proposals before applying
-- \`server/autoRollback.ts\` — Automatic rollback on degradation
+- \`server/selfRollback.ts\` — Automatic rollback on degradation
 - \`server/rsiEngine.ts\` — RSI (Recursive Self-Improvement) orchestrator with 8-phase OODA cycle
 
 ### Memory & Knowledge

@@ -140,13 +140,13 @@ describe("Guard: listBackups", () => {
 describe("Guard: getGuardConfig / updateGuardConfig", () => {
   it("should return a valid config object", () => {
     // Actual GuardConfig shape: { requireApproval, proposalExpiryMs, runSyntaxCheck,
-    //   runTestsBefore, autoRollbackOnTestFailure, maxBackupsPerFile, blockedFiles, metaGuardFiles }
+    //   runTestsBefore, selfRollbackOnTestFailure, maxBackupsPerFile, blockedFiles, metaGuardFiles }
     const config = getGuardConfig();
     expect(typeof config).toBe("object");
     expect(typeof config.requireApproval).toBe("boolean");
     expect(typeof config.runSyntaxCheck).toBe("boolean");
     expect(typeof config.runTestsBefore).toBe("boolean");
-    expect(typeof config.autoRollbackOnTestFailure).toBe("boolean");
+    expect(typeof config.selfRollbackOnTestFailure).toBe("boolean");
     expect(typeof config.maxBackupsPerFile).toBe("number");
     expect(config.maxBackupsPerFile).toBeGreaterThan(0);
     expect(Array.isArray(config.blockedFiles)).toBe(true);

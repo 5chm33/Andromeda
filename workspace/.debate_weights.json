@@ -1,0 +1,32 @@
+{
+  "security_auditor": {
+    "dynamicWeight": 0.37378613562624285,
+    "historicalAccuracy": 1,
+    "totalVotes": 10,
+    "correctVotes": 10
+  },
+  "performance_tuner": {
+    "dynamicWeight": 0.17891824696393058,
+    "historicalAccuracy": 0.5,
+    "totalVotes": 0,
+    "correctVotes": 0
+  },
+  "typescript_pedant": {
+    "dynamicWeight": 0.17891824696393058,
+    "historicalAccuracy": 0.5,
+    "totalVotes": 0,
+    "correctVotes": 0
+  },
+  "architecture_guardian": {
+    "dynamicWeight": 0.13418868522294797,
+    "historicalAccuracy": 0.5,
+    "totalVotes": 0,
+    "correctVotes": 0
+  },
+  "reliability_engineer": {
+    "dynamicWeight": 0.13418868522294797,
+    "historicalAccuracy": 0.5,
+    "totalVotes": 0,
+    "correctVotes": 0
+  }
+}

@@ -26,7 +26,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
 import { storeMemory } from "./memory.js";
-import { createSnapshot, restoreSnapshot } from "./autoRollback.js";
+import { createSnapshot, restoreSnapshot } from "./selfRollback.js";
 import { execSync } from "child_process";
 import { auditRsiEvent } from "./auditLog.js";
 
@@ -498,6 +498,38 @@ export async function runRSICycle(): Promise<RSICycleResult> {
       errors.push(`Propose phase error: ${String(e).slice(0, 200)}`);
     }
 
+
+    // v15.0.0: Proposal Ranker — deduplicate and rank proposals by composite score
+    if (proposals.length > 1) {
+      try {
+        const { rankProposals, formatRankingSummary } = await import("./proposalRanker.js");
+        const { loadProposals: lpRank } = await import("./selfImprove.js");
+        const fullState = lpRank();
+        const rankable = proposals.map(p => {
+          const full = fullState.proposals.find((fp: any) => fp.id === p.id);
+          return {
+            id: p.id,
+            title: (full as any)?.title ?? p.id,
+            targetFile: p.filePath,
+            area: (full as any)?.area ?? "general",
+            content: (full as any)?.proposedContent ?? "",
+            safetyScore: (full as any)?._safetyScore ?? 0.5,
+            patternScore: (full as any)?._patternScore ?? 0.5,
+            rewardScore: p.confidence,
+            complexity: (full as any)?._complexity ?? 5,
+          };
+        });
+        const rankResult = rankProposals(rankable);
+        if (rsiConfig.verboseLogging) {
+          console.log(`[RSIEngine] ${formatRankingSummary(rankResult)}`);
+        }
+        const rankedIds = rankResult.ranked.filter(r => r.isUnique).map(r => r.id);
+        proposals = proposals
+          .filter(p => rankedIds.includes(p.id))
+          .sort((a, b) => rankedIds.indexOf(a.id) - rankedIds.indexOf(b.id));
+        proposalsGenerated = proposals.length;
+      } catch { /* non-fatal — ranker is advisory */ }
+    }
     // ── STEP 4: VALIDATE + STEP 5: APPLY ─────────────────────────────────────
     rsiPhase = "validating";
     if (rsiConfig.verboseLogging) console.log(`[RSIEngine] Phase: VALIDATE + APPLY`);
@@ -903,7 +935,7 @@ export async function runRSICycle(): Promise<RSICycleResult> {
       [1000, "taskPlanner", (m) => { m.dispatchParallelSteps({ id: "rsi", goal: "probe", steps: [], status: "planning", createdAt: Date.now(), updatedAt: Date.now(), replanCount: 0, maxReplans: 3 }, [], async () => ""); }],
       [1000, "systemMemory", (m) => { m.updateBaseline("dummy_metric", "dummy_module", 1); }],
       [1000, "swarmSpecialistVoting", (m) => { m.runSpecialistVoting("rsi-probe", "rsiEngine.ts", "", "", "rsi probe"); }],
-      [1000, "selfTestGenerator", (m) => { m.generateBehavioralTest("rsiEngine.ts", "", "", "rsi probe"); }],
+      [1000, "testGenerator", (m) => { m.generateBehavioralTest("rsiEngine.ts", "", "", "rsi probe"); }],
       [1000, "selfRollback", (m) => { void m; }],
       [1000, "selfReflectionEngine", (m) => { typeof m.stopSelfReflectionEngine === 'function'; }],
       [1000, "selfMonitor", (m) => { m.resetMonitor(); }],
@@ -961,9 +993,9 @@ export async function runRSICycle(): Promise<RSICycleResult> {
       [1000, "grounding", (m) => { m.extractFactualClaims("dummy answer"); }],
       [1000, "ragPipeline", (m) => { m.chunkDocument("dummy content"); }],
       [1000, "zkProofSigning", (m) => { m.hashContent("dummy content"); }],
-      [1000, "autoRollback", (m) => { m.createSnapshot(["server/rsiEngine.ts"], "rsi-cycle-checkpoint"); }],
-      [1000, "autoRollback", (m) => { m.validateTypeScript(process.cwd()); }],
-      [1000, "autoRollback", (m) => { m.buildDependencyMap(process.cwd(), "server/rsiEngine.ts"); }],
+      [1000, "selfRollback", (m) => { m.createSnapshot(["server/rsiEngine.ts"], "rsi-cycle-checkpoint"); }],
+      [1000, "selfRollback", (m) => { m.validateTypeScript(process.cwd()); }],
+      [1000, "selfRollback", (m) => { m.buildDependencyMap(process.cwd(), "server/rsiEngine.ts"); }],
       [1000, "proofAssistant", (m) => { m.detectProverBackend(); }],
       [1000, "proofAssistant", (m) => { m.analyzeCodeSafety("const x = 1;"); }],
       [1000, "proofAssistant", (m) => { m.computeSafetyScore([]); }],
@@ -1288,7 +1320,7 @@ export async function runRSICycle(): Promise<RSICycleResult> {
       [1000, "algorithmicDiscoveryV2", (m) => { { m.initAlgorithmicDiscoveryV2(); }; }],
       [1000, "autoGoalSuggester", (m) => { { m.startAutoGoalSuggester(); }; }],
       [1000, "autoGoalSuggester", (m) => { { m.stopAutoGoalSuggester(); }; }],
-      [1000, "autoRollback", (m) => { { void m; }; }],
+      [1000, "selfRollback", (m) => { { void m; }; }],
       [1000, "autonomyOrchestrator", (m) => { { m.pause(); }; }],
       [1000, "autonomyOrchestrator", (m) => { { m.resume(); }; }],
       [1000, "autonomyOrchestrator", (m) => { { m.triggerCycle(); }; }],
@@ -1507,8 +1539,8 @@ export async function runRSICycle(): Promise<RSICycleResult> {
       [1000, "selfImproveGuard", (m) => { { m.listBackups(); }; }],
       [1000, "selfImproveGuard", (m) => { { m.sweepExpiredProposals(); }; }],
       [1000, "selfMonitor", (m) => { { void m; }; }],
-      [1000, "selfTestGenerator", (m) => { { void m; }; }],
-      [1000, "selfTestGenerator", (m) => { { m.getTestStats(); }; }],
+      [1000, "testGenerator", (m) => { { void m; }; }],
+      [1000, "testGenerator", (m) => { { m.getTestStats(); }; }],
       [1000, "skillGraph", (m) => { { m.runLearningPipeline(); }; }],
       [1000, "skillGraph", (m) => { { m.initSkillGraph(); }; }],
       [1000, "systemMemory", (m) => { { m.initSystemMemory(); }; }],

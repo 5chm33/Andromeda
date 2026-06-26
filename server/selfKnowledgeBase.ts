@@ -536,7 +536,7 @@ export function initKnowledgeBase(): void {
       status: "accepted",
       createdAt: Date.now(),
       updatedAt: Date.now(),
-      relatedFiles: ["server/selfImprove.ts", "server/selfImproveGuard.ts", "server/autoRollback.ts"],
+      relatedFiles: ["server/selfImprove.ts", "server/selfImproveGuard.ts", "server/selfRollback.ts"],
       tags: ["self-improvement", "safety", "autonomy"],
     });
 

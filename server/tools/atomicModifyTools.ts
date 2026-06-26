@@ -46,7 +46,7 @@ const FORBIDDEN_FILES = new Set([
   "server/selfImproveGuard.ts",
   "server/recursionGuard.ts",
   "server/selfRollback.ts",
-  "server/autoRollback.ts",
+  "server/selfRollback.ts",
   "server/tools/selfModifyTools.ts",
   "server/tools/atomicModifyTools.ts",
 ]);
