@@ -468,6 +468,7 @@ export async function streamAgentPlan(query: string, res: Response): Promise<voi
           .map((s, idx) => `[${idx + 1}] ${s.title} (${s.domain})\n${s.snippet}`)
           .join("\n\n");
         sseEvent(res, { type: "step_result", stepIndex: i, result: `Found ${safeSources.length} sources`, sources: safeSources.slice(0, 6) });
+        sseEvent(res, { type: "step_result", stepIndex: i, result: `Found ${safeSources.length} sources`, sources: safeSources.slice(0, 6) });
 
       } else if (step.type === "browse") {
         const { browseUrl } = await import("./browser");
