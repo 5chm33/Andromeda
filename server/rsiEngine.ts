@@ -29,6 +29,11 @@ import { storeMemory } from "./memory.js";
 import { createSnapshot, restoreSnapshot } from "./selfRollback.js";
 import { execSync } from "child_process";
 import { auditRsiEvent } from "./auditLog.js";
+import { parseGoalsFile, identifyRelevantFiles, selectGoalBiasedFiles } from "./goalConditionedRsi.js";
+import { checkBenchmarkGate } from "./externalBenchmarkGate.js";
+import { runParallelProposals, OrchestrationTask } from "./parallelProposalOrchestrator.js";
+
+
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -468,18 +473,43 @@ export async function runRSICycle(): Promise<RSICycleResult> {
           }
         } catch { /* non-fatal if selfHealingChaos not available */ }
 
-        // Fill remaining slots with normal rotation
+        // v19.0.0: Goal-Conditioned File Selection Bias
         if (targets.length < FILES_PER_CYCLE && ANALYZABLE_FILES && ANALYZABLE_FILES.length > 0) {
-          const offset = (cycleCount * FILES_PER_CYCLE) % ANALYZABLE_FILES.length;
-          for (let i = 0; i < FILES_PER_CYCLE - targets.length; i++) {
-            const candidate = ANALYZABLE_FILES[(offset + i) % ANALYZABLE_FILES.length];
-            if (!targets.includes(candidate)) targets.push(candidate);
+          try {
+            const goals = parseGoalsFile(process.cwd());
+            if (goals.length > 0) {
+              const relevantFiles = await identifyRelevantFiles(goals, ANALYZABLE_FILES);
+              const goalBiasedTargets = selectGoalBiasedFiles(ANALYZABLE_FILES, relevantFiles, FILES_PER_CYCLE - targets.length);
+              for (const gt of goalBiasedTargets) {
+                if (!targets.includes(gt)) targets.push(gt);
+              }
+            }
+          } catch { /* fallback */ }
+          
+          // Fallback to normal rotation if goal selection failed or returned empty
+          if (targets.length < FILES_PER_CYCLE) {
+            const offset = (cycleCount * FILES_PER_CYCLE) % ANALYZABLE_FILES.length;
+            for (let i = 0; i < FILES_PER_CYCLE - targets.length; i++) {
+              const candidate = ANALYZABLE_FILES[(offset + i) % ANALYZABLE_FILES.length];
+              if (!targets.includes(candidate)) targets.push(candidate);
+            }
           }
         }
 
-        for (const tf of targets) {
-          try { await analyzeAndPropose(tf); } catch { /* non-fatal */ }
-        }
+        // v19.0.0: Parallel Proposal Orchestrator
+        const tasks: OrchestrationTask[] = targets.map(tf => ({
+          targetId: tf,
+          intent: "Improve code quality, fix bugs, or optimize performance.",
+          originalSnippet: "See file content",
+          fileContext: tf,
+          generatorFn: async () => {
+            // We still use analyzeAndPropose which handles the full file analysis and DB insertion
+            await analyzeAndPropose(tf);
+            return "Proposal generated and stored in DB";
+          }
+        }));
+        
+        await runParallelProposals(tasks, 3, 1); // Max 3 concurrent to match FILES_PER_CYCLE
       }
       const pending = listProposals("pending");
       proposals = pending.map(p => ({
@@ -740,6 +770,15 @@ export async function runRSICycle(): Promise<RSICycleResult> {
       } catch (evalErr) {
         if (rsiConfig.verboseLogging) console.warn(`[RSIEngine] Eval run failed (non-fatal):`, String(evalErr).slice(0, 100));
       }
+    }
+
+    // v19.0.0: External Benchmark Gate (runs subset of HumanEval to detect regression)
+    try {
+      if (proposalsApplied > 0) {
+        await checkBenchmarkGate();
+      }
+    } catch (e) {
+      console.error(`[RSIEngine] External benchmark gate failed: ${(e as Error).message}`);
     }
 
     // ── STEP 7: RECORD ───────────────────────────────────────────────────────

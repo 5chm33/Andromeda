@@ -1,7 +1,7 @@
 {
-  "timestamp": 1782496400113,
-  "totalModules": 335,
-  "documentedModules": 224,
+  "timestamp": 1782497460682,
+  "totalModules": 341,
+  "documentedModules": 228,
   "undocumentedExports": [
     {
       "filePath": "server/_core/imageGeneration.ts",
@@ -3902,7 +3902,7 @@
     {
       "filePath": "ARCHITECTURE.md",
       "type": "architecture",
-      "content": "Updated: 335 modules, 649 undocumented exports"
+      "content": "Updated: 341 modules, 649 undocumented exports"
     }
   ],
   "architectureUpdated": true

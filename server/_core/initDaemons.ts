@@ -68,6 +68,8 @@ import { initRsiDashboard, registerDashboardRoutes } from "../rsiDashboard";
 import { initProposalGenealogy } from "../proposalGenealogy";
 import { initRollbackVerifier } from "../rollbackVerifier";
 import { initFineTunerActivation } from "../fineTunerActivation";
+import { initConsolidationV2 } from "../episodicConsolidationV2.js";
+import { resetBenchmarkBaseline } from "../externalBenchmarkGate.js";
 import { initConsensusConfig } from "../consensusConfig";
 import { initRewardCalibrator } from "../rewardCalibrator";
 import { initDependencyUpdateRsi } from "../dependencyUpdateRsi";
@@ -255,6 +257,11 @@ export function startDaemons(): void {
   // v18.0.0: Consensus Config — live 3-node peer config with health checks + auto-discovery
   try {
     initConsensusConfig();
+
+  // v19.0.0
+  initConsolidationV2();
+  resetBenchmarkBaseline();
+
     console.log("[v18.0.0] Consensus config initialized");
   } catch (ccErr) {
     console.warn("[v18.0.0] Consensus config failed to start:", (ccErr as Error).message);
