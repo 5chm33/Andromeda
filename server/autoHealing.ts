@@ -502,7 +502,7 @@ export function resetAutoHealer(): void {
 
 export function loadHealingLog(): HealingEvent[] {
   if (!existsSync(HEALING_LOG)) return [];
-  try {
+    try {
     return readFileSync(HEALING_LOG, "utf-8")
       .split("\n")
       .filter(Boolean)
