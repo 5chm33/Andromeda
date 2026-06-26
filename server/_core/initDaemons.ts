@@ -122,6 +122,12 @@ import { initInterfaceNegotiator } from "../interfaceNegotiator";
 import { initDependencyOptimizer } from "../dependencyOptimizer";
 import { initCodeQualityOracle } from "../codeQualityOracle";
 import { initRefactoringEngine } from "../refactoringEngine";
+import { initConceptMapper } from "../conceptMapper";
+import { initAnalogyEngine } from "../analogyEngine";
+import { initTransferLearningBroker } from "../transferLearningBroker";
+import { initDomainBridger } from "../domainBridger";
+import { initSemanticCompressor } from "../semanticCompressor";
+import { initKnowledgeFusion } from "../knowledgeFusion";
 import { initStakeholderReporting } from "../stakeholderReporting";
 import { initCognitiveLoadBalancer } from "../cognitiveLoadBalancer";
 import { initBootstrapper } from "../capabilityBootstrapper";
@@ -400,6 +406,13 @@ export function startDaemons(): void {
     initDependencyOptimizer();
     initCodeQualityOracle();
     initRefactoringEngine();
+    // v39
+    initConceptMapper();
+    initAnalogyEngine();
+    initTransferLearningBroker();
+    initDomainBridger();
+    initSemanticCompressor();
+    initKnowledgeFusion();
 
 
   initSummarizer();
