@@ -536,7 +536,7 @@ async function syncWithPeer(peerUrl: string): Promise<void> {
     log.warn(`[federated] Sync to ${peerUrl} error: ${(err as Error).message}`);
     // Find node by URL and mark unhealthy
     for (const [id, node] of nodeRegistry) {
-      if (node.url === peerUrl) { markNodeUnhealthy(id); break; }
+      if (node && node.url === peerUrl) { markNodeUnhealthy(id); break; }
     }
   }
 }
