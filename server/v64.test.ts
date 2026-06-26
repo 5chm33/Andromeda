@@ -48,8 +48,9 @@ describe("distributionShiftDetector", () => {
   });
 
   it("detects shift in very different distributions", () => {
-    captureDistribution("ref", Array.from({ length: 100 }, () => Math.random() * 0.1));
-    captureDistribution("cur", Array.from({ length: 100 }, () => 0.9 + Math.random() * 0.1));
+    // Deterministic: ref is all 0.05, cur is all 0.95 — maximum possible shift
+    captureDistribution("ref", Array.from({ length: 100 }, () => 0.05));
+    captureDistribution("cur", Array.from({ length: 100 }, () => 0.95));
     const result = detectShift("ref", "cur");
     expect(result.shiftDetected).toBe(true);
     expect(["moderate", "severe"]).toContain(result.severity);
