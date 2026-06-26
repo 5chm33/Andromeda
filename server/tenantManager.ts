@@ -188,7 +188,18 @@ export function getTenant(tenantId: string): TenantConfig | null {
 }
 
 export function getOrDefaultTenant(tenantId: string): TenantConfig {
-  return registry.get(tenantId) ?? registry.get("default")!;
+  return registry.get(tenantId) ?? registry.get("default") ?? {
+    id: "default",
+    name: "Default Tenant",
+    quota: { ...UNLIMITED_QUOTA },
+    allowedModules: [],
+    blockedModules: [],
+    constitutionalAiEnabled: true,
+    goalDecompositionEnabled: true,
+    active: true,
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  };
 }
 
 export function listTenants(): TenantConfig[] {
