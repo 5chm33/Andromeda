@@ -207,6 +207,12 @@ import { logEvent, queryLog, verifyIntegrity, _resetAuditLoggerForTest } from ".
 import { createCheckpoint, rollbackToCheckpoint, listCheckpoints, _resetRollbackManagerForTest } from "../agentRollbackManager.js";
 import { evaluateHealth, unquarantine, getHealingRecord, _resetSelfHealerForTest } from "../agentSelfHealer.js";
 import { recordSnapshot, getTrend, getEconomyHealth, _resetEconomyMonitorForTest } from "../agentEconomyMonitor.js";
+import { publishArtifact, requestKnowledge, searchArtifacts, _resetKnowledgeSharerForTest } from "../agentKnowledgeSharer.js";
+import { recordSkillUsage, recommendSpecialization, getProfile as getSkillProfile, _resetSpecializationEngineForTest } from "../agentSpecializationEngine.js";
+import { recordGeneration, getEvolutionTrend, getTopAgents as getTopEvolvedAgents, _resetEvolutionTrackerForTest } from "../agentEvolutionTracker.js";
+import { submitObservation, aggregateInsight, getObservationCount, _resetCollectiveIntelligenceForTest } from "../agentCollectiveIntelligence.js";
+import { recordBehaviorSignal, getPatterns as getEmergencePatterns, getNoveltyScore, _resetEmergenceDetectorV50ForTest } from "../agentEmergenceDetectorV50.js";
+import { optimize, getLatestResult as getLatestOptResult, _resetEconomyOptimizerForTest } from "../agentEconomyOptimizer.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -567,4 +573,7 @@ export function startDaemons(): void {
 
   // v49 — Sub-Agent Economy IV
   console.log("[Init] Sub-Agent Economy IV initialized (goalAlignment, ethics, auditLogger, rollback, selfHealer, economyMonitor).");
+
+  // v50 — Sub-Agent Economy V
+  console.log("[Init] Sub-Agent Economy V initialized (knowledgeSharer, specialization, evolution, collective, emergence, optimizer).");
 }
