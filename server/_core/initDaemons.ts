@@ -116,6 +116,12 @@ import { initResultAnalyzer } from "../resultAnalyzer";
 import { initPeerReviewSimulator } from "../peerReviewSimulator";
 import { initScientificMemory } from "../scientificMemory";
 import { initBreakthroughDetector } from "../breakthroughDetector";
+import { initArchitectureEvolver } from "../architectureEvolver";
+import { initModuleComposer } from "../moduleComposer";
+import { initInterfaceNegotiator } from "../interfaceNegotiator";
+import { initDependencyOptimizer } from "../dependencyOptimizer";
+import { initCodeQualityOracle } from "../codeQualityOracle";
+import { initRefactoringEngine } from "../refactoringEngine";
 import { initStakeholderReporting } from "../stakeholderReporting";
 import { initCognitiveLoadBalancer } from "../cognitiveLoadBalancer";
 import { initBootstrapper } from "../capabilityBootstrapper";
@@ -387,6 +393,13 @@ export function startDaemons(): void {
     initPeerReviewSimulator();
     initScientificMemory();
     initBreakthroughDetector();
+    // v38
+    initArchitectureEvolver();
+    initModuleComposer();
+    initInterfaceNegotiator();
+    initDependencyOptimizer();
+    initCodeQualityOracle();
+    initRefactoringEngine();
 
 
   initSummarizer();
