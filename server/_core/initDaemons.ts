@@ -140,6 +140,12 @@ import { initLatencyPredictor } from "../latencyPredictor";
 import { initThroughputMaximizer } from "../throughputMaximizer";
 import { initCostEstimator } from "../costEstimator";
 import { initResourceAuctioneer } from "../resourceAuctioneer";
+import { initCollaborationEngine } from "../collaborationEngine";
+import { initTrustBuilder } from "../trustBuilder";
+import { initReputationTracker } from "../reputationTracker";
+import { initConflictResolver } from "../conflictResolver";
+import { initConsensusNegotiator } from "../consensusNegotiator";
+import { initSocialNormLearner } from "../socialNormLearner";
 import { initStakeholderReporting } from "../stakeholderReporting";
 import { initCognitiveLoadBalancer } from "../cognitiveLoadBalancer";
 import { initBootstrapper } from "../capabilityBootstrapper";
@@ -439,6 +445,13 @@ export function startDaemons(): void {
     initThroughputMaximizer();
     initCostEstimator();
     initResourceAuctioneer();
+    // v42
+    initCollaborationEngine();
+    initTrustBuilder();
+    initReputationTracker();
+    initConflictResolver();
+    initConsensusNegotiator();
+    initSocialNormLearner();
 
 
   initSummarizer();
