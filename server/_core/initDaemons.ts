@@ -201,6 +201,12 @@ import { createSnapshot, rollback as rollbackSnapshot, diffSnapshots, _resetVers
 import { setPolicy as setSecurityPolicy, checkCapability, checkTopicAccess, _resetSecuritySandboxForTest } from "../agentSecuritySandbox.js";
 import { recordSample, getReport as getPerfReport, getSLACompliance, _resetProfilerForTest } from "../agentPerformanceProfiler.js";
 import { registerWorkflow, startExecution, recordStageResult, finalizeExecution, _resetOrchestrationEngineForTest } from "../agentOrchestrationEngine.js";
+import { registerGoalVector, evaluateAlignment, updateObjectiveValue, _resetGoalAlignmentForTest } from "../agentGoalAlignment.js";
+import { evaluateAction, getAuditLog as getEthicsLog, getBlockedActionCount, _resetEthicsEnforcerForTest } from "../agentEthicsEnforcer.js";
+import { logEvent, queryLog, verifyIntegrity, _resetAuditLoggerForTest } from "../agentAuditLogger.js";
+import { createCheckpoint, rollbackToCheckpoint, listCheckpoints, _resetRollbackManagerForTest } from "../agentRollbackManager.js";
+import { evaluateHealth, unquarantine, getHealingRecord, _resetSelfHealerForTest } from "../agentSelfHealer.js";
+import { recordSnapshot, getTrend, getEconomyHealth, _resetEconomyMonitorForTest } from "../agentEconomyMonitor.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -558,4 +564,7 @@ export function startDaemons(): void {
 
   // v48 — Sub-Agent Economy III
   console.log("[Init] Sub-Agent Economy III initialized (loadBalancer, faultTolerance, versionControl, securitySandbox, profiler, orchestration).");
+
+  // v49 — Sub-Agent Economy IV
+  console.log("[Init] Sub-Agent Economy IV initialized (goalAlignment, ethics, auditLogger, rollback, selfHealer, economyMonitor).");
 }
