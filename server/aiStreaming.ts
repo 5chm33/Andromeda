@@ -513,7 +513,7 @@ export async function streamAIResponseWithContext(
   // Assemble with dynamic budget
   const { assembled, dropped, warnings } = assembleContext(rawMessages, getActiveModel());
   recordAssembly(dropped);
-  if (warnings.length > 0) console.log("[ai.ts] Context assembly:", warnings.join("; "));
+  if (warnings.length > 0) log.info("Context assembly", { warnings: warnings.join("; ") });
   const messages = assembled as Array<{ role: string; content: string }>;
   const rawAnswer = await streamToResponse(messages, res, { temperature: 0.5 });
 
