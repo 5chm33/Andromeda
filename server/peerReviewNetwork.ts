@@ -71,7 +71,7 @@ export async function broadcastForPeerReview(proposal: NetworkProposal): Promise
       });
 
       if (response.ok) {
-        const data = await response.json() as any;
+        const data = await response.json() as { choices?: Array<{ message?: { content?: string } }> };
         const content = data.choices?.[0]?.message?.content || "";
         const vote = content.includes("APPROVE") ? "APPROVE" : "REJECT";
         votes.push({

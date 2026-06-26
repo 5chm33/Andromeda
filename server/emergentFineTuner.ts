@@ -58,7 +58,7 @@ export function collectTrainingPair(targetFile: string, originalCode: string, im
   fs.writeFileSync(MODEL_STATE_FILE, JSON.stringify(state, null, 2));
 }
 
-export function getEmergentModelState(): any {
+export function getEmergentModelState(): { activeModel: string; fineTuneCycles: number; totalPairsCollected: number } {
   try {
     return JSON.parse(fs.readFileSync(MODEL_STATE_FILE, "utf-8"));
   } catch {
@@ -99,7 +99,9 @@ export async function triggerEmergentFineTuning(): Promise<boolean> {
           path.join(TRAINING_DATA_DIR, file),
           path.join(archiveDir, file)
         );
-      } catch (e) {}
+      } catch (e) {
+        console.warn(`[EmergentFineTuner] Could not archive training file ${file}: ${(e as Error).message}`);
+      }
     }
     
     fs.writeFileSync(MODEL_STATE_FILE, JSON.stringify(state, null, 2));

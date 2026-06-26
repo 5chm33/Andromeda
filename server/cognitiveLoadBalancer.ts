@@ -244,7 +244,7 @@ export const globalLoadBalancer = new CognitiveLoadBalancer();
 
 export function initCognitiveLoadBalancer(): void {
   console.log(`[LoadBalancer] Cognitive Load Balancer initialized with ${os.cpus().length} CPU cores.`);
-  globalLoadBalancer.initPool().catch(console.error);
+  globalLoadBalancer.initPool().catch((e: Error) => console.error(`[LoadBalancer] Pool init failed: ${e.message}`));
 }
 
 export function getLoadMetrics(): LoadMetrics {
