@@ -104,6 +104,12 @@ import { initEpistemicUncertaintyQuantifier } from "../epistemicUncertaintyQuant
 import { initFederatedLearningCoordinator } from "../federatedLearningCoordinator";
 import { initCausalReasoningEngine } from "../causalReasoningEngine";
 import { initOmegaConvergenceMonitor } from "../omegaConvergenceMonitor";
+import { initPerpetualStatePersistence } from "../perpetualStatePersistence";
+import { initAdaptiveExplorationController } from "../adaptiveExplorationController";
+import { initMultiObjectiveOptimizer } from "../multiObjectiveOptimizer";
+import { initKnowledgeGraphBuilder } from "../knowledgeGraphBuilder";
+import { initAnomalyDetectionEngine } from "../anomalyDetectionEngine";
+import { initSelfDocumentationGenerator } from "../selfDocumentationGenerator";
 import { initStakeholderReporting } from "../stakeholderReporting";
 import { initCognitiveLoadBalancer } from "../cognitiveLoadBalancer";
 import { initBootstrapper } from "../capabilityBootstrapper";
@@ -361,6 +367,13 @@ export function startDaemons(): void {
     initFederatedLearningCoordinator();
     initCausalReasoningEngine();
     initOmegaConvergenceMonitor();
+    // v36
+    initPerpetualStatePersistence();
+    initAdaptiveExplorationController();
+    initMultiObjectiveOptimizer();
+    initKnowledgeGraphBuilder();
+    initAnomalyDetectionEngine();
+    initSelfDocumentationGenerator();
 
 
   initSummarizer();
