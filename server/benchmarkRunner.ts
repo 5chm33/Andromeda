@@ -112,6 +112,8 @@ async function benchmarkToolRegistry(): Promise<BenchmarkResult[]> {
     const start = performance.now();
     if (toolRegistry) {
       Object.keys(toolRegistry);
+    } else {
+      throw new Error('tool registry module returned empty');
     }
     const duration = performance.now() - start;
     results.push({
