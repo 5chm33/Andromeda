@@ -31,6 +31,9 @@ import { execSync } from "child_process";
 import { auditRsiEvent } from "./auditLog.js";
 import { parseGoalsFile, identifyRelevantFiles, selectGoalBiasedFiles } from "./goalConditionedRsi.js";
 import { checkBenchmarkGate } from "./externalBenchmarkGate.js";
+import { selectActiveHypothesis, updateBelief } from "./hypothesisEngine.js";
+import { getActiveHyperparameters, recordFitness, mutateHyperparameters } from "./nasEngine.js";
+import { writeResearchPaper } from "./paperWriter.js";
 import { runVisualRegressionGate } from "./multiModalExecutionVerifier.js";
 
 import { runParallelProposals, OrchestrationTask } from "./parallelProposalOrchestrator.js";

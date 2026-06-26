@@ -1,0 +1,50 @@
+[
+  {
+    "id": "mem-1782498528637-vqd5lee",
+    "tier": "sensory",
+    "content": "test content",
+    "activationCount": 1,
+    "lastActivated": 1782498528637,
+    "decayRate": 0.1
+  },
+  {
+    "id": "mem-1782498528638-9lhtyq9",
+    "tier": "working",
+    "content": "test content",
+    "activationCount": 4,
+    "lastActivated": 1782498528638,
+    "decayRate": 0.1
+  },
+  {
+    "id": "mem-1782498528639-zap3vzf",
+    "tier": "sensory",
+    "content": "test content",
+    "activationCount": 1,
+    "lastActivated": 1782498528639,
+    "decayRate": 0.1
+  },
+  {
+    "id": "mem-1782498557901-x1t02c4",
+    "tier": "sensory",
+    "content": "test content",
+    "activationCount": 1,
+    "lastActivated": 1782498557901,
+    "decayRate": 0.1
+  },
+  {
+    "id": "mem-1782498557901-k63chs7",
+    "tier": "working",
+    "content": "test content",
+    "activationCount": 4,
+    "lastActivated": 1782498557902,
+    "decayRate": 0.1
+  },
+  {
+    "id": "mem-1782498557903-or50yx7",
+    "tier": "sensory",
+    "content": "test content",
+    "activationCount": 1,
+    "lastActivated": 1782498557903,
+    "decayRate": 0.1
+  }
+]

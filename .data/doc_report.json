@@ -1,7 +1,7 @@
 {
-  "timestamp": 1782498055721,
-  "totalModules": 347,
-  "documentedModules": 233,
+  "timestamp": 1782498660450,
+  "totalModules": 353,
+  "documentedModules": 239,
   "undocumentedExports": [
     {
       "filePath": "server/_core/imageGeneration.ts",
@@ -1804,6 +1804,24 @@
       "line": 0
     },
     {
+      "filePath": "server/hypothesisEngine.ts",
+      "exportName": "initHypothesisEngine",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/hypothesisEngine.ts",
+      "exportName": "loadHypotheses",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/hypothesisEngine.ts",
+      "exportName": "saveHypotheses",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/incrementalAstInvalidator.ts",
       "exportName": "initIncrementalInvalidator",
       "exportType": "function",
@@ -2146,6 +2164,24 @@
       "line": 0
     },
     {
+      "filePath": "server/nasEngine.ts",
+      "exportName": "initNasEngine",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/nasEngine.ts",
+      "exportName": "getActiveHyperparameters",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/neuromorphicMemory.ts",
+      "exportName": "initNeuromorphicMemory",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/observability.ts",
       "exportName": "incrementCounter",
       "exportType": "function",
@@ -2268,6 +2304,12 @@
     {
       "filePath": "server/osGrounding.ts",
       "exportName": "getSystemHealth",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/paperWriter.ts",
+      "exportName": "initPaperWriter",
       "exportType": "function",
       "line": 0
     },
@@ -3902,7 +3944,7 @@
     {
       "filePath": "ARCHITECTURE.md",
       "type": "architecture",
-      "content": "Updated: 347 modules, 649 undocumented exports"
+      "content": "Updated: 353 modules, 656 undocumented exports"
     }
   ],
   "architectureUpdated": true

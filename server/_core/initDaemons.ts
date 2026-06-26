@@ -71,6 +71,10 @@ import { initFineTunerActivation } from "../fineTunerActivation";
 import { initConsolidationV2 } from "../episodicConsolidationV2.js";
 import { initUcdDaemon } from "../unsupervisedCodebaseDiscovery.js";
 import { initGlobalMemory } from "../persistentGlobalMemory.js";
+import { initHypothesisEngine } from "../hypothesisEngine.js";
+import { initPaperWriter } from "../paperWriter.js";
+import { initNeuromorphicMemory } from "../neuromorphicMemory.js";
+import { initNasEngine } from "../nasEngine.js";
 import { initSummarizer } from "../infiniteContextSummarizer.js";
 import { resetBenchmarkBaseline } from "../externalBenchmarkGate.js";
 import { initConsensusConfig } from "../consensusConfig";
@@ -269,6 +273,13 @@ export function startDaemons(): void {
   initUcdDaemon(process.cwd());
   initGlobalMemory();
   initSummarizer();
+
+  // v21.0.0
+  initHypothesisEngine();
+  initPaperWriter();
+  initNeuromorphicMemory();
+  initNasEngine();
+
 
 
     console.log("[v18.0.0] Consensus config initialized");

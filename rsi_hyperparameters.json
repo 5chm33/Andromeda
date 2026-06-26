@@ -1,0 +1,23 @@
+[
+  {
+    "debateRounds": 3,
+    "critiquePasses": 1,
+    "concurrencyLevel": 8,
+    "temperature": 0.7,
+    "fitnessScore": 5
+  },
+  {
+    "debateRounds": 4,
+    "critiquePasses": 2,
+    "concurrencyLevel": 10,
+    "temperature": 0.6597198780547755,
+    "fitnessScore": 5
+  },
+  {
+    "debateRounds": 4,
+    "critiquePasses": 2,
+    "concurrencyLevel": 10,
+    "temperature": 0.7096116255558776,
+    "fitnessScore": 0
+  }
+]
