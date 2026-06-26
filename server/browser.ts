@@ -445,13 +445,13 @@ export async function browserExtractData(sessionId: string): Promise<BrowserActi
     const [content, links, inputs] = await Promise.all([
       session.page.evaluate(() => document.body?.innerText?.slice(0, 50000) ?? ""),
       session.page.evaluate(() =>
-        Array.from(document.querySelectorAll("a[href]")).slice(0, 100).map(a => ({
+        Array.from(document.querySelectorAll("a[href]") ?? []).slice(0, 100).map(a => ({
           text: (a as HTMLAnchorElement).innerText?.trim().slice(0, 100) ?? "",
           href: (a as HTMLAnchorElement).href,
         }))
       ),
       session.page.evaluate(() =>
-        Array.from(document.querySelectorAll("input, textarea, select")).slice(0, 50).map(el => ({
+        Array.from(document.querySelectorAll("input, textarea, select") ?? []).slice(0, 50).map(el => ({
           type: (el as HTMLInputElement).type ?? el.tagName.toLowerCase(),
           name: (el as HTMLInputElement).name ?? (el as HTMLInputElement).id ?? "",
           value: (el as HTMLInputElement).value ?? "",
