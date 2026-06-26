@@ -234,6 +234,16 @@ export function registerRuntimeWatch(opts: {
     };
   }
 
+  // Guard: max 20 concurrent watches to prevent memory leaks
+  if (_activeWatches.size >= 20) {
+    log.warn(`[RuntimeGuard] Max concurrent watches (20) reached — skipping watch for proposal ${proposalId}`);
+    return {
+      watchRegistered: false,
+      routes: [],
+      skippedReason: "Max concurrent watches reached (20)",
+    };
+  }
+
   // Register the watch
   const watch: RouteWatch = {
     proposalId,

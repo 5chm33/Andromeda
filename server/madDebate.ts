@@ -306,6 +306,18 @@ export async function runMadDebate(opts: {
     };
   }
 
+  // Guard: if providerChain is empty, skip debate
+  if (!providerChain || providerChain.length === 0) {
+    return {
+      ran: false,
+      skippedReason: "No providers available for debate",
+      redTeamIssues: [],
+      blueTeamImproved: false,
+      confidenceDelta: 0,
+      transcript: "",
+      durationMs: Date.now() - start,
+    };
+  }
   // Use different providers for Red and Blue if available
   const redProvider = providerChain[0];
   const blueProvider = providerChain.length > 1 ? providerChain[1] : providerChain[0];

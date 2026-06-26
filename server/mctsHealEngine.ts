@@ -385,8 +385,28 @@ export async function mctsHeal(opts: {
     }
   });
 
-  // Wait for all candidates (with a timeout safety net)
-  const settled = await Promise.allSettled(candidatePromises);
+  // Wait for all candidates with a hard 90-second overall timeout
+  const timeoutPromise = new Promise<never>((_, reject) =>
+    setTimeout(() => reject(new Error("MCTS overall timeout (90s)")), 90_000)
+  );
+  let settled: PromiseSettledResult<MctsCandidate | null>[];
+  try {
+    settled = await Promise.race([
+      Promise.allSettled(candidatePromises),
+      timeoutPromise,
+    ]) as PromiseSettledResult<MctsCandidate | null>[];
+  } catch {
+    // Timeout — return empty result so caller falls back to sequential heal
+    log.warn("[MCTS] Overall timeout hit — returning empty result");
+    return {
+      success: false,
+      bestCandidate: undefined,
+      totalCandidates: 0,
+      passingCandidates: 0,
+      strategy: "mcts_timeout",
+      durationMs: Date.now() - start,
+    };
+  }
   const candidates: MctsCandidate[] = settled
     .filter((r): r is PromiseFulfilledResult<MctsCandidate | null> => r.status === "fulfilled" && r.value !== null)
     .map(r => r.value as MctsCandidate);

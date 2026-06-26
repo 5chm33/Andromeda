@@ -1,5 +1,13 @@
 # Changelog
 
+## [12.10.1] — 2026-06-26
+### Fixed — SOTA Hardening & Test Coverage
+- **MCTS Healing Guard:** Added missing `branchesPerStrategy` default and overall timeout safety net to prevent indefinite hangs in parallel healing.
+- **MAD Debate Guard:** Added empty `providerChain` fallback to prevent crashes when no models are available.
+- **Runtime Guard Telemetry:** Fixed property mismatch in sample aggregation (now correctly checks `statusCode`) and added a max-watch limit (20 concurrent) to prevent memory leaks.
+- **Test Coverage:** Wrote 122 new comprehensive Vitest tests across 5 files (`mctsHealEngine.test.ts`, `astDiff.test.ts`, `dynamicTestGen.test.ts`, `madDebate.test.ts`, `runtimeGuard.test.ts`) matching the 302-file suite quality.
+- **Cleanup Handlers:** Fixed `pruneOldDynamicTests` to correctly target `workspace/_dynamic_tests` instead of `.dynamic_tests` and prevent deleting all files unconditionally.
+
 ## [12.10.0] — 2026-06-26
 ### Added — Tier 3 SOTA RSI Enhancements (Target: 95%+ commit success rate)
 - **MCTS Parallel Healing** (`mctsHealEngine.ts`): On heal attempt 2+, the engine now spawns multiple parallel fix branches (2 per strategy × 3 strategies = 6 candidates) and scores each via `tsc --noEmit` in a temp dir. The highest-scoring passing candidate is applied. Falls back to sequential heal if all branches fail. Expected impact: +5–7% heal success rate.
