@@ -134,6 +134,12 @@ import { initValuePreservation } from "../valuePreservation";
 import { initCorrigibilityEngine } from "../corrigibilityEngine";
 import { initOversightProtocol } from "../oversightProtocol";
 import { initSafetyProofChecker } from "../safetyProofChecker";
+import { initEnergyProfiler } from "../energyProfiler";
+import { initMemoryOptimizer } from "../memoryOptimizer";
+import { initLatencyPredictor } from "../latencyPredictor";
+import { initThroughputMaximizer } from "../throughputMaximizer";
+import { initCostEstimator } from "../costEstimator";
+import { initResourceAuctioneer } from "../resourceAuctioneer";
 import { initStakeholderReporting } from "../stakeholderReporting";
 import { initCognitiveLoadBalancer } from "../cognitiveLoadBalancer";
 import { initBootstrapper } from "../capabilityBootstrapper";
@@ -426,6 +432,13 @@ export function startDaemons(): void {
     initCorrigibilityEngine();
     initOversightProtocol();
     initSafetyProofChecker();
+    // v41
+    initEnergyProfiler();
+    initMemoryOptimizer();
+    initLatencyPredictor();
+    initThroughputMaximizer();
+    initCostEstimator();
+    initResourceAuctioneer();
 
 
   initSummarizer();
