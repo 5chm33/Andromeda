@@ -110,6 +110,12 @@ import { initMultiObjectiveOptimizer } from "../multiObjectiveOptimizer";
 import { initKnowledgeGraphBuilder } from "../knowledgeGraphBuilder";
 import { initAnomalyDetectionEngine } from "../anomalyDetectionEngine";
 import { initSelfDocumentationGenerator } from "../selfDocumentationGenerator";
+import { initHypothesisGenerator } from "../hypothesisGenerator";
+import { initExperimentDesigner } from "../experimentDesigner";
+import { initResultAnalyzer } from "../resultAnalyzer";
+import { initPeerReviewSimulator } from "../peerReviewSimulator";
+import { initScientificMemory } from "../scientificMemory";
+import { initBreakthroughDetector } from "../breakthroughDetector";
 import { initStakeholderReporting } from "../stakeholderReporting";
 import { initCognitiveLoadBalancer } from "../cognitiveLoadBalancer";
 import { initBootstrapper } from "../capabilityBootstrapper";
@@ -374,6 +380,13 @@ export function startDaemons(): void {
     initKnowledgeGraphBuilder();
     initAnomalyDetectionEngine();
     initSelfDocumentationGenerator();
+    // v37
+    initHypothesisGenerator();
+    initExperimentDesigner();
+    initResultAnalyzer();
+    initPeerReviewSimulator();
+    initScientificMemory();
+    initBreakthroughDetector();
 
 
   initSummarizer();
