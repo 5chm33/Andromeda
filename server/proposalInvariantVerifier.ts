@@ -357,6 +357,32 @@ export async function verifyProposalInvariants(opts: {
     };
   }
 
+  // v12.12.0: Probabilistic type inference — check for runtime null-risk paths
+  try {
+    const { checkSnippetForNullRiskAccess } = await import("./probabilisticTypeInference.js");
+    const nullRiskWarnings = checkSnippetForNullRiskAccess(proposedSnippet, targetFile);
+    for (const w of nullRiskWarnings) {
+      violations.push({
+        invariant: "RUNTIME_NULL_RISK",
+        severity: "warning",
+        message: `Property access on '${w.path}' which is null/undefined ${(w.nullProbability * 100).toFixed(1)}% of the time at runtime (line ${w.line}). Add optional chaining (?.) or null guard.`,
+      });
+    }
+  } catch (_) { /* probabilistic inference is non-fatal */ }
+
+  // v12.12.0: Symbolic execution — trace control flow paths for null/undefined safety
+  try {
+    const { analyzeSymbolicSafety } = await import("./symbolicExecutor.js");
+    const symResult = analyzeSymbolicSafety(proposedSnippet, targetFile);
+    for (const v of symResult.violations) {
+      violations.push({
+        invariant: `SYMBOLIC_${v.kind}`,
+        severity: v.severity,
+        message: v.message,
+      });
+    }
+  } catch (_) { /* symbolic execution is non-fatal */ }
+
   const criticalCount = violations.filter(v => v.severity === "critical").length;
   const warningCount = violations.filter(v => v.severity === "warning").length;
   const infoCount = violations.filter(v => v.severity === "info").length;

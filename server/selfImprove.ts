@@ -1623,6 +1623,29 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
     console.warn("[SelfImprove] Git snapshot unavailable:", sanitizeForLog((snapErr as Error).message));
   }
 
+  // v12.12.0: Cross-Proposal Conflict Detection — check if this proposal conflicts
+  // with any recently applied proposals before spending time on dry-run.
+  try {
+    const { checkProposalConflicts, getRecentlyApplied } = await import("./crossProposalConflictDetector.js");
+    const projectRoot = path.resolve(getServerDir(), "..");
+    const conflictResult = await checkProposalConflicts(
+      proposalId,
+      proposal.targetFile,
+      proposal.proposedSnippet || proposal.proposedContent || "",
+      getRecentlyApplied(),
+      projectRoot
+    );
+    (proposal as any)._conflictResult = {
+      hasConflicts: conflictResult.hasConflicts,
+      criticalCount: conflictResult.criticalCount,
+      warningCount: conflictResult.warningCount,
+      suggestedAction: conflictResult.suggestedAction,
+    };
+    if (conflictResult.criticalCount > 0) {
+      log.warn(`[ConflictDetector] ${proposalId}: ${conflictResult.criticalCount} critical conflicts detected — proposal may be stale. Action: ${conflictResult.suggestedAction}`);
+    }
+  } catch (_) { /* conflict detection is non-fatal */ }
+
   // v12.9.0: Sandboxed pre-apply dry-run — run tsc on the proposed content in a
   // temp directory BEFORE writing to disk. Failures lower auto-apply score but
   // don't block the proposal (the heal engine may still fix it).
@@ -1828,6 +1851,16 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
           madIssueCount: (proposal as any)._madIssueCount,
           timestamp: Date.now(),
         }).catch(() => { /* non-fatal */ });
+      } catch { /* non-fatal */ }
+
+      // v12.12.0: Record this proposal for cross-proposal conflict detection
+      try {
+        const { buildAppliedRecord, recordAppliedProposal } = await import("./crossProposalConflictDetector.js");
+        recordAppliedProposal(buildAppliedRecord(
+          proposal.id,
+          proposal.targetFile,
+          proposal.proposedSnippet || proposal.proposedContent || ""
+        ));
       } catch { /* non-fatal */ }
 
       try {
@@ -2189,6 +2222,18 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         } catch (guardErr) {
           log.warn(`[RuntimeGuard] Watch registration threw (non-fatal): ${sanitizeForLog((guardErr as Error).message)}`);
         }
+
+        // v12.12.0: Incremental AST Knowledge Graph invalidation
+        // Re-parse only the modified file and its direct importers (not a full rebuild)
+        try {
+          const { invalidateChangedFiles } = await import("./incrementalAstInvalidator.js");
+          const serverDir = getServerDir();
+          invalidateChangedFiles(proposal.targetFile, serverDir).then(r => {
+            if (r.graphUpdated) {
+              log.info(`[IncrementalAST] Graph updated: ${r.reparsed.length} files re-parsed in ${r.durationMs}ms`);
+            }
+          }).catch(() => { /* non-fatal */ });
+        } catch (_) { /* non-fatal */ }
       }
 
       // v9.8.5: DEFINITIVE save — load fresh store and force status to 'applied'
@@ -2628,8 +2673,57 @@ export async function autoApplyHighConfidence(): Promise<AutoApplyResult[]> {
       break;
     }
 
-    const applyResult = await applyProposal(proposal.id);
+        // v12.12.0: Human-in-the-Loop gate — check if this proposal requires human review
+    try {
+      const { shouldRequireHumanReview, queueForHumanReview } = await import("./humanInTheLoopGate.js");
+      const gateDecision = shouldRequireHumanReview(
+        proposal.id,
+        proposal.targetFile,
+        proposal.confidence ?? 0.5,
+        (proposal as any)._criticScore,
+        (proposal as any)._madIssueCount
+      );
+      if (gateDecision.action === "human_review") {
+        queueForHumanReview(
+          proposal.id,
+          proposal.targetFile,
+          proposal.title || proposal.id,
+          proposal.confidence ?? 0.5,
+          gateDecision.reason ?? "Confidence threshold gate",
+          (proposal as any)._criticScore,
+          (proposal as any)._madIssueCount
+        );
+        proposal.status = "pending_review" as any;
+        (proposal as any)._hitlReason = gateDecision.reason;
+        saveProposals(loadProposals());
+        results.push({
+          proposalId: proposal.id,
+          targetFile: proposal.targetFile,
+          title: proposal.title,
+          applied: false,
+          committed: false,
+          typeCheckPassed: null,
+          message: `Queued for human review: ${gateDecision.reason}`,
+        });
+        continue;
+      } else if (gateDecision.action === "auto_reject") {
+        proposal.status = "rejected" as any;
+        (proposal as any)._hitlReason = gateDecision.reason;
+        saveProposals(loadProposals());
+        results.push({
+          proposalId: proposal.id,
+          targetFile: proposal.targetFile,
+          title: proposal.title,
+          applied: false,
+          committed: false,
+          typeCheckPassed: null,
+          message: `Auto-rejected by HITL gate: ${gateDecision.reason}`,
+        });
+        continue;
+      }
+    } catch (_) { /* HITL gate is non-fatal */ }
 
+    const applyResult = await applyProposal(proposal.id);
     if (!applyResult.success) {
       results.push({
         proposalId: proposal.id,
