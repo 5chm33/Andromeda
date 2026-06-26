@@ -1,5 +1,5 @@
 {
-  "timestamp": 1782419085008,
+  "timestamp": 1782483185213,
   "totalVulnerabilities": 0,
   "critical": 0,
   "high": 0,
@@ -39,7 +39,7 @@
       "name": "@codemirror/language",
       "current": "6.12.2",
       "wanted": "6.12.2",
-      "latest": "6.12.3",
+      "latest": "6.12.4",
       "type": "dependencies"
     },
     {
@@ -242,7 +242,7 @@
       "name": "@codemirror/view",
       "current": "6.39.16",
       "wanted": "6.39.16",
-      "latest": "6.43.2",
+      "latest": "6.43.3",
       "type": "dependencies"
     },
     {
@@ -358,13 +358,6 @@
       "type": "dependencies"
     },
     {
-      "name": "cookie",
-      "current": "1.0.2",
-      "wanted": "1.0.2",
-      "latest": "1.1.1",
-      "type": "dependencies"
-    },
-    {
       "name": "date-fns",
       "current": "4.1.0",
       "wanted": "4.1.0",
@@ -382,7 +375,7 @@
       "name": "framer-motion",
       "current": "12.23.22",
       "wanted": "12.23.22",
-      "latest": "12.41.0",
+      "latest": "12.42.0",
       "type": "dependencies"
     },
     {
@@ -403,7 +396,7 @@
       "name": "openai",
       "current": "6.37.0",
       "wanted": "6.37.0",
-      "latest": "6.44.0",
+      "latest": "6.45.0",
       "type": "dependencies"
     },
     {
@@ -480,7 +473,7 @@
       "name": "@types/node",
       "current": "24.7.0",
       "wanted": "24.7.0",
-      "latest": "26.0.0",
+      "latest": "26.0.1",
       "type": "dependencies"
     },
     {
@@ -498,10 +491,10 @@
       "type": "dependencies"
     },
     {
-      "name": "express",
-      "current": "4.21.2",
-      "wanted": "4.21.2",
-      "latest": "5.2.1",
+      "name": "cookie",
+      "current": "1.0.2",
+      "wanted": "1.0.2",
+      "latest": "2.0.0",
       "type": "dependencies"
     },
     {
@@ -612,7 +605,7 @@
   ],
   "fixProposals": [
     {
-      "id": "bump_@codemirror/commands_1782419085008",
+      "id": "bump_@codemirror/commands_1782483185213",
       "type": "version_bump",
       "package": "@codemirror/commands",
       "currentVersion": "6.10.2",
@@ -623,18 +616,18 @@
       "rationale": "Package outdated: 6.10.2 → 6.10.4"
     },
     {
-      "id": "bump_@codemirror/language_1782419085008",
+      "id": "bump_@codemirror/language_1782483185213",
       "type": "version_bump",
       "package": "@codemirror/language",
       "currentVersion": "6.12.2",
-      "proposedVersion": "6.12.3",
+      "proposedVersion": "6.12.4",
       "severity": "low",
       "autoFixable": true,
-      "command": "pnpm add @codemirror/language@6.12.3",
-      "rationale": "Package outdated: 6.12.2 → 6.12.3"
+      "command": "pnpm add @codemirror/language@6.12.4",
+      "rationale": "Package outdated: 6.12.2 → 6.12.4"
     },
     {
-      "id": "bump_@radix-ui/react-accordion_1782419085008",
+      "id": "bump_@radix-ui/react-accordion_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-accordion",
       "currentVersion": "1.2.12",
@@ -645,7 +638,7 @@
       "rationale": "Package outdated: 1.2.12 → 1.2.14"
     },
     {
-      "id": "bump_@radix-ui/react-alert-dialog_1782419085008",
+      "id": "bump_@radix-ui/react-alert-dialog_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-alert-dialog",
       "currentVersion": "1.1.15",
@@ -656,7 +649,7 @@
       "rationale": "Package outdated: 1.1.15 → 1.1.17"
     },
     {
-      "id": "bump_@radix-ui/react-aspect-ratio_1782419085008",
+      "id": "bump_@radix-ui/react-aspect-ratio_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-aspect-ratio",
       "currentVersion": "1.1.7",
@@ -667,7 +660,7 @@
       "rationale": "Package outdated: 1.1.7 → 1.1.10"
     },
     {
-      "id": "bump_@radix-ui/react-checkbox_1782419085008",
+      "id": "bump_@radix-ui/react-checkbox_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-checkbox",
       "currentVersion": "1.3.3",
@@ -678,7 +671,7 @@
       "rationale": "Package outdated: 1.3.3 → 1.3.5"
     },
     {
-      "id": "bump_@radix-ui/react-collapsible_1782419085008",
+      "id": "bump_@radix-ui/react-collapsible_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-collapsible",
       "currentVersion": "1.1.12",
@@ -689,7 +682,7 @@
       "rationale": "Package outdated: 1.1.12 → 1.1.14"
     },
     {
-      "id": "bump_@radix-ui/react-dialog_1782419085008",
+      "id": "bump_@radix-ui/react-dialog_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-dialog",
       "currentVersion": "1.1.15",
@@ -700,7 +693,7 @@
       "rationale": "Package outdated: 1.1.15 → 1.1.17"
     },
     {
-      "id": "bump_@radix-ui/react-dropdown-menu_1782419085008",
+      "id": "bump_@radix-ui/react-dropdown-menu_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-dropdown-menu",
       "currentVersion": "2.1.16",
@@ -711,7 +704,7 @@
       "rationale": "Package outdated: 2.1.16 → 2.1.18"
     },
     {
-      "id": "bump_@radix-ui/react-hover-card_1782419085008",
+      "id": "bump_@radix-ui/react-hover-card_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-hover-card",
       "currentVersion": "1.1.15",
@@ -722,7 +715,7 @@
       "rationale": "Package outdated: 1.1.15 → 1.1.17"
     },
     {
-      "id": "bump_@radix-ui/react-label_1782419085008",
+      "id": "bump_@radix-ui/react-label_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-label",
       "currentVersion": "2.1.7",
@@ -733,7 +726,7 @@
       "rationale": "Package outdated: 2.1.7 → 2.1.10"
     },
     {
-      "id": "bump_@radix-ui/react-menubar_1782419085008",
+      "id": "bump_@radix-ui/react-menubar_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-menubar",
       "currentVersion": "1.1.16",
@@ -744,7 +737,7 @@
       "rationale": "Package outdated: 1.1.16 → 1.1.18"
     },
     {
-      "id": "bump_@radix-ui/react-navigation-menu_1782419085008",
+      "id": "bump_@radix-ui/react-navigation-menu_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-navigation-menu",
       "currentVersion": "1.2.14",
@@ -755,7 +748,7 @@
       "rationale": "Package outdated: 1.2.14 → 1.2.16"
     },
     {
-      "id": "bump_@radix-ui/react-popover_1782419085008",
+      "id": "bump_@radix-ui/react-popover_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-popover",
       "currentVersion": "1.1.15",
@@ -766,7 +759,7 @@
       "rationale": "Package outdated: 1.1.15 → 1.1.17"
     },
     {
-      "id": "bump_@radix-ui/react-progress_1782419085008",
+      "id": "bump_@radix-ui/react-progress_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-progress",
       "currentVersion": "1.1.7",
@@ -777,7 +770,7 @@
       "rationale": "Package outdated: 1.1.7 → 1.1.10"
     },
     {
-      "id": "bump_@radix-ui/react-scroll-area_1782419085008",
+      "id": "bump_@radix-ui/react-scroll-area_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-scroll-area",
       "currentVersion": "1.2.10",
@@ -788,7 +781,7 @@
       "rationale": "Package outdated: 1.2.10 → 1.2.12"
     },
     {
-      "id": "bump_@radix-ui/react-separator_1782419085008",
+      "id": "bump_@radix-ui/react-separator_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-separator",
       "currentVersion": "1.1.7",
@@ -799,7 +792,7 @@
       "rationale": "Package outdated: 1.1.7 → 1.1.10"
     },
     {
-      "id": "bump_@radix-ui/react-tabs_1782419085008",
+      "id": "bump_@radix-ui/react-tabs_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-tabs",
       "currentVersion": "1.1.13",
@@ -810,7 +803,7 @@
       "rationale": "Package outdated: 1.1.13 → 1.1.15"
     },
     {
-      "id": "bump_@radix-ui/react-toggle_1782419085008",
+      "id": "bump_@radix-ui/react-toggle_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-toggle",
       "currentVersion": "1.1.10",
@@ -821,7 +814,7 @@
       "rationale": "Package outdated: 1.1.10 → 1.1.12"
     },
     {
-      "id": "bump_@radix-ui/react-toggle-group_1782419085008",
+      "id": "bump_@radix-ui/react-toggle-group_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-toggle-group",
       "currentVersion": "1.1.11",
@@ -832,7 +825,7 @@
       "rationale": "Package outdated: 1.1.11 → 1.1.13"
     },
     {
-      "id": "bump_@radix-ui/react-tooltip_1782419085008",
+      "id": "bump_@radix-ui/react-tooltip_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-tooltip",
       "currentVersion": "1.2.8",
@@ -843,7 +836,7 @@
       "rationale": "Package outdated: 1.2.8 → 1.2.10"
     },
     {
-      "id": "bump_@types/react_1782419085008",
+      "id": "bump_@types/react_1782483185213",
       "type": "version_bump",
       "package": "@types/react",
       "currentVersion": "19.2.1",
@@ -854,7 +847,7 @@
       "rationale": "Package outdated: 19.2.1 → 19.2.17"
     },
     {
-      "id": "bump_@types/react-dom_1782419085008",
+      "id": "bump_@types/react-dom_1782483185213",
       "type": "version_bump",
       "package": "@types/react-dom",
       "currentVersion": "19.2.1",
@@ -865,7 +858,7 @@
       "rationale": "Package outdated: 19.2.1 → 19.2.3"
     },
     {
-      "id": "bump_@xyflow/react_1782419085008",
+      "id": "bump_@xyflow/react_1782483185213",
       "type": "version_bump",
       "package": "@xyflow/react",
       "currentVersion": "12.11.0",
@@ -876,7 +869,7 @@
       "rationale": "Package outdated: 12.11.0 → 12.11.1"
     },
     {
-      "id": "bump_nanoid_1782419085008",
+      "id": "bump_nanoid_1782483185213",
       "type": "version_bump",
       "package": "nanoid",
       "currentVersion": "5.1.6",
@@ -887,7 +880,7 @@
       "rationale": "Package outdated: 5.1.6 → 5.1.16"
     },
     {
-      "id": "bump_react_1782419085008",
+      "id": "bump_react_1782483185213",
       "type": "version_bump",
       "package": "react",
       "currentVersion": "19.2.1",
@@ -898,7 +891,7 @@
       "rationale": "Package outdated: 19.2.1 → 19.2.7"
     },
     {
-      "id": "bump_react-dom_1782419085008",
+      "id": "bump_react-dom_1782483185213",
       "type": "version_bump",
       "package": "react-dom",
       "currentVersion": "19.2.1",
@@ -909,7 +902,7 @@
       "rationale": "Package outdated: 19.2.1 → 19.2.7"
     },
     {
-      "id": "bump_@aws-sdk/client-s3_1782419085008",
+      "id": "bump_@aws-sdk/client-s3_1782483185213",
       "type": "version_bump",
       "package": "@aws-sdk/client-s3",
       "currentVersion": "3.907.0",
@@ -920,7 +913,7 @@
       "rationale": "Package outdated: 3.907.0 → 3.1075.0"
     },
     {
-      "id": "bump_@aws-sdk/s3-request-presigner_1782419085008",
+      "id": "bump_@aws-sdk/s3-request-presigner_1782483185213",
       "type": "version_bump",
       "package": "@aws-sdk/s3-request-presigner",
       "currentVersion": "3.907.0",
@@ -931,7 +924,7 @@
       "rationale": "Package outdated: 3.907.0 → 3.1075.0"
     },
     {
-      "id": "bump_@codemirror/state_1782419085008",
+      "id": "bump_@codemirror/state_1782483185213",
       "type": "version_bump",
       "package": "@codemirror/state",
       "currentVersion": "6.5.4",
@@ -942,18 +935,18 @@
       "rationale": "Package outdated: 6.5.4 → 6.7.0"
     },
     {
-      "id": "bump_@codemirror/view_1782419085008",
+      "id": "bump_@codemirror/view_1782483185213",
       "type": "version_bump",
       "package": "@codemirror/view",
       "currentVersion": "6.39.16",
-      "proposedVersion": "6.43.2",
+      "proposedVersion": "6.43.3",
       "severity": "low",
       "autoFixable": true,
-      "command": "pnpm add @codemirror/view@6.43.2",
-      "rationale": "Package outdated: 6.39.16 → 6.43.2"
+      "command": "pnpm add @codemirror/view@6.43.3",
+      "rationale": "Package outdated: 6.39.16 → 6.43.3"
     },
     {
-      "id": "bump_@hookform/resolvers_1782419085008",
+      "id": "bump_@hookform/resolvers_1782483185213",
       "type": "version_bump",
       "package": "@hookform/resolvers",
       "currentVersion": "5.2.2",
@@ -964,7 +957,7 @@
       "rationale": "Package outdated: 5.2.2 → 5.4.0"
     },
     {
-      "id": "bump_@playwright/test_1782419085008",
+      "id": "bump_@playwright/test_1782483185213",
       "type": "version_bump",
       "package": "@playwright/test",
       "currentVersion": "1.60.0",
@@ -975,7 +968,7 @@
       "rationale": "Package outdated: 1.60.0 → 1.61.1"
     },
     {
-      "id": "bump_@radix-ui/react-avatar_1782419085008",
+      "id": "bump_@radix-ui/react-avatar_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-avatar",
       "currentVersion": "1.1.10",
@@ -986,7 +979,7 @@
       "rationale": "Package outdated: 1.1.10 → 1.2.0"
     },
     {
-      "id": "bump_@radix-ui/react-context-menu_1782419085008",
+      "id": "bump_@radix-ui/react-context-menu_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-context-menu",
       "currentVersion": "2.2.16",
@@ -997,7 +990,7 @@
       "rationale": "Package outdated: 2.2.16 → 2.3.1"
     },
     {
-      "id": "bump_@radix-ui/react-radio-group_1782419085008",
+      "id": "bump_@radix-ui/react-radio-group_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-radio-group",
       "currentVersion": "1.3.8",
@@ -1008,7 +1001,7 @@
       "rationale": "Package outdated: 1.3.8 → 1.4.1"
     },
     {
-      "id": "bump_@radix-ui/react-select_1782419085008",
+      "id": "bump_@radix-ui/react-select_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-select",
       "currentVersion": "2.2.6",
@@ -1019,7 +1012,7 @@
       "rationale": "Package outdated: 2.2.6 → 2.3.1"
     },
     {
-      "id": "bump_@radix-ui/react-slider_1782419085008",
+      "id": "bump_@radix-ui/react-slider_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-slider",
       "currentVersion": "1.3.6",
@@ -1030,7 +1023,7 @@
       "rationale": "Package outdated: 1.3.6 → 1.4.1"
     },
     {
-      "id": "bump_@radix-ui/react-slot_1782419085008",
+      "id": "bump_@radix-ui/react-slot_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-slot",
       "currentVersion": "1.2.3",
@@ -1041,7 +1034,7 @@
       "rationale": "Package outdated: 1.2.3 → 1.3.0"
     },
     {
-      "id": "bump_@radix-ui/react-switch_1782419085008",
+      "id": "bump_@radix-ui/react-switch_1782483185213",
       "type": "version_bump",
       "package": "@radix-ui/react-switch",
       "currentVersion": "1.2.6",
@@ -1052,7 +1045,7 @@
       "rationale": "Package outdated: 1.2.6 → 1.3.1"
     },
     {
-      "id": "bump_@tailwindcss/vite_1782419085008",
+      "id": "bump_@tailwindcss/vite_1782483185213",
       "type": "version_bump",
       "package": "@tailwindcss/vite",
       "currentVersion": "4.1.14",
@@ -1063,7 +1056,7 @@
       "rationale": "Package outdated: 4.1.14 → 4.3.1"
     },
     {
-      "id": "bump_@tanstack/react-query_1782419085008",
+      "id": "bump_@tanstack/react-query_1782483185213",
       "type": "version_bump",
       "package": "@tanstack/react-query",
       "currentVersion": "5.90.2",
@@ -1074,7 +1067,7 @@
       "rationale": "Package outdated: 5.90.2 → 5.101.1"
     },
     {
-      "id": "bump_@trpc/client_1782419085008",
+      "id": "bump_@trpc/client_1782483185213",
       "type": "version_bump",
       "package": "@trpc/client",
       "currentVersion": "11.6.0",
@@ -1085,7 +1078,7 @@
       "rationale": "Package outdated: 11.6.0 → 11.18.0"
     },
     {
-      "id": "bump_@trpc/react-query_1782419085008",
+      "id": "bump_@trpc/react-query_1782483185213",
       "type": "version_bump",
       "package": "@trpc/react-query",
       "currentVersion": "11.6.0",
@@ -1096,7 +1089,7 @@
       "rationale": "Package outdated: 11.6.0 → 11.18.0"
     },
     {
-      "id": "bump_@types/google.maps_1782419085008",
+      "id": "bump_@types/google.maps_1782483185213",
       "type": "version_bump",
       "package": "@types/google.maps",
       "currentVersion": "3.58.1",
@@ -1107,7 +1100,7 @@
       "rationale": "Package outdated: 3.58.1 → 3.65.2"
     },
     {
-      "id": "bump_autoprefixer_1782419085008",
+      "id": "bump_autoprefixer_1782483185213",
       "type": "version_bump",
       "package": "autoprefixer",
       "currentVersion": "10.4.21",
@@ -1118,7 +1111,7 @@
       "rationale": "Package outdated: 10.4.21 → 10.5.2"
     },
     {
-      "id": "bump_better-sqlite3_1782419085008",
+      "id": "bump_better-sqlite3_1782483185213",
       "type": "version_bump",
       "package": "better-sqlite3",
       "currentVersion": "12.10.0",
@@ -1129,18 +1122,7 @@
       "rationale": "Package outdated: 12.10.0 → 12.11.1"
     },
     {
-      "id": "bump_cookie_1782419085008",
-      "type": "version_bump",
-      "package": "cookie",
-      "currentVersion": "1.0.2",
-      "proposedVersion": "1.1.1",
-      "severity": "low",
-      "autoFixable": true,
-      "command": "pnpm add cookie@1.1.1",
-      "rationale": "Package outdated: 1.0.2 → 1.1.1"
-    },
-    {
-      "id": "bump_date-fns_1782419085008",
+      "id": "bump_date-fns_1782483185213",
       "type": "version_bump",
       "package": "date-fns",
       "currentVersion": "4.1.0",
@@ -1151,7 +1133,7 @@
       "rationale": "Package outdated: 4.1.0 → 4.4.0"
     },
     {
-      "id": "bump_dotenv_1782419085008",
+      "id": "bump_dotenv_1782483185213",
       "type": "version_bump",
       "package": "dotenv",
       "currentVersion": "17.2.3",
@@ -1162,18 +1144,18 @@
       "rationale": "Package outdated: 17.2.3 → 17.4.2"
     },
     {
-      "id": "bump_framer-motion_1782419085008",
+      "id": "bump_framer-motion_1782483185213",
       "type": "version_bump",
       "package": "framer-motion",
       "currentVersion": "12.23.22",
-      "proposedVersion": "12.41.0",
+      "proposedVersion": "12.42.0",
       "severity": "low",
       "autoFixable": true,
-      "command": "pnpm add framer-motion@12.41.0",
-      "rationale": "Package outdated: 12.23.22 → 12.41.0"
+      "command": "pnpm add framer-motion@12.42.0",
+      "rationale": "Package outdated: 12.23.22 → 12.42.0"
     },
     {
-      "id": "bump_jose_1782419085008",
+      "id": "bump_jose_1782483185213",
       "type": "version_bump",
       "package": "jose",
       "currentVersion": "6.1.0",
@@ -1184,7 +1166,7 @@
       "rationale": "Package outdated: 6.1.0 → 6.2.3"
     },
     {
-      "id": "bump_mysql2_1782419085008",
+      "id": "bump_mysql2_1782483185213",
       "type": "version_bump",
       "package": "mysql2",
       "currentVersion": "3.15.1",
@@ -1195,18 +1177,18 @@
       "rationale": "Package outdated: 3.15.1 → 3.22.5"
     },
     {
-      "id": "bump_openai_1782419085008",
+      "id": "bump_openai_1782483185213",
       "type": "version_bump",
       "package": "openai",
       "currentVersion": "6.37.0",
-      "proposedVersion": "6.44.0",
+      "proposedVersion": "6.45.0",
       "severity": "low",
       "autoFixable": true,
-      "command": "pnpm add openai@6.44.0",
-      "rationale": "Package outdated: 6.37.0 → 6.44.0"
+      "command": "pnpm add openai@6.45.0",
+      "rationale": "Package outdated: 6.37.0 → 6.45.0"
     },
     {
-      "id": "bump_playwright_1782419085008",
+      "id": "bump_playwright_1782483185213",
       "type": "version_bump",
       "package": "playwright",
       "currentVersion": "1.60.0",
@@ -1217,7 +1199,7 @@
       "rationale": "Package outdated: 1.60.0 → 1.61.1"
     },
     {
-      "id": "bump_playwright-core_1782419085008",
+      "id": "bump_playwright-core_1782483185213",
       "type": "version_bump",
       "package": "playwright-core",
       "currentVersion": "1.58.2",
@@ -1228,7 +1210,7 @@
       "rationale": "Package outdated: 1.58.2 → 1.61.1"
     },
     {
-      "id": "bump_prettier_1782419085008",
+      "id": "bump_prettier_1782483185213",
       "type": "version_bump",
       "package": "prettier",
       "currentVersion": "3.6.2",
@@ -1239,7 +1221,7 @@
       "rationale": "Package outdated: 3.6.2 → 3.8.4"
     },
     {
-      "id": "bump_react-hook-form_1782419085008",
+      "id": "bump_react-hook-form_1782483185213",
       "type": "version_bump",
       "package": "react-hook-form",
       "currentVersion": "7.64.0",
@@ -1250,7 +1232,7 @@
       "rationale": "Package outdated: 7.64.0 → 7.80.0"
     },
     {
-      "id": "bump_tailwind-merge_1782419085008",
+      "id": "bump_tailwind-merge_1782483185213",
       "type": "version_bump",
       "package": "tailwind-merge",
       "currentVersion": "3.3.1",
@@ -1261,7 +1243,7 @@
       "rationale": "Package outdated: 3.3.1 → 3.6.0"
     },
     {
-      "id": "bump_tailwindcss_1782419085008",
+      "id": "bump_tailwindcss_1782483185213",
       "type": "version_bump",
       "package": "tailwindcss",
       "currentVersion": "4.1.14",
@@ -1272,7 +1254,7 @@
       "rationale": "Package outdated: 4.1.14 → 4.3.1"
     },
     {
-      "id": "bump_tsx_1782419085008",
+      "id": "bump_tsx_1782483185213",
       "type": "version_bump",
       "package": "tsx",
       "currentVersion": "4.20.6",
@@ -1283,7 +1265,7 @@
       "rationale": "Package outdated: 4.20.6 → 4.22.4"
     },
     {
-      "id": "bump_wouter_1782419085008",
+      "id": "bump_wouter_1782483185213",
       "type": "version_bump",
       "package": "wouter",
       "currentVersion": "3.7.1",
@@ -1294,7 +1276,7 @@
       "rationale": "Package outdated: 3.7.1 → 3.10.0"
     },
     {
-      "id": "bump_zod_1782419085008",
+      "id": "bump_zod_1782483185213",
       "type": "version_bump",
       "package": "zod",
       "currentVersion": "4.1.12",
@@ -1305,7 +1287,7 @@
       "rationale": "Package outdated: 4.1.12 → 4.4.3"
     },
     {
-      "id": "bump_@types/express_1782419085008",
+      "id": "bump_@types/express_1782483185213",
       "type": "version_bump",
       "package": "@types/express",
       "currentVersion": "4.17.21",
@@ -1316,7 +1298,7 @@
       "rationale": "Package outdated: 4.17.21 → 5.0.6 (MAJOR version change — review needed)"
     },
     {
-      "id": "bump_@types/node_1782419085008",
+      "id": "bump_@types/node_1782483185213",
       "type": "version_bump",
       "package": "@types/node",
       "currentVersion": "24.7.0",
@@ -1324,10 +1306,10 @@
       "severity": "moderate",
       "autoFixable": false,
       "command": "pnpm add @types/node@24.7.0",
-      "rationale": "Package outdated: 24.7.0 → 26.0.0 (MAJOR version change — review needed)"
+      "rationale": "Package outdated: 24.7.0 → 26.0.1 (MAJOR version change — review needed)"
     },
     {
-      "id": "bump_@vitejs/plugin-react_1782419085008",
+      "id": "bump_@vitejs/plugin-react_1782483185213",
       "type": "version_bump",
       "package": "@vitejs/plugin-react",
       "currentVersion": "5.0.4",
@@ -1338,7 +1320,7 @@
       "rationale": "Package outdated: 5.0.4 → 6.0.3 (MAJOR version change — review needed)"
     },
     {
-      "id": "bump_@vitest/coverage-v8_1782419085008",
+      "id": "bump_@vitest/coverage-v8_1782483185213",
       "type": "version_bump",
       "package": "@vitest/coverage-v8",
       "currentVersion": "3.2.6",
@@ -1349,18 +1331,18 @@
       "rationale": "Package outdated: 3.2.6 → 4.1.9 (MAJOR version change — review needed)"
     },
     {
-      "id": "bump_express_1782419085008",
+      "id": "bump_cookie_1782483185213",
       "type": "version_bump",
-      "package": "express",
-      "currentVersion": "4.21.2",
-      "proposedVersion": "4.21.2",
+      "package": "cookie",
+      "currentVersion": "1.0.2",
+      "proposedVersion": "1.0.2",
       "severity": "moderate",
       "autoFixable": false,
-      "command": "pnpm add express@4.21.2",
-      "rationale": "Package outdated: 4.21.2 → 5.2.1 (MAJOR version change — review needed)"
+      "command": "pnpm add cookie@1.0.2",
+      "rationale": "Package outdated: 1.0.2 → 2.0.0 (MAJOR version change — review needed)"
     },
     {
-      "id": "bump_pnpm_1782419085008",
+      "id": "bump_pnpm_1782483185213",
       "type": "version_bump",
       "package": "pnpm",
       "currentVersion": "10.34.4",
@@ -1371,7 +1353,7 @@
       "rationale": "Package outdated: 10.34.4 → 11.9.0 (MAJOR version change — review needed)"
     },
     {
-      "id": "bump_react-day-picker_1782419085008",
+      "id": "bump_react-day-picker_1782483185213",
       "type": "version_bump",
       "package": "react-day-picker",
       "currentVersion": "9.11.1",
@@ -1382,7 +1364,7 @@
       "rationale": "Package outdated: 9.11.1 → 10.0.1 (MAJOR version change — review needed)"
     },
     {
-      "id": "bump_react-resizable-panels_1782419085008",
+      "id": "bump_react-resizable-panels_1782483185213",
       "type": "version_bump",
       "package": "react-resizable-panels",
       "currentVersion": "3.0.6",
@@ -1393,7 +1375,7 @@
       "rationale": "Package outdated: 3.0.6 → 4.11.2 (MAJOR version change — review needed)"
     },
     {
-      "id": "bump_recharts_1782419085008",
+      "id": "bump_recharts_1782483185213",
       "type": "version_bump",
       "package": "recharts",
       "currentVersion": "2.15.4",
@@ -1404,7 +1386,7 @@
       "rationale": "Package outdated: 2.15.4 → 3.9.0 (MAJOR version change — review needed)"
     },
     {
-      "id": "bump_streamdown_1782419085008",
+      "id": "bump_streamdown_1782483185213",
       "type": "version_bump",
       "package": "streamdown",
       "currentVersion": "1.4.0",
@@ -1415,7 +1397,7 @@
       "rationale": "Package outdated: 1.4.0 → 2.5.0 (MAJOR version change — review needed)"
     },
     {
-      "id": "bump_superjson_1782419085008",
+      "id": "bump_superjson_1782483185213",
       "type": "version_bump",
       "package": "superjson",
       "currentVersion": "1.13.3",
@@ -1426,7 +1408,7 @@
       "rationale": "Package outdated: 1.13.3 → 2.2.6 (MAJOR version change — review needed)"
     },
     {
-      "id": "bump_typescript_1782419085008",
+      "id": "bump_typescript_1782483185213",
       "type": "version_bump",
       "package": "typescript",
       "currentVersion": "5.9.3",
@@ -1437,7 +1419,7 @@
       "rationale": "Package outdated: 5.9.3 → 6.0.3 (MAJOR version change — review needed)"
     },
     {
-      "id": "bump_vite_1782419085008",
+      "id": "bump_vite_1782483185213",
       "type": "version_bump",
       "package": "vite",
       "currentVersion": "7.3.5",
@@ -1448,7 +1430,7 @@
       "rationale": "Package outdated: 7.3.5 → 8.1.0 (MAJOR version change — review needed)"
     },
     {
-      "id": "bump_vitest_1782419085008",
+      "id": "bump_vitest_1782483185213",
       "type": "version_bump",
       "package": "vitest",
       "currentVersion": "3.2.6",
@@ -1459,7 +1441,7 @@
       "rationale": "Package outdated: 3.2.6 → 4.1.9 (MAJOR version change — review needed)"
     },
     {
-      "id": "bump_@anthropic-ai/sdk_1782419085008",
+      "id": "bump_@anthropic-ai/sdk_1782483185213",
       "type": "version_bump",
       "package": "@anthropic-ai/sdk",
       "currentVersion": "0.105.0",
@@ -1470,7 +1452,7 @@
       "rationale": "Package outdated: 0.105.0 → 0.106.0"
     },
     {
-      "id": "bump_@tailwindcss/typography_1782419085008",
+      "id": "bump_@tailwindcss/typography_1782483185213",
       "type": "version_bump",
       "package": "@tailwindcss/typography",
       "currentVersion": "0.5.19",
@@ -1481,7 +1463,7 @@
       "rationale": "Package outdated: 0.5.19 → 0.5.20"
     },
     {
-      "id": "bump_drizzle-kit_1782419085008",
+      "id": "bump_drizzle-kit_1782483185213",
       "type": "version_bump",
       "package": "drizzle-kit",
       "currentVersion": "0.31.5",
@@ -1492,7 +1474,7 @@
       "rationale": "Package outdated: 0.31.5 → 0.31.10"
     },
     {
-      "id": "bump_esbuild_1782419085008",
+      "id": "bump_esbuild_1782483185213",
       "type": "version_bump",
       "package": "esbuild",
       "currentVersion": "0.25.10",
@@ -1503,7 +1485,7 @@
       "rationale": "Package outdated: 0.25.10 → 0.28.1"
     },
     {
-      "id": "bump_lucide-react_1782419085008",
+      "id": "bump_lucide-react_1782483185213",
       "type": "version_bump",
       "package": "lucide-react",
       "currentVersion": "0.453.0",
@@ -1514,7 +1496,7 @@
       "rationale": "Package outdated: 0.453.0 → 1.21.0 (MAJOR version change — review needed)"
     },
     {
-      "id": "bump_vite-plugin-manus-runtime_1782419085008",
+      "id": "bump_vite-plugin-manus-runtime_1782483185213",
       "type": "version_bump",
       "package": "vite-plugin-manus-runtime",
       "currentVersion": "0.0.57",

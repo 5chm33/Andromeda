@@ -1,8 +1,8 @@
 {
-  "timestamp": 1782426270122,
-  "totalModules": 291,
-  "testedModules": 288,
-  "untestedModules": 3,
+  "timestamp": 1782483172815,
+  "totalModules": 313,
+  "testedModules": 303,
+  "untestedModules": 10,
   "coveragePercent": 60,
   "moduleDetails": [
     {
@@ -225,6 +225,21 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/astContextInjector.ts",
+      "fileName": "astContextInjector.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "extractAstContext",
+        "extractAstContextForErrors"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "extractAstContext",
+        "extractAstContextForErrors"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/capabilityBootstrapper.ts",
       "fileName": "capabilityBootstrapper.ts",
       "hasTestFile": true,
@@ -313,6 +328,23 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/criticEngine.ts",
+      "fileName": "criticEngine.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "getCriticStats",
+        "reviewProposal",
+        "batchReviewProposals"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "getCriticStats",
+        "reviewProposal",
+        "batchReviewProposals"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/dbPostgres.ts",
       "fileName": "dbPostgres.ts",
       "hasTestFile": true,
@@ -331,6 +363,31 @@
         "pgExecute",
         "runPgMigrations",
         "getPgStatus"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/dynamicModelWeights.ts",
+      "fileName": "dynamicModelWeights.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "initDynamicWeights",
+        "getModelWeight",
+        "recordModelOutcome",
+        "recordConsensusOutcome",
+        "computeWeightedApproval",
+        "getModelWeightStats",
+        "resetModelWeights"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "initDynamicWeights",
+        "getModelWeight",
+        "recordModelOutcome",
+        "recordConsensusOutcome",
+        "computeWeightedApproval",
+        "getModelWeightStats",
+        "resetModelWeights"
       ],
       "coveragePercent": 0
     },
@@ -516,6 +573,23 @@
         "getRejectionContext",
         "getFileRejectionStats",
         "clearFileFeedback"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/proposalSandbox.ts",
+      "fileName": "proposalSandbox.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "getDryRunStats",
+        "runDryRun",
+        "quickSyntaxCheck"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "getDryRunStats",
+        "runDryRun",
+        "quickSyntaxCheck"
       ],
       "coveragePercent": 0
     },
@@ -825,6 +899,27 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/semanticRollback.ts",
+      "fileName": "semanticRollback.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "createSemanticSnapshot",
+        "semanticRollback",
+        "pruneOldSnapshots",
+        "getSnapshot",
+        "getSemanticRollbackStats"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "createSemanticSnapshot",
+        "semanticRollback",
+        "pruneOldSnapshots",
+        "getSnapshot",
+        "getSemanticRollbackStats"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/storage.ts",
       "fileName": "storage.ts",
       "hasTestFile": true,
@@ -869,6 +964,23 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/tsHealEngine.ts",
+      "fileName": "tsHealEngine.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "parseTscErrors",
+        "runScopedTsc",
+        "healTypeScriptErrors"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "parseTscErrors",
+        "runScopedTsc",
+        "healTypeScriptErrors"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/visualGrounding.ts",
       "fileName": "visualGrounding.ts",
       "hasTestFile": true,
@@ -887,6 +999,25 @@
         "clickByIndex",
         "saveAnnotatedScreenshot",
         "closeVisualGroundingBrowser"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/visualRegressionGuard.ts",
+      "fileName": "visualRegressionGuard.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "isUiFile",
+        "runVisualRegressionCheck",
+        "compareVisualRegression",
+        "pruneOldScreenshots"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "isUiFile",
+        "runVisualRegressionCheck",
+        "compareVisualRegression",
+        "pruneOldScreenshots"
       ],
       "coveragePercent": 0
     },
@@ -3784,6 +3915,33 @@
       "coveragePercent": 71
     },
     {
+      "filePath": "server/consensusEngine.ts",
+      "fileName": "consensusEngine.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/consensusEngine.test.ts",
+      "exportedFunctions": [
+        "getConsensus",
+        "requiresConsensus",
+        "getConsensusStats",
+        "updateConsensusConfig",
+        "initConsensusEngine",
+        "recordConsensusProposalOutcome",
+        "getDynamicModelWeightStats"
+      ],
+      "testedFunctions": [
+        "getConsensus",
+        "requiresConsensus",
+        "getConsensusStats",
+        "updateConsensusConfig",
+        "initConsensusEngine"
+      ],
+      "untestedFunctions": [
+        "recordConsensusProposalOutcome",
+        "getDynamicModelWeightStats"
+      ],
+      "coveragePercent": 71
+    },
+    {
       "filePath": "server/tools/toolRegistry.ts",
       "fileName": "toolRegistry.ts",
       "hasTestFile": true,
@@ -4078,6 +4236,27 @@
       "coveragePercent": 75
     },
     {
+      "filePath": "server/visionContextEnricher.ts",
+      "fileName": "visionContextEnricher.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/visionContextEnricher.test.ts",
+      "exportedFunctions": [
+        "isUIFile",
+        "enrichWithVisionContext",
+        "detectVisualRegression",
+        "pruneOldVisionScreenshots"
+      ],
+      "testedFunctions": [
+        "isUIFile",
+        "enrichWithVisionContext",
+        "pruneOldVisionScreenshots"
+      ],
+      "untestedFunctions": [
+        "detectVisualRegression"
+      ],
+      "coveragePercent": 75
+    },
+    {
       "filePath": "server/z3ProofLayer.ts",
       "fileName": "z3ProofLayer.ts",
       "hasTestFile": true,
@@ -4141,6 +4320,39 @@
       ],
       "untestedFunctions": [
         "syncWithPeers"
+      ],
+      "coveragePercent": 80
+    },
+    {
+      "filePath": "server/incrementalAstInvalidator.ts",
+      "fileName": "incrementalAstInvalidator.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/incrementalAstInvalidator.test.ts",
+      "exportedFunctions": [
+        "initIncrementalInvalidator",
+        "computeFileHash",
+        "hasFileChanged",
+        "markFileParsed",
+        "invalidateChangedFiles",
+        "findDirectImporters",
+        "getGraphAge",
+        "getInvalidatorStats",
+        "clearHashCache",
+        "primeHashCache"
+      ],
+      "testedFunctions": [
+        "computeFileHash",
+        "hasFileChanged",
+        "markFileParsed",
+        "findDirectImporters",
+        "getGraphAge",
+        "getInvalidatorStats",
+        "clearHashCache",
+        "primeHashCache"
+      ],
+      "untestedFunctions": [
+        "initIncrementalInvalidator",
+        "invalidateChangedFiles"
       ],
       "coveragePercent": 80
     },
@@ -4255,6 +4467,41 @@
         "getSystemMemoryStats"
       ],
       "coveragePercent": 80
+    },
+    {
+      "filePath": "server/probabilisticTypeInference.ts",
+      "fileName": "probabilisticTypeInference.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/probabilisticTypeInference.test.ts",
+      "exportedFunctions": [
+        "initTypeProfileStore",
+        "saveTypeProfileStore",
+        "observeRuntimeType",
+        "getTypeProfile",
+        "getHighRiskProfilesForFile",
+        "formatTypeProfileContext",
+        "getTypeProfileStats",
+        "clearTypeProfiles",
+        "pruneStaleProfiles",
+        "getRuntimeTypeString",
+        "checkSnippetForNullRiskAccess"
+      ],
+      "testedFunctions": [
+        "observeRuntimeType",
+        "getTypeProfile",
+        "getHighRiskProfilesForFile",
+        "formatTypeProfileContext",
+        "getTypeProfileStats",
+        "clearTypeProfiles",
+        "pruneStaleProfiles",
+        "getRuntimeTypeString",
+        "checkSnippetForNullRiskAccess"
+      ],
+      "untestedFunctions": [
+        "initTypeProfileStore",
+        "saveTypeProfileStore"
+      ],
+      "coveragePercent": 82
     },
     {
       "filePath": "server/costOptimizer.ts",
@@ -4495,6 +4742,33 @@
       ],
       "untestedFunctions": [
         "compressContext"
+      ],
+      "coveragePercent": 86
+    },
+    {
+      "filePath": "server/crossProposalConflictDetector.ts",
+      "fileName": "crossProposalConflictDetector.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/crossProposalConflictDetector.test.ts",
+      "exportedFunctions": [
+        "checkProposalConflicts",
+        "extractChangedExports",
+        "buildAppliedRecord",
+        "recordAppliedProposal",
+        "getRecentlyApplied",
+        "clearRecentlyApplied",
+        "refPattern"
+      ],
+      "testedFunctions": [
+        "checkProposalConflicts",
+        "extractChangedExports",
+        "buildAppliedRecord",
+        "recordAppliedProposal",
+        "getRecentlyApplied",
+        "clearRecentlyApplied"
+      ],
+      "untestedFunctions": [
+        "refPattern"
       ],
       "coveragePercent": 86
     },
@@ -4753,6 +5027,39 @@
       ],
       "untestedFunctions": [
         "browserClickVision"
+      ],
+      "coveragePercent": 90
+    },
+    {
+      "filePath": "server/humanInTheLoopGate.ts",
+      "fileName": "humanInTheLoopGate.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/humanInTheLoopGate.test.ts",
+      "exportedFunctions": [
+        "initHumanInTheLoopGate",
+        "shouldRequireHumanReview",
+        "queueForHumanReview",
+        "recordHumanDecision",
+        "isHumanApproved",
+        "getPendingReviews",
+        "getReviewQueue",
+        "getHITLStats",
+        "updateHITLConfig",
+        "pruneExpiredEntries"
+      ],
+      "testedFunctions": [
+        "shouldRequireHumanReview",
+        "queueForHumanReview",
+        "recordHumanDecision",
+        "isHumanApproved",
+        "getPendingReviews",
+        "getReviewQueue",
+        "getHITLStats",
+        "updateHITLConfig",
+        "pruneExpiredEntries"
+      ],
+      "untestedFunctions": [
+        "initHumanInTheLoopGate"
       ],
       "coveragePercent": 90
     },
@@ -5123,6 +5430,26 @@
       "coveragePercent": 100
     },
     {
+      "filePath": "server/astDiff.ts",
+      "fileName": "astDiff.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/astDiff.test.ts",
+      "exportedFunctions": [
+        "canonicalize",
+        "astDiff",
+        "findAndApplySnippet",
+        "detectConflict"
+      ],
+      "testedFunctions": [
+        "canonicalize",
+        "astDiff",
+        "findAndApplySnippet",
+        "detectConflict"
+      ],
+      "untestedFunctions": [],
+      "coveragePercent": 100
+    },
+    {
       "filePath": "server/astKnowledgeGraph.ts",
       "fileName": "astKnowledgeGraph.ts",
       "hasTestFile": true,
@@ -5140,6 +5467,28 @@
         "buildKnowledgeGraph",
         "ASTKnowledgeGraph",
         "ASTParser"
+      ],
+      "untestedFunctions": [],
+      "coveragePercent": 100
+    },
+    {
+      "filePath": "server/astMutator.ts",
+      "fileName": "astMutator.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/astMutator.test.ts",
+      "exportedFunctions": [
+        "applyMutation",
+        "validateMutation",
+        "recordMutationResult",
+        "recordValidationFailure",
+        "getMutatorStats"
+      ],
+      "testedFunctions": [
+        "applyMutation",
+        "validateMutation",
+        "recordMutationResult",
+        "recordValidationFailure",
+        "getMutatorStats"
       ],
       "untestedFunctions": [],
       "coveragePercent": 100
@@ -5443,28 +5792,6 @@
       "coveragePercent": 100
     },
     {
-      "filePath": "server/consensusEngine.ts",
-      "fileName": "consensusEngine.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/consensusEngine.test.ts",
-      "exportedFunctions": [
-        "getConsensus",
-        "requiresConsensus",
-        "getConsensusStats",
-        "updateConsensusConfig",
-        "initConsensusEngine"
-      ],
-      "testedFunctions": [
-        "getConsensus",
-        "requiresConsensus",
-        "getConsensusStats",
-        "updateConsensusConfig",
-        "initConsensusEngine"
-      ],
-      "untestedFunctions": [],
-      "coveragePercent": 100
-    },
-    {
       "filePath": "server/constitutionalConstraints.ts",
       "fileName": "constitutionalConstraints.ts",
       "hasTestFile": true,
@@ -5647,6 +5974,24 @@
       "coveragePercent": 100
     },
     {
+      "filePath": "server/dynamicTestGen.ts",
+      "fileName": "dynamicTestGen.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/dynamicTestGen.test.ts",
+      "exportedFunctions": [
+        "extractFunctionNames",
+        "generateAndRunTest",
+        "pruneOldDynamicTests"
+      ],
+      "testedFunctions": [
+        "extractFunctionNames",
+        "generateAndRunTest",
+        "pruneOldDynamicTests"
+      ],
+      "untestedFunctions": [],
+      "coveragePercent": 100
+    },
+    {
       "filePath": "server/ebpfGrounding.ts",
       "fileName": "ebpfGrounding.ts",
       "hasTestFile": true,
@@ -5734,6 +6079,30 @@
       ],
       "testedFunctions": [
         "seedAdaptiveBenchmarks"
+      ],
+      "untestedFunctions": [],
+      "coveragePercent": 100
+    },
+    {
+      "filePath": "server/federatedRLHF.ts",
+      "fileName": "federatedRLHF.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/federatedRLHF.test.ts",
+      "exportedFunctions": [
+        "broadcastOutcome",
+        "ingestPeerOutcomes",
+        "startFederatedSync",
+        "stopFederatedSync",
+        "runFederatedSync",
+        "getFederatedRLHFStats"
+      ],
+      "testedFunctions": [
+        "broadcastOutcome",
+        "ingestPeerOutcomes",
+        "startFederatedSync",
+        "stopFederatedSync",
+        "runFederatedSync",
+        "getFederatedRLHFStats"
       ],
       "untestedFunctions": [],
       "coveragePercent": 100
@@ -5869,6 +6238,20 @@
       "coveragePercent": 100
     },
     {
+      "filePath": "server/madDebate.ts",
+      "fileName": "madDebate.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/madDebate.test.ts",
+      "exportedFunctions": [
+        "runMadDebate"
+      ],
+      "testedFunctions": [
+        "runMadDebate"
+      ],
+      "untestedFunctions": [],
+      "coveragePercent": 100
+    },
+    {
       "filePath": "server/manifest.ts",
       "fileName": "manifest.ts",
       "hasTestFile": true,
@@ -5882,6 +6265,20 @@
         "generateManifest",
         "getManifestPrompt",
         "getFullManifest"
+      ],
+      "untestedFunctions": [],
+      "coveragePercent": 100
+    },
+    {
+      "filePath": "server/mctsHealEngine.ts",
+      "fileName": "mctsHealEngine.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/mctsHealEngine.test.ts",
+      "exportedFunctions": [
+        "mctsHeal"
+      ],
+      "testedFunctions": [
+        "mctsHeal"
       ],
       "untestedFunctions": [],
       "coveragePercent": 100
@@ -6002,6 +6399,22 @@
         "verifyCommitProposal",
         "loadVerificationLog",
         "getVerificationStats"
+      ],
+      "untestedFunctions": [],
+      "coveragePercent": 100
+    },
+    {
+      "filePath": "server/proposalInvariantVerifier.ts",
+      "fileName": "proposalInvariantVerifier.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/proposalInvariantVerifier.test.ts",
+      "exportedFunctions": [
+        "verifyProposalInvariants",
+        "passesInvariantGate"
+      ],
+      "testedFunctions": [
+        "verifyProposalInvariants",
+        "passesInvariantGate"
       ],
       "untestedFunctions": [],
       "coveragePercent": 100
@@ -6169,6 +6582,26 @@
       "coveragePercent": 100
     },
     {
+      "filePath": "server/runtimeGuard.ts",
+      "fileName": "runtimeGuard.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/runtimeGuard.test.ts",
+      "exportedFunctions": [
+        "extractRoutePaths",
+        "registerRuntimeWatch",
+        "getRuntimeGuardStats",
+        "clearAllWatches"
+      ],
+      "testedFunctions": [
+        "extractRoutePaths",
+        "registerRuntimeWatch",
+        "getRuntimeGuardStats",
+        "clearAllWatches"
+      ],
+      "untestedFunctions": [],
+      "coveragePercent": 100
+    },
+    {
       "filePath": "server/self/atomic_editor.ts",
       "fileName": "atomic_editor.ts",
       "hasTestFile": true,
@@ -6325,6 +6758,20 @@
       "coveragePercent": 100
     },
     {
+      "filePath": "server/semanticImpactPredictor.ts",
+      "fileName": "semanticImpactPredictor.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/semanticImpactPredictor.test.ts",
+      "exportedFunctions": [
+        "predictImpact"
+      ],
+      "testedFunctions": [
+        "predictImpact"
+      ],
+      "untestedFunctions": [],
+      "coveragePercent": 100
+    },
+    {
       "filePath": "server/streamRouter.ts",
       "fileName": "streamRouter.ts",
       "hasTestFile": true,
@@ -6380,6 +6827,22 @@
         "getSwarmTestnet",
         "resetSwarmTestnet",
         "SwarmTestnet"
+      ],
+      "untestedFunctions": [],
+      "coveragePercent": 100
+    },
+    {
+      "filePath": "server/symbolicExecutor.ts",
+      "fileName": "symbolicExecutor.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/symbolicExecutor.test.ts",
+      "exportedFunctions": [
+        "analyzeSymbolicSafety",
+        "formatSymbolicViolations"
+      ],
+      "testedFunctions": [
+        "analyzeSymbolicSafety",
+        "formatSymbolicViolations"
       ],
       "untestedFunctions": [],
       "coveragePercent": 100

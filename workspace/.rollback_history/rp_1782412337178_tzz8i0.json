@@ -1,8 +1,0 @@
-{
-  "id": "rp_1782412337178_tzz8i0",
-  "description": "Before proposal prop_1782412300432_8ucq3o: Add null guard before JSON.parse in kvGet",
-  "timestamp": 1782412337178,
-  "author": "self-improve",
-  "files": [],
-  "metadata": {}
-}

@@ -55,6 +55,7 @@ import { startDaemons } from "./initDaemons";
 import { runBootIntegrityCheck, clearCrashFlag } from "./initSafety";
 import { securityMiddleware } from "../security"; // Audit 14A: wire securityMiddleware
 import { disconnectAll } from "../mcpClient"; // Audit 14B: wire disconnectAll
+import { requestTracingMiddleware, registerMetricsRoute } from "../observability"; // v12.13.0: OpenTelemetry spans + metrics endpoint
 
 // ── Port utilities ────────────────────────────────────────────────────────────
 function isPortAvailable(port: number): Promise<boolean> {
@@ -113,6 +114,9 @@ async function startServer(): Promise<void> {
     next();
   });
 
+  // v12.13.0: Wire OpenTelemetry request tracing middleware — records spans for every request
+  requestTracingMiddleware(app);
+
   // Audit 14A: Apply security middleware (API key auth, IP blocklist, rate limiting)
   app.use(securityMiddleware());
 
@@ -159,6 +163,9 @@ async function startServer(): Promise<void> {
     });
     next();
   });
+
+  // v12.13.0: Register /metrics endpoint for Prometheus/OpenTelemetry scraping
+  registerMetricsRoute(app);
 
   // Register routes
   await registerCoreRoutes(app);  // /health, /api/self/introspect, /api/diagnostics, /api/rsi/*, /api/rag/*, /api/eval/*, /api/episodic/*, /api/plan/*

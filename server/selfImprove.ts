@@ -1113,6 +1113,19 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
       content: `Analyze this TypeScript file and propose the single best improvement${area ? ` focusing on: ${area}` : ``}.\n\nFile: ${filename}\n\n\`\`\`typescript\n${contentForAnalysis}\n\`\`\`\n\nReturn ONLY valid JSON.`,
     },
   ];
+  // v12.13.0: Cost optimizer — select the cheapest model that can handle this proposal's complexity.
+  // Prevents always using expensive Claude/Kimi for trivial readability improvements.
+  try {
+    const { scoreProposalComplexity, selectCostOptimalModel } = await import("./costOptimizer.js");
+    const diff = contentForAnalysis.slice(0, 500); // Use first 500 chars as complexity proxy
+    const complexity = scoreProposalComplexity(targetFile, diff, area ?? "general");
+    const { modelId: costOptimalModel, reason: costReason } = selectCostOptimalModel(complexity);
+    log.info(`[costOptimizer] ${path.basename(targetFile)}: complexity=${complexity.score}/10 → ${costOptimalModel} (${costReason})`);
+    // Prepend cost-optimal model to chain if not already present (avoids duplicates)
+    if (!providerChain.includes(costOptimalModel)) {
+      providerChain.unshift(costOptimalModel);
+    }
+  } catch { /* non-fatal — fall through to existing chain */ }
   // v7.1.4: Iterate through fallback chain; skip providers that return 401/402
   // v11.0.1: Also skip providers in the session-level _deadProviders cache to avoid
   //          wasting time on providers known to be billing/auth-failed this session.
@@ -1730,12 +1743,32 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
     } catch (fallbackErr) { log.caught("non-fatal", fallbackErr); }
   }
 
+    // v12.13.0: Transaction log — record the apply operation as an atomic transaction
+  // so it can be rolled back if anything goes wrong after the file write.
+  let _txnId: string | null = null;
+  try {
+    const { beginTransaction, recordChange, commitTransaction, rollbackTransaction } = await import("./transactionLog.js");
+    _txnId = beginTransaction(
+      `Apply proposal ${proposalId}: ${proposal.title || "self-improvement"}`,
+      [proposal.targetFile, ...(proposal.secondaryChanges?.map(c => c.targetFile) ?? [])]
+    );
+    // Record the before-state of the primary file
+    if (proposal.originalContent) {
+      recordChange(_txnId, filePath, proposal.proposedContent || proposal.proposedSnippet || "");
+    }
+  } catch { /* non-fatal — transaction log is audit-only */ }
   try {
     const { guardedApply } = await import("./selfImproveGuard");
     const guardResult = await guardedApply(proposalId);
-
     if (guardResult.success) {
       proposal.status = "applied";
+      // v12.13.0: Commit transaction on success
+      if (_txnId) {
+        try {
+          const { commitTransaction } = await import("./transactionLog.js");
+          commitTransaction(_txnId);
+        } catch { /* non-fatal */ }
+      }
 
       // v6.29: Apply secondary file changes atomically.
       // If any secondary change fails, roll back ALL secondary writes and mark

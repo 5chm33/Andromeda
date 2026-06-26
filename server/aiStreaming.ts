@@ -16,6 +16,7 @@ import { getActiveModel, getApiKey, getApiUrl, getProviderHeaders, resolveProvid
 import { buildSystemPrompt, buildUserPrompt, buildDeepResearchPrompt } from "./aiPrompts.js";
 import { canFitResponse } from "./tokenBudgetManager.js";  // v8.5.0: fix missing import
 import { assembleContext, recordAssembly, type ContextMessage } from "./tieredContextManager.js";  // v8.7.0: fix 'assembleContext is not defined' on follow-up queries
+import { startStream, recordChunk, endStream } from "./streamIntegrityMonitor.js"; // v12.13.0: stream integrity checking
 const log = createLogger("aiStreaming");
 
 // ─── Core streaming function ──────────────────────────────────────────────────
@@ -308,6 +309,10 @@ async function _streamToResponseCore(
   let wasTruncated = false; // true when DeepSeek returns finish_reason=="length"
   let streamUsage = { promptTokens: 0, completionTokens: 0, totalTokens: 0 };
   const streamStartTime = Date.now();
+  // v12.13.0: Start stream integrity monitoring
+  const streamId = `stream_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  const sessionId = (options as any).sessionId || "global";
+  try { startStream(sessionId, streamId); } catch { /* non-fatal */ }
   // v5.4: Cancel the upstream DeepSeek fetch when the client disconnects mid-stream
   // This prevents the writeQueue from accumulating indefinitely on abandoned connections
   let clientDisconnected = false;
@@ -386,6 +391,8 @@ async function _streamToResponseCore(
           if (delta) {
             fullContent += delta;
             chunkCount++;
+            // v12.13.0: Record chunk for stream integrity monitoring
+            try { recordChunk(streamId, delta); } catch { /* non-fatal */ }
 
             // Checkpoint every N chunks for mid-stream recovery
             if (chunkCount % CHECKPOINT_INTERVAL === 0) {
@@ -427,6 +434,13 @@ async function _streamToResponseCore(
     }
   }
 
+  // v12.13.0: End stream integrity check
+  try {
+    const integrityResult = endStream(streamId, fullContent);
+    if (!integrityResult.isComplete && integrityResult.confidence > 0.7) {
+      log.warn(`[StreamIntegrity] Stream ${streamId} may be incomplete (confidence ${(integrityResult.confidence * 100).toFixed(0)}%): ${integrityResult.indicators.join("; ")}`);
+    }
+  } catch { /* non-fatal */ }
   // v5.30: Record actual token usage to tokenBudgetManager and selfMonitor
   // v5.31: Also record to circuit breaker
   try {

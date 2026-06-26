@@ -1,8 +1,0 @@
-{
-  "id": "rp_1782413215358_ybxlns",
-  "description": "Before proposal prop_1782413005382_mfd3ce: Add null guard before .length in analyzeCodeSafety",
-  "timestamp": 1782413215359,
-  "author": "self-improve",
-  "files": [],
-  "metadata": {}
-}

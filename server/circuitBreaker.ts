@@ -134,6 +134,24 @@ export class CircuitBreaker {
   }
 
   /**
+   * v12.13.0: Manually record a successful call (for callers that manage their own fetch).
+   * Equivalent to the success path inside execute().
+   */
+  recordSuccess(): void {
+    this.totalRequests++;
+    this.onSuccess();
+  }
+
+  /**
+   * v12.13.0: Manually record a failed call (for callers that manage their own fetch).
+   * Equivalent to the failure path inside execute().
+   */
+  recordFailure(error: unknown): void {
+    this.totalRequests++;
+    this.onFailure(error);
+  }
+
+  /**
    * Manually reset the circuit breaker to closed state.
    */
   reset(): void {

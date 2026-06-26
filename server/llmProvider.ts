@@ -6,6 +6,8 @@
  * Ollama, LM Studio, Together, Groq, etc.)
  */
 import { createLogger } from "./logger.js";
+import { llmBreaker } from "./circuitBreaker.js";
+import { reportFailure, reportSuccess } from "./gracefulDegradation.js";
 const log = createLogger("llmProvider");
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -631,6 +633,13 @@ export async function chatCompletion(
     return controller.signal;
   };
 
+  // v12.13.0: Circuit breaker guard — prevent cascade failures when LLM API is down
+  if (!llmBreaker.canExecute()) {
+    const stats = llmBreaker.getStats();
+    const retryAfterMs = Math.max(0, stats.lastStateChange + 30_000 - Date.now());
+    reportFailure("llm", `Circuit breaker OPEN (${stats.consecutiveFailures} consecutive failures)`);
+    throw new Error(`LLM circuit breaker is OPEN — retry in ${Math.ceil(retryAfterMs / 1000)}s`);
+  }
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout
   const combinedSignal = combineAbortSignals(options?.signal, controller.signal);
@@ -644,6 +653,9 @@ export async function chatCompletion(
 
   if (!resp.ok) {
     const errText = await resp.text().catch(() => "Unknown error");
+    // v12.13.0: Report failure to graceful degradation manager and circuit breaker
+    reportFailure("llm", `HTTP ${resp.status} from ${provider.id}`);
+    llmBreaker.recordFailure(new Error(`HTTP ${resp.status}`));
     // v12.3.1: On 429 (quota/rate-limit) or 402 (insufficient balance), try fallback providers
     if (resp.status === 429 || resp.status === 402) {
       const fallbacks = buildFallbackChain(provider.id);
@@ -854,7 +866,10 @@ export async function chatCompletion(
     content = accumulated;
   }
 
-    // v6.22: Record cost of this call
+    // v12.13.0: Report success to graceful degradation manager and circuit breaker
+  reportSuccess("llm");
+  llmBreaker.recordSuccess();
+  // v6.22: Record cost of this call
   const _inputToks = json.usage?.prompt_tokens ?? 0;
   const _outputToks = json.usage?.completion_tokens ?? 0;
   recordLLMCost(provider.id, _inputToks, _outputToks);

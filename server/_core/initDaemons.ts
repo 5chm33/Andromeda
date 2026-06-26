@@ -1,9 +1,11 @@
 /**
- * initDaemons.ts — v6.04
+ * initDaemons.ts — v12.13.0
  *
  * Extracted from _core/index.ts (v6.03 refactor).
  * Starts all background analysis and monitoring daemons after the server is listening.
  * Called from within the server.listen() callback.
+ *
+ * v12.13.0: Wire initWatchdog() — module health watchdog now starts at boot.
  */
 
 import { resolve, dirname } from "path";
@@ -22,6 +24,7 @@ import { startCapabilityDiscovery } from "../capabilityDiscovery";
 import { getPromptStats } from "../promptEngineer";
 import { generateAndromedaMd } from "../andromedaMemoryWriter";
 import { seedInitialMemoriesIfEmpty } from "../memory";
+import { initWatchdog } from "../watchdog";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -58,5 +61,13 @@ export function startDaemons(): void {
     console.log("[v7.1] All autonomy daemons started successfully");
   } catch (daemonErr) {
     console.warn("[v7.1] Some daemons failed to start:", (daemonErr as Error).message);
+  }
+
+  // v12.13.0: Start module health watchdog — monitors all critical modules for health degradation
+  try {
+    initWatchdog();
+    console.log("[v12.13.0] Module health watchdog started");
+  } catch (wdErr) {
+    console.warn("[v12.13.0] Watchdog failed to start:", (wdErr as Error).message);
   }
 }

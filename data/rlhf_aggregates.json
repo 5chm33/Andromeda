@@ -12,7 +12,7 @@
     "bottomFiles": [
       "parallelRsi.ts"
     ],
-    "lastUpdated": "2026-06-25T20:24:07.776Z"
+    "lastUpdated": "2026-06-26T14:26:50.276Z"
   },
   "performance": {
     "category": "performance",
@@ -31,26 +31,26 @@
       "parallelRsi.ts",
       "knowledgeBaseConsolidation.ts"
     ],
-    "lastUpdated": "2026-06-25T20:24:07.776Z"
+    "lastUpdated": "2026-06-26T14:26:50.276Z"
   },
   "readability": {
     "category": "readability",
-    "sampleCount": 9,
+    "sampleCount": 7,
     "meanReward": 0.01,
     "acceptRate": 0,
     "rejectRate": 0,
     "editRate": 0,
     "topFiles": [
-      "ai.ts",
-      "aiPlanning.ts",
-      "unifiedKnowledge.ts"
+      "episodicConsolidation.ts",
+      "agentTypes.ts",
+      "multiAgentBus.ts"
     ],
     "bottomFiles": [
-      "multiAgentBus.ts",
       "manifest.ts",
-      "learnedConstraints.ts"
+      "learnedConstraints.ts",
+      "rsiScheduler.ts"
     ],
-    "lastUpdated": "2026-06-25T20:24:07.776Z"
+    "lastUpdated": "2026-06-26T14:26:50.276Z"
   },
   "helpfulness": {
     "category": "helpfulness",
@@ -82,7 +82,7 @@
       "multiAgentBus.ts",
       "agentTypes.ts"
     ],
-    "lastUpdated": "2026-06-25T20:24:07.776Z"
+    "lastUpdated": "2026-06-26T14:26:50.276Z"
   },
   "refactoring": {
     "category": "refactoring",
@@ -105,22 +105,22 @@
   },
   "reliability": {
     "category": "reliability",
-    "sampleCount": 54,
+    "sampleCount": 60,
     "meanReward": 0.010000000000000005,
     "acceptRate": 0,
     "rejectRate": 0,
     "editRate": 0,
     "topFiles": [
-      "epistemicBeliefModel.ts",
       "watchdog.ts",
-      "selfMonitor.ts"
+      "selfMonitor.ts",
+      "aiPlanning.ts"
     ],
     "bottomFiles": [
-      "agentStateMachine.ts",
-      "agentOrchestrator.ts",
-      "visionModule.ts"
+      "rsiDb.ts",
+      "gitSandbox.ts",
+      "memoryForgettingCurve.ts"
     ],
-    "lastUpdated": "2026-06-25T20:24:07.776Z"
+    "lastUpdated": "2026-06-26T14:26:50.276Z"
   },
   "null_safety": {
     "category": "null_safety",
@@ -139,7 +139,7 @@
       "watchdog.ts",
       "epistemicBeliefModel.ts"
     ],
-    "lastUpdated": "2026-06-25T20:24:07.776Z"
+    "lastUpdated": "2026-06-26T14:26:50.276Z"
   },
   "logging": {
     "category": "logging",
@@ -158,7 +158,7 @@
       "selfMonitor.ts",
       "docGenerator.ts"
     ],
-    "lastUpdated": "2026-06-25T20:24:07.776Z"
+    "lastUpdated": "2026-06-26T14:26:50.276Z"
   },
   "bug_fix": {
     "category": "bug_fix",
@@ -177,7 +177,7 @@
       "formalVerification.ts",
       "selfModel.ts"
     ],
-    "lastUpdated": "2026-06-25T20:24:07.776Z"
+    "lastUpdated": "2026-06-26T14:26:50.276Z"
   },
   "code_quality": {
     "category": "code_quality",
@@ -192,7 +192,7 @@
     "bottomFiles": [
       "manifest.ts"
     ],
-    "lastUpdated": "2026-06-25T20:24:07.776Z"
+    "lastUpdated": "2026-06-26T14:26:50.276Z"
   },
   "general": {
     "category": "general",
@@ -207,6 +207,6 @@
     "bottomFiles": [
       "parallelRsi.ts"
     ],
-    "lastUpdated": "2026-06-25T20:24:07.776Z"
+    "lastUpdated": "2026-06-26T14:26:50.276Z"
   }
 }

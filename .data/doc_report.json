@@ -1,7 +1,7 @@
 {
-  "timestamp": 1782419093061,
-  "totalModules": 291,
-  "documentedModules": 187,
+  "timestamp": 1782483998264,
+  "totalModules": 313,
+  "documentedModules": 202,
   "undocumentedExports": [
     {
       "filePath": "server/_core/imageGeneration.ts",
@@ -414,6 +414,24 @@
     {
       "filePath": "server/astKnowledgeGraph.ts",
       "exportName": "resetKnowledgeGraph",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/astMutator.ts",
+      "exportName": "recordMutationResult",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/astMutator.ts",
+      "exportName": "recordValidationFailure",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/astMutator.ts",
+      "exportName": "getMutatorStats",
       "exportType": "function",
       "line": 0
     },
@@ -868,6 +886,12 @@
       "line": 0
     },
     {
+      "filePath": "server/consensusEngine.ts",
+      "exportName": "getDynamicModelWeightStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/constitutionalConstraints.ts",
       "exportName": "checkConstitution",
       "exportType": "function",
@@ -1020,6 +1044,12 @@
     {
       "filePath": "server/costOptimizer.ts",
       "exportName": "getModelProfiles",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/criticEngine.ts",
+      "exportName": "getCriticStats",
       "exportType": "function",
       "line": 0
     },
@@ -1510,6 +1540,12 @@
       "line": 0
     },
     {
+      "filePath": "server/federatedRLHF.ts",
+      "exportName": "getFederatedRLHFStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/federatedRsiNetwork.ts",
       "exportName": "registerPeer",
       "exportType": "function",
@@ -1746,6 +1782,12 @@
     {
       "filePath": "server/hybridCostRouter.ts",
       "exportName": "initHybridCostRouter",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/incrementalAstInvalidator.ts",
+      "exportName": "initIncrementalInvalidator",
       "exportType": "function",
       "line": 0
     },
@@ -2260,6 +2302,18 @@
       "line": 0
     },
     {
+      "filePath": "server/probabilisticTypeInference.ts",
+      "exportName": "initTypeProfileStore",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/probabilisticTypeInference.ts",
+      "exportName": "saveTypeProfileStore",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/proofAssistant.ts",
       "exportName": "detectProverBackend",
       "exportType": "function",
@@ -2286,6 +2340,12 @@
     {
       "filePath": "server/proofVerifier.ts",
       "exportName": "getVerificationStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/proposalSandbox.ts",
+      "exportName": "getDryRunStats",
       "exportType": "function",
       "line": 0
     },
@@ -2496,6 +2556,18 @@
     {
       "filePath": "server/runtimeConfig.ts",
       "exportName": "onConfigChange",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/runtimeGuard.ts",
+      "exportName": "getRuntimeGuardStats",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/runtimeGuard.ts",
+      "exportName": "clearAllWatches",
       "exportType": "function",
       "line": 0
     },
@@ -3634,6 +3706,18 @@
       "line": 0
     },
     {
+      "filePath": "server/visionContextEnricher.ts",
+      "exportName": "isUIFile",
+      "exportType": "function",
+      "line": 0
+    },
+    {
+      "filePath": "server/visualRegressionGuard.ts",
+      "exportName": "isUiFile",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/watchdog.ts",
       "exportName": "getWatchdogStatus",
       "exportType": "function",
@@ -3698,7 +3782,7 @@
     {
       "filePath": "ARCHITECTURE.md",
       "type": "architecture",
-      "content": "Updated: 291 modules, 615 undocumented exports"
+      "content": "Updated: 313 modules, 629 undocumented exports"
     }
   ],
   "architectureUpdated": true

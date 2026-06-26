@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "version": "12.12.0",
+    "benchmarkDate": "2026-06-26T08:39:00.622Z",
+    "durationMinutes": "60.1",
+    "targetDurationMinutes": 60
+  },
+  "rsiActivity": {
+    "cyclesTriggered": 3,
+    "cyclesCompleted": 4,
+    "apiCallCount": 215,
+    "totalCostUsd": "0.177608"
+  },
+  "proposalMetrics": {
+    "generated": 28,
+    "applied": 18,
+    "rejected": 12,
+    "pending": 27
+  },
+  "successRates": {
+    "commitSuccessRate": "60.0%",
+    "commitSuccessRateRaw": 60,
+    "commitSuccesses": 18,
+    "commitFailures": 12,
+    "healSuccessRate": "N/A",
+    "healAttempts": 0,
+    "healSuccesses": 0
+  },
+  "sotaModuleActivity": {
+    "avgCriticScore": "0.961",
+    "criticScoresSampled": 28,
+    "madDebateImprovements": 0,
+    "mctsActivations": 0,
+    "hitlGateActivations": 0,
+    "conflictDetections": 0,
+    "invariantViolations": 0,
+    "dryRunFailures": 0,
+    "rollbacks": 0,
+    "snapshotsCreated": 0,
+    "rlaifBroadcasts": 0
+  },
+  "grade": {
+    "grade": "B",
+    "note": "60.0% commit success rate"
+  },
+  "errors": [
+    "GET /api/rsi/model-weights: Unexpected token '<', \"<!doctype \"... is not valid JSON",
+    "GET /api/rsi/model-weights: Unexpected token '<', \"<!doctype \"... is not valid JSON",
+    "GET /api/rsi/model-weights: Unexpected token '<', \"<!doctype \"... is not valid JSON",
+    "GET /api/rsi/model-weights: Unexpected token '<', \"<!doctype \"... is not valid JSON",
+    "GET /api/rsi/model-weights: Unexpected token '<', \"<!doctype \"... is not valid JSON",
+    "GET /api/rsi/model-weights: Unexpected token '<', \"<!doctype \"... is not valid JSON",
+    "GET /api/rsi/model-weights: Unexpected token '<', \"<!doctype \"... is not valid JSON",
+    "GET /api/rsi/model-weights: Unexpected token '<', \"<!doctype \"... is not valid JSON",
+    "GET /api/rsi/model-weights: Unexpected token '<', \"<!doctype \"... is not valid JSON",
+    "GET /api/rsi/model-weights: Unexpected token '<', \"<!doctype \"... is not valid JSON",
+    "GET /api/rsi/model-weights: Unexpected token '<', \"<!doctype \"... is not valid JSON",
+    "GET /api/rsi/model-weights: Unexpected token '<', \"<!doctype \"... is not valid JSON",
+    "GET /api/rsi/model-weights: Unexpected token '<', \"<!doctype \"... is not valid JSON",
+    "GET /api/rsi/model-weights: Unexpected token '<', \"<!doctype \"... is not valid JSON",
+    "GET /api/rsi/model-weights: Unexpected token '<', \"<!doctype \"... is not valid JSON",
+    "GET /api/rsi/model-weights: Unexpected token '<', \"<!doctype \"... is not valid JSON",
+    "GET /api/rsi/model-weights: Unexpected token '<', \"<!doctype \"... is not valid JSON",
+    "GET /api/rsi/model-weights: Unexpected token '<', \"<!doctype \"... is not valid JSON",
+    "GET /api/rsi/model-weights: Unexpected token '<', \"<!doctype \"... is not valid JSON",
+    "GET /api/rsi/model-weights: Unexpected token '<', \"<!doctype \"... is not valid JSON"
+  ],
+  "benchmarkTrend": []
+}

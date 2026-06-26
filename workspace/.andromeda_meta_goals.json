@@ -35,7 +35,38 @@
       "status": "planned",
       "recursive": false,
       "createdAt": 1782318049320,
-      "subGoals": [],
+      "subGoals": [
+        {
+          "id": "sg_mgoal_1782318049320_5oazdk_1782483236163_szef",
+          "parentId": "mgoal_1782318049320_5oazdk",
+          "title": "Analyze ai.ts for performance improvements",
+          "description": "Optimize LLM calls, caching, and processing to reduce end-to-end response time — focus on ai.ts",
+          "targetFile": "ai.ts",
+          "estimatedEffort": "medium",
+          "status": "failed",
+          "result": "Pipeline failed at typecheck: \u001b[96mserver/ai.ts\u001b[0m:\u001b[93m267\u001b[0m:\u001b[93m1\u001b[0m - \u001b[91merror\u001b[0m\u001b[90m TS1128: \u001b[0mDeclaration or statement expected.\nFound 1 error in server/ai.ts\u001b[90m:267\u001b[0m"
+        },
+        {
+          "id": "sg_mgoal_1782318049320_5oazdk_1782483236163_ak7g",
+          "parentId": "mgoal_1782318049320_5oazdk",
+          "title": "Analyze streamRouter.ts for performance improvements",
+          "description": "Optimize LLM calls, caching, and processing to reduce end-to-end response time — focus on streamRouter.ts",
+          "targetFile": "streamRouter.ts",
+          "estimatedEffort": "medium",
+          "status": "failed",
+          "result": "Pipeline failed at typecheck: \u001b[96mserver/streamRouter.ts\u001b[0m:\u001b[93m267\u001b[0m:\u001b[93m1\u001b[0m - \u001b[91merror\u001b[0m\u001b[90m TS1128: \u001b[0mDeclaration or statement expected.\nFound 1 error in server/streamRouter.ts\u001b[90m:267\u001b[0m"
+        },
+        {
+          "id": "sg_mgoal_1782318049320_5oazdk_1782483236163_7q5l",
+          "parentId": "mgoal_1782318049320_5oazdk",
+          "title": "Analyze tokenBudgetManager.ts for performance improvements",
+          "description": "Optimize LLM calls, caching, and processing to reduce end-to-end response time — focus on tokenBudgetManager.ts",
+          "targetFile": "tokenBudgetManager.ts",
+          "estimatedEffort": "medium",
+          "status": "failed",
+          "result": "Pipeline failed at unittest: \n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\nstdout | server/evalDrivenTargeting.test.ts > runEvalDrivenTargeting > should execute without throwing\n[2026-06-26T14:17:16.387Z] [INFO ] [evalDrivenTargeting] Benchmark degradation vs baseline: memory_keyword_search 63% → targeting 2 files\n\nstdout | server/algorithmicDiscovery.test.ts > algorithmicDiscovery > discoverAlgorithm resolves or rejects gracefully for context_compression\n[2026-06-26T14:17:16.395Z] [INFO ] [algorithmicDiscovery] [Discovery] Initiating algorithmic discovery for capability: context_compression\n[BenchmarkRunner] Running performance benchmarks...\n\nstdout | server/multiAgent.test.ts > runTeamAgent > should return correct type\n[v6.17] Startup provider: kimi (LLM_MODEL=(not set), DEEPSEEK_KEY=set)\n\n ✓ server/multiAgent.test.ts > runTeamAgent > should execute without throwing 4ms\nstdout | server/evalDrivenTargeting.test.ts > runEvalDrivenTargeting > should execute without throwing\n[2026-06-26T14:17:16.675Z] [INFO ] [selfImprove] [v7.1.3] LLM keys present: DeepSeek, OpenRouter, Anthropic, Kimi, OpenAI ✓\n\nstdout | server/qualityToRSI.test.ts > feedQualityToRSI > should execute without throwing\n[2026-06-26T14:17:16.682Z] [INFO ] [qualityToRSI] Skipping quality proposal for index.ts — not in RSI allowlist\n[2026-06-26T14:17:16.684Z] [INFO ] [qualityToRSI] Skipping quality proposal for initModules.ts — not in RSI allowlist\n[2026-06-26T14:17:16.684Z] [INFO ] [qualityToRSI] Skipping quality proposal for initRoutes.ts — not in RSI allowlist\n[2026-06-26T14:17:16.686Z] [INFO ] [selfImprove] [v7.1.3] LLM keys present: DeepSeek, OpenRouter, Anthropic, Kimi, OpenAI ✓\n\nstdout | server/continuousImprover.test.ts > startContinuousImprover > should test triggerCycleNow to get coverage\n[2026-06-26T14:17:16.698Z] [INFO ] [selfImprove] [v7.1.3] LLM keys present: DeepSeek, OpenRouter, Anthropic, Kimi, OpenAI ✓\n\nstdout | server/algorithmicDiscovery.test.ts > algorithmicDiscovery > discoverAlgorithm resolves or rejects gracefully for context_compression\n[BenchmarkRunner] ✓ All benchmarks within baseline (score: 100/100, 6 tests)\n\n ✓ server/algorithmicDiscovery.test.ts > algorithmicDiscovery > discoverAlgorithm is exported as a function 1ms\nstdout | server/evalDrivenTargeting.test.ts > runEvalDrivenTargeting > should execute without throwing\n[2026-06-26T14:17:18.848Z] [INFO ] [importGraph] [importGraph] Built graph: 631 files, 746 edges in 1397ms\n\nstdout | server/qualityToRSI.test.ts > feedQualityToRSI > should execute without throwing\n[2026-06-26T14:17:18.942Z] [INFO ] [importGraph] [importGraph] Built graph: 631 files, 746 edges in 1462ms\n\nstdout | server/evalDrivenTargeting.test.ts > runEvalDrivenTargeting > should execute without throwing\n[2026-06-26T14:17:18.957Z] [INFO ] [semanticImpactPredictor] [ImpactPredictor] /home/ubuntu/andromeda_v2/server/knowledgeBaseConsolidation.ts: riskScore=0, impact=0 direct, 0 transitive\n\nstdout | server/continuousImprover.test.ts > startContinuousImprover > should test trig"
+        }
+      ],
       "metrics": []
     },
     {
@@ -45,7 +76,7 @@
       "description": "Ensure self-improvements can be applied without service interruption",
       "rationale": "Downtime during self-improvement breaks the autonomous loop",
       "priority": 9,
-      "status": "active",
+      "status": "failed",
       "recursive": true,
       "createdAt": 1782318049320,
       "subGoals": [
@@ -80,7 +111,8 @@
         }
       ],
       "metrics": [],
-      "startedAt": 1782425678628
+      "startedAt": 1782425678628,
+      "outcome": "TTL exceeded (356min > 240min limit)"
     },
     {
       "id": "mgoal_1782318049320_cstkei",
@@ -141,14 +173,44 @@
       "description": "Make the goal decomposition system produce more actionable, well-scoped sub-goals",
       "rationale": "Better decomposition leads to better execution of all other goals",
       "priority": 9,
-      "status": "planned",
+      "status": "failed",
       "recursive": true,
       "createdAt": 1782318049321,
-      "subGoals": [],
-      "metrics": []
+      "subGoals": [
+        {
+          "id": "sg_mgoal_1782318049321_didolu_1782447043159_y5uf",
+          "parentId": "mgoal_1782318049321_didolu",
+          "title": "Analyze recursiveGoals.ts for meta improvements",
+          "description": "Make the goal decomposition system produce more actionable, well-scoped sub-goals — focus on recursiveGoals.ts",
+          "targetFile": "recursiveGoals.ts",
+          "estimatedEffort": "medium",
+          "status": "in_progress"
+        },
+        {
+          "id": "sg_mgoal_1782318049321_didolu_1782447043159_5j31",
+          "parentId": "mgoal_1782318049321_didolu",
+          "title": "Analyze autonomyOrchestrator.ts for meta improvements",
+          "description": "Make the goal decomposition system produce more actionable, well-scoped sub-goals — focus on autonomyOrchestrator.ts",
+          "targetFile": "autonomyOrchestrator.ts",
+          "estimatedEffort": "medium",
+          "status": "in_progress"
+        },
+        {
+          "id": "sg_mgoal_1782318049321_didolu_1782447043159_fdfe",
+          "parentId": "mgoal_1782318049321_didolu",
+          "title": "Analyze selfModel.ts for meta improvements",
+          "description": "Make the goal decomposition system produce more actionable, well-scoped sub-goals — focus on selfModel.ts",
+          "targetFile": "selfModel.ts",
+          "estimatedEffort": "medium",
+          "status": "in_progress"
+        }
+      ],
+      "metrics": [],
+      "startedAt": 1782465735222,
+      "outcome": "TTL exceeded (292min > 240min limit)"
     }
   ],
   "scans": [],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-25T22:14:38.628Z"
+  "_lastUpdated": "2026-06-26T14:17:22.249Z"
 }

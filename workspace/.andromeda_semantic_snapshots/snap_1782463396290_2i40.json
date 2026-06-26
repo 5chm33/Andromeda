@@ -1,0 +1,25 @@
+{
+  "id": "snap_1782463396290_2i40",
+  "proposalId": "prop_1782463147187_opqho0",
+  "targetFile": "server/aiMemory.ts",
+  "snapshotFiles": [
+    {
+      "relativePath": "server/aiMemory.ts",
+      "absolutePath": "/home/ubuntu/andromeda_v2/server/aiMemory.ts",
+      "content": "/**\n * aiMemory.ts — ANDROMEDA.md Project Memory\n * Andromeda v6.19 — extracted from ai.ts (was lines 1653-1679)\n *\n * Claude Code-style project memory: a persistent markdown file that the agent\n * reads at startup and writes to when it learns something important about the\n * project. Survives across sessions.\n */\n\nimport * as fs from \"fs\";\nimport * as path from \"path\";\nimport { createLogger } from \"./logger.js\";\n\nconst log = createLogger(\"aiMemory\");\n\n// ─── Path Resolution ──────────────────────────────────────────────────────────\n\nfunction getAndromedaMemoryPath(): string {\n  return path.resolve(process.cwd(), \"ANDROMEDA.md\");\n}\n\n// ─── API ──────────────────────────────────────────────────────────────────────\n\n/**\n * Write or append to the ANDROMEDA.md project memory file.\n * This is how the agent persists learnings about the project across sessions.\n */\nexport async function writeAndromedaMemory(content: string): Promise<{ path: string; chars: number }> {\n  const memPath = getAndromedaMemoryPath();\n  const dir = path.dirname(memPath);\n\n  if (!fs.existsSync(dir)) {\n    fs.mkdirSync(dir, { recursive: true });\n  }\n\n  // If file exists, append with a timestamp header; otherwise create fresh\n  if (fs.existsSync(memPath)) {\n    const timestamp = new Date().toISOString();\n    const appended = `\\n\\n---\\n*Updated: ${timestamp}*\\n\\n${content}`;\n    fs.appendFileSync(memPath, appended, \"utf8\");\n    const chars = fs.statSync(memPath).size;\n    log.info(`Appended ${content.length} chars to ANDROMEDA.md (total: ${chars} bytes)`);\n    return { path: memPath, chars };\n  } else {\n    const header = `# ANDROMEDA Project Memory\\n*Created: ${new Date().toISOString()}*\\n\\n`;\n    fs.writeFileSync(memPath, header + content, \"utf8\");\n    log.info(`Created ANDROMEDA.md with ${content.length} chars`);\n    return { path: memPath, chars: content.length };\n  }\n}\n\n/**\n * Read the current ANDROMEDA.md project memory.\n * Returns null if no memory file exists yet.\n */\nexport function readAndromedaMemory(): string | null {\n  const memPath = getAndromedaMemoryPath();\n  if (!fs.existsSync(memPath)) return null;\n  try {\n    return fs.readFileSync(memPath, \"utf8\");\n  } catch (err) {\n    log.warn(\"Failed to read ANDROMEDA.md:\", err);\n    return null;\n  }\n}\n\n/**\n * Get the path to the ANDROMEDA.md file (for display purposes).\n */\nexport function getAndromedaMemoryPathPublic(): string {\n  return getAndromedaMemoryPath();\n}\n\n/**\n * Check if ANDROMEDA.md exists and return its size.\n */\nexport function getAndromedaMemoryStats(): { exists: boolean; path: string; sizeBytes: number; lastModified?: Date } {\n  const memPath = getAndromedaMemoryPath();\n  if (!fs.existsSync(memPath)) {\n    return { exists: false, path: memPath, sizeBytes: 0 };\n  }\n  const stat = fs.statSync(memPath);\n  return { exists: true, path: memPath, sizeBytes: stat.size, lastModified: stat.mtime };\n}\n"
+    }
+  ],
+  "dependencyContext": {
+    "directDependents": [],
+    "transitiveDependentCount": 0,
+    "riskLevel": "low",
+    "exportedSymbols": [
+      "writeAndromedaMemory",
+      "readAndromedaMemory",
+      "getAndromedaMemoryPathPublic",
+      "getAndromedaMemoryStats"
+    ]
+  },
+  "createdAt": 1782463396290,
+  "description": "Before proposal prop_1782463147187_opqho0: Add null guard before content.length access"
+}

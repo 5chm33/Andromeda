@@ -1,8 +1,0 @@
-{
-  "id": "rp_1782412416011_i43nsv",
-  "description": "Before proposal prop_1782412023108_rkkqj9: Add null/undefined guard before .length on potential undefined",
-  "timestamp": 1782412416011,
-  "author": "self-improve",
-  "files": [],
-  "metadata": {}
-}

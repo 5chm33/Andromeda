@@ -1,5 +1,5 @@
 /**
- * rsiScheduler.ts — v6.32
+ * rsiScheduler.ts — v12.13.0
  *
  * Registers a persistent, configurable RSI auto-trigger task using the existing
  * scheduler.ts infrastructure. Unlike the one-shot enableRSI() call in initModules,
@@ -11,12 +11,19 @@
  *   - Skips if an RSI cycle is already running
  *   - Logs each trigger to data/rsi_schedule_log.json
  *
+ * v12.13.0: Adaptive backoff — interval automatically adjusts based on recent cycle success rate:
+ *   - >90% success rate over last 10 cycles → shorten to 2h (high momentum)
+ *   - 70–90% success rate → keep default (6h)
+ *   - 50–70% success rate → extend to 12h (moderate caution)
+ *   - <50% success rate → extend to 24h (high caution, something is wrong)
+ *
  * Exports:
  *   initRsiScheduler()          — call once on startup
  *   getRsiSchedulerStatus()     — returns current task status + next run time
  *   setRsiScheduleHours(n)      — change interval (1–168 hours)
  *   pauseRsiScheduler()         — pause the scheduled task
  *   resumeRsiScheduler()        — resume the scheduled task
+ *   computeAdaptiveInterval()   — compute the optimal interval based on recent history
  */
 
 import fs from "fs";
@@ -68,6 +75,66 @@ function appendScheduleLog(entry: ScheduleLogEntry): void {
   // Keep last MAX_LOG_ENTRIES entries
   if (entries.length > MAX_LOG_ENTRIES) entries = entries.slice(-MAX_LOG_ENTRIES);
   fs.writeFileSync(p, JSON.stringify(entries, null, 2), "utf8");
+}
+
+// ─── Adaptive Backoff ────────────────────────────────────────────────────────
+
+/**
+ * v12.13.0: Compute the optimal RSI trigger interval based on recent cycle success rates.
+ * Reads the last N cycles from rsiEngine history and adjusts the interval accordingly.
+ *
+ * @returns Recommended interval in hours
+ */
+export async function computeAdaptiveInterval(lookback = 10): Promise<number> {
+  try {
+    const { getRSIHistory } = await import("./rsiEngine.js");
+    const history = await getRSIHistory();
+    if (history.length < 3) {
+      // Not enough data — use default
+      return DEFAULT_HOURS;
+    }
+    const recent = history.slice(0, lookback);
+    const successCount = recent.filter(c => c.proposalsApplied > 0).length;
+    const successRate = successCount / recent.length;
+
+    let recommendedHours: number;
+    if (successRate >= 0.9) {
+      recommendedHours = 2;  // High momentum — run more frequently
+    } else if (successRate >= 0.7) {
+      recommendedHours = DEFAULT_HOURS;  // Normal operation
+    } else if (successRate >= 0.5) {
+      recommendedHours = 12; // Moderate issues — slow down
+    } else {
+      recommendedHours = 24; // High failure rate — significant backoff
+    }
+
+    log.info(
+      `[rsiScheduler] Adaptive interval: successRate=${(successRate * 100).toFixed(0)}% over last ${recent.length} cycles → ${recommendedHours}h (was ${DEFAULT_HOURS}h)`
+    );
+    return recommendedHours;
+  } catch {
+    return DEFAULT_HOURS; // Fallback to default on error
+  }
+}
+
+/**
+ * v12.13.0: Apply adaptive backoff — compute the optimal interval and update the scheduler task.
+ * Called after each RSI cycle completes to keep the schedule in sync with system health.
+ */
+async function applyAdaptiveBackoff(): Promise<void> {
+  try {
+    const recommended = await computeAdaptiveInterval();
+    const task = _taskId ? getTask(_taskId) : findExistingTask();
+    if (!task) return;
+    const currentHours = Math.round((task.intervalSeconds ?? DEFAULT_HOURS * 3600) / 3600);
+    if (Math.abs(currentHours - recommended) >= 1) {
+      // Interval has changed by at least 1 hour — update it
+      setRsiScheduleHours(recommended);
+      log.info(`[rsiScheduler] Adaptive backoff applied: ${currentHours}h → ${recommended}h`);
+    }
+  } catch (err) {
+    log.warn("[rsiScheduler] Adaptive backoff failed:", err);
+  }
 }
 
 // ─── Task runner ──────────────────────────────────────────────────────────────
@@ -171,6 +238,9 @@ async function runRsiTrigger(): Promise<void> {
       cycleStarted: true,
     });
     log.info("[rsiScheduler] RSI cycle triggered successfully");
+    // v12.13.0: Adaptive backoff — adjust next interval based on recent success rate
+    // Run async without awaiting so it doesn't block the trigger response
+    applyAdaptiveBackoff().catch(e => log.warn("[rsiScheduler] Adaptive backoff error:", e));
   } catch (err) {
     log.warn("[rsiScheduler] Failed to trigger RSI cycle:", err);
     appendScheduleLog({

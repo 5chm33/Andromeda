@@ -12,7 +12,7 @@ describe("startContinuousImprover", () => {
     } catch (e) {
       // Ignore errors from missing dependencies
     }
-  });
+  }, 60_000); // v12.13.0: Extended timeout — triggerCycleNow may call LLM APIs in test env
   it("should execute without throwing", () => {
     // startContinuousImprover returns void — just verify it doesn't throw
     expect(() => startContinuousImprover()).not.toThrow();

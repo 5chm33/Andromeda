@@ -1,0 +1,58 @@
+[
+  {
+    "triggeredAt": 1782459462534,
+    "source": "scheduler",
+    "intervalHours": 0,
+    "cycleStarted": true,
+    "note": "Manual trigger via API"
+  },
+  {
+    "triggeredAt": 1782460208590,
+    "source": "scheduler",
+    "intervalHours": 0,
+    "cycleStarted": true,
+    "note": "Manual trigger via API"
+  },
+  {
+    "triggeredAt": 1782461119242,
+    "source": "scheduler",
+    "intervalHours": 0,
+    "cycleStarted": true,
+    "note": "Manual trigger via API"
+  },
+  {
+    "triggeredAt": 1782461671228,
+    "source": "scheduler",
+    "intervalHours": 0,
+    "cycleStarted": true,
+    "note": "Manual trigger via API"
+  },
+  {
+    "triggeredAt": 1782462669308,
+    "source": "scheduler",
+    "intervalHours": 0,
+    "cycleStarted": true,
+    "note": "Manual trigger via API"
+  },
+  {
+    "triggeredAt": 1782463347249,
+    "source": "scheduler",
+    "intervalHours": 0,
+    "cycleStarted": true,
+    "note": "Manual trigger via API"
+  },
+  {
+    "triggeredAt": 1782464355936,
+    "source": "scheduler",
+    "intervalHours": 0,
+    "cycleStarted": true,
+    "note": "Manual trigger via API"
+  },
+  {
+    "triggeredAt": 1782465003979,
+    "source": "scheduler",
+    "intervalHours": 0,
+    "cycleStarted": true,
+    "note": "Manual trigger via API"
+  }
+]

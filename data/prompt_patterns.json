@@ -16,9 +16,9 @@
     "taskType": "self_improvement",
     "pattern": "test prompt fragment",
     "successRate": 1,
-    "useCount": 304,
-    "avgResponseQuality": 0.9000000000000024,
-    "lastUsed": "2026-06-25T20:17:27.087Z",
+    "useCount": 312,
+    "avgResponseQuality": 0.9000000000000017,
+    "lastUsed": "2026-06-26T14:26:52.995Z",
     "tags": [
       "self_improvement"
     ]
@@ -28,9 +28,9 @@
     "taskType": "coding",
     "pattern": "another prompt fragment",
     "successRate": 0,
-    "useCount": 304,
+    "useCount": 312,
     "avgResponseQuality": 0.2999999999999986,
-    "lastUsed": "2026-06-25T20:17:27.088Z",
+    "lastUsed": "2026-06-26T14:26:53.000Z",
     "tags": [
       "coding"
     ]
@@ -40,9 +40,9 @@
     "taskType": "analysis",
     "pattern": "partial prompt fragment",
     "successRate": 0,
-    "useCount": 304,
+    "useCount": 312,
     "avgResponseQuality": 0.5999999999999972,
-    "lastUsed": "2026-06-25T20:17:27.089Z",
+    "lastUsed": "2026-06-26T14:26:53.003Z",
     "tags": [
       "analysis"
     ]
@@ -52,9 +52,9 @@
     "taskType": "research",
     "pattern": "unique fragment xyz",
     "successRate": 1,
-    "useCount": 304,
-    "avgResponseQuality": 0.8499999999999962,
-    "lastUsed": "2026-06-25T20:17:27.089Z",
+    "useCount": 312,
+    "avgResponseQuality": 0.8499999999999969,
+    "lastUsed": "2026-06-26T14:26:53.004Z",
     "tags": [
       "research"
     ]
@@ -64,9 +64,9 @@
     "taskType": "self_improvement",
     "pattern": "RSI proposal: Extract magic numbers into named constants",
     "successRate": 1,
-    "useCount": 7,
-    "avgResponseQuality": 0.8591511256248906,
-    "lastUsed": "2026-06-25T18:42:22.875Z",
+    "useCount": 8,
+    "avgResponseQuality": 0.8504177707191269,
+    "lastUsed": "2026-06-26T09:21:18.456Z",
     "tags": [
       "self_improvement"
     ]
@@ -100,9 +100,9 @@
     "taskType": "self_improvement",
     "pattern": "RSI proposal: Add JSDoc to exported functions in aiTokens, aiPrompts, aiStreaming",
     "successRate": 1,
-    "useCount": 1,
-    "avgResponseQuality": 0.8350661145469053,
-    "lastUsed": "2026-06-25T13:38:51.685Z",
+    "useCount": 2,
+    "avgResponseQuality": 0.7879784307532239,
+    "lastUsed": "2026-06-26T07:46:21.891Z",
     "tags": [
       "self_improvement"
     ]
@@ -172,9 +172,9 @@
     "taskType": "self_improvement",
     "pattern": "RSI proposal: Replace empty catch blocks with log.warn",
     "successRate": 1,
-    "useCount": 2,
-    "avgResponseQuality": 0.848883120056527,
-    "lastUsed": "2026-06-25T16:04:38.952Z",
+    "useCount": 3,
+    "avgResponseQuality": 0.8513631015003901,
+    "lastUsed": "2026-06-26T08:40:00.831Z",
     "tags": [
       "self_improvement"
     ]
@@ -184,9 +184,9 @@
     "taskType": "self_improvement",
     "pattern": "RSI proposal: Add null guard before .slice() on sources in streamAgentPlan",
     "successRate": 1,
-    "useCount": 1,
-    "avgResponseQuality": 0.8345650435797245,
-    "lastUsed": "2026-06-25T14:37:25.820Z",
+    "useCount": 2,
+    "avgResponseQuality": 0.7922825217898622,
+    "lastUsed": "2026-06-26T07:57:50.987Z",
     "tags": [
       "self_improvement"
     ]
@@ -364,9 +364,9 @@
     "taskType": "self_improvement",
     "pattern": "RSI proposal: Add null guard before Object.keys on imported module",
     "successRate": 1,
-    "useCount": 1,
-    "avgResponseQuality": 0.8390035673153745,
-    "lastUsed": "2026-06-25T15:44:08.356Z",
+    "useCount": 2,
+    "avgResponseQuality": 0.8481774010098055,
+    "lastUsed": "2026-06-26T09:22:38.669Z",
     "tags": [
       "self_improvement"
     ]
@@ -376,9 +376,9 @@
     "taskType": "self_improvement",
     "pattern": "RSI proposal: Add null check for affectedFiles before join",
     "successRate": 1,
-    "useCount": 1,
-    "avgResponseQuality": 0.8471763516632004,
-    "lastUsed": "2026-06-25T15:44:29.553Z",
+    "useCount": 2,
+    "avgResponseQuality": 0.8488131451616717,
+    "lastUsed": "2026-06-26T09:25:34.070Z",
     "tags": [
       "self_improvement"
     ]
@@ -400,9 +400,9 @@
     "taskType": "self_improvement",
     "pattern": "RSI proposal: Add null guard for stackFrames[0] access in diagnoseError",
     "successRate": 1,
-    "useCount": 1,
-    "avgResponseQuality": 0.8493808227464252,
-    "lastUsed": "2026-06-25T15:48:35.103Z",
+    "useCount": 2,
+    "avgResponseQuality": 0.8155884533533623,
+    "lastUsed": "2026-06-26T08:12:07.701Z",
     "tags": [
       "self_improvement"
     ]
@@ -448,9 +448,9 @@
     "taskType": "self_improvement",
     "pattern": "RSI proposal: Add null guard before .push() on stagedChanges",
     "successRate": 1,
-    "useCount": 1,
-    "avgResponseQuality": 0.8665429676530371,
-    "lastUsed": "2026-06-25T16:08:38.765Z",
+    "useCount": 2,
+    "avgResponseQuality": 0.8421148972310271,
+    "lastUsed": "2026-06-26T08:20:19.422Z",
     "tags": [
       "self_improvement"
     ]
@@ -460,9 +460,9 @@
     "taskType": "self_improvement",
     "pattern": "RSI proposal: Replace console.debug with structured log.debug",
     "successRate": 1,
-    "useCount": 1,
-    "avgResponseQuality": 0.89093150050996,
-    "lastUsed": "2026-06-25T16:16:50.864Z",
+    "useCount": 2,
+    "avgResponseQuality": 0.8706907195850515,
+    "lastUsed": "2026-06-26T07:57:06.371Z",
     "tags": [
       "self_improvement"
     ]
@@ -664,9 +664,9 @@
     "taskType": "self_improvement",
     "pattern": "RSI proposal: Add null guard before .find() in disableConstraint",
     "successRate": 1,
-    "useCount": 1,
-    "avgResponseQuality": 0.9247065013174821,
-    "lastUsed": "2026-06-25T19:05:01.261Z",
+    "useCount": 3,
+    "avgResponseQuality": 0.7124071513588125,
+    "lastUsed": "2026-06-26T09:21:44.033Z",
     "tags": [
       "self_improvement"
     ]
@@ -796,9 +796,9 @@
     "taskType": "self_improvement",
     "pattern": "RSI proposal: Add null guard before .find() in promoteToConstitution",
     "successRate": 1,
-    "useCount": 1,
-    "avgResponseQuality": 0.9635291090043289,
-    "lastUsed": "2026-06-25T19:43:13.929Z",
+    "useCount": 2,
+    "avgResponseQuality": 0.9450219127009478,
+    "lastUsed": "2026-06-26T07:58:59.874Z",
     "tags": [
       "self_improvement"
     ]
@@ -844,9 +844,9 @@
     "taskType": "self_improvement",
     "pattern": "RSI proposal: Add null check before .length in browserExtractData",
     "successRate": 1,
-    "useCount": 1,
-    "avgResponseQuality": 0.9137197881219641,
-    "lastUsed": "2026-06-25T19:51:42.111Z",
+    "useCount": 2,
+    "avgResponseQuality": 0.8922193321196961,
+    "lastUsed": "2026-06-26T07:47:55.465Z",
     "tags": [
       "self_improvement"
     ]
@@ -883,6 +883,234 @@
     "useCount": 1,
     "avgResponseQuality": 0.9098969117154512,
     "lastUsed": "2026-06-25T20:15:55.076Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "d570c0": {
+    "id": "d570c0",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .includes() call",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.7804499386601431,
+    "lastUsed": "2026-06-26T07:59:33.264Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "40256f72": {
+    "id": "40256f72",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before entryMap.get(id) in injectMemoryContextAsync",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8222340221190103,
+    "lastUsed": "2026-06-26T08:02:07.872Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "58c50ebd": {
+    "id": "58c50ebd",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before filter in getMetricHistory",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9003480498143928,
+    "lastUsed": "2026-06-26T08:04:04.909Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "17c8a68f": {
+    "id": "17c8a68f",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null check before registry.get in getOrDefaultTenant",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9185297428881191,
+    "lastUsed": "2026-06-26T08:05:06.434Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "76e7d871": {
+    "id": "76e7d871",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .map() on DB rows",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8700179460575301,
+    "lastUsed": "2026-06-26T08:05:47.554Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "55fa2ac5": {
+    "id": "55fa2ac5",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Extract duplicate keyGenerator into shared function",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9375192053018083,
+    "lastUsed": "2026-06-26T08:11:40.962Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "766030e": {
+    "id": "766030e",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null check before property access in syncWithPeer",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8703327043543938,
+    "lastUsed": "2026-06-26T08:14:56.324Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "5d02a931": {
+    "id": "5d02a931",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before tool_calls access in extractToolCalls",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9053547671525547,
+    "lastUsed": "2026-06-26T08:27:00.324Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "22c0f7a2": {
+    "id": "22c0f7a2",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add timeout guard to fetch calls in chatCompletion",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8845292780494706,
+    "lastUsed": "2026-06-26T08:28:45.015Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "104f17b5": {
+    "id": "104f17b5",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .filter() on evaluations",
+    "successRate": 1,
+    "useCount": 2,
+    "avgResponseQuality": 0.7804499386601431,
+    "lastUsed": "2026-06-26T08:40:17.614Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "7175500f": {
+    "id": "7175500f",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before .some() on ALLOWED_GIT_PATTERNS",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.837313787134496,
+    "lastUsed": "2026-06-26T08:43:15.489Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "6ec0cf13": {
+    "id": "6ec0cf13",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before content.length access",
+    "successRate": 1,
+    "useCount": 2,
+    "avgResponseQuality": 0.8734671965823652,
+    "lastUsed": "2026-06-26T08:43:42.601Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "27e8409d": {
+    "id": "27e8409d",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Replace console.warn with structured logging",
+    "successRate": 1,
+    "useCount": 2,
+    "avgResponseQuality": 0.8846598883398384,
+    "lastUsed": "2026-06-26T08:57:50.006Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "22e6e193": {
+    "id": "22e6e193",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add .unref() to cycleTimer to prevent vitest worker hangs",
+    "successRate": 1,
+    "useCount": 2,
+    "avgResponseQuality": 0.8663483460114539,
+    "lastUsed": "2026-06-26T08:55:55.502Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "4f9ea44b": {
+    "id": "4f9ea44b",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before evals.length access",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8158995095244159,
+    "lastUsed": "2026-06-26T09:00:40.325Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "6655ffa5": {
+    "id": "6655ffa5",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Replace synchronous fs.appendFileSync with async write in recordCost",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.948334404092442,
+    "lastUsed": "2026-06-26T09:04:45.353Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "31bccf25": {
+    "id": "31bccf25",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Replace empty catch blocks with log.warn in generateSuggestions",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8678672490851678,
+    "lastUsed": "2026-06-26T09:07:36.520Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "1a5bca11": {
+    "id": "1a5bca11",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Replace console.log with structured logger in streamAIResponseWithContext",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8504499386601431,
+    "lastUsed": "2026-06-26T09:09:49.561Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "4cafa4b": {
+    "id": "4cafa4b",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before JSON.parse in querySpecialist",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8883864243490426,
+    "lastUsed": "2026-06-26T09:22:08.555Z",
     "tags": [
       "self_improvement"
     ]

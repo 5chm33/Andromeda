@@ -5257,6 +5257,1078 @@
       "confidence": 0.9,
       "createdAt": 1782422788985,
       "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782459964238_r4u44l",
+      "category": "antipattern",
+      "title": "Failure: Add null guard before .find() in activateGoal and other functions",
+      "description": "Failed to apply \"Add null guard before .find() in activateGoal and other functions\" to recursiveGoals.ts. Reason: sandboxVerifier.quickValidate rejected proposal: Unbalanced braces: 197 open, 199 close. Avoid similar changes.",
+      "context": "self-modify recursiveGoals.ts reliability",
+      "outcome": "failure: sandboxVerifier.quickValidate rejected proposal: Unbalanced braces: 197 open, 199 close",
+      "lesson": "Avoid for recursiveGoals.ts: Add null guard before .find() in activateGoal and other functions — causes sandboxVerifier.quickValidate rejected proposal: Unbalanced braces: 197 open, 199 close",
+      "applicableTo": [
+        "recursiveGoals.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782459964238,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782459976016_grrgry",
+      "category": "success",
+      "title": "Success: Add JSDoc to exported functions in aiTokens, aiPrompts, aiStreaming",
+      "description": "Successfully applied \"Add JSDoc to exported functions in aiTokens, aiPrompts, aiStreaming\" to ai.ts (readability). Health: improved.",
+      "context": "self-modify ai.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for ai.ts: Add JSDoc to exported functions in aiTokens, aiPrompts, aiStreaming",
+      "applicableTo": [
+        "ai.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782459976016,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782460069303_f4mt38",
+      "category": "success",
+      "title": "Success: Add null check before .length in browserExtractData",
+      "description": "Successfully applied \"Add null check before .length in browserExtractData\" to browser.ts (reliability). Health: improved.",
+      "context": "self-modify browser.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for browser.ts: Add null check before .length in browserExtractData",
+      "applicableTo": [
+        "browser.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782460069303,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782460098252_032rsq",
+      "category": "antipattern",
+      "title": "Failure: Add null guard for sources array in groundAnswer",
+      "description": "Failed to apply \"Add null guard for sources array in groundAnswer\" to grounding.ts. Reason: sandboxVerifier.quickValidate rejected proposal: Duplicate declaration: function names. Avoid similar changes.",
+      "context": "self-modify grounding.ts reliability",
+      "outcome": "failure: sandboxVerifier.quickValidate rejected proposal: Duplicate declaration: function names",
+      "lesson": "Avoid for grounding.ts: Add null guard for sources array in groundAnswer — causes sandboxVerifier.quickValidate rejected proposal: Duplicate declaration: function names",
+      "applicableTo": [
+        "grounding.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782460098252,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782460619828_4c60ya",
+      "category": "success",
+      "title": "Success: Replace console.debug with structured log.debug",
+      "description": "Successfully applied \"Replace console.debug with structured log.debug\" to aiStreaming.ts (reliability). Health: improved.",
+      "context": "self-modify aiStreaming.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for aiStreaming.ts: Replace console.debug with structured log.debug",
+      "applicableTo": [
+        "aiStreaming.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782460619828,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782460664660_k6ytiv",
+      "category": "success",
+      "title": "Success: Add null guard before .slice() on sources in streamAgentPlan",
+      "description": "Successfully applied \"Add null guard before .slice() on sources in streamAgentPlan\" to aiPlanning.ts (reliability). Health: improved.",
+      "context": "self-modify aiPlanning.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for aiPlanning.ts: Add null guard before .slice() on sources in streamAgentPlan",
+      "applicableTo": [
+        "aiPlanning.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782460664660,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782460707098_8aurhz",
+      "category": "success",
+      "title": "Success: Add null guard before .find() in disableConstraint",
+      "description": "Successfully applied \"Add null guard before .find() in disableConstraint\" to learnedConstraints.ts (readability). Health: improved.",
+      "context": "self-modify learnedConstraints.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for learnedConstraints.ts: Add null guard before .find() in disableConstraint",
+      "applicableTo": [
+        "learnedConstraints.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782460707098,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782460733483_cfw7kq",
+      "category": "success",
+      "title": "Success: Add null guard before .find() in promoteToConstitution",
+      "description": "Successfully applied \"Add null guard before .find() in promoteToConstitution\" to knowledgeBaseConsolidation.ts (reliability). Health: improved.",
+      "context": "self-modify knowledgeBaseConsolidation.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for knowledgeBaseConsolidation.ts: Add null guard before .find() in promoteToConstitution",
+      "applicableTo": [
+        "knowledgeBaseConsolidation.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782460733483,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782460766934_d25ss4",
+      "category": "success",
+      "title": "Success: Add null guard before .includes() call",
+      "description": "Successfully applied \"Add null guard before .includes() call\" to aiZipEdit.ts (reliability). Health: improved.",
+      "context": "self-modify aiZipEdit.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for aiZipEdit.ts: Add null guard before .includes() call",
+      "applicableTo": [
+        "aiZipEdit.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782460766934,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782460906597_u8qftr",
+      "category": "antipattern",
+      "title": "Failure: Replace console.warn with structured logger",
+      "description": "Failed to apply \"Replace console.warn with structured logger\" to parallelRsi.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify parallelRsi.ts readability",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for parallelRsi.ts: Replace console.warn with structured logger — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "parallelRsi.ts",
+        "readability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782460906597,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782460921415_00w9n9",
+      "category": "success",
+      "title": "Success: Add null guard before entryMap.get(id) in injectMemoryContextAsync",
+      "description": "Successfully applied \"Add null guard before entryMap.get(id) in injectMemoryContextAsync\" to memory.ts (reliability). Health: improved.",
+      "context": "self-modify memory.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for memory.ts: Add null guard before entryMap.get(id) in injectMemoryContextAsync",
+      "applicableTo": [
+        "memory.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782460921415,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782460931205_f3jgv7",
+      "category": "antipattern",
+      "title": "Failure: Add null guard before fs.readdirSync in executeCodeWithWorkspace",
+      "description": "Failed to apply \"Add null guard before fs.readdirSync in executeCodeWithWorkspace\" to workspace.ts. Reason: Constitution blocked: proposed content contains forbidden pattern 'rm -rf /'.. Avoid similar changes.",
+      "context": "self-modify workspace.ts reliability",
+      "outcome": "failure: Constitution blocked: proposed content contains forbidden pattern 'rm -rf /'.",
+      "lesson": "Avoid for workspace.ts: Add null guard before fs.readdirSync in executeCodeWithWorkspace — causes Constitution blocked: proposed content contains forbidden pattern 'rm -rf /'.",
+      "applicableTo": [
+        "workspace.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782460931205,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782461037926_l512yz",
+      "category": "success",
+      "title": "Success: Add null guard before filter in getMetricHistory",
+      "description": "Successfully applied \"Add null guard before filter in getMetricHistory\" to selfMonitor.ts (reliability). Health: improved.",
+      "context": "self-modify selfMonitor.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for selfMonitor.ts: Add null guard before filter in getMetricHistory",
+      "applicableTo": [
+        "selfMonitor.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782461037926,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782461044921_whan6l",
+      "category": "success",
+      "title": "Add null guard before filter in getMetricHistory",
+      "description": "RSI commit: reliability improvement to selfMonitor.ts",
+      "context": "selfMonitor.ts",
+      "outcome": "Committed with confidence 0.90",
+      "lesson": "RSI applied: The getMetricHistory function calls samples.filter(...) without checking if samples is defined, which could cause a runtime error if samples is somehow null or undefined. Adding a null guard ensures robustness and prevents potential crashes.",
+      "applicableTo": [
+        "selfMonitor.ts",
+        "reliability"
+      ],
+      "confidence": 0.9003480498143928,
+      "createdAt": 1782461044921,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782461090130_0gkgqt",
+      "category": "antipattern",
+      "title": "Failure: Add null guard before fs.readdirSync in executeCodeWithWorkspace",
+      "description": "Failed to apply \"Add null guard before fs.readdirSync in executeCodeWithWorkspace\" to workspace.ts. Reason: Constitution blocked: proposed content contains forbidden pattern 'rm -rf /'.. Avoid similar changes.",
+      "context": "self-modify workspace.ts reliability",
+      "outcome": "failure: Constitution blocked: proposed content contains forbidden pattern 'rm -rf /'.",
+      "lesson": "Avoid for workspace.ts: Add null guard before fs.readdirSync in executeCodeWithWorkspace — causes Constitution blocked: proposed content contains forbidden pattern 'rm -rf /'.",
+      "applicableTo": [
+        "workspace.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782461090130,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782461099261_n1czzw",
+      "category": "success",
+      "title": "Success: Add null check before registry.get in getOrDefaultTenant",
+      "description": "Successfully applied \"Add null check before registry.get in getOrDefaultTenant\" to tenantManager.ts (reliability). Health: improved.",
+      "context": "self-modify tenantManager.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for tenantManager.ts: Add null check before registry.get in getOrDefaultTenant",
+      "applicableTo": [
+        "tenantManager.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782461099261,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782461106450_i3vj6i",
+      "category": "success",
+      "title": "Add null check before registry.get in getOrDefaultTenant",
+      "description": "RSI commit: reliability improvement to tenantManager.ts",
+      "context": "tenantManager.ts",
+      "outcome": "Committed with confidence 0.92",
+      "lesson": "RSI applied: getOrDefaultTenant uses a non-null assertion on registry.get('default') which could throw if the default tenant is missing. Adding a fallback ensures the function never crashes and returns a valid tenant config.",
+      "applicableTo": [
+        "tenantManager.ts",
+        "reliability"
+      ],
+      "confidence": 0.9185297428881191,
+      "createdAt": 1782461106450,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782461139369_za3hwt",
+      "category": "success",
+      "title": "Success: Add null guard before .map() on DB rows",
+      "description": "Successfully applied \"Add null guard before .map() on DB rows\" to rsiDb.ts (reliability). Health: improved.",
+      "context": "self-modify rsiDb.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for rsiDb.ts: Add null guard before .map() on DB rows",
+      "applicableTo": [
+        "rsiDb.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782461139369,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782461147565_9cq9bx",
+      "category": "success",
+      "title": "Add null guard before .map() on DB rows",
+      "description": "RSI commit: reliability improvement to rsiDb.ts",
+      "context": "rsiDb.ts",
+      "outcome": "Committed with confidence 0.87",
+      "lesson": "RSI applied: The dbLoadProposals function calls .map() on rows[0] without checking if it's null or undefined, which would throw a TypeError if the DB returns no rows. Adding a null guard ensures the function returns an empty array instead of crashing.",
+      "applicableTo": [
+        "rsiDb.ts",
+        "reliability"
+      ],
+      "confidence": 0.8700179460575301,
+      "createdAt": 1782461147565,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782461493773_v12nbw",
+      "category": "success",
+      "title": "Success: Extract duplicate keyGenerator into shared function",
+      "description": "Successfully applied \"Extract duplicate keyGenerator into shared function\" to streamRouter.ts (readability). Health: improved.",
+      "context": "self-modify streamRouter.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for streamRouter.ts: Extract duplicate keyGenerator into shared function",
+      "applicableTo": [
+        "streamRouter.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782461493773,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782461521432_zwld85",
+      "category": "success",
+      "title": "Success: Add null guard for stackFrames[0] access in diagnoseError",
+      "description": "Successfully applied \"Add null guard for stackFrames[0] access in diagnoseError\" to codeIntel.ts (reliability). Health: improved.",
+      "context": "self-modify codeIntel.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for codeIntel.ts: Add null guard for stackFrames[0] access in diagnoseError",
+      "applicableTo": [
+        "codeIntel.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782461521432,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782461689053_if07qk",
+      "category": "success",
+      "title": "Success: Add null check before property access in syncWithPeer",
+      "description": "Successfully applied \"Add null check before property access in syncWithPeer\" to federatedLearning.ts (reliability). Health: improved.",
+      "context": "self-modify federatedLearning.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for federatedLearning.ts: Add null check before property access in syncWithPeer",
+      "applicableTo": [
+        "federatedLearning.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782461689053,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782461750456_m1ya5n",
+      "category": "antipattern",
+      "title": "Failure: Add null guard before accessing context.artifacts in debugger/security userMessage",
+      "description": "Failed to apply \"Add null guard before accessing context.artifacts in debugger/security userMessage\" to multiAgent.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify multiAgent.ts reliability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for multiAgent.ts: Add null guard before accessing context.artifacts in debugger/security userMessage — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "multiAgent.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782461750456,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782461807566_iew4v8",
+      "category": "antipattern",
+      "title": "Failure: Replace empty catch block with log.warn",
+      "description": "Failed to apply \"Replace empty catch block with log.warn\" to reactEngine.ts. Reason: sandboxVerifier.quickValidate rejected proposal: Duplicate declaration: function calling; Duplicate declaration: function calling; Duplicate declaration: function calling. Avoid similar changes.",
+      "context": "self-modify reactEngine.ts reliability",
+      "outcome": "failure: sandboxVerifier.quickValidate rejected proposal: Duplicate declaration: function calling; Duplicate declaration: function calling; Duplicate declaration: function calling",
+      "lesson": "Avoid for reactEngine.ts: Replace empty catch block with log.warn — causes sandboxVerifier.quickValidate rejected proposal: Duplicate declaration: function calling; Duplicate declaration: function calling; Duplicate declaration: function calling",
+      "applicableTo": [
+        "reactEngine.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782461807566,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782462013708_xag6rq",
+      "category": "success",
+      "title": "Success: Add null guard before .push() on stagedChanges",
+      "description": "Successfully applied \"Add null guard before .push() on stagedChanges\" to privilegeSeparation.ts (reliability). Health: improved.",
+      "context": "self-modify privilegeSeparation.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for privilegeSeparation.ts: Add null guard before .push() on stagedChanges",
+      "applicableTo": [
+        "privilegeSeparation.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782462013708,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782462291296_x8swm7",
+      "category": "antipattern",
+      "title": "Failure: Add timeout guard to fetch calls in chatCompletion",
+      "description": "Failed to apply \"Add timeout guard to fetch calls in chatCompletion\" to llmProvider.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify llmProvider.ts reliability",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for llmProvider.ts: Add timeout guard to fetch calls in chatCompletion — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "llmProvider.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782462291296,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782462413711_mvx7cc",
+      "category": "success",
+      "title": "Success: Add null guard before tool_calls access in extractToolCalls",
+      "description": "Successfully applied \"Add null guard before tool_calls access in extractToolCalls\" to contextManager.ts (reliability). Health: improved.",
+      "context": "self-modify contextManager.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for contextManager.ts: Add null guard before tool_calls access in extractToolCalls",
+      "applicableTo": [
+        "contextManager.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782462413711,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782462518328_pp2mwu",
+      "category": "success",
+      "title": "Success: Add timeout guard to fetch calls in chatCompletion",
+      "description": "Successfully applied \"Add timeout guard to fetch calls in chatCompletion\" to llmProvider.ts (reliability). Health: improved.",
+      "context": "self-modify llmProvider.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for llmProvider.ts: Add timeout guard to fetch calls in chatCompletion",
+      "applicableTo": [
+        "llmProvider.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782462518328,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782462575184_gy549a",
+      "category": "antipattern",
+      "title": "Failure: Add null guard before accessing context.artifacts in debugger/security userMessage",
+      "description": "Failed to apply \"Add null guard before accessing context.artifacts in debugger/security userMessage\" to multiAgent.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify multiAgent.ts reliability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for multiAgent.ts: Add null guard before accessing context.artifacts in debugger/security userMessage — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "multiAgent.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782462575184,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782462584694_cs703n",
+      "category": "antipattern",
+      "title": "Failure: Replace empty catch block with log.warn",
+      "description": "Failed to apply \"Replace empty catch block with log.warn\" to reactEngine.ts. Reason: sandboxVerifier.quickValidate rejected proposal: Duplicate declaration: function calling; Duplicate declaration: function calling; Duplicate declaration: function calling. Avoid similar changes.",
+      "context": "self-modify reactEngine.ts reliability",
+      "outcome": "failure: sandboxVerifier.quickValidate rejected proposal: Duplicate declaration: function calling; Duplicate declaration: function calling; Duplicate declaration: function calling",
+      "lesson": "Avoid for reactEngine.ts: Replace empty catch block with log.warn — causes sandboxVerifier.quickValidate rejected proposal: Duplicate declaration: function calling; Duplicate declaration: function calling; Duplicate declaration: function calling",
+      "applicableTo": [
+        "reactEngine.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782462584694,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782463000702_7yk6mx",
+      "category": "success",
+      "title": "Success: Add null guard before .filter() on evaluations",
+      "description": "Successfully applied \"Add null guard before .filter() on evaluations\" to selfConsistency.ts (reliability). Health: improved.",
+      "context": "self-modify selfConsistency.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for selfConsistency.ts: Add null guard before .filter() on evaluations",
+      "applicableTo": [
+        "selfConsistency.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782463000702,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782463019902_c5bcti",
+      "category": "antipattern",
+      "title": "Failure: Fix nested function inside selectProvider",
+      "description": "Failed to apply \"Fix nested function inside selectProvider\" to adaptiveRouter.ts. Reason: Syntax check failed — proposal refined but still has errors (queued for retry). Avoid similar changes.",
+      "context": "self-modify adaptiveRouter.ts reliability",
+      "outcome": "failure: Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "lesson": "Avoid for adaptiveRouter.ts: Fix nested function inside selectProvider — causes Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "applicableTo": [
+        "adaptiveRouter.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782463019902,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782463194247_aqjwie",
+      "category": "success",
+      "title": "Success: Replace empty catch blocks with log.warn",
+      "description": "Successfully applied \"Replace empty catch blocks with log.warn\" to contextBus.ts (reliability). Health: improved.",
+      "context": "self-modify contextBus.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for contextBus.ts: Replace empty catch blocks with log.warn",
+      "applicableTo": [
+        "contextBus.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782463194247,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782463211290_g34mxi",
+      "category": "success",
+      "title": "Success: Add null guard before .filter() on evaluations",
+      "description": "Successfully applied \"Add null guard before .filter() on evaluations\" to selfConsistency.ts (reliability). Health: improved.",
+      "context": "self-modify selfConsistency.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for selfConsistency.ts: Add null guard before .filter() on evaluations",
+      "applicableTo": [
+        "selfConsistency.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782463211290,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782463388632_z2gb5h",
+      "category": "success",
+      "title": "Success: Add null guard before .some() on ALLOWED_GIT_PATTERNS",
+      "description": "Successfully applied \"Add null guard before .some() on ALLOWED_GIT_PATTERNS\" to gitSandbox.ts (reliability). Health: improved.",
+      "context": "self-modify gitSandbox.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for gitSandbox.ts: Add null guard before .some() on ALLOWED_GIT_PATTERNS",
+      "applicableTo": [
+        "gitSandbox.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782463388632,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782463395501_43fkz6",
+      "category": "success",
+      "title": "Add null guard before .some() on ALLOWED_GIT_PATTERNS",
+      "description": "RSI commit: reliability improvement to gitSandbox.ts",
+      "context": "gitSandbox.ts",
+      "outcome": "Committed with confidence 0.84",
+      "lesson": "RSI applied: The ALLOWED_GIT_PATTERNS array could theoretically be mutated or undefined in edge cases. Adding a guard ensures the .some() call never throws a TypeError, improving reliability.",
+      "applicableTo": [
+        "gitSandbox.ts",
+        "reliability"
+      ],
+      "confidence": 0.837313787134496,
+      "createdAt": 1782463395501,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782463404031_iuxl79",
+      "category": "success",
+      "title": "Success: Add null guard before content.length access",
+      "description": "Successfully applied \"Add null guard before content.length access\" to aiMemory.ts (reliability). Health: improved.",
+      "context": "self-modify aiMemory.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for aiMemory.ts: Add null guard before content.length access",
+      "applicableTo": [
+        "aiMemory.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782463404031,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782463416550_6hzy4n",
+      "category": "success",
+      "title": "Success: Add null guard before content.length access",
+      "description": "Successfully applied \"Add null guard before content.length access\" to aiMemory.ts (reliability). Health: improved.",
+      "context": "self-modify aiMemory.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for aiMemory.ts: Add null guard before content.length access",
+      "applicableTo": [
+        "aiMemory.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782463416550,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782463422613_h3ni1d",
+      "category": "success",
+      "title": "Add null guard before content.length access",
+      "description": "RSI commit: reliability improvement to aiMemory.ts",
+      "context": "aiMemory.ts",
+      "outcome": "Committed with confidence 0.87",
+      "lesson": "RSI applied: The function writeAndromedaMemory accesses content.length without checking if content is a string, which could throw if called with undefined or null. Adding a guard prevents a potential runtime crash and improves reliability.",
+      "applicableTo": [
+        "aiMemory.ts",
+        "reliability"
+      ],
+      "confidence": 0.8734671965823652,
+      "createdAt": 1782463422613,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782463529376_lwvlg8",
+      "category": "antipattern",
+      "title": "Failure: Fix nested function inside selectProvider",
+      "description": "Failed to apply \"Fix nested function inside selectProvider\" to adaptiveRouter.ts. Reason: Syntax check failed — proposal refined but still has errors (queued for retry). Avoid similar changes.",
+      "context": "self-modify adaptiveRouter.ts reliability",
+      "outcome": "failure: Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "lesson": "Avoid for adaptiveRouter.ts: Fix nested function inside selectProvider — causes Syntax check failed — proposal refined but still has errors (queued for retry)",
+      "applicableTo": [
+        "adaptiveRouter.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782463529376,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782463578708_8w1aj7",
+      "category": "antipattern",
+      "title": "Failure: Add null guard before accessing context.artifacts in debugger/security userMessage",
+      "description": "Failed to apply \"Add null guard before accessing context.artifacts in debugger/security userMessage\" to multiAgent.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify multiAgent.ts reliability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for multiAgent.ts: Add null guard before accessing context.artifacts in debugger/security userMessage — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "multiAgent.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782463578708,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782463879172_phj24u",
+      "category": "success",
+      "title": "Success: Replace console.warn with structured logging",
+      "description": "Successfully applied \"Replace console.warn with structured logging\" to selfDocumentation.ts (reliability). Health: improved.",
+      "context": "self-modify selfDocumentation.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for selfDocumentation.ts: Replace console.warn with structured logging",
+      "applicableTo": [
+        "selfDocumentation.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782463879172,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782463885119_xuu5e6",
+      "category": "antipattern",
+      "title": "Failure: Replace synchronous fs.readFileSync with async fs.promises.readFile in analyzeAndPropose",
+      "description": "Failed to apply \"Replace synchronous fs.readFileSync with async fs.promises.readFile in analyzeAndPropose\" to selfImprove.ts. Reason: sandboxVerifier.quickValidate rejected proposal: Duplicate declaration: function signature. Avoid similar changes.",
+      "context": "self-modify selfImprove.ts performance",
+      "outcome": "failure: sandboxVerifier.quickValidate rejected proposal: Duplicate declaration: function signature",
+      "lesson": "Avoid for selfImprove.ts: Replace synchronous fs.readFileSync with async fs.promises.readFile in analyzeAndPropose — causes sandboxVerifier.quickValidate rejected proposal: Duplicate declaration: function signature",
+      "applicableTo": [
+        "selfImprove.ts",
+        "performance"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782463885119,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782464092957_n9k5tc",
+      "category": "success",
+      "title": "Success: Add .unref() to cycleTimer to prevent vitest worker hangs",
+      "description": "Successfully applied \"Add .unref() to cycleTimer to prevent vitest worker hangs\" to rsiEngine.ts (performance). Health: improved.",
+      "context": "self-modify rsiEngine.ts performance",
+      "outcome": "success",
+      "lesson": "Pattern works for rsiEngine.ts: Add .unref() to cycleTimer to prevent vitest worker hangs",
+      "applicableTo": [
+        "rsiEngine.ts",
+        "performance"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782464092957,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782464149533_sln5ue",
+      "category": "success",
+      "title": "Success: Add .unref() to cycleTimer to prevent vitest worker hangs",
+      "description": "Successfully applied \"Add .unref() to cycleTimer to prevent vitest worker hangs\" to rsiEngine.ts (performance). Health: improved.",
+      "context": "self-modify rsiEngine.ts performance",
+      "outcome": "success",
+      "lesson": "Pattern works for rsiEngine.ts: Add .unref() to cycleTimer to prevent vitest worker hangs",
+      "applicableTo": [
+        "rsiEngine.ts",
+        "performance"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782464149533,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782464164775_r3vgdj",
+      "category": "antipattern",
+      "title": "Failure: Replace synchronous fs.readFileSync with async fs.promises.readFile in analyzeAndPropose",
+      "description": "Failed to apply \"Replace synchronous fs.readFileSync with async fs.promises.readFile in analyzeAndPropose\" to selfImprove.ts. Reason: sandboxVerifier.quickValidate rejected proposal: Duplicate declaration: function signature. Avoid similar changes.",
+      "context": "self-modify selfImprove.ts performance",
+      "outcome": "failure: sandboxVerifier.quickValidate rejected proposal: Duplicate declaration: function signature",
+      "lesson": "Avoid for selfImprove.ts: Replace synchronous fs.readFileSync with async fs.promises.readFile in analyzeAndPropose — causes sandboxVerifier.quickValidate rejected proposal: Duplicate declaration: function signature",
+      "applicableTo": [
+        "selfImprove.ts",
+        "performance"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782464164775,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782464264572_x3bx8o",
+      "category": "success",
+      "title": "Success: Replace console.warn with structured logging",
+      "description": "Successfully applied \"Replace console.warn with structured logging\" to selfDocumentation.ts (reliability). Health: improved.",
+      "context": "self-modify selfDocumentation.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for selfDocumentation.ts: Replace console.warn with structured logging",
+      "applicableTo": [
+        "selfDocumentation.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782464264572,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782464352341_vciwyr",
+      "category": "antipattern",
+      "title": "Failure: Add null guard before .match() call in runSemanticChecks",
+      "description": "Failed to apply \"Add null guard before .match() call in runSemanticChecks\" to distributedProofConsensus.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify distributedProofConsensus.ts reliability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for distributedProofConsensus.ts: Add null guard before .match() call in runSemanticChecks — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "distributedProofConsensus.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782464352341,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782464433985_95t4hb",
+      "category": "success",
+      "title": "Success: Add null guard before evals.length access",
+      "description": "Successfully applied \"Add null guard before evals.length access\" to realEvalHarness.ts (reliability). Health: improved.",
+      "context": "self-modify realEvalHarness.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for realEvalHarness.ts: Add null guard before evals.length access",
+      "applicableTo": [
+        "realEvalHarness.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782464433985,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782464526370_gw13r3",
+      "category": "antipattern",
+      "title": "Failure: Replace setImmediate with Promise-based yield in apply loop",
+      "description": "Failed to apply \"Replace setImmediate with Promise-based yield in apply loop\" to continuousImprover.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify continuousImprover.ts performance",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for continuousImprover.ts: Replace setImmediate with Promise-based yield in apply loop — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "continuousImprover.ts",
+        "performance"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782464526370,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782464678996_d7brd4",
+      "category": "success",
+      "title": "Success: Replace synchronous fs.appendFileSync with async write in recordCost",
+      "description": "Successfully applied \"Replace synchronous fs.appendFileSync with async write in recordCost\" to costOptimizer.ts (performance). Health: improved.",
+      "context": "self-modify costOptimizer.ts performance",
+      "outcome": "success",
+      "lesson": "Pattern works for costOptimizer.ts: Replace synchronous fs.appendFileSync with async write in recordCost",
+      "applicableTo": [
+        "costOptimizer.ts",
+        "performance"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782464678996,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782464849875_wx4rph",
+      "category": "success",
+      "title": "Success: Replace empty catch blocks with log.warn in generateSuggestions",
+      "description": "Successfully applied \"Replace empty catch blocks with log.warn in generateSuggestions\" to aiPlanning.ts (reliability). Health: improved.",
+      "context": "self-modify aiPlanning.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for aiPlanning.ts: Replace empty catch blocks with log.warn in generateSuggestions",
+      "applicableTo": [
+        "aiPlanning.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782464849875,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782464982640_i49zr6",
+      "category": "success",
+      "title": "Success: Replace console.log with structured logger in streamAIResponseWithContext",
+      "description": "Successfully applied \"Replace console.log with structured logger in streamAIResponseWithContext\" to aiStreaming.ts (reliability). Health: improved.",
+      "context": "self-modify aiStreaming.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for aiStreaming.ts: Replace console.log with structured logger in streamAIResponseWithContext",
+      "applicableTo": [
+        "aiStreaming.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782464982640,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782465265264_gmru1l",
+      "category": "antipattern",
+      "title": "Failure: Fix nested function inside selectProvider",
+      "description": "Failed to apply \"Fix nested function inside selectProvider\" to adaptiveRouter.ts. Reason: Syntax check failed — refinement generation failed. Avoid similar changes.",
+      "context": "self-modify adaptiveRouter.ts reliability",
+      "outcome": "failure: Syntax check failed — refinement generation failed",
+      "lesson": "Avoid for adaptiveRouter.ts: Fix nested function inside selectProvider — causes Syntax check failed — refinement generation failed",
+      "applicableTo": [
+        "adaptiveRouter.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782465265264,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782465303194_068n7l",
+      "category": "antipattern",
+      "title": "Failure: Add null guard before accessing context.artifacts in debugger/security userMessage",
+      "description": "Failed to apply \"Add null guard before accessing context.artifacts in debugger/security userMessage\" to multiAgent.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify multiAgent.ts reliability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for multiAgent.ts: Add null guard before accessing context.artifacts in debugger/security userMessage — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "multiAgent.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782465303194,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782465672562_42q3ec",
+      "category": "success",
+      "title": "Success: Extract magic numbers into named constants",
+      "description": "Successfully applied \"Extract magic numbers into named constants\" to rsiScheduler.ts (readability). Health: improved.",
+      "context": "self-modify rsiScheduler.ts readability",
+      "outcome": "success",
+      "lesson": "Pattern works for rsiScheduler.ts: Extract magic numbers into named constants",
+      "applicableTo": [
+        "rsiScheduler.ts",
+        "readability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782465672562,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782465678472_1b6gg7",
+      "category": "success",
+      "title": "Extract magic numbers into named constants",
+      "description": "RSI commit: readability improvement to rsiScheduler.ts",
+      "context": "rsiScheduler.ts",
+      "outcome": "Committed with confidence 0.79",
+      "lesson": "RSI applied: The file contains several magic numbers (500, 0.45, 3600, 168, 1) that obscure their meaning. Extracting them into named constants improves code readability and maintainability by making the intent explicit.",
+      "applicableTo": [
+        "rsiScheduler.ts",
+        "readability"
+      ],
+      "confidence": 0.7892842863787819,
+      "createdAt": 1782465678472,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782465698298_a68olo",
+      "category": "success",
+      "title": "Success: Add null guard before .find() in disableConstraint",
+      "description": "Successfully applied \"Add null guard before .find() in disableConstraint\" to memoryForgettingCurve.ts (reliability). Health: improved.",
+      "context": "self-modify memoryForgettingCurve.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for memoryForgettingCurve.ts: Add null guard before .find() in disableConstraint",
+      "applicableTo": [
+        "memoryForgettingCurve.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782465698298,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782465704044_635aup",
+      "category": "success",
+      "title": "Add null guard before .find() in disableConstraint",
+      "description": "RSI commit: reliability improvement to memoryForgettingCurve.ts",
+      "context": "memoryForgettingCurve.ts",
+      "outcome": "Committed with confidence 0.35",
+      "lesson": "RSI applied: The .find() call in disableConstraint is safe because it's on an array, but the function lacks a guard for the case where the constraint is not found, which could lead to a runtime error when trying to access properties on undefined. Adding a null check prevents potential crashes and improves reliability.",
+      "applicableTo": [
+        "memoryForgettingCurve.ts",
+        "reliability"
+      ],
+      "confidence": 0.35,
+      "createdAt": 1782465704044,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782465721897_ziqpjf",
+      "category": "success",
+      "title": "Success: Add null guard before JSON.parse in querySpecialist",
+      "description": "Successfully applied \"Add null guard before JSON.parse in querySpecialist\" to swarmSpecialistVoting.ts (reliability). Health: improved.",
+      "context": "self-modify swarmSpecialistVoting.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for swarmSpecialistVoting.ts: Add null guard before JSON.parse in querySpecialist",
+      "applicableTo": [
+        "swarmSpecialistVoting.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782465721897,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782465728566_7m19v0",
+      "category": "success",
+      "title": "Add null guard before JSON.parse in querySpecialist",
+      "description": "RSI commit: reliability improvement to swarmSpecialistVoting.ts",
+      "context": "swarmSpecialistVoting.ts",
+      "outcome": "Committed with confidence 0.89",
+      "lesson": "RSI applied: The JSON.parse call in querySpecialist can throw if the AI returns malformed JSON, causing an unhandled rejection that crashes the voting session. Adding a try/catch around JSON.parse ensures graceful fallback to a default vote, maintaining system resilience.",
+      "applicableTo": [
+        "swarmSpecialistVoting.ts",
+        "reliability"
+      ],
+      "confidence": 0.8883864243490426,
+      "createdAt": 1782465728567,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782465751732_fnm2bd",
+      "category": "success",
+      "title": "Success: Add null guard before Object.keys on imported module",
+      "description": "Successfully applied \"Add null guard before Object.keys on imported module\" to benchmarkRunner.ts (reliability). Health: improved.",
+      "context": "self-modify benchmarkRunner.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for benchmarkRunner.ts: Add null guard before Object.keys on imported module",
+      "applicableTo": [
+        "benchmarkRunner.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782465751732,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782465792555_d2qwzu",
+      "category": "antipattern",
+      "title": "Failure: Add null guard before accessing context.artifacts in debugger/security userMessage",
+      "description": "Failed to apply \"Add null guard before accessing context.artifacts in debugger/security userMessage\" to multiAgent.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify multiAgent.ts reliability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for multiAgent.ts: Add null guard before accessing context.artifacts in debugger/security userMessage — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "multiAgent.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782465792555,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782465927256_5sxgm3",
+      "category": "success",
+      "title": "Success: Add null check for affectedFiles before join",
+      "description": "Successfully applied \"Add null check for affectedFiles before join\" to consensusEngine.ts (reliability). Health: improved.",
+      "context": "self-modify consensusEngine.ts reliability",
+      "outcome": "success",
+      "lesson": "Pattern works for consensusEngine.ts: Add null check for affectedFiles before join",
+      "applicableTo": [
+        "consensusEngine.ts",
+        "reliability"
+      ],
+      "confidence": 0.8,
+      "createdAt": 1782465927256,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782465950562_ojfsym",
+      "category": "antipattern",
+      "title": "Failure: Add null guard before .find() in runTest",
+      "description": "Failed to apply \"Add null guard before .find() in runTest\" to testGenerator.ts. Reason: sandboxVerifier.quickValidate rejected proposal: Unbalanced braces: 176 open, 171 close. Avoid similar changes.",
+      "context": "self-modify testGenerator.ts reliability",
+      "outcome": "failure: sandboxVerifier.quickValidate rejected proposal: Unbalanced braces: 176 open, 171 close",
+      "lesson": "Avoid for testGenerator.ts: Add null guard before .find() in runTest — causes sandboxVerifier.quickValidate rejected proposal: Unbalanced braces: 176 open, 171 close",
+      "applicableTo": [
+        "testGenerator.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782465950562,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782483226079_dd2jq4",
+      "category": "antipattern",
+      "title": "Failure: Add null guard before accessing context.artifacts in debugger/security userMessage",
+      "description": "Failed to apply \"Add null guard before accessing context.artifacts in debugger/security userMessage\" to multiAgent.ts. Reason: Tests failed after applying — automatically rolled back. Avoid similar changes.",
+      "context": "self-modify multiAgent.ts reliability",
+      "outcome": "failure: Tests failed after applying — automatically rolled back",
+      "lesson": "Avoid for multiAgent.ts: Add null guard before accessing context.artifacts in debugger/security userMessage — causes Tests failed after applying — automatically rolled back",
+      "applicableTo": [
+        "multiAgent.ts",
+        "reliability"
+      ],
+      "confidence": 0.9,
+      "createdAt": 1782483226079,
+      "relatedProposalIds": []
+    },
+    {
+      "id": "learn_1782483442253_znngea",
+      "category": "antipattern",
+      "title": "Goal execution: Reduce Response Latency",
+      "description": "Processed 3 sub-goals, 0 succeeded",
+      "context": "Goal: Reduce Response Latency (performance)",
+      "outcome": "no progress",
+      "lesson": "Processed 3 sub-goals, 0 succeeded",
+      "applicableTo": [
+        "recursiveGoals",
+        "selfImprove"
+      ],
+      "confidence": 0.7,
+      "createdAt": 1782483442253,
+      "relatedProposalIds": []
     }
   ],
   "capabilities": [
@@ -5399,5 +6471,5 @@
     }
   ],
   "_version": "5.17.0",
-  "_lastUpdated": "2026-06-25T21:26:28.985Z"
+  "_lastUpdated": "2026-06-26T14:26:46.529Z"
 }

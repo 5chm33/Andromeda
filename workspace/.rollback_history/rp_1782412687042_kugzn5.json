@@ -1,8 +1,0 @@
-{
-  "id": "rp_1782412687042_kugzn5",
-  "description": "Before proposal prop_1782412626647_iuacv8: Add null check before rollbackPoints.find in rollbackTo",
-  "timestamp": 1782412687042,
-  "author": "self-improve",
-  "files": [],
-  "metadata": {}
-}

@@ -1,8 +1,0 @@
-{
-  "id": "rp_1782411486690_c9s5eu",
-  "description": "Before proposal prop_1782405133815_kvxpwn: Add null guard before graph.get in findCircularDeps",
-  "timestamp": 1782411486690,
-  "author": "self-improve",
-  "files": [],
-  "metadata": {}
-}

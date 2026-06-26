@@ -5,6 +5,1749 @@ Every entry represents a code change that Andromeda proposed, validated, and app
 
 ---
 
+## [12.12.0] 2026-06-26 14:26:41 — `ai.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test feature
+
+> Rationale for feature.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 14:26:41 — `ai.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test readability
+
+> Rationale for readability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 14:26:41 — `ai.ts`
+
+**Category:** security | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test security
+
+> Rationale for security.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 14:26:41 — `ai.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test reliability
+
+> Rationale for reliability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 14:26:41 — `ai.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test performance
+
+> Rationale for performance.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 14:26:41 — `b.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry B
+
+> Rationale B.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 14:26:41 — `a.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry A
+
+> Rationale A.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 14:26:41 — `testTarget.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Audit 11 test entry
+
+> Test rationale.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 14:26:41 — `selfImprove.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Improved error handling
+
+> Better null checks.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 09:24:46 — `ai.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test feature
+
+> Rationale for feature.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 09:24:46 — `ai.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test readability
+
+> Rationale for readability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 09:24:46 — `ai.ts`
+
+**Category:** security | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test security
+
+> Rationale for security.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 09:24:46 — `ai.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test reliability
+
+> Rationale for reliability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 09:24:46 — `ai.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test performance
+
+> Rationale for performance.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 09:24:46 — `b.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry B
+
+> Rationale B.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 09:24:46 — `a.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry A
+
+> Rationale A.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 09:24:46 — `testTarget.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Audit 11 test entry
+
+> Test rationale.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 09:24:46 — `selfImprove.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Improved error handling
+
+> Better null checks.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 09:22:08 — `swarmSpecialistVoting.ts`
+
+**Category:** reliability | **Impact:** high | **Confidence:** 89%
+**Change:** Add null guard before JSON.parse in querySpecialist
+
+> The JSON.parse call in querySpecialist can throw if the AI returns malformed JSON, causing an unhandled rejection that crashes the voting session.
+> Adding a try/catch around JSON.parse ensures graceful fallback to a default vote, maintaining system resilience.
+
+```diff
+-     const raw = response.choices[0]?.message?.content || "{}";
+-     const parsed = JSON.parse(raw);
+---
++     const raw = response.choices[0]?.message?.content || "{}";
++     let parsed: any;
++     try {
++       parsed = JSON.parse(raw);
++     } catch {
++       parsed = {};
++     }
+```
+
+---
+
+## [12.12.0] 2026-06-26 09:21:44 — `memoryForgettingCurve.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** 35%
+**Change:** Add null guard before .find() in disableConstraint
+
+> The .find() call in disableConstraint is safe because it's on an array, but the function lacks a guard for the case where the constraint is not found, which could lead to a runtime error when trying to access properties on undefined.
+> Adding a null check prevents potential crashes and improves reliability.
+
+```diff
+- export function disableConstraint(constraintId: string): void {
+-   const constraint = constraints.find(c => c.id === constraintId);
+-   if (!constraint) return;
+-   constraint.enabled = false;
+- }
+---
++ export function disableConstraint(constraintId: string): void {
++   const constraint = constraints.find(c => c.id === constraintId);
++   if (!constraint) {
++     console.warn(`Constraint with id ${constraintId} not found`);
++     return;
++   }
++   constraint.enabled = false;
++ }
+```
+
+---
+
+## [12.12.0] 2026-06-26 09:21:18 — `rsiScheduler.ts`
+
+**Category:** readability | **Impact:** low | **Confidence:** 79%
+**Change:** Extract magic numbers into named constants
+
+> The file contains several magic numbers (500, 0.45, 3600, 168, 1) that obscure their meaning.
+> Extracting them into named constants improves code readability and maintainability by making the intent explicit.
+
+```diff
+-   const MAX_LOG_ENTRIES = 500;
+-   entries.push(entry);
+-   // Keep last MAX_LOG_ENTRIES entries
+-   if (entries.length > MAX_LOG_ENTRIES) entries = entries.slice(-MAX_LOG_ENTRIES);
+---
++   const MAX_LOG_ENTRIES = 500;
++   entries.push(entry);
++   // Keep last MAX_LOG_ENTRIES entries
++   if (entries.length > MAX_LOG_ENTRIES) entries = entries.slice(-MAX_LOG_ENTRIES);
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:47:52 — `ai.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test feature
+
+> Rationale for feature.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:47:52 — `ai.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test readability
+
+> Rationale for readability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:47:52 — `ai.ts`
+
+**Category:** security | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test security
+
+> Rationale for security.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:47:52 — `ai.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test reliability
+
+> Rationale for reliability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:47:52 — `ai.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test performance
+
+> Rationale for performance.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:47:52 — `b.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry B
+
+> Rationale B.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:47:52 — `a.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry A
+
+> Rationale A.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:47:52 — `testTarget.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Audit 11 test entry
+
+> Test rationale.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:47:52 — `selfImprove.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Improved error handling
+
+> Better null checks.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:43:42 — `aiMemory.ts`
+
+**Category:** reliability | **Impact:** high | **Confidence:** 87%
+**Change:** Add null guard before content.length access
+
+> The function writeAndromedaMemory accesses content.length without checking if content is a string, which could throw if called with undefined or null.
+> Adding a guard prevents a potential runtime crash and improves reliability.
+
+```diff
+- export async function writeAndromedaMemory(content: string): Promise<{ path: string; chars: number }> {
+-   const memPath = getAndromedaMemoryPath();
+-   const dir = path.dirname(memPath);
+  
+-   if (!fs.existsSync(dir)) {
+-     fs.mkdirSync(dir, { recursive: true });
+-   }
+  
+-   // If file exists, append with a timestamp header; otherwise create fresh
+-   if (fs.existsSync(memPath)) {
+-     const timestamp = new Date().toISOString();
+-     const appended = `\n\n---\n*Updated: ${timestamp}*\n\n${content}`;
+-     fs.appendFileSync(memPath, appended, "utf8");
+-     const chars = fs.statSync(memPath).size;
+-     log.info(`Appended ${content.length} chars to ANDROMEDA.md (total: ${chars} bytes)`);
+-     return { path: memPath, chars };
+-   } else {
+-     const header = `# ANDROMEDA Project Memory\n*Created: ${new Date().toISOString()}*\n\n`;
+-     fs.writeFileSync(memPath, header + content, "utf8");
+-     log.info(`Created ANDROMEDA.md with ${content.length} chars`);
+- ... (3 more lines)
+---
++ export async function writeAndromedaMemory(content: string): Promise<{ path: string; chars: number }> {
++   if (typeof content !== "string" || content.length === 0) {
++     log.warn("writeAndromedaMemory called with invalid content");
++     throw new Error("Content must be a non-empty string");
++   }
++   const memPath = getAndromedaMemoryPath();
++   const dir = path.dirname(memPath);
+  
++   if (!fs.existsSync(dir)) {
++     fs.mkdirSync(dir, { recursive: true });
++   }
+  
++   // If file exists, append with a timestamp header; otherwise create fresh
++   if (fs.existsSync(memPath)) {
++     const timestamp = new Date().toISOString();
++     const appended = `\n\n---\n*Updated: ${timestamp}*\n\n${content}`;
++     fs.appendFileSync(memPath, appended, "utf8");
++     const chars = fs.statSync(memPath).size;
++     log.info(`Appended ${content.length} chars to ANDROMEDA.md (total: ${chars} bytes)`);
++     return { path: memPath, chars };
++ ... (7 more lines)
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:43:15 — `gitSandbox.ts`
+
+**Category:** reliability | **Impact:** low | **Confidence:** 84%
+**Change:** Add null guard before .some() on ALLOWED_GIT_PATTERNS
+
+> The ALLOWED_GIT_PATTERNS array could theoretically be mutated or undefined in edge cases.
+> Adding a guard ensures the .some() call never throws a TypeError, improving reliability.
+
+```diff
+-   // Check against whitelist
+-   const allowed = ALLOWED_GIT_PATTERNS.some(pattern => pattern.test(trimmed));
+-   if (!allowed) {
+-     throw new GitCommandNotAllowedError(
+-       trimmed,
+-       `git subcommand not in whitelist. Allowed: init, add, commit, push, checkout, tag, remote, rev-parse, diff, log, status`
+-     );
+-   }
+---
++   // Check against whitelist
++   const allowed = ALLOWED_GIT_PATTERNS && ALLOWED_GIT_PATTERNS.some(pattern => pattern.test(trimmed));
++   if (!allowed) {
++     throw new GitCommandNotAllowedError(
++       trimmed,
++       `git subcommand not in whitelist. Allowed: init, add, commit, push, checkout, tag, remote, rev-parse, diff, log, status`
++     );
++   }
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:07:18 — `ai.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test feature
+
+> Rationale for feature.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:07:18 — `ai.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test readability
+
+> Rationale for readability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:07:18 — `ai.ts`
+
+**Category:** security | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test security
+
+> Rationale for security.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:07:18 — `ai.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test reliability
+
+> Rationale for reliability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:07:18 — `ai.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test performance
+
+> Rationale for performance.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:07:18 — `b.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry B
+
+> Rationale B.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:07:17 — `a.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry A
+
+> Rationale A.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:07:17 — `testTarget.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Audit 11 test entry
+
+> Test rationale.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:07:17 — `selfImprove.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Improved error handling
+
+> Better null checks.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:05:47 — `rsiDb.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** 87%
+**Change:** Add null guard before .map() on DB rows
+
+> The dbLoadProposals function calls .map() on rows[0] without checking if it's null or undefined, which would throw a TypeError if the DB returns no rows.
+> Adding a null guard ensures the function returns an empty array instead of crashing.
+
+```diff
+-       return (rows[0] as any[]).map((r: any) => ({
+-         id: r.id,
+-         targetFile: r.target_file,
+-         title: r.title,
+-         rationale: r.rationale,
+-         category: r.category,
+-         impact: r.impact,
+-         confidence: r.confidence,
+-         diff: r.diff,
+-         originalSnippet: r.original_snippet,
+-         proposedSnippet: r.proposed_snippet,
+-         originalContent: "",
+-         proposedContent: "",
+-         createdAt: r.created_at,
+-         status: r.status,
+-       }));
+---
++       const rowsData = rows[0] as any[] | undefined;
++       if (!rowsData) return [];
++       return rowsData.map((r: any) => ({
++         id: r.id,
++         targetFile: r.target_file,
++         title: r.title,
++         rationale: r.rationale,
++         category: r.category,
++         impact: r.impact,
++         confidence: r.confidence,
++         diff: r.diff,
++         originalSnippet: r.original_snippet,
++         proposedSnippet: r.proposed_snippet,
++         originalContent: "",
++         proposedContent: "",
++         createdAt: r.created_at,
++         status: r.status,
++       }));
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:05:06 — `tenantManager.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** 92%
+**Change:** Add null check before registry.get in getOrDefaultTenant
+
+> getOrDefaultTenant uses a non-null assertion on registry.get('default') which could throw if the default tenant is missing.
+> Adding a fallback ensures the function never crashes and returns a valid tenant config.
+
+```diff
+- export function getOrDefaultTenant(tenantId: string): TenantConfig {
+-   return registry.get(tenantId) ?? registry.get("default")!;
+- }
+---
++ export function getOrDefaultTenant(tenantId: string): TenantConfig {
++   return registry.get(tenantId) ?? registry.get("default") ?? {
++     id: "default",
++     name: "Default Tenant",
++     quota: { ...UNLIMITED_QUOTA },
++     allowedModules: [],
++     blockedModules: [],
++     constitutionalAiEnabled: true,
++     goalDecompositionEnabled: true,
++     active: true,
++     createdAt: Date.now(),
++     updatedAt: Date.now(),
++   };
++ }
+```
+
+---
+
+## [12.12.0] 2026-06-26 08:04:04 — `selfMonitor.ts`
+
+**Category:** reliability | **Impact:** low | **Confidence:** 90%
+**Change:** Add null guard before filter in getMetricHistory
+
+> The getMetricHistory function calls samples.filter(...) without checking if samples is defined, which could cause a runtime error if samples is somehow null or undefined.
+> Adding a null guard ensures robustness and prevents potential crashes.
+
+```diff
+- export function getMetricHistory(type: MetricType, limit: number = 100): MetricSample[] {
+-   return samples.filter(s => s.type === type).slice(-limit);
+- }
+---
++ export function getMetricHistory(type: MetricType, limit: number = 100): MetricSample[] {
++   if (!samples) return [];
++   return samples.filter(s => s.type === type).slice(-limit);
++ }
+```
+
+---
+
+## [12.11.0] 2026-06-26 07:33:23 — `ai.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test feature
+
+> Rationale for feature.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.11.0] 2026-06-26 07:33:23 — `ai.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test readability
+
+> Rationale for readability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.11.0] 2026-06-26 07:33:23 — `ai.ts`
+
+**Category:** security | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test security
+
+> Rationale for security.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.11.0] 2026-06-26 07:33:23 — `ai.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test reliability
+
+> Rationale for reliability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.11.0] 2026-06-26 07:33:23 — `ai.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test performance
+
+> Rationale for performance.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.11.0] 2026-06-26 07:33:23 — `b.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry B
+
+> Rationale B.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.11.0] 2026-06-26 07:33:23 — `a.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry A
+
+> Rationale A.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.11.0] 2026-06-26 07:33:23 — `testTarget.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Audit 11 test entry
+
+> Test rationale.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.11.0] 2026-06-26 07:33:23 — `selfImprove.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Improved error handling
+
+> Better null checks.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.10.1] 2026-06-26 07:08:09 — `ai.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test feature
+
+> Rationale for feature.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.10.1] 2026-06-26 07:08:09 — `ai.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test readability
+
+> Rationale for readability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.10.1] 2026-06-26 07:08:09 — `ai.ts`
+
+**Category:** security | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test security
+
+> Rationale for security.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.10.1] 2026-06-26 07:08:09 — `ai.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test reliability
+
+> Rationale for reliability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.10.1] 2026-06-26 07:08:09 — `ai.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test performance
+
+> Rationale for performance.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.10.1] 2026-06-26 07:08:09 — `b.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry B
+
+> Rationale B.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.10.1] 2026-06-26 07:08:09 — `a.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry A
+
+> Rationale A.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.10.1] 2026-06-26 07:08:09 — `testTarget.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Audit 11 test entry
+
+> Test rationale.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.10.1] 2026-06-26 07:08:09 — `selfImprove.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Improved error handling
+
+> Better null checks.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.10.0] 2026-06-26 06:47:09 — `ai.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test feature
+
+> Rationale for feature.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.10.0] 2026-06-26 06:47:09 — `ai.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test readability
+
+> Rationale for readability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.10.0] 2026-06-26 06:47:09 — `ai.ts`
+
+**Category:** security | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test security
+
+> Rationale for security.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.10.0] 2026-06-26 06:47:09 — `ai.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test reliability
+
+> Rationale for reliability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.10.0] 2026-06-26 06:47:09 — `ai.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test performance
+
+> Rationale for performance.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.10.0] 2026-06-26 06:47:09 — `b.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry B
+
+> Rationale B.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.10.0] 2026-06-26 06:47:09 — `a.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry A
+
+> Rationale A.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.10.0] 2026-06-26 06:47:09 — `testTarget.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Audit 11 test entry
+
+> Test rationale.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.10.0] 2026-06-26 06:47:09 — `selfImprove.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Improved error handling
+
+> Better null checks.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.9.1] 2026-06-26 06:36:11 — `ai.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test feature
+
+> Rationale for feature.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.9.1] 2026-06-26 06:36:11 — `ai.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test readability
+
+> Rationale for readability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.9.1] 2026-06-26 06:36:11 — `ai.ts`
+
+**Category:** security | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test security
+
+> Rationale for security.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.9.1] 2026-06-26 06:36:11 — `ai.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test reliability
+
+> Rationale for reliability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.9.1] 2026-06-26 06:36:11 — `ai.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test performance
+
+> Rationale for performance.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.9.1] 2026-06-26 06:36:11 — `b.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry B
+
+> Rationale B.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.9.1] 2026-06-26 06:36:11 — `a.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry A
+
+> Rationale A.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.9.1] 2026-06-26 06:36:11 — `testTarget.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Audit 11 test entry
+
+> Test rationale.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.9.1] 2026-06-26 06:36:11 — `selfImprove.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Improved error handling
+
+> Better null checks.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.9.1] 2026-06-26 06:17:50 — `ai.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test feature
+
+> Rationale for feature.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.9.1] 2026-06-26 06:17:50 — `ai.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test readability
+
+> Rationale for readability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.9.1] 2026-06-26 06:17:50 — `ai.ts`
+
+**Category:** security | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test security
+
+> Rationale for security.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.9.1] 2026-06-26 06:17:50 — `ai.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test reliability
+
+> Rationale for reliability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.9.1] 2026-06-26 06:17:50 — `ai.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test performance
+
+> Rationale for performance.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.9.1] 2026-06-26 06:17:50 — `b.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry B
+
+> Rationale B.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.9.1] 2026-06-26 06:17:50 — `a.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry A
+
+> Rationale A.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.9.1] 2026-06-26 06:17:50 — `testTarget.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Audit 11 test entry
+
+> Test rationale.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.9.1] 2026-06-26 06:17:50 — `selfImprove.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Improved error handling
+
+> Better null checks.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.8.1] 2026-06-26 05:41:49 — `ai.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test feature
+
+> Rationale for feature.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.8.1] 2026-06-26 05:41:49 — `ai.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test readability
+
+> Rationale for readability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.8.1] 2026-06-26 05:41:49 — `ai.ts`
+
+**Category:** security | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test security
+
+> Rationale for security.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.8.1] 2026-06-26 05:41:49 — `ai.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test reliability
+
+> Rationale for reliability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.8.1] 2026-06-26 05:41:49 — `ai.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test performance
+
+> Rationale for performance.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.8.1] 2026-06-26 05:41:49 — `b.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry B
+
+> Rationale B.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.8.1] 2026-06-26 05:41:49 — `a.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry A
+
+> Rationale A.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.8.1] 2026-06-26 05:41:49 — `testTarget.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Audit 11 test entry
+
+> Test rationale.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.8.1] 2026-06-26 05:41:49 — `selfImprove.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Improved error handling
+
+> Better null checks.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.8.1] 2026-06-26 04:11:51 — `ai.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test feature
+
+> Rationale for feature.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.8.1] 2026-06-26 04:11:51 — `ai.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test readability
+
+> Rationale for readability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.8.1] 2026-06-26 04:11:51 — `ai.ts`
+
+**Category:** security | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test security
+
+> Rationale for security.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.8.1] 2026-06-26 04:11:51 — `ai.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test reliability
+
+> Rationale for reliability.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.8.1] 2026-06-26 04:11:51 — `ai.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Test performance
+
+> Rationale for performance.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.8.1] 2026-06-26 04:11:51 — `b.ts`
+
+**Category:** feature | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry B
+
+> Rationale B.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.8.1] 2026-06-26 04:11:51 — `a.ts`
+
+**Category:** readability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Entry A
+
+> Rationale A.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.8.1] 2026-06-26 04:11:51 — `testTarget.ts`
+
+**Category:** performance | **Impact:** medium | **Confidence:** NaN%
+**Change:** Audit 11 test entry
+
+> Test rationale.
+
+```diff
+  
+---
+  
+```
+
+---
+
+## [12.8.1] 2026-06-26 04:11:51 — `selfImprove.ts`
+
+**Category:** reliability | **Impact:** medium | **Confidence:** NaN%
+**Change:** Improved error handling
+
+> Better null checks.
+
+```diff
+  
+---
+  
+```
+
+---
+
 ## [12.2.1] 2026-06-25 20:17:16 — `ai.ts`
 
 **Category:** feature | **Impact:** medium | **Confidence:** NaN%

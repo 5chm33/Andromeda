@@ -587,6 +587,449 @@
       "createdAt": "2026-06-25T21:25:09.897Z",
       "proposalId": "prop_1782421900174_0ezjtg",
       "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782459971156_qxtubu",
+      "filename": "ai.ts",
+      "backupPath": "ai_1782459971155.ts.bak",
+      "originalSize": 370,
+      "createdAt": "2026-06-26T07:46:11.156Z",
+      "proposalId": "prop_1782459557546_7gn4wd",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782460067176_5hsvjc",
+      "filename": "browser.ts",
+      "backupPath": "browser_1782460067175.ts.bak",
+      "originalSize": 18840,
+      "createdAt": "2026-06-26T07:47:47.176Z",
+      "proposalId": "prop_1782460043204_rc1j5f",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782460615358_ejjqen",
+      "filename": "aiStreaming.ts",
+      "backupPath": "aiStreaming_1782460615357.ts.bak",
+      "originalSize": 27046,
+      "createdAt": "2026-06-26T07:56:55.358Z",
+      "proposalId": "prop_1782460581436_yyy90z",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782460647375_uywk4u",
+      "filename": "aiPlanning.ts",
+      "backupPath": "aiPlanning_1782460647375.ts.bak",
+      "originalSize": 30665,
+      "createdAt": "2026-06-26T07:57:27.375Z",
+      "proposalId": "prop_1782460491190_w0mf4w",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782460705440_7snw0p",
+      "filename": "learnedConstraints.ts",
+      "backupPath": "learnedConstraints_1782460705440.ts.bak",
+      "originalSize": 7417,
+      "createdAt": "2026-06-26T07:58:25.440Z",
+      "proposalId": "prop_1782460326710_k3t2xf",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782460731890_6rgp33",
+      "filename": "knowledgeBaseConsolidation.ts",
+      "backupPath": "knowledgeBaseConsolidation_1782460731889.ts.bak",
+      "originalSize": 14515,
+      "createdAt": "2026-06-26T07:58:51.890Z",
+      "proposalId": "prop_1782459797333_t8ly7g",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782460765095_bxhhv1",
+      "filename": "aiZipEdit.ts",
+      "backupPath": "aiZipEdit_1782460765094.ts.bak",
+      "originalSize": 4494,
+      "createdAt": "2026-06-26T07:59:25.095Z",
+      "proposalId": "prop_1782459555619_aow6y0",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782460918914_0tb3yo",
+      "filename": "memory.ts",
+      "backupPath": "memory_1782460918914.ts.bak",
+      "originalSize": 27243,
+      "createdAt": "2026-06-26T08:01:58.914Z",
+      "proposalId": "prop_1782460875164_wc5zrj",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782461036218_6pc8bd",
+      "filename": "selfMonitor.ts",
+      "backupPath": "selfMonitor_1782461036217.ts.bak",
+      "originalSize": 25660,
+      "createdAt": "2026-06-26T08:03:56.218Z",
+      "proposalId": "prop_1782461016907_imvg1v",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782461097455_dlp60x",
+      "filename": "tenantManager.ts",
+      "backupPath": "tenantManager_1782461097455.ts.bak",
+      "originalSize": 11897,
+      "createdAt": "2026-06-26T08:04:57.455Z",
+      "proposalId": "prop_1782460784380_4vwaop",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782461136196_7ehdpe",
+      "filename": "rsiDb.ts",
+      "backupPath": "rsiDb_1782461136196.ts.bak",
+      "originalSize": 15402,
+      "createdAt": "2026-06-26T08:05:36.196Z",
+      "proposalId": "prop_1782460271377_5ey93i",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782461487321_yosg6w",
+      "filename": "streamRouter.ts",
+      "backupPath": "streamRouter_1782461487319.ts.bak",
+      "originalSize": 5825,
+      "createdAt": "2026-06-26T08:11:27.321Z",
+      "proposalId": "prop_1782461470849_scj8ac",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782461519657_6hoojc",
+      "filename": "codeIntel.ts",
+      "backupPath": "codeIntel_1782461519657.ts.bak",
+      "originalSize": 14559,
+      "createdAt": "2026-06-26T08:11:59.657Z",
+      "proposalId": "prop_1782461309108_62s0jo",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782461687246_pnwv6p",
+      "filename": "federatedLearning.ts",
+      "backupPath": "federatedLearning_1782461687246.ts.bak",
+      "originalSize": 22008,
+      "createdAt": "2026-06-26T08:14:47.246Z",
+      "proposalId": "prop_1782461654821_vlt1hz",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782462011745_t4takw",
+      "filename": "privilegeSeparation.ts",
+      "backupPath": "privilegeSeparation_1782462011745.ts.bak",
+      "originalSize": 13953,
+      "createdAt": "2026-06-26T08:20:11.745Z",
+      "proposalId": "prop_1782461973779_24ifte",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782462411919_hm7spn",
+      "filename": "contextManager.ts",
+      "backupPath": "contextManager_1782462411919.ts.bak",
+      "originalSize": 12823,
+      "createdAt": "2026-06-26T08:26:51.919Z",
+      "proposalId": "prop_1782462386612_rfr7hh",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782462516670_yxiugr",
+      "filename": "llmProvider.ts",
+      "backupPath": "llmProvider_1782462516670.ts.bak",
+      "originalSize": 52487,
+      "createdAt": "2026-06-26T08:28:36.670Z",
+      "proposalId": "prop_1782462194097_7hls6s",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782462543496_sy611d",
+      "filename": "multiAgent.ts",
+      "backupPath": "multiAgent_1782462543496.ts.bak",
+      "originalSize": 14047,
+      "createdAt": "2026-06-26T08:29:03.496Z",
+      "proposalId": "prop_1782461056710_oguorm",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782462575167_rxgpqh",
+      "filename": "multiAgent.ts",
+      "backupPath": "multiAgent_1782462575167.ts.bak",
+      "originalSize": 14047,
+      "createdAt": "2026-06-26T08:29:35.167Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1782462998918_ipq5t9",
+      "filename": "selfConsistency.ts",
+      "backupPath": "selfConsistency_1782462998918.ts.bak",
+      "originalSize": 14633,
+      "createdAt": "2026-06-26T08:36:38.918Z",
+      "proposalId": "prop_1782462949485_l3kxfc",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782463191401_nkr5sl",
+      "filename": "contextBus.ts",
+      "backupPath": "contextBus_1782463191401.ts.bak",
+      "originalSize": 19538,
+      "createdAt": "2026-06-26T08:39:51.401Z",
+      "proposalId": "prop_1782463150248_9nj5l9",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782463209495_wj1x6b",
+      "filename": "selfConsistency.ts",
+      "backupPath": "selfConsistency_1782463209495.ts.bak",
+      "originalSize": 14633,
+      "createdAt": "2026-06-26T08:40:09.495Z",
+      "proposalId": "prop_1782462949485_l3kxfc",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782463387066_egxbs0",
+      "filename": "gitSandbox.ts",
+      "backupPath": "gitSandbox_1782463387066.ts.bak",
+      "originalSize": 5363,
+      "createdAt": "2026-06-26T08:43:07.066Z",
+      "proposalId": "prop_1782463356016_jsxvxl",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782463402338_dqqmqp",
+      "filename": "aiMemory.ts",
+      "backupPath": "aiMemory_1782463402338.ts.bak",
+      "originalSize": 3153,
+      "createdAt": "2026-06-26T08:43:22.338Z",
+      "proposalId": "prop_1782463147187_opqho0",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782463414946_9m662n",
+      "filename": "aiMemory.ts",
+      "backupPath": "aiMemory_1782463414946.ts.bak",
+      "originalSize": 3343,
+      "createdAt": "2026-06-26T08:43:34.946Z",
+      "proposalId": "prop_1782463147187_opqho0",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782463547043_a8ihza",
+      "filename": "multiAgent.ts",
+      "backupPath": "multiAgent_1782463547043.ts.bak",
+      "originalSize": 14047,
+      "createdAt": "2026-06-26T08:45:47.043Z",
+      "proposalId": "prop_1782461056710_oguorm",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782463578686_w9v9zd",
+      "filename": "multiAgent.ts",
+      "backupPath": "multiAgent_1782463578686.ts.bak",
+      "originalSize": 14047,
+      "createdAt": "2026-06-26T08:46:18.686Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1782463877461_2sh2sd",
+      "filename": "selfDocumentation.ts",
+      "backupPath": "selfDocumentation_1782463877460.ts.bak",
+      "originalSize": 6137,
+      "createdAt": "2026-06-26T08:51:17.461Z",
+      "proposalId": "prop_1782463731154_fjkbgg",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782464054123_r7jj1g",
+      "filename": "rsiEngine.ts",
+      "backupPath": "rsiEngine_1782464054122.ts.bak",
+      "originalSize": 133207,
+      "createdAt": "2026-06-26T08:54:14.123Z",
+      "proposalId": "prop_1782463989075_ktt70k",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782464108794_g8xnih",
+      "filename": "rsiEngine.ts",
+      "backupPath": "rsiEngine_1782464108794.ts.bak",
+      "originalSize": 133215,
+      "createdAt": "2026-06-26T08:55:08.794Z",
+      "proposalId": "prop_1782463989075_ktt70k",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782464262992_lhuafr",
+      "filename": "selfDocumentation.ts",
+      "backupPath": "selfDocumentation_1782464262992.ts.bak",
+      "originalSize": 6137,
+      "createdAt": "2026-06-26T08:57:42.992Z",
+      "proposalId": "prop_1782463731154_fjkbgg",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782464350629_elaw9d",
+      "filename": "distributedProofConsensus.ts",
+      "backupPath": "distributedProofConsensus_1782464350628.ts.bak",
+      "originalSize": 17441,
+      "createdAt": "2026-06-26T08:59:10.629Z",
+      "proposalId": "prop_1782464334824_vfr747",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782464352314_q08h2r",
+      "filename": "distributedProofConsensus.ts",
+      "backupPath": "distributedProofConsensus_1782464352314.ts.bak",
+      "originalSize": 17464,
+      "createdAt": "2026-06-26T08:59:12.314Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1782464432338_vtkr8g",
+      "filename": "realEvalHarness.ts",
+      "backupPath": "realEvalHarness_1782464432337.ts.bak",
+      "originalSize": 9541,
+      "createdAt": "2026-06-26T09:00:32.338Z",
+      "proposalId": "prop_1782464408695_eobppn",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782464494669_zc0r8i",
+      "filename": "continuousImprover.ts",
+      "backupPath": "continuousImprover_1782464494669.ts.bak",
+      "originalSize": 38756,
+      "createdAt": "2026-06-26T09:01:34.669Z",
+      "proposalId": "prop_1782464447093_vitrol",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782464526337_0z9zh1",
+      "filename": "continuousImprover.ts",
+      "backupPath": "continuousImprover_1782464526337.ts.bak",
+      "originalSize": 38757,
+      "createdAt": "2026-06-26T09:02:06.337Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1782464677312_z9zrt5",
+      "filename": "costOptimizer.ts",
+      "backupPath": "costOptimizer_1782464677312.ts.bak",
+      "originalSize": 12322,
+      "createdAt": "2026-06-26T09:04:37.312Z",
+      "proposalId": "prop_1782464551861_z5l3gv",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782464831291_qfshtc",
+      "filename": "aiPlanning.ts",
+      "backupPath": "aiPlanning_1782464831291.ts.bak",
+      "originalSize": 30808,
+      "createdAt": "2026-06-26T09:07:11.291Z",
+      "proposalId": "prop_1782464785268_kauvr3",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782464977750_4hho24",
+      "filename": "aiStreaming.ts",
+      "backupPath": "aiStreaming_1782464977750.ts.bak",
+      "originalSize": 27044,
+      "createdAt": "2026-06-26T09:09:37.750Z",
+      "proposalId": "prop_1782464878600_hnvpds",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782465271362_i8yf9y",
+      "filename": "multiAgent.ts",
+      "backupPath": "multiAgent_1782465271362.ts.bak",
+      "originalSize": 14047,
+      "createdAt": "2026-06-26T09:14:31.362Z",
+      "proposalId": "prop_1782461056710_oguorm",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782465303162_ihoxae",
+      "filename": "multiAgent.ts",
+      "backupPath": "multiAgent_1782465303162.ts.bak",
+      "originalSize": 14047,
+      "createdAt": "2026-06-26T09:15:03.162Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1782465670779_leblx9",
+      "filename": "rsiScheduler.ts",
+      "backupPath": "rsiScheduler_1782465670779.ts.bak",
+      "originalSize": 14065,
+      "createdAt": "2026-06-26T09:21:10.779Z",
+      "proposalId": "prop_1782465664154_f9nruh",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782465696636_lnqofe",
+      "filename": "memoryForgettingCurve.ts",
+      "backupPath": "memoryForgettingCurve_1782465696636.ts.bak",
+      "originalSize": 8791,
+      "createdAt": "2026-06-26T09:21:36.636Z",
+      "proposalId": "prop_1782465535897_qwcg6g",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782465720216_p65mcc",
+      "filename": "swarmSpecialistVoting.ts",
+      "backupPath": "swarmSpecialistVoting_1782465720216.ts.bak",
+      "originalSize": 14259,
+      "createdAt": "2026-06-26T09:22:00.216Z",
+      "proposalId": "prop_1782465351740_myzrcn",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782465749203_0kkvbx",
+      "filename": "benchmarkRunner.ts",
+      "backupPath": "benchmarkRunner_1782465749202.ts.bak",
+      "originalSize": 13378,
+      "createdAt": "2026-06-26T09:22:29.203Z",
+      "proposalId": "prop_1782465738393_jnv7tr",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782465760594_uuk9dc",
+      "filename": "multiAgent.ts",
+      "backupPath": "multiAgent_1782465760594.ts.bak",
+      "originalSize": 14047,
+      "createdAt": "2026-06-26T09:22:40.594Z",
+      "proposalId": "prop_1782461056710_oguorm",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782465792509_9g5vff",
+      "filename": "multiAgent.ts",
+      "backupPath": "multiAgent_1782465792509.ts.bak",
+      "originalSize": 14047,
+      "createdAt": "2026-06-26T09:23:12.509Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1782465925197_l81oze",
+      "filename": "consensusEngine.ts",
+      "backupPath": "consensusEngine_1782465925197.ts.bak",
+      "originalSize": 10665,
+      "createdAt": "2026-06-26T09:25:25.197Z",
+      "proposalId": "prop_1782465575231_v74pt6",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782483192729_gk5sdb",
+      "filename": "multiAgent.ts",
+      "backupPath": "multiAgent_1782483192729.ts.bak",
+      "originalSize": 14047,
+      "createdAt": "2026-06-26T14:13:12.729Z",
+      "proposalId": "prop_1782461056710_oguorm",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782483226049_qbr5sj",
+      "filename": "multiAgent.ts",
+      "backupPath": "multiAgent_1782483226049.ts.bak",
+      "originalSize": 14047,
+      "createdAt": "2026-06-26T14:13:46.049Z",
+      "reason": "pre-rollback"
     }
   ],
   "audit": [
@@ -2227,6 +2670,1320 @@
       "result": "blocked",
       "details": "Constitution: proposed content contains forbidden pattern 'rm -rf /'",
       "timestamp": "2026-06-25T21:26:28.923Z"
+    },
+    {
+      "id": "audit_1782447061430_fe0ozi",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-26T04:11:01.430Z"
+    },
+    {
+      "id": "audit_1782447061436_1r0uxa",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-26T04:11:01.436Z"
+    },
+    {
+      "id": "audit_1782452490831_i8dvly",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-26T05:41:30.831Z"
+    },
+    {
+      "id": "audit_1782452490838_f7w7s4",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-26T05:41:30.838Z"
+    },
+    {
+      "id": "audit_1782454651562_k4767h",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-26T06:17:31.562Z"
+    },
+    {
+      "id": "audit_1782454651566_gvifok",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-26T06:17:31.566Z"
+    },
+    {
+      "id": "audit_1782455751804_am060y",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-26T06:35:51.804Z"
+    },
+    {
+      "id": "audit_1782455751810_qvjlf5",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-26T06:35:51.810Z"
+    },
+    {
+      "id": "audit_1782456411246_kww8rm",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-26T06:46:51.246Z"
+    },
+    {
+      "id": "audit_1782456411250_flo4jt",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-26T06:46:51.250Z"
+    },
+    {
+      "id": "audit_1782457664703_34apmq",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-26T07:07:44.703Z"
+    },
+    {
+      "id": "audit_1782457664709_pz9dv5",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-26T07:07:44.709Z"
+    },
+    {
+      "id": "audit_1782459178417_tgp2wk",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-26T07:32:58.417Z"
+    },
+    {
+      "id": "audit_1782459178423_90evkz",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-26T07:32:58.423Z"
+    },
+    {
+      "id": "audit_1782459964234_8g7d2a",
+      "action": "apply",
+      "proposalId": "prop_1782459841528_rxe15d",
+      "filename": "recursiveGoals.ts",
+      "result": "blocked",
+      "details": "sandboxVerifier.quickValidate rejected proposal: Unbalanced braces: 197 open, 199 close",
+      "timestamp": "2026-06-26T07:46:04.234Z"
+    },
+    {
+      "id": "audit_1782459976010_o70jry",
+      "action": "test",
+      "proposalId": "prop_1782459557546_7gn4wd",
+      "filename": "ai.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/ai.test.ts > ai module > should load without errors 2ms\n\n Test Files  1 passed (1)\n      Tests  1 passed (1)\n   Start at  07:46:12\n   Duration  3.54s",
+      "timestamp": "2026-06-26T07:46:16.010Z"
+    },
+    {
+      "id": "audit_1782459976011_wtc7e4",
+      "action": "apply",
+      "proposalId": "prop_1782459557546_7gn4wd",
+      "filename": "ai.ts",
+      "result": "success",
+      "details": "Applied proposal: Add JSDoc to exported functions in aiTokens, aiPrompts, aiStreaming",
+      "timestamp": "2026-06-26T07:46:16.011Z"
+    },
+    {
+      "id": "audit_1782460069297_hmdr9j",
+      "action": "test",
+      "proposalId": "prop_1782460043204_rc1j5f",
+      "filename": "browser.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/browser.test.ts > browseUrl > should execute without throwing 2ms\n ✓ server/browser.test.ts > browseUrl > should return correct type 0ms\n ✓ server/br",
+      "timestamp": "2026-06-26T07:47:49.297Z"
+    },
+    {
+      "id": "audit_1782460069299_zhvofy",
+      "action": "apply",
+      "proposalId": "prop_1782460043204_rc1j5f",
+      "filename": "browser.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null check before .length in browserExtractData",
+      "timestamp": "2026-06-26T07:47:49.299Z"
+    },
+    {
+      "id": "audit_1782460098247_1eddlk",
+      "action": "apply",
+      "proposalId": "prop_1782459753347_yuqfx5",
+      "filename": "grounding.ts",
+      "result": "blocked",
+      "details": "sandboxVerifier.quickValidate rejected proposal: Duplicate declaration: function names",
+      "timestamp": "2026-06-26T07:48:18.247Z"
+    },
+    {
+      "id": "audit_1782460619818_40p7k0",
+      "action": "test",
+      "proposalId": "prop_1782460581436_yyy90z",
+      "filename": "aiStreaming.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/aiStreaming.test.ts > aiStreaming > module loads without error 1ms\n ✓ server/aiStreaming.test.ts > aiStreaming > exports at least one function 0ms\n ✓",
+      "timestamp": "2026-06-26T07:56:59.818Z"
+    },
+    {
+      "id": "audit_1782460619820_egiqhd",
+      "action": "apply",
+      "proposalId": "prop_1782460581436_yyy90z",
+      "filename": "aiStreaming.ts",
+      "result": "success",
+      "details": "Applied proposal: Replace console.debug with structured log.debug",
+      "timestamp": "2026-06-26T07:56:59.820Z"
+    },
+    {
+      "id": "audit_1782460664652_yhafkp",
+      "action": "test",
+      "proposalId": "prop_1782460491190_w0mf4w",
+      "filename": "aiPlanning.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\nstdout | server/aiPlanning.test.ts > generateSubQueries > should execute without throwing\n[v6.17] Startup provider: kimi (LLM_MODEL=(not set), DEEPSEEK_KEY=set",
+      "timestamp": "2026-06-26T07:57:44.652Z"
+    },
+    {
+      "id": "audit_1782460664654_030y20",
+      "action": "apply",
+      "proposalId": "prop_1782460491190_w0mf4w",
+      "filename": "aiPlanning.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before .slice() on sources in streamAgentPlan",
+      "timestamp": "2026-06-26T07:57:44.654Z"
+    },
+    {
+      "id": "audit_1782460707090_w6mwfn",
+      "action": "test",
+      "proposalId": "prop_1782460326710_k3t2xf",
+      "filename": "learnedConstraints.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/learnedConstraints.test.ts > learnedConstraints > addLearnedConstraint adds a new constraint and returns it 2ms\n ✓ server/learnedConstraints.test.ts ",
+      "timestamp": "2026-06-26T07:58:27.090Z"
+    },
+    {
+      "id": "audit_1782460707092_liwwde",
+      "action": "apply",
+      "proposalId": "prop_1782460326710_k3t2xf",
+      "filename": "learnedConstraints.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before .find() in disableConstraint",
+      "timestamp": "2026-06-26T07:58:27.092Z"
+    },
+    {
+      "id": "audit_1782460733476_62keln",
+      "action": "test",
+      "proposalId": "prop_1782459797333_t8ly7g",
+      "filename": "knowledgeBaseConsolidation.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\nstdout | server/knowledgeBaseConsolidation.test.ts > knowledgeBaseConsolidation > should skip consolidation if not due and not forced\n[KBConsolidation] Next ru",
+      "timestamp": "2026-06-26T07:58:53.476Z"
+    },
+    {
+      "id": "audit_1782460733478_2sa46v",
+      "action": "apply",
+      "proposalId": "prop_1782459797333_t8ly7g",
+      "filename": "knowledgeBaseConsolidation.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before .find() in promoteToConstitution",
+      "timestamp": "2026-06-26T07:58:53.478Z"
+    },
+    {
+      "id": "audit_1782460766922_kx9s9u",
+      "action": "test",
+      "proposalId": "prop_1782459555619_aow6y0",
+      "filename": "aiZipEdit.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/aiZipEdit.test.ts > aiZipEdit > module loads without errors 1ms\n ✓ server/aiZipEdit.test.ts > aiZipEdit > exports are defined 0ms\n ✓ server/aiZipEdit",
+      "timestamp": "2026-06-26T07:59:26.922Z"
+    },
+    {
+      "id": "audit_1782460766926_dte2ks",
+      "action": "apply",
+      "proposalId": "prop_1782459555619_aow6y0",
+      "filename": "aiZipEdit.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before .includes() call",
+      "timestamp": "2026-06-26T07:59:26.926Z"
+    },
+    {
+      "id": "audit_1782460782012_wpm0k0",
+      "action": "apply",
+      "proposalId": "prop_1782459494683_eczlyu",
+      "filename": "parallelRsi.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/parallelRsi.ts(128,9): error TS2304: Cannot find name 'log'.\nserver/parallelRsi.ts(135,5): error TS2304: Cannot find name 'log'.",
+      "timestamp": "2026-06-26T07:59:42.012Z"
+    },
+    {
+      "id": "audit_1782460921405_p6q70r",
+      "action": "test",
+      "proposalId": "prop_1782460875164_wc5zrj",
+      "filename": "memory.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/memory.test.ts > MemoryModule.listMemories > should execute without throwing 19ms\n ✓ server/memory.test.ts > MemoryModule.listMemories > should retur",
+      "timestamp": "2026-06-26T08:02:01.405Z"
+    },
+    {
+      "id": "audit_1782460921407_4698d9",
+      "action": "apply",
+      "proposalId": "prop_1782460875164_wc5zrj",
+      "filename": "memory.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before entryMap.get(id) in injectMemoryContextAsync",
+      "timestamp": "2026-06-26T08:02:01.407Z"
+    },
+    {
+      "id": "audit_1782460931197_bt1vzj",
+      "action": "apply",
+      "proposalId": "prop_1782460436727_yuuqrx",
+      "filename": "workspace.ts",
+      "result": "blocked",
+      "details": "Constitution: proposed content contains forbidden pattern 'rm -rf /'",
+      "timestamp": "2026-06-26T08:02:11.197Z"
+    },
+    {
+      "id": "audit_1782461037915_urya8k",
+      "action": "test",
+      "proposalId": "prop_1782461016907_imvg1v",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/selfMonitor.test.ts > selfMonitor > module loads without errors 2ms\n ✓ server/selfMonitor.test.ts > selfMonitor > exports are defined 1ms\n ✓ server/s",
+      "timestamp": "2026-06-26T08:03:57.915Z"
+    },
+    {
+      "id": "audit_1782461037917_k6szhk",
+      "action": "apply",
+      "proposalId": "prop_1782461016907_imvg1v",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before filter in getMetricHistory",
+      "timestamp": "2026-06-26T08:03:57.917Z"
+    },
+    {
+      "id": "audit_1782461090122_7vdx09",
+      "action": "apply",
+      "proposalId": "prop_1782460436727_yuuqrx",
+      "filename": "workspace.ts",
+      "result": "blocked",
+      "details": "Constitution: proposed content contains forbidden pattern 'rm -rf /'",
+      "timestamp": "2026-06-26T08:04:50.122Z"
+    },
+    {
+      "id": "audit_1782461099249_l6ombn",
+      "action": "test",
+      "proposalId": "prop_1782460784380_4vwaop",
+      "filename": "tenantManager.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\nstdout | server/tenantManager.test.ts\n[2026-06-26T08:04:59.059Z] [INFO ] [tenantManager] [tenantManager] Loaded 1 tenants from disk\n[2026-06-26T08:04:59.060Z] ",
+      "timestamp": "2026-06-26T08:04:59.249Z"
+    },
+    {
+      "id": "audit_1782461099251_ac1vzl",
+      "action": "apply",
+      "proposalId": "prop_1782460784380_4vwaop",
+      "filename": "tenantManager.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null check before registry.get in getOrDefaultTenant",
+      "timestamp": "2026-06-26T08:04:59.251Z"
+    },
+    {
+      "id": "audit_1782461139358_xsuzg9",
+      "action": "test",
+      "proposalId": "prop_1782460271377_5ey93i",
+      "filename": "rsiDb.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/rsiDb.test.ts > rsiDb > getRsiDbStatus returns a status object with expected shape 2ms\nstdout | server/rsiDb.test.ts > rsiDb > runRsiDbMigration runs",
+      "timestamp": "2026-06-26T08:05:39.358Z"
+    },
+    {
+      "id": "audit_1782461139360_u3958i",
+      "action": "apply",
+      "proposalId": "prop_1782460271377_5ey93i",
+      "filename": "rsiDb.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before .map() on DB rows",
+      "timestamp": "2026-06-26T08:05:39.360Z"
+    },
+    {
+      "id": "audit_1782461218485_mb9mlj",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-26T08:06:58.485Z"
+    },
+    {
+      "id": "audit_1782461218492_tazyt6",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-26T08:06:58.492Z"
+    },
+    {
+      "id": "audit_1782461493762_pu8xen",
+      "action": "test",
+      "proposalId": "prop_1782461470849_scj8ac",
+      "filename": "streamRouter.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/streamRouter.test.ts > registerStreamRoutes > should execute without throwing 7ms\n ✓ server/streamRouter.test.ts > registerStreamRoutes > should hand",
+      "timestamp": "2026-06-26T08:11:33.762Z"
+    },
+    {
+      "id": "audit_1782461493764_7t69w5",
+      "action": "apply",
+      "proposalId": "prop_1782461470849_scj8ac",
+      "filename": "streamRouter.ts",
+      "result": "success",
+      "details": "Applied proposal: Extract duplicate keyGenerator into shared function",
+      "timestamp": "2026-06-26T08:11:33.764Z"
+    },
+    {
+      "id": "audit_1782461521421_qqhmr1",
+      "action": "test",
+      "proposalId": "prop_1782461309108_62s0jo",
+      "filename": "codeIntel.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/codeIntel.test.ts > readPackageJson > should execute without throwing 2ms\n ✓ server/codeIntel.test.ts > readPackageJson > should return correct type ",
+      "timestamp": "2026-06-26T08:12:01.421Z"
+    },
+    {
+      "id": "audit_1782461521423_9x2tip",
+      "action": "apply",
+      "proposalId": "prop_1782461309108_62s0jo",
+      "filename": "codeIntel.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard for stackFrames[0] access in diagnoseError",
+      "timestamp": "2026-06-26T08:12:01.423Z"
+    },
+    {
+      "id": "audit_1782461689042_8y73zn",
+      "action": "test",
+      "proposalId": "prop_1782461654821_vlt1hz",
+      "filename": "federatedLearning.ts",
+      "result": "success",
+      "details": "odule loads without throwing\n[2026-06-26T08:14:48.840Z] [INFO ] [federatedLearning] [federated] Loaded state: 3 nodes, 1 proposals\n[2026-06-26T08:14:48.841Z] [INFO ] [federatedLearning] [federated] Fe",
+      "timestamp": "2026-06-26T08:14:49.042Z"
+    },
+    {
+      "id": "audit_1782461689044_qtd2ca",
+      "action": "apply",
+      "proposalId": "prop_1782461654821_vlt1hz",
+      "filename": "federatedLearning.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null check before property access in syncWithPeer",
+      "timestamp": "2026-06-26T08:14:49.044Z"
+    },
+    {
+      "id": "audit_1782461750433_u46ifh",
+      "action": "test",
+      "proposalId": "prop_1782461056710_oguorm",
+      "filename": "multiAgent.ts",
+      "result": "failure",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\nstdout | server/multiAgent.test.ts > runTeamAgent > should return correct type\n[v6.17] Startup provider: kimi (LLM_MODEL=(not set), DEEPSEEK_KEY=set)\n\n ✓ serve",
+      "timestamp": "2026-06-26T08:15:50.433Z"
+    },
+    {
+      "id": "audit_1782461750441_9uok96",
+      "action": "rollback",
+      "proposalId": "prop_1782461056710_oguorm",
+      "filename": "multiAgent.ts",
+      "result": "success",
+      "details": "Rolled back multiAgent.ts to backup bak_1782461718557_33ad7s",
+      "timestamp": "2026-06-26T08:15:50.441Z"
+    },
+    {
+      "id": "audit_1782461750443_s99fkw",
+      "action": "rollback",
+      "proposalId": "prop_1782461056710_oguorm",
+      "filename": "multiAgent.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back multiAgent.ts to 2026-06-26T08:15:18.557Z",
+      "timestamp": "2026-06-26T08:15:50.443Z"
+    },
+    {
+      "id": "audit_1782461807552_9mr8ui",
+      "action": "apply",
+      "proposalId": "prop_1782461762538_mhdlne",
+      "filename": "reactEngine.ts",
+      "result": "blocked",
+      "details": "sandboxVerifier.quickValidate rejected proposal: Duplicate declaration: function calling; Duplicate declaration: function calling; Duplicate declaration: function calling",
+      "timestamp": "2026-06-26T08:16:47.552Z"
+    },
+    {
+      "id": "audit_1782462013694_72m4bf",
+      "action": "test",
+      "proposalId": "prop_1782461973779_24ifte",
+      "filename": "privilegeSeparation.ts",
+      "result": "success",
+      "details": "tx-1782462013425-ld8zyz (sandboxed)\n[2026-06-26T08:20:13.425Z] [INFO ] [privilegeSeparation] [privilegeSeparation] Staged change: /tmp/priv-sep-test-1782462013425-3anahp/promote.ts (1 diff lines)\n\n ✓ ",
+      "timestamp": "2026-06-26T08:20:13.694Z"
+    },
+    {
+      "id": "audit_1782462013696_22higw",
+      "action": "apply",
+      "proposalId": "prop_1782461973779_24ifte",
+      "filename": "privilegeSeparation.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before .push() on stagedChanges",
+      "timestamp": "2026-06-26T08:20:13.696Z"
+    },
+    {
+      "id": "audit_1782462219552_kkl8x1",
+      "action": "apply",
+      "proposalId": "prop_1782462194097_7hls6s",
+      "filename": "llmProvider.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/llmProvider.ts(627,7): error TS2552: Cannot find name 'combineAbortSignals'. Did you mean 'combinedSignal'?",
+      "timestamp": "2026-06-26T08:23:39.552Z"
+    },
+    {
+      "id": "audit_1782462413694_twh3nx",
+      "action": "test",
+      "proposalId": "prop_1782462386612_rfr7hh",
+      "filename": "contextManager.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/contextManager.test.ts > estimateTokens > should execute without throwing 1ms\n ✓ server/contextManager.test.ts > estimateTokens > should return corre",
+      "timestamp": "2026-06-26T08:26:53.694Z"
+    },
+    {
+      "id": "audit_1782462413697_i19025",
+      "action": "apply",
+      "proposalId": "prop_1782462386612_rfr7hh",
+      "filename": "contextManager.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before tool_calls access in extractToolCalls",
+      "timestamp": "2026-06-26T08:26:53.697Z"
+    },
+    {
+      "id": "audit_1782462428950_dr4faj",
+      "action": "apply",
+      "proposalId": "prop_1782462194097_7hls6s",
+      "filename": "llmProvider.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/llmProvider.ts(627,7): error TS2552: Cannot find name 'combineAbortSignals'. Did you mean 'combinedSignal'?",
+      "timestamp": "2026-06-26T08:27:08.950Z"
+    },
+    {
+      "id": "audit_1782462502220_az67p4",
+      "action": "apply",
+      "proposalId": "prop_1782462194097_7hls6s",
+      "filename": "llmProvider.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1782462194097_7hls6s after syntax error",
+      "timestamp": "2026-06-26T08:28:22.220Z"
+    },
+    {
+      "id": "audit_1782462508178_v733fw",
+      "action": "apply",
+      "proposalId": "prop_1782462194097_7hls6s",
+      "filename": "llmProvider.ts",
+      "result": "success",
+      "details": "Refinement fixed syntax errors for prop_1782462194097_7hls6s",
+      "timestamp": "2026-06-26T08:28:28.178Z"
+    },
+    {
+      "id": "audit_1782462518311_pm0vzb",
+      "action": "test",
+      "proposalId": "prop_1782462194097_7hls6s",
+      "filename": "llmProvider.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\nstdout | server/llmProvider.test.ts > resolveProviderFromEnv > should execute without throwing\n[v6.17] Startup provider: kimi (LLM_MODEL=(not set), DEEPSEEK_KE",
+      "timestamp": "2026-06-26T08:28:38.311Z"
+    },
+    {
+      "id": "audit_1782462518314_xqt7sj",
+      "action": "apply",
+      "proposalId": "prop_1782462194097_7hls6s",
+      "filename": "llmProvider.ts",
+      "result": "success",
+      "details": "Applied proposal: Add timeout and combined abort signal to fetch",
+      "timestamp": "2026-06-26T08:28:38.314Z"
+    },
+    {
+      "id": "audit_1782462575165_2mv2fg",
+      "action": "test",
+      "proposalId": "prop_1782461056710_oguorm",
+      "filename": "multiAgent.ts",
+      "result": "failure",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\nstdout | server/multiAgent.test.ts > runTeamAgent > should return correct type\n[v6.17] Startup provider: kimi (LLM_MODEL=(not set), DEEPSEEK_KEY=set)\n\n ✓ serve",
+      "timestamp": "2026-06-26T08:29:35.165Z"
+    },
+    {
+      "id": "audit_1782462575170_nsbp7n",
+      "action": "rollback",
+      "proposalId": "prop_1782461056710_oguorm",
+      "filename": "multiAgent.ts",
+      "result": "success",
+      "details": "Rolled back multiAgent.ts to backup bak_1782462543496_sy611d",
+      "timestamp": "2026-06-26T08:29:35.170Z"
+    },
+    {
+      "id": "audit_1782462575172_6608yt",
+      "action": "rollback",
+      "proposalId": "prop_1782461056710_oguorm",
+      "filename": "multiAgent.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back multiAgent.ts to 2026-06-26T08:29:03.496Z",
+      "timestamp": "2026-06-26T08:29:35.172Z"
+    },
+    {
+      "id": "audit_1782462584681_7kan21",
+      "action": "apply",
+      "proposalId": "prop_1782461762538_mhdlne",
+      "filename": "reactEngine.ts",
+      "result": "blocked",
+      "details": "sandboxVerifier.quickValidate rejected proposal: Duplicate declaration: function calling; Duplicate declaration: function calling; Duplicate declaration: function calling",
+      "timestamp": "2026-06-26T08:29:44.681Z"
+    },
+    {
+      "id": "audit_1782462885784_f2jicw",
+      "action": "apply",
+      "proposalId": "prop_1782462850281_29vzij",
+      "filename": "adaptiveRouter.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/adaptiveRouter.ts(267,1): error TS1128: Declaration or statement expected.",
+      "timestamp": "2026-06-26T08:34:45.784Z"
+    },
+    {
+      "id": "audit_1782463000687_n9nfa9",
+      "action": "test",
+      "proposalId": "prop_1782462949485_l3kxfc",
+      "filename": "selfConsistency.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/selfConsistency.test.ts > checkSelfConsistency > should execute without throwing 2ms\n ✓ server/selfConsistency.test.ts > checkSelfConsistency > shoul",
+      "timestamp": "2026-06-26T08:36:40.687Z"
+    },
+    {
+      "id": "audit_1782463000689_aubf81",
+      "action": "apply",
+      "proposalId": "prop_1782462949485_l3kxfc",
+      "filename": "selfConsistency.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before .filter() on evaluations",
+      "timestamp": "2026-06-26T08:36:40.689Z"
+    },
+    {
+      "id": "audit_1782463014414_cytdfx",
+      "action": "apply",
+      "proposalId": "prop_1782462850281_29vzij",
+      "filename": "adaptiveRouter.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1782462850281_29vzij after syntax error",
+      "timestamp": "2026-06-26T08:36:54.414Z"
+    },
+    {
+      "id": "audit_1782463194231_1mbd9l",
+      "action": "test",
+      "proposalId": "prop_1782463150248_9nj5l9",
+      "filename": "contextBus.ts",
+      "result": "success",
+      "details": "ontextbusModule.createChannel > should return correct type 0ms\n ✓ server/contextBus.test.ts > ContextbusModule.createChannel > should handle empty/null inputs gracefully 1ms\n ✓ server/contextBus.test.",
+      "timestamp": "2026-06-26T08:39:54.231Z"
+    },
+    {
+      "id": "audit_1782463194233_5fo84n",
+      "action": "apply",
+      "proposalId": "prop_1782463150248_9nj5l9",
+      "filename": "contextBus.ts",
+      "result": "success",
+      "details": "Applied proposal: Replace empty catch blocks with log.warn",
+      "timestamp": "2026-06-26T08:39:54.233Z"
+    },
+    {
+      "id": "audit_1782463211273_hkzmfn",
+      "action": "test",
+      "proposalId": "prop_1782462949485_l3kxfc",
+      "filename": "selfConsistency.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/selfConsistency.test.ts > checkSelfConsistency > should execute without throwing 2ms\n ✓ server/selfConsistency.test.ts > checkSelfConsistency > shoul",
+      "timestamp": "2026-06-26T08:40:11.273Z"
+    },
+    {
+      "id": "audit_1782463211276_1wwefj",
+      "action": "apply",
+      "proposalId": "prop_1782462949485_l3kxfc",
+      "filename": "selfConsistency.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before .filter() on evaluations",
+      "timestamp": "2026-06-26T08:40:11.276Z"
+    },
+    {
+      "id": "audit_1782463388615_2ybaws",
+      "action": "test",
+      "proposalId": "prop_1782463356016_jsxvxl",
+      "filename": "gitSandbox.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/gitSandbox.test.ts > gitSandbox > should load without throwing 12ms\n ✓ server/gitSandbox.test.ts > gitSandbox > should export gitSandbox function 1ms",
+      "timestamp": "2026-06-26T08:43:08.615Z"
+    },
+    {
+      "id": "audit_1782463388618_4a2maq",
+      "action": "apply",
+      "proposalId": "prop_1782463356016_jsxvxl",
+      "filename": "gitSandbox.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before .some() on ALLOWED_GIT_PATTERNS",
+      "timestamp": "2026-06-26T08:43:08.618Z"
+    },
+    {
+      "id": "audit_1782463404010_rp8g8m",
+      "action": "test",
+      "proposalId": "prop_1782463147187_opqho0",
+      "filename": "aiMemory.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/aiMemory.test.ts > aiMemory > getAndromedaMemoryPathPublic returns a non-empty string path 2ms\n ✓ server/aiMemory.test.ts > aiMemory > getAndromedaMe",
+      "timestamp": "2026-06-26T08:43:24.010Z"
+    },
+    {
+      "id": "audit_1782463404012_oa1jmc",
+      "action": "apply",
+      "proposalId": "prop_1782463147187_opqho0",
+      "filename": "aiMemory.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before content.length access",
+      "timestamp": "2026-06-26T08:43:24.012Z"
+    },
+    {
+      "id": "audit_1782463416534_rd1xym",
+      "action": "test",
+      "proposalId": "prop_1782463147187_opqho0",
+      "filename": "aiMemory.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/aiMemory.test.ts > aiMemory > getAndromedaMemoryPathPublic returns a non-empty string path 1ms\n ✓ server/aiMemory.test.ts > aiMemory > getAndromedaMe",
+      "timestamp": "2026-06-26T08:43:36.534Z"
+    },
+    {
+      "id": "audit_1782463416536_iith41",
+      "action": "apply",
+      "proposalId": "prop_1782463147187_opqho0",
+      "filename": "aiMemory.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before content.length access",
+      "timestamp": "2026-06-26T08:43:36.536Z"
+    },
+    {
+      "id": "audit_1782463428835_mdwkwk",
+      "action": "apply",
+      "proposalId": "prop_1782462850281_29vzij",
+      "filename": "adaptiveRouter.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/adaptiveRouter.ts(267,1): error TS1128: Declaration or statement expected.",
+      "timestamp": "2026-06-26T08:43:48.835Z"
+    },
+    {
+      "id": "audit_1782463523656_0mx5bi",
+      "action": "apply",
+      "proposalId": "prop_1782462850281_29vzij",
+      "filename": "adaptiveRouter.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1782462850281_29vzij after syntax error",
+      "timestamp": "2026-06-26T08:45:23.656Z"
+    },
+    {
+      "id": "audit_1782463578684_lcdsgy",
+      "action": "test",
+      "proposalId": "prop_1782461056710_oguorm",
+      "filename": "multiAgent.ts",
+      "result": "failure",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\nstdout | server/multiAgent.test.ts > runTeamAgent > should return correct type\n[v6.17] Startup provider: kimi (LLM_MODEL=(not set), DEEPSEEK_KEY=set)\n\n ✓ serve",
+      "timestamp": "2026-06-26T08:46:18.684Z"
+    },
+    {
+      "id": "audit_1782463578689_svrhln",
+      "action": "rollback",
+      "proposalId": "prop_1782461056710_oguorm",
+      "filename": "multiAgent.ts",
+      "result": "success",
+      "details": "Rolled back multiAgent.ts to backup bak_1782463547043_a8ihza",
+      "timestamp": "2026-06-26T08:46:18.689Z"
+    },
+    {
+      "id": "audit_1782463578691_c4swzi",
+      "action": "rollback",
+      "proposalId": "prop_1782461056710_oguorm",
+      "filename": "multiAgent.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back multiAgent.ts to 2026-06-26T08:45:47.043Z",
+      "timestamp": "2026-06-26T08:46:18.691Z"
+    },
+    {
+      "id": "audit_1782463659377_0j0oul",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-26T08:47:39.377Z"
+    },
+    {
+      "id": "audit_1782463659381_80igr4",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-26T08:47:39.381Z"
+    },
+    {
+      "id": "audit_1782463773704_yb3756",
+      "action": "apply",
+      "proposalId": "prop_1782463731154_fjkbgg",
+      "filename": "selfDocumentation.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/selfDocumentation.ts(183,5): error TS2304: Cannot find name 'log'.\nserver/selfDocumentation.ts(197,5): error TS2304: Cannot find name 'log'.",
+      "timestamp": "2026-06-26T08:49:33.704Z"
+    },
+    {
+      "id": "audit_1782463863189_tybueg",
+      "action": "apply",
+      "proposalId": "prop_1782463731154_fjkbgg",
+      "filename": "selfDocumentation.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1782463731154_fjkbgg after syntax error",
+      "timestamp": "2026-06-26T08:51:03.189Z"
+    },
+    {
+      "id": "audit_1782463869382_9o600s",
+      "action": "apply",
+      "proposalId": "prop_1782463731154_fjkbgg",
+      "filename": "selfDocumentation.ts",
+      "result": "success",
+      "details": "Refinement fixed syntax errors for prop_1782463731154_fjkbgg",
+      "timestamp": "2026-06-26T08:51:09.382Z"
+    },
+    {
+      "id": "audit_1782463879151_t8f3ik",
+      "action": "test",
+      "proposalId": "prop_1782463731154_fjkbgg",
+      "filename": "selfDocumentation.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/selfDocumentation.test.ts > selfDocumentation > module loads without errors 2ms\n ✓ server/selfDocumentation.test.ts > selfDocumentation > getChangelo",
+      "timestamp": "2026-06-26T08:51:19.151Z"
+    },
+    {
+      "id": "audit_1782463879153_qp4mdv",
+      "action": "apply",
+      "proposalId": "prop_1782463731154_fjkbgg",
+      "filename": "selfDocumentation.ts",
+      "result": "success",
+      "details": "Applied proposal: Fix 'log' not found errors in selfDocumentation.ts",
+      "timestamp": "2026-06-26T08:51:19.153Z"
+    },
+    {
+      "id": "audit_1782463885100_gcmlxs",
+      "action": "apply",
+      "proposalId": "prop_1782463825417_dtin4c",
+      "filename": "selfImprove.ts",
+      "result": "blocked",
+      "details": "sandboxVerifier.quickValidate rejected proposal: Duplicate declaration: function signature",
+      "timestamp": "2026-06-26T08:51:25.100Z"
+    },
+    {
+      "id": "audit_1782464092934_s94v7t",
+      "action": "test",
+      "proposalId": "prop_1782463989075_ktt70k",
+      "filename": "rsiEngine.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/rsiEngine.test.ts > measureBenchmark > should execute without throwing 6115ms\n ✓ server/rsiEngine.test.ts > measureBenchmark > should return correct ",
+      "timestamp": "2026-06-26T08:54:52.934Z"
+    },
+    {
+      "id": "audit_1782464092937_sklvhw",
+      "action": "apply",
+      "proposalId": "prop_1782463989075_ktt70k",
+      "filename": "rsiEngine.ts",
+      "result": "success",
+      "details": "Applied proposal: Add .unref() to cycleTimer to prevent vitest worker hangs",
+      "timestamp": "2026-06-26T08:54:52.937Z"
+    },
+    {
+      "id": "audit_1782464149504_aopft8",
+      "action": "test",
+      "proposalId": "prop_1782463989075_ktt70k",
+      "filename": "rsiEngine.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/rsiEngine.test.ts > measureBenchmark > should execute without throwing 6792ms\n ✓ server/rsiEngine.test.ts > measureBenchmark > should return correct ",
+      "timestamp": "2026-06-26T08:55:49.504Z"
+    },
+    {
+      "id": "audit_1782464149506_fgsgqr",
+      "action": "apply",
+      "proposalId": "prop_1782463989075_ktt70k",
+      "filename": "rsiEngine.ts",
+      "result": "success",
+      "details": "Applied proposal: Add .unref() to cycleTimer to prevent vitest worker hangs",
+      "timestamp": "2026-06-26T08:55:49.506Z"
+    },
+    {
+      "id": "audit_1782464164754_c1ucnk",
+      "action": "apply",
+      "proposalId": "prop_1782463825417_dtin4c",
+      "filename": "selfImprove.ts",
+      "result": "blocked",
+      "details": "sandboxVerifier.quickValidate rejected proposal: Duplicate declaration: function signature",
+      "timestamp": "2026-06-26T08:56:04.754Z"
+    },
+    {
+      "id": "audit_1782464172877_v26r7e",
+      "action": "apply",
+      "proposalId": "prop_1782463731154_fjkbgg",
+      "filename": "selfDocumentation.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/selfDocumentation.ts(183,5): error TS2304: Cannot find name 'log'.\nserver/selfDocumentation.ts(197,5): error TS2304: Cannot find name 'log'.",
+      "timestamp": "2026-06-26T08:56:12.877Z"
+    },
+    {
+      "id": "audit_1782464251593_deifdn",
+      "action": "apply",
+      "proposalId": "prop_1782463731154_fjkbgg",
+      "filename": "selfDocumentation.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1782463731154_fjkbgg after syntax error",
+      "timestamp": "2026-06-26T08:57:31.593Z"
+    },
+    {
+      "id": "audit_1782464257218_vd0or1",
+      "action": "apply",
+      "proposalId": "prop_1782463731154_fjkbgg",
+      "filename": "selfDocumentation.ts",
+      "result": "success",
+      "details": "Refinement fixed syntax errors for prop_1782463731154_fjkbgg",
+      "timestamp": "2026-06-26T08:57:37.218Z"
+    },
+    {
+      "id": "audit_1782464264550_phwppj",
+      "action": "test",
+      "proposalId": "prop_1782463731154_fjkbgg",
+      "filename": "selfDocumentation.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/selfDocumentation.test.ts > selfDocumentation > module loads without errors 2ms\n ✓ server/selfDocumentation.test.ts > selfDocumentation > getChangelo",
+      "timestamp": "2026-06-26T08:57:44.550Z"
+    },
+    {
+      "id": "audit_1782464264552_fp2s8o",
+      "action": "apply",
+      "proposalId": "prop_1782463731154_fjkbgg",
+      "filename": "selfDocumentation.ts",
+      "result": "success",
+      "details": "Applied proposal: Fix 'log' not found errors in selfDocumentation.ts",
+      "timestamp": "2026-06-26T08:57:44.552Z"
+    },
+    {
+      "id": "audit_1782464352311_3lyo6k",
+      "action": "test",
+      "proposalId": "prop_1782464334824_vfr747",
+      "filename": "distributedProofConsensus.ts",
+      "result": "failure",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n\n Test Files  1 failed (1)\n      Tests  no tests\n   Start at  08:59:11\n   Duration  371ms (transform 78ms, setup 49ms, collect 0ms, tests 0ms, environment 0ms,",
+      "timestamp": "2026-06-26T08:59:12.311Z"
+    },
+    {
+      "id": "audit_1782464352318_u1pvgx",
+      "action": "rollback",
+      "proposalId": "prop_1782464334824_vfr747",
+      "filename": "distributedProofConsensus.ts",
+      "result": "success",
+      "details": "Rolled back distributedProofConsensus.ts to backup bak_1782464350629_elaw9d",
+      "timestamp": "2026-06-26T08:59:12.318Z"
+    },
+    {
+      "id": "audit_1782464352320_uylj6f",
+      "action": "rollback",
+      "proposalId": "prop_1782464334824_vfr747",
+      "filename": "distributedProofConsensus.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back distributedProofConsensus.ts to 2026-06-26T08:59:10.629Z",
+      "timestamp": "2026-06-26T08:59:12.320Z"
+    },
+    {
+      "id": "audit_1782464433956_99lb03",
+      "action": "test",
+      "proposalId": "prop_1782464408695_eobppn",
+      "filename": "realEvalHarness.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\nstdout | server/realEvalHarness.test.ts > realEvalHarness > should run the eval harness and generate a report\n[RealEvalHarness] Replaying 3 recorded queries...",
+      "timestamp": "2026-06-26T09:00:33.956Z"
+    },
+    {
+      "id": "audit_1782464433961_y9c1nv",
+      "action": "apply",
+      "proposalId": "prop_1782464408695_eobppn",
+      "filename": "realEvalHarness.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before evals.length access",
+      "timestamp": "2026-06-26T09:00:33.961Z"
+    },
+    {
+      "id": "audit_1782464526334_gfs8lr",
+      "action": "test",
+      "proposalId": "prop_1782464447093_vitrol",
+      "filename": "continuousImprover.ts",
+      "result": "failure",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\nstdout | server/continuousImprover.test.ts > startContinuousImprover > should test triggerCycleNow to get coverage\n[2026-06-26T09:01:36.366Z] [INFO ] [selfImpr",
+      "timestamp": "2026-06-26T09:02:06.334Z"
+    },
+    {
+      "id": "audit_1782464526343_cvg62h",
+      "action": "rollback",
+      "proposalId": "prop_1782464447093_vitrol",
+      "filename": "continuousImprover.ts",
+      "result": "success",
+      "details": "Rolled back continuousImprover.ts to backup bak_1782464494669_zc0r8i",
+      "timestamp": "2026-06-26T09:02:06.343Z"
+    },
+    {
+      "id": "audit_1782464526346_r8un9d",
+      "action": "rollback",
+      "proposalId": "prop_1782464447093_vitrol",
+      "filename": "continuousImprover.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back continuousImprover.ts to 2026-06-26T09:01:34.669Z",
+      "timestamp": "2026-06-26T09:02:06.346Z"
+    },
+    {
+      "id": "audit_1782464568213_xmymd7",
+      "action": "apply",
+      "proposalId": "prop_1782464551861_z5l3gv",
+      "filename": "costOptimizer.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/costOptimizer.ts(221,5): error TS1308: 'await' expressions are only allowed within async functions and at the top levels of modules.\nserver/costOptimizer.ts(222,5): error TS1308: 'await' expres",
+      "timestamp": "2026-06-26T09:02:48.213Z"
+    },
+    {
+      "id": "audit_1782464657718_e08usm",
+      "action": "apply",
+      "proposalId": "prop_1782464551861_z5l3gv",
+      "filename": "costOptimizer.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1782464551861_z5l3gv after syntax error",
+      "timestamp": "2026-06-26T09:04:17.718Z"
+    },
+    {
+      "id": "audit_1782464663333_zeq7qf",
+      "action": "apply",
+      "proposalId": "prop_1782464551861_z5l3gv",
+      "filename": "costOptimizer.ts",
+      "result": "success",
+      "details": "Refinement fixed syntax errors for prop_1782464551861_z5l3gv",
+      "timestamp": "2026-06-26T09:04:23.333Z"
+    },
+    {
+      "id": "audit_1782464678974_6uq644",
+      "action": "test",
+      "proposalId": "prop_1782464551861_z5l3gv",
+      "filename": "costOptimizer.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/costOptimizer.test.ts > costOptimizer > scoreProposalComplexity > scores critical RSI files high 2ms\n ✓ server/costOptimizer.test.ts > costOptimizer ",
+      "timestamp": "2026-06-26T09:04:38.974Z"
+    },
+    {
+      "id": "audit_1782464678977_q4qreg",
+      "action": "apply",
+      "proposalId": "prop_1782464551861_z5l3gv",
+      "filename": "costOptimizer.ts",
+      "result": "success",
+      "details": "Applied proposal: Fix await usage in cost optimizer",
+      "timestamp": "2026-06-26T09:04:38.977Z"
+    },
+    {
+      "id": "audit_1782464849851_j04ire",
+      "action": "test",
+      "proposalId": "prop_1782464785268_kauvr3",
+      "filename": "aiPlanning.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\nstdout | server/aiPlanning.test.ts > generateSubQueries > should execute without throwing\n[v6.17] Startup provider: kimi (LLM_MODEL=(not set), DEEPSEEK_KEY=set",
+      "timestamp": "2026-06-26T09:07:29.851Z"
+    },
+    {
+      "id": "audit_1782464849853_pwcexq",
+      "action": "apply",
+      "proposalId": "prop_1782464785268_kauvr3",
+      "filename": "aiPlanning.ts",
+      "result": "success",
+      "details": "Applied proposal: Replace empty catch blocks with log.warn in generateSuggestions",
+      "timestamp": "2026-06-26T09:07:29.853Z"
+    },
+    {
+      "id": "audit_1782464884880_jfkgvu",
+      "action": "apply",
+      "proposalId": "prop_1782462850281_29vzij",
+      "filename": "adaptiveRouter.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/adaptiveRouter.ts(267,1): error TS1128: Declaration or statement expected.",
+      "timestamp": "2026-06-26T09:08:04.880Z"
+    },
+    {
+      "id": "audit_1782464982613_scna6l",
+      "action": "test",
+      "proposalId": "prop_1782464878600_hnvpds",
+      "filename": "aiStreaming.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/aiStreaming.test.ts > aiStreaming > module loads without error 1ms\n ✓ server/aiStreaming.test.ts > aiStreaming > exports at least one function 0ms\n ✓",
+      "timestamp": "2026-06-26T09:09:42.613Z"
+    },
+    {
+      "id": "audit_1782464982615_sgyon1",
+      "action": "apply",
+      "proposalId": "prop_1782464878600_hnvpds",
+      "filename": "aiStreaming.ts",
+      "result": "success",
+      "details": "Applied proposal: Replace console.log with structured logger in streamAIResponseWithContext",
+      "timestamp": "2026-06-26T09:09:42.616Z"
+    },
+    {
+      "id": "audit_1782465303159_4pi6cy",
+      "action": "test",
+      "proposalId": "prop_1782461056710_oguorm",
+      "filename": "multiAgent.ts",
+      "result": "failure",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\nstdout | server/multiAgent.test.ts > runTeamAgent > should return correct type\n[v6.17] Startup provider: kimi (LLM_MODEL=(not set), DEEPSEEK_KEY=set)\n\n ✓ serve",
+      "timestamp": "2026-06-26T09:15:03.159Z"
+    },
+    {
+      "id": "audit_1782465303166_nlom0e",
+      "action": "rollback",
+      "proposalId": "prop_1782461056710_oguorm",
+      "filename": "multiAgent.ts",
+      "result": "success",
+      "details": "Rolled back multiAgent.ts to backup bak_1782465271362_i8yf9y",
+      "timestamp": "2026-06-26T09:15:03.166Z"
+    },
+    {
+      "id": "audit_1782465303169_tw5bf8",
+      "action": "rollback",
+      "proposalId": "prop_1782461056710_oguorm",
+      "filename": "multiAgent.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back multiAgent.ts to 2026-06-26T09:14:31.362Z",
+      "timestamp": "2026-06-26T09:15:03.169Z"
+    },
+    {
+      "id": "audit_1782465672534_1wzut7",
+      "action": "test",
+      "proposalId": "prop_1782465664154_f9nruh",
+      "filename": "rsiScheduler.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\n ✓ server/rsiScheduler.test.ts > rsiScheduler > exports initRsiScheduler, getRsiSchedulerStatus, setRsiScheduleHours 2ms\n ✓ server/rsiScheduler.test.ts > rsiSc",
+      "timestamp": "2026-06-26T09:21:12.534Z"
+    },
+    {
+      "id": "audit_1782465672537_p7u6fy",
+      "action": "apply",
+      "proposalId": "prop_1782465664154_f9nruh",
+      "filename": "rsiScheduler.ts",
+      "result": "success",
+      "details": "Applied proposal: Extract magic numbers into named constants",
+      "timestamp": "2026-06-26T09:21:12.537Z"
+    },
+    {
+      "id": "audit_1782465698273_v66o3b",
+      "action": "test",
+      "proposalId": "prop_1782465535897_qwcg6g",
+      "filename": "memoryForgettingCurve.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\nstdout | server/memoryForgettingCurve.test.ts > memoryForgettingCurve > startMemoryForgettingCurveDaemon does not throw\n[MemoryForgetting] Daemon started (cons",
+      "timestamp": "2026-06-26T09:21:38.274Z"
+    },
+    {
+      "id": "audit_1782465698276_v0lup3",
+      "action": "apply",
+      "proposalId": "prop_1782465535897_qwcg6g",
+      "filename": "memoryForgettingCurve.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before .find() in disableConstraint",
+      "timestamp": "2026-06-26T09:21:38.276Z"
+    },
+    {
+      "id": "audit_1782465721871_bbvoom",
+      "action": "test",
+      "proposalId": "prop_1782465351740_myzrcn",
+      "filename": "swarmSpecialistVoting.ts",
+      "result": "success",
+      "details": "ing > initialization > can be enabled via options\n[2026-06-26T09:22:01.682Z] [INFO ] [swarmSpecialistVoting] [SwarmVoting] Initialized — enabled=false, quorum=3\n\nstdout | server/swarmSpecialistVoting.",
+      "timestamp": "2026-06-26T09:22:01.871Z"
+    },
+    {
+      "id": "audit_1782465721873_h09jvw",
+      "action": "apply",
+      "proposalId": "prop_1782465351740_myzrcn",
+      "filename": "swarmSpecialistVoting.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before JSON.parse in querySpecialist",
+      "timestamp": "2026-06-26T09:22:01.873Z"
+    },
+    {
+      "id": "audit_1782465751701_hdk5d9",
+      "action": "test",
+      "proposalId": "prop_1782465738393_jnv7tr",
+      "filename": "benchmarkRunner.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\nstdout | server/benchmarkRunner.test.ts > runBenchmarks > should execute without throwing\n[BenchmarkRunner] Running performance benchmarks...\n\nstdout | server/",
+      "timestamp": "2026-06-26T09:22:31.701Z"
+    },
+    {
+      "id": "audit_1782465751704_975b3h",
+      "action": "apply",
+      "proposalId": "prop_1782465738393_jnv7tr",
+      "filename": "benchmarkRunner.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before Object.keys on imported module",
+      "timestamp": "2026-06-26T09:22:31.704Z"
+    },
+    {
+      "id": "audit_1782465792503_lteq6c",
+      "action": "test",
+      "proposalId": "prop_1782461056710_oguorm",
+      "filename": "multiAgent.ts",
+      "result": "failure",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\nstdout | server/multiAgent.test.ts > runTeamAgent > should return correct type\n[v6.17] Startup provider: kimi (LLM_MODEL=(not set), DEEPSEEK_KEY=set)\n\n ✓ serve",
+      "timestamp": "2026-06-26T09:23:12.503Z"
+    },
+    {
+      "id": "audit_1782465792516_ilcih5",
+      "action": "rollback",
+      "proposalId": "prop_1782461056710_oguorm",
+      "filename": "multiAgent.ts",
+      "result": "success",
+      "details": "Rolled back multiAgent.ts to backup bak_1782465760594_uuk9dc",
+      "timestamp": "2026-06-26T09:23:12.516Z"
+    },
+    {
+      "id": "audit_1782465792527_o22j1k",
+      "action": "rollback",
+      "proposalId": "prop_1782461056710_oguorm",
+      "filename": "multiAgent.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back multiAgent.ts to 2026-06-26T09:22:40.594Z",
+      "timestamp": "2026-06-26T09:23:12.527Z"
+    },
+    {
+      "id": "audit_1782465870167_sjhue4",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-26T09:24:30.167Z"
+    },
+    {
+      "id": "audit_1782465870172_hi4ypi",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-26T09:24:30.172Z"
+    },
+    {
+      "id": "audit_1782465927221_4a10zh",
+      "action": "test",
+      "proposalId": "prop_1782465575231_v74pt6",
+      "filename": "consensusEngine.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\nstdout | server/consensusEngine.test.ts > getConsensus > should execute without throwing\n[Consensus] Bypass: Single-model mode & not required — auto-approving ",
+      "timestamp": "2026-06-26T09:25:27.221Z"
+    },
+    {
+      "id": "audit_1782465927224_4xqo55",
+      "action": "apply",
+      "proposalId": "prop_1782465575231_v74pt6",
+      "filename": "consensusEngine.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null check for affectedFiles before join",
+      "timestamp": "2026-06-26T09:25:27.224Z"
+    },
+    {
+      "id": "audit_1782465950536_2g5zhj",
+      "action": "apply",
+      "proposalId": "prop_1782465494558_ijzpn7",
+      "filename": "testGenerator.ts",
+      "result": "blocked",
+      "details": "sandboxVerifier.quickValidate rejected proposal: Unbalanced braces: 176 open, 171 close",
+      "timestamp": "2026-06-26T09:25:50.536Z"
+    },
+    {
+      "id": "audit_1782483226046_w4sqi6",
+      "action": "test",
+      "proposalId": "prop_1782461056710_oguorm",
+      "filename": "multiAgent.ts",
+      "result": "failure",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda_v2\n\nstdout | server/multiAgent.test.ts > runTeamAgent > should return correct type\n[v6.17] Startup provider: kimi (LLM_MODEL=(not set), DEEPSEEK_KEY=set)\n\n ✓ serve",
+      "timestamp": "2026-06-26T14:13:46.046Z"
+    },
+    {
+      "id": "audit_1782483226054_nlkm8l",
+      "action": "rollback",
+      "proposalId": "prop_1782461056710_oguorm",
+      "filename": "multiAgent.ts",
+      "result": "success",
+      "details": "Rolled back multiAgent.ts to backup bak_1782483192729_gk5sdb",
+      "timestamp": "2026-06-26T14:13:46.054Z"
+    },
+    {
+      "id": "audit_1782483226057_degtae",
+      "action": "rollback",
+      "proposalId": "prop_1782461056710_oguorm",
+      "filename": "multiAgent.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back multiAgent.ts to 2026-06-26T14:13:12.729Z",
+      "timestamp": "2026-06-26T14:13:46.057Z"
+    },
+    {
+      "id": "audit_1782483981987_dxqp5o",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-26T14:26:21.987Z"
+    },
+    {
+      "id": "audit_1782483981992_djjcir",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-26T14:26:21.992Z"
     }
   ]
 }
