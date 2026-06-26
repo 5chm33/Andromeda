@@ -621,12 +621,26 @@ export async function chatCompletion(
     ...provider.headers,
   };
 
+  const combineAbortSignals = (...signals: (AbortSignal | undefined)[]) => {
+    const controller = new AbortController();
+    signals.forEach(signal => {
+      if (signal) {
+        signal.addEventListener('abort', () => controller.abort(), { once: true });
+      }
+    });
+    return controller.signal;
+  };
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout
+  const combinedSignal = combineAbortSignals(options?.signal, controller.signal);
   const resp = await fetch(provider.apiUrl, {
     method: "POST",
     headers,
     body: JSON.stringify(body),
-    signal: options?.signal,
+    signal: combinedSignal,
   });
+  clearTimeout(timeoutId);
 
   if (!resp.ok) {
     const errText = await resp.text().catch(() => "Unknown error");
