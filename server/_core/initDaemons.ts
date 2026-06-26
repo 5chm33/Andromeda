@@ -128,6 +128,12 @@ import { initTransferLearningBroker } from "../transferLearningBroker";
 import { initDomainBridger } from "../domainBridger";
 import { initSemanticCompressor } from "../semanticCompressor";
 import { initKnowledgeFusion } from "../knowledgeFusion";
+import { initConstitutionalGuard } from "../constitutionalGuard";
+import { initAlignmentMonitor } from "../alignmentMonitor";
+import { initValuePreservation } from "../valuePreservation";
+import { initCorrigibilityEngine } from "../corrigibilityEngine";
+import { initOversightProtocol } from "../oversightProtocol";
+import { initSafetyProofChecker } from "../safetyProofChecker";
 import { initStakeholderReporting } from "../stakeholderReporting";
 import { initCognitiveLoadBalancer } from "../cognitiveLoadBalancer";
 import { initBootstrapper } from "../capabilityBootstrapper";
@@ -413,6 +419,13 @@ export function startDaemons(): void {
     initDomainBridger();
     initSemanticCompressor();
     initKnowledgeFusion();
+    // v40
+    initConstitutionalGuard();
+    initAlignmentMonitor();
+    initValuePreservation();
+    initCorrigibilityEngine();
+    initOversightProtocol();
+    initSafetyProofChecker();
 
 
   initSummarizer();
