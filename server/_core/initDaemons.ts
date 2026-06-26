@@ -146,6 +146,12 @@ import { initReputationTracker } from "../reputationTracker";
 import { initConflictResolver } from "../conflictResolver";
 import { initConsensusNegotiator } from "../consensusNegotiator";
 import { initSocialNormLearner } from "../socialNormLearner";
+import { initEventSequencer } from "../eventSequencer";
+import { initCausalChainTracer } from "../causalChainTracer";
+import { initFutureStatePredictor } from "../futureStatePredictor";
+import { initHistoricalPatternMiner } from "../historicalPatternMiner";
+import { initTimeSeriesForecaster } from "../timeSeriesForecaster";
+import { initTemporalConsistencyChecker } from "../temporalConsistencyChecker";
 import { initStakeholderReporting } from "../stakeholderReporting";
 import { initCognitiveLoadBalancer } from "../cognitiveLoadBalancer";
 import { initBootstrapper } from "../capabilityBootstrapper";
@@ -452,6 +458,13 @@ export function startDaemons(): void {
     initConflictResolver();
     initConsensusNegotiator();
     initSocialNormLearner();
+    // v43
+    initEventSequencer();
+    initCausalChainTracer();
+    initFutureStatePredictor();
+    initHistoricalPatternMiner();
+    initTimeSeriesForecaster();
+    initTemporalConsistencyChecker();
 
 
   initSummarizer();
