@@ -221,11 +221,11 @@ export async function dbLoadCycles(limit = 50): Promise<RSICycleResult[]> {
         capabilityScoreBefore: r.score_before,
         capabilityScoreAfter: r.score_after,
         scoreImprovement: r.score_delta,
-        appliedFiles: JSON.parse(r.applied_files || "[]"),
-        errors: JSON.parse(r.errors || "[]"),
+        appliedFiles: (() => { try { return JSON.parse(r.applied_files || "[]"); } catch { return []; } })(),
+        errors: (() => { try { return JSON.parse(r.errors || "[]"); } catch { return []; } })(),
         memoryStoredCount: 0,
-        benchmarkBefore: r.benchmark_before ? JSON.parse(r.benchmark_before) : undefined,
-        benchmarkAfter: r.benchmark_after ? JSON.parse(r.benchmark_after) : undefined,
+        benchmarkBefore: r.benchmark_before ? (() => { try { return JSON.parse(r.benchmark_before); } catch { return undefined; } })() : undefined,
+        benchmarkAfter: r.benchmark_after ? (() => { try { return JSON.parse(r.benchmark_after); } catch { return undefined; } })() : undefined,
       }));
     } catch (err) {
       log.warn(`[rsiDb] DB cycle load failed: ${(err as Error).message}`);

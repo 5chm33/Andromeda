@@ -51,3 +51,5 @@
 {"timestamp":1782489767291,"modelId":"deepseek-chat","inputTokens":1000,"outputTokens":500,"costUsd":0.00028,"proposalId":"test-proposal","area":"feature"}
 {"timestamp":1782489849608,"modelId":"deepseek-chat","inputTokens":1000,"outputTokens":500,"costUsd":0.00028,"proposalId":"test-proposal","area":"feature"}
 {"timestamp":1782489925426,"modelId":"deepseek-chat","inputTokens":1000,"outputTokens":500,"costUsd":0.00028,"proposalId":"test-proposal","area":"feature"}
+{"timestamp":1782496232666,"modelId":"deepseek-chat","inputTokens":1000,"outputTokens":500,"costUsd":0.00028,"proposalId":"test-proposal","area":"feature"}
+{"timestamp":1782496422770,"modelId":"deepseek-chat","inputTokens":1000,"outputTokens":500,"costUsd":0.00028,"proposalId":"test-proposal","area":"feature"}

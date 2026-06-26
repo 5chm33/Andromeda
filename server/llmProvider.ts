@@ -918,11 +918,12 @@ export async function* streamChatCompletion(
     ...provider.headers,
   };
 
+  const _streamSignal = options?.signal ?? AbortSignal.timeout(120_000); // 120s default timeout
   const resp = await fetch(provider.apiUrl, {
     method: "POST",
     headers,
     body: JSON.stringify(body),
-    signal: options?.signal,
+    signal: _streamSignal,
   });
 
   if (!resp.ok) {
@@ -1158,11 +1159,12 @@ export async function backgroundChatCompletion(
     Authorization: `Bearer ${provider.apiKey}`,
     ...(provider.headers ?? {}),
   };
+  const _bgSignal = options?.signal ?? AbortSignal.timeout(120_000); // 120s default timeout
   const resp = await fetch(provider.apiUrl, {
     method: "POST",
     headers,
     body: JSON.stringify(body),
-    signal: options?.signal,
+    signal: _bgSignal,
   });
   if (!resp.ok) {
     const errText = await resp.text().catch(() => resp.statusText);

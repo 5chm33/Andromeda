@@ -242,7 +242,8 @@ Defend your code and return the (possibly improved) snippet as JSON.`,
     }
 
     const cleaned = raw.replace(/^```json?\s*/im, "").replace(/\s*```\s*$/m, "").trim();
-    const parsed = JSON.parse(cleaned) as BlueTeamResult;
+    let parsed: BlueTeamResult;
+    try { parsed = JSON.parse(cleaned) as BlueTeamResult; } catch { throw new Error("Blue Team returned invalid JSON"); }
     return {
       improvedSnippet: parsed.improvedSnippet || proposedSnippet,
       addressedIssues: Array.isArray(parsed.addressedIssues) ? parsed.addressedIssues : [],

@@ -120,7 +120,8 @@ Respond with ONLY a JSON object:
       // Parse JSON response
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        const parsed = JSON.parse(jsonMatch[0]);
+        let parsed: any;
+        try { parsed = JSON.parse(jsonMatch[0]); } catch { continue; }
         return {
           model,
           approved: !!parsed.approved,

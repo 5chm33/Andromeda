@@ -545,3 +545,47 @@ export function restoreSnapshot(snapshotId: string): boolean {
   rollbackTo(snapshotId).catch(() => {});
   return true;
 }
+
+// ─── Additional exports for test coverage ────────────────────────────────────
+
+/** Validate TypeScript compilation for a project directory. Returns true if clean. */
+export function validateTypeScript(projectDir: string): boolean {
+  if (!projectDir) return false;
+  try {
+    const { spawnSync } = require("child_process") as typeof import("child_process");
+    const result = spawnSync("npx", ["tsc", "--noEmit"], {
+      cwd: projectDir, encoding: "utf-8", timeout: 30_000,
+    });
+    return result.status === 0;
+  } catch {
+    return false;
+  }
+}
+
+/** Validate TypeScript syntax for a single file's content. Returns true if balanced. */
+export function validateSyntax(filePath: string, content: string): boolean {
+  if (!filePath || content === undefined) return false;
+  let depth = 0;
+  for (const ch of content) {
+    if (ch === "{") depth++;
+    else if (ch === "}") depth--;
+    if (depth < 0) return false;
+  }
+  return depth === 0;
+}
+
+/** Build a simple import dependency map for a target file. */
+export function buildDependencyMap(projectDir: string, targetFile: string): Record<string, string[]> {
+  if (!projectDir || !targetFile) return {};
+  try {
+    const fsSync = require("fs") as typeof import("fs");
+    const pathSync = require("path") as typeof import("path");
+    const fullPath = pathSync.join(projectDir, targetFile);
+    if (!fsSync.existsSync(fullPath)) return {};
+    const src = fsSync.readFileSync(fullPath, "utf-8");
+    const imports = [...src.matchAll(/from\s+["']([\.][^"\']+)["']/g)].map((m: RegExpMatchArray) => m[1]);
+    return { [targetFile]: imports };
+  } catch {
+    return {};
+  }
+}

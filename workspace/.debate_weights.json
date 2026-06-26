@@ -1,30 +1,30 @@
 {
   "security_auditor": {
-    "dynamicWeight": 0.37378613562624285,
+    "dynamicWeight": 0.402853230978836,
     "historicalAccuracy": 1,
-    "totalVotes": 10,
-    "correctVotes": 10
+    "totalVotes": 16,
+    "correctVotes": 16
   },
   "performance_tuner": {
-    "dynamicWeight": 0.17891824696393058,
-    "historicalAccuracy": 0.5,
-    "totalVotes": 0,
+    "dynamicWeight": 0.1605117642207319,
+    "historicalAccuracy": 0,
+    "totalVotes": 2,
     "correctVotes": 0
   },
   "typescript_pedant": {
-    "dynamicWeight": 0.17891824696393058,
+    "dynamicWeight": 0.17465400192017277,
     "historicalAccuracy": 0.5,
     "totalVotes": 0,
     "correctVotes": 0
   },
   "architecture_guardian": {
-    "dynamicWeight": 0.13418868522294797,
+    "dynamicWeight": 0.13099050144012964,
     "historicalAccuracy": 0.5,
     "totalVotes": 0,
     "correctVotes": 0
   },
   "reliability_engineer": {
-    "dynamicWeight": 0.13418868522294797,
+    "dynamicWeight": 0.13099050144012964,
     "historicalAccuracy": 0.5,
     "totalVotes": 0,
     "correctVotes": 0

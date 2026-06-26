@@ -1,8 +1,0 @@
-{
-  "id": "rp_1782418534661_fg2zjw",
-  "description": "Before proposal prop_1782418321467_rd5itu: Add null check before accessing response.choices[0]",
-  "timestamp": 1782418534661,
-  "author": "self-improve",
-  "files": [],
-  "metadata": {}
-}

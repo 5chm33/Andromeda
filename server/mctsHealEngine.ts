@@ -344,7 +344,8 @@ export async function mctsHeal(opts: {
 
       // Parse JSON response
       const cleaned = rawContent.replace(/^```json?\s*/im, "").replace(/\s*```\s*$/m, "").trim();
-      const parsed = JSON.parse(cleaned);
+      let parsed: any;
+      try { parsed = JSON.parse(cleaned); } catch { return null; }
       if (!parsed.originalSnippet || !parsed.proposedSnippet) return null;
 
       // Verify snippet exists in file

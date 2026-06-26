@@ -271,7 +271,8 @@ async function runTrainingLoop(
   run.completedAt = Date.now();
   run.status = "completed";
 
-  const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+  let manifest: any;
+  try { manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8")); } catch { manifest = {}; }
   Object.assign(manifest, {
     completedAt: new Date().toISOString(),
     evalRewardAccuracy: evalAccuracy,

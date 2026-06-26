@@ -1,8 +1,0 @@
-{
-  "id": "rp_1782416024771_efctd9",
-  "description": "Before proposal prop_1782415956033_gc786c: Add null guard before .slice() on compressibleIndices",
-  "timestamp": 1782416024771,
-  "author": "self-improve",
-  "files": [],
-  "metadata": {}
-}

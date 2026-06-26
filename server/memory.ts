@@ -595,7 +595,9 @@ Return empty memories array if nothing worth storing. Return ONLY valid JSON.`,
 
     // Strip markdown code blocks if present
     const jsonStr = content.replace(/^```json?\n?/, "").replace(/\n?```$/, "");
-    const parsed = JSON.parse(jsonStr) as { memories: Array<{ content: string; type: MemoryType; tags: string[] }> };
+    let parsed: { memories: Array<{ content: string; type: MemoryType; tags: string[] }> } | null;
+    try { parsed = JSON.parse(jsonStr) as { memories: Array<{ content: string; type: MemoryType; tags: string[] }> }; } catch { parsed = null; }
+    if (!parsed) return [];
 
     const stored: MemoryEntry[] = [];
     for (const mem of parsed.memories ?? []) {

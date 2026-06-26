@@ -1,8 +1,0 @@
-{
-  "id": "rp_1782419632825_0wb2h2",
-  "description": "Before proposal prop_1782419537976_kamort: Add null guard before .slice() in buildUserPrompt",
-  "timestamp": 1782419632825,
-  "author": "self-improve",
-  "files": [],
-  "metadata": {}
-}

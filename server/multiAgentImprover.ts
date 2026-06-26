@@ -203,7 +203,8 @@ async function queryAgent(agent: AgentRole, ctx: ImprovementContext): Promise<Ag
     });
 
     const content = response.choices[0]?.message?.content || "{}";
-    const parsed = JSON.parse(content);
+    let parsed: any;
+    try { parsed = JSON.parse(content); } catch { parsed = {}; }
 
     return {
       agent: agent.name,

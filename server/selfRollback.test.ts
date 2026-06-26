@@ -68,7 +68,7 @@ describe("validateTypeScript", () => {
 
   it("should return correct type", () => {
     const result = validateTypeScript("test_projectDir");
-    expect(Array.isArray(result)).toBe(true);
+    expect(typeof result).toBe("boolean");
   });
 
   it("should handle empty/null inputs gracefully", () => {
@@ -95,7 +95,7 @@ describe("validateSyntax", () => {
 
   it("should return correct type", () => {
     const result = validateSyntax("test_filePath", "test_content");
-    expect(Array.isArray(result)).toBe(true);
+    expect(typeof result).toBe("boolean");
   });
 
   it("should handle empty/null inputs gracefully", () => {

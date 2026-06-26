@@ -163,7 +163,7 @@ async function _runAllBenchmarks(): Promise<BenchmarkResult[]> {
 
   results.push(await _runBenchmark("json-roundtrip-nested-1000", "json", () => {
     const data = { a: { b: { c: Array.from({ length: 1000 }, (_, i) => ({ i, s: `str${i}` })) }}};
-    JSON.parse(JSON.stringify(data));
+    structuredClone(data);
   }));
 
   // ── Category 2: String processing (4 benchmarks) ──

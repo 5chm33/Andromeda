@@ -249,7 +249,8 @@ export async function generateDomainProposal(artifactId: string): Promise<Domain
     });
 
     const raw = response.choices[0]?.message?.content || "{}";
-    const parsed = JSON.parse(raw);
+    let parsed: any;
+    try { parsed = JSON.parse(raw); } catch { parsed = {}; }
 
     const proposal: DomainProposal = {
       id: `proposal-${artifact.domain}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
@@ -304,7 +305,8 @@ export async function evaluateDomainProposal(proposalId: string): Promise<Domain
     });
 
     const raw = response.choices[0]?.message?.content || "{}";
-    const parsed = JSON.parse(raw);
+    let parsed: any;
+    try { parsed = JSON.parse(raw); } catch { parsed = {}; }
 
     const evaluation: DomainEvaluation = {
       proposalId,

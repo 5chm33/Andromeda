@@ -381,7 +381,8 @@ export async function browserClickVision(
     const data = await response.json() as { choices?: Array<{ message?: { content?: string } }> };
     const raw = data.choices?.[0]?.message?.content?.trim() ?? "";
     const cleaned = raw.replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
-    const coords = JSON.parse(cleaned) as { x: number; y: number };
+    let coords: { x: number; y: number } | null;
+    try { coords = JSON.parse(cleaned) as { x: number; y: number }; } catch { return { success: false, sessionId, error: "Vision: invalid JSON coordinates returned" }; }
 
     if (coords.x < 0 || coords.y < 0) {
       return { success: false, sessionId, error: `Vision: element "${description}" not found in screenshot` };

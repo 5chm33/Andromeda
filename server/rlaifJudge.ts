@@ -90,11 +90,9 @@ Respond EXACTLY in this JSON format:
                         
       if (!jsonMatch) continue;
 
-      const parsed = JSON.parse(jsonMatch[1] || jsonMatch[0]) as {
-        score: number;
-        reasoning: string;
-        improved_response: string;
-      };
+      let parsed: { score: number; reasoning: string; improved_response: string } | null;
+      try { parsed = JSON.parse(jsonMatch[1] || jsonMatch[0]) as { score: number; reasoning: string; improved_response: string }; } catch { continue; }
+      if (!parsed) continue;
 
       if (parsed.score < 9 && parsed.improved_response !== "PERFECT") {
         pairs.push({

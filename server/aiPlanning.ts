@@ -95,7 +95,8 @@ export async function generateSuggestions(query: string): Promise<string[]> {
     const data = (await response.json()) as any;
     const content = data.choices?.[0]?.message?.content;
     if (!content) return [];
-    const parsed = JSON.parse(content);
+    let parsed: any;
+    try { parsed = JSON.parse(content); } catch { return []; }
     const arr = parsed.suggestions || parsed.queries || Object.values(parsed)[0];
     return Array.isArray(arr) ? arr.slice(0, 4) : [];
   } catch (err) {
@@ -643,7 +644,7 @@ Rules:
   const data = (await response.json()) as any;
   const content = data.choices?.[0]?.message?.content;
   if (!content) throw new Error("No plan returned");
-  return JSON.parse(content) as ExecutionPlan;
+  try { return JSON.parse(content) as ExecutionPlan; } catch { throw new Error("Plan generation returned invalid JSON"); }
 }
 
 // ── 2. Context Compression (/compact command) ─────────────────────────────────

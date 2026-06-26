@@ -90,7 +90,7 @@ export function checkForRegressions(cycleId: string): { hasRegression: boolean, 
 }
 
 export function getMetricHistory(): Record<string, number[]> {
-  return JSON.parse(JSON.stringify(history)); // deep copy
+  return structuredClone(history); // deep copy
 }
 
 export function getRegressionGuardStatus(): RegressionStatus {
