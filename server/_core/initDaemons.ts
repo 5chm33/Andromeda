@@ -291,6 +291,13 @@ import { reportConflict, mediateConflict, resolveConflict } from "../conflictMed
 import { makeCollectiveDecision } from "../collectiveDecisionMaker";
 import { publishKnowledge, syncKnowledge, getKnowledge } from "../knowledgeSynchronizer";
 import { addRating, getRecommendations as getCollabRecommendations } from "../collaborativeFilteringEngine";
+import { recordSignal, adaptToEnvironment } from "../environmentalAdaptor";
+import { captureDistribution, detectShift } from "../distributionShiftDetector";
+import { initializeModel as initOnlineModel, onlineUpdate, getModelState } from "../onlineLearningController";
+import { recordPredictionError, checkForDrift } from "../conceptDriftHandler";
+import { registerDomain, adaptDomain } from "../domainAdaptationEngine";
+import { registerTransferTask, planTransfer } from "../transferOptimizer";
+
 
 
 
