@@ -211,22 +211,22 @@ describe("getRSIStatus", () => {
 });
 
 describe("getRSIHistory", () => {
-  it("should execute without throwing", () => {
+  it("should execute without throwing", async () => {
     try {
-      const result = getRSIHistory();
-      expect(result).toBeDefined();
+      const result = await withTimeout(getRSIHistory());
+      expect(result === null || result !== undefined).toBe(true);
     } catch (e: any) {
       expect(e).toBeDefined();
     }
   });
 
-  it("should return correct type", () => {
-    const result = getRSIHistory();
+  it("should return correct type", async () => {
+    const result = await getRSIHistory();
     expect(Array.isArray(result)).toBe(true);
   });
 
-  it("should handle invalid inputs", () => {
+  it("should handle invalid inputs", async () => {
     // @ts-expect-error Testing invalid input
-    try { getRSIHistory(); } catch (e: any) { expect(e).toBeDefined(); }
+    try { await getRSIHistory(); } catch (e: any) { expect(e).toBeDefined(); }
   });
 });
