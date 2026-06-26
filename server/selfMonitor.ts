@@ -398,6 +398,7 @@ export function resolveAlert(alertId: string): boolean {
 }
 
 export function getMetricHistory(type: MetricType, limit: number = 100): MetricSample[] {
+  if (!samples) return [];
   return samples.filter(s => s.type === type).slice(-limit);
 }
 
