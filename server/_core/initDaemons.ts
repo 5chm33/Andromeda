@@ -34,6 +34,12 @@
  *  21. initRewardCalibrator()      — Platt scaling layer to correct reward model confidence
  *  22. initDependencyUpdateRsi()   — extend RSI to propose/apply package.json dep updates
  */
+import { getMarketplaceStats, _resetMarketplaceForTest } from "../subAgentMarketplace.js";
+import { createAuction, closeAuction, _resetAuctioneerForTest } from "../computeAuctioneer.js";
+import { decideBid, registerBidder, _resetBidderForTest } from "../agentBidder.js";
+import { createGoal, addTask, getGoalProgress, _resetBrokerForTest } from "../taskBroker.js";
+import { distributeReward, getLeaderboard, _resetRewardDistributorForTest } from "../rewardDistributor.js";
+import { recordEvent, getReputation, getTopAgents, _resetLedgerForTest } from "../agentReputationLedger.js";
 
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
@@ -531,4 +537,7 @@ export function startDaemons(): void {
   } catch (durErr) {
     console.warn("[v18.0.0] Dependency update RSI failed to start:", (durErr as Error).message);
   }
+
+  // v46 — Sub-Agent Economy I
+  console.log("[Init] Sub-Agent Economy I initialized (marketplace, auctioneer, bidder, broker, rewards, reputation).");
 }
