@@ -1241,29 +1241,45 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
     }
   } catch { /* non-fatal — learnedConstraints unavailable */ }
 
-  // First, build the proposed content via snippet replacement (same as before)
+  // v12.10.0: AST-aware snippet matching — replaces raw includes() + trimmed-line loop
+  // Uses astDiff.ts to handle whitespace/comment-only changes without false-positive misses.
   let snippetApplied = false;
-  if (originalContent.includes(parsed.originalSnippet)) {
-    proposedContent = originalContent.replace(parsed.originalSnippet, parsed.proposedSnippet);
-    snippetApplied = true;
-  } else {
-    // Fuzzy match on trimmed lines
-    const origLines = originalContent.split("\n");
-    const snippetLines = parsed.originalSnippet.split("\n").map(l => l.trim());
-    let matchStart = -1;
-    for (let i = 0; i <= origLines.length - snippetLines.length; i++) {
-      const window = origLines.slice(i, i + snippetLines.length).map(l => l.trim());
-      if (window.join("\n") === snippetLines.join("\n")) { matchStart = i; break; }
-    }
-    if (matchStart >= 0) {
-      const before = origLines.slice(0, matchStart).join("\n");
-      const after = origLines.slice(matchStart + snippetLines.length).join("\n");
-      proposedContent = [before, parsed.proposedSnippet, after].filter(Boolean).join("\n");
+  try {
+    const { findAndApplySnippet } = await import("./astDiff.js");
+    const matchResult = findAndApplySnippet(originalContent, parsed.originalSnippet, parsed.proposedSnippet);
+    if (matchResult.found && matchResult.proposedContent) {
+      proposedContent = matchResult.proposedContent;
       snippetApplied = true;
+      if (matchResult.normalizedMatch) {
+        log.info(`[AstDiff] Snippet matched via normalization for ${filename}`);
+      }
     } else {
-      // Snippet not found — lower confidence and still save for display
+      // Snippet not found even with AST normalization — lower confidence
       confidence = Math.min(confidence, 0.3);
       proposedContent = originalContent;
+    }
+  } catch {
+    // Fallback to original text-based matching if astDiff throws
+    if (originalContent.includes(parsed.originalSnippet)) {
+      proposedContent = originalContent.replace(parsed.originalSnippet, parsed.proposedSnippet);
+      snippetApplied = true;
+    } else {
+      const origLines = originalContent.split("\n");
+      const snippetLines = parsed.originalSnippet.split("\n").map(l => l.trim());
+      let matchStart = -1;
+      for (let i = 0; i <= origLines.length - snippetLines.length; i++) {
+        const window = origLines.slice(i, i + snippetLines.length).map(l => l.trim());
+        if (window.join("\n") === snippetLines.join("\n")) { matchStart = i; break; }
+      }
+      if (matchStart >= 0) {
+        const before = origLines.slice(0, matchStart).join("\n");
+        const after = origLines.slice(matchStart + snippetLines.length).join("\n");
+        proposedContent = [before, parsed.proposedSnippet, after].filter(Boolean).join("\n");
+        snippetApplied = true;
+      } else {
+        confidence = Math.min(confidence, 0.3);
+        proposedContent = originalContent;
+      }
     }
   }
 
@@ -1286,6 +1302,44 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
     } catch {
       log.info(`[v6.34] applyPatch threw for ${filename} — falling back to proposedContent`);
     }
+  }
+
+  // v12.10.0: Multi-Agent Debate (MAD) — Red Team attacks, Blue Team defends.
+  // Runs BEFORE Actor-Critic to catch edge cases a single LLM review misses.
+  try {
+    const { runMadDebate } = await import("./madDebate.js");
+    const fileContextForMad = originalContent.split("\n").slice(0, 50).join("\n");
+    const madResult = await runMadDebate({
+      proposal: {
+        targetFile: filename,
+        originalSnippet: parsed.originalSnippet,
+        proposedSnippet: parsed.proposedSnippet,
+        category: parsed.category,
+        title: parsed.title,
+      },
+      fileContext: fileContextForMad,
+      simpleChatCompletion,
+      providerChain,
+    });
+    if (madResult.ran) {
+      // Apply Blue Team's improved snippet if they patched the code
+      if (madResult.blueTeamImproved && madResult.improvedSnippet) {
+        log.info(`[MAD] Blue Team improved snippet for ${filename} — applying patch`);
+        parsed.proposedSnippet = madResult.improvedSnippet;
+        // Recompute proposedContent with improved snippet
+        try {
+          const { findAndApplySnippet } = await import("./astDiff.js");
+          const reMatch = findAndApplySnippet(originalContent, parsed.originalSnippet, parsed.proposedSnippet);
+          if (reMatch.found && reMatch.proposedContent) proposedContent = reMatch.proposedContent;
+        } catch { /* non-fatal */ }
+      }
+      // Apply confidence delta from debate outcome
+      confidence = Math.max(0.1, Math.min(1.0, confidence + madResult.confidenceDelta));
+      (parsed as any)._madDebateTranscript = madResult.transcript.slice(0, 500);
+      (parsed as any)._madIssueCount = madResult.redTeamIssues.length;
+    }
+  } catch (madErr) {
+    log.warn(`[MAD] Debate threw (non-fatal): ${(madErr as Error).message?.slice(0, 100)}`);
   }
 
   // v12.9.0: Actor-Critic review — before saving, run the Critic LLM to catch
@@ -1806,6 +1860,53 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
               const healProp = healStore.proposals.find(p => p.id === proposalId);
               if (healProp) { (healProp as any)._tsHealCount = healCount + 1; saveProposals(healStore); }
             }
+            // v12.10.0: On attempt 2+, use MCTS parallel healing for a wider search
+            if (healCount >= 1) {
+              try {
+                const { mctsHeal } = await import("./mctsHealEngine.js");
+                const mctsResult = await mctsHeal({
+                  proposal: {
+                    id: proposal.id,
+                    targetFile: proposal.targetFile,
+                    title: proposal.title || "",
+                    category: proposal.category,
+                    originalSnippet: proposal.originalSnippet,
+                    proposedSnippet: proposal.proposedSnippet,
+                    originalContent: proposal.originalContent,
+                    proposedContent: proposal.proposedContent,
+                  },
+                  tscErrors,
+                  rawTscOutput: tsErrRaw,
+                  projectRoot: path.resolve(getServerDir(), ".."),
+                  simpleChatCompletion,
+                  providerChain,
+                  deadProviders: _deadProviders,
+                  branchesPerStrategy: 2,
+                });
+                if (mctsResult.success && mctsResult.bestCandidate) {
+                  const best = mctsResult.bestCandidate;
+                  console.log(`[SelfImprove] MCTS heal SUCCESS via '${mctsResult.strategy}' (${mctsResult.passingCandidates}/${mctsResult.totalCandidates} passed) for ${proposal.targetFile}`);
+                  proposal.originalSnippet = best.originalSnippet;
+                  proposal.proposedSnippet = best.proposedSnippet;
+                  proposal.proposedContent = best.proposedContent;
+                  const mctsStore = loadProposals();
+                  const mctsProp = mctsStore.proposals.find(p => p.id === proposalId);
+                  if (mctsProp) {
+                    mctsProp.originalSnippet = best.originalSnippet;
+                    mctsProp.proposedSnippet = best.proposedSnippet;
+                    (mctsProp as any).proposedContent = best.proposedContent;
+                    (mctsProp as any)._mctsStrategy = mctsResult.strategy;
+                    saveProposals(mctsStore);
+                  }
+                  return applyProposal(proposalId);
+                } else {
+                  console.warn(`[SelfImprove] MCTS heal found no passing candidates (${mctsResult.totalCandidates} tried) — falling back to sequential heal`);
+                  // Fall through to sequential heal below
+                }
+              } catch (mctsErr) {
+                console.warn(`[SelfImprove] MCTS heal threw (non-fatal): ${sanitizeForLog((mctsErr as Error).message)} — falling back to sequential heal`);
+              }
+            }
             const healResult = await healTypeScriptErrors({
               proposal: {
                 id: proposal.id,
@@ -1892,6 +1993,39 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         return { success: false, message: `TypeScript check failed after apply — self-heal attempted. Errors: ${tsErrMsg.slice(0, 200)}` };
       }
 
+      // v12.10.0: Dynamic test generation — write and run a targeted Vitest test
+      // for the modified function before committing. Non-blocking (failure adds metadata only).
+      if (tsCheckPassed) {
+        try {
+          const { generateAndRunTest } = await import("./dynamicTestGen.js");
+          const { simpleChatCompletion: dynScc, getProviderForTier: dynGpt, tierForArea: dynTfa } = await import("./llmProvider.js");
+          const dynTestResult = await generateAndRunTest({
+            proposal: {
+              id: proposalId,
+              targetFile: proposal.targetFile,
+              originalSnippet: proposal.originalSnippet,
+              proposedSnippet: proposal.proposedSnippet,
+              title: proposal.title || "",
+            },
+            projectRoot: path.resolve(getServerDir(), ".."),
+            simpleChatCompletion: dynScc,
+            providerId: dynGpt(dynTfa("self-modification")),
+          });
+          if (dynTestResult.ran) {
+            (proposal as any)._dynamicTestPassed = dynTestResult.passed;
+            (proposal as any)._dynamicTestFunctions = dynTestResult.functionsTested;
+            if (!dynTestResult.passed) {
+              log.warn(`[DynamicTestGen] Dynamic test FAILED for ${proposal.targetFile} — flagging proposal but not blocking commit`);
+              (proposal as any)._dynamicTestFailure = dynTestResult.failureOutput?.slice(0, 300);
+            } else {
+              log.info(`[DynamicTestGen] Dynamic test PASSED for ${proposal.targetFile} (functions: ${dynTestResult.functionsTested.join(", ")})`);
+            }
+          }
+        } catch (dynErr) {
+          log.warn(`[DynamicTestGen] Dynamic test threw (non-fatal): ${sanitizeForLog((dynErr as Error).message)}`);
+        }
+      }
+
       // v9.8.5: Git commit the applied change so it shows up in git log
       if (tsCheckPassed) {
         try {
@@ -1906,6 +2040,33 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
           }
         } catch (gitErr) {
           console.warn("[SelfImprove] Git commit unavailable (non-fatal):", sanitizeForLog((gitErr as Error).message));
+        }
+
+        // v12.10.0: Register runtime telemetry watch for auto-rollback on 500 errors
+        try {
+          const { registerRuntimeWatch } = await import("./runtimeGuard.js");
+          const { semanticRollback: doSemanticRollback } = await import("./semanticRollback.js");
+          const projectRoot = path.resolve(getServerDir(), "..");
+          registerRuntimeWatch({
+            proposalId,
+            targetFile: proposal.targetFile,
+            projectRoot,
+            windowMinutes: 5,
+            rollbackFn: async () => {
+              log.warn(`[RuntimeGuard] Auto-rollback triggered for proposal ${proposalId}`);
+              await doSemanticRollback(proposalId);
+              // Mark proposal as auto-rolled-back
+              const rbStore = loadProposals();
+              const rbProp = rbStore.proposals.find(p => p.id === proposalId);
+              if (rbProp) {
+                (rbProp as any).status = "auto-rolled-back";
+                (rbProp as any)._autoRollbackAt = new Date().toISOString();
+                saveProposals(rbStore);
+              }
+            },
+          });
+        } catch (guardErr) {
+          log.warn(`[RuntimeGuard] Watch registration threw (non-fatal): ${sanitizeForLog((guardErr as Error).message)}`);
         }
       }
 

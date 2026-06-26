@@ -1,5 +1,13 @@
 # Changelog
 
+## [12.10.0] — 2026-06-26
+### Added — Tier 3 SOTA RSI Enhancements (Target: 95%+ commit success rate)
+- **MCTS Parallel Healing** (`mctsHealEngine.ts`): On heal attempt 2+, the engine now spawns multiple parallel fix branches (2 per strategy × 3 strategies = 6 candidates) and scores each via `tsc --noEmit` in a temp dir. The highest-scoring passing candidate is applied. Falls back to sequential heal if all branches fail. Expected impact: +5–7% heal success rate.
+- **Dynamic Test Generation** (`dynamicTestGen.ts`): After tsc passes but before git commit, the engine generates a targeted Vitest test for the modified function(s) using the TypeScript AST to extract function names. The test is run and the result is stored as `_dynamicTestPassed` metadata. Non-blocking — failures flag the proposal but do not block the commit. Expected impact: +3–4% commit success rate by catching logical regressions.
+- **AST-Based Structural Diffing** (`astDiff.ts`): Snippet matching now uses the TypeScript compiler API to canonicalize both the stored snippet and the current file before comparing. Handles whitespace, comment, and indentation changes without false-positive misses. Falls back to trimmed-line matching if AST parse fails. Expected impact: +2–3% commit success rate by eliminating false-positive conflicts.
+- **Multi-Agent Debate** (`madDebate.ts`): A Red Team agent aggressively attacks each proposal (type safety, null safety, logic, performance, security, boundary conditions). A Blue Team agent defends and optionally patches the code. The improved snippet replaces the original before Actor-Critic review. Confidence is adjusted based on unaddressed critical issues. Expected impact: +3–5% commit success rate.
+- **Runtime Telemetry Guard** (`runtimeGuard.ts`): After each commit, the modified file's Express routes are extracted and watched for 5 minutes. If ≥3 consecutive 500 errors are detected on a watched route, `semanticRollback` is triggered automatically and the proposal is marked `auto-rolled-back`. Non-blocking safety net. Expected impact: Prevents bad commits from staying live.
+
 ## [12.9.0] — 2026-06-26
 ### Added — SOTA RSI Enhancements (Target: 85%+ commit success rate)
 - **Actor-Critic Proposal Generation** (`criticEngine.ts`): Every RSI proposal is now reviewed by a dedicated Critic LLM before being saved. The critic scores each proposal on a 0–10 scale across correctness, safety, and reversibility. Proposals scoring below 5 are flagged with `_criticScore` metadata and deprioritized in the auto-apply queue. Expected impact: +6–8% commit success rate by filtering low-quality proposals before they reach the apply pipeline.
