@@ -51,16 +51,17 @@ setInterval(() => {
 // ── Rate limiters ──────────────────────────────────────────────────────────────
 
 /** Standard rate limiter: 120 requests per minute per IP */
+function extractIp(req: Request): string {
+  const forwarded = req.headers["x-forwarded-for"];
+  return typeof forwarded === "string" ? forwarded.split(",")[0].trim() : forwarded?.[0] ?? req.socket.remoteAddress ?? "unknown";
+}
+
 const streamLimiter = rateLimit({
   windowMs: 60_000,
   max: 120,
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req: Request) => {
-    const forwarded = req.headers["x-forwarded-for"];
-    const ip = typeof forwarded === "string" ? forwarded.split(",")[0].trim() : forwarded?.[0] ?? req.socket.remoteAddress ?? "unknown";
-    return ip;
-  },
+  keyGenerator: extractIp,
 });
 
 /** Heavy rate limiter: 20 requests per minute per IP (for expensive operations) */
@@ -69,10 +70,7 @@ const heavyLimiter = rateLimit({
   max: 20,
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req: Request) => {
-    const forwarded = req.headers["x-forwarded-for"];
-    return typeof forwarded === "string" ? forwarded.split(",")[0].trim() : forwarded?.[0] ?? req.socket.remoteAddress ?? "unknown";
-  },
+  keyGenerator: extractIp,
 });
 
 // ── SSE helpers ────────────────────────────────────────────────────────────────
