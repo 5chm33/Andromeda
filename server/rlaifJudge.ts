@@ -48,6 +48,9 @@ export async function generateRlaifPairs(limit = 10): Promise<RlaifPair[]> {
 
   for (const row of rows) {
     try {
+      const MIN_SCORE_FOR_IMPROVEMENT = 9;
+      const MAX_SCORE = 10;
+
       const prompt = `
 You are an expert AI Judge. Your task is to evaluate the following response to a user query, and if it is not perfect, provide a superior "chosen" response.
 
@@ -57,12 +60,9 @@ ${row.query}
 ORIGINAL RESPONSE (To be evaluated):
 ${row.response}
 
-      const MIN_SCORE_FOR_IMPROVEMENT = 9;
-      const MAX_SCORE = 10;
-
-      Evaluate the original response on a scale of 1-MAX_SCORE.
-If the score is less than MIN_SCORE_FOR_IMPROVEMENT, write a significantly better response.
-If the score is MIN_SCORE_FOR_IMPROVEMENT or MAX_SCORE, just output "PERFECT" for the improved response.
+Evaluate the original response on a scale of 1-${MAX_SCORE}.
+If the score is less than ${MIN_SCORE_FOR_IMPROVEMENT}, write a significantly better response.
+If the score is ${MIN_SCORE_FOR_IMPROVEMENT} or ${MAX_SCORE}, just output "PERFECT" for the improved response.
 
 Respond EXACTLY in this JSON format:
 {
