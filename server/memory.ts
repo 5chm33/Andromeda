@@ -466,9 +466,10 @@ export async function injectMemoryContextAsync(query: string): Promise<string> {
         for (const { id, text, score } of vectorResults) {
           if (score < 0.25) continue;
           const entry = entryMap.get(id);
-          const type = entry?.type ?? "fact";
+          if (!entry) continue;
+          const type = entry.type ?? "fact";
           if (!sections[type]) sections[type] = [];
-          sections[type].push(entry?.content ?? text);
+          sections[type].push(entry.content ?? text);
         }
         if (Object.keys(sections).length > 0) {
           const typeLabels: Record<string, string> = {
