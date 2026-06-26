@@ -23,7 +23,7 @@ describe("gradientDescentOptimizer", () => {
     // f(x) = (x - 3)^2, minimum at x=3
     const result = optimizeGradientDescent(
       [0],
-      (p) => (p[0] - 3) ** 2,
+      (p) => Math.pow(p[0] - 3, 2),
       (p) => [2 * (p[0] - 3)],
       { learningRate: 0.1, maxIterations: 200 }
     );
@@ -34,7 +34,7 @@ describe("gradientDescentOptimizer", () => {
   it("detects convergence", () => {
     const result = optimizeGradientDescent(
       [5],
-      (p) => (p[0] - 5) ** 2,
+      (p) => Math.pow(p[0] - 5, 2),
       (p) => [2 * (p[0] - 5)],
       { learningRate: 0.5, tolerance: 1e-4 }
     );
@@ -46,7 +46,7 @@ describe("bayesianOptimizer", () => {
   it("finds near-optimal value in search space", () => {
     // maximize f(x) = -(x-2)^2 + 4, peak at x=2
     const result = optimizeBayesian(
-      (p) => -(p[0] - 2) ** 2 + 4,
+      (p) => -Math.pow(p[0] - 2, 2) + 4,
       [{ min: -5, max: 5 }],
       25
     );
@@ -71,7 +71,7 @@ describe("evolutionaryOptimizer", () => {
   it("maximizes a fitness function", () => {
     // maximize f(x) = -(x-5)^2 + 25, peak at x=5
     const result = optimizeEvolutionary(
-      (genes) => -(genes[0] - 5) ** 2 + 25,
+      (genes) => -Math.pow(genes[0] - 5, 2) + 25,
       [[-10, 10]],
       30, 50
     );
@@ -93,7 +93,7 @@ describe("evolutionaryOptimizer", () => {
 describe("simulatedAnnealingEngine", () => {
   it("minimizes a simple energy function", () => {
     const result = optimizeSimulatedAnnealing(
-      (s) => (s[0] - 3) ** 2,
+      (s) => Math.pow(s[0] - 3, 2),
       [10],
       (s) => [s[0] + (Math.random() - 0.5) * 0.5],
       50, 0.99, 500
@@ -105,7 +105,7 @@ describe("simulatedAnnealingEngine", () => {
 
   it("tracks final temperature", () => {
     const result = optimizeSimulatedAnnealing(
-      (s) => s[0] ** 2,
+      (s) => Math.pow(s[0], 2),
       [5],
       (s) => [s[0] + (Math.random() - 0.5)],
       100, 0.9, 100
@@ -118,7 +118,7 @@ describe("particleSwarmOptimizer", () => {
   it("maximizes a fitness function", () => {
     // maximize f(x) = -(x-4)^2 + 16
     const result = optimizePSO(
-      (pos) => -(pos[0] - 4) ** 2 + 16,
+      (pos) => -Math.pow(pos[0] - 4, 2) + 16,
       [[-10, 10]],
       20, 50
     );
