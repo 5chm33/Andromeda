@@ -151,7 +151,7 @@ export function getEligiblePeers(
   return peers
     .filter((p) => {
       if (!p.isOnline) return false;
-      const trust = trustRegistry.trustedPeers[p.instanceId];
+      const trust = trustRegistry.trustedPeers?.[p.instanceId];
       if (!trust || trust.trustScore < config.minTrustScore) return false;
       if (requiredCapability && !p.capabilities.includes(requiredCapability)) return false;
       // Consider peer stale if not seen in 5 minutes
