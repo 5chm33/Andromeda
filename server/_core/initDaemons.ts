@@ -225,6 +225,12 @@ import { configureRecovery, decideRecovery, recordSuccess, isCircuitOpen, _reset
 import { registerMigration, adaptRequest, getCompatibilityReport, _resetVersionAdapterForTest } from "../apiVersionAdapter.js";
 import { cacheKey, get as cacheGet, set as cacheSet, invalidate as cacheInvalidate, getStats as getCacheStats, _resetCachingLayerForTest } from "../apiCachingLayer.js";
 import { auditApiSecurity, getSecurityGrade, _resetSecurityAuditorForTest } from "../apiSecurityAuditor.js";
+import { registerTestCase, runTestCase, runTestSuite, _resetIntegrationTesterForTest } from "../apiIntegrationTester.js";
+import { recordBenchmarkRun, setBaseline, getBenchmarkReport, _resetBenchmarkerForTest } from "../apiPerformanceBenchmarker.js";
+import { registerCostConfig, recordApiUsage, getCostRecord, getOptimizationRecommendations, _resetCostOptimizerForTest } from "../apiCostOptimizer.js";
+import { registerDependency, getDependencyGraph, getDependentsOf, getDependenciesOf, _resetDependencyMapperForTest } from "../apiDependencyMapper.js";
+import { compareSchemas, _resetChangeDetectorForTest } from "../apiChangeDetector.js";
+import { registerMigrationScript, runMigration, getMigrationHistory, getPendingMigrations, isApplied, _resetMigrationEngineForTest } from "../apiMigrationEngine.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -594,4 +600,7 @@ export function startDaemons(): void {
 
   // v52 — External API Mastery II
   console.log("[Init] External API Mastery II initialized (workflowComposer, dataTransformer, errorRecovery, versionAdapter, cachingLayer, securityAuditor).");
+
+  // v53 — External API Mastery III
+  console.log("[Init] External API Mastery III initialized (integrationTester, benchmarker, costOptimizer, dependencyMapper, changeDetector, migrationEngine).");
 }
