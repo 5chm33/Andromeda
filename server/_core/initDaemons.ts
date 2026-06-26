@@ -158,6 +158,12 @@ import { initMotorSkillLibrary } from "../motorSkillLibrary";
 import { initEnvironmentModeler } from "../environmentModeler";
 import { initTaskDecomposerV44 } from "../taskDecomposerV44";
 import { initExecutionMonitor } from "../executionMonitor";
+import { initSystemIntegrator } from "../systemIntegrator";
+import { initCapabilityOrchestrator } from "../capabilityOrchestrator";
+import { initGlobalOptimizer } from "../globalOptimizer";
+import { initEmergenceDetector } from "../emergenceDetector";
+import { initSingularityPreparator } from "../singularityPreparator";
+import { initOmegaStateManager } from "../omegaStateManager";
 import { initStakeholderReporting } from "../stakeholderReporting";
 import { initCognitiveLoadBalancer } from "../cognitiveLoadBalancer";
 import { initBootstrapper } from "../capabilityBootstrapper";
@@ -478,6 +484,13 @@ export function startDaemons(): void {
     initEnvironmentModeler();
     initTaskDecomposerV44();
     initExecutionMonitor();
+    // v45
+    initSystemIntegrator();
+    initCapabilityOrchestrator();
+    initGlobalOptimizer();
+    initEmergenceDetector();
+    initSingularityPreparator();
+    initOmegaStateManager();
 
 
   initSummarizer();

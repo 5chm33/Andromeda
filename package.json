@@ -1,6 +1,6 @@
 {
   "name": "andromeda",
-  "version": "44.0.0",
+  "version": "45.0.0",
   "type": "module",
   "license": "MIT",
   "scripts": {
