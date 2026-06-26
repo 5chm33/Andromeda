@@ -601,8 +601,8 @@ export async function generateSmokeTests(
   const result = generateTests(targetContent, targetFile, "typescript");
   return {
     success: true,
-    testFile: result.filePath,
-    content: result.content
+    testFile: result.testFile,
+    content: result.testCode
   };
 }
 
@@ -616,8 +616,8 @@ export async function generateBehavioralTest(
   const result = generateTests(targetContent, targetFile, "typescript");
   return {
     success: true,
-    testFile: result.filePath,
-    content: result.content
+    testFile: result.testFile,
+    content: result.testCode
   };
 }
 

@@ -194,7 +194,7 @@ IMPORTANT: This modifies Andromeda's own source code. Use with care.
       };
     }
 
-    try { await generateSmokeTests(filePath, content, rationale); } catch { /* non-fatal */ }
+    try { await generateSmokeTests(filePath, content); } catch { /* non-fatal */ }
 
     const hashShort = commitResult.sha256After?.slice(0, 12) ?? "unknown";
     const backupNote = commitResult.backupPath ? path.basename(commitResult.backupPath) : "none (new file)";

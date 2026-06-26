@@ -536,7 +536,7 @@ export function initRollback(): void {
 
 // ─── Legacy selfRollback.ts Aliases (v15.0.0 cleanup) ────────────────────────
 export function createSnapshot(files: string[], reason: string): string {
-  const pt = createRollbackPoint("system", reason, files);
+  const pt = createRollbackPoint(files, reason, "system");
   return pt.id;
 }
 

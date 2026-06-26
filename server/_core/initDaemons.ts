@@ -48,6 +48,7 @@ import { initPatternMemory } from "../epistemicBeliefModel";
 import { initSelfHealingChaos } from "../selfHealingChaos";
 import { initRsiTaskQueue } from "../rsiTaskQueue";
 import { initContinuousFineTuner } from "../continuousFineTuner";
+import { initRsiScheduler } from "../rsiScheduler";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -171,5 +172,13 @@ export function startDaemons(): void {
     console.log("[v15.0.0] Continuous fine-tuner initialized");
   } catch (cftErr) {
     console.warn("[v15.0.0] Continuous fine-tuner failed to start:", (cftErr as Error).message);
+  }
+
+  // v15.0.1: RSI Adaptive Scheduler — adaptive interval scheduling (backs off on failure, speeds up on success)
+  try {
+    initRsiScheduler();
+    console.log("[v15.0.1] RSI adaptive scheduler initialized");
+  } catch (schedErr) {
+    console.warn("[v15.0.1] RSI adaptive scheduler failed to start:", (schedErr as Error).message);
   }
 }
