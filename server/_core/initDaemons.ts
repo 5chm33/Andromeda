@@ -279,6 +279,13 @@ import { optimizeEvolutionary } from "../evolutionaryOptimizer";
 import { optimizeSimulatedAnnealing } from "../simulatedAnnealingEngine";
 import { optimizePSO } from "../particleSwarmOptimizer";
 import { ensembleOptimizers } from "../optimizationEnsembler";
+import { registerSignature, detectThreats } from "../threatDetector";
+import { recordBaseline, evaluateAnomaly } from "../anomalyIsolator";
+import { signPayload, verifyPayload, hashData } from "../cryptographicVerifier";
+import { defineRole, assignRole, checkAccess } from "../accessControlManager";
+import { logAuditEvent, verifyTrailIntegrity, generateComplianceReport } from "../auditTrailEnforcer";
+import { registerPatch, stagePatch, applyPatch, rollbackPatch } from "../securityPatchApplier";
+
 
 
 
