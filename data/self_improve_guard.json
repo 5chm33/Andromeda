@@ -4183,6 +4183,24 @@
       "result": "success",
       "details": "Previewed proposal: No change",
       "timestamp": "2026-06-26T19:00:25.733Z"
+    },
+    {
+      "id": "audit_1782510596954_wrj5zm",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-26T21:49:56.954Z"
+    },
+    {
+      "id": "audit_1782510596960_5lr0rs",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-26T21:49:56.960Z"
     }
   ]
 }

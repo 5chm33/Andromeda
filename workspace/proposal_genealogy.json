@@ -8,8 +8,8 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "rolled_back",
-    "generatedAt": "2026-06-26T18:30:48.254Z",
-    "outcomeAt": "2026-06-26T18:30:48.254Z",
+    "generatedAt": "2026-06-26T21:49:58.608Z",
+    "outcomeAt": "2026-06-26T21:49:58.608Z",
     "lifetimeMs": 0
   },
   {
@@ -21,8 +21,8 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "rolled_back",
-    "generatedAt": "2026-06-26T18:30:48.253Z",
-    "outcomeAt": "2026-06-26T18:30:48.253Z",
+    "generatedAt": "2026-06-26T21:49:58.608Z",
+    "outcomeAt": "2026-06-26T21:49:58.608Z",
     "lifetimeMs": 0
   },
   {
@@ -34,8 +34,8 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "rolled_back",
-    "generatedAt": "2026-06-26T18:30:48.253Z",
-    "outcomeAt": "2026-06-26T18:30:48.253Z",
+    "generatedAt": "2026-06-26T21:49:58.608Z",
+    "outcomeAt": "2026-06-26T21:49:58.608Z",
     "lifetimeMs": 0
   },
   {
@@ -47,9 +47,9 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "rolled_back",
-    "generatedAt": "2026-06-26T18:30:48.253Z",
-    "outcomeAt": "2026-06-26T18:30:48.253Z",
-    "lifetimeMs": 0
+    "generatedAt": "2026-06-26T21:49:58.607Z",
+    "outcomeAt": "2026-06-26T21:49:58.608Z",
+    "lifetimeMs": 1
   },
   {
     "id": "g4",
@@ -60,7 +60,7 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "pending",
-    "generatedAt": "2026-06-26T18:30:48.252Z"
+    "generatedAt": "2026-06-26T21:49:58.607Z"
   },
   {
     "id": "g2",
@@ -71,7 +71,7 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "pending",
-    "generatedAt": "2026-06-26T18:30:48.252Z"
+    "generatedAt": "2026-06-26T21:49:58.607Z"
   },
   {
     "id": "g3",
@@ -82,7 +82,7 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "pending",
-    "generatedAt": "2026-06-26T18:30:48.252Z"
+    "generatedAt": "2026-06-26T21:49:58.607Z"
   },
   {
     "id": "g1",
@@ -93,7 +93,7 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "pending",
-    "generatedAt": "2026-06-26T18:30:48.252Z"
+    "generatedAt": "2026-06-26T21:49:58.606Z"
   },
   {
     "id": "g0",
@@ -104,7 +104,7 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "pending",
-    "generatedAt": "2026-06-26T18:30:48.251Z"
+    "generatedAt": "2026-06-26T21:49:58.606Z"
   },
   {
     "id": "ctx1",
@@ -115,8 +115,8 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "applied",
-    "generatedAt": "2026-06-26T18:30:48.250Z",
-    "outcomeAt": "2026-06-26T18:30:48.250Z",
+    "generatedAt": "2026-06-26T21:49:58.605Z",
+    "outcomeAt": "2026-06-26T21:49:58.605Z",
     "lifetimeMs": 0
   },
   {
@@ -128,8 +128,8 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "rejected",
-    "generatedAt": "2026-06-26T18:30:48.248Z",
-    "outcomeAt": "2026-06-26T18:30:48.248Z",
+    "generatedAt": "2026-06-26T21:49:58.604Z",
+    "outcomeAt": "2026-06-26T21:49:58.604Z",
     "lifetimeMs": 0
   },
   {
@@ -141,8 +141,8 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "applied",
-    "generatedAt": "2026-06-26T18:30:48.248Z",
-    "outcomeAt": "2026-06-26T18:30:48.248Z",
+    "generatedAt": "2026-06-26T21:49:58.604Z",
+    "outcomeAt": "2026-06-26T21:49:58.604Z",
     "lifetimeMs": 0
   },
   {
@@ -157,7 +157,7 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "pending",
-    "generatedAt": "2026-06-26T18:30:48.246Z"
+    "generatedAt": "2026-06-26T21:49:58.603Z"
   },
   {
     "id": "parent2",
@@ -168,9 +168,9 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "merged_into",
-    "generatedAt": "2026-06-26T18:30:48.246Z",
+    "generatedAt": "2026-06-26T21:49:58.602Z",
     "mergedInto": "child1",
-    "outcomeAt": "2026-06-26T18:30:48.246Z"
+    "outcomeAt": "2026-06-26T21:49:58.603Z"
   },
   {
     "id": "parent1",
@@ -181,9 +181,9 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "merged_into",
-    "generatedAt": "2026-06-26T18:30:48.246Z",
+    "generatedAt": "2026-06-26T21:49:58.602Z",
     "mergedInto": "child1",
-    "outcomeAt": "2026-06-26T18:30:48.246Z"
+    "outcomeAt": "2026-06-26T21:49:58.603Z"
   },
   {
     "id": "p2",
@@ -194,9 +194,9 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "applied",
-    "generatedAt": "2026-06-26T18:30:48.245Z",
-    "outcomeAt": "2026-06-26T18:30:48.246Z",
-    "lifetimeMs": 1
+    "generatedAt": "2026-06-26T21:49:58.602Z",
+    "outcomeAt": "2026-06-26T21:49:58.602Z",
+    "lifetimeMs": 0
   },
   {
     "id": "p1",
@@ -208,6 +208,6 @@
     "semanticSafetyScore": 0.9,
     "rewardScore": 0.85,
     "outcome": "pending",
-    "generatedAt": "2026-06-26T18:30:48.227Z"
+    "generatedAt": "2026-06-26T21:49:58.593Z"
   }
 ]

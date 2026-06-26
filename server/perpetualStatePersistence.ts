@@ -69,7 +69,7 @@ class PerpetualStatePersistenceEngine {
     // Keep last 100 checkpoints
     if (this.checkpoints.length > 100) this.checkpoints.shift();
     this.writeAheadLog("checkpoint", { checkpointId: cp.id, cycleNumber: state.cycleNumber });
-    console.log(`[Persistence] Checkpoint ${cp.id} created at cycle ${state.cycleNumber}`);
+    // [Persistence] Checkpoint ${cp.id} created at cycle ${state.cycleNumber}`);
     return cp;
   }
 
@@ -84,7 +84,7 @@ class PerpetualStatePersistenceEngine {
       console.warn(`[Persistence] Checkpoint ${cp.id} failed integrity check`);
       return null;
     }
-    console.log(`[Persistence] Restored from checkpoint ${cp.id} (cycle ${cp.cycleNumber})`);
+    // [Persistence] Restored from checkpoint ${cp.id} (cycle ${cp.cycleNumber})`);
     return cp;
   }
 

@@ -1,36 +1,21 @@
 {
   "targets": [
     {
-      "moduleName": "criticalModule",
-      "moduleFile": "server/criticalModule.ts",
-      "resilienceScore": 0.1,
+      "moduleName": "testModuleEpsilon",
+      "moduleFile": "server/testModuleEpsilon.ts",
+      "resilienceScore": 0.2,
       "escalationLevel": 3,
       "priority": "critical",
       "failedFaults": [
-        "crash",
-        "timeout"
+        "disk_io"
       ],
-      "firstDetectedAt": 1782500427095,
-      "lastUpdatedAt": 1782500427095,
-      "rsiCyclesAttempted": 0,
-      "resolved": false
-    },
-    {
-      "moduleName": "highModule",
-      "moduleFile": "server/highModule.ts",
-      "resilienceScore": 0.5,
-      "escalationLevel": 2,
-      "priority": "high",
-      "failedFaults": [
-        "timeout"
-      ],
-      "firstDetectedAt": 1782500427095,
-      "lastUpdatedAt": 1782500427095,
+      "firstDetectedAt": 1782510598486,
+      "lastUpdatedAt": 1782510598486,
       "rsiCyclesAttempted": 0,
       "resolved": false
     }
   ],
-  "lastChaosRunAt": 1782500427095,
+  "lastChaosRunAt": 1782510598486,
   "totalRsiCyclesTriggered": 0,
-  "savedAt": 1782500427096
+  "savedAt": 1782510598486
 }

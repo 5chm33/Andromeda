@@ -79,7 +79,7 @@ class BreakthroughDetectorEngine {
         this.events.push(event);
         state.cusum = 0; // Reset after detection
         state.consecutiveAbove = 0;
-        console.log(`[Breakthrough] ${event.description}`);
+        // [Breakthrough] ${event.description}`);
         return event;
       }
     } else {

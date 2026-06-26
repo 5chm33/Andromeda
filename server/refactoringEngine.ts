@@ -119,7 +119,7 @@ class RefactoringEngineImpl {
     const opp = this.opportunities.find(o => o.id === opportunityId);
     if (!opp || opp.riskLevel === "risky") return false;
     this.appliedCount++;
-    console.log(`[Refactor] Applied: ${opp.description}`);
+    // [Refactor] Applied: ${opp.description}`);
     return true;
   }
 

@@ -66,7 +66,7 @@ class AnomalyDetectionEngineImpl {
       thresholdLow: 0.15,
       fittedAt: Date.now(),
     };
-    console.log(`[Anomaly] Model fitted on ${samples.length} samples, ${featureNames.length} features`);
+    // [Anomaly] Model fitted on ${samples.length} samples, ${featureNames.length} features`);
     return this.model;
   }
 
