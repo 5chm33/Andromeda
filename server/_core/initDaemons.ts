@@ -74,6 +74,9 @@ import { initUcdDaemon } from "../unsupervisedCodebaseDiscovery.js";
 
 import { initSrilDaemon } from "../srilEngine";
 import { initDeploymentDaemon } from "../autonomousDeployment";
+import { initSemanticVersionControl } from "../semanticVersionControl";
+import { initStakeholderReporting } from "../stakeholderReporting";
+import { initCognitiveLoadBalancer } from "../cognitiveLoadBalancer";
 import { initBootstrapper } from "../capabilityBootstrapper";
 import { initStreamingDashboard } from "../streamingDashboard";
 import { initGlobalMemory } from "../persistentGlobalMemory.js";
@@ -291,6 +294,10 @@ export function startDaemons(): void {
     // v29
     initSrilDaemon();
     initDeploymentDaemon();
+    // v30
+    initSemanticVersionControl();
+    initStakeholderReporting();
+    initCognitiveLoadBalancer();
 
 
   initSummarizer();

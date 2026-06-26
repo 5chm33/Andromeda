@@ -42,6 +42,7 @@ import { writeResearchPaper } from "./paperWriter.js";
 import { runVisualRegressionGate } from "./multiModalExecutionVerifier.js";
 
 import { runParallelProposals, OrchestrationTask } from "./parallelProposalOrchestrator.js";
+import { commitImprovement, runEvolutionarySearch } from "./semanticVersionControl";
 
 
 

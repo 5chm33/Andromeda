@@ -74,6 +74,7 @@ import { assignVariant, recordVariantOutcome } from "./abTestingFramework.js";
 import { queryFederatedGraph, publishToFederatedGraph } from "./federatedKnowledgeGraph.js";
 import { discoverActiveSpecialization, getSpecializedPrompt, recordSpecializationOutcome } from "./emergentSpecialization.js";
 import { recordTemporalEvent } from "./temporalReasoningEngine.js";
+import { globalStakeholderReporting } from "./stakeholderReporting";
 
 
 const log = createLogger("selfImprove");
