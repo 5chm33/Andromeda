@@ -249,6 +249,13 @@ import { recordActivation, analyzeLayer } from "../activationPatternAnalyzer";
 import { pruneLayer, computeSparsity } from "../neuralPruningEngine";
 import { analyzeFusionCandidates, applyFusion } from "../layerFusionOptimizer";
 import { recordGradient, analyzeGradientFlow } from "../gradientFlowMonitor";
+import { buildDeductiveChain, validateChain } from "../deductiveReasoningChain";
+import { addObservation, synthesizePatterns } from "../inductivePatternSynthesizer";
+import { generateHypotheses, getBestHypothesis } from "../abductiveHypothesisEngine";
+import { registerConcept, findAnalogies } from "../analogicalReasoningBridge";
+import { conductDebate, getDebateHistory } from "../dialecticalDebateEngine";
+import { addCalibrationSample, calibrate, applyCalibration } from "../reasoningConfidenceCalibrator";
+
 
 
 const __filename = fileURLToPath(import.meta.url);
