@@ -101,7 +101,7 @@ Instructions: ${instructions}`;
 
     try {
       const content = await file.async("string");
-      if (!content.includes(edit.find)) {
+      if (content == null || !content.includes(edit.find)) {
         errors.push(`Find text not found in ${edit.file}: "${edit.find.slice(0, 50)}..."`);
         continue;
       }
