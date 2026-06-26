@@ -219,6 +219,12 @@ import { generateClient, generateClientFromEndpoints } from "../apiClientGenerat
 import { registerCredential, getAuthHeader, refreshToken as refreshApiToken, isCredentialValid, _resetAuthManagerForTest } from "../apiAuthManager.js";
 import { configureRateLimit, tryAcquire, getStatus as getRateLimitStatus, _resetRateLimiterForTest } from "../apiRateLimiter.js";
 import { registerApi, recordCall as recordApiCall, getHealthReport, getAllHealthReports, _resetApiHealthMonitorForTest } from "../apiHealthMonitor.js";
+import { createWorkflow, startExecution as startWorkflowExecution, getWorkflow, listWorkflows, _resetWorkflowComposerForTest } from "../apiWorkflowComposer.js";
+import { applyMapping, normalizeResponse, flattenObject } from "../apiDataTransformer.js";
+import { configureRecovery, decideRecovery, recordSuccess, isCircuitOpen, _resetErrorRecoveryForTest } from "../apiErrorRecovery.js";
+import { registerMigration, adaptRequest, getCompatibilityReport, _resetVersionAdapterForTest } from "../apiVersionAdapter.js";
+import { cacheKey, get as cacheGet, set as cacheSet, invalidate as cacheInvalidate, getStats as getCacheStats, _resetCachingLayerForTest } from "../apiCachingLayer.js";
+import { auditApiSecurity, getSecurityGrade, _resetSecurityAuditorForTest } from "../apiSecurityAuditor.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -585,4 +591,7 @@ export function startDaemons(): void {
 
   // v51 — External API Mastery I
   console.log("[Init] External API Mastery I initialized (docParser, schemaInferrer, clientGenerator, authManager, rateLimiter, healthMonitor).");
+
+  // v52 — External API Mastery II
+  console.log("[Init] External API Mastery II initialized (workflowComposer, dataTransformer, errorRecovery, versionAdapter, cachingLayer, securityAuditor).");
 }
