@@ -139,6 +139,8 @@ function ProposalRow({ proposal, onRlhf }: {
 }) {
   const [expanded, setExpanded] = useState(false);
   const canRlhf = proposal.status === "committed";
+  // One-shot RLHF: once voted, buttons disappear. Persisted in localStorage.
+  const voted = proposal.rlhf !== null && proposal.rlhf !== undefined;
   return (
     <>
       <div
@@ -164,29 +166,37 @@ function ProposalRow({ proposal, onRlhf }: {
         <div><StatusBadge status={proposal.status} /></div>
         <div style={{ fontSize: 11, color: "#52525b" }}>{timeAgo(proposal.createdAt)}</div>
         <div style={{ display: "flex", gap: 4, alignItems: "center" }} onClick={e => e.stopPropagation()}>
-          {canRlhf ? (
+          {canRlhf && !voted ? (
             <>
               <button
                 onClick={() => onRlhf(proposal.id, "accept", proposal.targetFile, proposal.category || "reliability", proposal.title)}
                 title="Good improvement"
                 style={{
-                  background: proposal.rlhf === "accept" ? "rgba(34,197,94,0.2)" : "transparent",
-                  border: `1px solid ${proposal.rlhf === "accept" ? "rgba(34,197,94,0.4)" : "#27272a"}`,
+                  background: "transparent",
+                  border: "1px solid #27272a",
                   borderRadius: 6, padding: "2px 6px", cursor: "pointer",
-                  color: proposal.rlhf === "accept" ? "#86efac" : "#52525b", transition: "all 0.1s",
+                  color: "#52525b", transition: "all 0.15s",
                 }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(34,197,94,0.15)"; (e.currentTarget as HTMLElement).style.color = "#86efac"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(34,197,94,0.4)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "#52525b"; (e.currentTarget as HTMLElement).style.borderColor = "#27272a"; }}
               ><ThumbsUp style={{ width: 11, height: 11 }} /></button>
               <button
                 onClick={() => onRlhf(proposal.id, "reject", proposal.targetFile, proposal.category || "reliability", proposal.title)}
                 title="Bad improvement"
                 style={{
-                  background: proposal.rlhf === "reject" ? "rgba(239,68,68,0.2)" : "transparent",
-                  border: `1px solid ${proposal.rlhf === "reject" ? "rgba(239,68,68,0.4)" : "#27272a"}`,
+                  background: "transparent",
+                  border: "1px solid #27272a",
                   borderRadius: 6, padding: "2px 6px", cursor: "pointer",
-                  color: proposal.rlhf === "reject" ? "#fca5a5" : "#52525b", transition: "all 0.1s",
+                  color: "#52525b", transition: "all 0.15s",
                 }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(239,68,68,0.15)"; (e.currentTarget as HTMLElement).style.color = "#fca5a5"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(239,68,68,0.4)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "#52525b"; (e.currentTarget as HTMLElement).style.borderColor = "#27272a"; }}
               ><ThumbsDown style={{ width: 11, height: 11 }} /></button>
             </>
+          ) : canRlhf && voted ? (
+            <span style={{ fontSize: 10, color: proposal.rlhf === "accept" ? "#86efac" : "#fca5a5", fontWeight: 600 }}>
+              {proposal.rlhf === "accept" ? "👍" : "👎"}
+            </span>
           ) : (
             <span style={{ fontSize: 10, color: "#27272a" }}>—</span>
           )}
@@ -213,7 +223,7 @@ function GitHubFixerModal({ onClose }: { onClose: () => void }) {
   const [repoUrl, setRepoUrl] = useState("");
   const [pat, setPat] = useState("");
   const [cycles, setCycles] = useState(3);
-  const [status, setStatus] = useState<"idle" | "running" | "done" | "failed">("idle");
+  const [status, setStatus] = useState<"idle" | "running" | "done" | "failed" | string>("idle");
   const [log, setLog] = useState<string[]>([]);
   const [prUrl, setPrUrl] = useState<string | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
@@ -318,7 +328,13 @@ export function ProposalTreeGraph() {
   const [events, setEvents] = useState<ActivityEvent[]>([]);
   const [filter, setFilter] = useState<"all" | "pending" | "committed" | "rejected">("all");
   const [search, setSearch] = useState("");
-  const [rlhfMap, setRlhfMap] = useState<Record<string, "accept" | "reject">>({});
+  // Load persisted RLHF votes from localStorage on mount
+  const [rlhfMap, setRlhfMap] = useState<Record<string, "accept" | "reject">>(() => {
+    try {
+      const stored = localStorage.getItem("andromeda_rlhf_votes");
+      return stored ? JSON.parse(stored) : {};
+    } catch { return {}; }
+  });
   const [showGitHub, setShowGitHub] = useState(false);
   const [toggling, setToggling] = useState(false);
   const [triggering, setTriggering] = useState(false);
@@ -395,7 +411,11 @@ export function ProposalTreeGraph() {
     category: string,
     title: string,
   ) => {
-    setRlhfMap(m => ({ ...m, [proposalId]: vote }));
+    setRlhfMap(m => {
+      const next = { ...m, [proposalId]: vote };
+      try { localStorage.setItem("andromeda_rlhf_votes", JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
     fetch("/api/v71/rlhf/feedback", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

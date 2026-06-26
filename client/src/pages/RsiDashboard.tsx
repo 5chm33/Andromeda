@@ -199,7 +199,7 @@ function LiveActivityFeed() {
             {events.map((event, i) => {
               const meta = eventMeta(event.type);
               const Icon = meta.icon;
-              const title = (event.data?.title as string) || (event.data?.proposalTitle as string) || (event.data?.summary as string) || meta.label;
+              const title: string = String((event.data?.title as string) || (event.data?.proposalTitle as string) || (event.data?.summary as string) || meta.label || "");
               const sub = event.data?.cycleId ? `cycle ${String(event.data.cycleId).slice(-6)}` : event.data?.file ? String(event.data.file) : "";
               return (
                 <motion.div
@@ -219,9 +219,9 @@ function LiveActivityFeed() {
                   <span className="text-[9px] text-[#3f3f46] font-mono flex-shrink-0 mt-0.5 group-hover:text-[#52525b] transition-colors">
                     {formatTimeAgo(event.timestamp)}
                   </span>
-                  {event.type === "proposal:applied" && event.data?.proposalId && (
-                    <LiveEventRlhf proposalId={String(event.data.proposalId)} targetFile={String(event.data?.file ?? "")} title={title} />
-                  )}
+                  {event.type === "proposal:applied" && event.data?.proposalId != null && (
+                    <LiveEventRlhf proposalId={String(event.data.proposalId as string)} targetFile={String((event.data?.file ?? "") as string)} title={String(title)} />
+                  ) as React.ReactNode}
                 </motion.div>
               );
             })}

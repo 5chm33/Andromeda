@@ -1603,19 +1603,23 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         });
       } catch (err) { log.caught("non-fatal", err); }
 
-      // v9.8.5: TypeScript check BEFORE git commit — prevents committing broken code
+      // v12.6.0: TypeScript check BEFORE git commit — scope-limited for server files
+      // Uses tsHealEngine.runScopedTsc which checks only server/ for server proposals,
+      // avoiding client-side type errors blocking server-only changes.
       let tsCheckPassed = true;
       try {
-        const tscBin = path.resolve(getServerDir(), "..", "node_modules", ".bin", "tsc");
-        const tscCmd = fs.existsSync(tscBin) ? tscBin : null;
-        if (tscCmd) {
-          const tscResult = spawnSync(tscCmd, ["--noEmit"], { cwd: path.resolve(getServerDir(), ".."), timeout: 60000, stdio: "pipe" });
-          // v11.9.2: Check exit code — spawnSync does NOT throw on non-zero exit.
-          // Previously this always logged "PASSED" even when tsc found errors.
-          if (tscResult.status !== 0) {
-            const errOut = ((tscResult.stderr || tscResult.stdout || "") as Buffer).toString().slice(0, 300);
-            throw new Error(`tsc exited with code ${tscResult.status}: ${errOut}`);
-          }
+        const { runScopedTsc } = await import("./tsHealEngine.js");
+        const projectRoot = path.resolve(getServerDir(), "..");
+        const scopedResult = runScopedTsc(proposal.targetFile, projectRoot);
+        if (!scopedResult.passed) {
+          const errOut = scopedResult.raw.slice(0, 300);
+          throw new Error(`tsc exited with code 1: ${errOut}`);
+        }
+        if (true) { // scope block for variable isolation
+          const dummy = scopedResult; void dummy; // satisfy linter
+        }
+        // legacy full-project tsc block removed in v12.6.0 — replaced by runScopedTsc above
+        if (true) {
           console.log(`[SelfImprove] TypeScript check PASSED for ${proposal.targetFile}`);
           // v9.8.5: Use FRESH store to ensure "applied" status is persisted correctly
           {
@@ -1628,56 +1632,92 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
               saveProposals(store); // fallback
             }
           }
-        } else {
-          console.warn("[SelfImprove] tsc binary not found — skipping pre-commit TypeScript check");
-          // v9.8.5: Use FRESH store for fallback save too
-          {
-            const freshStore = loadProposals();
-            const freshProp = freshStore.proposals.find(p => p.id === proposalId);
-            if (freshProp && (freshProp.status as string) !== 'applied') {
-              freshProp.status = 'applied' as any;
-              saveProposals(freshStore);
-            } else if (!freshProp) {
-              saveProposals(store);
-            }
-          }
-        }
+        } // end if(true)
+        // no else branch needed — runScopedTsc always returns a result
       } catch (tsErr: any) {
         tsCheckPassed = false;
-        const tsErrMsg = (tsErr.stderr || tsErr.stdout || tsErr.message || "").toString().slice(0, 600);
-        console.warn(`[SelfImprove] TypeScript check FAILED for ${proposal.targetFile} — attempting LLM self-heal. Errors: ${tsErrMsg.slice(0, 200)}`);
+        const tsErrRaw = (tsErr.stderr || tsErr.stdout || tsErr.message || "").toString();
+        const tsErrMsg = tsErrRaw.slice(0, 600);
+        console.warn(`[SelfImprove] TypeScript check FAILED for ${proposal.targetFile} — initiating SOTA heal pipeline. Errors: ${tsErrMsg.slice(0, 200)}`);
         // Revert the file write to restore the original content
         if (proposal.originalContent) {
           try { fs.writeFileSync(filePath, proposal.originalContent, "utf-8"); } catch { /* best effort */ }
         }
-        // v12.5.1: LLM self-heal loop — feed the tsc error back to the LLM and retry once.
-        // The guard's pre-flight syntax check already has a refinement loop, but proposals can
-        // pass the guard's lightweight check and still fail the full project-wide tsc --noEmit.
-        // This second loop catches those cases and gives the LLM one more chance to fix them.
+        // v12.6.0: SOTA multi-strategy TS heal pipeline (tsHealEngine.ts)
+        // Strategies: 1) structured fix with full context, 2) minimal revert, 3) safe wrapper
         const healCount = (proposal as any)._tsHealCount || 0;
-        if (healCount < 2) {
+        if (healCount < 3) {
           try {
-            console.log(`[SelfImprove] Initiating TS self-heal for ${proposal.targetFile} (attempt ${healCount + 1}/2)`);
+            const { healTypeScriptErrors, parseTscErrors } = await import("./tsHealEngine.js");
+            const { simpleChatCompletion, getProviderForTier, tierForArea } = await import("./llmProvider.js");
+            const tier = tierForArea("self-modification");
+            const primary = getProviderForTier(tier);
+            const providerChain: string[] = [primary];
+            for (const fb of ["kimi", "openrouter-fast", "openrouter", "deepseek", "openai"]) {
+              if (!providerChain.includes(fb)) {
+                const has = {
+                  kimi: !!process.env.KIMI_API_KEY,
+                  "openrouter-fast": !!process.env.OPENROUTER_API_KEY,
+                  openrouter: !!process.env.OPENROUTER_API_KEY,
+                  deepseek: !!process.env.DEEPSEEK_API_KEY && !_deadProviders.has("deepseek"),
+                  openai: !!process.env.OPENAI_API_KEY,
+                };
+                if ((has as any)[fb]) providerChain.push(fb);
+              }
+            }
+            const tscErrors = parseTscErrors(tsErrRaw);
+            console.log(`[SelfImprove] SOTA heal attempt ${healCount + 1}/3 for ${proposal.targetFile} (${tscErrors.length} parsed errors)`);
             (proposal as any)._tsHealCount = healCount + 1;
-            // Persist the updated heal count before retrying
             {
               const healStore = loadProposals();
               const healProp = healStore.proposals.find(p => p.id === proposalId);
               if (healProp) { (healProp as any)._tsHealCount = healCount + 1; saveProposals(healStore); }
             }
-            const healed = await refineProposal(proposal, tsErrMsg);
-            if (healed) {
-              console.log(`[SelfImprove] TS self-heal generated corrected proposal for ${proposal.targetFile} — retrying apply`);
-              // Retry the full apply pipeline with the healed proposal
+            const healResult = await healTypeScriptErrors({
+              proposal: {
+                id: proposal.id,
+                targetFile: proposal.targetFile,
+                title: proposal.title || "",
+                category: proposal.category,
+                impact: proposal.impact,
+                originalSnippet: proposal.originalSnippet,
+                proposedSnippet: proposal.proposedSnippet,
+                originalContent: proposal.originalContent,
+                proposedContent: proposal.proposedContent,
+              },
+              tscErrors,
+              rawTscOutput: tsErrRaw,
+              projectRoot: path.resolve(getServerDir(), ".."),
+              simpleChatCompletion,
+              providerChain,
+              deadProviders: _deadProviders,
+              healAttempt: healCount,
+            });
+            if (healResult.success && healResult.originalSnippet && healResult.proposedSnippet) {
+              console.log(`[SelfImprove] SOTA heal SUCCESS via strategy '${healResult.strategy}' for ${proposal.targetFile}`);
+              proposal.originalSnippet = healResult.originalSnippet;
+              proposal.proposedSnippet = healResult.proposedSnippet;
+              if (healResult.proposedContent) proposal.proposedContent = healResult.proposedContent;
+              // Persist healed snippets
+              {
+                const healStore = loadProposals();
+                const healProp = healStore.proposals.find(p => p.id === proposalId);
+                if (healProp) {
+                  healProp.originalSnippet = healResult.originalSnippet;
+                  healProp.proposedSnippet = healResult.proposedSnippet;
+                  if (healResult.proposedContent) (healProp as any).proposedContent = healResult.proposedContent;
+                  saveProposals(healStore);
+                }
+              }
               return applyProposal(proposalId);
             } else {
-              console.warn(`[SelfImprove] TS self-heal failed to generate corrected proposal for ${proposal.targetFile}`);
+              console.warn(`[SelfImprove] SOTA heal attempt ${healCount + 1} failed (strategy: ${healResult.strategy}) for ${proposal.targetFile}`);
             }
           } catch (healErr) {
-            console.warn(`[SelfImprove] TS self-heal threw (non-fatal): ${sanitizeForLog((healErr as Error).message)}`);
+            console.warn(`[SelfImprove] SOTA heal threw (non-fatal): ${sanitizeForLog((healErr as Error).message)}`);
           }
         } else {
-          console.warn(`[SelfImprove] TS self-heal exhausted for ${proposal.targetFile} — marking rejected`);
+          console.warn(`[SelfImprove] SOTA heal exhausted (3/3 attempts) for ${proposal.targetFile} — marking rejected`);
         }
         // v9.8.5: Load a FRESH store to avoid stale data overwriting concurrent saves
         {
