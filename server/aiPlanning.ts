@@ -98,7 +98,8 @@ export async function generateSuggestions(query: string): Promise<string[]> {
     const parsed = JSON.parse(content);
     const arr = parsed.suggestions || parsed.queries || Object.values(parsed)[0];
     return Array.isArray(arr) ? arr.slice(0, 4) : [];
-  } catch {
+  } catch (err) {
+    log.warn("generateSuggestions fetch failed", err);
     return [];
   }
 }
