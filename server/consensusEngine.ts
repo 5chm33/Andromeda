@@ -87,7 +87,7 @@ Type: ${request.type}
 Target: ${request.targetFile}
 Risk Level: ${request.riskLevel}
 Description: ${request.description}
-Affected Files: ${request.affectedFiles?.join(", ") || "none specified"}
+Affected Files: ${(request.affectedFiles && request.affectedFiles.length > 0) ? request.affectedFiles.join(", ") : "none specified"}
 
 Proposed Change (first 2000 chars):
 ${request.proposedChange.slice(0, 2000)}
