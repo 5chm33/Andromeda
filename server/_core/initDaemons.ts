@@ -189,6 +189,12 @@ import { resetBenchmarkBaseline } from "../externalBenchmarkGate.js";
 import { initConsensusConfig } from "../consensusConfig";
 import { initRewardCalibrator } from "../rewardCalibrator";
 import { initDependencyUpdateRsi } from "../dependencyUpdateRsi";
+import { spawnAgent, terminateAgent, getActiveAgents, _resetSpawnControllerForTest } from "../agentSpawnController.js";
+import { registerLifecycle, transitionState, heartbeat, recordTaskOutcome, _resetLifecycleManagerForTest } from "../agentLifecycleManager.js";
+import { subscribe, publish, getQueueDepth, _resetBusForTest } from "../agentCommunicationBus.js";
+import { writeMemory, readMemory, grantAccess, _resetMemoryBrokerForTest } from "../agentMemoryBroker.js";
+import { registerCapabilities, findAgentsWithCapability, getRegistryStats, _resetCapabilityRegistryForTest } from "../agentCapabilityRegistry.js";
+import { createPlan, addStep, assignStep, completeStep, getPlan, _resetCoordinatorForTest } from "../agentCoordinator.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -540,4 +546,7 @@ export function startDaemons(): void {
 
   // v46 — Sub-Agent Economy I
   console.log("[Init] Sub-Agent Economy I initialized (marketplace, auctioneer, bidder, broker, rewards, reputation).");
+
+  // v47 — Sub-Agent Economy II
+  console.log("[Init] Sub-Agent Economy II initialized (spawn, lifecycle, bus, memory, registry, coordinator).");
 }
