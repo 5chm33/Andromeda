@@ -396,6 +396,6 @@ export function getConfig(): TokenBudgetConfig {
 
 export function initTokenBudgetManager(): void {
   // Cleanup stale sessions every 5 minutes
-  setInterval(cleanupStaleSessions, 5 * 60 * 1000);
+  setInterval(cleanupStaleSessions, 5 * 60 * 1000).unref();
   console.log(`[TokenBudget] Initialized: ${config.contextWindow} token window, ${(config.hardCapThreshold * 100).toFixed(0)}% hard cap`);
 }
