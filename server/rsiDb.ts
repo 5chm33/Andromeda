@@ -116,7 +116,9 @@ export async function dbLoadProposals(): Promise<ImprovementProposal[]> {
                 UNIX_TIMESTAMP(created_at)*1000 as created_at
          FROM rsi_proposals ORDER BY created_at DESC LIMIT 1000`
       );
-      return (rows[0] as any[]).map((r: any) => ({
+      const rowsData = rows[0] as any[] | undefined;
+      if (!rowsData) return [];
+      return rowsData.map((r: any) => ({
         id: r.id,
         targetFile: r.target_file,
         title: r.title,
