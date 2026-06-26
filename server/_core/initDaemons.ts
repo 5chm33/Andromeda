@@ -80,6 +80,12 @@ import { initSpikePlasticityEngine } from "../spikePlasticityEngine";
 import { initCurriculumDesigner } from "../curriculumDesigner";
 import { initCounterfactualSimulator } from "../counterfactualSimulator";
 import { initEmergentLanguageProtocol } from "../emergentLanguageProtocol";
+import { initSubAgentSpawner } from "../subAgentSpawner";
+import { initComputeBudgetManager } from "../computeBudgetManager";
+import { initResearchPublisher } from "../researchPublisher";
+import { initCrossSystemNegotiation } from "../crossSystemNegotiation";
+import { initTemporalKnowledgeDistillation } from "../temporalKnowledgeDistillation";
+import { initEmergentGoalSynthesis } from "../emergentGoalSynthesis";
 import { initStakeholderReporting } from "../stakeholderReporting";
 import { initCognitiveLoadBalancer } from "../cognitiveLoadBalancer";
 import { initBootstrapper } from "../capabilityBootstrapper";
@@ -309,6 +315,13 @@ export function startDaemons(): void {
     initCurriculumDesigner();
     initCounterfactualSimulator();
     initEmergentLanguageProtocol();
+    // v32
+    initSubAgentSpawner();
+    initComputeBudgetManager();
+    initResearchPublisher();
+    initCrossSystemNegotiation();
+    initTemporalKnowledgeDistillation();
+    initEmergentGoalSynthesis();
 
 
   initSummarizer();
