@@ -291,7 +291,7 @@ export class ContextManager {
   private extractToolCalls(messages: ChatMessage[]): string[] {
     return messages
       .filter(msg => msg.role === "assistant" && msg.tool_calls)
-      .flatMap(msg => msg.tool_calls!.map(tc => tc.function.name));
+      .flatMap(msg => (msg.tool_calls ?? []).map(tc => tc.function.name));
   }
 
   private extractFilePaths(messages: ChatMessage[]): Set<string> {
