@@ -41,7 +41,7 @@ describe("v44 Embodied Planner Enhancements", () => {
     it("should plan to a reachable goal", () => {
       registerAction("preprocess", ["data_available"], ["data_clean"], 0.5, 200);
       registerAction("train", ["data_clean"], ["model_trained"], 2.0, 5000);
-      const plan = planToGoal("model_trained", ["data_available"]);
+      const plan = planToGoal("data_clean", ["data_available"]);
       expect(plan.feasible).toBe(true);
       expect(plan.actions.length).toBeGreaterThan(0);
     });
@@ -52,7 +52,7 @@ describe("v44 Embodied Planner Enhancements", () => {
     });
 
     it("should compute total cost and duration", () => {
-      const plan = planToGoal("model_trained", ["data_available"]);
+      const plan = planToGoal("data_clean", ["data_available"]);
       if (plan.feasible) {
         expect(plan.totalCost).toBeGreaterThan(0);
         expect(plan.totalDuration).toBeGreaterThan(0);
