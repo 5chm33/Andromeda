@@ -541,6 +541,12 @@ export async function runRSICycle(): Promise<RSICycleResult> {
               const reason = shadowResult.testsFailed > 0 ? `${shadowResult.testsFailed} tests failed` : "shadow test failed";
               errors.push(`Proposal ${proposal.id} failed shadow test: ${reason}`);
               console.warn(`[RSIEngine] Shadow test FAILED for ${proposal.id} — skipping apply. ${reason}`);
+              // v12.7.0: Record _failReason so the dashboard shows the rejection cause
+              try {
+                const { loadProposals: _lp, saveProposals: _sp } = await import("./selfImprove.js");
+                const _st = _lp(); const _p = _st.proposals.find((p: any) => p.id === proposal.id);
+                if (_p && !(_p as any)._failReason) { (_p as any)._failReason = `Shadow test: ${reason}`; _sp(_st); }
+              } catch { /* non-fatal */ }
               continue;
             }
             console.log(`[RSIEngine] Shadow test PASSED for ${proposal.id} (${shadowResult.testsPassed} passed, ${shadowResult.testsFailed} failed)`);
@@ -581,6 +587,12 @@ export async function runRSICycle(): Promise<RSICycleResult> {
               console.warn(`[RSIEngine] CI FAILED at stage "${ciResult.failedStage}" — ${ciResult.rolledBack ? "rolled back" : "no rollback"}`);
               proposalsRejected++;
               errors.push(`Proposal ${proposal.id} rejected by CI (${ciResult.failedStage}): ${failSummary}`);
+              // v12.7.0: Record _failReason so the dashboard shows the rejection cause
+              try {
+                const { loadProposals: _lp2, saveProposals: _sp2 } = await import("./selfImprove.js");
+                const _st2 = _lp2(); const _p2 = _st2.proposals.find((p: any) => p.id === proposal.id);
+                if (_p2 && !(_p2 as any)._failReason) { (_p2 as any)._failReason = `CI failed at ${ciResult.failedStage}: ${failSummary.slice(0, 200)}`; _sp2(_st2); }
+              } catch { /* non-fatal */ }
               storeMemory(
                 `RSI proposal ${proposal.id} REJECTED by CI pipeline at stage ${ciResult.failedStage}. File: ${proposal.filePath}`,
                 "fact",
@@ -596,6 +608,12 @@ export async function runRSICycle(): Promise<RSICycleResult> {
           restoreSnapshot(snapshotId);
           proposalsRejected++;
           errors.push(`Apply error for ${proposal.id}: ${String(e).slice(0, 200)}`);
+          // v12.7.0: Record _failReason for unhandled exceptions
+          try {
+            const { loadProposals: _lp3, saveProposals: _sp3 } = await import("./selfImprove.js");
+            const _st3 = _lp3(); const _p3 = _st3.proposals.find((p: any) => p.id === proposal.id);
+            if (_p3 && !(_p3 as any)._failReason) { (_p3 as any)._failReason = `Exception: ${String(e).slice(0, 200)}`; _sp3(_st3); }
+          } catch { /* non-fatal */ }
         }
       }
 

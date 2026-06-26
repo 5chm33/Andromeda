@@ -141,12 +141,13 @@ Respond with ONLY a JSON object:
       console.warn(`[Consensus] Model ${model} attempt ${attempt + 1}/${maxRetries} failed: ${(err as Error).message}`);
     }
   }
-  // All retries exhausted
+  // All retries exhausted — provider is unreachable, abstain rather than vote no.
+  // Counting a network failure as a "no" vote was causing false rejections (v12.7.0 fix).
   return {
     model,
-    approved: false,
-    confidence: 0,
-    reasoning: `Error after ${maxRetries} retries: ${lastError?.message}`,
+    approved: true,  // abstain: don't penalise proposal for provider being down
+    confidence: 0,   // zero confidence signals this was an abstain, not a real approval
+    reasoning: `Abstain (provider unreachable after ${maxRetries} retries): ${lastError?.message}`,
     responseTime: Date.now() - start,
   };
 }

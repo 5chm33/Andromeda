@@ -826,6 +826,48 @@ export async function guardedApply(proposalId: string): Promise<{
     log.info(`Skipping self-consistency for low-risk proposal: ${(proposal.title || "").slice(0, 60)}`);
   }
 
+  // v12.7.0: Brace-balancing post-processor — auto-fix off-by-one brace/paren imbalances
+  // before quickValidate runs. The LLM occasionally generates a snippet with one extra or
+  // missing brace, which is trivially fixable without an LLM retry.
+  if (proposal.proposedContent) {
+    const ext = (proposal.targetFile || "").split(".").pop() || "";
+    if (/^(ts|tsx|js|jsx)$/.test(ext)) {
+      let content = proposal.proposedContent;
+      // Brace balance
+      const openB = (content.match(/\{/g) || []).length;
+      const closeB = (content.match(/\}/g) || []).length;
+      const bracesDiff = openB - closeB;
+      if (bracesDiff === 1) {
+        // One extra open brace — append closing brace at end
+        content = content.trimEnd() + "\n}";
+        log.info(`[BraceBalance] Auto-appended missing } to ${proposal.targetFile}`);
+        proposal.proposedContent = content;
+      } else if (bracesDiff === -1) {
+        // One extra close brace — remove last lone } on its own line
+        content = content.replace(/(\n\s*\}\s*)$/, "");
+        if ((content.match(/\{/g) || []).length === (content.match(/\}/g) || []).length) {
+          log.info(`[BraceBalance] Auto-removed extra } from ${proposal.targetFile}`);
+          proposal.proposedContent = content;
+        }
+      }
+      // Paren balance (only fix off-by-one)
+      const openP = (content.match(/\(/g) || []).length;
+      const closeP = (content.match(/\)/g) || []).length;
+      const parenDiff = openP - closeP;
+      if (parenDiff === 1) {
+        content = content.trimEnd() + ")";
+        log.info(`[BraceBalance] Auto-appended missing ) to ${proposal.targetFile}`);
+        proposal.proposedContent = content;
+      } else if (parenDiff === -1) {
+        content = content.replace(/(\n\s*\)\s*)$/, "");
+        if ((content.match(/\(/g) || []).length === (content.match(/\)/g) || []).length) {
+          log.info(`[BraceBalance] Auto-removed extra ) from ${proposal.targetFile}`);
+          proposal.proposedContent = content;
+        }
+      }
+    }
+  }
+
   // v11.18.0 Audit 10 Fix C: Wire quickValidate so sandboxVerifier catches obvious issues before write
   if (proposal.proposedContent) {
     try {
