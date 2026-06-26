@@ -74,6 +74,11 @@ import { initGlobalMemory } from "../persistentGlobalMemory.js";
 import { initHypothesisEngine } from "../hypothesisEngine.js";
 import { initPaperWriter } from "../paperWriter.js";
 import { initNeuromorphicMemory } from "../neuromorphicMemory.js";
+import { initMetaRsi } from "../metaRsiAgent.js";
+import { initCausalModel } from "../causalWorldModel.js";
+import { initNtdlMemory } from "../ntdlMemory.js";
+import { initBenchmarkSynthesizer } from "../benchmarkSynthesizer.js";
+import { initConstitutionalAI } from "../constitutionalAI.js";
 import { initNasEngine } from "../nasEngine.js";
 import { initSummarizer } from "../infiniteContextSummarizer.js";
 import { resetBenchmarkBaseline } from "../externalBenchmarkGate.js";
@@ -279,6 +284,14 @@ export function startDaemons(): void {
   initPaperWriter();
   initNeuromorphicMemory();
   initNasEngine();
+
+  // v22.0.0
+  initMetaRsi();
+  initCausalModel();
+  initNtdlMemory();
+  initBenchmarkSynthesizer();
+  initConstitutionalAI();
+
 
 
 

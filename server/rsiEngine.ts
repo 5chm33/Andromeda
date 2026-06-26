@@ -33,6 +33,8 @@ import { parseGoalsFile, identifyRelevantFiles, selectGoalBiasedFiles } from "./
 import { checkBenchmarkGate } from "./externalBenchmarkGate.js";
 import { selectActiveHypothesis, updateBelief } from "./hypothesisEngine.js";
 import { getActiveHyperparameters, recordFitness, mutateHyperparameters } from "./nasEngine.js";
+import { runMetaRsiPass } from "./metaRsiAgent.js";
+import { synthesizeBenchmark } from "./benchmarkSynthesizer.js";
 import { writeResearchPaper } from "./paperWriter.js";
 import { runVisualRegressionGate } from "./multiModalExecutionVerifier.js";
 
