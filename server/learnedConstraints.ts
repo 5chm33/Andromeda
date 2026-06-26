@@ -206,7 +206,7 @@ export function checkLearnedConstraints(snippet: string): LearnedConstraint | nu
 export function disableConstraint(id: string): boolean {
   const store = loadStore();
   const constraint = store.constraints.find(c => c.id === id);
-  if (!constraint) return false;
+  if (constraint == null) return false;
   constraint.active = false;
   saveStore(store);
   invalidateCache();
