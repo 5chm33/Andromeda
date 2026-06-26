@@ -1821,6 +1821,33 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         clearHardeningTarget(moduleName);
       } catch { /* non-fatal */ }
 
+      // v14.0.0: CI Regression Gate — block apply if metrics regress
+      try {
+        const { runTestSuiteGate } = await import("./ciRegressionGuard.js");
+        const projectRoot = path.resolve(process.cwd());
+        const newContent = (proposal as any).content ?? (proposal as any).newContent ?? "";
+        const gateResult = runTestSuiteGate(proposalId, proposal.targetFile, newContent, projectRoot);
+        if (!gateResult.passed) {
+          log.warn(`[ciRegressionGuard] Gate FAILED for ${path.basename(proposal.targetFile)}: ${gateResult.detail}`);
+          // Record as failure in pattern memory
+          try {
+            const { recordPatternOutcome } = await import("./epistemicBeliefModel.js");
+            recordPatternOutcome(proposal.title || "unknown", "structure", path.basename(proposal.targetFile), "failure");
+          } catch { /* non-fatal */ }
+          // Roll back via transaction log
+          if (_txnId) {
+            try {
+              const { rollbackTransaction } = await import("./transactionLog.js");
+              rollbackTransaction(_txnId);
+            } catch { /* non-fatal */ }
+          }
+          proposal.status = "rejected";
+          (proposal as any).rejectionReason = `CI regression gate failed: ${gateResult.detail}`;
+          return { success: false, message: `CI regression gate failed: ${gateResult.detail}` };
+        }
+        log.info(`[ciRegressionGuard] Gate PASSED for ${path.basename(proposal.targetFile)}: ${gateResult.detail}`);
+      } catch { /* non-fatal — gate is advisory if module unavailable */ }
+
       proposal.status = "applied";
       // v12.13.0: Commit transaction on success
       if (_txnId) {
