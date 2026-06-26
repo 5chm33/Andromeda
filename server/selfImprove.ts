@@ -1644,11 +1644,40 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         }
       } catch (tsErr: any) {
         tsCheckPassed = false;
-        const tsErrMsg = (tsErr.stderr || tsErr.stdout || tsErr.message || "").toString().slice(0, 300);
-        console.warn(`[SelfImprove] TypeScript check FAILED for ${proposal.targetFile} — reverting file. Errors: ${tsErrMsg}`);
+        const tsErrMsg = (tsErr.stderr || tsErr.stdout || tsErr.message || "").toString().slice(0, 600);
+        console.warn(`[SelfImprove] TypeScript check FAILED for ${proposal.targetFile} — attempting LLM self-heal. Errors: ${tsErrMsg.slice(0, 200)}`);
         // Revert the file write to restore the original content
         if (proposal.originalContent) {
           try { fs.writeFileSync(filePath, proposal.originalContent, "utf-8"); } catch { /* best effort */ }
+        }
+        // v12.5.1: LLM self-heal loop — feed the tsc error back to the LLM and retry once.
+        // The guard's pre-flight syntax check already has a refinement loop, but proposals can
+        // pass the guard's lightweight check and still fail the full project-wide tsc --noEmit.
+        // This second loop catches those cases and gives the LLM one more chance to fix them.
+        const healCount = (proposal as any)._tsHealCount || 0;
+        if (healCount < 2) {
+          try {
+            console.log(`[SelfImprove] Initiating TS self-heal for ${proposal.targetFile} (attempt ${healCount + 1}/2)`);
+            (proposal as any)._tsHealCount = healCount + 1;
+            // Persist the updated heal count before retrying
+            {
+              const healStore = loadProposals();
+              const healProp = healStore.proposals.find(p => p.id === proposalId);
+              if (healProp) { (healProp as any)._tsHealCount = healCount + 1; saveProposals(healStore); }
+            }
+            const healed = await refineProposal(proposal, tsErrMsg);
+            if (healed) {
+              console.log(`[SelfImprove] TS self-heal generated corrected proposal for ${proposal.targetFile} — retrying apply`);
+              // Retry the full apply pipeline with the healed proposal
+              return applyProposal(proposalId);
+            } else {
+              console.warn(`[SelfImprove] TS self-heal failed to generate corrected proposal for ${proposal.targetFile}`);
+            }
+          } catch (healErr) {
+            console.warn(`[SelfImprove] TS self-heal threw (non-fatal): ${sanitizeForLog((healErr as Error).message)}`);
+          }
+        } else {
+          console.warn(`[SelfImprove] TS self-heal exhausted for ${proposal.targetFile} — marking rejected`);
         }
         // v9.8.5: Load a FRESH store to avoid stale data overwriting concurrent saves
         {
@@ -1656,12 +1685,11 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
           const freshProp = freshStore.proposals.find(p => p.id === proposalId);
           if (freshProp) {
             freshProp.status = "rejected" as any;
-            (freshProp as any)._failReason = `TypeScript check failed: ${tsErrMsg}`;
+            (freshProp as any)._failReason = `TypeScript check failed: ${tsErrMsg.slice(0, 200)}`;
             saveProposals(freshStore);
           } else {
-            // Fallback: update the in-memory store
             proposal.status = "rejected" as any;
-            (proposal as any)._failReason = `TypeScript check failed: ${tsErrMsg}`;
+            (proposal as any)._failReason = `TypeScript check failed: ${tsErrMsg.slice(0, 200)}`;
             saveProposals(store);
           }
         }
@@ -1678,7 +1706,7 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         } catch (fpErr) {
           console.warn("[SelfImprove] recordFailure (non-fatal):", (fpErr as Error).message);
         }
-        return { success: false, message: `TypeScript check failed after apply — reverted. Errors: ${tsErrMsg}` };
+        return { success: false, message: `TypeScript check failed after apply — self-heal attempted. Errors: ${tsErrMsg.slice(0, 200)}` };
       }
 
       // v9.8.5: Git commit the applied change so it shows up in git log
