@@ -255,6 +255,13 @@ import { generateHypotheses, getBestHypothesis } from "../abductiveHypothesisEng
 import { registerConcept, findAnalogies } from "../analogicalReasoningBridge";
 import { conductDebate, getDebateHistory } from "../dialecticalDebateEngine";
 import { addCalibrationSample, calibrate, applyCalibration } from "../reasoningConfidenceCalibrator";
+import { storeEpisode, recallEpisode, searchEpisodes } from "../episodicMemoryStore";
+import { indexFact, queryFacts } from "../semanticMemoryIndex";
+import { pushToWorkingMemory, getWorkingMemory, focusAttention } from "../workingMemoryBuffer";
+import { consolidateMemories } from "../memoryConsolidator";
+import { indexMemory, retrieveByAssociation } from "../memoryRetrievalOptimizer";
+import { createTrace, reviewTrace, getDueForReview } from "../forgettingCurveManager";
+
 
 
 
