@@ -155,7 +155,7 @@ export async function runEvalHarness(opts: {
   const runAt = Date.now();
 
   try {
-    const evals = getEvalsForReplay(maxReplays);
+    const evals = getEvalsForReplay(maxReplays) ?? [];
     if (evals.length === 0) {
       const report: EvalHarnessReport = {
         runAt,
