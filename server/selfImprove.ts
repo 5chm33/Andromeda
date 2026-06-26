@@ -68,6 +68,9 @@ import { getDistilledReward, distillFromApi } from "./onlineRewardDistiller.js";
 import { isSemanticDuplicate, recordSemanticEmbedding } from "./semanticDedup.js";
 import { determineSampleCount, selectBestSample } from "./adaptiveSelfConsistency.js";
 import { assignVariant, recordVariantOutcome } from "./abTestingFramework.js";
+import { queryFederatedGraph, publishToFederatedGraph } from "./federatedKnowledgeGraph.js";
+import { discoverActiveSpecialization, getSpecializedPrompt, recordSpecializationOutcome } from "./emergentSpecialization.js";
+import { recordTemporalEvent } from "./temporalReasoningEngine.js";
 
 
 const log = createLogger("selfImprove");

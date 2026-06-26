@@ -32,6 +32,8 @@ import { auditRsiEvent } from "./auditLog.js";
 import { parseGoalsFile, identifyRelevantFiles, selectGoalBiasedFiles } from "./goalConditionedRsi.js";
 import { checkBenchmarkGate } from "./externalBenchmarkGate.js";
 import { startExperiment } from "./abTestingFramework.js";
+import { applySelfHealing } from "./selfHealingInfra.js";
+import { detectTemporalDrift } from "./temporalReasoningEngine.js";
 import { selectActiveHypothesis, updateBelief } from "./hypothesisEngine.js";
 import { getActiveHyperparameters, recordFitness, mutateHyperparameters } from "./nasEngine.js";
 import { runMetaRsiPass } from "./metaRsiAgent.js";
