@@ -75,6 +75,11 @@ import { initUcdDaemon } from "../unsupervisedCodebaseDiscovery.js";
 import { initSrilDaemon } from "../srilEngine";
 import { initDeploymentDaemon } from "../autonomousDeployment";
 import { initSemanticVersionControl } from "../semanticVersionControl";
+import { initMetaCognitiveEngine } from "../metaCognitiveEngine";
+import { initSpikePlasticityEngine } from "../spikePlasticityEngine";
+import { initCurriculumDesigner } from "../curriculumDesigner";
+import { initCounterfactualSimulator } from "../counterfactualSimulator";
+import { initEmergentLanguageProtocol } from "../emergentLanguageProtocol";
 import { initStakeholderReporting } from "../stakeholderReporting";
 import { initCognitiveLoadBalancer } from "../cognitiveLoadBalancer";
 import { initBootstrapper } from "../capabilityBootstrapper";
@@ -298,6 +303,12 @@ export function startDaemons(): void {
     initSemanticVersionControl();
     initStakeholderReporting();
     initCognitiveLoadBalancer();
+    // v31
+    initMetaCognitiveEngine();
+    initSpikePlasticityEngine();
+    initCurriculumDesigner();
+    initCounterfactualSimulator();
+    initEmergentLanguageProtocol();
 
 
   initSummarizer();
