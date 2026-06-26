@@ -243,6 +243,13 @@ import { recordLearningEvent, getLearnedPatterns, getLearningStats, _resetPerpet
 import { createGoal as createAdaptiveGoal, updateGoalProgress as updateAdaptiveGoalProgress, adaptGoal, getGoalHierarchy, getActiveGoals, reprioritizeGoals, _resetGoalHierarchyForTest } from "../adaptiveGoalHierarchy.js";
 import { registerCapability, updateCapabilityProficiency, captureSnapshot as captureSelfSnapshot, getCapabilityByName, getSnapshotHistory, _resetSelfModelForTest } from "../transcendentSelfModel.js";
 import { registerSubsystem, updateSubsystemMetrics, recordSystemEvent, generateUnifiedReport, getReportHistory, getSystemEvents, _resetGrandUnificationMonitorForTest } from "../grandUnificationMonitor.js";
+import { registerTopology, optimizeTopology } from "../neuralTopologyOptimizer";
+import { initializeWeights, applyWeightUpdate } from "../synapticWeightManager";
+import { recordActivation, analyzeLayer } from "../activationPatternAnalyzer";
+import { pruneLayer, computeSparsity } from "../neuralPruningEngine";
+import { analyzeFusionCandidates, applyFusion } from "../layerFusionOptimizer";
+import { recordGradient, analyzeGradientFlow } from "../gradientFlowMonitor";
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
