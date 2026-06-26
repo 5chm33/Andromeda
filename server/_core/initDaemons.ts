@@ -261,6 +261,13 @@ import { pushToWorkingMemory, getWorkingMemory, focusAttention } from "../workin
 import { consolidateMemories } from "../memoryConsolidator";
 import { indexMemory, retrieveByAssociation } from "../memoryRetrievalOptimizer";
 import { createTrace, reviewTrace, getDueForReview } from "../forgettingCurveManager";
+import { predictShortTerm } from "../shortTermPredictor";
+import { forecastLongTerm } from "../longTermForecaster";
+import { propagateUncertainty } from "../uncertaintyPropagator";
+import { addPredictionOutcome, evaluateCalibration } from "../predictionCalibrator";
+import { simulateScenarios } from "../scenarioSimulator";
+import { ensemblePredictions } from "../predictionEnsembler";
+
 
 
 
