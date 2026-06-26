@@ -102,7 +102,7 @@ export function gitSandbox(
   }
 
   // Check against whitelist
-  const allowed = ALLOWED_GIT_PATTERNS.some(pattern => pattern.test(trimmed));
+  const allowed = ALLOWED_GIT_PATTERNS && ALLOWED_GIT_PATTERNS.some(pattern => pattern.test(trimmed));
   if (!allowed) {
     throw new GitCommandNotAllowedError(
       trimmed,
