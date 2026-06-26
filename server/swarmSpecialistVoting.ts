@@ -300,7 +300,12 @@ Respond with JSON only.`;
     }
 
     const raw = response.choices[0]?.message?.content || "{}";
-    const parsed = JSON.parse(raw);
+    let parsed: any;
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      parsed = {};
+    }
     const confidence = typeof parsed.confidence === "number"
       ? Math.max(0, Math.min(1, parsed.confidence))
       : 0.5;
