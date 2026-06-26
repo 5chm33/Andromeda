@@ -456,14 +456,27 @@ export async function runRSICycle(): Promise<RSICycleResult> {
         for (const tf of rsiConfig.targetFiles.slice(0, FILES_PER_CYCLE)) {
           try { await analyzeAndPropose(tf); } catch { /* non-fatal */ }
         }
-      } else if (ANALYZABLE_FILES && ANALYZABLE_FILES.length > 0) {
-        // Smart rotation: use cycleCount as seed to pick different files each cycle
-        const offset = (cycleCount * FILES_PER_CYCLE) % ANALYZABLE_FILES.length;
-        const targets = [
-          ANALYZABLE_FILES[offset % ANALYZABLE_FILES.length],
-          ANALYZABLE_FILES[(offset + 1) % ANALYZABLE_FILES.length],
-          ANALYZABLE_FILES[(offset + 2) % ANALYZABLE_FILES.length],
-        ];
+      } else {
+        // v14.0.0: Prioritize chaos-identified hardening targets before normal rotation
+        let targets: string[] = [];
+        try {
+          const { getHardeningTargets, recordRsiAttempt } = await import("./selfHealingChaos.js");
+          const hardeningTargets = getHardeningTargets(FILES_PER_CYCLE);
+          for (const ht of hardeningTargets) {
+            targets.push(ht.moduleFile);
+            recordRsiAttempt(ht.moduleName);
+          }
+        } catch { /* non-fatal if selfHealingChaos not available */ }
+
+        // Fill remaining slots with normal rotation
+        if (targets.length < FILES_PER_CYCLE && ANALYZABLE_FILES && ANALYZABLE_FILES.length > 0) {
+          const offset = (cycleCount * FILES_PER_CYCLE) % ANALYZABLE_FILES.length;
+          for (let i = 0; i < FILES_PER_CYCLE - targets.length; i++) {
+            const candidate = ANALYZABLE_FILES[(offset + i) % ANALYZABLE_FILES.length];
+            if (!targets.includes(candidate)) targets.push(candidate);
+          }
+        }
+
         for (const tf of targets) {
           try { await analyzeAndPropose(tf); } catch { /* non-fatal */ }
         }

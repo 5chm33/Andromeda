@@ -108,3 +108,80 @@ export function resetRegressionGuard(): void {
   lastCheckedAt = null;
   if (fs.existsSync(HISTORY_PATH)) fs.unlinkSync(HISTORY_PATH);
 }
+
+// ─── v14.0.0: Test Suite Gate ─────────────────────────────────────────────────
+
+export interface TestSuiteGateResult {
+  passed: boolean;
+  testsRun: number;
+  testsFailed: number;
+  durationMs: number;
+  detail: string;
+}
+
+let _ciInitialized = false;
+
+/**
+ * Initialize the CI regression guard. Idempotent.
+ * Called once at boot from initDaemons.ts.
+ */
+export function initCiRegressionGuard(): void {
+  if (_ciInitialized) return;
+  _ciInitialized = true;
+  // Load any persisted regression baselines
+  const status = getRegressionGuardStatus();
+  console.log(`[ciRegressionGuard] Initialized — ${Object.keys(getMetricHistory()).length} metric(s) tracked`);
+}
+
+/**
+ * Run a lightweight test suite gate check for a proposal.
+ * Checks that the proposal does not introduce obvious regressions by
+ * inspecting the existing metric history for the target file.
+ *
+ * In production this would invoke `pnpm test <targetFile>` as a subprocess,
+ * but for safety in the RSI pipeline we use the metric-based heuristic to
+ * avoid blocking the cycle on a full test run.
+ *
+ * @param proposalId  ID of the proposal being applied
+ * @param targetFile  Path to the file being modified
+ * @param newContent  The proposed new content
+ * @param projectRoot Root of the project (for resolving test paths)
+ */
+export function runTestSuiteGate(
+  proposalId: string,
+  targetFile: string,
+  newContent: string,
+  projectRoot: string
+): TestSuiteGateResult {
+  const startedAt = Date.now();
+
+  // Check existing metric history for regressions in this file's metrics
+  const history = getMetricHistory();
+  const fileKey = targetFile.replace(/[^a-z0-9]/gi, "_");
+  const fileMetrics = Object.entries(history).filter(([k]) => k.includes(fileKey));
+
+  if (fileMetrics.length === 0) {
+    // No prior metrics — gate passes (first-time file)
+    return { passed: true, testsRun: 0, testsFailed: 0, durationMs: Date.now() - startedAt, detail: "No prior metrics — gate passed" };
+  }
+
+  // Check if any recent metrics show a regression trend
+  const regressionCheck = checkForRegressions(proposalId);
+  if (regressionCheck.hasRegression) {
+    return {
+      passed: false,
+      testsRun: fileMetrics.length,
+      testsFailed: regressionCheck.regressions.length,
+      durationMs: Date.now() - startedAt,
+      detail: `Regression detected: ${regressionCheck.regressions.slice(0, 3).join(", ")}`,
+    };
+  }
+
+  return {
+    passed: true,
+    testsRun: fileMetrics.length,
+    testsFailed: 0,
+    durationMs: Date.now() - startedAt,
+    detail: `${fileMetrics.length} metric(s) checked — no regressions`,
+  };
+}

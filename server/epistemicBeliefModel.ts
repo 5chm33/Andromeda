@@ -480,3 +480,118 @@ export function getEpistemicModel(dataDir?: string): EpistemicModel {
 export function resetEpistemicModel(): void {
   _model = null;
 }
+
+// ─── v14.0.0: Cross-Session Architectural Pattern Memory ─────────────────────
+//
+// Tracks which code patterns succeed or fail when applied by the RSI engine.
+// The agent uses this to avoid repeating mistakes and to prefer patterns that
+// have a proven track record in this specific codebase.
+
+import pathModule from "path";
+import fsModule from "fs";
+
+export type PatternCategory = "structure" | "naming" | "imports" | "types" | "tests" | "docs";
+export type PatternOutcome = "success" | "failure";
+
+export interface PatternRecord {
+  patternTitle: string;
+  category: PatternCategory;
+  targetFile: string;
+  outcome: PatternOutcome;
+  timestamp: number;
+}
+
+export interface PatternStats {
+  totalPatterns: number;
+  successCount: number;
+  failureCount: number;
+  successRate: number;
+  topSuccessfulPatterns: string[];
+  topFailingPatterns: string[];
+}
+
+const _patternHistory: PatternRecord[] = [];
+let _patternMemoryInitialized = false;
+
+function getPatternMemoryPath(): string {
+  const workspaceDir = pathModule.resolve(process.cwd(), "workspace");
+  if (!fsModule.existsSync(workspaceDir)) fsModule.mkdirSync(workspaceDir, { recursive: true });
+  return pathModule.join(workspaceDir, ".pattern_memory.json");
+}
+
+function loadPatternMemory(): void {
+  try {
+    const p = getPatternMemoryPath();
+    if (fsModule.existsSync(p)) {
+      const data = JSON.parse(fsModule.readFileSync(p, "utf-8"));
+      if (Array.isArray(data)) _patternHistory.push(...data);
+    }
+  } catch { /* non-fatal */ }
+}
+
+function savePatternMemory(): void {
+  try {
+    const toSave = _patternHistory.slice(-1000);
+    fsModule.writeFileSync(getPatternMemoryPath(), JSON.stringify(toSave, null, 2), "utf-8");
+  } catch { /* non-fatal */ }
+}
+
+/** Initialize the architectural pattern memory. Idempotent. */
+export function initPatternMemory(): void {
+  if (_patternMemoryInitialized) return;
+  _patternMemoryInitialized = true;
+  loadPatternMemory();
+}
+
+/** Record the outcome of applying a pattern. */
+export function recordPatternOutcome(
+  patternTitle: string,
+  category: PatternCategory,
+  targetFile: string,
+  outcome: PatternOutcome
+): void {
+  _patternHistory.push({
+    patternTitle: patternTitle.slice(0, 120),
+    category,
+    targetFile: pathModule.basename(targetFile),
+    outcome,
+    timestamp: Date.now(),
+  });
+  savePatternMemory();
+}
+
+/** Build a context string summarising what patterns have worked/failed for a file. */
+export function buildPatternContext(targetFile: string): string {
+  const basename = pathModule.basename(targetFile);
+  const fileHistory = _patternHistory.filter(r => r.targetFile === basename).slice(-20);
+  if (fileHistory.length === 0) {
+    const globalSuccesses = _patternHistory.filter(r => r.outcome === "success").slice(-10).map(r => r.patternTitle);
+    if (globalSuccesses.length === 0) return "";
+    return `Previously successful patterns in this codebase: ${[...new Set(globalSuccesses)].slice(0, 5).join("; ")}.`;
+  }
+  const successes = fileHistory.filter(r => r.outcome === "success").map(r => r.patternTitle);
+  const failures = fileHistory.filter(r => r.outcome === "failure").map(r => r.patternTitle);
+  const parts: string[] = [];
+  if (successes.length > 0) parts.push(`Patterns that SUCCEEDED in ${basename}: ${[...new Set(successes)].slice(0, 3).join("; ")}`);
+  if (failures.length > 0) parts.push(`Patterns that FAILED in ${basename} (avoid): ${[...new Set(failures)].slice(0, 3).join("; ")}`);
+  return parts.join(". ");
+}
+
+/** Get overall pattern memory statistics. */
+export function getPatternStats(): PatternStats {
+  const total = _patternHistory.length;
+  const successes = _patternHistory.filter(r => r.outcome === "success");
+  const failures = _patternHistory.filter(r => r.outcome === "failure");
+  const successCounts = new Map<string, number>();
+  const failureCounts = new Map<string, number>();
+  for (const r of successes) successCounts.set(r.patternTitle, (successCounts.get(r.patternTitle) || 0) + 1);
+  for (const r of failures) failureCounts.set(r.patternTitle, (failureCounts.get(r.patternTitle) || 0) + 1);
+  return {
+    totalPatterns: total,
+    successCount: successes.length,
+    failureCount: failures.length,
+    successRate: total > 0 ? successes.length / total : 0,
+    topSuccessfulPatterns: [...successCounts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,5).map(([t])=>t),
+    topFailingPatterns: [...failureCounts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,5).map(([t])=>t),
+  };
+}

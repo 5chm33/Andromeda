@@ -32,6 +32,10 @@ import { initWatchdog } from "../watchdog";
 import { initSemanticCodebaseGraph } from "../semanticCodebaseGraph";
 import { initMultiAgentDebate } from "../multiAgentDebate";
 import { initChaosEngineer } from "../chaosEngineer";
+import { initRsiWorkerPool } from "../rsiWorkerPool";
+import { initCiRegressionGuard } from "../ciRegressionGuard";
+import { initPatternMemory } from "../epistemicBeliefModel";
+import { initSelfHealingChaos } from "../selfHealingChaos";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -106,5 +110,37 @@ export function startDaemons(): void {
     console.log("[v13.0.0] Chaos engineer initialized (smoke test queued)");
   } catch (ceErr) {
     console.warn("[v13.0.0] Chaos engineer failed to start:", (ceErr as Error).message);
+  }
+
+  // v14.0.0: RSI Worker Pool — parallel proposal generation with worker threads
+  try {
+    initRsiWorkerPool();
+    console.log("[v14.0.0] RSI worker pool initialized");
+  } catch (wpErr) {
+    console.warn("[v14.0.0] RSI worker pool failed to start:", (wpErr as Error).message);
+  }
+
+  // v14.0.0: CI Regression Guard — loads historical test failure patterns
+  try {
+    initCiRegressionGuard();
+    console.log("[v14.0.0] CI regression guard initialized");
+  } catch (rgErr) {
+    console.warn("[v14.0.0] CI regression guard failed to start:", (rgErr as Error).message);
+  }
+
+  // v14.0.0: Architectural Pattern Memory — loads cross-session pattern success/failure data
+  try {
+    initPatternMemory();
+    console.log("[v14.0.0] Architectural pattern memory initialized");
+  } catch (pmErr) {
+    console.warn("[v14.0.0] Pattern memory failed to start:", (pmErr as Error).message);
+  }
+
+  // v14.0.0: Self-Healing Chaos — loads persisted hardening targets, logs any critical modules
+  try {
+    initSelfHealingChaos();
+    console.log("[v14.0.0] Self-healing chaos loop initialized");
+  } catch (shcErr) {
+    console.warn("[v14.0.0] Self-healing chaos failed to start:", (shcErr as Error).message);
   }
 }

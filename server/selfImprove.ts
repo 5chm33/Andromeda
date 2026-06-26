@@ -1114,6 +1114,19 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
     },
   ];
 
+  // v14.0.0: Architectural Pattern Memory — inject cross-session pattern context into LLM prompt.
+  // Tells the LLM what patterns have succeeded/failed for this specific file in past RSI cycles.
+  try {
+    const { buildPatternContext } = await import("./epistemicBeliefModel.js");
+    const patternCtx = buildPatternContext(targetFile);
+    if (patternCtx) {
+      const userMsg = llmMessages[llmMessages.length - 1];
+      if (userMsg && userMsg.role === "user") {
+        (userMsg as any).content += `\n\n--- ARCHITECTURAL PATTERN MEMORY ---\n${patternCtx}\n--- END PATTERN MEMORY ---`;
+      }
+    }
+  } catch { /* non-fatal — pattern memory is advisory only */ }
+
   // v13.0.0: Multi-Agent Debate Protocol — run upstream debate before LLM generation.
   // Five specialized agents (Security, Performance, Reliability, TypeScript, Architecture)
   // debate the highest-priority improvement. The winning brief is injected into the
@@ -1795,6 +1808,19 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
     const { guardedApply } = await import("./selfImproveGuard");
     const guardResult = await guardedApply(proposalId);
     if (guardResult.success) {
+      // v14.0.0: Record success in architectural pattern memory
+      try {
+        const { recordPatternOutcome } = await import("./epistemicBeliefModel.js");
+        recordPatternOutcome(proposal.title || "unknown", "structure", path.basename(proposal.targetFile), "success");
+      } catch { /* non-fatal */ }
+
+      // v14.0.0: Clear self-healing chaos hardening target if this file was flagged
+      try {
+        const { clearHardeningTarget } = await import("./selfHealingChaos.js");
+        const moduleName = path.basename(proposal.targetFile, ".ts");
+        clearHardeningTarget(moduleName);
+      } catch { /* non-fatal */ }
+
       proposal.status = "applied";
       // v12.13.0: Commit transaction on success
       if (_txnId) {
