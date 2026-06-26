@@ -1113,6 +1113,40 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
       content: `Analyze this TypeScript file and propose the single best improvement${area ? ` focusing on: ${area}` : ``}.\n\nFile: ${filename}\n\n\`\`\`typescript\n${contentForAnalysis}\n\`\`\`\n\nReturn ONLY valid JSON.`,
     },
   ];
+
+  // v13.0.0: Multi-Agent Debate Protocol — run upstream debate before LLM generation.
+  // Five specialized agents (Security, Performance, Reliability, TypeScript, Architecture)
+  // debate the highest-priority improvement. The winning brief is injected into the
+  // user message so the LLM writes exactly what the debate consensus agreed upon.
+  // Runs in structural mode (useLLM: false) — zero token cost.
+  try {
+    const { runDebateProtocol } = await import("./multiAgentDebate.js");
+    const debateResult = await runDebateProtocol(targetFile, contentForAnalysis, { useLLM: false });
+    if (debateResult?.winningBrief) {
+      const userMsg = llmMessages[llmMessages.length - 1];
+      if (userMsg && userMsg.role === "user") {
+        const consensusType = debateResult.strongConsensus ? "strong" : "weak";
+        (userMsg as any).content += `\n\n--- DEBATE CONSENSUS (${consensusType}) ---\n${debateResult.winningBrief}\nLead agent: ${debateResult.winner}\nConstraints: ${(debateResult.constraints ?? []).slice(0, 2).join("; ")}\n--- END DEBATE ---`;
+      }
+      log.info(`[v13.0.0] Debate (${debateResult.strongConsensus ? "strong" : "weak"} consensus): ${debateResult.winner} — ${String(debateResult.winningBrief).slice(0, 80)}`);
+    }
+  } catch { /* non-fatal — debate is advisory only */ }
+
+  // v13.0.0: Semantic Safety Score — block or flag high-risk proposals before LLM call.
+  // Prevents expensive generation for changes that would cascade-break the codebase.
+  try {
+    const { getChangeSafetyScore } = await import("./semanticCodebaseGraph.js");
+    const projectRoot = path.resolve(process.cwd());
+    const safetyResult = getChangeSafetyScore(targetFile, contentForAnalysis.slice(0, 1000), projectRoot);
+    if (safetyResult?.recommendation === "block") {
+      log.warn(`[v13.0.0] Semantic safety BLOCKED ${path.basename(targetFile)}: score=${safetyResult.score?.toFixed(2)}, risks=${(safetyResult.riskFactors ?? []).join(", ")}`);
+      return null; // abort — too risky to generate
+    } else if (safetyResult?.recommendation === "review") {
+      const callerCount = (safetyResult.impactProof?.directCallers?.length ?? 0) + (safetyResult.impactProof?.transitiveCallers?.length ?? 0);
+      log.info(`[v13.0.0] Semantic safety REVIEW ${path.basename(targetFile)}: score=${safetyResult.score?.toFixed(2)}, impact=${callerCount} callers`);
+    }
+  } catch { /* non-fatal — safety check is advisory */ }
+
   // v12.13.0: Cost optimizer — select the cheapest model that can handle this proposal's complexity.
   // Prevents always using expensive Claude/Kimi for trivial readability improvements.
   try {
