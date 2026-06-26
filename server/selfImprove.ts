@@ -62,6 +62,13 @@ import { verifyProposalProof } from "./z3ProofLayer.js";
 import { recordFailure as recordFailurePattern } from "./failurePatternMemory.js";
 import { calibrateScore, updateCalibration } from "./rewardCalibrator.js";
 import { generateRefinementBrief } from "./genealogyGuidedGeneration.js";
+import { runSpeculativeDebate } from "./speculativeExecutionEngine.js";
+import { routePrompt } from "./moePromptRouter.js";
+import { getDistilledReward, distillFromApi } from "./onlineRewardDistiller.js";
+import { isSemanticDuplicate, recordSemanticEmbedding } from "./semanticDedup.js";
+import { determineSampleCount, selectBestSample } from "./adaptiveSelfConsistency.js";
+import { assignVariant, recordVariantOutcome } from "./abTestingFramework.js";
+
 
 const log = createLogger("selfImprove");
 
