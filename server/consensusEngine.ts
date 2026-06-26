@@ -10,6 +10,8 @@
  * - Changes affecting >5 dependent files
  */
 
+import { initDynamicWeights, computeWeightedApproval, recordConsensusOutcome, getModelWeightStats } from "./dynamicModelWeights.js";
+
 // ── Types ────────────────────────────────────────────────────────────────────
 
 interface ConsensusVote {
@@ -194,24 +196,40 @@ export async function getConsensus(request: ConsensusRequest): Promise<Consensus
     config.models.map(m => queryModel(m, request))
   );
 
-  const approvalCount = votes.filter(v => v.approved).length;
-  const threshold = Math.ceil(config.models.length * config.majorityThreshold);
-  const approved = approvalCount >= threshold;
-  const avgConfidence = votes.reduce((sum, v) => sum + v.confidence, 0) / votes.length;
+  // v12.9.0: Dynamic RLAIF model weighting — use historical accuracy to weight votes
+  // instead of simple majority. Models with better track records have more influence.
+  const simpleApprovalCount = votes.filter(v => v.approved).length;
+  const simpleThreshold = Math.ceil(config.models.length * config.majorityThreshold);
+
+  let approved: boolean;
+  let consensusConfidence: number;
+
+  try {
+    const weightedResult = computeWeightedApproval(
+      votes.map(v => ({ model: v.model, approved: v.approved, confidence: v.confidence }))
+    );
+    approved = weightedResult.score >= config.majorityThreshold;
+    consensusConfidence = weightedResult.score;
+    console.log(`[Consensus] Weighted score: ${weightedResult.score.toFixed(3)} (threshold: ${config.majorityThreshold})`);
+  } catch {
+    // Fallback to simple majority if weighting fails
+    approved = simpleApprovalCount >= simpleThreshold;
+    consensusConfidence = votes.reduce((sum, v) => sum + v.confidence, 0) / votes.length;
+  }
 
   const result: ConsensusResult = {
     approved,
     votes,
-    majorityReached: approvalCount >= threshold || (config.models.length - approvalCount) >= threshold,
+    majorityReached: simpleApprovalCount >= simpleThreshold || (config.models.length - simpleApprovalCount) >= simpleThreshold,
     totalModels: config.models.length,
-    approvalCount,
-    consensusConfidence: avgConfidence,
+    approvalCount: simpleApprovalCount,
+    consensusConfidence,
   };
 
   if (approved) totalApproved++;
   else totalRejected++;
 
-  console.log(`[Consensus] ${approved ? "APPROVED" : "REJECTED"} (${approvalCount}/${config.models.length}): ${(request.description ?? '').slice(0, 80)}`);
+  console.log(`[Consensus] ${approved ? "APPROVED" : "REJECTED"} (${simpleApprovalCount}/${config.models.length}, weighted): ${(request.description ?? '').slice(0, 80)}`);
   return result;
 }
 
@@ -241,5 +259,23 @@ export function updateConsensusConfig(updates: Partial<ConsensusConfig>): void {
 
 export function initConsensusEngine(overrides?: Partial<ConsensusConfig>): void {
   if (overrides) config = { ...config, ...overrides };
+  // v12.9.0: Initialize dynamic model weights on startup
+  try { initDynamicWeights(); } catch { /* non-fatal */ }
   console.log(`[Consensus] Initialized. Models: ${config.models.length}, Threshold: ${config.majorityThreshold}, Required for: ${config.requireForRiskLevel}+`);
+}
+
+/**
+ * Record the outcome of a consensus decision for RLAIF weight updates.
+ * Call this after a proposal's final result is known.
+ */
+export function recordConsensusProposalOutcome(
+  votes: Array<{ model: string; approved: boolean }>,
+  proposalSucceeded: boolean
+): void {
+  try { recordConsensusOutcome(votes, proposalSucceeded); } catch { /* non-fatal */ }
+}
+
+/** Get dynamic model weight stats for the dashboard. */
+export function getDynamicModelWeightStats() {
+  try { return getModelWeightStats(); } catch { return []; }
 }

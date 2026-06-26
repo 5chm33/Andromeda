@@ -1,5 +1,14 @@
 # Changelog
 
+## [12.9.0] — 2026-06-26
+### Added — SOTA RSI Enhancements (Target: 85%+ commit success rate)
+- **Actor-Critic Proposal Generation** (`criticEngine.ts`): Every RSI proposal is now reviewed by a dedicated Critic LLM before being saved. The critic scores each proposal on a 0–10 scale across correctness, safety, and reversibility. Proposals scoring below 5 are flagged with `_criticScore` metadata and deprioritized in the auto-apply queue. Expected impact: +6–8% commit success rate by filtering low-quality proposals before they reach the apply pipeline.
+- **AST-Based Context Injection** (`astContextInjector.ts`): The TypeScript heal engine now uses the TypeScript compiler API to extract the full enclosing function declaration, enclosing class signature, and all referenced type declarations at the error location. This replaces the ±25-line radius approach with semantically complete context. Expected impact: +5–8% heal success rate.
+- **Sandboxed Pre-Apply Dry-Run** (`proposalSandbox.ts`): Before writing any proposal to disk, a full `tsc --noEmit` dry-run is performed in a temp directory. Failures are surfaced as `_dryRunResult` metadata without blocking the proposal. Expected impact: +4–6% commit success rate by pre-screening proposals that would fail tsc.
+- **Semantic Multi-File Rollback** (`semanticRollback.ts`): The rollback system now uses the dependency graph to snapshot the target file AND all its direct dependents before applying a proposal. Rollback restores all affected files atomically, eliminating partial-rollback failures. Expected impact: +2–3% commit success rate.
+- **E2E Visual Regression Guard** (`visualRegressionGuard.ts`): UI proposals (React components, CSS, Tailwind) are screenshotted before and after apply. Pixel-diff scores above 5% threshold flag the proposal for review. Falls back to DOM-structure diff when Playwright is not installed. Expected impact: +1–2% commit success rate for UI proposals.
+- **Dynamic RLAIF Model Weighting** (`dynamicModelWeights.ts`): The consensus engine now tracks each model's historical accuracy (precision, recall, F1) and uses weighted voting instead of simple majority. Models that consistently approve failing proposals have their weight reduced; models with strong track records gain influence. Weights persist across restarts. Expected impact: +3–5% commit success rate.
+
 ## [12.8.1] — 2026-06-26
 ### Fixed
 - **Express v5 wildcard route crash** (`server/_core/vite.ts`): Express v5 no longer accepts bare `"*"` as a route pattern. Both `app.use("*", ...)` calls replaced with `app.use("/{*path}", ...)`. This was causing Stage 4 CI smoke tests to fail with a startup crash immediately after the v12.8.0 Express upgrade.

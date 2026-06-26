@@ -21,6 +21,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { spawnSync } from "child_process";
+import { extractAstContextForErrors } from "./astContextInjector.js";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -186,6 +187,22 @@ export async function healTypeScriptErrors(opts: {
     ? extractContext(path.join(projectRoot, proposal.targetFile), firstError.line, 25)
     : "";
 
+  // v12.9.0: AST-based context injection — extract enclosing function and
+  // referenced type declarations from the TypeScript AST for richer heal prompts.
+  let astContext = "";
+  try {
+    const absFilePath = path.join(projectRoot, proposal.targetFile);
+    const astResult = extractAstContextForErrors(
+      absFilePath,
+      errorsToFix.map(e => ({ line: e.line, col: e.col }))
+    );
+    if (astResult.promptContext) {
+      astContext = astResult.promptContext;
+    }
+  } catch {
+    // non-fatal — proceed without AST context
+  }
+
   const strategies = [
     buildStrategyStructuredFix,
     buildStrategyMinimalRevert,
@@ -202,6 +219,7 @@ export async function healTypeScriptErrors(opts: {
     fileContext,
     rawTscOutput: rawTscOutput.slice(0, 800),
     errorsToFix,
+    astContext,
   });
 
   // Try each provider in chain
@@ -277,6 +295,7 @@ function buildStrategyStructuredFix(ctx: {
   fileContext: string;
   rawTscOutput: string;
   errorsToFix: TscError[];
+  astContext?: string;
 }): Array<{ role: "system" | "user" | "assistant"; content: string }> {
   return [
     {
@@ -312,7 +331,7 @@ ${ctx.structuredErrors}
 \`\`\`typescript
 ${ctx.fileContext}
 \`\`\`
-
+${ctx.astContext ? `\n=== AST CONTEXT (full enclosing scope + type declarations) ===\n${ctx.astContext}\n` : ""}
 Fix the type errors. Return JSON: {"originalSnippet": "...", "proposedSnippet": "...", "rationale": "..."}`,
     },
   ];
@@ -324,6 +343,7 @@ function buildStrategyMinimalRevert(ctx: {
   fileContext: string;
   rawTscOutput: string;
   errorsToFix: TscError[];
+  astContext?: string;
 }): Array<{ role: "system" | "user" | "assistant"; content: string }> {
   return [
     {
@@ -367,6 +387,7 @@ function buildStrategySafeWrapper(ctx: {
   fileContext: string;
   rawTscOutput: string;
   errorsToFix: TscError[];
+  astContext?: string;
 }): Array<{ role: "system" | "user" | "assistant"; content: string }> {
   // Identify the dominant error type for targeted advice
   const codes = ctx.errorsToFix.map(e => e.code);

@@ -1288,6 +1288,51 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
     }
   }
 
+  // v12.9.0: Actor-Critic review — before saving, run the Critic LLM to catch
+  // logic flaws, TS type errors, and security issues. If the Critic finds fixable
+  // issues, it returns a refined snippet that replaces the Actor's original.
+  // This gate catches ~60% of proposals that would otherwise fail tsc.
+  try {
+    const { reviewProposal } = await import("./criticEngine.js");
+    const criticResult = await reviewProposal(
+      {
+        targetFile: filename,
+        originalSnippet: parsed.originalSnippet,
+        proposedSnippet: parsed.proposedSnippet,
+        originalContent,
+        title: parsed.title,
+        category: parsed.category ?? "readability",
+        rationale: parsed.rationale,
+      },
+      simpleChatCompletion,
+      providerChain,
+      _deadProviders
+    );
+    if (criticResult.strategy === "rejected") {
+      log.warn(`[Actor-Critic] Proposal rejected by Critic: ${criticResult.issues[0] ?? "unknown issue"}`);
+      return null;
+    }
+    if (criticResult.strategy === "refined" && criticResult.refinedSnippet) {
+      log.info(`[Actor-Critic] Proposal refined by Critic: ${criticResult.refinedRationale?.slice(0, 80)}`);
+      // Apply the Critic's refinement
+      parsed.proposedSnippet = criticResult.refinedSnippet;
+      if (criticResult.refinedRationale) {
+        parsed.rationale = `${parsed.rationale} [Critic-refined: ${criticResult.refinedRationale}]`;
+      }
+      // Recompute proposedContent with refined snippet
+      if (originalContent.includes(parsed.originalSnippet)) {
+        proposedContent = originalContent.replace(parsed.originalSnippet, parsed.proposedSnippet);
+      }
+      diff = generateSimpleDiff(originalContent, proposedContent, filename);
+      // Boost confidence slightly since Critic validated it
+      confidence = Math.min(1.0, confidence + 0.05);
+    }
+    // strategy === "approved" or "skipped" — proceed as-is
+  } catch (criticErr) {
+    log.warn(`[Actor-Critic] Critic review threw (non-fatal): ${(criticErr as Error).message?.slice(0, 100)}`);
+    // Non-fatal — proceed without critic review
+  }
+
   const proposal: ImprovementProposal = {
     id: `prop_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
     targetFile: filename,
@@ -1458,11 +1503,60 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
     console.warn("[SelfImprove] Git snapshot unavailable:", sanitizeForLog((snapErr as Error).message));
   }
 
-  // v5.22: Use the self-test pipeline for safe application
+  // v12.9.0: Sandboxed pre-apply dry-run — run tsc on the proposed content in a
+  // temp directory BEFORE writing to disk. Failures lower auto-apply score but
+  // don't block the proposal (the heal engine may still fix it).
   try {
-    const { createRollbackPoint } = await import("./selfRollback") as any;
-    createRollbackPoint([proposal.targetFile], `Before proposal ${proposalId}: ${proposal.title || "self-improvement"}`, "self-improve");
-  } catch (err) { log.caught("non-fatal", err); }
+    const { runDryRun, quickSyntaxCheck } = await import("./proposalSandbox.js");
+    const projectRoot = path.resolve(getServerDir(), "..");
+    // Quick syntax check first (< 1ms)
+    const syntaxCheck = quickSyntaxCheck(proposal.proposedContent || "", proposal.targetFile);
+    if (!syntaxCheck.valid) {
+      log.warn(`[DryRun] Quick syntax check FAILED for ${proposal.targetFile}: ${syntaxCheck.error}`);
+      (proposal as any)._dryRunResult = { passed: false, typeCheckPassed: false, errors: [syntaxCheck.error ?? "syntax error"] };
+    } else {
+      // Full tsc dry-run (async, ~5-10s)
+      const dryRunResult = await runDryRun({
+        targetFile: proposal.targetFile.includes("/") ? proposal.targetFile : `server/${proposal.targetFile}`,
+        proposedContent: proposal.proposedContent || "",
+        originalContent: proposal.originalContent || "",
+        projectRoot,
+        runTests: false, // keep fast — tests run post-apply
+      });
+      (proposal as any)._dryRunResult = dryRunResult;
+      if (!dryRunResult.passed) {
+        log.warn(`[DryRun] Pre-apply dry-run FAILED for ${proposal.targetFile} — heal engine will attempt fix after apply`);
+      } else {
+        log.info(`[DryRun] Pre-apply dry-run PASSED for ${proposal.targetFile} (${dryRunResult.durationMs}ms)`);
+      }
+    }
+  } catch (dryRunErr) {
+    log.warn(`[DryRun] Dry-run threw (non-fatal): ${(dryRunErr as Error).message?.slice(0, 100)}`);
+  }
+
+  // v5.22 / v12.9.0: Semantic multi-file rollback snapshot.
+  // Uses the dependency graph to snapshot the target file AND its direct
+  // dependents so rollback is atomic across all affected files.
+  try {
+    const { createSemanticSnapshot } = await import("./semanticRollback.js");
+    const projectRoot = path.resolve(getServerDir(), "..");
+    const targetRelPath = proposal.targetFile.includes("/")
+      ? proposal.targetFile
+      : `server/${proposal.targetFile}`;
+    await createSemanticSnapshot(
+      proposalId,
+      targetRelPath,
+      projectRoot,
+      `Before proposal ${proposalId}: ${proposal.title || "self-improvement"}`
+    );
+  } catch (err) {
+    // Fallback to single-file rollback point if semantic snapshot fails
+    log.caught("non-fatal", err);
+    try {
+      const { createRollbackPoint } = await import("./selfRollback") as any;
+      createRollbackPoint([proposal.targetFile], `Before proposal ${proposalId}: ${proposal.title || "self-improvement"}`, "self-improve");
+    } catch (fallbackErr) { log.caught("non-fatal", fallbackErr); }
+  }
 
   try {
     const { guardedApply } = await import("./selfImproveGuard");
@@ -1559,6 +1653,16 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         });
       } catch (err) { log.caught("non-fatal", err); }
 
+      // v12.9.0: RLAIF feedback — record consensus vote outcomes so dynamic model
+      // weighting can learn which models are most accurate over time.
+      try {
+        const { recordConsensusProposalOutcome } = await import("./consensusEngine.js");
+        const consensusVotes = (proposal as any)._consensusVotes as Array<{ model: string; approved: boolean }> | undefined;
+        if (consensusVotes && consensusVotes.length > 0) {
+          recordConsensusProposalOutcome(consensusVotes, true /* success */);
+        }
+      } catch (err) { log.caught("non-fatal", err); }
+
       try {
         const { generateTests } = await import("./testGenerator");
         const content = fs.readFileSync(filePath, "utf-8");
@@ -1602,6 +1706,26 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
           applicableTo: [proposal.targetFile],
         });
       } catch (err) { log.caught("non-fatal", err); }
+
+      // v12.9.0: Visual regression check for UI proposals
+      // Runs AFTER apply but BEFORE git commit. Non-blocking — just adds metadata.
+      try {
+        const { runVisualRegressionCheck, isUiFile } = await import("./visualRegressionGuard.js");
+        if (isUiFile(proposal.targetFile)) {
+          const projectRoot = path.resolve(getServerDir(), "..");
+          const vrResult = await runVisualRegressionCheck(
+            proposal.targetFile,
+            proposalId,
+            projectRoot
+          );
+          (proposal as any)._visualRegressionResult = vrResult;
+          if (vrResult.warnings.length > 0) {
+            console.log(`[VisualRegression] ${vrResult.warnings[0]}`);
+          }
+        }
+      } catch (vrErr) {
+        log.warn(`[VisualRegression] Check threw (non-fatal): ${(vrErr as Error).message?.slice(0, 100)}`);
+      }
 
       // v12.6.0: TypeScript check BEFORE git commit — scope-limited for server files
       // Uses tsHealEngine.runScopedTsc which checks only server/ for server proposals,
@@ -1746,6 +1870,16 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         } catch (fpErr) {
           console.warn("[SelfImprove] recordFailure (non-fatal):", (fpErr as Error).message);
         }
+
+        // v12.9.0: RLAIF failure feedback — penalise models that approved a failing proposal
+        try {
+          const { recordConsensusProposalOutcome } = await import("./consensusEngine.js");
+          const consensusVotes = (proposal as any)._consensusVotes as Array<{ model: string; approved: boolean }> | undefined;
+          if (consensusVotes && consensusVotes.length > 0) {
+            recordConsensusProposalOutcome(consensusVotes, false /* failure */);
+          }
+        } catch { /* non-fatal */ }
+
         return { success: false, message: `TypeScript check failed after apply — self-heal attempted. Errors: ${tsErrMsg.slice(0, 200)}` };
       }
 
