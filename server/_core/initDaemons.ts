@@ -69,6 +69,9 @@ import { initProposalGenealogy } from "../proposalGenealogy";
 import { initRollbackVerifier } from "../rollbackVerifier";
 import { initFineTunerActivation } from "../fineTunerActivation";
 import { initConsolidationV2 } from "../episodicConsolidationV2.js";
+import { initUcdDaemon } from "../unsupervisedCodebaseDiscovery.js";
+import { initGlobalMemory } from "../persistentGlobalMemory.js";
+import { initSummarizer } from "../infiniteContextSummarizer.js";
 import { resetBenchmarkBaseline } from "../externalBenchmarkGate.js";
 import { initConsensusConfig } from "../consensusConfig";
 import { initRewardCalibrator } from "../rewardCalibrator";
@@ -261,6 +264,12 @@ export function startDaemons(): void {
   // v19.0.0
   initConsolidationV2();
   resetBenchmarkBaseline();
+
+  // v20.0.0
+  initUcdDaemon(process.cwd());
+  initGlobalMemory();
+  initSummarizer();
+
 
     console.log("[v18.0.0] Consensus config initialized");
   } catch (ccErr) {

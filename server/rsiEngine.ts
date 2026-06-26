@@ -31,6 +31,8 @@ import { execSync } from "child_process";
 import { auditRsiEvent } from "./auditLog.js";
 import { parseGoalsFile, identifyRelevantFiles, selectGoalBiasedFiles } from "./goalConditionedRsi.js";
 import { checkBenchmarkGate } from "./externalBenchmarkGate.js";
+import { runVisualRegressionGate } from "./multiModalExecutionVerifier.js";
+
 import { runParallelProposals, OrchestrationTask } from "./parallelProposalOrchestrator.js";
 
 
@@ -779,6 +781,26 @@ export async function runRSICycle(): Promise<RSICycleResult> {
       }
     } catch (e) {
       console.error(`[RSIEngine] External benchmark gate failed: ${(e as Error).message}`);
+    }
+    
+    // v20.0.0: Multi-Modal Execution Verifier (MMEV)
+    try {
+      if (proposalsApplied > 0 && appliedFiles.some(f => f.includes("components") || f.includes("ui") || f.endsWith(".tsx"))) {
+        for (const file of appliedFiles) {
+          if (file.includes("components") || file.includes("ui") || file.endsWith(".tsx")) {
+            const visualResult = await runVisualRegressionGate(file, "RSI UI update");
+            if (!visualResult.passed) {
+              console.error(`[RSIEngine] MMEV visual regression detected in ${file}: ${visualResult.detectedIssues.join(", ")}`);
+              // Trigger rollback
+              const { restoreSnapshot } = await import("./selfRollback.js");
+              restoreSnapshot(cycleId);
+              break;
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.error(`[RSIEngine] MMEV gate failed: ${(e as Error).message}`);
     }
 
     // ── STEP 7: RECORD ───────────────────────────────────────────────────────

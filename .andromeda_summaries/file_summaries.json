@@ -1,0 +1,86 @@
+{
+  "/tmp/ics-test-bIuasi/test.ts": {
+    "filePath": "/tmp/ics-test-bIuasi/test.ts",
+    "summary": "Simulated file summary generated without API key.",
+    "exports": [
+      "y",
+      "z"
+    ],
+    "dependencies": [
+      "./other.js"
+    ],
+    "lastUpdated": 1782497945017
+  },
+  "/tmp/ics-test-gcIUCO/test.ts": {
+    "filePath": "/tmp/ics-test-gcIUCO/test.ts",
+    "summary": "Simulated file summary generated without API key.",
+    "exports": [
+      "a"
+    ],
+    "dependencies": [],
+    "lastUpdated": 1782497945018
+  },
+  "/tmp/ics-test-blhS5v/test.ts": {
+    "filePath": "/tmp/ics-test-blhS5v/test.ts",
+    "summary": "Simulated file summary generated without API key.",
+    "exports": [
+      "y",
+      "z"
+    ],
+    "dependencies": [
+      "./other.js"
+    ],
+    "lastUpdated": 1782497953389
+  },
+  "/tmp/ics-test-7krGy1/test.ts": {
+    "filePath": "/tmp/ics-test-7krGy1/test.ts",
+    "summary": "Simulated file summary generated without API key.",
+    "exports": [
+      "a"
+    ],
+    "dependencies": [],
+    "lastUpdated": 1782497953391
+  },
+  "/tmp/ics-test-JURVDq/test.ts": {
+    "filePath": "/tmp/ics-test-JURVDq/test.ts",
+    "summary": "Simulated file summary generated without API key.",
+    "exports": [
+      "y",
+      "z"
+    ],
+    "dependencies": [
+      "./other.js"
+    ],
+    "lastUpdated": 1782497963685
+  },
+  "/tmp/ics-test-u5MEwk/test.ts": {
+    "filePath": "/tmp/ics-test-u5MEwk/test.ts",
+    "summary": "Simulated file summary generated without API key.",
+    "exports": [
+      "a"
+    ],
+    "dependencies": [],
+    "lastUpdated": 1782497963687
+  },
+  "/tmp/ics-test-941t1y/test.ts": {
+    "filePath": "/tmp/ics-test-941t1y/test.ts",
+    "summary": "Simulated file summary generated without API key.",
+    "exports": [
+      "y",
+      "z"
+    ],
+    "dependencies": [
+      "./other.js"
+    ],
+    "lastUpdated": 1782497976104
+  },
+  "/tmp/ics-test-FjNksu/test.ts": {
+    "filePath": "/tmp/ics-test-FjNksu/test.ts",
+    "summary": "Simulated file summary generated without API key.",
+    "exports": [
+      "a"
+    ],
+    "dependencies": [],
+    "lastUpdated": 1782497976106
+  }
+}
