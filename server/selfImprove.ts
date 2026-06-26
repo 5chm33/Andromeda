@@ -60,6 +60,9 @@ import { checkConstitution } from "./constitutionalConstraints.js";
 import { scoreWithRewardModel } from "./rewardModel.js";
 import { verifyProposalProof } from "./z3ProofLayer.js";
 import { recordFailure as recordFailurePattern } from "./failurePatternMemory.js";
+
+import { getPreferenceReward } from "./rlhfPipeline";
+import { emitDashboardEvent } from "./streamingDashboard";
 import { calibrateScore, updateCalibration } from "./rewardCalibrator.js";
 import { generateRefinementBrief } from "./genealogyGuidedGeneration.js";
 import { runSpeculativeDebate } from "./speculativeExecutionEngine.js";

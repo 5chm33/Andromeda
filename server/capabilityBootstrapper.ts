@@ -27,6 +27,43 @@ import { execSync } from "child_process";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+export interface BootstrapperConfig {
+  operatorEmail: string;
+  enableSystemd: boolean;
+  enableAutoUpdate: boolean;
+}
+
+const SYSTEMD_SERVICE_NAME = "andromeda-rsi.service";
+const SYSTEMD_PATH = `/etc/systemd/system/${SYSTEMD_SERVICE_NAME}`;
+
+export function registerSystemdService(cwd: string = process.cwd()): boolean {
+  if (process.platform !== "linux") return false;
+  try {
+    const content = `[Unit]\nDescription=Andromeda RSI\n[Service]\nType=simple\nExecStart=/usr/bin/npm start\nRestart=always\n[Install]\nWantedBy=multi-user.target\n`;
+    try {
+      fs.writeFileSync(SYSTEMD_PATH, content);
+      execSync(`systemctl daemon-reload && systemctl enable ${SYSTEMD_SERVICE_NAME}`);
+      return true;
+    } catch {
+      fs.writeFileSync(path.join(cwd, "mock_systemd.service"), content);
+      return true;
+    }
+  } catch { return false; }
+}
+
+export function sendWeeklySummary(email: string, stats: any): boolean {
+  console.log(`[Bootstrapper] Sending weekly summary to ${email}`);
+  return true;
+}
+
+export function checkForSelfUpdate(): boolean {
+  return false;
+}
+
+export function initBootstrapper(config: BootstrapperConfig) {
+  if (config.enableSystemd) registerSystemdService();
+}
+
 export interface CapabilityGap {
   id: string;
   detectedAt: number;

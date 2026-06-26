@@ -70,6 +70,9 @@ import { initRollbackVerifier } from "../rollbackVerifier";
 import { initFineTunerActivation } from "../fineTunerActivation";
 import { initConsolidationV2 } from "../episodicConsolidationV2.js";
 import { initUcdDaemon } from "../unsupervisedCodebaseDiscovery.js";
+
+import { initBootstrapper } from "../capabilityBootstrapper";
+import { initStreamingDashboard } from "../streamingDashboard";
 import { initGlobalMemory } from "../persistentGlobalMemory.js";
 import { initHypothesisEngine } from "../hypothesisEngine.js";
 import { initPaperWriter } from "../paperWriter.js";
@@ -277,6 +280,11 @@ export function startDaemons(): void {
   // v20.0.0
   initUcdDaemon(process.cwd());
   initGlobalMemory();
+
+    // v28
+    initBootstrapper({ operatorEmail: "admin@example.com", enableSystemd: false, enableAutoUpdate: true });
+    initStreamingDashboard(8081);
+
   initSummarizer();
 
   // v21.0.0
