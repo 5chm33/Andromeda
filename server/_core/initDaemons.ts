@@ -267,6 +267,13 @@ import { propagateUncertainty } from "../uncertaintyPropagator";
 import { addPredictionOutcome, evaluateCalibration } from "../predictionCalibrator";
 import { simulateScenarios } from "../scenarioSimulator";
 import { ensemblePredictions } from "../predictionEnsembler";
+import { registerTemplate, generateText } from "../naturalLanguageGenerator";
+import { defineIntent, parseIntent } from "../intentParser";
+import { createSession, addTurn, fillSlot } from "../dialogueManager";
+import { registerProfile, generateContextualResponse } from "../contextualResponder";
+import { encodeMultimodal, computeSimilarity } from "../multimodalEncoder";
+import { adaptStyle } from "../communicationStyleAdapter";
+
 
 
 
