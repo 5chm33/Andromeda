@@ -297,6 +297,13 @@ import { initializeModel as initOnlineModel, onlineUpdate, getModelState } from 
 import { recordPredictionError, checkForDrift } from "../conceptDriftHandler";
 import { registerDomain, adaptDomain } from "../domainAdaptationEngine";
 import { registerTransferTask, planTransfer } from "../transferOptimizer";
+import { recordSelfState, generateIntrospectionReport } from "../selfAwarenessMonitor";
+import { recordThought, generateMetacognitiveInsight } from "../metacognitionEngine";
+import { recordConsciousnessState, getCurrentConsciousnessLevel } from "../consciousnessStateTracker";
+import { addIntentionalState, formIntention } from "../intentionalityEngine";
+import { captureQualia, getQualiaProfile } from "../qualiaCaptureSystem";
+import { integrateApexState, generateApexReport } from "../apexIntegrationOrchestrator";
+
 
 
 
