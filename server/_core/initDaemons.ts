@@ -213,6 +213,12 @@ import { recordGeneration, getEvolutionTrend, getTopAgents as getTopEvolvedAgent
 import { submitObservation, aggregateInsight, getObservationCount, _resetCollectiveIntelligenceForTest } from "../agentCollectiveIntelligence.js";
 import { recordBehaviorSignal, getPatterns as getEmergencePatterns, getNoveltyScore, _resetEmergenceDetectorV50ForTest } from "../agentEmergenceDetectorV50.js";
 import { optimize, getLatestResult as getLatestOptResult, _resetEconomyOptimizerForTest } from "../agentEconomyOptimizer.js";
+import { parseOpenApiJson, parseMarkdownDoc, getEndpointsByTag, getEndpointsByMethod } from "../apiDocumentationParser.js";
+import { inferSchema, schemaToPseudoTypeScript } from "../apiSchemaInferrer.js";
+import { generateClient, generateClientFromEndpoints } from "../apiClientGenerator.js";
+import { registerCredential, getAuthHeader, refreshToken as refreshApiToken, isCredentialValid, _resetAuthManagerForTest } from "../apiAuthManager.js";
+import { configureRateLimit, tryAcquire, getStatus as getRateLimitStatus, _resetRateLimiterForTest } from "../apiRateLimiter.js";
+import { registerApi, recordCall as recordApiCall, getHealthReport, getAllHealthReports, _resetApiHealthMonitorForTest } from "../apiHealthMonitor.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -576,4 +582,7 @@ export function startDaemons(): void {
 
   // v50 — Sub-Agent Economy V
   console.log("[Init] Sub-Agent Economy V initialized (knowledgeSharer, specialization, evolution, collective, emergence, optimizer).");
+
+  // v51 — External API Mastery I
+  console.log("[Init] External API Mastery I initialized (docParser, schemaInferrer, clientGenerator, authManager, rateLimiter, healthMonitor).");
 }
