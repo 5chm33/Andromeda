@@ -237,6 +237,12 @@ import { createCompositionPlan, getExecutionOrder, _resetCompositionPlannerForTe
 import { startDeployment, recordHealthCheck as recordDeployHealthCheck, finalizeDeployment, getDeploymentRecord, getDeploymentsByApi, _resetDeploymentAutomatorForTest } from "../apiDeploymentAutomator.js";
 import { recordMetricSnapshot, addAlertRule, getDashboardView, resolveAlert, _resetMonitoringDashboardForTest } from "../apiMonitoringDashboard.js";
 import { registerProxy, simulateCall, resetCircuit, getProxyHealth, _resetSelfHealingProxyForTest } from "../apiSelfHealingProxy.js";
+import { registerAgent, registerHandler, sendMessage, getAgentStatus, listActiveAgents, getMessageLog, updateAgentStatus, _resetUniversalAgentInterfaceForTest } from "../universalAgentInterface.js";
+import { setContext, getContext, queryContext, removeContext, getContextSnapshot, _resetOmniscientContextForTest } from "../omniscientContextManager.js";
+import { recordLearningEvent, getLearnedPatterns, getLearningStats, _resetPerpetualLearningForTest } from "../perpetualLearningEngine.js";
+import { createGoal as createAdaptiveGoal, updateGoalProgress as updateAdaptiveGoalProgress, adaptGoal, getGoalHierarchy, getActiveGoals, reprioritizeGoals, _resetGoalHierarchyForTest } from "../adaptiveGoalHierarchy.js";
+import { registerCapability, updateCapabilityProficiency, captureSnapshot as captureSelfSnapshot, getCapabilityByName, getSnapshotHistory, _resetSelfModelForTest } from "../transcendentSelfModel.js";
+import { registerSubsystem, updateSubsystemMetrics, recordSystemEvent, generateUnifiedReport, getReportHistory, getSystemEvents, _resetGrandUnificationMonitorForTest } from "../grandUnificationMonitor.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -612,4 +618,7 @@ export function startDaemons(): void {
 
   // v54 — External API Mastery IV
   console.log("[Init] External API Mastery IV initialized (knowledgeBase, recommendationEngine, compositionPlanner, deploymentAutomator, monitoringDashboard, selfHealingProxy).");
+
+  // v55 — The Grand Unification
+  console.log("[Init] Grand Unification initialized (universalAgentInterface, omniscientContextManager, perpetualLearningEngine, adaptiveGoalHierarchy, transcendentSelfModel, grandUnificationMonitor).");
 }
