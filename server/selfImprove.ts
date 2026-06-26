@@ -1019,6 +1019,28 @@ export async function analyzeAndPropose(
   const { simpleChatCompletion, getProviderForTier: getProviderForTier_fn, tierForArea: tierForArea_fn } = await import("./llmProvider.js");
   const providerChain = buildProviderFallbackChain(area);
 
+  // v12.11.0: Semantic Graph Impact Prediction — compute downstream consumer context
+  // before building the LLM prompt so the model knows what contracts it must preserve.
+  let semanticImpactContext = "";
+  try {
+    const { predictImpact } = await import("./semanticImpactPredictor.js");
+    const projectRoot = path.resolve(getServerDir(), "..");
+    const impactResult = await predictImpact({
+      targetFile: targetFile.includes("/") ? targetFile : `server/${targetFile}`,
+      projectRoot,
+      maxConsumerFiles: 6,
+    });
+    if (!impactResult.skipped && impactResult.consumerContextSnippet) {
+      semanticImpactContext = `\n\n${impactResult.consumerContextSnippet}`;
+    }
+    // Store impact metadata for dashboard visibility
+    (analyzeAndPropose as any)._lastImpact = {
+      riskScore: impactResult.riskScore,
+      impactRadius: impactResult.impactRadius,
+      highRisk: impactResult.highRisk,
+    };
+  } catch { /* non-fatal */ }
+
   // v12.2.2: Load RSI priority goals from ANDROMEDA.md — extract the Goals section specifically
   let projectGoals = "";
   try {
@@ -1046,7 +1068,7 @@ export async function analyzeAndPropose(
 You will receive source code and must identify the SINGLE BEST improvement to make.${projectGoals}
 ${knowledgeContext ? `\nArchitecture decisions and known issues for this file:\n${knowledgeContext}` : ""}${patternContext ? `\nCross-agent learned patterns for this file:\n${patternContext}` : ""}${longTermMemoryContext}${systemHealthContext}${previousAttempts}${metaLearningContext}${episodicContext}${rlhfContext}${longTermMemoryContext}
 ${knownLimitations}
-${constitutionBlock}${importGraphContext}
+${constitutionBlock}${importGraphContext}${semanticImpactContext}
 
 CRITICAL: Return ONLY a JSON object. No markdown. No explanation outside the JSON.
 The JSON must contain:
@@ -1241,45 +1263,57 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
     }
   } catch { /* non-fatal — learnedConstraints unavailable */ }
 
-  // v12.10.0: AST-aware snippet matching — replaces raw includes() + trimmed-line loop
-  // Uses astDiff.ts to handle whitespace/comment-only changes without false-positive misses.
+  // v12.11.0: AST-Aware Mutation — uses astMutator.ts as the primary strategy with
+  // 4-tier fallback: (1) exact string, (2) normalized string, (3) AST structural match,
+  // (4) fuzzy line match. Also validates that exported symbols are preserved after mutation.
   let snippetApplied = false;
   try {
-    const { findAndApplySnippet } = await import("./astDiff.js");
-    const matchResult = findAndApplySnippet(originalContent, parsed.originalSnippet, parsed.proposedSnippet);
-    if (matchResult.found && matchResult.proposedContent) {
-      proposedContent = matchResult.proposedContent;
+    const { applyMutation, validateMutation, recordMutationResult, recordValidationFailure } = await import("./astMutator.js");
+    const mutResult = applyMutation(originalContent, parsed.originalSnippet, parsed.proposedSnippet, filename);
+    recordMutationResult(mutResult);
+    if (mutResult.success) {
+      // Validate that exported symbols are preserved
+      const validation = validateMutation({
+        originalContent,
+        mutatedContent: mutResult.mutatedContent,
+        filename,
+      });
+      if (!validation.valid) {
+        recordValidationFailure();
+        log.warn(`[AstMutator] Mutation validation failed for ${filename}: ${validation.warnings.join("; ")}`);
+        // Lower confidence but still proceed — tsc will catch real errors
+        confidence = Math.min(confidence, 0.4);
+      }
+      proposedContent = mutResult.mutatedContent;
       snippetApplied = true;
-      if (matchResult.normalizedMatch) {
-        log.info(`[AstDiff] Snippet matched via normalization for ${filename}`);
+      if (mutResult.method === "ast") {
+        log.info(`[AstMutator] AST mutation applied for ${filename} (confidence: ${mutResult.matchConfidence.toFixed(2)})`);
+      }
+      // Discount confidence for low-confidence matches
+      if (mutResult.matchConfidence < 0.85) {
+        confidence = Math.min(confidence, mutResult.matchConfidence);
       }
     } else {
-      // Snippet not found even with AST normalization — lower confidence
+      // All mutation strategies failed — lower confidence significantly
+      log.warn(`[AstMutator] All mutation strategies failed for ${filename}: ${mutResult.errorMessage}`);
       confidence = Math.min(confidence, 0.3);
       proposedContent = originalContent;
     }
-  } catch {
-    // Fallback to original text-based matching if astDiff throws
-    if (originalContent.includes(parsed.originalSnippet)) {
-      proposedContent = originalContent.replace(parsed.originalSnippet, parsed.proposedSnippet);
-      snippetApplied = true;
-    } else {
-      const origLines = originalContent.split("\n");
-      const snippetLines = parsed.originalSnippet.split("\n").map(l => l.trim());
-      let matchStart = -1;
-      for (let i = 0; i <= origLines.length - snippetLines.length; i++) {
-        const window = origLines.slice(i, i + snippetLines.length).map(l => l.trim());
-        if (window.join("\n") === snippetLines.join("\n")) { matchStart = i; break; }
-      }
-      if (matchStart >= 0) {
-        const before = origLines.slice(0, matchStart).join("\n");
-        const after = origLines.slice(matchStart + snippetLines.length).join("\n");
-        proposedContent = [before, parsed.proposedSnippet, after].filter(Boolean).join("\n");
+  } catch (mutErr) {
+    // Fallback to astDiff if astMutator throws
+    try {
+      const { findAndApplySnippet } = await import("./astDiff.js");
+      const matchResult = findAndApplySnippet(originalContent, parsed.originalSnippet, parsed.proposedSnippet);
+      if (matchResult.found && matchResult.proposedContent) {
+        proposedContent = matchResult.proposedContent;
         snippetApplied = true;
       } else {
         confidence = Math.min(confidence, 0.3);
         proposedContent = originalContent;
       }
+    } catch {
+      confidence = Math.min(confidence, 0.3);
+      proposedContent = originalContent;
     }
   }
 
@@ -1342,6 +1376,28 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
     log.warn(`[MAD] Debate threw (non-fatal): ${(madErr as Error).message?.slice(0, 100)}`);
   }
 
+  // v12.11.0: Multi-Modal Context Awareness — for UI proposals, capture a screenshot
+  // and inject the visual context into the Critic review so it can evaluate
+  // whether the proposed change would break the visible UI.
+  let _visionContextSnippet = "";
+  try {
+    const { enrichWithVisionContext, isUIFile, pruneOldVisionScreenshots } = await import("./visionContextEnricher.js");
+    if (isUIFile(filename)) {
+      pruneOldVisionScreenshots();
+      const visionResult = await enrichWithVisionContext({
+        targetFile: filename,
+        proposedSnippet: parsed.proposedSnippet,
+      });
+      if (visionResult.enriched && visionResult.contextSnippet) {
+        _visionContextSnippet = visionResult.contextSnippet;
+        (parsed as any)._visionEnriched = true;
+        log.info(`[VisionEnricher] UI context captured for ${filename}: ${visionResult.visibleComponents?.length ?? 0} components`);
+      }
+    }
+  } catch (visionErr) {
+    log.warn(`[VisionEnricher] Threw (non-fatal): ${(visionErr as Error).message?.slice(0, 100)}`);
+  }
+
   // v12.9.0: Actor-Critic review — before saving, run the Critic LLM to catch
   // logic flaws, TS type errors, and security issues. If the Critic finds fixable
   // issues, it returns a refined snippet that replaces the Actor's original.
@@ -1357,6 +1413,7 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
         title: parsed.title,
         category: parsed.category ?? "readability",
         rationale: parsed.rationale,
+        visionContext: _visionContextSnippet || undefined,
       },
       simpleChatCompletion,
       providerChain,
@@ -1597,6 +1654,35 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
     log.warn(`[DryRun] Dry-run threw (non-fatal): ${(dryRunErr as Error).message?.slice(0, 100)}`);
   }
 
+  // v12.11.0: Formal Invariant Verification — run static invariant checks on the
+  // proposed snippet before applying. Critical violations (eval, import cycles)
+  // block the proposal. Warnings are stored as metadata for dashboard visibility.
+  try {
+    const { verifyProposalInvariants } = await import("./proposalInvariantVerifier.js");
+    const projectRoot = path.resolve(getServerDir(), "..");
+    const invariantResult = await verifyProposalInvariants({
+      proposedSnippet: proposal.proposedSnippet || proposal.proposedContent || "",
+      targetFile: proposal.targetFile,
+      projectRoot,
+    });
+    (proposal as any)._invariantResult = {
+      passed: invariantResult.passed,
+      criticalCount: invariantResult.criticalCount,
+      warningCount: invariantResult.warningCount,
+      violations: invariantResult.violations.map(v => `[${v.severity.toUpperCase()}] ${v.invariant}: ${v.message}`),
+    };
+    if (!invariantResult.passed && !invariantResult.skipped) {
+      log.warn(`[InvariantVerifier] CRITICAL violations in ${proposal.targetFile} — blocking proposal: ${invariantResult.violations.filter(v => v.severity === 'critical').map(v => v.message).join('; ')}`);
+      proposal.status = "rejected" as any;
+      return { success: false, message: `Invariant violations: ${invariantResult.criticalCount} critical — proposal blocked` };
+    }
+    if (invariantResult.warningCount > 0) {
+      log.info(`[InvariantVerifier] ${invariantResult.warningCount} warnings in ${proposal.targetFile} (non-blocking)`);
+    }
+  } catch (invErr) {
+    log.warn(`[InvariantVerifier] Threw (non-fatal): ${(invErr as Error).message?.slice(0, 100)}`);
+  }
+
   // v5.22 / v12.9.0: Semantic multi-file rollback snapshot.
   // Uses the dependency graph to snapshot the target file AND its direct
   // dependents so rollback is atomic across all affected files.
@@ -1725,6 +1811,24 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
           recordConsensusProposalOutcome(consensusVotes, true /* success */);
         }
       } catch (err) { log.caught("non-fatal", err); }
+
+      // v12.11.0: Federated RLHF — broadcast success outcome to peers so they
+      // can update their local model weights from our experience.
+      try {
+        const { broadcastOutcome } = await import("./federatedRLHF.js");
+        const consensusVotes2 = (proposal as any)._consensusVotes as Array<{ model: string; approved: boolean }> | undefined;
+        broadcastOutcome({
+          proposalId: proposal.id,
+          targetFile: proposal.targetFile,
+          category: proposal.category,
+          modelIds: consensusVotes2?.map(v => v.model) ?? [],
+          outcome: "success",
+          confidenceScore: proposal.confidence ?? 0.5,
+          criticScore: (proposal as any)._criticScore,
+          madIssueCount: (proposal as any)._madIssueCount,
+          timestamp: Date.now(),
+        }).catch(() => { /* non-fatal */ });
+      } catch { /* non-fatal */ }
 
       try {
         const { generateTests } = await import("./testGenerator");
@@ -1988,6 +2092,23 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
           if (consensusVotes && consensusVotes.length > 0) {
             recordConsensusProposalOutcome(consensusVotes, false /* failure */);
           }
+        } catch { /* non-fatal */ }
+
+        // v12.11.0: Federated RLHF — broadcast failure outcome to peers
+        try {
+          const { broadcastOutcome: broadcastFail } = await import("./federatedRLHF.js");
+          const failVotes = (proposal as any)._consensusVotes as Array<{ model: string; approved: boolean }> | undefined;
+          broadcastFail({
+            proposalId: proposal.id,
+            targetFile: proposal.targetFile,
+            category: proposal.category,
+            modelIds: failVotes?.map(v => v.model) ?? [],
+            outcome: "failure",
+            confidenceScore: proposal.confidence ?? 0.5,
+            criticScore: (proposal as any)._criticScore,
+            madIssueCount: (proposal as any)._madIssueCount,
+            timestamp: Date.now(),
+          }).catch(() => { /* non-fatal */ });
         } catch { /* non-fatal */ }
 
         return { success: false, message: `TypeScript check failed after apply — self-heal attempted. Errors: ${tsErrMsg.slice(0, 200)}` };

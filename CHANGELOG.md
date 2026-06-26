@@ -1,5 +1,15 @@
 # Changelog
 
+## [12.11.0] — 2026-06-26
+### Added — Tier 4 SOTA Enhancements (Target: 99%+ Success Rate)
+- **Formal Invariant Verifier** (`proposalInvariantVerifier.ts`): Statically checks every proposal for 6 invariants (no `eval`, no `as any`, async/await correctness, no sync FS in hot paths, import cycle detection, null safety). Critical violations block the proposal before any file is written.
+- **Semantic Impact Predictor** (`semanticImpactPredictor.ts`): Uses the dependency graph to find all direct and transitive consumers of the target file. Injects consumer call-site context into the LLM prompt so proposals are written with full knowledge of downstream impact.
+- **Vision Context Enricher** (`visionContextEnricher.ts`): For UI proposals (`.tsx`, `.jsx`, CSS, components/), captures a dev-server screenshot and injects a visual description into the Actor-Critic review. Gracefully skips when no dev server is running.
+- **Federated RLHF Bridge** (`federatedRLHF.ts`): Bridges the local `dynamicModelWeights` feedback loop with the federated learning network. Every proposal outcome is broadcast to healthy peers; peer outcomes are ingested and applied at a 30% discount to prevent poisoning.
+- **AST-Aware Mutator** (`astMutator.ts`): Replaces the fragile regex-based snippet matching with TypeScript Compiler API AST surgery. Finds the exact function/class/variable node to replace, performs the substitution at the AST level, and validates the result for syntax errors and exported symbol preservation.
+- **Test Coverage:** 94 new Vitest tests across 5 files (`astMutator.test.ts`, `proposalInvariantVerifier.test.ts`, `semanticImpactPredictor.test.ts`, `federatedRLHF.test.ts`, `visionContextEnricher.test.ts`).
+- **Hardening:** Fixed `federatedRLHF.ts` weight delta rejection counter, `astMutator.ts` syntax validation (replaced invalid `parseDiagnostics` with `createProgram` + `getSyntacticDiagnostics`), and `selfImprove.ts` invariant gate return path.
+
 ## [12.10.1] — 2026-06-26
 ### Fixed — SOTA Hardening & Test Coverage
 - **MCTS Healing Guard:** Added missing `branchesPerStrategy` default and overall timeout safety net to prevent indefinite hangs in parallel healing.

@@ -37,6 +37,8 @@ export interface CriticInput {
   title: string;
   category: string;
   rationale: string;
+  // v12.11.0: Optional visual context for UI proposals
+  visionContext?: string;
 }
 
 export interface CriticResult {
@@ -149,7 +151,7 @@ ${input.proposedSnippet.slice(0, 1500)}
 \`\`\`typescript
 ${input.originalContent.slice(0, 800)}
 \`\`\`
-
+${input.visionContext ? `\n=== CURRENT UI STATE (Visual Context) ===\n${input.visionContext.slice(0, 600)}\n` : ""}
 Review this change. Return JSON only.`;
 
   const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [
