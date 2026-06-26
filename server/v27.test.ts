@@ -91,12 +91,13 @@ describe("v27 Collective Superintelligence Enhancements", () => {
     });
 
     it("should detect temporal drift", () => {
+      // Reset storage to ensure clean state for this test
+      // @ts-ignore
+      fs.__resetMockStorage?.();
       // 10 good historical events
       for (let i = 0; i < 10; i++) recordTemporalEvent("test", "test.ts", 0.9);
-      
       // 10 bad recent events
       for (let i = 0; i < 10; i++) recordTemporalEvent("test", "test.ts", 0.4);
-      
       expect(detectTemporalDrift()).toBe(true);
     });
   });

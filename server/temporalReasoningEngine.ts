@@ -102,3 +102,12 @@ export function detectTemporalDrift(): boolean {
   
   return false;
 }
+
+/**
+ * Resets the temporal graph (for testing purposes only).
+ */
+export function _resetTemporalGraphForTest(): void {
+  if (fs.existsSync(TEMPORAL_GRAPH_DB)) {
+    fs.unlinkSync(TEMPORAL_GRAPH_DB);
+  }
+}
