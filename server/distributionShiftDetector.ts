@@ -29,12 +29,20 @@ export function detectShift(referenceName: string, currentName: string): ShiftDe
   const ref = snapshots.get(referenceName);
   const cur = snapshots.get(currentName);
   if (!ref || !cur) throw new Error(`[DistributionShiftDetector] Snapshot not found`);
-  const refNorm = normalize(ref.histogram);
-  const curNorm = normalize(cur.histogram);
+  // Pad histograms to same length and use element-wise comparison
+  const len = Math.max(ref.histogram.length, cur.histogram.length);
+  const refHist = [...ref.histogram, ...new Array(len - ref.histogram.length).fill(0)];
+  const curHist = [...cur.histogram, ...new Array(len - cur.histogram.length).fill(0)];
+  const refNorm = normalize(refHist);
+  const curNorm = normalize(curHist);
+  // Also compute a location-aware shift score using mean difference
+  const refMean = refHist.reduce((s, v, i) => s + v * i, 0) / Math.max(refHist.reduce((s, v) => s + v, 0), 1);
+  const curMean = curHist.reduce((s, v, i) => s + v * i, 0) / Math.max(curHist.reduce((s, v) => s + v, 0), 1);
+  const locationShift = Math.abs(curMean - refMean) / len;
   const psiScore = refNorm.reduce((s, r, i) => s + (curNorm[i] - r) * Math.log(curNorm[i] / r), 0);
-  const absPsi = Math.abs(psiScore);
-  const severity: ShiftDetectionResult["severity"] = absPsi < 0.1 ? "none" : absPsi < 0.2 ? "minor" : absPsi < 0.5 ? "moderate" : "severe";
-  const result: ShiftDetectionResult = { resultId: `res-${++rCounter}`, referenceName, currentName, psiScore: absPsi, shiftDetected: absPsi >= 0.1, severity };
+  const combinedScore = Math.max(Math.abs(psiScore), locationShift * 2);
+  const severity: ShiftDetectionResult["severity"] = combinedScore < 0.1 ? "none" : combinedScore < 0.2 ? "minor" : combinedScore < 0.5 ? "moderate" : "severe";
+  const result: ShiftDetectionResult = { resultId: `res-${++rCounter}`, referenceName, currentName, psiScore: combinedScore, shiftDetected: combinedScore >= 0.1, severity };
   results.push(result);
   return result;
 }

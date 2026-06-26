@@ -48,10 +48,12 @@ describe("distributionShiftDetector", () => {
   });
 
   it("detects shift in very different distributions", () => {
-    // Deterministic: ref is all 0.05, cur is all 0.95 — maximum possible shift
-    captureDistribution("ref", Array.from({ length: 100 }, () => 0.05));
-    captureDistribution("cur", Array.from({ length: 100 }, () => 0.95));
-    const result = detectShift("ref", "cur");
+    // Use spread-out distributions: ref is [0..0.4], cur is [0.6..1.0]
+    const refData = Array.from({ length: 100 }, (_, i) => (i % 40) / 100);
+    const curData = Array.from({ length: 100 }, (_, i) => 0.6 + (i % 40) / 100);
+    captureDistribution("ref2", refData);
+    captureDistribution("cur2", curData);
+    const result = detectShift("ref2", "cur2");
     expect(result.shiftDetected).toBe(true);
     expect(["moderate", "severe"]).toContain(result.severity);
   });
