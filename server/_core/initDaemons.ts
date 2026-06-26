@@ -231,6 +231,12 @@ import { registerCostConfig, recordApiUsage, getCostRecord, getOptimizationRecom
 import { registerDependency, getDependencyGraph, getDependentsOf, getDependenciesOf, _resetDependencyMapperForTest } from "../apiDependencyMapper.js";
 import { compareSchemas, _resetChangeDetectorForTest } from "../apiChangeDetector.js";
 import { registerMigrationScript, runMigration, getMigrationHistory, getPendingMigrations, isApplied, _resetMigrationEngineForTest } from "../apiMigrationEngine.js";
+import { addKnowledge, searchKnowledge, getKnowledgeByCategory, updateKnowledge, _resetKnowledgeBaseForTest } from "../apiKnowledgeBase.js";
+import { registerApiProfile, getRecommendations, _resetRecommendationEngineForTest } from "../apiRecommendationEngine.js";
+import { createCompositionPlan, getExecutionOrder, _resetCompositionPlannerForTest } from "../apiCompositionPlanner.js";
+import { startDeployment, recordHealthCheck as recordDeployHealthCheck, finalizeDeployment, getDeploymentRecord, getDeploymentsByApi, _resetDeploymentAutomatorForTest } from "../apiDeploymentAutomator.js";
+import { recordMetricSnapshot, addAlertRule, getDashboardView, resolveAlert, _resetMonitoringDashboardForTest } from "../apiMonitoringDashboard.js";
+import { registerProxy, simulateCall, resetCircuit, getProxyHealth, _resetSelfHealingProxyForTest } from "../apiSelfHealingProxy.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -603,4 +609,7 @@ export function startDaemons(): void {
 
   // v53 — External API Mastery III
   console.log("[Init] External API Mastery III initialized (integrationTester, benchmarker, costOptimizer, dependencyMapper, changeDetector, migrationEngine).");
+
+  // v54 — External API Mastery IV
+  console.log("[Init] External API Mastery IV initialized (knowledgeBase, recommendationEngine, compositionPlanner, deploymentAutomator, monitoringDashboard, selfHealingProxy).");
 }
