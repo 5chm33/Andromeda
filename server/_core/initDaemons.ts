@@ -152,6 +152,12 @@ import { initFutureStatePredictor } from "../futureStatePredictor";
 import { initHistoricalPatternMiner } from "../historicalPatternMiner";
 import { initTimeSeriesForecaster } from "../timeSeriesForecaster";
 import { initTemporalConsistencyChecker } from "../temporalConsistencyChecker";
+import { initActionSpacePlanner } from "../actionSpacePlanner";
+import { initSensorFusionEngine } from "../sensorFusionEngine";
+import { initMotorSkillLibrary } from "../motorSkillLibrary";
+import { initEnvironmentModeler } from "../environmentModeler";
+import { initTaskDecomposerV44 } from "../taskDecomposerV44";
+import { initExecutionMonitor } from "../executionMonitor";
 import { initStakeholderReporting } from "../stakeholderReporting";
 import { initCognitiveLoadBalancer } from "../cognitiveLoadBalancer";
 import { initBootstrapper } from "../capabilityBootstrapper";
@@ -465,6 +471,13 @@ export function startDaemons(): void {
     initHistoricalPatternMiner();
     initTimeSeriesForecaster();
     initTemporalConsistencyChecker();
+    // v44
+    initActionSpacePlanner();
+    initSensorFusionEngine();
+    initMotorSkillLibrary();
+    initEnvironmentModeler();
+    initTaskDecomposerV44();
+    initExecutionMonitor();
 
 
   initSummarizer();
