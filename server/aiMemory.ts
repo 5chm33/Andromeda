@@ -26,6 +26,10 @@ function getAndromedaMemoryPath(): string {
  * This is how the agent persists learnings about the project across sessions.
  */
 export async function writeAndromedaMemory(content: string): Promise<{ path: string; chars: number }> {
+  if (typeof content !== "string" || content.length === 0) {
+    log.warn("writeAndromedaMemory called with invalid content");
+    throw new Error("Content must be a non-empty string");
+  }
   const memPath = getAndromedaMemoryPath();
   const dir = path.dirname(memPath);
 
