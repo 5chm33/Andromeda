@@ -213,7 +213,9 @@ export function publish(opts: {
 
     // Fire callback if registered
     if (sub.callback) {
-      try { sub.callback(entry); } catch { /* swallow */ }
+      try { sub.callback(entry); } catch (err) {
+        console.warn('[ContextBus] Subscriber callback error:', (err as Error).message);
+      }
     }
   }
 
