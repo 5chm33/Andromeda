@@ -170,6 +170,9 @@ export async function createSemanticSnapshot(
     // Register in memory index
     _snapshotIndex.set(proposalId, snapshot);
 
+    // v12.9.1 hardening: Prune old snapshots to prevent disk bloat (keep last 50)
+    try { pruneOldSnapshots(); } catch { /* non-fatal */ }
+
     log.info(`[SemanticRollback] Snapshot created for ${targetFile} (${snapshotFiles.length} files, risk: ${riskLevel})`);
     return snapshot;
   } catch (err) {

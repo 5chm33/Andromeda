@@ -375,7 +375,7 @@ File context:
 \`\`\`typescript
 ${ctx.fileContext}
 \`\`\`
-
+${ctx.astContext ? `\nAST context (enclosing scope + type declarations):\n${ctx.astContext}\n` : ""}
 Produce a minimal safe version. Return JSON.`,
     },
   ];
@@ -438,7 +438,7 @@ Context:
 ${ctx.fileContext}
 \`\`\`
 
-Add type assertions/casts to make it compile. Return JSON.`,
+${ctx.astContext ? `\nAST context (enclosing scope + type declarations):\n${ctx.astContext}\n` : ""}Add type assertions/casts to make it compile. Return JSON.`,
     },
   ];
 }

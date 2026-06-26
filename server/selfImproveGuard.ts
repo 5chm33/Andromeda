@@ -767,6 +767,9 @@ export async function guardedApply(proposalId: string): Promise<{
       }
       const approvalPct = ((consensusResult.approvalCount / Math.max(consensusResult.totalModels, 1)) * 100).toFixed(0);
       log.info(`Consensus approved for ${proposal.targetFile} (${approvalPct}% approval, confidence: ${consensusResult.consensusConfidence.toFixed(2)})`);
+      // v12.9.1 hardening: Store votes on proposal so RLAIF feedback loop fires after outcome.
+      // applyProposal reads _consensusVotes to call recordConsensusProposalOutcome.
+      (proposal as any)._consensusVotes = consensusResult.votes.map(v => ({ model: v.model, approved: v.approved }));
     }
   } catch (consensusErr) {
     // Non-fatal — if consensus engine is unavailable, proceed without it

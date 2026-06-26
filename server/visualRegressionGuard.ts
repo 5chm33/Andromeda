@@ -200,6 +200,8 @@ export async function runVisualRegressionCheck(
   if (!fs.existsSync(screenshotDir)) {
     fs.mkdirSync(screenshotDir, { recursive: true });
   }
+  // v12.9.1 hardening: Prune old screenshots before writing new ones
+  pruneOldScreenshots(projectRoot);
 
   const beforePath = path.join(screenshotDir, `${proposalId}_before.png`);
   const afterPath = path.join(screenshotDir, `${proposalId}_after.png`);
@@ -401,4 +403,30 @@ const { chromium } = require('playwright');
   } catch (err) {
     return { passed: true, diffScore: 0, warning: `Comparison threw: ${(err as Error).message?.slice(0, 100)}` };
   }
+}
+
+// ─── Screenshot Pruning ───────────────────────────────────────────────────────
+
+/**
+ * v12.9.1 hardening: Prune old screenshots to prevent disk bloat.
+ * Keeps the most recent `maxFiles` screenshot/baseline files.
+ *
+ * @param projectRoot - Project root directory
+ * @param maxFiles - Maximum number of files to keep (default: 100)
+ */
+export function pruneOldScreenshots(projectRoot: string, maxFiles = 100): void {
+  const screenshotDir = path.join(projectRoot, "workspace", "screenshots");
+  if (!fs.existsSync(screenshotDir)) return;
+  try {
+    const files = fs.readdirSync(screenshotDir)
+      .filter(f => f.endsWith(".png") || f.endsWith(".txt"))
+      .map(f => ({ name: f, mtime: fs.statSync(path.join(screenshotDir, f)).mtimeMs }))
+      .sort((a, b) => b.mtime - a.mtime); // newest first
+    if (files.length > maxFiles) {
+      for (const file of files.slice(maxFiles)) {
+        try { fs.unlinkSync(path.join(screenshotDir, file.name)); } catch { /* non-fatal */ }
+      }
+      log.info(`[VisualRegression] Pruned ${files.length - maxFiles} old screenshots`);
+    }
+  } catch { /* non-fatal */ }
 }

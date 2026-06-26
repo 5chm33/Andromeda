@@ -1327,12 +1327,16 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
       // Boost confidence slightly since Critic validated it
       confidence = Math.min(1.0, confidence + 0.05);
     }
-    // strategy === "approved" or "skipped" — proceed as-is
+        // strategy === "approved" or "skipped" — proceed as-is
+    // v12.9.1 hardening: Store critic score on proposal for dashboard visibility
+    if (criticResult.confidence !== undefined) {
+      (parsed as any)._criticScore = criticResult.confidence;
+      (parsed as any)._criticStrategy = criticResult.strategy;
+    }
   } catch (criticErr) {
     log.warn(`[Actor-Critic] Critic review threw (non-fatal): ${(criticErr as Error).message?.slice(0, 100)}`);
     // Non-fatal — proceed without critic review
   }
-
   const proposal: ImprovementProposal = {
     id: `prop_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
     targetFile: filename,
@@ -1349,6 +1353,11 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
     createdAt: Date.now(),
     status: "pending",
   };
+  // v12.9.1 hardening: Carry critic metadata forward so dashboard can display it
+  if ((parsed as any)._criticScore !== undefined) {
+    (proposal as any)._criticScore = (parsed as any)._criticScore;
+    (proposal as any)._criticStrategy = (parsed as any)._criticStrategy;
+  }
 
   // v6.28 A1: Register in dedup hash set before saving
   _seenProposalHashes.add(hash);
