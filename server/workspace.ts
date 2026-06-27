@@ -316,7 +316,7 @@ export async function executeCodeWithWorkspace(
 
   // Snapshot files before execution
   const before = new Set(
-    fs.existsSync(workspaceDir)
+    fs.existsSync(workspaceDir) && fs.statSync(workspaceDir).isDirectory()
       ? fs.readdirSync(workspaceDir).map((f) => {
           const stat = fs.statSync(path.join(workspaceDir, f));
           return `${f}:${stat.mtimeMs}`;
