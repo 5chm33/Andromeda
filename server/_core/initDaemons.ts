@@ -351,6 +351,12 @@ import { detectMotionEvents } from "../motionEventDetector";
 import { generateTemporalCaptions } from "../temporalCaptioner";
 import { alignSubtitles } from "../subtitleAligner";
 import { summarizeVideo } from "../videoSummarizer";
+import { evaluatePrivacy } from "../privacyEngine";
+import { redactPii } from "../piiRedactor";
+import { grantConsent, hasConsent } from "../consentManager";
+import { addRetentionRule, enforceRetention } from "../dataRetentionPolicy";
+import { runAnonymizationPipeline } from "../anonymizationPipeline";
+import { checkGdprCompliance } from "../gdprComplianceChecker";
 
 
 
