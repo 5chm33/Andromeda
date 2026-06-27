@@ -289,8 +289,11 @@ async function runInPlaceShadowTest(
     let stdout = "";
     let stderr = "";
     try {
+      // v14.1.6: Set VITEST_SHADOW_MODE=1 so tests can detect they're running
+      // in a shadow context and avoid lock-contending operations (e.g. triggerCycleNow
+      // in continuousImprover.test.ts which blocks waiting for the server's lock).
       stdout = execSync(
-        `cd "${workspaceDir}" && pnpm exec vitest run --reporter=json "${testPattern}" 2>/dev/null`,
+        `cd "${workspaceDir}" && VITEST_SHADOW_MODE=1 pnpm exec vitest run --reporter=json "${testPattern}" 2>/dev/null`,
         { timeout: timeoutMs, encoding: "utf8", stdio: "pipe" }
       );
     } catch (e: unknown) {
