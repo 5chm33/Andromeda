@@ -186,20 +186,23 @@ export function createApiKey(input: {
   expiresAt?: string;
   metadata?: Record<string, string>;
 }): { key: ApiKey; plaintext: string } {
+  if (!input || typeof input.name !== 'string' || !input.name.trim() || !Array.isArray(input.scopes) || input.scopes.length === 0) {
+    throw new Error('Invalid input: name must be a non-empty string and scopes must be a non-empty array');
+  }
   const store = loadStore();
   const plaintext = generateApiKey();
 
   const key: ApiKey = {
     id: `key_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-    name: input.name,
+    name: input.name.trim(),
     keyHash: hashKey(plaintext),
     keyPrefix: plaintext.slice(0, 12),
     scopes: input.scopes,
     createdAt: new Date().toISOString(),
     expiresAt: input.expiresAt,
-    rateLimit: input.rateLimit ?? 0,
+    rateLimit: typeof input.rateLimit === 'number' ? input.rateLimit : 0,
     isActive: true,
-    metadata: input.metadata,
+    metadata: input.metadata && typeof input.metadata === 'object' ? input.metadata : undefined,
   };
 
   store.apiKeys.push(key);
