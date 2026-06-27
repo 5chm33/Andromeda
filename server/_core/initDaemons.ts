@@ -369,6 +369,12 @@ import { checkLicenses } from "../licenseChecker";
 import { generateSbom } from "../sbomGenerator";
 import { auditSupplyChain } from "../supplyChainAuditor";
 import { analyzeDependencyGraph } from "../dependencyGraphAnalyzer";
+import { createFlag, evaluateFlag } from "../featureFlagManager";
+import { createExperiment, exposeUser, recordConversion } from "../abTestingEngine";
+import { trackExperiment, updateExperimentStatus } from "../experimentTracker";
+import { createCanaryDeployment, activateCanary, recordHealthCheck } from "../canaryDeployer";
+import { createRolloutPlan, advanceRollout } from "../rolloutController";
+import { logAuditEntry, getAuditLog } from "../featureAuditLog";
 
 
 
