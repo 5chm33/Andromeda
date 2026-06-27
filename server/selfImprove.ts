@@ -356,7 +356,7 @@ export const ANALYZABLE_FILES = [
   "episodicConsolidation.ts",
   "autoGoalSuggester.ts",
   "autonomousGoalGenerator.ts",
-  "selfRollback.ts",
+  // selfRollback.ts is in blockedFiles — removed from ANALYZABLE_FILES (v14.1.1)
   "autoRebuild.ts",
   "ciPipeline.ts",
   "codeQualityMonitor.ts",
@@ -365,15 +365,15 @@ export const ANALYZABLE_FILES = [
   "dependencyResolver.ts",
   "docGenerator.ts",
   "selfDocumentation.ts",
-  "selfHeal.ts",
+  // selfHeal.ts is in blockedFiles — removed from ANALYZABLE_FILES (v14.1.1)
   "selfIntrospect.ts",
   "selfKnowledgeBase.ts",
   "selfModel.ts",
   "selfReflectionEngine.ts",
   "selfReview.ts",
-  "selfRollback.ts",
+  // selfRollback.ts (duplicate) removed from ANALYZABLE_FILES (v14.1.1)
   "testGenerator.ts",
-  "selfTestPipeline.ts",
+  // selfTestPipeline.ts is in blockedFiles — removed from ANALYZABLE_FILES (v14.1.1)
   "skillGraph.ts",
   "taskDecomposer.ts",
   "taskPlanner.ts",
@@ -512,7 +512,7 @@ export const ANALYZABLE_FILES = [
   "sandboxVerifier.ts",
   "security.ts",
   "selfDistillation.ts",
-  "selfImproveGuard.ts",
+  // selfImproveGuard.ts is in blockedFiles — removed from ANALYZABLE_FILES (v14.1.1)
   "selfModify.ts",
   "selfMonitor.ts",
   "semanticSelfModel.ts",
@@ -2640,7 +2640,21 @@ export function listProposals(statusFilter?: ImprovementProposal["status"]): Imp
 }
 
 export function getAnalyzableFiles(): string[] {
-  return ANALYZABLE_FILES.filter(f => resolveServerFile(f) !== null);
+  // v14.1.1: Also filter out files that are in the guard's blockedFiles list.
+  // Previously the engine could pick selfRollback.ts, selfHeal.ts, etc. from
+  // ANALYZABLE_FILES, generate a valid proposal, pass all quality gates, and
+  // then have the proposal rejected at the final apply step because the file
+  // is blocked — wasting the entire cycle and producing 0% success rate.
+  let blocked: Set<string>;
+  try {
+    const { getGuardConfig } = _require("./selfImproveGuard.js");
+    const cfg = getGuardConfig();
+    blocked = new Set((cfg.blockedFiles ?? []).map((f: string) => f.replace(/^server\//, "")));
+  } catch {
+    // Fallback to known default blocked files if guard is unavailable
+    blocked = new Set(["db.ts", "auth.ts", "selfImproveGuard.ts", "selfHeal.ts", "selfRollback.ts", "selfTestPipeline.ts"]);
+  }
+  return ANALYZABLE_FILES.filter(f => resolveServerFile(f) !== null && !blocked.has(f));
 }
 
 // ─── v5.16: Auto-Apply Mode + GitOps Integration ─────────────────────────────
