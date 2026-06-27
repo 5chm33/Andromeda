@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("DataRetentionPolicy");
 /**
  * dataRetentionPolicy.ts — v74.0.0 "Privacy & Data Protection"
  * Manages data retention schedules and enforces deletion of expired records.
@@ -49,7 +51,7 @@ export function enforceRetention(nowMs = Date.now()): { deleted: number; retaine
       if (rule?.autoDelete !== false) { record.deleted = true; deleted++; }
     } else if (!record.deleted) { retained++; }
   }
-  console.log(`[DataRetentionPolicy] Enforcement run: ${deleted} deleted, ${retained} retained.`);
+  log.info(`[DataRetentionPolicy] Enforcement run: ${deleted} deleted, ${retained} retained.`);
   return { deleted, retained };
 }
 

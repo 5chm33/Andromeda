@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("BillingReporter");
 /**
  * billingReporter.ts — v78.0.0 "Cost Management & FinOps"
  * Generates structured billing reports for teams, projects, and time periods.
@@ -58,7 +60,7 @@ export function generateBillingReport(params: {
   };
 
   reports.push(report);
-  console.log(`[BillingReporter] Generated billing report for ${params.recipientId} (${params.periodLabel}): $${report.totalUsd.toFixed(2)}`);
+  log.info(`[BillingReporter] Generated billing report for ${params.recipientId} (${params.periodLabel}): $${report.totalUsd.toFixed(2)}`);
   return report;
 }
 

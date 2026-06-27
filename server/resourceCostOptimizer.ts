@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("ResourceCostOptimizer");
 /**
  * resourceCostOptimizer.ts — v78.0.0 "Cost Management & FinOps"
  * Analyzes resource utilization and generates cost optimization recommendations.
@@ -87,7 +89,7 @@ export function generateOptimizationReport(resources: ResourceUtilization[]): Op
   };
 
   reports.push(report);
-  console.log(`[ResourceCostOptimizer] Generated ${recommendations.length} recommendations, estimated savings: $${report.totalEstimatedSavingsUsd.toFixed(2)}`);
+  log.info(`[ResourceCostOptimizer] Generated ${recommendations.length} recommendations, estimated savings: $${report.totalEstimatedSavingsUsd.toFixed(2)}`);
   return report;
 }
 

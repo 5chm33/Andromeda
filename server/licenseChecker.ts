@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("LicenseChecker");
 /**
  * licenseChecker.ts — v76.0.0 "Supply Chain & Dependency Management"
  * Checks dependency licenses for compatibility with the project's license policy.
@@ -72,7 +74,7 @@ export function checkLicenses(projectName: string, packages: Array<{ name: strin
   };
 
   reports.push(report);
-  console.log(`[LicenseChecker] License report for ${projectName}: ${report.incompatibleCount} incompatible, ${report.reviewRequiredCount} review required`);
+  log.info(`[LicenseChecker] License report for ${projectName}: ${report.incompatibleCount} incompatible, ${report.reviewRequiredCount} review required`);
   return report;
 }
 

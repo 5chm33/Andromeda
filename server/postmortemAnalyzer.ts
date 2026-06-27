@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("PostmortemAnalyzer");
 /**
  * postmortemAnalyzer.ts — v75.0.0 "Incident Management & SRE"
  * Generates blameless postmortems from incident timelines and extracts action items.
@@ -68,7 +70,7 @@ export function generatePostmortem(input: PostmortemInput, actionItems: Omit<Act
   };
 
   postmortems.push(postmortem);
-  console.log(`[PostmortemAnalyzer] Generated ${postmortem.postmortemId} for incident ${input.incidentId}`);
+  log.info(`[PostmortemAnalyzer] Generated ${postmortem.postmortemId} for incident ${input.incidentId}`);
   return postmortem;
 }
 

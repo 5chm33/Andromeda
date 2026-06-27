@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("AnonymizationPipeline");
 /**
  * anonymizationPipeline.ts — v74.0.0 "Privacy & Data Protection"
  * Applies k-anonymity and pseudonymization techniques to datasets.
@@ -72,7 +74,7 @@ export function runAnonymizationPipeline(rows: DataRow[], configs: Anonymization
     suppressedRows,
   };
   pipelineHistory.push(result);
-  console.log(`[AnonymizationPipeline] Pipeline ${result.pipelineId}: ${rows.length} → ${processedRows.length} rows`);
+  log.info(`[AnonymizationPipeline] Pipeline ${result.pipelineId}: ${rows.length} → ${processedRows.length} rows`);
   return { rows: processedRows, result };
 }
 

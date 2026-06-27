@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("IncidentManager");
 /**
  * incidentManager.ts — v75.0.0 "Incident Management & SRE"
  * Tracks incidents from detection through resolution with severity, timeline, and status management.
@@ -39,7 +41,7 @@ export function openIncident(title: string, severity: IncidentSeverity, affected
     assignee: null, tags,
   };
   incidents.set(incident.incidentId, incident);
-  console.log(`[IncidentManager] Opened ${incident.incidentId} (${severity}): ${title}`);
+  log.info(`[IncidentManager] Opened ${incident.incidentId} (${severity}): ${title}`);
   return incident;
 }
 

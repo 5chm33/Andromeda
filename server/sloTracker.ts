@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("SloTracker");
 /**
  * sloTracker.ts — v75.0.0 "Incident Management & SRE"
  * Tracks Service Level Objectives (SLOs) and computes compliance against targets.
@@ -38,7 +40,7 @@ let measurementCounter = 0;
 
 export function registerSlo(slo: SloDefinition): void {
   slos.set(slo.sloId, slo);
-  console.log(`[SloTracker] Registered SLO: ${slo.name} (target: ${slo.targetPercent}%)`);
+  log.info(`[SloTracker] Registered SLO: ${slo.name} (target: ${slo.targetPercent}%)`);
 }
 
 export function recordMeasurement(sloId: string, goodEvents: number, totalEvents: number): SloMeasurement | null {

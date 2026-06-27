@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("SceneSegmenter");
 /**
  * sceneSegmenter.ts — v73.0.0 "Video Understanding Enhancements"
  * Segments a video timeline into scenes using label changes, motion deltas, and confidence thresholds.
@@ -99,7 +101,7 @@ export function segmentScenes(
   };
 
   segmentationHistory.push(result);
-  console.log(`[SceneSegmenter] Segmented ${videoId} into ${segments.length} scenes.`);
+  log.info(`[SceneSegmenter] Segmented ${videoId} into ${segments.length} scenes.`);
   return result;
 }
 

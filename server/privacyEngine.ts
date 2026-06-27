@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("PrivacyEngine");
 /**
  * privacyEngine.ts — v74.0.0 "Privacy & Data Protection"
  * Central privacy engine that coordinates PII detection, redaction, and consent enforcement.
@@ -37,7 +39,7 @@ const DEFAULT_POLICIES: PrivacyPolicy[] = [
 
 export function initPrivacyEngine(): void {
   policies.push(...DEFAULT_POLICIES);
-  console.log("[PrivacyEngine] Initialized with default policies.");
+  log.info("[PrivacyEngine] Initialized with default policies.");
 }
 
 export function registerPolicy(policy: PrivacyPolicy): void {

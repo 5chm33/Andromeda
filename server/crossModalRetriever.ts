@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("CrossModalRetriever");
 /**
  * crossModalRetriever.ts — v72.0.0 "Multi-Modal Fusion"
  * Cross-modal retrieval: given a query in one modality, retrieve semantically similar content from other modalities.
@@ -52,7 +54,7 @@ export function indexDocument(modality: Modality, content: string, embedding: nu
     docId: `doc-${++docCounter}`, modality, content, embedding, metadata, indexedAt: Date.now()
   };
   index.push(doc);
-  console.log(`[CrossModalRetriever] Indexed ${modality} document ${doc.docId}`);
+  log.info(`[CrossModalRetriever] Indexed ${modality} document ${doc.docId}`);
   return doc;
 }
 
@@ -65,7 +67,7 @@ export function retrieveCrossModal(queryText: string, queryEmbedding: number[], 
     queryId: `query-${++queryCounter}`, queryText, queryEmbedding, targetModalities, topK, results, retrievedAt: Date.now()
   };
   queryHistory.push(query);
-  console.log(`[CrossModalRetriever] Query ${query.queryId}: retrieved ${results.length} results across [${targetModalities.join(",")}]`);
+  log.info(`[CrossModalRetriever] Query ${query.queryId}: retrieved ${results.length} results across [${targetModalities.join(",")}]`);
   return query;
 }
 

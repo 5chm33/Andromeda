@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("CanaryDeployer");
 /**
  * canaryDeployer.ts — v77.0.0 "Feature Flags & Experimentation"
  * Manages canary deployments with traffic splitting, health checks, and automatic rollback triggers.
@@ -32,7 +34,7 @@ export function createCanaryDeployment(serviceName: string, stableVersion: strin
     createdAt: Date.now(), updatedAt: Date.now(),
   };
   deployments.set(deployment.deploymentId, deployment);
-  console.log(`[CanaryDeployer] Created canary: ${serviceName} ${stableVersion} → ${canaryVersion} (${initialTrafficPercent}%)`);
+  log.info(`[CanaryDeployer] Created canary: ${serviceName} ${stableVersion} → ${canaryVersion} (${initialTrafficPercent}%)`);
   return deployment;
 }
 
@@ -54,7 +56,7 @@ export function recordHealthCheck(deploymentId: string, passed: boolean): { roll
       d.status = "rolled_back";
       d.canaryTrafficPercent = 0;
       d.updatedAt = Date.now();
-      console.log(`[CanaryDeployer] Auto-rollback triggered for ${d.serviceName} after ${d.healthChecksFailed} failures`);
+      log.info(`[CanaryDeployer] Auto-rollback triggered for ${d.serviceName} after ${d.healthChecksFailed} failures`);
       return { rolledBack: true };
     }
   }
@@ -68,7 +70,7 @@ export function promoteCanary(deploymentId: string): boolean {
   d.status = "completed";
   d.canaryTrafficPercent = 100;
   d.updatedAt = Date.now();
-  console.log(`[CanaryDeployer] Promoted canary: ${d.serviceName} → ${d.canaryVersion}`);
+  log.info(`[CanaryDeployer] Promoted canary: ${d.serviceName} → ${d.canaryVersion}`);
   return true;
 }
 

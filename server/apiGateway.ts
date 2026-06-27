@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("ApiGateway");
 /**
  * apiGateway.ts — v79.0.0 "API Gateway & Integration"
  * Routes incoming API requests to registered upstream services with middleware support.
@@ -36,7 +38,7 @@ let reqCounter = 0;
 
 export function registerService(service: UpstreamService): void {
   services.set(service.serviceId, service);
-  console.log(`[ApiGateway] Registered service: ${service.name} (${service.pathPrefix})`);
+  log.info(`[ApiGateway] Registered service: ${service.name} (${service.pathPrefix})`);
 }
 
 export function routeRequest(method: string, path: string, headers: Record<string, string> = {}, body: unknown = null): { matched: boolean; serviceId: string | null; request: GatewayRequest } {

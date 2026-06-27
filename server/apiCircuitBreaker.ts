@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("ApiCircuitBreaker");
 /**
  * apiCircuitBreaker.ts — v79.0.0 "API Gateway & Integration"
  * Implements the circuit breaker pattern for upstream API calls to prevent cascade failures.
@@ -38,7 +40,7 @@ export function registerCircuit(config: CircuitBreakerConfig): void {
     totalRequests: 0,
     totalFailures: 0,
   });
-  console.log(`[ApiCircuitBreaker] Registered circuit: ${config.name}`);
+  log.info(`[ApiCircuitBreaker] Registered circuit: ${config.name}`);
 }
 
 export function canExecute(circuitId: string, now = Date.now()): boolean {
@@ -49,7 +51,7 @@ export function canExecute(circuitId: string, now = Date.now()): boolean {
     if (now - circuit.lastStateChangeAt >= circuit.config.timeoutMs) {
       circuit.state = "half_open";
       circuit.lastStateChangeAt = now;
-      console.log(`[ApiCircuitBreaker] Circuit ${circuit.name} → half_open`);
+      log.info(`[ApiCircuitBreaker] Circuit ${circuit.name} → half_open`);
       return true;
     }
     return false;
@@ -69,7 +71,7 @@ export function recordSuccess(circuitId: string): void {
       circuit.failureCount = 0;
       circuit.successCount = 0;
       circuit.lastStateChangeAt = Date.now();
-      console.log(`[ApiCircuitBreaker] Circuit ${circuit.name} → closed`);
+      log.info(`[ApiCircuitBreaker] Circuit ${circuit.name} → closed`);
     }
   } else {
     circuit.failureCount = 0;
@@ -88,7 +90,7 @@ export function recordFailure(circuitId: string): void {
     circuit.state = "open";
     circuit.successCount = 0;
     circuit.lastStateChangeAt = Date.now();
-    console.log(`[ApiCircuitBreaker] Circuit ${circuit.name} → open after ${circuit.failureCount} failures`);
+    log.info(`[ApiCircuitBreaker] Circuit ${circuit.name} → open after ${circuit.failureCount} failures`);
   }
 }
 

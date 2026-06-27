@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("DependencyGraphAnalyzer");
 /**
  * dependencyGraphAnalyzer.ts — v76.0.0 "Supply Chain & Dependency Management"
  * Builds and analyzes a directed dependency graph to detect cycles, depth, and critical paths.
@@ -94,7 +96,7 @@ export function analyzeDependencyGraph(edges: DependencyEdge[]): GraphAnalysisRe
   };
 
   analysisHistory.push(result);
-  console.log(`[DependencyGraphAnalyzer] Graph: ${allNodes.size} nodes, ${edges.length} edges, depth ${maxDepth}, ${cycles.length} cycles`);
+  log.info(`[DependencyGraphAnalyzer] Graph: ${allNodes.size} nodes, ${edges.length} edges, depth ${maxDepth}, ${cycles.length} cycles`);
   return result;
 }
 

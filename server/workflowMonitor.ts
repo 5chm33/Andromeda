@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("WorkflowMonitor");
 /**
  * workflowMonitor.ts — v84.0.0 "Workflow & Task Automation"
  * Monitors workflow executions, tracks SLAs, and emits alerts for stuck or failed workflows.
@@ -66,7 +68,7 @@ export function emitAlert(executionId: string, workflowId: string, severity: Ale
     resolved: false,
   };
   alerts.push(alert);
-  console.log(`[WorkflowMonitor] ${severity.toUpperCase()}: ${message}`);
+  log.info(`[WorkflowMonitor] ${severity.toUpperCase()}: ${message}`);
   return alert;
 }
 

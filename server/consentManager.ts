@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("ConsentManager");
 /**
  * consentManager.ts — v74.0.0 "Privacy & Data Protection"
  * Manages user consent records for data processing purposes.
@@ -31,7 +33,7 @@ export function grantConsent(userId: string, purpose: ConsentPurpose, expiryDays
   const existing = consentStore.get(makeKey(userId, purpose)) ?? [];
   existing.push(record);
   consentStore.set(makeKey(userId, purpose), existing);
-  console.log(`[ConsentManager] Consent granted: user=${userId} purpose=${purpose}`);
+  log.info(`[ConsentManager] Consent granted: user=${userId} purpose=${purpose}`);
   return record;
 }
 

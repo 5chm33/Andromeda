@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("BudgetAlertEngine");
 /**
  * budgetAlertEngine.ts — v78.0.0 "Cost Management & FinOps"
  * Monitors spend against budgets and fires threshold alerts at configurable percentages.
@@ -60,7 +62,7 @@ export function checkBudget(budgetId: string, currentSpendUsd: number): BudgetAl
       };
       alerts.push(alert);
       newAlerts.push(alert);
-      console.log(`[BudgetAlertEngine] ${threshold.severity.toUpperCase()}: ${alert.message}`);
+      log.info(`[BudgetAlertEngine] ${threshold.severity.toUpperCase()}: ${alert.message}`);
     }
   }
 

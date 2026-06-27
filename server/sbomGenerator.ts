@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("SbomGenerator");
 /**
  * sbomGenerator.ts — v76.0.0 "Supply Chain & Dependency Management"
  * Generates a Software Bill of Materials (SBOM) in CycloneDX-compatible JSON format.
@@ -62,7 +64,7 @@ export function generateSbom(projectName: string, projectVersion: string, compon
   };
 
   sbomHistory.push(sbom);
-  console.log(`[SbomGenerator] Generated SBOM for ${projectName}@${projectVersion}: ${sbomComponents.length} components`);
+  log.info(`[SbomGenerator] Generated SBOM for ${projectName}@${projectVersion}: ${sbomComponents.length} components`);
   return sbom;
 }
 

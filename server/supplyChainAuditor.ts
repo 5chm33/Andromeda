@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("SupplyChainAuditor");
 /**
  * supplyChainAuditor.ts — v76.0.0 "Supply Chain & Dependency Management"
  * Audits the software supply chain for integrity issues, typosquatting risks, and provenance gaps.
@@ -75,7 +77,7 @@ export function auditSupplyChain(projectName: string, packages: Array<{ name: st
   };
 
   auditHistory.push(report);
-  console.log(`[SupplyChainAuditor] Audit for ${projectName}: ${findings.length} findings, risk score ${riskScore}`);
+  log.info(`[SupplyChainAuditor] Audit for ${projectName}: ${findings.length} findings, risk score ${riskScore}`);
   return report;
 }
 

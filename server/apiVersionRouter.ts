@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("ApiVersionRouter");
 /**
  * apiVersionRouter.ts — v79.0.0 "API Gateway & Integration"
  * Routes requests to the correct API version handler based on version negotiation.
@@ -27,7 +29,7 @@ export function registerVersion(version: ApiVersion): void {
   const existing = versions.findIndex(v => v.version === version.version);
   if (existing >= 0) versions[existing] = version;
   else versions.push(version);
-  console.log(`[ApiVersionRouter] Registered API version: ${version.version} (${version.status})`);
+  log.info(`[ApiVersionRouter] Registered API version: ${version.version} (${version.status})`);
 }
 
 export function setDefaultVersion(version: string): void {

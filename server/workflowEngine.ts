@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("WorkflowEngine");
 /**
  * workflowEngine.ts — v84.0.0 "Workflow & Task Automation"
  * Defines and executes multi-step workflows with conditional branching and parallel steps.
@@ -67,7 +69,7 @@ export function startExecution(workflowId: string, inputs: Record<string, unknow
     error: null,
   };
   executions.set(execution.executionId, execution);
-  console.log(`[WorkflowEngine] Started execution ${execution.executionId} for workflow "${def.name}"`);
+  log.info(`[WorkflowEngine] Started execution ${execution.executionId} for workflow "${def.name}"`);
   return execution;
 }
 

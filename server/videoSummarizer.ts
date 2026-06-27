@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("VideoSummarizer");
 /**
  * videoSummarizer.ts — v73.0.0 "Video Understanding Enhancements"
  * Produces a structured textual summary of a video from scene segments, captions, and tracked objects.
@@ -61,7 +63,7 @@ export function summarizeVideo(input: VideoSummaryInput): VideoSummary {
   };
 
   summaryHistory.push(summary);
-  console.log(`[VideoSummarizer] Summarized video ${input.videoId}: "${headline}"`);
+  log.info(`[VideoSummarizer] Summarized video ${input.videoId}: "${headline}"`);
   return summary;
 }
 

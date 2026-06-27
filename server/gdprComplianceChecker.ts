@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("GdprComplianceChecker");
 /**
  * gdprComplianceChecker.ts — v74.0.0 "Privacy & Data Protection"
  * Checks data processing operations for GDPR compliance: lawful basis, data minimization, purpose limitation.
@@ -50,7 +52,7 @@ export function checkGdprCompliance(params: {
 
   checkHistory.push(check);
   if (!check.compliant) {
-    console.log(`[GdprComplianceChecker] Non-compliant: ${params.operation} — ${violations.join("; ")}`);
+    log.info(`[GdprComplianceChecker] Non-compliant: ${params.operation} — ${violations.join("; ")}`);
   }
   return check;
 }

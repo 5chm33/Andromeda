@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("RolloutController");
 /**
  * rolloutController.ts — v77.0.0 "Feature Flags & Experimentation"
  * Controls phased feature rollouts with configurable stages and pause/resume capabilities.
@@ -43,7 +45,7 @@ export function createRolloutPlan(featureName: string, stageConfigs: Array<{ nam
     featureName, stages, currentStageIndex: 0, paused: false, createdAt: Date.now(),
   };
   plans.set(plan.planId, plan);
-  console.log(`[RolloutController] Created rollout plan for "${featureName}" with ${stages.length} stages`);
+  log.info(`[RolloutController] Created rollout plan for "${featureName}" with ${stages.length} stages`);
   return plan;
 }
 

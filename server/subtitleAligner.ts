@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("SubtitleAligner");
 /**
  * subtitleAligner.ts — v73.0.0 "Video Understanding Enhancements"
  * Aligns subtitle text blocks to video timestamps, handling drift correction and gap filling.
@@ -78,7 +80,7 @@ export function alignSubtitles(
   };
 
   alignmentHistory.push(result);
-  console.log(`[SubtitleAligner] Aligned ${aligned.length} subtitle blocks, ${gapsFilled} gaps filled.`);
+  log.info(`[SubtitleAligner] Aligned ${aligned.length} subtitle blocks, ${gapsFilled} gaps filled.`);
   return result;
 }
 

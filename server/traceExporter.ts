@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("TraceExporter");
 /**
  * traceExporter.ts — v80.0.0 "Distributed Tracing & Observability"
  * Exports trace data to configured backends (Jaeger, Zipkin, OTLP) in the correct format.
@@ -28,7 +30,7 @@ let exportCounter = 0;
 
 export function registerExportTarget(target: ExportTarget): void {
   targets.set(target.targetId, target);
-  console.log(`[TraceExporter] Registered export target: ${target.backend} (${target.endpoint})`);
+  log.info(`[TraceExporter] Registered export target: ${target.backend} (${target.endpoint})`);
 }
 
 function formatForBackend(backend: ExportBackend, traceId: string, spanCount: number): string {
@@ -57,7 +59,7 @@ export function exportTrace(traceId: string, spanCount: number): ExportedTrace[]
     };
     exportHistory.push(exported);
     results.push(exported);
-    if (target.backend === "console") console.log(`[TraceExporter] ${format}`);
+    if (target.backend === "console") log.info(`[TraceExporter] ${format}`);
   }
   return results;
 }

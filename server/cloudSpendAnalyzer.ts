@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("CloudSpendAnalyzer");
 /**
  * cloudSpendAnalyzer.ts — v78.0.0 "Cost Management & FinOps"
  * Analyzes cloud spend trends, detects anomalies, and produces period-over-period comparisons.
@@ -99,7 +101,7 @@ export function analyzeSpend(dataPoints: SpendDataPoint[]): SpendAnalysisReport 
   };
 
   reports.push(report);
-  console.log(`[CloudSpendAnalyzer] Analyzed ${dataPoints.length} data points: ${trends.length} trends, ${anomalies.length} anomalies`);
+  log.info(`[CloudSpendAnalyzer] Analyzed ${dataPoints.length} data points: ${trends.length} trends, ${anomalies.length} anomalies`);
   return report;
 }
 

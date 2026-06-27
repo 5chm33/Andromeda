@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("DependencyScanner");
 /**
  * dependencyScanner.ts — v76.0.0 "Supply Chain & Dependency Management"
  * Scans project dependency manifests and produces a normalized dependency inventory.
@@ -46,7 +48,7 @@ export function scanDependencies(projectName: string, ecosystem: EcosystemType, 
   };
 
   scanHistory.push(result);
-  console.log(`[DependencyScanner] Scanned ${projectName}: ${dependencies.length} dependencies (${result.directCount} direct, ${result.transitiveCount} transitive)`);
+  log.info(`[DependencyScanner] Scanned ${projectName}: ${dependencies.length} dependencies (${result.directCount} direct, ${result.transitiveCount} transitive)`);
   return result;
 }
 

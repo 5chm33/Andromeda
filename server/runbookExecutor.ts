@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("RunbookExecutor");
 /**
  * runbookExecutor.ts — v75.0.0 "Incident Management & SRE"
  * Executes structured runbooks (ordered steps) for incident response automation.
@@ -35,7 +37,7 @@ let execCounter = 0;
 
 export function registerRunbook(runbook: Runbook): void {
   runbooks.set(runbook.runbookId, runbook);
-  console.log(`[RunbookExecutor] Registered runbook: ${runbook.name}`);
+  log.info(`[RunbookExecutor] Registered runbook: ${runbook.name}`);
 }
 
 export function executeRunbook(runbookId: string, incidentId: string): RunbookExecution | null {
@@ -60,7 +62,7 @@ export function executeRunbook(runbookId: string, incidentId: string): RunbookEx
   execution.completedAt = Date.now();
 
   executions.push(execution);
-  console.log(`[RunbookExecutor] Executed ${runbookId} for incident ${incidentId}: ${execution.overallStatus}`);
+  log.info(`[RunbookExecutor] Executed ${runbookId} for incident ${incidentId}: ${execution.overallStatus}`);
   return execution;
 }
 

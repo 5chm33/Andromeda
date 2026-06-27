@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("OncallRouter");
 /**
  * oncallRouter.ts — v75.0.0 "Incident Management & SRE"
  * Routes incidents to the appropriate on-call engineer based on service ownership and escalation policies.
@@ -28,7 +30,7 @@ export function registerOncallSchedule(schedule: OncallSchedule): void {
   const existing = schedules.findIndex(s => s.scheduleId === schedule.scheduleId);
   if (existing >= 0) schedules[existing] = schedule;
   else schedules.push(schedule);
-  console.log(`[OncallRouter] Registered schedule for service: ${schedule.service}`);
+  log.info(`[OncallRouter] Registered schedule for service: ${schedule.service}`);
 }
 
 export function routeIncident(incidentId: string, service: string, ageMinutes = 0): RoutingDecision {
@@ -59,7 +61,7 @@ export function routeIncident(incidentId: string, service: string, ageMinutes = 
   };
 
   routingHistory.push(decision);
-  console.log(`[OncallRouter] Incident ${incidentId} → ${assignedTo} (level ${escalationLevel})`);
+  log.info(`[OncallRouter] Incident ${incidentId} → ${assignedTo} (level ${escalationLevel})`);
   return decision;
 }
 

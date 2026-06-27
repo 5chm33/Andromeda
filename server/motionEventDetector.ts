@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("MotionEventDetector");
 /**
  * motionEventDetector.ts — v73.0.0 "Video Understanding Enhancements"
  * Detects discrete motion events (sudden starts, stops, direction changes) in a video stream.
@@ -64,7 +66,7 @@ export function detectMotionEvents(
   }
 
   eventHistory.push(events);
-  console.log(`[MotionEventDetector] Detected ${events.length} motion events.`);
+  log.info(`[MotionEventDetector] Detected ${events.length} motion events.`);
   return events;
 }
 

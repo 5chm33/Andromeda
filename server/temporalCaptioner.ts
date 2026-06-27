@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("TemporalCaptioner");
 /**
  * temporalCaptioner.ts — v73.0.0 "Video Understanding Enhancements"
  * Generates time-stamped captions for video segments based on scene labels and object detections.
@@ -71,7 +73,7 @@ export function generateTemporalCaptions(
   }
 
   captionHistory.push(captions);
-  console.log(`[TemporalCaptioner] Generated ${captions.length} captions.`);
+  log.info(`[TemporalCaptioner] Generated ${captions.length} captions.`);
   return captions;
 }
 

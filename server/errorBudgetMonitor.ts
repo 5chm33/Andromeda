@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("ErrorBudgetMonitor");
 /**
  * errorBudgetMonitor.ts — v75.0.0 "Incident Management & SRE"
  * Computes and monitors error budgets derived from SLO targets vs. actual compliance.
@@ -43,7 +45,7 @@ export function consumeErrorBudget(sloId: string, actualCompliancePercent: numbe
   state.burnRate = consumed / (state.windowDays * 24);
   state.updatedAt = Date.now();
 
-  if (state.budgetExhausted) console.log(`[ErrorBudgetMonitor] Budget EXHAUSTED for SLO ${sloId} (service: ${state.service})`);
+  if (state.budgetExhausted) log.info(`[ErrorBudgetMonitor] Budget EXHAUSTED for SLO ${sloId} (service: ${state.service})`);
   return state;
 }
 

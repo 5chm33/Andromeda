@@ -1,3 +1,5 @@
+import { createLogger } from "./logger.js";
+const log = createLogger("ObjectTracker");
 /**
  * objectTracker.ts — v73.0.0 "Video Understanding Enhancements"
  * Tracks object identities across frames and summarizes motion paths and persistence.
@@ -62,7 +64,7 @@ export function trackObjects(frames: ObjectDetectionFrame[]): TrackedObject[] {
 
   const results = [...tracks.values()];
   trackingHistory.push(results);
-  console.log(`[ObjectTracker] Produced ${results.length} tracks.`);
+  log.info(`[ObjectTracker] Produced ${results.length} tracks.`);
   return results;
 }
 
