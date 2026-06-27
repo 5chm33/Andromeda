@@ -299,7 +299,7 @@ Respond with JSON only.`;
       clearTimeout(timeoutId);
     }
 
-    const raw = response.choices[0]?.message?.content || "{}";
+    const raw = (response.choices && response.choices[0]?.message?.content) || "{}";
     let parsed: any;
     try {
       parsed = JSON.parse(raw);
