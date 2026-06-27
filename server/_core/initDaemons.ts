@@ -357,6 +357,12 @@ import { grantConsent, hasConsent } from "../consentManager";
 import { addRetentionRule, enforceRetention } from "../dataRetentionPolicy";
 import { runAnonymizationPipeline } from "../anonymizationPipeline";
 import { checkGdprCompliance } from "../gdprComplianceChecker";
+import { openIncident, updateIncidentStatus } from "../incidentManager";
+import { registerRunbook, executeRunbook } from "../runbookExecutor";
+import { generatePostmortem } from "../postmortemAnalyzer";
+import { registerSlo, recordMeasurement, getSloStatus } from "../sloTracker";
+import { initErrorBudget, consumeErrorBudget } from "../errorBudgetMonitor";
+import { registerOncallSchedule, routeIncident } from "../oncallRouter";
 
 
 
