@@ -333,6 +333,13 @@ import { getErrorRate } from "../logAnalyzer";
 import { getTrace } from "../traceCorrelator";
 import { getActiveAlerts } from "../alertingEngine";
 import { generateSLAReport } from "../slaMonitor";
+import { getVisionHistory } from "../visionProcessor";
+import { getAudioHistory } from "../audioAnalyzer";
+import { getParsedDocs } from "../documentParser";
+import { getChartAnalyses } from "../chartUnderstander";
+import { getCaptions } from "../imageCaptioner";
+import { getOCRHistory } from "../ocrEngine";
+
 
 
 
