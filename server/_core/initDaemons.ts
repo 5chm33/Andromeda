@@ -321,6 +321,13 @@ import { checkRateLimit } from "../rateLimitEnforcer";
 import { withRetry } from "../retryOrchestrator";
 import { getCircuitStats } from "../circuitBreakerV68";
 import { inspectDeadLetters } from "../deadLetterQueue";
+import { getPipelineResults } from "../dataPipelineEngine";
+import { validateData } from "../dataValidator";
+import { listTransforms } from "../dataTransformRegistry";
+import { getLineageGraph } from "../dataLineageTracker";
+import { getQualityReports } from "../dataQualityMonitor";
+import { listAssets } from "../dataCatalog";
+
 
 
 
