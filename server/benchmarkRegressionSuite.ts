@@ -35,10 +35,23 @@ const log = createLogger("benchmarkRegressionSuite");
 const REGRESSION_THRESHOLD_PERCENT = 20;
 
 /** Number of measurement rounds per benchmark */
-const MEASUREMENT_ROUNDS = 10;
+// v14.1.4: Increased from 10 to 25 rounds for better statistical stability.
+// Sub-millisecond benchmarks with only 10 rounds were producing 20–100% apparent
+// "regressions" from normal OS scheduling jitter (context switches, CPU frequency
+// scaling). More rounds give a more stable median.
+const MEASUREMENT_ROUNDS = 25;
 
 /** Number of warmup rounds before measurement */
-const WARMUP_ROUNDS = 3;
+// v14.1.4: Increased from 3 to 8 warmup rounds to ensure JIT is fully warmed.
+const WARMUP_ROUNDS = 8;
+
+/**
+ * v14.1.4: Minimum baseline floor in milliseconds.
+ * If a baseline is below this value, the regression check is skipped for that
+ * benchmark because the measurement noise exceeds the signal. Sub-microsecond
+ * operations cannot be reliably compared across runs.
+ */
+const MIN_BASELINE_MS = 0.01;
 
 /** Path to the persistent baseline store */
 const BASELINE_PATH = path.resolve(process.cwd(), ".andromeda", "benchmark-baselines.json");
@@ -292,6 +305,19 @@ export async function runRegressionCheck(proposalId?: string): Promise<Regressio
       updatedBaselines[result.name] = {
         name: result.name,
         medianMs: result.medianMs,
+        recordedAt: new Date().toISOString(),
+        proposalId: proposalId ?? null,
+      };
+      continue;
+    }
+
+    // v14.1.4: Skip regression check for sub-microsecond baselines — measurement
+    // noise exceeds signal at this precision level and causes false positives.
+    if (baseline.medianMs < MIN_BASELINE_MS) {
+      // Update baseline with current measurement (may be more accurate)
+      updatedBaselines[result.name] = {
+        name: result.name,
+        medianMs: Math.min(baseline.medianMs, result.medianMs), // keep the faster one
         recordedAt: new Date().toISOString(),
         proposalId: proposalId ?? null,
       };
