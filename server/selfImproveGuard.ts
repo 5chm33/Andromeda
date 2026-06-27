@@ -634,8 +634,31 @@ export async function guardedApply(proposalId: string): Promise<{
         return { success: false, message: `Constitution forbids autonomous modification of test files matching '${matchedFilePattern}'. Test files are the ground truth for correctness.` };
       }
       // Check forbidden patterns in proposed content
+      // v14.1.2: Use context-aware matching to avoid false positives.
+      // Plain .includes() was triggering on legitimate code that REFERENCES a dangerous
+      // pattern in a comment, string literal, or regex — e.g. workspace.ts contains
+      // /rm\s+-rf?\s+\/(?!tmp)/i as a SECURITY GUARD regex, but the literal substring
+      // 'rm -rf /' appears inside it and was incorrectly flagging the proposal.
+      // Fix: strip single-line comments, block comments, string literals, and regex
+      // literals before checking for forbidden patterns.
       const forbiddenPatterns: string[] = constitution.forbiddenModifications?.patterns || [];
-      const matchedPattern = forbiddenPatterns.find((p: string) => (proposal.proposedContent || proposal.proposedSnippet || "").includes(p));
+      function stripCodeContext(src: string): string {
+        return src
+          // Remove block comments
+          .replace(/\/\*[\s\S]*?\*\//g, " ")
+          // Remove single-line comments
+          .replace(/\/\/[^\n]*/g, " ")
+          // Remove template literals (simplified)
+          .replace(/`[^`]*`/g, '""')
+          // Remove double-quoted strings
+          .replace(/"(?:[^"\\]|\\.)*"/g, '""')
+          // Remove single-quoted strings
+          .replace(/'(?:[^'\\]|\\.)*'/g, "''")
+          // Remove regex literals (heuristic: /pattern/flags after = ( , ! & | ? : ;)
+          .replace(/(?<=[=(,!&|?:;\s])\/(?:[^\/\\\n]|\\.)+\/[gimsuy]*/g, "//");
+      }
+      const strippedContent = stripCodeContext(proposal.proposedContent || proposal.proposedSnippet || "");
+      const matchedPattern = forbiddenPatterns.find((p: string) => strippedContent.includes(p));
       if (matchedPattern) {
         // Count how many times this proposal has been blocked by a constitution pattern
         const store = loadStore();
