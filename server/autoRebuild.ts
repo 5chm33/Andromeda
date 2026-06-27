@@ -60,6 +60,18 @@ export function getAutoRebuildConfig(): AutoRebuildConfig {
 }
 
 export function setAutoRebuildConfig(patch: Partial<AutoRebuildConfig>): void {
+  if (patch.minAppliedToTrigger !== undefined && (typeof patch.minAppliedToTrigger !== 'number' || patch.minAppliedToTrigger < 1 || !Number.isFinite(patch.minAppliedToTrigger))) {
+    log.warn(`Invalid minAppliedToTrigger: ${patch.minAppliedToTrigger}, using existing ${_config.minAppliedToTrigger}`);
+    delete patch.minAppliedToTrigger;
+  }
+  if (patch.debounceMs !== undefined && (typeof patch.debounceMs !== 'number' || patch.debounceMs < 1000 || !Number.isFinite(patch.debounceMs))) {
+    log.warn(`Invalid debounceMs: ${patch.debounceMs}, using existing ${_config.debounceMs}`);
+    delete patch.debounceMs;
+  }
+  if (patch.maxPerHour !== undefined && (typeof patch.maxPerHour !== 'number' || patch.maxPerHour < 1 || patch.maxPerHour > 100 || !Number.isFinite(patch.maxPerHour))) {
+    log.warn(`Invalid maxPerHour: ${patch.maxPerHour}, using existing ${_config.maxPerHour}`);
+    delete patch.maxPerHour;
+  }
   _config = { ..._config, ...patch };
   log.info(`Config updated: ${JSON.stringify(_config)}`);
 }
