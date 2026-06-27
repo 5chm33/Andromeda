@@ -166,26 +166,34 @@ describe("confirmContinue", () => {
 
 describe("updateRSIConfig", () => {
   it("should execute without throwing", () => {
-    try {
-      const result = updateRSIConfig("test_value");
-      expect(result).toBeDefined();
-    } catch (e: any) {
-      expect(e).toBeDefined();
-    }
+    // v14.1.0: Use a valid partial config object (not a string) to avoid corrupting rsiConfig
+    const result = updateRSIConfig({ verboseLogging: false });
+    expect(result).toBeDefined();
   });
 
   it("should return correct type", () => {
-    const result = updateRSIConfig("test_value");
+    const result = updateRSIConfig({ verboseLogging: false });
     expect(result).toBeTruthy();
   });
 
-  it("should handle empty/null inputs gracefully", () => {
-    try { updateRSIConfig({}); } catch (e: any) { expect(e).toBeDefined(); }
+  it("should handle empty object gracefully", () => {
+    const result = updateRSIConfig({});
+    expect(result).toBeDefined();
   });
 
-  it("should handle invalid inputs", () => {
+  it("should ignore invalid non-object inputs gracefully", () => {
     // @ts-expect-error Testing invalid input
-    try { updateRSIConfig(undefined); } catch (e: any) { expect(e).toBeDefined(); }
+    const result = updateRSIConfig(undefined);
+    expect(result).toBeDefined(); // returns current status without throwing
+  });
+
+  it("should ignore string inputs without corrupting config", () => {
+    // @ts-expect-error Testing invalid input — must NOT spread string chars into rsiConfig
+    const result = updateRSIConfig("test_value");
+    expect(result).toBeDefined(); // returns current status without throwing or corrupting
+    // Ensure no numeric string keys leaked into config
+    const status = getRSIStatus();
+    expect(Object.keys(status.config).some(k => !isNaN(Number(k)))).toBe(false);
   });
 });
 

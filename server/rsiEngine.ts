@@ -159,7 +159,14 @@ function loadPersistedConfig(): void {
       const saved = JSON.parse(fs.readFileSync(p, "utf8"));
       // Restore RSI config (strip any corrupted string-indexed keys)
       const { cycleCount: savedCycles, totalApplied: savedApplied, totalRejected: savedRejected, lastCycleAt: savedLastCycle, ...configOnly } = saved;
-      rsiConfig = { ...DEFAULT_CONFIG, ...configOnly };
+      // v14.1.0: Strip numeric-string keys ("0","1",...) that were written by a
+      // previous bug where updateRSIConfig spread a string arg into rsiConfig.
+      const cleanConfig: Record<string, unknown> = {};
+      for (const [k, v] of Object.entries(configOnly)) {
+        if (!isNaN(Number(k))) continue;
+        cleanConfig[k] = v;
+      }
+      rsiConfig = { ...DEFAULT_CONFIG, ...cleanConfig };
       // v12.2.1: Restore cycle counters so they survive server restarts
       if (typeof savedCycles === "number" && savedCycles > 0) {
         cycleCount = savedCycles;
@@ -2293,9 +2300,22 @@ export function confirmContinue(): RSIStatus {
 
 /**
  * Update RSI configuration.
+ * v14.1.0: Guard against non-object inputs (e.g. strings from tests) which
+ * would spread character-indexed keys into rsiConfig and corrupt rsi-config.json.
  */
 export function updateRSIConfig(updates: Partial<RSIConfig>): RSIStatus {
-  rsiConfig = { ...rsiConfig, ...updates };
+  // Reject non-object or null inputs — only plain objects are valid config updates
+  if (!updates || typeof updates !== "object" || Array.isArray(updates)) {
+    console.warn(`[RSIEngine] updateRSIConfig: ignoring invalid input (${typeof updates}) — must be a plain object`);
+    return getRSIStatus();
+  }
+  // Strip any numeric/string-indexed keys that may have leaked in from test spreads
+  const safeUpdates: Partial<RSIConfig> = {};
+  for (const [k, v] of Object.entries(updates)) {
+    if (!isNaN(Number(k))) continue; // skip "0", "1", etc.
+    (safeUpdates as Record<string, unknown>)[k] = v;
+  }
+  rsiConfig = { ...rsiConfig, ...safeUpdates };
   saveConfig();
   if (rsiConfig.enabled) {
     scheduleNextCycle();
