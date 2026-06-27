@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 
 const TEMPORAL_GRAPH_DB = path.join(process.cwd(), "data", "temporal_graph.json");
+let _nodeCounter = 0;
 
 export interface TemporalNode {
   id: string;
@@ -34,7 +35,7 @@ function saveTemporalGraph(graph: Record<string, TemporalNode>) {
  */
 export function recordTemporalEvent(action: string, targetFile: string, outcomeMetric: number, causalParents: string[] = []): string {
   const graph = loadTemporalGraph();
-  const id = `te_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+  const id = `te_${Date.now()}_${++_nodeCounter}`;
   
   const node: TemporalNode = {
     id,

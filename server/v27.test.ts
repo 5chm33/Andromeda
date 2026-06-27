@@ -85,7 +85,7 @@ describe("v27 Collective Superintelligence Enhancements", () => {
       recordTemporalEvent("lint", "target.ts", 0.5);
       
       // Counterfactual: what if we refactored target.ts instead of linting?
-      // Avg refactor = 0.85. Avg lint = 0.45. Delta should be +0.40.
+      // Avg refactor = 0.85. Avg lint = (0.4+0.5)/2 = 0.45. Delta = 0.85 - 0.45 = 0.40.
       const delta = evaluateCounterfactual("target.ts", "refactor");
       expect(delta).toBeCloseTo(0.40, 2);
     });
