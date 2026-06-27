@@ -339,6 +339,12 @@ import { getParsedDocs } from "../documentParser";
 import { getChartAnalyses } from "../chartUnderstander";
 import { getCaptions } from "../imageCaptioner";
 import { getOCRHistory } from "../ocrEngine";
+import { analyzeVideo } from "../videoFrameAnalyzer";
+import { recognizeSpeech } from "../speechRecognizer";
+import { interpretDiagram } from "../diagramInterpreter";
+import { fuseModalities } from "../multimodalFusion";
+import { routeByMimeType } from "../modalityRouter";
+import { indexDocument, retrieveCrossModal } from "../crossModalRetriever";
 
 
 
