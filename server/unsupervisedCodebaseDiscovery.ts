@@ -8,6 +8,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import { execSync } from "child_process";
 
 export interface CodebaseHealthMetric {
   file: string;
@@ -43,8 +44,20 @@ export function scanCodebaseHealth(workspaceDir: string): CodebaseHealthMetric[]
     const testFile = fullPath.replace(".ts", ".test.ts");
     const coverage = fs.existsSync(testFile) ? 1.0 : 0.0;
     
-    // Churn rate (simulated here; in reality, would use `git log --oneline <file> | wc -l`)
-    const churnRate = Math.floor(Math.random() * 10);
+    // Churn rate: count git commits touching this file deterministically.
+    // Math.random() was previously used here, causing non-deterministic test failures
+    // where simple.ts could randomly outscore complex.ts. Using git log ensures
+    // the sort order is stable and reproducible across CI runs.
+    let churnRate = 0;
+    try {
+      const count = execSync(`git log --oneline -- "${fullPath}" 2>/dev/null | wc -l`, {
+        cwd: workspaceDir,
+        stdio: ["pipe", "pipe", "ignore"],
+      }).toString().trim();
+      churnRate = parseInt(count, 10) || 0;
+    } catch {
+      churnRate = 0;
+    }
 
     // ROI: High complexity + low coverage + high churn = High ROI for refactoring
     const roiScore = (complexity * 0.5) + (churnRate * 2.0) + ((1 - coverage) * 10.0) + (todos * 1.5);
