@@ -327,6 +327,13 @@ import { listTransforms } from "../dataTransformRegistry";
 import { getLineageGraph } from "../dataLineageTracker";
 import { getQualityReports } from "../dataQualityMonitor";
 import { listAssets } from "../dataCatalog";
+import { listDashboards } from "../observabilityDashboard";
+import { getMetricNames } from "../metricsAggregator";
+import { getErrorRate } from "../logAnalyzer";
+import { getTrace } from "../traceCorrelator";
+import { getActiveAlerts } from "../alertingEngine";
+import { generateSLAReport } from "../slaMonitor";
+
 
 
 
