@@ -348,17 +348,40 @@ export function getMonitorConfig(): MonitorConfig {
 }
 
 export function setMonitorConfig(updates: Partial<MonitorConfig>): MonitorConfig {
+  if (typeof updates !== 'object' || updates === null) {
+    throw new Error('setMonitorConfig: updates must be an object');
+  }
+  if (updates.checkIntervalMs !== undefined && (typeof updates.checkIntervalMs !== 'number' || updates.checkIntervalMs <= 0)) {
+    throw new Error('setMonitorConfig: checkIntervalMs must be a positive number');
+  }
+  if (updates.windowSizeMs !== undefined && (typeof updates.windowSizeMs !== 'number' || updates.windowSizeMs <= 0)) {
+    throw new Error('setMonitorConfig: windowSizeMs must be a positive number');
+  }
+  if (updates.minSamplesForAlert !== undefined && (typeof updates.minSamplesForAlert !== 'number' || updates.minSamplesForAlert < 1)) {
+    throw new Error('setMonitorConfig: minSamplesForAlert must be a positive integer');
+  }
+  if (updates.cooldownMs !== undefined && (typeof updates.cooldownMs !== 'number' || updates.cooldownMs <= 0)) {
+    throw new Error('setMonitorConfig: cooldownMs must be a positive number');
+  }
+  if (updates.thresholds !== undefined) {
+    if (typeof updates.thresholds !== 'object' || updates.thresholds === null) {
+      throw new Error('setMonitorConfig: thresholds must be an object');
+    }
+    for (const key of Object.keys(updates.thresholds) as (keyof MonitorConfig['thresholds'])[]) {
+      const val = updates.thresholds[key];
+      if (val !== undefined && (typeof val !== 'number' || val < 0)) {
+        throw new Error(`setMonitorConfig: threshold ${key} must be a non-negative number`);
+      }
+    }
+  }
   config = { ...config, ...updates };
   if (updates.thresholds) {
     config.thresholds = { ...defaultConfig.thresholds, ...updates.thresholds };
   }
-
-  // Restart interval if changed
   if (updates.checkIntervalMs !== undefined || updates.enabled !== undefined) {
     stopMonitor();
     if (config.enabled) startMonitor();
   }
-
   return config;
 }
 
@@ -398,7 +421,7 @@ export function resolveAlert(alertId: string): boolean {
 }
 
 export function getMetricHistory(type: MetricType, limit: number = 100): MetricSample[] {
-  if (!samples) return [];
+  if (!samples || !Array.isArray(samples)) return [];
   return samples.filter(s => s.type === type).slice(-limit);
 }
 
