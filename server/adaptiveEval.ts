@@ -347,7 +347,13 @@ Generate exactly ${count} task(s).`;
     const jsonMatch = response.match(/\[[\s\S]*\]/);
     if (!jsonMatch) throw new Error("No JSON array found in LLM response");
 
-    const parsed = JSON.parse(jsonMatch[0]) as Partial<EvalTask>[];
+    let parsed: Partial<EvalTask>[];
+    try {
+      parsed = JSON.parse(jsonMatch[0]) as Partial<EvalTask>[];
+    } catch (parseErr) {
+      log.warn(`[adaptiveEval] Failed to parse LLM JSON: ${(parseErr as Error).message}`);
+      throw new Error('Invalid JSON from LLM');
+    }
 
     generated = parsed
       .filter(t => t.id && t.prompt && t.expectedKeywords && t.category && t.difficulty)
