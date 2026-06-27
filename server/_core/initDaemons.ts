@@ -303,6 +303,13 @@ import { recordConsciousnessState, getCurrentConsciousnessLevel } from "../consc
 import { addIntentionalState, formIntention } from "../intentionalityEngine";
 import { captureQualia, getQualiaProfile } from "../qualiaCaptureSystem";
 import { integrateApexState, generateApexReport } from "../apexIntegrationOrchestrator";
+import { getBrowsingHistory } from "../webBrowsingEngine";
+import { getFileAuditLog } from "../fileIOManager";
+import { getExecutionHistory } from "../codeExecutionSandbox";
+import { listTools } from "../toolUseOrchestrator";
+import { listPlugins } from "../pluginManager";
+import { getRequestLog } from "../httpClientManager";
+
 
 
 
