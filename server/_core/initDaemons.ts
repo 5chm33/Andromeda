@@ -345,6 +345,12 @@ import { interpretDiagram } from "../diagramInterpreter";
 import { fuseModalities } from "../multimodalFusion";
 import { routeByMimeType } from "../modalityRouter";
 import { indexDocument, retrieveCrossModal } from "../crossModalRetriever";
+import { segmentScenes } from "../sceneSegmenter";
+import { trackObjects } from "../objectTracker";
+import { detectMotionEvents } from "../motionEventDetector";
+import { generateTemporalCaptions } from "../temporalCaptioner";
+import { alignSubtitles } from "../subtitleAligner";
+import { summarizeVideo } from "../videoSummarizer";
 
 
 
