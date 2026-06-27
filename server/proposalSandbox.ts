@@ -286,11 +286,23 @@ async function runColocatedTests(
  */
 export function quickSyntaxCheck(proposedContent: string, filename: string): { valid: boolean; error?: string } {
   try {
-    // Check for obvious syntax errors using a simple heuristic
-    const openBraces = (proposedContent.match(/\{/g) || []).length;
-    const closeBraces = (proposedContent.match(/\}/g) || []).length;
-    const openParens = (proposedContent.match(/\(/g) || []).length;
-    const closeParens = (proposedContent.match(/\)/g) || []).length;
+    // v14.1.5: Strip comments and string/regex literals before counting brackets.
+    // Raw character counts on TypeScript files produce false positives because:
+    //   - String literals like "use (this)" add unmatched parens
+    //   - Regex literals like /\)/g add unmatched close-parens
+    //   - JSDoc comments with @param (type) add unmatched parens
+    // The stripped content only contains actual code-level brackets.
+    const stripped = proposedContent
+      .replace(/\/\*[\s\S]*?\*\//g, " ")   // block comments
+      .replace(/\/\/[^\n]*/g, " ")          // single-line comments
+      .replace(/`[^`]*`/g, '""')             // template literals
+      .replace(/"(?:[^"\\]|\\.)*"/g, '""')  // double-quoted strings
+      .replace(/'(?:[^'\\]|\\.)*'/g, "''")  // single-quoted strings
+      .replace(/(?<=[=(,!&|?:;\s])\/(?:[^\/\\\n]|\\.)+\/[gimsuy]*/g, "//"); // regex literals
+    const openBraces = (stripped.match(/\{/g) || []).length;
+    const closeBraces = (stripped.match(/\}/g) || []).length;
+    const openParens = (stripped.match(/\(/g) || []).length;
+    const closeParens = (stripped.match(/\)/g) || []).length;
 
     if (Math.abs(openBraces - closeBraces) > 3) {
       return { valid: false, error: `Unbalanced braces: ${openBraces} open, ${closeBraces} close` };
