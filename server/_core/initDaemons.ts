@@ -375,6 +375,12 @@ import { trackExperiment, updateExperimentStatus } from "../experimentTracker";
 import { createCanaryDeployment, activateCanary, recordHealthCheck } from "../canaryDeployer";
 import { createRolloutPlan, advanceRollout } from "../rolloutController";
 import { logAuditEntry, getAuditLog } from "../featureAuditLog";
+import { recordCostEvent, getCostSummary } from "../costTracker";
+import { createBudget, checkBudget } from "../budgetAlertEngine";
+import { generateOptimizationReport } from "../resourceCostOptimizer";
+import { analyzeSpend } from "../cloudSpendAnalyzer";
+import { createAllocationRule, allocateCost } from "../costAllocationEngine";
+import { generateBillingReport } from "../billingReporter";
 
 
 
