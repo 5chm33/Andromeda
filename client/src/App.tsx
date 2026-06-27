@@ -10,6 +10,10 @@ import Search from "@/pages/Search";
 import History from "@/pages/History";
 import Chat from "@/pages/Chat";
 import RsiDashboard from "@/pages/RsiDashboard";
+import KnowledgeGraph from "@/pages/KnowledgeGraph";
+import ModuleBrowser from "@/pages/ModuleBrowser";
+import DebateViewer from "@/pages/DebateViewer";
+import MetricsDashboard from "@/pages/MetricsDashboard";
 import { ProposalNotifier } from "./components/rsi/ProposalNotifier";
 
 function Router() {
@@ -21,6 +25,10 @@ function Router() {
       <Route path={"/history"} component={History} />
       <Route path={"/chat"} component={Chat} />
       <Route path={"/rsi"} component={RsiDashboard} />
+      <Route path={"/graph"} component={KnowledgeGraph} />
+      <Route path={"/modules"} component={ModuleBrowser} />
+      <Route path={"/debate"} component={DebateViewer} />
+      <Route path={"/metrics"} component={MetricsDashboard} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

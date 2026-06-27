@@ -973,5 +973,380 @@
     "updatedAt": 1782527438445,
     "accessCount": 0,
     "lastAccessedAt": 1782527438445
+  },
+  {
+    "id": "mem_1782535124428_yjxa0i",
+    "content": "Test memory content",
+    "type": "insight",
+    "tags": [
+      "test",
+      "v19"
+    ],
+    "timestamp": 1782535124428,
+    "tier": "ephemeral",
+    "impactScore": 0.5,
+    "useCount": 0,
+    "successCount": 0,
+    "vector": [],
+    "createdAt": 1782535124428,
+    "updatedAt": 1782535124428,
+    "accessCount": 0,
+    "lastAccessedAt": 1782535124428
+  },
+  {
+    "id": "mem_1782535124428_oglznm",
+    "content": "Impact test memory",
+    "type": "pattern",
+    "tags": [
+      "impact"
+    ],
+    "timestamp": 1782535124429,
+    "tier": "core",
+    "impactScore": 0.875,
+    "useCount": 6,
+    "successCount": 6,
+    "vector": [],
+    "createdAt": 1782535124429,
+    "updatedAt": 1782535124429,
+    "accessCount": 0,
+    "lastAccessedAt": 1782535124429
+  },
+  {
+    "id": "mem_1782535124431_nqtipa",
+    "content": "TypeScript error handling patterns",
+    "type": "pattern",
+    "tags": [
+      "typescript",
+      "error"
+    ],
+    "timestamp": 1782535124431,
+    "tier": "ephemeral",
+    "impactScore": 0.5,
+    "useCount": 0,
+    "successCount": 0,
+    "vector": [],
+    "createdAt": 1782535124431,
+    "updatedAt": 1782535124431,
+    "accessCount": 0,
+    "lastAccessedAt": 1782535124431
+  },
+  {
+    "id": "mem_1782535124432_rfxk8r",
+    "content": "Database connection retry logic",
+    "type": "pattern",
+    "tags": [
+      "database",
+      "retry"
+    ],
+    "timestamp": 1782535124432,
+    "tier": "ephemeral",
+    "impactScore": 0.5,
+    "useCount": 0,
+    "successCount": 0,
+    "vector": [],
+    "createdAt": 1782535124432,
+    "updatedAt": 1782535124432,
+    "accessCount": 0,
+    "lastAccessedAt": 1782535124432
+  },
+  {
+    "id": "mem_1782535175357_t2uz3j",
+    "content": "Test memory content",
+    "type": "insight",
+    "tags": [
+      "test",
+      "v19"
+    ],
+    "timestamp": 1782535175357,
+    "tier": "ephemeral",
+    "impactScore": 0.5,
+    "useCount": 0,
+    "successCount": 0,
+    "vector": [],
+    "createdAt": 1782535175357,
+    "updatedAt": 1782535175357,
+    "accessCount": 0,
+    "lastAccessedAt": 1782535175357
+  },
+  {
+    "id": "mem_1782535175359_3q2ire",
+    "content": "Impact test memory",
+    "type": "pattern",
+    "tags": [
+      "impact"
+    ],
+    "timestamp": 1782535175359,
+    "tier": "core",
+    "impactScore": 0.875,
+    "useCount": 6,
+    "successCount": 6,
+    "vector": [],
+    "createdAt": 1782535175359,
+    "updatedAt": 1782535175359,
+    "accessCount": 0,
+    "lastAccessedAt": 1782535175359
+  },
+  {
+    "id": "mem_1782535175362_ya3xyp",
+    "content": "TypeScript error handling patterns",
+    "type": "pattern",
+    "tags": [
+      "typescript",
+      "error"
+    ],
+    "timestamp": 1782535175362,
+    "tier": "ephemeral",
+    "impactScore": 0.5,
+    "useCount": 0,
+    "successCount": 0,
+    "vector": [],
+    "createdAt": 1782535175362,
+    "updatedAt": 1782535175362,
+    "accessCount": 0,
+    "lastAccessedAt": 1782535175362
+  },
+  {
+    "id": "mem_1782535175362_vxioaj",
+    "content": "Database connection retry logic",
+    "type": "pattern",
+    "tags": [
+      "database",
+      "retry"
+    ],
+    "timestamp": 1782535175362,
+    "tier": "ephemeral",
+    "impactScore": 0.5,
+    "useCount": 0,
+    "successCount": 0,
+    "vector": [],
+    "createdAt": 1782535175362,
+    "updatedAt": 1782535175362,
+    "accessCount": 0,
+    "lastAccessedAt": 1782535175362
+  },
+  {
+    "id": "mem_1782535229999_cbbzju",
+    "content": "Test memory content",
+    "type": "insight",
+    "tags": [
+      "test",
+      "v19"
+    ],
+    "timestamp": 1782535229999,
+    "tier": "ephemeral",
+    "impactScore": 0.5,
+    "useCount": 0,
+    "successCount": 0,
+    "vector": [],
+    "createdAt": 1782535229999,
+    "updatedAt": 1782535229999,
+    "accessCount": 0,
+    "lastAccessedAt": 1782535229999
+  },
+  {
+    "id": "mem_1782535230004_wj4k08",
+    "content": "Impact test memory",
+    "type": "pattern",
+    "tags": [
+      "impact"
+    ],
+    "timestamp": 1782535230004,
+    "tier": "core",
+    "impactScore": 0.875,
+    "useCount": 6,
+    "successCount": 6,
+    "vector": [],
+    "createdAt": 1782535230004,
+    "updatedAt": 1782535230004,
+    "accessCount": 0,
+    "lastAccessedAt": 1782535230004
+  },
+  {
+    "id": "mem_1782535230010_2n6o9f",
+    "content": "TypeScript error handling patterns",
+    "type": "pattern",
+    "tags": [
+      "typescript",
+      "error"
+    ],
+    "timestamp": 1782535230010,
+    "tier": "ephemeral",
+    "impactScore": 0.5,
+    "useCount": 0,
+    "successCount": 0,
+    "vector": [],
+    "createdAt": 1782535230010,
+    "updatedAt": 1782535230010,
+    "accessCount": 0,
+    "lastAccessedAt": 1782535230010
+  },
+  {
+    "id": "mem_1782535230010_81r1hw",
+    "content": "Database connection retry logic",
+    "type": "pattern",
+    "tags": [
+      "database",
+      "retry"
+    ],
+    "timestamp": 1782535230010,
+    "tier": "ephemeral",
+    "impactScore": 0.5,
+    "useCount": 0,
+    "successCount": 0,
+    "vector": [],
+    "createdAt": 1782535230010,
+    "updatedAt": 1782535230010,
+    "accessCount": 0,
+    "lastAccessedAt": 1782535230010
+  },
+  {
+    "id": "mem_1782535869511_n08tkp",
+    "content": "Test memory content",
+    "type": "insight",
+    "tags": [
+      "test",
+      "v19"
+    ],
+    "timestamp": 1782535869511,
+    "tier": "ephemeral",
+    "impactScore": 0.5,
+    "useCount": 0,
+    "successCount": 0,
+    "vector": [],
+    "createdAt": 1782535869511,
+    "updatedAt": 1782535869511,
+    "accessCount": 0,
+    "lastAccessedAt": 1782535869511
+  },
+  {
+    "id": "mem_1782535869512_n0gdv4",
+    "content": "Impact test memory",
+    "type": "pattern",
+    "tags": [
+      "impact"
+    ],
+    "timestamp": 1782535869512,
+    "tier": "core",
+    "impactScore": 0.875,
+    "useCount": 6,
+    "successCount": 6,
+    "vector": [],
+    "createdAt": 1782535869512,
+    "updatedAt": 1782535869512,
+    "accessCount": 0,
+    "lastAccessedAt": 1782535869512
+  },
+  {
+    "id": "mem_1782535869514_8utn2y",
+    "content": "TypeScript error handling patterns",
+    "type": "pattern",
+    "tags": [
+      "typescript",
+      "error"
+    ],
+    "timestamp": 1782535869514,
+    "tier": "ephemeral",
+    "impactScore": 0.5,
+    "useCount": 0,
+    "successCount": 0,
+    "vector": [],
+    "createdAt": 1782535869514,
+    "updatedAt": 1782535869514,
+    "accessCount": 0,
+    "lastAccessedAt": 1782535869514
+  },
+  {
+    "id": "mem_1782535869515_7ivbo4",
+    "content": "Database connection retry logic",
+    "type": "pattern",
+    "tags": [
+      "database",
+      "retry"
+    ],
+    "timestamp": 1782535869515,
+    "tier": "ephemeral",
+    "impactScore": 0.5,
+    "useCount": 0,
+    "successCount": 0,
+    "vector": [],
+    "createdAt": 1782535869515,
+    "updatedAt": 1782535869515,
+    "accessCount": 0,
+    "lastAccessedAt": 1782535869515
+  },
+  {
+    "id": "mem_1782536055569_u1bfm8",
+    "content": "Test memory content",
+    "type": "insight",
+    "tags": [
+      "test",
+      "v19"
+    ],
+    "timestamp": 1782536055569,
+    "tier": "ephemeral",
+    "impactScore": 0.5,
+    "useCount": 0,
+    "successCount": 0,
+    "vector": [],
+    "createdAt": 1782536055569,
+    "updatedAt": 1782536055569,
+    "accessCount": 0,
+    "lastAccessedAt": 1782536055569
+  },
+  {
+    "id": "mem_1782536055570_fj2nj5",
+    "content": "Impact test memory",
+    "type": "pattern",
+    "tags": [
+      "impact"
+    ],
+    "timestamp": 1782536055570,
+    "tier": "core",
+    "impactScore": 0.875,
+    "useCount": 6,
+    "successCount": 6,
+    "vector": [],
+    "createdAt": 1782536055570,
+    "updatedAt": 1782536055570,
+    "accessCount": 0,
+    "lastAccessedAt": 1782536055570
+  },
+  {
+    "id": "mem_1782536055573_0x036s",
+    "content": "TypeScript error handling patterns",
+    "type": "pattern",
+    "tags": [
+      "typescript",
+      "error"
+    ],
+    "timestamp": 1782536055573,
+    "tier": "ephemeral",
+    "impactScore": 0.5,
+    "useCount": 0,
+    "successCount": 0,
+    "vector": [],
+    "createdAt": 1782536055573,
+    "updatedAt": 1782536055573,
+    "accessCount": 0,
+    "lastAccessedAt": 1782536055573
+  },
+  {
+    "id": "mem_1782536055573_6pi2nz",
+    "content": "Database connection retry logic",
+    "type": "pattern",
+    "tags": [
+      "database",
+      "retry"
+    ],
+    "timestamp": 1782536055573,
+    "tier": "ephemeral",
+    "impactScore": 0.5,
+    "useCount": 0,
+    "successCount": 0,
+    "vector": [],
+    "createdAt": 1782536055573,
+    "updatedAt": 1782536055573,
+    "accessCount": 0,
+    "lastAccessedAt": 1782536055573
   }
 ]

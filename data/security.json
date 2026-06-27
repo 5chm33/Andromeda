@@ -32,5 +32,24 @@
       "isActive": true
     }
   ],
-  "auditLog": []
+  "auditLog": [
+    {
+      "id": "log_1782535837211_y2p9s5",
+      "timestamp": "2026-06-27T04:50:37.211Z",
+      "method": "GET",
+      "path": "/",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 200,
+      "durationMs": 966
+    },
+    {
+      "id": "log_1782535855178_ppu3mv",
+      "timestamp": "2026-06-27T04:50:55.178Z",
+      "method": "GET",
+      "path": "/",
+      "ip": "::1",
+      "statusCode": 200,
+      "durationMs": 733
+    }
+  ]
 }

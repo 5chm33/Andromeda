@@ -1,36 +1,22 @@
 {
   "targets": [
     {
-      "moduleName": "criticalModule",
-      "moduleFile": "server/criticalModule.ts",
-      "resilienceScore": 0.1,
+      "moduleName": "selfRollback",
+      "moduleFile": "server/selfRollback.ts",
+      "resilienceScore": 0,
       "escalationLevel": 3,
       "priority": "critical",
       "failedFaults": [
-        "crash",
-        "timeout"
+        "rollback-dirty-fake-point-xyz",
+        "TypeScript check FAILED: Command failed: npx tsc --noEmit --project tsconfig.server.json"
       ],
-      "firstDetectedAt": 1782527436524,
-      "lastUpdatedAt": 1782527436524,
-      "rsiCyclesAttempted": 0,
-      "resolved": false
-    },
-    {
-      "moduleName": "highModule",
-      "moduleFile": "server/highModule.ts",
-      "resilienceScore": 0.5,
-      "escalationLevel": 2,
-      "priority": "high",
-      "failedFaults": [
-        "timeout"
-      ],
-      "firstDetectedAt": 1782527436525,
-      "lastUpdatedAt": 1782527436525,
+      "firstDetectedAt": 1782536063756,
+      "lastUpdatedAt": 1782536064210,
       "rsiCyclesAttempted": 0,
       "resolved": false
     }
   ],
-  "lastChaosRunAt": 1782527436524,
+  "lastChaosRunAt": 1782536064210,
   "totalRsiCyclesTriggered": 0,
-  "savedAt": 1782527436525
+  "savedAt": 1782536064210
 }

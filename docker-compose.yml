@@ -1,18 +1,28 @@
-# ─── Andromeda v9.16.0 — docker-compose.yml ────────────────────────────────────
+# ─── Andromeda v101.0.0 — docker-compose.yml ──────────────────────────────────
 #
-# Runs Andromeda with persistent data volumes for:
-#   - Episodic memory
-#   - Eval baseline scores
-#   - RSI state and improvement history
-#   - Workspace files
+# Full production stack:
+#   andromeda   — The main AI agent (port 3000)
+#   redis       — Fast in-memory cache for session state and rate limiting
+#   ollama      — Local LLM inference (Llama 3, Mistral, etc.) — no API key needed
 #
-# Usage:
-#   docker-compose up -d          # Start in background
-#   docker-compose logs -f        # Follow logs
-#   docker-compose down           # Stop (data volumes preserved)
-#   docker-compose down -v        # Stop and delete volumes
+# Profiles:
+#   default     — andromeda + redis
+#   local-llm   — adds Ollama for fully offline inference
+#   gpu         — adds GPU passthrough for Ollama (requires NVIDIA Docker runtime)
+#
+# Quick Start:
+#   cp .env.example .env.local
+#   docker-compose up -d                          # Start (default profile)
+#   docker-compose --profile local-llm up -d      # With Ollama
+#   docker-compose --profile gpu up -d            # With GPU-accelerated Ollama
+#   docker-compose logs -f andromeda              # Follow logs
+#   docker-compose down                           # Stop (data preserved)
+#   docker-compose down -v                        # Stop + delete volumes
+#
+# First-time Ollama model pull (after starting with local-llm profile):
+#   docker-compose exec ollama ollama pull llama3.2
+#   docker-compose exec ollama ollama pull mistral
 # ─────────────────────────────────────────────────────────────────────────────
-
 version: "3.9"
 
 services:
@@ -23,6 +33,9 @@ services:
     image: andromeda:latest
     container_name: andromeda
     restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
     ports:
       - "${PORT:-3000}:3000"
     env_file:
@@ -30,15 +43,17 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
+      - REDIS_URL=redis://redis:6379
+      - OLLAMA_BASE_URL=http://ollama:11434
     volumes:
-      # Persistent data — survives container restarts and updates
       - andromeda_data:/app/data
       - andromeda_workspace:/app/workspace
+      - andromeda_logs:/app/logs
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      interval: 15s
+      timeout: 5s
+      retries: 5
       start_period: 30s
     logging:
       driver: "json-file"
@@ -46,8 +61,60 @@ services:
         max-size: "50m"
         max-file: "5"
 
+  redis:
+    image: redis:7-alpine
+    container_name: andromeda-redis
+    restart: unless-stopped
+    command: >
+      redis-server
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --save 60 1
+      --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: andromeda-ollama
+    restart: unless-stopped
+    profiles:
+      - local-llm
+      - gpu
+    volumes:
+      - ollama_models:/root/.ollama
+    ports:
+      - "11434:11434"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
 volumes:
   andromeda_data:
     driver: local
   andromeda_workspace:
     driver: local
+  andromeda_logs:
+    driver: local
+  redis_data:
+    driver: local
+  ollama_models:
+    driver: local
+
+networks:
+  default:
+    name: andromeda-network
+    driver: bridge

@@ -4309,6 +4309,96 @@
       "result": "success",
       "details": "Previewed proposal: No change",
       "timestamp": "2026-06-27T02:30:08.721Z"
+    },
+    {
+      "id": "audit_1782535120700_u84qgp",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-27T04:38:40.700Z"
+    },
+    {
+      "id": "audit_1782535120705_71zuuv",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-27T04:38:40.705Z"
+    },
+    {
+      "id": "audit_1782535170725_9dceav",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-27T04:39:30.725Z"
+    },
+    {
+      "id": "audit_1782535170730_rxzm3c",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-27T04:39:30.730Z"
+    },
+    {
+      "id": "audit_1782535226351_g9r88r",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-27T04:40:26.351Z"
+    },
+    {
+      "id": "audit_1782535226357_24b4vr",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-27T04:40:26.358Z"
+    },
+    {
+      "id": "audit_1782535866152_l8ghal",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-27T04:51:06.152Z"
+    },
+    {
+      "id": "audit_1782535866157_zcv93k",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-27T04:51:06.157Z"
+    },
+    {
+      "id": "audit_1782536051973_m706vx",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-27T04:54:11.973Z"
+    },
+    {
+      "id": "audit_1782536051979_pohmyf",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-27T04:54:11.979Z"
     }
   ]
 }

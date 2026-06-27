@@ -8,9 +8,9 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "rolled_back",
-    "generatedAt": "2026-06-27T02:30:17.967Z",
-    "outcomeAt": "2026-06-27T02:30:17.967Z",
-    "lifetimeMs": 0
+    "generatedAt": "2026-06-27T04:54:23.272Z",
+    "outcomeAt": "2026-06-27T04:54:23.273Z",
+    "lifetimeMs": 1
   },
   {
     "id": "rb2",
@@ -21,8 +21,8 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "rolled_back",
-    "generatedAt": "2026-06-27T02:30:17.967Z",
-    "outcomeAt": "2026-06-27T02:30:17.967Z",
+    "generatedAt": "2026-06-27T04:54:23.272Z",
+    "outcomeAt": "2026-06-27T04:54:23.272Z",
     "lifetimeMs": 0
   },
   {
@@ -34,8 +34,8 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "rolled_back",
-    "generatedAt": "2026-06-27T02:30:17.966Z",
-    "outcomeAt": "2026-06-27T02:30:17.966Z",
+    "generatedAt": "2026-06-27T04:54:23.271Z",
+    "outcomeAt": "2026-06-27T04:54:23.271Z",
     "lifetimeMs": 0
   },
   {
@@ -47,9 +47,9 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "rolled_back",
-    "generatedAt": "2026-06-27T02:30:17.965Z",
-    "outcomeAt": "2026-06-27T02:30:17.966Z",
-    "lifetimeMs": 1
+    "generatedAt": "2026-06-27T04:54:23.271Z",
+    "outcomeAt": "2026-06-27T04:54:23.271Z",
+    "lifetimeMs": 0
   },
   {
     "id": "g4",
@@ -60,18 +60,7 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "pending",
-    "generatedAt": "2026-06-27T02:30:17.965Z"
-  },
-  {
-    "id": "g2",
-    "targetFile": "server/z.ts",
-    "cycleId": "c1",
-    "mergedFrom": [],
-    "postChaosGeneration": false,
-    "semanticSafetyScore": 0,
-    "rewardScore": 0,
-    "outcome": "pending",
-    "generatedAt": "2026-06-27T02:30:17.965Z"
+    "generatedAt": "2026-06-27T04:54:23.270Z"
   },
   {
     "id": "g3",
@@ -82,7 +71,18 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "pending",
-    "generatedAt": "2026-06-27T02:30:17.965Z"
+    "generatedAt": "2026-06-27T04:54:23.269Z"
+  },
+  {
+    "id": "g2",
+    "targetFile": "server/z.ts",
+    "cycleId": "c1",
+    "mergedFrom": [],
+    "postChaosGeneration": false,
+    "semanticSafetyScore": 0,
+    "rewardScore": 0,
+    "outcome": "pending",
+    "generatedAt": "2026-06-27T04:54:23.269Z"
   },
   {
     "id": "g1",
@@ -93,7 +93,7 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "pending",
-    "generatedAt": "2026-06-27T02:30:17.965Z"
+    "generatedAt": "2026-06-27T04:54:23.268Z"
   },
   {
     "id": "g0",
@@ -104,7 +104,7 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "pending",
-    "generatedAt": "2026-06-27T02:30:17.964Z"
+    "generatedAt": "2026-06-27T04:54:23.268Z"
   },
   {
     "id": "ctx1",
@@ -115,9 +115,9 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "applied",
-    "generatedAt": "2026-06-27T02:30:17.963Z",
-    "outcomeAt": "2026-06-27T02:30:17.964Z",
-    "lifetimeMs": 1
+    "generatedAt": "2026-06-27T04:54:23.265Z",
+    "outcomeAt": "2026-06-27T04:54:23.267Z",
+    "lifetimeMs": 2
   },
   {
     "id": "s2",
@@ -128,8 +128,8 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "rejected",
-    "generatedAt": "2026-06-27T02:30:17.962Z",
-    "outcomeAt": "2026-06-27T02:30:17.962Z",
+    "generatedAt": "2026-06-27T04:54:23.264Z",
+    "outcomeAt": "2026-06-27T04:54:23.264Z",
     "lifetimeMs": 0
   },
   {
@@ -141,8 +141,8 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "applied",
-    "generatedAt": "2026-06-27T02:30:17.962Z",
-    "outcomeAt": "2026-06-27T02:30:17.962Z",
+    "generatedAt": "2026-06-27T04:54:23.264Z",
+    "outcomeAt": "2026-06-27T04:54:23.264Z",
     "lifetimeMs": 0
   },
   {
@@ -157,7 +157,7 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "pending",
-    "generatedAt": "2026-06-27T02:30:17.961Z"
+    "generatedAt": "2026-06-27T04:54:23.262Z"
   },
   {
     "id": "parent2",
@@ -168,9 +168,9 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "merged_into",
-    "generatedAt": "2026-06-27T02:30:17.961Z",
+    "generatedAt": "2026-06-27T04:54:23.262Z",
     "mergedInto": "child1",
-    "outcomeAt": "2026-06-27T02:30:17.961Z"
+    "outcomeAt": "2026-06-27T04:54:23.262Z"
   },
   {
     "id": "parent1",
@@ -181,9 +181,9 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "merged_into",
-    "generatedAt": "2026-06-27T02:30:17.960Z",
+    "generatedAt": "2026-06-27T04:54:23.262Z",
     "mergedInto": "child1",
-    "outcomeAt": "2026-06-27T02:30:17.961Z"
+    "outcomeAt": "2026-06-27T04:54:23.262Z"
   },
   {
     "id": "p2",
@@ -194,8 +194,8 @@
     "semanticSafetyScore": 0,
     "rewardScore": 0,
     "outcome": "applied",
-    "generatedAt": "2026-06-27T02:30:17.960Z",
-    "outcomeAt": "2026-06-27T02:30:17.960Z",
+    "generatedAt": "2026-06-27T04:54:23.261Z",
+    "outcomeAt": "2026-06-27T04:54:23.261Z",
     "lifetimeMs": 0
   },
   {
@@ -208,6 +208,6 @@
     "semanticSafetyScore": 0.9,
     "rewardScore": 0.85,
     "outcome": "pending",
-    "generatedAt": "2026-06-27T02:30:17.934Z"
+    "generatedAt": "2026-06-27T04:54:23.253Z"
   }
 ]

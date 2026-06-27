@@ -62,3 +62,6 @@
 {"timestamp":1782526207680,"modelId":"deepseek-chat","inputTokens":1000,"outputTokens":500,"costUsd":0.00028,"proposalId":"test-proposal","area":"feature"}
 {"timestamp":1782527285478,"modelId":"deepseek-chat","inputTokens":1000,"outputTokens":500,"costUsd":0.00028,"proposalId":"test-proposal","area":"feature"}
 {"timestamp":1782527453084,"modelId":"deepseek-chat","inputTokens":1000,"outputTokens":500,"costUsd":0.00028,"proposalId":"test-proposal","area":"feature"}
+{"timestamp":1782535253745,"modelId":"deepseek-chat","inputTokens":1000,"outputTokens":500,"costUsd":0.00028,"proposalId":"test-proposal","area":"feature"}
+{"timestamp":1782535892234,"modelId":"deepseek-chat","inputTokens":1000,"outputTokens":500,"costUsd":0.00028,"proposalId":"test-proposal","area":"feature"}
+{"timestamp":1782536078753,"modelId":"deepseek-chat","inputTokens":1000,"outputTokens":500,"costUsd":0.00028,"proposalId":"test-proposal","area":"feature"}
