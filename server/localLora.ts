@@ -31,6 +31,20 @@ export interface LoraConfig {
  */
 export async function runLocalLoraTraining(config: LoraConfig): Promise<{ success: boolean; outputDir?: string; error?: string }> {
   try {
+    // Validate required config fields
+    if (!config.modelId || typeof config.modelId !== 'string') {
+      return { success: false, error: "modelId is required and must be a string" };
+    }
+    if (config.batchSize !== undefined && (typeof config.batchSize !== 'number' || config.batchSize <= 0)) {
+      return { success: false, error: "batchSize must be a positive number" };
+    }
+    if (config.epochs !== undefined && (typeof config.epochs !== 'number' || config.epochs <= 0)) {
+      return { success: false, error: "epochs must be a positive number" };
+    }
+    if (config.learningRate !== undefined && (typeof config.learningRate !== 'number' || config.learningRate <= 0)) {
+      return { success: false, error: "learningRate must be a positive number" };
+    }
+
     let datasetPath = config.datasetPath;
     
     // If no dataset provided, auto-extract from RLHF database
