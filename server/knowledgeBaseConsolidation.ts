@@ -175,7 +175,7 @@ function promoteToConstitution(analysis: any): number {
   for (const pattern of (analysis.constitutionPatterns || [])) {
     if (typeof pattern !== "string" || pattern.length < 5) continue;
     if (!constitution.patterns) constitution.patterns = [];
-    if (!constitution.patterns.find((p: string) => p === pattern)) {
+    if (!constitution.patterns?.find((p: string) => p === pattern)) {
       constitution.patterns.push(pattern);
       count++;
     }
