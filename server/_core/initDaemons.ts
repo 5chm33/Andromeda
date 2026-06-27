@@ -309,6 +309,13 @@ import { getExecutionHistory } from "../codeExecutionSandbox";
 import { listTools } from "../toolUseOrchestrator";
 import { listPlugins } from "../pluginManager";
 import { getRequestLog } from "../httpClientManager";
+import { getReplayBuffer } from "../eventBus";
+import { getDeliveries } from "../webhookManager";
+import { getTasks } from "../taskScheduler";
+import { getShellHistory } from "../shellExecutor";
+import { getConfig } from "../configManager";
+import { listSecretNames } from "../secretsVault";
+
 
 
 
