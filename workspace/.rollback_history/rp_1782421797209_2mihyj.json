@@ -1,8 +1,0 @@
-{
-  "id": "rp_1782421797209_2mihyj",
-  "description": "Before proposal prop_1782421657436_8y6nx2: Add null guard before .filter() on potentially undefined metrics",
-  "timestamp": 1782421797209,
-  "author": "self-improve",
-  "files": [],
-  "metadata": {}
-}

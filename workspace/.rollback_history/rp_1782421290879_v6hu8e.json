@@ -1,8 +1,0 @@
-{
-  "id": "rp_1782421290879_v6hu8e",
-  "description": "Before proposal prop_1782421005798_s1t73n: Add null/undefined guard before .map() in retrieveChunks",
-  "timestamp": 1782421290879,
-  "author": "self-improve",
-  "files": [],
-  "metadata": {}
-}

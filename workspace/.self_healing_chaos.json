@@ -1,21 +1,22 @@
 {
   "targets": [
     {
-      "moduleName": "testModuleEpsilon",
-      "moduleFile": "server/testModuleEpsilon.ts",
-      "resilienceScore": 0.2,
+      "moduleName": "selfRollback",
+      "moduleFile": "server/selfRollback.ts",
+      "resilienceScore": 0,
       "escalationLevel": 3,
       "priority": "critical",
       "failedFaults": [
-        "disk_io"
+        "rollback-dirty-fake-point-xyz",
+        "TypeScript check FAILED: Command failed: npx tsc --noEmit --project tsconfig.server.json"
       ],
-      "firstDetectedAt": 1782510598486,
-      "lastUpdatedAt": 1782510598486,
+      "firstDetectedAt": 1782525154782,
+      "lastUpdatedAt": 1782525155340,
       "rsiCyclesAttempted": 0,
       "resolved": false
     }
   ],
-  "lastChaosRunAt": 1782510598486,
+  "lastChaosRunAt": 1782525155340,
   "totalRsiCyclesTriggered": 0,
-  "savedAt": 1782510598486
+  "savedAt": 1782525155340
 }
