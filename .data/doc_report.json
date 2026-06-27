@@ -1,7 +1,7 @@
 {
-  "timestamp": 1782526089362,
+  "timestamp": 1782527423612,
   "totalModules": 817,
-  "documentedModules": 689,
+  "documentedModules": 688,
   "undocumentedExports": [
     {
       "filePath": "server/_core/imageGeneration.ts",
@@ -383,49 +383,7 @@
     },
     {
       "filePath": "server/advancedCache.ts",
-      "exportName": "createCache",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/advancedCache.ts",
-      "exportName": "cacheHas",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/advancedCache.ts",
-      "exportName": "cacheDelete",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/advancedCache.ts",
-      "exportName": "cacheClear",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/advancedCache.ts",
-      "exportName": "getCacheStats",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/advancedCache.ts",
-      "exportName": "getCacheKeys",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/advancedCache.ts",
       "exportName": "advancedCache",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/advancedCache.ts",
-      "exportName": "_resetAdvancedCacheForTest",
       "exportType": "function",
       "line": 0
     },
@@ -16250,7 +16208,7 @@
     {
       "filePath": "ARCHITECTURE.md",
       "type": "architecture",
-      "content": "Updated: 817 modules, 2707 undocumented exports"
+      "content": "Updated: 817 modules, 2700 undocumented exports"
     }
   ],
   "architectureUpdated": true
