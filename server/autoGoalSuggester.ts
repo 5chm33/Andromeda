@@ -222,7 +222,8 @@ export function stopAutoGoalSuggester(): void {
 }
 
 export function getSuggestions(limit = 20): GoalSuggestion[] {
-  return suggestions.slice(-limit);
+  const safeLimit = typeof limit === 'number' && limit > 0 ? limit : 20;
+  return suggestions.slice(-safeLimit);
 }
 
 export async function triggerSuggestionCycle(): Promise<GoalSuggestion[]> {
