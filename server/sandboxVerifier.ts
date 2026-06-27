@@ -313,7 +313,16 @@ export function quickValidate(content: string, filePath: string): { valid: boole
     }
 
     // Check for duplicate function declarations
-    const funcDecls = content.match(/(?:export\s+)?(?:async\s+)?function\s+(\w+)/g) || [];
+    // v14.1.3: Strip comments and string literals before checking for duplicate
+    // function declarations to avoid false positives on phrases like
+    // "function calling" appearing in JSDoc comments or string messages.
+    const strippedForDecls = content
+      .replace(/\/\*[\s\S]*?\*\//g, " ")   // block comments
+      .replace(/\/\/[^\n]*/g, " ")          // single-line comments
+      .replace(/`[^`]*`/g, '""')             // template literals
+      .replace(/"(?:[^"\\]|\\.)*"/g, '""')  // double-quoted strings
+      .replace(/'(?:[^'\\]|\\.)*'/g, "''"); // single-quoted strings
+    const funcDecls = strippedForDecls.match(/(?:export\s+)?(?:async\s+)?function\s+(\w+)/g) || [];
     const seen = new Set<string>();
     for (const decl of funcDecls) {
       if (seen.has(decl)) issues.push(`Duplicate declaration: ${decl}`);
