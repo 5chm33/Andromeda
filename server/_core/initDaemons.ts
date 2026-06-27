@@ -381,6 +381,12 @@ import { generateOptimizationReport } from "../resourceCostOptimizer";
 import { analyzeSpend } from "../cloudSpendAnalyzer";
 import { createAllocationRule, allocateCost } from "../costAllocationEngine";
 import { generateBillingReport } from "../billingReporter";
+import { registerService as registerGatewayService, routeRequest as routeGatewayRequest } from "../apiGateway";
+import { createPolicy as createRlPolicy, checkRateLimit as checkRl } from "../rateLimiter";
+import { registerSchema as registerValidationSchema, validateRequest as validateApiRequest } from "../requestValidator";
+import { registerTransformRule, transformResponse } from "../responseTransformer";
+import { registerVersion as registerApiVersion, resolveVersion } from "../apiVersionRouter";
+import { registerCircuit as registerCb, canExecute, recordSuccess as recordCbSuccess, recordFailure as recordCbFailure } from "../apiCircuitBreaker";
 
 
 
