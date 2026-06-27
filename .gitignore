@@ -139,3 +139,51 @@ data/system_memory.json
 .data/skill_graph.json
 data/andromeda.db-wal
 data/andromeda.db-shm
+
+# ─── Production cleanup (added v14.1.8) ─────────────────────────────────────
+# Legacy wiring scripts
+wire_v*.py
+
+# One-time migration patches
+patch_*.cjs
+patch_*.py
+
+# Versioned roadmap/grade/audit documents (kept in docs/history only)
+V[0-9]*_ROADMAP.md
+V[0-9]*_HARDENING_REPORT.md
+SOTA_AUDIT_AND_ROADMAP_*.md
+SOTA_ENHANCEMENT_ROADMAP.md
+ANDROMEDA_FINAL_GRADE_*.md
+ANDROMEDA_SOTA_ASSESSMENT.md
+ANDROMEDA_V[0-9]*_ROADMAP.md
+FINAL_AUDIT_REPORT.md
+FINAL_VALUATION_ANALYSIS.md
+GRADE_AND_ROADMAP.md
+STRATEGIC_ASSESSMENT.md
+CHANGELOG_AI.md
+PROPOSED_GOALS.md
+HYPOTHESES.json
+Andromeda_v[0-9]*_*.md
+docs/history/
+
+# Debug/dev-only files
+DEBUG_launcher.bat
+live_run_report.md
+live_stress_test.mjs
+harden_console_logs.py
+rsi_hyperparameters.json
+
+# Redundant lock file (pnpm-lock.yaml is canonical)
+package-lock.json
+
+# Runtime workspace state (regenerated at startup)
+workspace/
+!workspace/.gitkeep
+
+# Test artifacts
+test-results/
+
+# Runtime database (large, regenerated)
+data/andromeda.db
+data/andromeda.db-wal
+data/andromeda.db-shm
