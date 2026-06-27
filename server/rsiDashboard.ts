@@ -194,6 +194,29 @@ async function _buildSnapshot(): Promise<DashboardSnapshot> {
   };
 
   // Gather data from all subsystems (graceful — each is optional)
+
+  // v16.1.0: Populate RSI engine stats — was previously hardcoded to all-zeros
+  // causing the dashboard to always show 0% success rate and "Idle" even when running.
+  try {
+    const { getRSIStatus } = await import("./rsiEngine.js");
+    const rsiStatus = getRSIStatus();
+    const totalDecided = (rsiStatus.totalApplied ?? 0) + (rsiStatus.totalRejected ?? 0);
+    snapshot.rsi.isRunning = rsiStatus.phase === "proposing" || rsiStatus.phase === "applying" || rsiStatus.phase === "validating" || rsiStatus.phase === "verifying" || rsiStatus.phase === "recording" || rsiStatus.phase === "observing" || rsiStatus.phase === "evaluating";
+    snapshot.rsi.cyclesCompleted = rsiStatus.cycleCount ?? 0;
+    snapshot.rsi.lastCycleAt = rsiStatus.lastCycleAt ? new Date(rsiStatus.lastCycleAt).toISOString() : null;
+    snapshot.rsi.nextCycleAt = rsiStatus.nextCycleAt ? new Date(rsiStatus.nextCycleAt).toISOString() : null;
+    snapshot.rsi.adaptiveIntervalMs = rsiStatus.config?.intervalMs ?? snapshot.rsi.adaptiveIntervalMs;
+    // Compute acceptance rates from recent cycles
+    const recentCycles = rsiStatus.recentCycles ?? [];
+    const last10 = recentCycles.slice(0, 10);
+    const last10Applied = last10.filter((c: any) => c.proposalsApplied > 0 || c.outcome === "applied").length;
+    snapshot.rsi.acceptanceRateLast10 = last10.length > 0 ? last10Applied / last10.length : 0;
+    const last50 = recentCycles.slice(0, 50);
+    const last50Applied = last50.filter((c: any) => c.proposalsApplied > 0 || c.outcome === "applied").length;
+    snapshot.rsi.acceptanceRateLast50 = last50.length > 0 ? last50Applied / last50.length : 0;
+    snapshot.rsi.acceptanceRateAllTime = totalDecided > 0 ? (rsiStatus.totalApplied ?? 0) / totalDecided : 0;
+  } catch { /* non-fatal — rsiEngine may not be available in all environments */ }
+
   try {
     const { getFineTunerStatus } = await import("./continuousFineTuner.js");
     const ft = getFineTunerStatus();
@@ -236,7 +259,7 @@ async function _buildSnapshot(): Promise<DashboardSnapshot> {
     snapshot.proposals.pending = all.filter(p => p.status === "pending").length;
     snapshot.proposals.applied = all.filter(p => p.status === "applied").length;
     snapshot.proposals.rejected = all.filter(p => p.status === "rejected").length;
-    snapshot.proposals.processing = all.filter(p => p.status === "pending").length;
+    snapshot.proposals.processing = all.filter(p => p.status === "approved").length; // 'approved' = in-flight/processing
 
     // Last 5 applied proposals
     snapshot.proposals.recentlyApplied = all

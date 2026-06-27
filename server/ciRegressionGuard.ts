@@ -165,15 +165,26 @@ export function runTestSuiteGate(
     return { passed: true, testsRun: 0, testsFailed: 0, durationMs: Date.now() - startedAt, detail: "No prior metrics — gate passed" };
   }
 
-  // Check if any recent metrics show a regression trend
-  const regressionCheck = checkForRegressions(proposalId);
-  if (regressionCheck.hasRegression) {
+  // v14.1.0: Scope regression check to THIS FILE's metrics only.
+  // The previous implementation called checkForRegressions() which scanned ALL metrics
+  // globally — a single unrelated metric fluctuation anywhere in the system would block
+  // every proposal. Now we only check metrics keyed to the target file.
+  const fileRegressions: string[] = [];
+  for (const [key, values] of fileMetrics) {
+    if (values.length < 2) continue;
+    const current = values[values.length - 1];
+    const previous = values[values.length - 2];
+    if (current < previous * 0.95) {
+      fileRegressions.push(`Metric '${key}' dropped from ${previous.toFixed(2)} to ${current.toFixed(2)} (-${((1 - current / previous) * 100).toFixed(1)}%)`);
+    }
+  }
+  if (fileRegressions.length > 0) {
     return {
       passed: false,
       testsRun: fileMetrics.length,
-      testsFailed: regressionCheck.regressions.length,
+      testsFailed: fileRegressions.length,
       durationMs: Date.now() - startedAt,
-      detail: `Regression detected: ${regressionCheck.regressions.slice(0, 3).join(", ")}`,
+      detail: `File-scoped regression detected: ${fileRegressions.slice(0, 3).join(", ")}`,
     };
   }
 

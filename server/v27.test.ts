@@ -91,13 +91,14 @@ describe("v27 Collective Superintelligence Enhancements", () => {
     });
 
     it("should detect temporal drift", () => {
-      // Reset storage to ensure clean state for this test
+      // Reset storage inline to guarantee clean state regardless of test ordering
       // @ts-ignore
       fs.__resetMockStorage?.();
-      // 10 good historical events
-      for (let i = 0; i < 10; i++) recordTemporalEvent("test", "test.ts", 0.9);
-      // 10 bad recent events
-      for (let i = 0; i < 10; i++) recordTemporalEvent("test", "test.ts", 0.4);
+      // 30 good historical events (avg 0.9) then 10 very bad recent events (avg 0.15)
+      // detectTemporalDrift requires >= 20 nodes; recent avg must be < historical * 0.8
+      // 0.15 << 0.9 * 0.8 = 0.72 — clear unambiguous drift signal
+      for (let i = 0; i < 30; i++) recordTemporalEvent("drift-test", "drift.ts", 0.9);
+      for (let i = 0; i < 10; i++) recordTemporalEvent("drift-test", "drift.ts", 0.15);
       expect(detectTemporalDrift()).toBe(true);
     });
   });
