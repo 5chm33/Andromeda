@@ -363,6 +363,12 @@ import { generatePostmortem } from "../postmortemAnalyzer";
 import { registerSlo, recordMeasurement, getSloStatus } from "../sloTracker";
 import { initErrorBudget, consumeErrorBudget } from "../errorBudgetMonitor";
 import { registerOncallSchedule, routeIncident } from "../oncallRouter";
+import { scanDependencies } from "../dependencyScanner";
+import { generateAdvisoryReport } from "../vulnerabilityAdvisor";
+import { checkLicenses } from "../licenseChecker";
+import { generateSbom } from "../sbomGenerator";
+import { auditSupplyChain } from "../supplyChainAuditor";
+import { analyzeDependencyGraph } from "../dependencyGraphAnalyzer";
 
 
 
