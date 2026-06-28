@@ -92,30 +92,35 @@ async function queryProvider(
   }
 
   const start = Date.now();
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${apiKey}`,
-      ...extraHeaders,
-    },
-    body: JSON.stringify({
-      model,
-      messages: [{ role: "user", content: prompt }],
-      max_tokens: 1000,
-      temperature: 0.3,
-    }),
-  });
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+        ...extraHeaders,
+      },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 1000,
+        temperature: 0.3,
+      }),
+    });
 
-  if (!response.ok) {
-    throw new Error(`${url} ${response.status}: ${await response.text()}`);
+    if (!response.ok) {
+      throw new Error(`${url} ${response.status}: ${await response.text()}`);
+    }
+
+    const data = await response.json() as any;
+    return {
+      content: data.choices?.[0]?.message?.content || "",
+      latencyMs: Date.now() - start,
+    };
+  } catch (err) {
+    console.error(`[selfConsistency] queryProvider failed for ${url}: ${(err as Error).message}`);
+    throw err;
   }
-
-  const data = await response.json() as any;
-  return {
-    content: data.choices?.[0]?.message?.content || "",
-    latencyMs: Date.now() - start,
-  };
 }
 
 async function queryOpenRouter(
