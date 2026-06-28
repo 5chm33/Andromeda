@@ -68,11 +68,14 @@ export async function runLocalLoraTraining(config: LoraConfig): Promise<{ succes
 
     log.info(`[LoRA] Starting fine-tuning for ${config.modelId} using dataset ${datasetPath}`);
 
+    if (!datasetPath) {
+      return { success: false, error: "datasetPath is required but was not provided or generated" };
+    }
     return new Promise((resolve) => {
       const pythonProcess = spawn("python3", [
         scriptPath,
         "--model_id", config.modelId,
-        "--dataset_path", datasetPath!,
+        "--dataset_path", datasetPath,
         "--output_dir", outputDir,
         "--batch_size", (config.batchSize ?? 4).toString(),
         "--epochs", (config.epochs ?? 3).toString(),
