@@ -234,7 +234,7 @@ Andromeda is evaluated on [SWE-bench](https://www.swebench.com/) — the standar
 | **Model** | Claude Sonnet 4.5 via OpenRouter (localization) + DeepSeek Coder (repair) |
 | **Prediction file** | [`data/swebench/andromeda_verified_from_full_predictions.jsonl`](data/swebench/andromeda_verified_from_full_predictions.jsonl) |
 
-<!-- SWEBENCH_SCORE_PLACEHOLDER -->
+**SWE-bench Verified:** 0/500 (0.0%) resolved — [full results](data/swebench/)
 
 ### SWE-bench Full (2,294 tasks)
 

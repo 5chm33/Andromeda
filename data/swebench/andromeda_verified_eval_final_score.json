@@ -1,0 +1,10 @@
+{
+  "benchmark": "SWE-bench Verified",
+  "run_id": "andromeda_verified_final",
+  "date": "2026-06-28T16:12:54Z",
+  "resolved": 0,
+  "total": 500,
+  "pct_resolved": 0.0,
+  "predictions_file": "andromeda_verified_from_full_predictions.jsonl",
+  "elapsed_minutes": 106
+}
