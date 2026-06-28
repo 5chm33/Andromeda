@@ -227,8 +227,3 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). The short version: run `pnpm test` befor
 
 MIT — see [LICENSE](LICENSE).
 
----
-
-<div align="center">
-<sub><em>This README was written by a human. The code improvements were not.</em></sub>
-</div>
