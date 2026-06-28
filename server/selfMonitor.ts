@@ -458,14 +458,15 @@ export function startMonitor(): void {
   loadPersistedMetrics();
 
   monitorStartTime = Date.now();
+  let lastPersist = 0;
   monitorInterval = setInterval(() => {
     runHealthCheck().catch((err) => console.warn(`[SelfMonitor] Health check error: ${(err as Error).message}`));
+    const now = Date.now();
+    if (now - lastPersist >= PERSIST_INTERVAL_MS) {
+      persistMetrics();
+      lastPersist = now;
+    }
   }, config.checkIntervalMs);
-
-  // v5.32: Start periodic persistence
-  persistInterval = setInterval(() => {
-    persistMetrics();
-  }, PERSIST_INTERVAL_MS);
 
   // Run an immediate check
   runHealthCheck().catch((err) => console.warn(`[SelfMonitor] Initial health check error: ${(err as Error).message}`));
@@ -475,10 +476,6 @@ export function stopMonitor(): void {
   if (monitorInterval) {
     clearInterval(monitorInterval);
     monitorInterval = null;
-  }
-  if (persistInterval) {
-    clearInterval(persistInterval);
-    persistInterval = null;
   }
   // v5.32: Persist metrics on shutdown
   persistMetrics();
