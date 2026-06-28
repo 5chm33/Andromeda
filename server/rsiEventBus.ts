@@ -66,6 +66,14 @@ function addToHistory(event: RsiEvent): void {
  * Emit an RSI event to all connected SSE clients.
  */
 export function emitRsiEvent(type: RsiEventType, data: Record<string, unknown> = {}): void {
+  if (!type || typeof type !== 'string') {
+    console.warn('[rsiEventBus] Invalid event type:', type);
+    return;
+  }
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    console.warn('[rsiEventBus] Invalid event data, using empty object');
+    data = {};
+  }
   const event: RsiEvent = { type, timestamp: Date.now(), data };
   addToHistory(event);
 
