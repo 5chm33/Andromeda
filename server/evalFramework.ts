@@ -705,16 +705,34 @@ export async function runEvaluation(
   const BATCH_SIZE = 10;  // v10.5.7: restored to 10 — sandbox LLM endpoint handles parallel load cleanly
   for (let i = 0; i < tasks.length; i += BATCH_SIZE) {
     const batch = tasks.slice(i, i + BATCH_SIZE);
-    const batchResults = await Promise.all(batch.map(async (task) => {
-      const taskStart = Date.now();
-      let response = "";
-      try {
-        response = await runAgent(task.prompt, task.maxTokens, task.timeoutMs);
-      } catch (err) {
-        response = `error: ${String(err)}`;
-      }
-      return scoreResponse(task, response, Date.now() - taskStart);
-    }));
+    let batchResults: EvalResult[];
+    try {
+      batchResults = await Promise.all(batch.map(async (task) => {
+        const taskStart = Date.now();
+        let response = "";
+        try {
+          response = await runAgent(task.prompt, task.maxTokens, task.timeoutMs);
+        } catch (err) {
+          response = `error: ${String(err)}`;
+        }
+        return scoreResponse(task, response, Date.now() - taskStart);
+      }));
+    } catch (err) {
+      console.error(`Batch processing error: ${err}`);
+      batchResults = batch.map(task => ({
+        taskId: task.id,
+        timestamp: Date.now(),
+        passed: false,
+        score: 0,
+        responseTokens: 0,
+        durationMs: 0,
+        response: `error: batch failed - ${String(err)}`,
+        matchedKeywords: [],
+        missedKeywords: task.expectedKeywords,
+        foundForbidden: [],
+        error: String(err),
+      }));
+    }
     for (const result of batchResults) {
       results.push(result);
       const task = batch.find(t => t.id === result.taskId)!;
@@ -762,7 +780,13 @@ export function getEvalHistory(limit = 10): EvalRun[] {
   try {
     if (!fs.existsSync(RESULTS_FILE)) return [];
     const lines = fs.readFileSync(RESULTS_FILE, "utf-8").trim().split("\n").filter(Boolean);
-    return lines.slice(-limit).map(l => JSON.parse(l) as EvalRun);
+    return lines.slice(-limit).map(l => {
+      try {
+        return JSON.parse(l) as EvalRun;
+      } catch {
+        return null;
+      }
+    }).filter((r): r is EvalRun => r !== null);
   } catch {
     return [];
   }
