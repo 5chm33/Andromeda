@@ -77,6 +77,10 @@ function metricKey(name: string, labels: Record<string, string> = {}): string {
 // ─── Metrics API ──────────────────────────────────────────────────────────────
 
 export function incrementCounter(name: string, labels: Record<string, string> = {}, by: number = 1): void {
+  if (typeof by !== 'number' || !Number.isFinite(by) || by < 0) {
+    console.warn(`[Observability] Invalid increment value for counter "${name}": ${by}`);
+    return;
+  }
   const key = metricKey(name, labels);
   const existing = metrics.get(key) as Counter | undefined;
   if (existing) {
