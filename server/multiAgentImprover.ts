@@ -166,14 +166,14 @@ export async function reviewWithAgents(ctx: ImprovementContext): Promise<Consens
 
   // Security agent has veto power
   const securityVote = votes.find(v => v.agent === "security");
-  const securityVetoed = securityVote && !securityVote.approve && securityVote.confidence > 0.8;
+  const securityVetoed = securityVote !== undefined && !securityVote.approve && securityVote.confidence > 0.8;
 
   return {
     approved: approved && !securityVetoed,
     votes,
     overallConfidence,
-    reasoning: securityVetoed
-      ? `VETOED by Security Agent: ${securityVote!.reasoning}`
+    reasoning: securityVetoed && securityVote
+      ? `VETOED by Security Agent: ${securityVote.reasoning}`
       : `Consensus: ${Math.round(overallConfidence * 100)}% approval (threshold: 60%)`,
     requiredChanges: allSuggestions.slice(0, 5),
   };
