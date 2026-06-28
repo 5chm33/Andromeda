@@ -257,13 +257,19 @@ async function executeTask(taskId: string): Promise<void> {
 
     switch (task.actionType) {
       case "webhook": {
-        const resp = await fetch(task.webhookUrl ?? "", {
-          method: task.webhookMethod ?? "POST",
-          headers: { "Content-Type": "application/json" },
-          body: task.webhookBody ?? JSON.stringify({ taskId, action: task.action, timestamp: new Date().toISOString() }),
-          signal: AbortSignal.timeout(30000),
-        });
-        result = `HTTP ${resp.status}: ${(await resp.text()).slice(0, 500)}`;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+        try {
+          const resp = await fetch(task.webhookUrl ?? "", {
+            method: task.webhookMethod ?? "POST",
+            headers: { "Content-Type": "application/json" },
+            body: task.webhookBody ?? JSON.stringify({ taskId, action: task.action, timestamp: new Date().toISOString() }),
+            signal: controller.signal,
+          });
+          result = `HTTP ${resp.status}: ${(await resp.text()).slice(0, 500)}`;
+        } finally {
+          clearTimeout(timeoutId);
+        }
         break;
       }
       case "script": {
