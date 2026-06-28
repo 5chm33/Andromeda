@@ -257,32 +257,37 @@ async function trainWithOllama(
 ): Promise<LoraTrainingResult> {
   const baseUrl = process.env.OLLAMA_BASE_URL ?? "http://localhost:11434";
 
-  // Ollama doesn't support LoRA training directly — use it for inference-time
-  // adapter loading via Modelfile. We create a Modelfile that references the
-  // base model and any adapter weights.
-  const modelfile = `FROM ${request.modelId}\nPARAMETER temperature 0.7\n`;
+  try {
+    // Ollama doesn't support LoRA training directly — use it for inference-time
+    // adapter loading via Modelfile. We create a Modelfile that references the
+    // base model and any adapter weights.
+    const modelfile = `FROM ${request.modelId}\nPARAMETER temperature 0.7\n`;
 
-  const response = await fetch(`${baseUrl}/api/create`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name: `andromeda-lora-${Date.now()}`,
-      modelfile,
-    }),
-    signal: AbortSignal.timeout(60_000),
-  });
+    const response = await fetch(`${baseUrl}/api/create`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: `andromeda-lora-${Date.now()}`,
+        modelfile,
+      }),
+      signal: AbortSignal.timeout(60_000),
+    });
 
-  if (!response.ok) {
-    throw new Error(`Ollama create failed: HTTP ${response.status}`);
+    if (!response.ok) {
+      throw new Error(`Ollama create failed: HTTP ${response.status}`);
+    }
+
+    return {
+      success: true,
+      backend: "ollama",
+      adapterPath: `ollama://andromeda-lora-${Date.now()}`,
+      durationMs: Date.now() - startMs,
+      simulationMode: false,
+    };
+  } catch (err) {
+    log.warn(`[loraBackendDetector] trainWithOllama failed:`, err);
+    throw err;
   }
-
-  return {
-    success: true,
-    backend: "ollama",
-    adapterPath: `ollama://andromeda-lora-${Date.now()}`,
-    durationMs: Date.now() - startMs,
-    simulationMode: false,
-  };
 }
 
 async function trainWithHuggingFace(
