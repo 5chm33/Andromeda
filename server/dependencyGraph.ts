@@ -245,6 +245,9 @@ export async function buildGraph(): Promise<GraphStats> {
     console.log(`[DependencyGraph] Built graph: ${graph.size} files, ${Array.from(graph.values()).reduce((sum, n) => sum + n.imports.length, 0)} edges`);
 
     return getGraphStats();
+  } catch (err) {
+    console.error("[DependencyGraph] Build failed:", err);
+    throw err;
   } finally {
     buildInProgress = false;
   }
