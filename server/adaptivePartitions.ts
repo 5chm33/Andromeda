@@ -88,13 +88,19 @@ export function calculateAdaptivePartitions(
   signals: TaskComplexitySignals,
   availableTokens: number
 ): PartitionAllocation {
+  // Validate and sanitize inputs
+  const safeSignals: TaskComplexitySignals = signals && typeof signals === 'object' && !Array.isArray(signals)
+    ? signals
+    : { toolCallCount: 0, averageToolOutputTokens: 0, taskType: 'unknown' as TaskComplexitySignals['taskType'], conversationTurns: 0, hasFileOperations: false, hasCodeExecution: false };
+  const safeAvailableTokens = typeof availableTokens === 'number' && availableTokens > 0 ? availableTokens : 1000;
+
   // Start with the base profile for this task type
-  const baseProfile = COMPLEXITY_PROFILES[signals.taskType] || COMPLEXITY_PROFILES.unknown;
+  const baseProfile = COMPLEXITY_PROFILES[safeSignals.taskType] || COMPLEXITY_PROFILES.unknown;
   const weights = { ...baseProfile };
 
   // Adjustment 1: If many tool calls, expand tier 3 (recent tool results) and tier 5 (older tool results)
-  if (signals.toolCallCount > 5) {
-    const boost = Math.min(0.15, signals.toolCallCount * 0.01);
+  if (safeSignals.toolCallCount > 5) {
+    const boost = Math.min(0.15, safeSignals.toolCallCount * 0.01);
     weights[3] += boost;
     weights[5] += boost * 0.5;
     weights[6] -= boost * 0.75;
