@@ -163,6 +163,14 @@ export function receiveLoraPackage(
   pkg: LoraWeightPackage,
   outputDir: string
 ): { success: boolean; reason?: string } {
+  // Input validation
+  if (!pkg || typeof pkg !== 'object' || !pkg.weightsDelta || !pkg.checksum || !pkg.packageId) {
+    return { success: false, reason: "invalid_package" };
+  }
+  if (typeof outputDir !== 'string' || outputDir.length === 0) {
+    return { success: false, reason: "invalid_output_dir" };
+  }
+
   // Validate checksum
   const rawBytes = Buffer.from(pkg.weightsDelta, "base64");
   const actualChecksum = crypto.createHash("sha256").update(rawBytes).digest("hex");
