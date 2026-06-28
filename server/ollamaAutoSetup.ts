@@ -120,7 +120,7 @@ async function detectVramGb(): Promise<number | null> {
       log.info(`[OllamaAutoSetup] Detected NVIDIA GPU: ${freeMb}MB free VRAM (~${freeGb}GB)`);
       return freeGb;
     }
-  } catch { /* nvidia-smi not available */ }
+  } catch (err: unknown) { log.warn(`[OllamaAutoSetup] nvidia-smi detection failed: ${err instanceof Error ? err.message : String(err)}`); }
 
   // Try rocm-smi (AMD GPUs on Linux)
   try {
