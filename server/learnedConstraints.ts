@@ -184,6 +184,7 @@ export function getAllConstraints(): LearnedConstraint[] {
  * Returns the first violated constraint, or null if clean.
  */
 export function checkLearnedConstraints(snippet: string): LearnedConstraint | null {
+  if (typeof snippet !== 'string' || snippet.length === 0) return null;
   const active = getLearnedConstraints();
   for (const constraint of active) {
     try {
@@ -204,6 +205,7 @@ export function checkLearnedConstraints(snippet: string): LearnedConstraint | nu
  * Disable a constraint (soft-delete — keeps the record for audit purposes).
  */
 export function disableConstraint(id: string): boolean {
+  if (typeof id !== 'string' || id.length === 0) return false;
   const store = loadStore();
   const constraint = store.constraints.find(c => c.id === id);
   if (constraint == null) return false;
