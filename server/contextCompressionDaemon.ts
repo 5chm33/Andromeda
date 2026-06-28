@@ -103,7 +103,8 @@ async function compressWithLLM(content: string, tokenCount: number): Promise<str
       return `[Compressed from ${tokenCount} tokens] ${result.content}`;
     }
   } catch (err) {
-    console.warn("[ContextCompression] LLM summarization failed, using truncation:", err);
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    console.warn("[ContextCompression] LLM summarization failed, using truncation:", errorMessage);
   }
   return null;
 }
