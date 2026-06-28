@@ -1,0 +1,14 @@
+{
+  "run_id": "andromeda_full_20260628_0922",
+  "dataset": "full",
+  "total": 2294,
+  "done": 2294,
+  "attempted": 2294,
+  "patched": 2291,
+  "empty": 2,
+  "errors": 1,
+  "start_time": "2026-06-28T09:23:05.768541+00:00",
+  "last_update": "2026-06-28T13:13:18.901011+00:00",
+  "eta_hours": 0.0,
+  "rate_per_hour": 598.0
+}
