@@ -184,7 +184,8 @@ async function summariseCluster(
     ]);
     return lesson?.trim() ??
       `Cluster "${clusterKey}": ${episodes.length} episodes (${successes} successes, ${failures} failures).`;
-  } catch {
+  } catch (error) {
+    console.error(`Error summarising cluster ${clusterKey}:`, error);
     return `Cluster "${clusterKey}": ${episodes.length} episodes (${successes} successes, ${failures} failures).`;
   }
 }
