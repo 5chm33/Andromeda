@@ -43,6 +43,7 @@ function getEncoderCached(model: string): ReturnType<typeof getEncoding> {
 }
 
 function countTokens(text: string, model?: string): number {
+  if (typeof text !== 'string' || text.length === 0) return 0;
   try {
     return getEncoderCached(model || "gpt-4").encode(text).length;
   } catch {
