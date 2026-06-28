@@ -234,6 +234,15 @@ function selectProvider(taskType: TaskType): string {
  * (call applyRouting() to switch).
  */
 export function routeQuery(query: string, hasImages?: boolean): RoutingDecision {
+  if (typeof query !== 'string' || query.trim().length === 0) {
+    return {
+      taskType: 'general',
+      selectedProvider: DEFAULT_ROUTING_TABLE.general[0],
+      confidence: 0,
+      reason: 'Empty or invalid query — defaulting to general',
+      previousProvider: getActiveProvider().id,
+    };
+  }
   const { type, confidence } = classifyTask(query, hasImages);
   const selectedProvider = selectProvider(type);
   const previousProvider = getActiveProvider().id;
@@ -253,6 +262,9 @@ export function routeQuery(query: string, hasImages?: boolean): RoutingDecision 
  */
 export function applyRouting(decision: RoutingDecision): boolean {
   if (!routingConfig.enabled) return false;
+  if (!decision || typeof decision !== 'object' || typeof decision.selectedProvider !== 'string' || typeof decision.confidence !== 'number') {
+    return false;
+  }
 
   const current = getActiveProvider().id;
   if (current === decision.selectedProvider) return false;
