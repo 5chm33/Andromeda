@@ -111,6 +111,9 @@ export function predictTruncation(
   model: string,
   upcomingContent: string
 ): TruncationPrediction {
+  if (!sessionId || !model || typeof upcomingContent !== 'string') {
+    throw new Error('Invalid arguments to predictTruncation');
+  }
   const contextLimit = getContextWindow(model);
   const maxOutput = getMaxOutputTokens(model);
   const upcomingTokens = estimateTokens(upcomingContent);
