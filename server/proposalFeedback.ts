@@ -97,12 +97,21 @@ export function recordRejectionFeedback(
   rejectionReason: string
 ): void {
   try {
+    if (typeof proposalId !== 'string' || !proposalId.trim() ||
+        typeof targetFile !== 'string' || !targetFile.trim() ||
+        typeof title !== 'string' || !title.trim() ||
+        typeof originalSnippet !== 'string' ||
+        typeof proposedSnippet !== 'string' ||
+        typeof rejectionReason !== 'string' || !rejectionReason.trim()) {
+      console.warn('[ProposalFeedback] Invalid input to recordRejectionFeedback');
+      return;
+    }
     const store = loadStore();
     const feedback: ProposalRejectionFeedback = {
       proposalId,
       targetFile: path.basename(targetFile),
       title,
-      originalSnippet: originalSnippet.slice(0, 500), // cap to avoid bloat
+      originalSnippet: originalSnippet.slice(0, 500),
       proposedSnippet: proposedSnippet.slice(0, 500),
       rejectionReason: rejectionReason.slice(0, 300),
       rejectionCategory: classifyRejection(rejectionReason),
