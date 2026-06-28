@@ -137,6 +137,12 @@ export class SwarmTestnet extends EventEmitter {
    * Submit a proposal to the testnet for consensus voting.
    */
   async submitProposal(content: string, proposedBy: string): Promise<TestnetProposal> {
+    if (typeof content !== 'string' || content.trim().length === 0) {
+      throw new Error('Invalid proposal content: must be a non-empty string');
+    }
+    if (typeof proposedBy !== 'string' || proposedBy.trim().length === 0) {
+      throw new Error('Invalid proposer ID: must be a non-empty string');
+    }
     const proposalId = `proposal-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     const requiredQuorum = Math.ceil(this.nodes.size * this.config.quorumThreshold);
 
