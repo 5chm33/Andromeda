@@ -59,6 +59,29 @@ export interface AgentConfig {
   sessionId?: string;  // v5.75: Per-conversation session ID for token budget tracking
 }
 
+/**
+ * Validates an AgentConfig object and returns sanitized values or throws.
+ * Ensures numeric fields are within safe ranges and required fields are present.
+ */
+export function validateAgentConfig(config: AgentConfig): AgentConfig {
+  if (typeof config.maxSteps !== 'number' || config.maxSteps < 1 || config.maxSteps > 1000) {
+    throw new Error(`Invalid maxSteps: ${config.maxSteps}. Must be between 1 and 1000.`);
+  }
+  if (typeof config.maxTokens !== 'number' || config.maxTokens < 1 || config.maxTokens > 1000000) {
+    throw new Error(`Invalid maxTokens: ${config.maxTokens}. Must be between 1 and 1000000.`);
+  }
+  if (typeof config.temperature !== 'number' || config.temperature < 0 || config.temperature > 2) {
+    throw new Error(`Invalid temperature: ${config.temperature}. Must be between 0 and 2.`);
+  }
+  if (typeof config.workspaceDir !== 'string' || config.workspaceDir.trim().length === 0) {
+    throw new Error('workspaceDir must be a non-empty string.');
+  }
+  if (typeof config.onEvent !== 'function') {
+    throw new Error('onEvent must be a function.');
+  }
+  return config;
+}
+
 export interface PendingHumanQuestion {
   question: string;
   resolve: (answer: string) => void;
