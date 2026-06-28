@@ -162,9 +162,10 @@ async function runRebuild(proposalIds: string[]): Promise<RebuildRecord> {
     output = result.stdout + result.stderr;
     success = true;
     log.info(`Rebuild ${id} succeeded in ${Date.now() - startMs}ms`);
-  } catch (err: any) {
-    output = err.stdout ?? "";
-    error = err.stderr ?? err.message ?? String(err);
+  } catch (err: unknown) {
+    const errorObj = err instanceof Error ? err : new Error(String(err));
+    output = (err && typeof err === 'object' && 'stdout' in err) ? (err as any).stdout : '';
+    error = (err && typeof err === 'object' && 'stderr' in err) ? (err as any).stderr : errorObj.message;
     log.warn(`Rebuild ${id} failed: ${error?.slice(0, 200)}`);
   }
 
