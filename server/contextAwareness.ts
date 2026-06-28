@@ -65,6 +65,9 @@ export function recordContextUsage(
   inputTokens: number,
   outputTokens: number
 ): ContextUsage {
+  if (!sessionId || !model || typeof inputTokens !== 'number' || typeof outputTokens !== 'number') {
+    throw new Error('Invalid arguments to recordContextUsage');
+  }
   const contextLimit = getContextWindow(model);
   const totalUsed = inputTokens + outputTokens;
   const usagePercent = (totalUsed / contextLimit) * 100;
