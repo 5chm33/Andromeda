@@ -287,8 +287,8 @@ export async function generateBenchmarks(
   } = options;
 
   const gap = gapAnalysis ?? analyzeGaps();
-  const targetCategory = options.targetCategory ?? gap.targetCategories[0] ?? "reasoning";
-  const targetDifficulty = options.targetDifficulty ?? gap.recommendedDifficulty;
+  const targetCategory = options.targetCategory ?? (gap.targetCategories.length > 0 ? gap.targetCategories[0] : "reasoning");
+  const targetDifficulty = options.targetDifficulty ?? gap.recommendedDifficulty ?? "medium";
 
   log.info(`[adaptiveEval] Generating ${count} benchmark(s): category=${targetCategory}, difficulty=${targetDifficulty}`);
 
