@@ -279,12 +279,17 @@ async function callAgent(
   agent: AgentSpec,
   messages: Array<{ role: string; content: string }>,
 ): Promise<string> {
-  // v5.93: Use active provider (Claude via OpenRouter) instead of hardcoded DeepSeek.
-  const { simpleChatCompletion } = await import("./llmProvider.js");
-  return await simpleChatCompletion(
-    [{ role: "system", content: agent.systemPrompt }, ...messages],
-    { maxTokens: 4000, temperature: 0.4 },
-  );
+  try {
+    // v5.93: Use active provider (Claude via OpenRouter) instead of hardcoded DeepSeek.
+    const { simpleChatCompletion } = await import("./llmProvider.js");
+    return await simpleChatCompletion(
+      [{ role: "system", content: agent.systemPrompt }, ...messages],
+      { maxTokens: 4000, temperature: 0.4 },
+    );
+  } catch (err) {
+    console.error(`[callAgent] Error calling ${agent.name}:`, err);
+    throw new Error(`Agent ${agent.name} failed: ${err instanceof Error ? err.message : String(err)}`);
+  }
 }
 
 // ─── Debate Protocol ──────────────────────────────────────────────────────────
