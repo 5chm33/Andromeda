@@ -579,6 +579,10 @@ export function recordModificationOutcome(input: {
   rollbackReason?: string;
   healthImpact?: "improved" | "degraded" | "neutral";
 }): void {
+  if (!input || typeof input.targetFile !== "string" || typeof input.proposalTitle !== "string" || typeof input.category !== "string" || typeof input.success !== "boolean") {
+    console.warn("[KnowledgeBase] Invalid input to recordModificationOutcome, skipping.");
+    return;
+  }
   const category = input.success ? "success" : "antipattern";
   const confidence = input.success ? 0.8 : 0.9; // High confidence in anti-patterns
 
