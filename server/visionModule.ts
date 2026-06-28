@@ -106,30 +106,35 @@ async function analyzeWithOpenAI(
   prompt: string,
   options: VisionAnalysisOptions
 ): Promise<string> {
-  const { default: OpenAI } = await import('openai');
-  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  try {
+    const { default: OpenAI } = await import('openai');
+    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-  const response = await client.chat.completions.create({
-    model: 'gpt-4o',
-    max_tokens: options.maxTokens ?? 1024,
-    messages: [
-      {
-        role: 'user',
-        content: [
-          {
-            type: 'image_url',
-            image_url: {
-              url: `data:${mimeType};base64,${imageData}`,
-              detail: options.detail ?? 'auto',
+    const response = await client.chat.completions.create({
+      model: 'gpt-4o',
+      max_tokens: options.maxTokens ?? 1024,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'image_url',
+              image_url: {
+                url: `data:${mimeType};base64,${imageData}`,
+                detail: options.detail ?? 'auto',
+              },
             },
-          },
-          { type: 'text', text: prompt },
-        ],
-      },
-    ],
-  });
+            { type: 'text', text: prompt },
+          ],
+        },
+      ],
+    });
 
-  return response.choices?.[0]?.message?.content ?? '';
+    return response.choices?.[0]?.message?.content ?? '';
+  } catch (error) {
+    console.error('OpenAI vision analysis failed:', error);
+    throw error;
+  }
 }
 
 /**
