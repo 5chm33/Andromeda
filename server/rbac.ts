@@ -83,24 +83,24 @@ declare global {
 async function resolveRole(req: Request): Promise<{ role: Role; actorId: string }> {
   // 1. System token (service-to-service)
   const systemToken = process.env.SYSTEM_TOKEN;
-  if (systemToken && req.headers["x-system-token"] === systemToken) {
+  if (typeof systemToken === 'string' && systemToken.length > 0 && req.headers["x-system-token"] === systemToken) {
     return { role: "system", actorId: "system" };
   }
 
   // 2. Admin token (simple bearer token for CLI/scripts)
   const adminToken = process.env.ADMIN_TOKEN;
-  if (adminToken) {
+  if (typeof adminToken === 'string' && adminToken.length > 0) {
     const auth = req.headers.authorization ?? "";
-    if (auth === `Bearer ${adminToken}`) {
+    if (typeof auth === 'string' && auth === `Bearer ${adminToken}`) {
       return { role: "admin", actorId: "admin-token" };
     }
   }
 
   // 3. Dev/test role override (only when NODE_ENV !== "production")
   if (process.env.NODE_ENV !== "production") {
-    const devRole = req.headers["x-actor-role"] as Role | undefined;
-    if (devRole && ROLE_LEVELS[devRole] !== undefined) {
-      return { role: devRole, actorId: `dev-${devRole}` };
+    const devRole = req.headers["x-actor-role"];
+    if (typeof devRole === 'string' && ROLE_LEVELS[devRole as Role] !== undefined) {
+      return { role: devRole as Role, actorId: `dev-${devRole}` };
     }
   }
 
