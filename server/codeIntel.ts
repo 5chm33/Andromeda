@@ -304,6 +304,7 @@ export function searchWorkspaceCode(
   pattern: string,
   options: { caseSensitive?: boolean; maxResults?: number } = {}
 ): CodeSearchResult[] {
+  if (typeof pattern !== 'string' || pattern.length === 0) return [];
   const workspaceDir = getWorkspaceDir();
   const results: CodeSearchResult[] = [];
   const maxResults = options.maxResults ?? 50;
