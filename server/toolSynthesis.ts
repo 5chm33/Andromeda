@@ -57,7 +57,10 @@ function loadRegistry(): SynthesizedTool[] {
     const p = getRegistryPath();
     if (!fs.existsSync(p)) return [];
     return JSON.parse(fs.readFileSync(p, "utf8")) as SynthesizedTool[];
-  } catch { return []; }
+  } catch (err) {
+    console.warn('[ToolSynthesis] Failed to load registry:', err instanceof Error ? err.message : String(err));
+    return [];
+  }
 }
 
 function saveRegistry(tools: SynthesizedTool[]): void {
