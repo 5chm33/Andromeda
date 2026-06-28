@@ -75,6 +75,7 @@ export interface BehavioralViolation {
  * This tells the RSI engine exactly what behavior is expected for each function.
  */
 export function extractContracts(testFilePath: string): BehavioralContract[] {
+  if (typeof testFilePath !== "string" || testFilePath.trim() === "") return [];
   if (!fs.existsSync(testFilePath)) return [];
 
   const content = fs.readFileSync(testFilePath, "utf-8");
