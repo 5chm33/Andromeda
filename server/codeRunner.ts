@@ -28,23 +28,28 @@ function detectLanguage(code: string, hint?: string): "python" | "javascript" | 
 }
 
 async function findPythonCmd(): Promise<string> {
-  // Windows uses 'py' launcher or 'python'; Linux/Mac use 'python3'
-  const candidates = process.platform === "win32"
-    ? ["py", "python", "python3"]
-    : ["python3", "python"];
-  for (const cmd of candidates) {
-    try {
-      await new Promise<void>((resolve, reject) => {
-        const p = spawn(cmd, ["--version"], { timeout: 3000 });
-        p.on("close", (code) => (code === 0 ? resolve() : reject()));
-        p.on("error", reject);
-      });
-      return cmd;
-    } catch {
-      // try next
+  try {
+    // Windows uses 'py' launcher or 'python'; Linux/Mac use 'python3'
+    const candidates = process.platform === "win32"
+      ? ["py", "python", "python3"]
+      : ["python3", "python"];
+    for (const cmd of candidates) {
+      try {
+        await new Promise<void>((resolve, reject) => {
+          const p = spawn(cmd, ["--version"], { timeout: 3000 });
+          p.on("close", (code) => (code === 0 ? resolve() : reject()));
+          p.on("error", reject);
+        });
+        return cmd;
+      } catch {
+        // try next
+      }
     }
+    return "python3"; // fallback with helpful error message
+  } catch (err) {
+    console.warn("findPythonCmd unexpected error:", err);
+    return "python3";
   }
-  return "python3"; // fallback with helpful error message
 }
 
 async function runPython(code: string, tmpDir: string): Promise<RunResult> {
