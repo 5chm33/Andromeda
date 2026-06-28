@@ -116,6 +116,10 @@ function generateId(): string {
  * Record an audit event. Non-blocking — writes to disk asynchronously.
  */
 export function audit(event: Omit<AuditEvent, "id" | "timestamp">): void {
+  if (!event || typeof event !== 'object' || !event.category || !event.action || typeof event.actor !== 'string') {
+    log.warn(`[auditLog] Invalid audit event: ${JSON.stringify(event)}`);
+    return;
+  }
   const fullEvent: AuditEvent = {
     id: generateId(),
     timestamp: Date.now(),
