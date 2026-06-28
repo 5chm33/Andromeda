@@ -160,6 +160,14 @@ export function publish(opts: {
   replyTo?: string;
   tags?: string[];
 }): ContextEntry {
+  if (!opts || typeof opts !== 'object') throw new Error('publish: opts must be an object');
+  if (typeof opts.channel !== 'string' || !opts.channel) throw new Error('publish: channel is required');
+  if (typeof opts.agentId !== 'string' || !opts.agentId) throw new Error('publish: agentId is required');
+  if (typeof opts.agentRole !== 'string' || !opts.agentRole) throw new Error('publish: agentRole is required');
+  if (typeof opts.type !== 'string' || !opts.type) throw new Error('publish: type is required');
+  if (typeof opts.title !== 'string' || !opts.title) throw new Error('publish: title is required');
+  if (typeof opts.content !== 'string' || !opts.content) throw new Error('publish: content is required');
+
   const channel = ensureChannel(opts.channel);
 
   const entry: ContextEntry = {
