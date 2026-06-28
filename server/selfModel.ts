@@ -285,48 +285,54 @@ export function updateTrends(trends: PerformanceTrend[]): void {
  * Full refresh of the self-model — queries all subsystems.
  */
 export async function refreshSelfModel(): Promise<SelfModelState> {
-  // Discover capabilities
-  state.capabilities = await discoverCapabilities();
-
-  // Get goals from recursiveGoals (using static import)
   try {
-    const goals = _recursiveGoals.listMetaGoals({ status: "active" });
-    state.activeGoals = goals
-      .slice(0, 10)
-      .map((g: any) => ({
-        id: g.id,
-        title: g.title,
-        status: g.status,
-        progress: g.subGoals?.length > 0
-          ? Math.round(g.subGoals.filter((s: any) => s.status === "completed").length / g.subGoals.length * 100)
-          : 0,
-        startedAt: g.createdAt,
-      }));
-  } catch { /* goals not available */ }
+    // Discover capabilities
+    state.capabilities = await discoverCapabilities();
 
-  // Get model info
-  try {
-    state.currentModel = process.env.LLM_DEFAULT_MODEL || "deepseek/deepseek-chat";
-    state.contextWindow = getContextWindow(state.currentModel);
-  } catch { /* use defaults */ }
+    // Get goals from recursiveGoals (using static import)
+    try {
+      const goals = _recursiveGoals.listMetaGoals({ status: "active" });
+      state.activeGoals = goals
+        .slice(0, 10)
+        .map((g: any) => ({
+          id: g.id,
+          title: g.title,
+          status: g.status,
+          progress: g.subGoals?.length > 0
+            ? Math.round(g.subGoals.filter((s: any) => s.status === "completed").length / g.subGoals.length * 100)
+            : 0,
+          startedAt: g.createdAt,
+        }));
+    } catch { /* goals not available */ }
 
-  // Get resource usage
-  try {
-    const report = _selfMonitor.getHealthReport();
-    state.resources.apiCallsToday = report.totalSamples || 0;
-  } catch { /* non-critical */ }
+    // Get model info
+    try {
+      state.currentModel = process.env.LLM_DEFAULT_MODEL || "deepseek/deepseek-chat";
+      state.contextWindow = getContextWindow(state.currentModel);
+    } catch { /* use defaults */ }
 
-  state.uptime = Date.now() - startTime;
-  state.lastUpdated = Date.now();
+    // Get resource usage
+    try {
+      const report = _selfMonitor.getHealthReport();
+      state.resources.apiCallsToday = report.totalSamples || 0;
+    } catch { /* non-critical */ }
 
-  // v5.34: Validate self-model consistency
-  const validation = validateSelfModel();
-  if (!validation.valid) {
-    console.warn(`[SelfModel] Validation warnings: ${validation.issues.join("; ")}`);
+    state.uptime = Date.now() - startTime;
+    state.lastUpdated = Date.now();
+
+    // v5.34: Validate self-model consistency
+    const validation = validateSelfModel();
+    if (!validation.valid) {
+      console.warn(`[SelfModel] Validation warnings: ${validation.issues.join("; ")}`);
+    }
+
+    saveState();
+    return state;
+  } catch (err) {
+    console.error(`[SelfModel] refreshSelfModel failed:`, err);
+    // Return current state as fallback
+    return state;
   }
-
-  saveState();
-  return state;
 }
 
 /**
