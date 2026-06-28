@@ -126,19 +126,24 @@ export interface WorkspaceFile {
  * Lists all files in the workspace directory.
  */
 export async function listWorkspaceFiles(): Promise<WorkspaceFile[]> {
-  const workspaceDir = getWorkspaceDir();
-  const entries = fs.readdirSync(workspaceDir, { withFileTypes: true });
-  return entries
-    .map((entry) => {
-      const stat = fs.statSync(path.join(workspaceDir, entry.name));
-      return {
-        name: entry.name,
-        size: stat.size,
-        modifiedAt: stat.mtime.toISOString(),
-        isDirectory: entry.isDirectory(),
-      };
-    })
-    .sort((a, b) => b.modifiedAt.localeCompare(a.modifiedAt));
+  try {
+    const workspaceDir = getWorkspaceDir();
+    const entries = fs.readdirSync(workspaceDir, { withFileTypes: true });
+    return entries
+      .map((entry) => {
+        const stat = fs.statSync(path.join(workspaceDir, entry.name));
+        return {
+          name: entry.name,
+          size: stat.size,
+          modifiedAt: stat.mtime.toISOString(),
+          isDirectory: entry.isDirectory(),
+        };
+      })
+      .sort((a, b) => b.modifiedAt.localeCompare(a.modifiedAt));
+  } catch (err) {
+    console.error("Failed to list workspace files:", err);
+    return [];
+  }
 }
 
 /**
