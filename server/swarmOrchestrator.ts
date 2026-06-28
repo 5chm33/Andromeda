@@ -314,13 +314,14 @@ export async function dispatchTask<TInput, TOutput>(
       updatePeerTrust(peer.instanceId, true, 0.02);
       return { instanceId: peer.instanceId, output, latencyMs, verified: true, error: null };
     } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
       updatePeerTrust(peer.instanceId, false, 0.05);
       return {
         instanceId: peer.instanceId,
         output: null as unknown as TOutput,
         latencyMs: config.peerTimeoutMs,
         verified: false,
-        error: String(err),
+        error: errorMessage,
       };
     }
   });
