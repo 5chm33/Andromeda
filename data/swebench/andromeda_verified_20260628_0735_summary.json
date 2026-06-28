@@ -1,0 +1,14 @@
+{
+  "run_id": "andromeda_verified_20260628_0735",
+  "dataset": "verified",
+  "total": 500,
+  "done": 80,
+  "attempted": 80,
+  "patched": 80,
+  "empty": 0,
+  "errors": 0,
+  "start_time": "2026-06-28T07:35:13.549308+00:00",
+  "last_update": "2026-06-28T07:44:10.679953+00:00",
+  "eta_hours": 0.8,
+  "rate_per_hour": 536.0
+}
