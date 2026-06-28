@@ -72,24 +72,30 @@ export async function storagePut(
   data: Buffer | Uint8Array | string,
   contentType = "application/octet-stream"
 ): Promise<{ key: string; url: string }> {
-  const { baseUrl, apiKey } = getStorageConfig();
-  const key = normalizeKey(relKey);
-  const uploadUrl = buildUploadUrl(baseUrl, key);
-  const formData = toFormData(data, contentType, key.split("/").pop() ?? key);
-  const response = await fetch(uploadUrl, {
-    method: "POST",
-    headers: buildAuthHeaders(apiKey),
-    body: formData,
-  });
+  try {
+    const { baseUrl, apiKey } = getStorageConfig();
+    const key = normalizeKey(relKey);
+    const uploadUrl = buildUploadUrl(baseUrl, key);
+    const formData = toFormData(data, contentType, key.split("/").pop() ?? key);
+    const response = await fetch(uploadUrl, {
+      method: "POST",
+      headers: buildAuthHeaders(apiKey),
+      body: formData,
+    });
 
-  if (!response.ok) {
-    const message = await response.text().catch(() => response.statusText);
+    if (!response.ok) {
+      const message = await response.text().catch(() => response.statusText);
+      throw new Error(
+        `Storage upload failed (${response.status} ${response.statusText}): ${message}`
+      );
+    }
+    const url = (await response.json()).url;
+    return { key, url };
+  } catch (error) {
     throw new Error(
-      `Storage upload failed (${response.status} ${response.statusText}): ${message}`
+      `Storage upload failed: ${error instanceof Error ? error.message : String(error)}`
     );
   }
-  const url = (await response.json()).url;
-  return { key, url };
 }
 
 export async function storageGet(relKey: string): Promise<{ key: string; url: string; }> {
