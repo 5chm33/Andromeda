@@ -550,7 +550,10 @@ export async function autoExtractMemories(
   if (!apiKey) return [];
 
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
     const response = await fetch((() => { try { return _memGetProvider().apiUrl; } catch { return "https://api.deepseek.com/v1/chat/completions"; } })(), {
+      signal: controller.signal,
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
