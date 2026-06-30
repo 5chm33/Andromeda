@@ -1,0 +1,11 @@
+{
+  "run_id": "andromeda_sota_20260628_1450",
+  "dataset": "verified",
+  "total": 500,
+  "done": 500,
+  "patched": 62,
+  "errors": 0,
+  "patch_rate": 0.124,
+  "elapsed_hours": 1.475447107884619,
+  "completed_at": "2026-06-28T16:19:34.355356+00:00"
+}
