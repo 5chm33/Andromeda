@@ -109,27 +109,27 @@ describe('extractPatchFromLLMResponse', () => {
 describe('parseTestCounts', () => {
   it('parses passed and failed counts from pytest output', () => {
     const output = '5 passed, 2 failed in 1.23s';
-    const { passed, failed } = parseTestCounts(output);
+    const { passed, failed } = parseTestCounts(output, 'test__test-1');
     expect(passed).toBe(5);
     expect(failed).toBe(2);
   });
 
   it('handles output with only passed tests', () => {
     const output = '10 passed in 0.5s';
-    const { passed, failed } = parseTestCounts(output);
+    const { passed, failed } = parseTestCounts(output, 'test__test-1');
     expect(passed).toBe(10);
     expect(failed).toBe(0);
   });
 
   it('handles output with only failed tests', () => {
     const output = '3 failed in 0.5s';
-    const { passed, failed } = parseTestCounts(output);
+    const { passed, failed } = parseTestCounts(output, 'test__test-1');
     expect(passed).toBe(0);
     expect(failed).toBe(3);
   });
 
   it('returns zeros for unrecognized output', () => {
-    const { passed, failed } = parseTestCounts('no test output here');
+    const { passed, failed } = parseTestCounts('no test output here', 'test__test-1');
     expect(passed).toBe(0);
     expect(failed).toBe(0);
   });
@@ -192,7 +192,7 @@ describe('buildAgentPrompt', () => {
     const prompt = buildAgentPrompt(
       'django__django-12308',
       'Fix the bug in QuerySet.filter()',
-      'def filter(self): pass',
+      { 'filter.py': 'def filter(self): pass' },
       { name: 'conservative', temperature: 0.0, llmProvider: async () => '' }
     );
     expect(prompt).toContain('django__django-12308');
@@ -203,7 +203,7 @@ describe('buildAgentPrompt', () => {
     const prompt = buildAgentPrompt(
       'test__test-1',
       'The filter method is broken',
-      'def filter(): return None',
+      { 'filter.py': 'def filter(): return None' },
       { name: 'creative', temperature: 0.4, llmProvider: async () => '' }
     );
     expect(prompt).toContain('The filter method is broken');
