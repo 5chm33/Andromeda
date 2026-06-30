@@ -114,7 +114,8 @@ export function buildAgentPrompt(
   issueDescription: string,
   fileContents: Record<string, string>,
   agentConfig: AgentConfig,
-  failToPassTests: string[] = []
+  failToPassTests: string[] = [],
+  testPatch: string = ''
 ): string {
   const styleHints: Record<string, string> = {
     conservative: 'Make the MINIMAL possible change. Fix the bug with the fewest lines changed.',
@@ -136,10 +137,16 @@ export function buildAgentPrompt(
     return `${header}\n\`\`\`python\n${text}\n\`\`\``;
   }).join('\n\n');
 
-  // Include failing test names so the LLM knows exactly what it needs to make pass
-  const testSection = failToPassTests.length > 0
-    ? `\n## Failing Tests (your fix must make these pass)\n${failToPassTests.slice(0, 10).join('\n')}\n`
+  // Include failing test names AND test code so LLM knows exactly what to make pass
+  const testNames = failToPassTests.length > 0
+    ? `## Failing Tests (your fix must make these pass)\n${failToPassTests.slice(0, 10).join('\n')}\n`
     : '';
+
+  const testCode = testPatch
+    ? `## New Test Code (this test will be added and must pass)\n\`\`\`diff\n${testPatch.slice(0, 3000)}\n\`\`\`\n`
+    : '';
+
+  const testSection = (testNames || testCode) ? `\n${testNames}${testCode}` : '';
 
   return `You are an expert Python software engineer solving a GitHub issue.
 
@@ -241,7 +248,7 @@ export async function runConsensus(
   // ── Phase 1: Parallel Patch Generation ──────────────────────────────────────
   const patchGenerationPromises = agents.map(async (agent): Promise<{ agent: AgentConfig; patch: string; durationMs: number }> => {
     const genStart = Date.now();
-    const prompt = buildAgentPrompt(instanceId, issueDescription, fileContents, agent, options?.failToPassTests ?? []);
+    const prompt = buildAgentPrompt(instanceId, issueDescription, fileContents, agent, options?.failToPassTests ?? [], options?.testPatch ?? '');
 
     try {
       const response = await agent.llmProvider(prompt);

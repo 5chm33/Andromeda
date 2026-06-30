@@ -245,6 +245,7 @@ export function buildRevisionPrompt(
     fileContents?: Record<string, string>;  // CURRENT state of files (after patch applied)
     originalFileContents?: Record<string, string>;  // ORIGINAL state before any patches
     failToPassTests?: string[];
+    testPatch?: string;  // The new test code that must pass
   }
 ): string {
   // Show the CURRENT state of the files (after the failed patch was applied)
@@ -263,9 +264,15 @@ export function buildRevisionPrompt(
     ? `## Issue Description\n${options.issueDescription}\n\n`
     : '';
 
-  const testSection = options?.failToPassTests && options.failToPassTests.length > 0
+  const testNames = options?.failToPassTests && options.failToPassTests.length > 0
     ? `## Tests That Must Pass\n${options.failToPassTests.slice(0, 10).join('\n')}\n\n`
     : '';
+
+  const testCode = options?.testPatch
+    ? `## New Test Code (this test will be added and must pass)\n\`\`\`diff\n${options.testPatch.slice(0, 3000)}\n\`\`\`\n\n`
+    : '';
+
+  const testSection = testNames + testCode;
 
   return `You are an expert Python software engineer fixing a bug in a repository.
 
@@ -455,6 +462,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
             fileContents: currentFileContents,  // CURRENT state after patch
             originalFileContents: fileContents,  // Original for diff baseline
             failToPassTests,
+            testPatch,  // New test code that must pass
           }
         );
 

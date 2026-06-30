@@ -290,7 +290,8 @@ async function generateInitialPatch(
   instanceId: string,
   issueDescription: string,
   fileContents: Record<string, string>,
-  failToPassTests: string[] = []
+  failToPassTests: string[] = [],
+  testPatch: string = ''
 ): Promise<string> {
   // Only use diff format for truly large files where complete output would overflow
   // Complete-file format is more reliable since LLM doesn't need to guess line numbers
@@ -304,11 +305,17 @@ async function generateInitialPatch(
     return `### ${fp}\n\`\`\`python\n${truncated}\n\`\`\``;
   }).join('\n\n');
 
-  // Include failing test names so the LLM knows exactly what it needs to make pass
-  const testContext = failToPassTests.length > 0
-    ? `\n## Failing Tests (your fix must make these pass)
-${failToPassTests.slice(0, 10).join('\n')}\n`
+  // Include failing test names AND test code so LLM knows exactly what to make pass
+  const testNames = failToPassTests.length > 0
+    ? `## Failing Tests (your fix must make these pass)\n${failToPassTests.slice(0, 10).join('\n')}\n`
     : '';
+
+  // Include the test patch so LLM can see exactly what behavior is expected
+  const testCode = testPatch
+    ? `## New Test Code (this test will be added and must pass)\n\`\`\`diff\n${testPatch.slice(0, 3000)}\n\`\`\`\n`
+    : '';
+
+  const testContext = (testNames || testCode) ? `\n${testNames}${testCode}` : '';
 
   const outputInstructions = useDiffFormat
     ? `Output a unified diff patch (git diff format) with ONLY the changed lines:
@@ -527,7 +534,7 @@ async function main() {
 
       // ── Phase 1d: Generate initial patch ────────────────────────────────
       console.log('[Runner] Phase 1d: Generating initial patch...');
-      const initialPatch = await generateInitialPatch(instance_id, issueDescription, fileContents, failToPassList);
+      const initialPatch = await generateInitialPatch(instance_id, issueDescription, fileContents, failToPassList, test_patch || '');
       console.log(`[Runner] Initial patch: ${initialPatch.length} chars`);
 
       // ── Parse FAIL_TO_PASS tests ─────────────────────────────────────────
