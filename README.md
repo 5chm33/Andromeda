@@ -230,11 +230,12 @@ Andromeda is evaluated on [SWE-bench](https://www.swebench.com/) — the standar
 | Metric | Result |
 |---|---|
 | **Predictions generated** | 500 / 500 (100%) |
-| **Resolved (% passing tests)** | **32.1%** (52/162 evaluated instances) |
+| **Resolved (Official Score)** | **19.20%** (96 / 500 instances) |
+| **Resolve Rate (Evaluated)** | **28.66%** (96 / 335 clean patch applies) |
 | **Model** | Claude Sonnet 4.5 via OpenRouter (localization) + DeepSeek Coder (repair) |
-| **Prediction file** | [`data/swebench/andromeda_verified_from_full_predictions.jsonl`](data/swebench/andromeda_verified_from_full_predictions.jsonl) |
+| **Prediction file** | [`data/swebench/andromeda_sota_v3_fixed_predictions.jsonl`](data/swebench/andromeda_sota_v3_fixed_predictions.jsonl) |
 
-> *Note: Due to Docker image build timeouts on the evaluation server, 162 out of 500 instances were fully evaluated. The 32.1% resolve rate is based on this representative subset (primarily Django and Astropy).*
+> *Note: The official score is 19.20% across all 500 instances. 165 instances failed to evaluate due to malformed patch generation (e.g., null git hashes). Among the 335 instances where patches applied cleanly, the resolve rate was 28.66%. See `data/swebench/SWEBENCH_RESULTS.md` for full details.*
 
 ### SWE-bench Full (2,294 tasks)
 
