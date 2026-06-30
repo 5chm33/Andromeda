@@ -38,7 +38,7 @@ export const MAX_ATTEMPTS = 5;
 export const TEST_TIMEOUT_SECONDS = 300;
 
 /** Maximum number of traceback lines to include in the LLM feedback prompt. */
-const MAX_TRACEBACK_LINES = 100;
+const MAX_TRACEBACK_LINES = 150;
 
 /** Maximum chars of file content to show in prompts (prevents token overflow). */
 const MAX_FILE_CHARS = 8000;
@@ -140,18 +140,37 @@ export interface TracebackLoopResult {
 export function extractTracebackSummary(testOutput: string): string {
   const lines = testOutput.split('\n');
 
-  // Find the FAILED / ERROR section
-  const failureStart = lines.findIndex(l =>
-    l.includes('FAILED') || l.includes('ERROR') || l.includes('AssertionError') ||
-    l.includes('Traceback (most recent call last)') || l.includes('FAIL:')
+  // Priority 1: Find the === FAILURES === section (contains assertion diffs)
+  // This is the most useful section for the LLM to understand what went wrong
+  const failuresSectionStart = lines.findIndex(l =>
+    l.includes('=== FAILURES ===') || l.includes('====== FAILURES ======') ||
+    l.match(/={3,}\s*FAILURES\s*={3,}/)
   );
 
-  if (failureStart === -1) {
-    return lines.slice(-MAX_TRACEBACK_LINES).join('\n');
+  if (failuresSectionStart !== -1) {
+    // Take up to MAX_TRACEBACK_LINES from the FAILURES section
+    const relevantLines = lines.slice(failuresSectionStart, failuresSectionStart + MAX_TRACEBACK_LINES);
+    return relevantLines.join('\n');
   }
 
-  const relevantLines = lines.slice(failureStart, failureStart + MAX_TRACEBACK_LINES);
-  return relevantLines.join('\n');
+  // Priority 2: Find Traceback (most recent call last)
+  const tracebackStart = lines.findIndex(l =>
+    l.includes('Traceback (most recent call last)')
+  );
+  if (tracebackStart !== -1) {
+    return lines.slice(tracebackStart, tracebackStart + MAX_TRACEBACK_LINES).join('\n');
+  }
+
+  // Priority 3: Find FAIL: or ERROR: (Django test runner format)
+  const failStart = lines.findIndex(l =>
+    l.match(/^(FAIL|ERROR):\s/) || l.includes('AssertionError')
+  );
+  if (failStart !== -1) {
+    return lines.slice(failStart, failStart + MAX_TRACEBACK_LINES).join('\n');
+  }
+
+  // Fallback: last MAX_TRACEBACK_LINES
+  return lines.slice(-MAX_TRACEBACK_LINES).join('\n');
 }
 
 /**
@@ -178,6 +197,11 @@ export async function applyAndTest(
   const failToPassTests = options?.failToPassTests ?? [];
 
   try {
+    // ── Step 0: Reset the container's repo state from any previous attempt ──
+    await execAsync(
+      `docker exec ${containerName} bash -c "cd ${repoPath} && git checkout -- . 2>/dev/null || true"`
+    ).catch(() => { /* ignore */ });
+
     // ── Step 1: Apply the model patch ──────────────────────────────────────
     fs.writeFileSync(hostPatchPath, patch, 'utf-8');
     await execAsync(`docker cp ${hostPatchPath} ${containerName}:/tmp/candidate.diff`);
@@ -223,11 +247,9 @@ export async function applyAndTest(
     try { fs.unlinkSync(hostPatchPath); } catch { /* ignore */ }
     try { fs.unlinkSync(hostTestPatchPath); } catch { /* ignore */ }
     try { fs.unlinkSync(hostScriptPath); } catch { /* ignore */ }
-
-    // Reset the container's repo state for the next attempt
-    await execAsync(
-      `docker exec ${containerName} bash -c "cd ${repoPath} && git checkout -- . 2>/dev/null || true"`
-    ).catch(() => { /* ignore */ });
+    // NOTE: We do NOT reset the repo here anymore.
+    // The reset is done at the START of the next applyAndTest call (Step 0).
+    // This allows the caller to read the current patched file state for revision prompts.
   }
 }
 
@@ -465,6 +487,12 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
             testPatch,  // New test code that must pass
           }
         );
+
+        // Debug: write revision prompt and traceback to files for inspection
+        fs.writeFileSync(`/tmp/debug_revision_prompt_attempt${attempt}.txt`, revisionPrompt, 'utf-8');
+        fs.writeFileSync(`/tmp/debug_traceback_attempt${attempt}.txt`, tracebackSummary, 'utf-8');
+        console.log(`[TracebackLoop] Revision prompt written to /tmp/debug_revision_prompt_attempt${attempt}.txt`);
+        console.log(`[TracebackLoop] Traceback summary (first 500 chars): ${tracebackSummary.slice(0, 500)}`);
 
         try {
           const llmResponse = await llmProvider(revisionPrompt);

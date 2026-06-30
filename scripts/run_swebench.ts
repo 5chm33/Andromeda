@@ -354,6 +354,8 @@ ${outputInstructions}
 `;
 
   console.log('[Runner] Phase 1d: Calling LLM for initial patch...');
+  fs.writeFileSync('/tmp/debug_prompt.txt', prompt, 'utf-8');
+  console.log('[DEBUG] Full prompt written to /tmp/debug_prompt.txt');
   const response = await andromedaLLM(prompt, 0.0);
   console.log(`[Runner] Phase 1d: LLM responded (${response.length} chars)`);
 
