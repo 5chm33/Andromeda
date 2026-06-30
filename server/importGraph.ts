@@ -237,16 +237,26 @@ async function getGraph(): Promise<ImportGraph> {
  * Get all files that import from `file`.
  */
 export async function getImporters(file: string): Promise<string[]> {
-  const g = await getGraph();
-  return Array.from(g.importers.get(path.resolve(file)) ?? []);
+  try {
+    const g = await getGraph();
+    return Array.from(g.importers.get(path.resolve(file)) ?? []);
+  } catch (err) {
+    log.error(`[importGraph] getImporters failed for ${file}: ${err}`);
+    throw err;
+  }
 }
 
 /**
  * Get all files that `file` imports from.
  */
 export async function getImportees(file: string): Promise<string[]> {
-  const g = await getGraph();
-  return Array.from(g.importees.get(path.resolve(file)) ?? []);
+  try {
+    const g = await getGraph();
+    return Array.from(g.importees.get(path.resolve(file)) ?? []);
+  } catch (err) {
+    log.error(`[importGraph] getImportees failed for ${file}: ${err}`);
+    throw err;
+  }
 }
 
 /**
@@ -256,9 +266,14 @@ export async function getImportees(file: string): Promise<string[]> {
  * @param symbol  Name of the exported symbol (function, type, const, etc.)
  */
 export async function findSymbolUsages(file: string, symbol: string): Promise<string[]> {
-  const g = await getGraph();
-  const key = `${path.resolve(file)}::${symbol}`;
-  return Array.from(g.symbolUsages.get(key) ?? []);
+  try {
+    const g = await getGraph();
+    const key = `${path.resolve(file)}::${symbol}`;
+    return Array.from(g.symbolUsages.get(key) ?? []);
+  } catch (err) {
+    log.error(`[importGraph] findSymbolUsages failed for ${file}::${symbol}: ${err}`);
+    throw err;
+  }
 }
 
 /**

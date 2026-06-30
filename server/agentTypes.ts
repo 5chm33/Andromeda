@@ -64,6 +64,9 @@ export interface AgentConfig {
  * Ensures numeric fields are within safe ranges and required fields are present.
  */
 export function validateAgentConfig(config: AgentConfig): AgentConfig {
+  if (!config || typeof config !== 'object') {
+    throw new Error('config must be a non-null object.');
+  }
   if (typeof config.maxSteps !== 'number' || config.maxSteps < 1 || config.maxSteps > 1000) {
     throw new Error(`Invalid maxSteps: ${config.maxSteps}. Must be between 1 and 1000.`);
   }

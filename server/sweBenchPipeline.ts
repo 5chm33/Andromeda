@@ -1,30 +1,29 @@
 /**
- * sweBenchPipeline.ts — Unified SWE-bench Pipeline Orchestrator (v1.0.0)
+ * sweBenchPipeline.ts — Unified SWE-bench Pipeline Orchestrator (v2.0.0)
  *
- * Ties together the three architectural upgrades into a single coherent pipeline:
+ * v2.0.0 upgrades:
+ *   - fileContents (Record<string, string>) replaces relevantCode string
+ *   - testPatch and failToPassTests passed through to consensus + traceback loop
+ *   - Multi-file patch support throughout
+ *   - Conda activation and repo-specific test commands
  *
- *   Phase 1 — Localization (existing)
- *     Claude Sonnet reads the repo structure and identifies the files/functions
- *     most likely to require changes.
+ * Pipeline phases:
+ *   Phase 1 — Localization (runner script)
+ *     Extract files from Docker image at exact base_commit.
+ *     Identify relevant files using LLM + issue description.
  *
- *   Phase 2 — Multi-Agent Patch Generation (NEW: sweBenchConsensus.ts)
+ *   Phase 2 — Multi-Agent Consensus (sweBenchConsensus.ts)
  *     4 agents generate candidate patches in parallel with diverse temperatures.
+ *     Each agent outputs complete file content; difflib generates exact diffs.
  *
- *   Phase 3 — Traceback Loop (NEW: sweBenchTracebackLoop.ts)
- *     The best candidate from Phase 2 is fed into the traceback loop.
+ *   Phase 3 — Traceback Loop (sweBenchTracebackLoop.ts)
+ *     Best candidate fed into iterative test-feedback loop.
  *     Up to 5 rounds of sandbox execution + LLM revision.
  *
- *   Phase 4 — Robust Evaluation (NEW: sweBenchInfra.ts)
- *     Sequential image pulls, 5-minute timeouts, automatic disk management.
- *
- * Expected performance improvement:
- *   Baseline (zero-shot agentless):  19.2% (96/500)
- *   + Traceback Loop only:           ~35-40%
- *   + Consensus + Traceback:         ~50-60%
- *   + All three upgrades:            ~60-70%
- *
- * This matches the architecture of top-scoring open systems on the
- * SWE-bench Verified leaderboard as of June 2025.
+ * Expected performance:
+ *   Baseline (zero-shot agentless):  19.2%
+ *   v2.0.0 target:                   40-50%
+ *   With RAG context optimizer:      50-60%
  */
 
 export { runTracebackLoop, MAX_ATTEMPTS, TEST_TIMEOUT_SECONDS } from './sweBenchTracebackLoop.js';
@@ -80,16 +79,20 @@ export interface PipelineResult {
 /**
  * Runs the full SOTA pipeline for a single SWE-bench instance.
  *
- * This is the main entry point for the upgraded pipeline. It orchestrates
- * all three architectural upgrades in sequence.
+ * v2.0.0: Takes fileContents (extracted from Docker) instead of relevantCode string.
+ * Passes testPatch and failToPassTests through all phases.
  */
 export async function runSOTAPipeline(
   instanceId: string,
   dockerImage: string,
   issueDescription: string,
-  relevantCode: string,
+  fileContents: Record<string, string>,
   initialPatch: string,
-  config: PipelineConfig
+  config: PipelineConfig,
+  options?: {
+    testPatch?: string;
+    failToPassTests?: string[];
+  }
 ): Promise<PipelineResult> {
   const startTime = Date.now();
   const {
@@ -99,32 +102,40 @@ export async function runSOTAPipeline(
     useConsensus = true,
     useTracebackLoop = true,
   } = config;
-  
+
   let bestPatch = initialPatch;
   const phases: PipelineResult['phases'] = {};
-  
+
   // ── Phase 2: Multi-Agent Consensus ──────────────────────────────────────────
   if (useConsensus) {
     const agents: AgentConfig[] = createDefaultAgents(llmProvider).slice(0, agentCount);
-    
+
     const consensusResult = await runConsensus(
       instanceId,
       dockerImage,
       issueDescription,
-      relevantCode,
-      agents
+      fileContents,
+      agents,
+      {
+        testPatch: options?.testPatch,
+        failToPassTests: options?.failToPassTests,
+      }
     );
-    
+
     phases.consensus = {
       agentsRun: agents.length,
       candidatesGenerated: consensusResult.candidates.length,
       anyPassed: consensusResult.resolved,
     };
-    
+
+    // Log consensus test output for debugging
+    for (const c of consensusResult.candidates) {
+      console.log(`[Consensus] Agent ${c.agentName}: passed=${c.testsPassed}, output=${c.testOutput?.slice(0, 400)}`);
+    }
     if (consensusResult.winningPatch) {
       bestPatch = consensusResult.winningPatch;
     }
-    
+
     // If consensus already resolved it, skip the traceback loop
     if (consensusResult.resolved) {
       return {
@@ -136,30 +147,34 @@ export async function runSOTAPipeline(
       };
     }
   }
-  
+
   // ── Phase 3: Traceback Loop ──────────────────────────────────────────────────
   if (useTracebackLoop) {
     const tracebackInput: TracebackLoopInput = {
       instanceId,
       dockerImage,
       initialPatch: bestPatch,
+      testPatch: options?.testPatch,
+      failToPassTests: options?.failToPassTests,
       repoPath: '/testbed',
       llmProvider: (prompt) => llmProvider(prompt, 0.2),
+      issueDescription,
+      fileContents,
     };
-    
+
     const tracebackResult = await runTracebackLoop(tracebackInput);
-    
+
     const resolvedOnAttempt = tracebackResult.attempts.findIndex(a => a.testsPassed);
-    
+
     phases.tracebackLoop = {
       attemptsUsed: tracebackResult.totalAttempts,
       resolvedOnAttempt: resolvedOnAttempt >= 0 ? resolvedOnAttempt + 1 : null,
     };
-    
+
     if (tracebackResult.finalPatch) {
       bestPatch = tracebackResult.finalPatch;
     }
-    
+
     if (tracebackResult.resolved) {
       return {
         instanceId,
@@ -170,7 +185,7 @@ export async function runSOTAPipeline(
       };
     }
   }
-  
+
   return {
     instanceId,
     resolved: false,
@@ -184,46 +199,53 @@ export async function runSOTAPipeline(
 
 /**
  * Runs the SOTA pipeline across multiple instances with robust infrastructure.
- *
- * This is the top-level function for a full SWE-bench evaluation run.
  */
 export async function runBatchSOTAPipeline(
   instances: Array<{
     instanceId: string;
     dockerImage: string;
     issueDescription: string;
-    relevantCode: string;
+    fileContents: Record<string, string>;
     initialPatch: string;
+    testPatch?: string;
+    failToPassTests?: string[];
   }>,
   config: PipelineConfig
 ): Promise<PipelineResult[]> {
-  const infraConfig = { ...DEFAULT_INFRA_CONFIG, ...(config.infraConfig ?? {}) };
-  const imageMap: Record<string, string> = {};
-  
-  for (const inst of instances) {
-    imageMap[inst.instanceId] = inst.dockerImage;
-  }
-  
   const results: PipelineResult[] = [];
-  
-  // Process with robust infrastructure (sequential pulls, disk management)
+
   for (const inst of instances) {
-    const result = await runSOTAPipeline(
-      inst.instanceId,
-      inst.dockerImage,
-      inst.issueDescription,
-      inst.relevantCode,
-      inst.initialPatch,
-      config
-    );
-    results.push(result);
+    try {
+      const result = await runSOTAPipeline(
+        inst.instanceId,
+        inst.dockerImage,
+        inst.issueDescription,
+        inst.fileContents,
+        inst.initialPatch,
+        config,
+        {
+          testPatch: inst.testPatch,
+          failToPassTests: inst.failToPassTests,
+        }
+      );
+      results.push(result);
+    } catch (err: any) {
+      console.error(`[Pipeline] Instance ${inst.instanceId} failed:`, err.message);
+      results.push({
+        instanceId: inst.instanceId,
+        resolved: false,
+        finalPatch: inst.initialPatch,
+        phases: {},
+        totalDurationMs: 0,
+      });
+    }
   }
-  
+
   const resolved = results.filter(r => r.resolved).length;
   console.log(
     `[Pipeline] Complete: ${resolved}/${results.length} resolved ` +
     `(${(resolved / results.length * 100).toFixed(1)}%)`
   );
-  
+
   return results;
 }

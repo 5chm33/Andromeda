@@ -234,6 +234,12 @@ export function allocateTokens(
   requestedTokens: number,
   type: AllocationRecord["type"] = "response"
 ): AllocationResult {
+  if (typeof sessionId !== "string" || !sessionId) {
+    throw new Error("allocateTokens: sessionId must be a non-empty string");
+  }
+  if (typeof requestedTokens !== "number" || requestedTokens < 0) {
+    throw new Error("allocateTokens: requestedTokens must be a non-negative number");
+  }
   // v5.68: Auto-reset if session is exhausted to prevent spiral
   autoResetIfExhausted(sessionId);
   const session = getOrCreateSession(sessionId);
@@ -303,6 +309,15 @@ export function recordUsage(
   inputTokens: number,
   outputTokens: number
 ): void {
+  if (typeof sessionId !== "string" || !sessionId) {
+    throw new Error("recordUsage: sessionId must be a non-empty string");
+  }
+  if (typeof inputTokens !== "number" || inputTokens < 0) {
+    throw new Error("recordUsage: inputTokens must be a non-negative number");
+  }
+  if (typeof outputTokens !== "number" || outputTokens < 0) {
+    throw new Error("recordUsage: outputTokens must be a non-negative number");
+  }
   const session = getOrCreateSession(sessionId);
   session.inputTokens += inputTokens;
   session.outputTokens += outputTokens;

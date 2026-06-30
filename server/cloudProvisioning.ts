@@ -161,38 +161,43 @@ export function detectAvailableProviders(): CloudProvider[] {
 export async function provisionInstance(
   request: ProvisionRequest
 ): Promise<ProvisionedInstance> {
-  if (process.env.CLOUD_PROVISIONING_ENABLED !== "true") {
-    throw new Error("Cloud provisioning disabled. Set CLOUD_PROVISIONING_ENABLED=true to enable.");
-  }
+  try {
+    if (process.env.CLOUD_PROVISIONING_ENABLED !== "true") {
+      throw new Error("Cloud provisioning disabled. Set CLOUD_PROVISIONING_ENABLED=true to enable.");
+    }
 
-  const state = loadState();
+    const state = loadState();
 
-  // Budget check
-  if (state.totalSpendUsd >= state.monthlyBudgetUsd) {
-    throw new Error(
-      `Monthly cloud budget of $${state.monthlyBudgetUsd} exceeded. ` +
-      `Current spend: $${state.totalSpendUsd.toFixed(2)}`
-    );
-  }
+    // Budget check
+    if (state.totalSpendUsd >= state.monthlyBudgetUsd) {
+      throw new Error(
+        `Monthly cloud budget of ${state.monthlyBudgetUsd} exceeded. ` +
+        `Current spend: ${state.totalSpendUsd.toFixed(2)}`
+      );
+    }
 
-  log.info("Provisioning cloud instance", {
-    provider: request.provider,
-    instanceType: request.instanceType,
-    region: request.region,
-    purpose: request.purpose,
-  });
+    log.info("Provisioning cloud instance", {
+      provider: request.provider,
+      instanceType: request.instanceType,
+      region: request.region,
+      purpose: request.purpose,
+    });
 
-  const instanceId = `andromeda-${request.purpose.slice(0, 8)}-${crypto.randomBytes(4).toString("hex")}`;
+    const instanceId = `andromeda-${request.purpose.slice(0, 8)}-${crypto.randomBytes(4).toString("hex")}`;
 
-  switch (request.provider) {
-    case "fly":
-      return provisionFlyInstance(request, instanceId, state);
-    case "aws":
-      return provisionAwsInstance(request, instanceId, state);
-    case "hetzner":
-      return provisionHetznerInstance(request, instanceId, state);
-    default:
-      throw new Error(`Provider ${request.provider} not yet implemented`);
+    switch (request.provider) {
+      case "fly":
+        return provisionFlyInstance(request, instanceId, state);
+      case "aws":
+        return provisionAwsInstance(request, instanceId, state);
+      case "hetzner":
+        return provisionHetznerInstance(request, instanceId, state);
+      default:
+        throw new Error(`Provider ${request.provider} not yet implemented`);
+    }
+  } catch (err) {
+    log.error("provisionInstance failed", { error: String(err) });
+    throw err;
   }
 }
 

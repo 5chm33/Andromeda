@@ -1,4 +1,28 @@
 {
+  "36281205": {
+    "id": "36281205",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null check before accessing securityVote.reasoning",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8266735861332776,
+    "lastUsed": "2026-06-28T10:29:46.241Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "54608052": {
+    "id": "54608052",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add error type narrowing in catch blocks",
+    "successRate": 1,
+    "useCount": 5,
+    "avgResponseQuality": 0.8982776487555532,
+    "lastUsed": "2026-06-28T12:47:16.751Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
   "64203025": {
     "id": "64203025",
     "taskType": "self_improvement",
@@ -7,6 +31,18 @@
     "useCount": 1,
     "avgResponseQuality": 0.9103025621626132,
     "lastUsed": "2026-06-25T18:32:40.328Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "68886174": {
+    "id": "68886174",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add input validation to publish function",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.826620084439801,
+    "lastUsed": "2026-06-28T11:34:55.441Z",
     "tags": [
       "self_improvement"
     ]
@@ -1111,6 +1147,342 @@
     "useCount": 1,
     "avgResponseQuality": 0.8883864243490426,
     "lastUsed": "2026-06-26T09:22:08.555Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "66e8e23b": {
+    "id": "66e8e23b",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add timeout to fetch call in autoExtractMemories",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9162434477478469,
+    "lastUsed": "2026-06-28T07:55:02.606Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "2842a8f0": {
+    "id": "2842a8f0",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add input validation to searchWorkspaceCode pattern parameter",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9371472424268235,
+    "lastUsed": "2026-06-28T08:04:30.086Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "15aa9c98": {
+    "id": "15aa9c98",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null check before accessing securityVote properties",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8730216816185228,
+    "lastUsed": "2026-06-28T08:17:11.941Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "38f7c1c0": {
+    "id": "38f7c1c0",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Consolidate setInterval timers into single dispatch loop",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8253951844749632,
+    "lastUsed": "2026-06-28T09:24:32.819Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "6d68a600": {
+    "id": "6d68a600",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add input validation to audit function",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8654919243124137,
+    "lastUsed": "2026-06-28T09:25:08.576Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "115d2656": {
+    "id": "115d2656",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add try/catch to runEvaluation for error resilience",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8851914723002037,
+    "lastUsed": "2026-06-28T09:32:16.136Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "bfd2671": {
+    "id": "bfd2671",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add input validation to histogram and counter functions",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8799410423294927,
+    "lastUsed": "2026-06-28T09:43:05.859Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "62887e46": {
+    "id": "62887e46",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add try/catch to async functions for error resilience",
+    "successRate": 1,
+    "useCount": 4,
+    "avgResponseQuality": 0.9180589542245259,
+    "lastUsed": "2026-06-28T10:25:53.799Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "53396a3a": {
+    "id": "53396a3a",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add input validation to recordRejectionFeedback",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9230351798455754,
+    "lastUsed": "2026-06-28T10:26:55.983Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "3240853f": {
+    "id": "3240853f",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add input validation for external parameters in RBAC middleware",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8906352266095183,
+    "lastUsed": "2026-06-28T10:27:32.998Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "48c06ef4": {
+    "id": "48c06ef4",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add input validation to emitRsiEvent and registerSseClient",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8560003299462192,
+    "lastUsed": "2026-06-28T10:30:50.397Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "2c06faa2": {
+    "id": "2c06faa2",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add input validation to recordModificationOutcome",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8481590290671924,
+    "lastUsed": "2026-06-28T10:31:52.655Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "1ab545ff": {
+    "id": "1ab545ff",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add input validation to recordContextUsage and predictTruncation",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8715528505468596,
+    "lastUsed": "2026-06-28T10:32:38.990Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "54d46511": {
+    "id": "54d46511",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add input validation to exported functions",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.7,
+    "lastUsed": "2026-06-28T10:57:55.850Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "7909b445": {
+    "id": "7909b445",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null guard before accessing gapAnalysis properties in generateBenchmarks",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.870674622214175,
+    "lastUsed": "2026-06-28T11:24:02.284Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "3dde0fe1": {
+    "id": "3dde0fe1",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add input validation to predictTruncation",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8648052330396045,
+    "lastUsed": "2026-06-28T11:33:02.517Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "562fc266": {
+    "id": "562fc266",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add try/catch to async functions for error handling",
+    "successRate": 1,
+    "useCount": 3,
+    "avgResponseQuality": 0.924835497064581,
+    "lastUsed": "2026-06-28T12:32:16.457Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "53846c43": {
+    "id": "53846c43",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add try/catch to async functions for reliability",
+    "successRate": 1,
+    "useCount": 4,
+    "avgResponseQuality": 0.9139340385724233,
+    "lastUsed": "2026-06-28T13:50:11.841Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "426e51e5": {
+    "id": "426e51e5",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add timeout to webhook fetch call in executeTask",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.879565946244141,
+    "lastUsed": "2026-06-28T11:54:03.954Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "482ea6ff": {
+    "id": "482ea6ff",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add input validation to submitProposal and runScenario",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8864421019133395,
+    "lastUsed": "2026-06-28T12:18:06.394Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "467bd5ba": {
+    "id": "467bd5ba",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add input validation to calculateAdaptivePartitions and inferComplexitySignals",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8919675469712289,
+    "lastUsed": "2026-06-28T12:31:43.187Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "455d1075": {
+    "id": "455d1075",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add input validation to AgentConfig fields",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.83515427168419,
+    "lastUsed": "2026-06-28T12:48:13.602Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "7a77b605": {
+    "id": "7a77b605",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add input validation to calculateMaxTokens and countTokens",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9012643562395104,
+    "lastUsed": "2026-06-28T12:58:05.653Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "4b67e97e": {
+    "id": "4b67e97e",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add null check for datasetPath before use",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8615480923167169,
+    "lastUsed": "2026-06-28T13:09:54.781Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "3b5e9a14": {
+    "id": "3b5e9a14",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add input validation to checkLearnedConstraints and disableConstraint",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8661479551312232,
+    "lastUsed": "2026-06-28T13:12:30.866Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "26f5831d": {
+    "id": "26f5831d",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add input validation to extractContracts",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.9035244223816014,
+    "lastUsed": "2026-06-28T13:41:01.783Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "21241c7f": {
+    "id": "21241c7f",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add input validation to routeQuery and applyRouting",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8807279183168244,
+    "lastUsed": "2026-06-28T13:51:16.054Z",
+    "tags": [
+      "self_improvement"
+    ]
+  },
+  "18e1cb58": {
+    "id": "18e1cb58",
+    "taskType": "self_improvement",
+    "pattern": "RSI proposal: Add input validation to receiveLoraPackage and receiveToolProposal",
+    "successRate": 1,
+    "useCount": 1,
+    "avgResponseQuality": 0.8307969178784609,
+    "lastUsed": "2026-06-28T14:08:44.676Z",
     "tags": [
       "self_improvement"
     ]

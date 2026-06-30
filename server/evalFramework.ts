@@ -770,7 +770,9 @@ export async function runEvaluation(
   try {
     fs.mkdirSync(EVAL_DIR, { recursive: true });
     fs.appendFileSync(RESULTS_FILE, JSON.stringify(run) + "\n", "utf-8");
-  } catch {}
+  } catch (err) {
+    console.warn(`Failed to persist eval run ${runId}: ${err}`);
+  }
 
   return run;
 }

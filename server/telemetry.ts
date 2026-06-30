@@ -158,6 +158,10 @@ export function recordEvalScore(sample: Omit<EvalScoreSample, "timestamp">): voi
  * @param error The error message string
  */
 export function recordError(module: string, error: string): void {
+  if (typeof module !== 'string' || typeof error !== 'string') {
+    log.warn('[telemetry] recordError called with non-string arguments', { module, error });
+    return;
+  }
   pushSample(errorSamples, MAX_ERROR_SAMPLES, { module, error });
 }
 

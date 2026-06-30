@@ -43,6 +43,16 @@ export async function executeInSandbox(
   language: 'javascript' | 'typescript' | 'python' | 'bash',
   options: SandboxOptions = {}
 ): Promise<SandboxResult> {
+  if (typeof code !== 'string' || code.length === 0) {
+    throw new Error('code must be a non-empty string');
+  }
+  const validLanguages = ['javascript', 'typescript', 'python', 'bash'] as const;
+  if (!validLanguages.includes(language)) {
+    throw new Error(`Invalid language: ${language}`);
+  }
+  if (typeof options !== 'object' || options === null) {
+    throw new Error('options must be an object');
+  }
   const image = options.image ?? DEFAULT_IMAGE;
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT;
   const memoryLimit = options.memoryLimit ?? DEFAULT_MEMORY;

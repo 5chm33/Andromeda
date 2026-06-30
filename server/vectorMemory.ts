@@ -261,7 +261,12 @@ function cosineSimilarity(a: number[], b: number[]): number {
  * Add a text entry to the vector store.
  */
 export async function vectorStore(id: string, text: string): Promise<void> {
-  await vectorStoreBatch([{ id, text }]);
+  try {
+    await vectorStoreBatch([{ id, text }]);
+  } catch (err) {
+    console.error(`[VectorMemory] vectorStore failed for id ${id}:`, err);
+    throw err;
+  }
 }
 
 /**

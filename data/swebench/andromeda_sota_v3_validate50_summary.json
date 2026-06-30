@@ -1,0 +1,15 @@
+{
+  "run_id": "andromeda_sota_v3_validate50",
+  "dataset": "verified",
+  "total": 50,
+  "done": 50,
+  "patched": 49,
+  "errors": 1,
+  "patch_rate": 0.98,
+  "pipeline": {
+    "num_candidates": 4,
+    "max_traceback_attempts": 5,
+    "docker_test_timeout": 300
+  },
+  "completed_at": "2026-06-30T05:45:51.678153+00:00"
+}

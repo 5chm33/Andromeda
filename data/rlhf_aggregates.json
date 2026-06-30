@@ -12,7 +12,7 @@
     "bottomFiles": [
       "parallelRsi.ts"
     ],
-    "lastUpdated": "2026-06-27T04:55:14.217Z"
+    "lastUpdated": "2026-06-28T14:08:44.678Z"
   },
   "performance": {
     "category": "performance",
@@ -31,11 +31,11 @@
       "parallelRsi.ts",
       "knowledgeBaseConsolidation.ts"
     ],
-    "lastUpdated": "2026-06-27T04:55:14.217Z"
+    "lastUpdated": "2026-06-28T14:08:44.678Z"
   },
   "readability": {
     "category": "readability",
-    "sampleCount": 7,
+    "sampleCount": 8,
     "meanReward": 0.01,
     "acceptRate": 0,
     "rejectRate": 0,
@@ -46,11 +46,11 @@
       "multiAgentBus.ts"
     ],
     "bottomFiles": [
-      "manifest.ts",
       "learnedConstraints.ts",
-      "rsiScheduler.ts"
+      "rsiScheduler.ts",
+      "selfMonitor.ts"
     ],
-    "lastUpdated": "2026-06-27T04:55:14.217Z"
+    "lastUpdated": "2026-06-28T14:08:44.678Z"
   },
   "helpfulness": {
     "category": "helpfulness",
@@ -82,7 +82,7 @@
       "multiAgentBus.ts",
       "agentTypes.ts"
     ],
-    "lastUpdated": "2026-06-27T04:55:14.217Z"
+    "lastUpdated": "2026-06-28T14:08:44.678Z"
   },
   "refactoring": {
     "category": "refactoring",
@@ -105,7 +105,7 @@
   },
   "reliability": {
     "category": "reliability",
-    "sampleCount": 60,
+    "sampleCount": 79,
     "meanReward": 0.010000000000000005,
     "acceptRate": 0,
     "rejectRate": 0,
@@ -116,11 +116,11 @@
       "aiPlanning.ts"
     ],
     "bottomFiles": [
-      "rsiDb.ts",
-      "gitSandbox.ts",
-      "memoryForgettingCurve.ts"
+      "swarmTestnet.ts",
+      "learnedConstraints.ts",
+      "federatedLoraSharing.ts"
     ],
-    "lastUpdated": "2026-06-27T04:55:14.217Z"
+    "lastUpdated": "2026-06-28T14:08:44.678Z"
   },
   "null_safety": {
     "category": "null_safety",
@@ -139,7 +139,7 @@
       "watchdog.ts",
       "epistemicBeliefModel.ts"
     ],
-    "lastUpdated": "2026-06-27T04:55:14.217Z"
+    "lastUpdated": "2026-06-28T14:08:44.678Z"
   },
   "logging": {
     "category": "logging",
@@ -158,7 +158,7 @@
       "selfMonitor.ts",
       "docGenerator.ts"
     ],
-    "lastUpdated": "2026-06-27T04:55:14.217Z"
+    "lastUpdated": "2026-06-28T14:08:44.678Z"
   },
   "bug_fix": {
     "category": "bug_fix",
@@ -177,7 +177,7 @@
       "formalVerification.ts",
       "selfModel.ts"
     ],
-    "lastUpdated": "2026-06-27T04:55:14.217Z"
+    "lastUpdated": "2026-06-28T14:08:44.678Z"
   },
   "code_quality": {
     "category": "code_quality",
@@ -192,7 +192,7 @@
     "bottomFiles": [
       "manifest.ts"
     ],
-    "lastUpdated": "2026-06-27T04:55:14.217Z"
+    "lastUpdated": "2026-06-28T14:08:44.678Z"
   },
   "general": {
     "category": "general",
@@ -207,6 +207,6 @@
     "bottomFiles": [
       "parallelRsi.ts"
     ],
-    "lastUpdated": "2026-06-27T04:55:14.217Z"
+    "lastUpdated": "2026-06-28T14:08:44.678Z"
   }
 }

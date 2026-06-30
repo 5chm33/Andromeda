@@ -245,7 +245,7 @@ export class CrossModalSelfImprovementManager {
 
     } catch (err) {
       cycle.success = false;
-      cycle.error = String(err);
+      cycle.error = err instanceof Error ? err.message : String(err);
       log.warn(`[crossModal] Cycle ${cycleId} failed:`, err);
     }
 

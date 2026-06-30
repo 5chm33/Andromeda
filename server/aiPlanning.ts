@@ -26,9 +26,12 @@ export async function generateSubQueries(mainQuery: string): Promise<string[]> {
     const MAX_TOKENS_SUB_QUERY = 200;
     const TEMPERATURE_SUB_QUERY = 0.7;
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
     const response = await fetch(getApiUrl(), {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", ...getProviderHeaders() },
+      signal: controller.signal,
       body: JSON.stringify({
         model: getActiveModel(),
         messages: [
@@ -47,6 +50,7 @@ export async function generateSubQueries(mainQuery: string): Promise<string[]> {
         response_format: { type: "json_object" },
       }),
     });
+    clearTimeout(timeoutId);
 
     if (!response.ok) return [mainQuery];
     const data = (await response.json()) as any;

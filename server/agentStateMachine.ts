@@ -63,6 +63,12 @@ export class AgentStateMachine {
   };
 
   transition(to: AgentState, reason: string): void {
+    if (typeof to !== 'string' || !to) {
+      throw new Error('Invalid transition target: must be a non-empty string');
+    }
+    if (typeof reason !== 'string' || reason.length > 1000) {
+      throw new Error('Invalid transition reason: must be a string with max length 1000');
+    }
     const from = this._state;
     const allowed = AgentStateMachine.VALID_TRANSITIONS[from];
     if (!allowed || !allowed.includes(to)) {

@@ -114,10 +114,11 @@ export function checkDatabaseHealth(): HealthCheck {
       autoHealable: false,
     };
   } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
     return {
       name: "database",
       status: "critical",
-      message: `Database check failed: ${String(err)}`,
+      message: `Database check failed: ${message}`,
       autoHealable: true,
       healingAction: "repair_database",
     };

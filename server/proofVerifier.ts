@@ -373,19 +373,29 @@ async function runHeuristicVerification(proof: ProposalProof): Promise<{
   explanation: string;
   safetyResult: ProofResult;
 }> {
-  const safetyResult = await verifyCodeSafety(proof.proposedContent, {
-    minSafetyScore: 0.6,
-    blockOnFailure: false,
-  });
+  try {
+    const safetyResult = await verifyCodeSafety(proof.proposedContent, {
+      minSafetyScore: 0.6,
+      blockOnFailure: false,
+    });
 
-  const zkCheck = verifyZKProof(safetyResult, 0.6);
+    const zkCheck = verifyZKProof(safetyResult, 0.6);
 
-  return {
-    valid: zkCheck.valid,
-    confidence: zkCheck.confidence,
-    explanation: zkCheck.explanation,
-    safetyResult,
-  };
+    return {
+      valid: zkCheck.valid,
+      confidence: zkCheck.confidence,
+      explanation: zkCheck.explanation,
+      safetyResult,
+    };
+  } catch (error) {
+    console.error(`[ProofVerifier] Heuristic verification failed: ${error}`);
+    return {
+      valid: false,
+      confidence: 0,
+      explanation: `Heuristic verification error: ${String(error).slice(0, 200)}`,
+      safetyResult: { score: 0, violations: [], backend: "heuristic", timestamp: Date.now(), codeHash: "", safe: false, verificationTimeMs: 0 },
+    };
+  }
 }
 
 // ─── 5. Proof Gate (Main Entry Point) ────────────────────────────────────────

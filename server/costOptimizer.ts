@@ -196,6 +196,14 @@ export function recordCost(
   proposalId?: string,
   area?: string,
 ): void {
+  if (typeof modelId !== 'string' || !modelId) {
+    log.warn('[CostOptimizer] recordCost called with invalid modelId');
+    return;
+  }
+  if (typeof inputTokens !== 'number' || inputTokens < 0 || typeof outputTokens !== 'number' || outputTokens < 0) {
+    log.warn('[CostOptimizer] recordCost called with invalid token counts');
+    return;
+  }
   const profile = MODEL_PROFILE_MAP.get(modelId);
   if (!profile) return;
 

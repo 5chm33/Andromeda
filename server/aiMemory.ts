@@ -63,7 +63,7 @@ export function readAndromedaMemory(): string | null {
   try {
     return fs.readFileSync(memPath, "utf8");
   } catch (err) {
-    log.warn("Failed to read ANDROMEDA.md:", err);
+    log.warn("Failed to read ANDROMEDA.md:", err instanceof Error ? err.message : String(err));
     return null;
   }
 }

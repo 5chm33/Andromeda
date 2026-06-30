@@ -123,6 +123,8 @@ function initProviders(): void {
  * Record a successful request to a provider.
  */
 export function recordSuccess(providerId: string, latencyMs: number): void {
+  if (typeof providerId !== 'string' || providerId.length === 0) return;
+  if (typeof latencyMs !== 'number' || latencyMs < 0) return;
   initProviders();
   const m = metrics.get(providerId);
   if (!m) return;

@@ -112,7 +112,8 @@ function runNpmAudit(): { vulnerabilities: Vulnerability[]; counts: Record<strin
       console.warn("[DependencyAuditor] pnpm audit unavailable:", auditResult.error.message);
     }
   } catch (err) {
-    console.warn("[DependencyAuditor] pnpm audit failed:", String(err).slice(0, 200));
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn("[DependencyAuditor] pnpm audit failed:", msg.slice(0, 200));
   }
 
   return { vulnerabilities, counts };

@@ -88,7 +88,7 @@ function getTypeScriptFiles(dir: string): string[] {
         files.push(fullPath);
       }
     }
-  } catch (err) { console.warn("[DocGenerator] Failed to read directory:", err); }
+  } catch (err) { console.warn("[DocGenerator] Failed to read directory:", err instanceof Error ? err.message : String(err)); }
   return files;
 }
 

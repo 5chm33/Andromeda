@@ -241,6 +241,9 @@ function signalToSubTaskType(signal: ComplexitySignal): SubTaskType {
  * Uses heuristic decomposition — in production, this would call the LLM.
  */
 export function decomposeQuery(query: string, complexity?: ComplexityAnalysis): DecomposedQuery {
+  if (typeof query !== 'string' || query.trim().length === 0) {
+    throw new Error('decomposeQuery: query must be a non-empty string');
+  }
   const analysis = complexity ?? analyzeComplexity(query);
   const queryId = randomUUID();
   const subTasks: SubTask[] = [];

@@ -582,7 +582,12 @@ export async function streamChat(
   messages: Array<{ role: string; content: string }>,
   res: Response
 ): Promise<string> {
-  return streamToResponse(messages, res, { temperature: 0.6 });
+  try {
+    return await streamToResponse(messages, res, { temperature: 0.6 });
+  } catch (err) {
+    log.caught("streamChat failed", err);
+    throw err;
+  }
 }
 
 /**
@@ -596,12 +601,17 @@ export async function streamContinue(
   messages: Array<{ role: string; content: string }>,
   res: Response
 ): Promise<string> {
-  // Append a user turn asking the model to continue exactly where it left off
-  const continueMessages = [
-    ...messages,
-    { role: "user", content: "Please continue exactly where you left off. Do not repeat anything already written — just continue the response from where it was cut off." },
-  ];
-  return streamToResponse(continueMessages, res, { temperature: 0.3 });
+  try {
+    // Append a user turn asking the model to continue exactly where it left off
+    const continueMessages = [
+      ...messages,
+      { role: "user", content: "Please continue exactly where you left off. Do not repeat anything already written — just continue the response from where it was cut off." },
+    ];
+    return await streamToResponse(continueMessages, res, { temperature: 0.3 });
+  } catch (err) {
+    log.caught("streamContinue failed", err);
+    throw err;
+  }
 }
 
 /**

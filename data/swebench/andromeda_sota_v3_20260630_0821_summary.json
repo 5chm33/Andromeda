@@ -1,0 +1,16 @@
+{
+  "run_id": "andromeda_sota_v3_20260630_0821",
+  "dataset": "verified",
+  "total": 50,
+  "done": 50,
+  "patched": 48,
+  "errors": 2,
+  "patch_rate": 0.96,
+  "model": "anthropic/claude-sonnet-4-5",
+  "pipeline": {
+    "num_candidates": 4,
+    "max_traceback_attempts": 5,
+    "docker_test_timeout": 300
+  },
+  "completed_at": "2026-06-30T09:17:59.733174+00:00"
+}

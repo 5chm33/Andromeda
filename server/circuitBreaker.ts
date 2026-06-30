@@ -62,6 +62,12 @@ export class CircuitBreaker {
   private name: string;
 
   constructor(name: string, config: Partial<CircuitBreakerConfig> = {}) {
+    if (!name || typeof name !== 'string') {
+      throw new Error('CircuitBreaker: name must be a non-empty string');
+    }
+    if (config && typeof config !== 'object') {
+      throw new Error('CircuitBreaker: config must be an object');
+    }
     this.name = name;
     this.config = { ...DEFAULT_CONFIG, ...config };
   }

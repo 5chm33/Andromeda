@@ -259,9 +259,10 @@ export class ContextManager {
       });
 
       return result.content || "Summary generation failed — previous steps involved tool calls and reasoning.";
-    } catch (err) {
+    } catch (err: unknown) {
       // Fallback: create a simple mechanical summary
-      console.warn(`[ContextManager] LLM summarization failed: ${err}. Using fallback.`);
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      console.warn(`[ContextManager] LLM summarization failed: ${errorMessage}. Using fallback.`);
       return this.fallbackSummary(messages);
     }
   }

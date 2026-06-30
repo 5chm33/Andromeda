@@ -75,6 +75,12 @@ export function updateSelfDocumentation(
   version: string = "5.16.0",
   options: { category?: string; targetFile?: string; automated?: boolean } = {}
 ): { success: boolean; message: string; entry: ChangelogEntry } {
+  if (typeof change !== "string" || change.trim().length === 0) {
+    throw new Error("change must be a non-empty string");
+  }
+  if (typeof version !== "string" || version.trim().length === 0) {
+    throw new Error("version must be a non-empty string");
+  }
   const entry: ChangelogEntry = {
     version,
     timestamp: new Date().toISOString(),

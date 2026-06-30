@@ -29,8 +29,9 @@ export interface FineTuningCycleResult {
  * Executes a complete unsupervised fine-tuning cycle.
  * Designed to be run nightly via cron or daemon schedule.
  */
-export async function runNightlyFineTuningCycle(modelId = "mistralai/Mistral-7B-Instruct-v0.2"): Promise<FineTuningCycleResult> {
-  log.info(`[NightlyCycle] Starting continuous fine-tuning cycle for ${modelId}`);
+export async function runNightlyFineTuningCycle(modelId: string = "mistralai/Mistral-7B-Instruct-v0.2"): Promise<FineTuningCycleResult> {
+  const resolvedModelId = modelId.trim().length > 0 ? modelId.trim() : "mistralai/Mistral-7B-Instruct-v0.2";
+  log.info(`[NightlyCycle] Starting continuous fine-tuning cycle for ${resolvedModelId}`);
 
   try {
     // 1. Generate synthetic feedback (RLAIF)

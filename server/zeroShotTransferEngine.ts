@@ -270,7 +270,8 @@ Return JSON: {
 
     return transfer;
   } catch (err) {
-    log.warn(`[ZeroShotTransfer] Transfer failed for ${principleId} → ${targetDomain}:`, err);
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    log.warn(`[ZeroShotTransfer] Transfer failed for ${principleId} → ${targetDomain}: ${errorMessage}`);
     return null;
   }
 }

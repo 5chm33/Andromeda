@@ -49,9 +49,12 @@ interface DiscoveryHistory {
 function loadHistory(): DiscoveryHistory {
   try {
     if (fs.existsSync(DISCOVERY_PATH)) {
-      return JSON.parse(fs.readFileSync(DISCOVERY_PATH, "utf-8"));
+      const content = fs.readFileSync(DISCOVERY_PATH, "utf-8");
+      return JSON.parse(content);
     }
-  } catch { /* ignore */ }
+  } catch (err) {
+    console.warn("[EvalGoalDiscovery] Failed to load history:", (err as Error).message);
+  }
   return { discoveries: [], lastRunAt: 0 };
 }
 

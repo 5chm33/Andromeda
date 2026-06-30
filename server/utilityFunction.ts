@@ -401,6 +401,10 @@ function evaluateWeights(weights: UtilityWeights, outcomes: RSICycleOutcome[]): 
  * Record the outcome of an RSI cycle for future calibration.
  */
 export function recordRSIOutcome(outcome: RSICycleOutcome): void {
+  if (!outcome || typeof outcome !== 'object' || !outcome.cycleId || !outcome.proposalId) {
+    console.warn('[UtilityFunction] Invalid outcome ignored:', outcome);
+    return;
+  }
   appendHistory(outcome);
 
   // Auto-calibrate every 10 outcomes

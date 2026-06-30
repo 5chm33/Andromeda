@@ -445,10 +445,13 @@ export async function runRSICycle(): Promise<RSICycleResult> {
   auditRsiEvent({ action: "cycle_started", cycleId, success: true, details: { cycleNumber: cycleCount + 1 } });
   rsiPhase = "observing";
   // v12.2.1: Emit cycle:start event to SSE clients for Live Activity feed
-  try {
-    const { emitRsiEvent } = await import("./rsiEventBus.js");
-    emitRsiEvent("cycle:start", { cycleId, cycleNumber: cycleCount + 1, startedAt });
-  } catch { /* non-fatal */ }
+  // Parallelize independent startup operations
+  const startupPromise = (async () => {
+    try {
+      const { emitRsiEvent } = await import("./rsiEventBus.js");
+      emitRsiEvent("cycle:start", { cycleId, cycleNumber: cycleCount + 1, startedAt });
+    } catch { /* non-fatal */ }
+  })();
 
   try {
     // ── STEP 1: OBSERVE ─────────────────────────────────────────────────────────────────────────────
@@ -459,7 +462,8 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     rsiPhase = "evaluating";
     if (rsiConfig.verboseLogging) console.log(`[RSIEngine] Phase: EVALUATE`);
     // v6.16: Capture full benchmark breakdown, not just total score
-    benchmarkBefore = await measureBenchmark();
+    // Run benchmark and startup event in parallel
+    [benchmarkBefore] = await Promise.all([measureBenchmark(), startupPromise]);
     capabilityScoreBefore = benchmarkBefore.total;
     console.log(`[RSIEngine] Benchmark BEFORE: ${capabilityScoreBefore}/100 (TS:${benchmarkBefore.typeScriptHealth} PQ:${benchmarkBefore.proposalQuality} TC:${benchmarkBefore.testCoverage} MR:${benchmarkBefore.memoryRichness} GC:${benchmarkBefore.goalCompletion})`);
 

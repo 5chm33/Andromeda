@@ -384,7 +384,7 @@ export class EbpfMonitor extends EventEmitter {
     }
   }
 
-  private _startProcMonitor(): void {
+  private _startSamplingLoop(): void {
     this.procSampleTimer = setInterval(() => {
       const stats = this.captureProcessStats();
       this.eventCount++;
@@ -393,14 +393,12 @@ export class EbpfMonitor extends EventEmitter {
     }, this.config.procSampleIntervalMs);
   }
 
+  private _startProcMonitor(): void {
+    this._startSamplingLoop();
+  }
+
   private _startHrtimeSampler(): void {
-    // Lightweight hrtime-based sampling for non-Linux platforms
-    this.procSampleTimer = setInterval(() => {
-      const stats = this.captureProcessStats();
-      this.eventCount++;
-      this.emit("stats", stats);
-      this._checkForAnomalies(stats);
-    }, this.config.procSampleIntervalMs);
+    this._startSamplingLoop();
   }
 
   private _checkForAnomalies(stats: ProcessStats): void {

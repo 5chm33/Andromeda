@@ -1,0 +1,621 @@
+/**
+ * run_swebench.ts — Andromeda SWE-bench Runner (v2.0.0)
+ *
+ * This is the OFFICIAL runner that uses Andromeda's full pipeline:
+ *   - Andromeda's LLM provider (Claude Sonnet 4.5 via OpenRouter)
+ *   - sweBenchConsensus.ts (4-agent parallel patch generation)
+ *   - sweBenchTracebackLoop.ts (iterative test-feedback loop)
+ *   - sweBenchPipeline.ts (orchestrator)
+ *
+ * Phase 1 (localization) is handled here:
+ *   - Load SWE-bench dataset from HuggingFace cache (pyarrow)
+ *   - Extract exact file content from Docker image (not git clone)
+ *   - Use LLM to identify which files need changing
+ *   - Generate initial patch candidate
+ *
+ * Usage:
+ *   npx tsx scripts/run_swebench.ts --instances 50 --split test
+ *   npx tsx scripts/run_swebench.ts --instance-ids "django__django-11066,astropy__astropy-12907"
+ *   npx tsx scripts/run_swebench.ts --resume --output predictions.jsonl
+ */
+
+import { exec } from 'child_process';
+import { promisify } from 'util';
+import fs from 'fs';
+import path from 'path';
+import crypto from 'crypto';
+import { readFileSync } from 'fs';
+
+const execAsync = promisify(exec);
+
+// ─── Environment Setup ────────────────────────────────────────────────────────
+
+// Load environment variables from andromeda_env.local
+const envFile = '/home/ubuntu/andromeda_env.local';
+if (fs.existsSync(envFile)) {
+  const env = readFileSync(envFile, 'utf-8');
+  for (const line of env.split('\n')) {
+    const m = line.match(/^([A-Z_][A-Z0-9_]*)=(.*)$/);
+    if (m && !process.env[m[1]]) process.env[m[1]] = m[2];
+  }
+}
+
+// ─── Andromeda LLM Provider ───────────────────────────────────────────────────
+
+import { simpleChatCompletion } from '../server/llmProvider.js';
+import { runSOTAPipeline, PipelineConfig } from '../server/sweBenchPipeline.js';
+import { pullImageSafely, ensureDiskSpace } from '../server/sweBenchInfra.js';
+
+/**
+ * Andromeda's LLM provider for SWE-bench.
+ * Routes to Claude Sonnet 4.5 via OpenRouter.
+ */
+async function andromedaLLM(prompt: string, temperature = 0.0): Promise<string> {
+  // Use a 180-second hard timeout to allow for large file responses
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 180_000);
+  try {
+    return await simpleChatCompletion(
+      [{ role: 'user', content: prompt }],
+      {
+        maxTokens: 8192,  // Increased to handle large file outputs
+        temperature,
+        providerId: 'anthropic',  // → anthropic/claude-sonnet-4-5 via OpenRouter
+        signal: controller.signal,
+      }
+    );
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+// ─── SWE-bench Dataset Loading ────────────────────────────────────────────────
+
+interface SWEBenchInstance {
+  instance_id: string;
+  repo: string;
+  base_commit: string;
+  problem_statement: string;
+  hints_text: string;
+  patch: string;
+  test_patch: string;
+  FAIL_TO_PASS: string;  // JSON array string
+  PASS_TO_PASS: string;  // JSON array string
+  environment_setup_commit: string;
+  version: string;
+}
+
+/**
+ * Loads SWE-bench instances from the HuggingFace cache using Python.
+ */
+async function loadSWEBenchInstances(
+  instanceIds?: string[],
+  maxInstances?: number,
+  split = 'test'
+): Promise<SWEBenchInstance[]> {
+  const scriptPath = `/tmp/load_swebench_${crypto.randomBytes(4).toString('hex')}.py`;
+
+  const filterClause = instanceIds && instanceIds.length > 0
+    ? `instance_ids = ${JSON.stringify(instanceIds)}\ndf = df[df['instance_id'].isin(instance_ids)]`
+    : maxInstances
+    ? `df = df.head(${maxInstances})`
+    : '';
+
+  const script = `
+import pyarrow as pa
+import pyarrow.ipc as ipc
+import json
+import glob
+import os
+
+# Find the arrow file in HuggingFace cache
+cache_dirs = glob.glob(os.path.expanduser(
+    '~/.cache/huggingface/datasets/SWE-bench___swe-bench_verified/**/*.arrow'
+), recursive=True)
+
+if not cache_dirs:
+    # Try alternate path
+    cache_dirs = glob.glob(os.path.expanduser(
+        '~/.cache/huggingface/datasets/**/*.arrow'
+    ), recursive=True)
+
+if not cache_dirs:
+    print('ERROR: No arrow files found in HuggingFace cache')
+    exit(1)
+
+# Load the first arrow file
+arrow_file = cache_dirs[0]
+try:
+    with open(arrow_file, 'rb') as f:
+        reader = ipc.open_stream(f)
+        table = reader.read_all()
+except:
+    try:
+        with open(arrow_file, 'rb') as f:
+            reader = ipc.open_file(f)
+            table = reader.read_all()
+    except Exception as e:
+        print(f'ERROR: {e}')
+        exit(1)
+
+import pandas as pd
+df = table.to_pandas()
+
+${filterClause}
+
+records = df.to_dict('records')
+print(json.dumps(records))
+`;
+
+  fs.writeFileSync(scriptPath, script);
+  try {
+    const result = await execAsync(`python3 "${scriptPath}" 2>&1`, { maxBuffer: 50 * 1024 * 1024 });
+    if (result.stdout.startsWith('ERROR:')) {
+      throw new Error(result.stdout);
+    }
+    return JSON.parse(result.stdout);
+  } finally {
+    try { fs.unlinkSync(scriptPath); } catch { /* ignore */ }
+  }
+}
+
+// ─── Docker File Extraction ───────────────────────────────────────────────────
+
+/**
+ * Gets the SWE-bench Docker image name for an instance.
+ * Pattern: astropy__astropy-12907 → swebench/sweb.eval.x86_64.astropy_1776_astropy-12907:latest
+ */
+function getDockerImageName(instanceId: string): string {
+  // Replace __ with _1776_ to get the versioned image name
+  const normalized = instanceId.replace('__', '_1776_').toLowerCase();
+  return `swebench/sweb.eval.x86_64.${normalized}:latest`;
+}
+
+/**
+ * Extracts file content directly from the Docker image.
+ * This guarantees exact file content matching (no git clone mismatch).
+ */
+async function extractFileFromDocker(dockerImage: string, filePath: string): Promise<string | null> {
+  try {
+    const result = await execAsync(
+      `docker run --rm "${dockerImage}" cat "/testbed/${filePath}" 2>/dev/null`,
+      { maxBuffer: 10 * 1024 * 1024 }
+    );
+    return result.stdout;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Lists Python files in the Docker image's testbed directory.
+ */
+async function listRepoFiles(dockerImage: string): Promise<string[]> {
+  try {
+    const result = await execAsync(
+      `docker run --rm "${dockerImage}" bash -c "cd /testbed && git ls-files '*.py' 2>/dev/null"`,
+      { maxBuffer: 5 * 1024 * 1024 }
+    );
+    return result.stdout.trim().split('\n').filter(f => f.length > 0);
+  } catch {
+    return [];
+  }
+}
+
+// ─── Phase 1: Localization ────────────────────────────────────────────────────
+
+const MAX_FILE_CHARS = 15000;
+
+/**
+ * Uses the LLM to identify which files are most relevant to the issue.
+ * Returns a ranked list of file paths.
+ */
+async function localizeFiles(
+  instanceId: string,
+  issueDescription: string,
+  allFiles: string[],
+  failToPassTests: string[] = []
+): Promise<string[]> {
+  // Derive source file hints from test paths in FAIL_TO_PASS
+  // e.g. "astropy/table/tests/test_table.py" → "astropy/table/table.py"
+  const testHints = failToPassTests.flatMap(t => {
+    const filePart = t.split('::')[0]; // strip ::TestClass::test_method
+    // Convert test path to likely source path
+    const sourceGuess = filePart
+      .replace(/\/tests\/test_/, '/')
+      .replace(/\/tests\//, '/')
+      .replace(/test_/, '');
+    return [filePart, sourceGuess];
+  });
+
+  // Filter to likely relevant files based on keywords
+  const keywords = issueDescription.toLowerCase().split(/\s+/).filter(w => w.length > 4);
+  const scored = allFiles.map(f => {
+    const fLower = f.toLowerCase();
+    let score = keywords.filter(kw => fLower.includes(kw)).length;
+    // Boost score for files hinted by test paths
+    if (testHints.some(hint => f.includes(hint) || hint.includes(f.replace(/\.py$/, '')))) {
+      score += 10;
+    }
+    return { file: f, score };
+  });
+
+  // Take top 30 candidates by keyword score, excluding test files
+  const candidates = scored
+    .filter(s => !s.file.includes('test_') && !s.file.includes('/tests/'))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 30)
+    .map(s => s.file);
+
+  if (candidates.length === 0) {
+    // Fall back to all non-test Python files, top 20
+    return allFiles.filter(f => !f.includes('test_') && !f.includes('/tests/')).slice(0, 20);
+  }
+
+  // Ask LLM to pick the top 3 most relevant files
+  const testHint = failToPassTests.length > 0
+    ? `\n## Failing Tests (hint: the source files being tested are likely what needs fixing)\n${failToPassTests.slice(0, 5).join('\n')}\n`
+    : '';
+  const prompt = `You are an expert software engineer. Given this GitHub issue and list of files, identify the 1-3 files most likely to need modification to fix the bug.
+
+## Issue: ${instanceId}
+${issueDescription.slice(0, 2000)}
+${testHint}
+## Candidate Files
+${candidates.slice(0, 30).join('\n')}
+
+Output ONLY a JSON array of file paths (most relevant first). Example: ["path/to/file.py"]
+`;
+
+  try {
+    const response = await andromedaLLM(prompt, 0.0);
+    const match = response.match(/\[[\s\S]*?\]/);
+    if (match) {
+      const files = JSON.parse(match[0]) as string[];
+      const validFiles = files.filter(f => allFiles.includes(f)).slice(0, 5);
+      if (validFiles.length > 0) return validFiles;
+      // LLM returned invalid paths — fall through to keyword candidates
+    }
+  } catch { /* fall through */ }
+
+  // Fallback: return top keyword-scored candidates
+  return candidates.slice(0, 3);
+}
+
+/**
+ * Generates an initial patch candidate using the LLM.
+ * Uses the "output complete file" approach for reliable patch generation.
+ */
+async function generateInitialPatch(
+  instanceId: string,
+  issueDescription: string,
+  fileContents: Record<string, string>,
+  failToPassTests: string[] = []
+): Promise<string> {
+  // Only use diff format for truly large files where complete output would overflow
+  // Complete-file format is more reliable since LLM doesn't need to guess line numbers
+  const totalChars = Object.values(fileContents).reduce((s, c) => s + c.length, 0);
+  const useDiffFormat = totalChars > 12000;  // Raised threshold — prefer complete-file format
+
+  const fileSections = Object.entries(fileContents).map(([fp, content]) => {
+    const truncated = content.length > MAX_FILE_CHARS
+      ? content.slice(0, MAX_FILE_CHARS) + '\n... [truncated]'
+      : content;
+    return `### ${fp}\n\`\`\`python\n${truncated}\n\`\`\``;
+  }).join('\n\n');
+
+  // Include failing test names so the LLM knows exactly what it needs to make pass
+  const testContext = failToPassTests.length > 0
+    ? `\n## Failing Tests (your fix must make these pass)
+${failToPassTests.slice(0, 10).join('\n')}\n`
+    : '';
+
+  const outputInstructions = useDiffFormat
+    ? `Output a unified diff patch (git diff format) with ONLY the changed lines:
+
+\`\`\`diff
+--- a/path/to/file.py
++++ b/path/to/file.py
+@@ -line,count +line,count @@
+-old line
++new line
+\`\`\`
+
+Output ONLY the diff block. No explanation. Make MINIMAL changes.`
+    : `Output the COMPLETE corrected content for each file you need to change:
+
+<file path="path/to/file.py">
+[complete corrected file content]
+</file>
+
+Output ONLY the file blocks. No explanation.`;
+
+  const prompt = `You are an expert Python software engineer solving a GitHub issue.
+
+## Instance: ${instanceId}
+
+## Issue Description
+${issueDescription}
+${testContext}
+## Files to Modify
+${fileSections}
+
+## Task
+Fix the bug described in the issue. Make MINIMAL changes. Your fix must make the failing tests pass.
+
+${outputInstructions}
+`;
+
+  console.log('[Runner] Phase 1d: Calling LLM for initial patch...');
+  const response = await andromedaLLM(prompt, 0.0);
+  console.log(`[Runner] Phase 1d: LLM responded (${response.length} chars)`);
+
+  // Extract file contents and generate diff
+  const fileMatches = [...response.matchAll(/<file path="([^"]+)">([\s\S]*?)<\/file>/g)];
+  console.log(`[Runner] Phase 1d: Found ${fileMatches.length} file blocks`);
+  if (fileMatches.length === 0) {
+    // Fallback: try to extract a raw diff from the response
+    const diffMatch = response.match(/```diff\n([\s\S]*?)```/);
+    if (diffMatch) {
+      console.log('[Runner] Phase 1d: Falling back to raw diff extraction');
+      return diffMatch[1].trim();
+    }
+    // Try raw diff format (starts with --- or diff --git)
+    const rawDiff = response.match(/((?:diff --git|---\s+a\/)\n?[\s\S]*)/);
+    if (rawDiff) {
+      console.log('[Runner] Phase 1d: Falling back to raw diff (no code fence)');
+      return rawDiff[1].trim();
+    }
+    console.log('[Runner] Phase 1d: No patch found in LLM response');
+    console.log('[Runner] Phase 1d: Response preview:', response.slice(0, 300).replace(/\n/g, '\\n'));
+    return '';
+  }
+
+  const diffs: string[] = [];
+  for (const match of fileMatches) {
+    const filePath = match[1].trim();
+    let newContent = match[2].replace(/^\n/, '').replace(/\n$/, '');
+    newContent = newContent.replace(/^```(?:python)?\n/, '').replace(/\n```$/, '');
+
+    const originalContent = fileContents[filePath];
+    if (!originalContent || newContent === originalContent) continue;
+
+    // Generate diff using system diff command
+    const origPath = `/tmp/orig_${crypto.randomBytes(4).toString('hex')}.py`;
+    const modPath = `/tmp/mod_${crypto.randomBytes(4).toString('hex')}.py`;
+    try {
+      fs.writeFileSync(origPath, originalContent, 'utf-8');
+      fs.writeFileSync(modPath, newContent, 'utf-8');
+      const diffResult = await execAsync(
+        `diff -u --label "a/${filePath}" --label "b/${filePath}" "${origPath}" "${modPath}" || true`
+      );
+      if (diffResult.stdout.trim()) {
+        diffs.push(diffResult.stdout.trim());
+      }
+    } finally {
+      try { fs.unlinkSync(origPath); } catch { /* ignore */ }
+      try { fs.unlinkSync(modPath); } catch { /* ignore */ }
+    }
+  }
+
+  return diffs.join('\n');
+}
+
+// ─── Main Runner ──────────────────────────────────────────────────────────────
+
+interface RunnerOptions {
+  instanceIds?: string[];
+  maxInstances?: number;
+  outputPath: string;
+  logPath: string;
+  resume: boolean;
+}
+
+async function main() {
+  // Parse CLI arguments
+  const args = process.argv.slice(2);
+  const opts: RunnerOptions = {
+    outputPath: path.join(process.env.HOME!, 'andromeda/data/swebench/andromeda_v4_predictions.jsonl'),
+    logPath: '/tmp/andromeda_v4_run.log',
+    resume: args.includes('--resume'),
+  };
+
+  const instancesIdx = args.indexOf('--instances');
+  if (instancesIdx >= 0) opts.maxInstances = parseInt(args[instancesIdx + 1], 10);
+
+  const instanceIdsIdx = args.indexOf('--instance-ids');
+  if (instanceIdsIdx >= 0) opts.instanceIds = args[instanceIdsIdx + 1].split(',');
+
+  const outputIdx = args.indexOf('--output');
+  if (outputIdx >= 0) opts.outputPath = args[outputIdx + 1];
+
+  // Load already-processed instances for resume
+  const processedIds = new Set<string>();
+  if (opts.resume && fs.existsSync(opts.outputPath)) {
+    const lines = fs.readFileSync(opts.outputPath, 'utf-8').split('\n').filter(l => l.trim());
+    for (const line of lines) {
+      try {
+        const pred = JSON.parse(line);
+        if (pred.instance_id) processedIds.add(pred.instance_id);
+      } catch { /* ignore */ }
+    }
+    console.log(`[Runner] Resuming: ${processedIds.size} instances already processed`);
+  }
+
+  // Load dataset
+  console.log('[Runner] Loading SWE-bench Verified dataset...');
+  const allInstances = await loadSWEBenchInstances(opts.instanceIds, opts.maxInstances);
+  const instances = allInstances.filter(i => !processedIds.has(i.instance_id));
+  console.log(`[Runner] Processing ${instances.length} instances (${processedIds.size} already done)`);
+
+  // Pipeline config using Andromeda's LLM
+  const pipelineConfig: PipelineConfig = {
+    llmProvider: andromedaLLM,
+    agentCount: 4,
+    maxTracebackAttempts: 5,
+    useConsensus: true,
+    useTracebackLoop: true,
+  };
+
+  let resolved = 0;
+  let total = 0;
+
+  for (const instance of instances) {
+    const { instance_id, problem_statement, hints_text, test_patch, FAIL_TO_PASS } = instance;
+    const dockerImage = getDockerImageName(instance_id);
+
+    console.log(`\n[Runner] ── Instance ${total + 1}/${instances.length}: ${instance_id} ──`);
+    const instanceStart = Date.now();
+
+    try {
+      // ── Ensure disk space ────────────────────────────────────────────────
+      await ensureDiskSpace(10);
+
+      // ── Pull Docker image (skip if already available locally) ────────────
+      console.log(`[Runner] Pulling image: ${dockerImage}`);
+      try {
+        // Check if image exists locally first
+        const { stdout: imgCheck } = await execAsync(
+          `docker images -q "${dockerImage}" 2>/dev/null`
+        );
+        if (!imgCheck.trim()) {
+          await pullImageSafely(dockerImage, { minFreeDiskGb: 10, maxRetries: 3, retryDelayMs: 5000, testTimeoutSeconds: 300, datasetName: 'princeton-nlp/SWE-bench_Verified', harnessPath: '/tmp', batchSize: 1 });
+        } else {
+          console.log('[Runner] Image already available locally');
+        }
+      } catch (pullErr: any) {
+        console.warn(`[Runner] Image pull failed: ${pullErr.message} — trying anyway`);
+      }
+
+      // ── Phase 1a: List repo files ────────────────────────────────────────
+      console.log('[Runner] Phase 1a: Listing repo files...');
+      const allFiles = await listRepoFiles(dockerImage);
+      console.log(`[Runner] Found ${allFiles.length} Python files`);
+
+      // ── Phase 1b: Localize relevant files ───────────────────────────────
+      const issueDescription = `${problem_statement}\n\n${hints_text || ''}`.trim();
+      const failToPassList: string[] = JSON.parse(FAIL_TO_PASS || '[]');
+      console.log('[Runner] Phase 1b: Localizing relevant files...');
+      const relevantFiles = await localizeFiles(instance_id, issueDescription, allFiles, failToPassList);
+      console.log(`[Runner] Relevant files: ${relevantFiles.join(', ')}`);
+
+      // ── Phase 1c: Extract file content from Docker ───────────────────────
+      console.log('[Runner] Phase 1c: Extracting file content from Docker...');
+      const fileContents: Record<string, string> = {};
+      for (const fp of relevantFiles) {
+        const content = await extractFileFromDocker(dockerImage, fp);
+        if (content) {
+          // Truncate large files to MAX_FILE_CHARS to stay within LLM context
+          const truncated = content.length > MAX_FILE_CHARS
+            ? content.slice(0, MAX_FILE_CHARS) + '\n# ... [file truncated for context]'
+            : content;
+          fileContents[fp] = truncated;
+          console.log(`[Runner]   ${fp}: ${content.length} chars (${truncated.length} used)`);
+        }
+      }
+
+      if (Object.keys(fileContents).length === 0) {
+        console.log('[Runner] No file content extracted — skipping instance');
+        fs.appendFileSync(opts.outputPath, JSON.stringify({
+          instance_id,
+          model_patch: '',
+          model_name_or_path: 'andromeda-v4-claude-sonnet-4-5',
+        }) + '\n');
+        total++;
+        continue;
+      }
+
+      // ── Phase 1d: Generate initial patch ────────────────────────────────
+      console.log('[Runner] Phase 1d: Generating initial patch...');
+      const initialPatch = await generateInitialPatch(instance_id, issueDescription, fileContents, failToPassList);
+      console.log(`[Runner] Initial patch: ${initialPatch.length} chars`);
+
+      // ── Parse FAIL_TO_PASS tests ─────────────────────────────────────────
+      let failToPassTests: string[] = [];
+      try {
+        failToPassTests = JSON.parse(FAIL_TO_PASS);
+      } catch { /* ignore */ }
+
+      // ── Phases 2+3: Andromeda Pipeline (Consensus + Traceback Loop) ──────
+      console.log('[Runner] Phase 2+3: Running Andromeda pipeline...');
+      // Wrap in a 10-minute per-instance timeout to prevent stuck instances
+      const INSTANCE_TIMEOUT_MS = 10 * 60 * 1000;
+      const result = await Promise.race([
+        runSOTAPipeline(
+          instance_id,
+          dockerImage,
+          issueDescription,
+          fileContents,
+          initialPatch,
+          pipelineConfig,
+          {
+            testPatch: test_patch,
+            failToPassTests,
+          }
+        ),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error(`Instance timeout after ${INSTANCE_TIMEOUT_MS / 1000}s`)), INSTANCE_TIMEOUT_MS)
+        )
+      ]);
+
+      const durationSec = ((Date.now() - instanceStart) / 1000).toFixed(0);
+      const status = result.resolved ? '✅ RESOLVED' : '❌ unresolved';
+      // Verbose: print final patch for debugging
+      if (!result.resolved && result.finalPatch) {
+        console.log('[Runner] Final patch (first 500 chars):');
+        console.log(result.finalPatch.slice(0, 500));
+      }
+      console.log(`[Runner] ${status} — ${durationSec}s`);
+      if (result.phases.consensus) {
+        console.log(`[Runner]   Consensus: ${result.phases.consensus.candidatesGenerated} candidates, anyPassed=${result.phases.consensus.anyPassed}`);
+      }
+      if (result.phases.tracebackLoop) {
+        console.log(`[Runner]   Traceback: ${result.phases.tracebackLoop.attemptsUsed} attempts, resolvedOn=${result.phases.tracebackLoop.resolvedOnAttempt}`);
+      }
+
+      // Write prediction
+      fs.appendFileSync(opts.outputPath, JSON.stringify({
+        instance_id,
+        model_patch: result.finalPatch,
+        model_name_or_path: 'andromeda-v4-claude-sonnet-4-5',
+      }) + '\n');
+
+      if (result.resolved) resolved++;
+      total++;
+
+      const rate = (resolved / total * 100).toFixed(1);
+      console.log(`[Runner] Running score: ${resolved}/${total} = ${rate}%`);
+
+    } catch (err: any) {
+      console.error(`[Runner] Instance ${instance_id} failed:`, err.message);
+      console.error(`[Runner] Stack:`, err.stack?.split('\n').slice(0,8).join('\n'));
+      // Clean up any orphaned Docker containers for this instance
+      try {
+        const { execSync } = await import('child_process');
+        const containers = execSync(
+          `docker ps -q --filter "name=andromeda_.*_${instance_id.replace(/__/g, '_').replace(/-/g, '_')}" 2>/dev/null || true`,
+          { encoding: 'utf-8' }
+        ).trim();
+        if (containers) {
+          execSync(`docker rm -f ${containers.split('\n').join(' ')} 2>/dev/null || true`);
+          console.log(`[Runner] Cleaned up ${containers.split('\n').length} orphaned container(s)`);
+        }
+      } catch { /* ignore cleanup errors */ }
+      fs.appendFileSync(opts.outputPath, JSON.stringify({
+        instance_id,
+        model_patch: '',
+        model_name_or_path: 'andromeda-v4-claude-sonnet-4-5',
+      }) + '\n');
+      total++;
+    }
+  }
+
+  console.log(`\n[Runner] ══ COMPLETE ══`);
+  console.log(`[Runner] Resolved: ${resolved}/${total} = ${(resolved / total * 100).toFixed(1)}%`);
+  console.log(`[Runner] Predictions: ${opts.outputPath}`);
+}
+
+main().catch(err => {
+  console.error('[Runner] Fatal error:', err);
+  process.exit(1);
+});

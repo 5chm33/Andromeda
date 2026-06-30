@@ -228,6 +228,7 @@ export async function getPgStatus(): Promise<{
       url: url.replace(/:[^:@]+@/, ":***@"), // redact password
       tables: rows.map((r: any) => r.tablename),
     };
+
   } catch (err) {
     return {
       available: false,

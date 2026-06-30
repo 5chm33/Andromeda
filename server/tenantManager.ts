@@ -184,10 +184,25 @@ function loadTenants(): void {
 // ── Public API ─────────────────────────────────────────────────────────────────
 
 export function getTenant(tenantId: string): TenantConfig | null {
+  if (typeof tenantId !== "string" || tenantId.trim() === "") return null;
   return registry.get(tenantId) ?? null;
 }
 
 export function getOrDefaultTenant(tenantId: string): TenantConfig {
+  if (typeof tenantId !== "string" || tenantId.trim() === "") {
+    return registry.get("default") ?? {
+      id: "default",
+      name: "Default Tenant",
+      quota: { ...UNLIMITED_QUOTA },
+      allowedModules: [],
+      blockedModules: [],
+      constitutionalAiEnabled: true,
+      goalDecompositionEnabled: true,
+      active: true,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    };
+  }
   return registry.get(tenantId) ?? registry.get("default") ?? {
     id: "default",
     name: "Default Tenant",

@@ -123,44 +123,49 @@ async function runLocalJudge(
   testResults: { passed: number; failed: number }
 ): Promise<JudgeVerdict> {
   const start = Date.now();
-  const nodeId = process.env.FEDERATED_NODE_ID ?? require("os").hostname();
+  try {
+    const nodeId = process.env.FEDERATED_NODE_ID ?? require("os").hostname();
 
-  // Scoring heuristics (in production, this calls the LLM via rlaifJudge.ts)
-  const testPassRate = testResults.passed / Math.max(testResults.passed + testResults.failed, 1);
-  const codeQualityScore = estimateCodeQuality(proposalCode);
-  const descriptionScore = estimateDescriptionQuality(proposalDescription);
+    // Scoring heuristics (in production, this calls the LLM via rlaifJudge.ts)
+    const testPassRate = testResults.passed / Math.max(testResults.passed + testResults.failed, 1);
+    const codeQualityScore = estimateCodeQuality(proposalCode);
+    const descriptionScore = estimateDescriptionQuality(proposalDescription);
 
-  const score = testPassRate * 0.5 + codeQualityScore * 0.3 + descriptionScore * 0.2;
-  const flags: RewardHackingFlag[] = [];
+    const score = testPassRate * 0.5 + codeQualityScore * 0.3 + descriptionScore * 0.2;
+    const flags: RewardHackingFlag[] = [];
 
-  // Detect potential reward hacking: very high score with very little code
-  if (score > 0.9 && proposalCode.length < 50) {
-    flags.push({
-      type: "score_inflation",
-      severity: "high",
-      description: "Suspiciously high score for minimal code change",
-    });
+    // Detect potential reward hacking: very high score with very little code
+    if (score > 0.9 && proposalCode.length < 50) {
+      flags.push({
+        type: "score_inflation",
+        severity: "high",
+        description: "Suspiciously high score for minimal code change",
+      });
+    }
+
+    // Detect circular reasoning: description matches code too literally
+    if (proposalDescription.length > 0 && proposalCode.includes(proposalDescription.slice(0, 20))) {
+      flags.push({
+        type: "circular_reasoning",
+        severity: "low",
+        description: "Description appears to be copied from code",
+      });
+    }
+
+    return {
+      judgeNodeId: nodeId,
+      proposalId,
+      score,
+      approved: score >= 0.6 && flags.filter((f) => f.severity === "high").length === 0,
+      reasoning: `Test pass rate: ${(testPassRate * 100).toFixed(1)}%, Code quality: ${(codeQualityScore * 100).toFixed(1)}%`,
+      flags,
+      latencyMs: Date.now() - start,
+      timestamp: Date.now(),
+    };
+  } catch (error) {
+    console.error(`runLocalJudge failed for proposal ${proposalId}:`, error);
+    throw error; // rethrow after logging
   }
-
-  // Detect circular reasoning: description matches code too literally
-  if (proposalDescription.length > 0 && proposalCode.includes(proposalDescription.slice(0, 20))) {
-    flags.push({
-      type: "circular_reasoning",
-      severity: "low",
-      description: "Description appears to be copied from code",
-    });
-  }
-
-  return {
-    judgeNodeId: nodeId,
-    proposalId,
-    score,
-    approved: score >= 0.6 && flags.filter((f) => f.severity === "high").length === 0,
-    reasoning: `Test pass rate: ${(testPassRate * 100).toFixed(1)}%, Code quality: ${(codeQualityScore * 100).toFixed(1)}%`,
-    flags,
-    latencyMs: Date.now() - start,
-    timestamp: Date.now(),
-  };
 }
 
 /**
@@ -340,7 +345,8 @@ async function fetchPeerVerdict(
 
     if (!res.ok) return null;
     return await res.json() as JudgeVerdict;
-  } catch {
+  } catch (error) {
+    log.warn("fetchPeerVerdict failed", { peerUrl, proposalId, error: String(error) });
     return null;
   }
 }

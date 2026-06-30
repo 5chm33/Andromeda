@@ -1031,6 +1031,1061 @@
       "originalSize": 14047,
       "createdAt": "2026-06-26T14:13:46.049Z",
       "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1782632551654_w9u0sk",
+      "filename": "grounding.ts",
+      "backupPath": "grounding_1782632551653.ts.bak",
+      "originalSize": 13279,
+      "createdAt": "2026-06-28T07:42:31.654Z",
+      "proposalId": "prop_1782632496327_81ajdt",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782633285086_x20zt6",
+      "filename": "memory.ts",
+      "backupPath": "memory_1782633285085.ts.bak",
+      "originalSize": 27427,
+      "createdAt": "2026-06-28T07:54:45.086Z",
+      "proposalId": "prop_1782633218758_vf0i60",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782633449723_hhtrpr",
+      "filename": "evalFramework.ts",
+      "backupPath": "evalFramework_1782633449723.ts.bak",
+      "originalSize": 42113,
+      "createdAt": "2026-06-28T07:57:29.723Z",
+      "proposalId": "prop_1782633413365_mo5k9y",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782633852941_fdpsgt",
+      "filename": "codeIntel.ts",
+      "backupPath": "codeIntel_1782633852940.ts.bak",
+      "originalSize": 14559,
+      "createdAt": "2026-06-28T08:04:12.941Z",
+      "proposalId": "prop_1782633823977_isfp5w",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782633894226_qzqy14",
+      "filename": "toolSynthesis.ts",
+      "backupPath": "toolSynthesis_1782633894226.ts.bak",
+      "originalSize": 10073,
+      "createdAt": "2026-06-28T08:04:54.226Z",
+      "proposalId": "prop_1782633215519_yglvrn",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782634502267_ef2mru",
+      "filename": "llmProvider.ts",
+      "backupPath": "llmProvider_1782634502267.ts.bak",
+      "originalSize": 54139,
+      "createdAt": "2026-06-28T08:15:02.267Z",
+      "proposalId": "prop_1782634476148_qonkf7",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782634534268_6g48vf",
+      "filename": "ollamaAutoSetup.ts",
+      "backupPath": "ollamaAutoSetup_1782634534268.ts.bak",
+      "originalSize": 18483,
+      "createdAt": "2026-06-28T08:15:34.268Z",
+      "proposalId": "prop_1782633990701_429zmn",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782634611919_edg7w1",
+      "filename": "multiAgentImprover.ts",
+      "backupPath": "multiAgentImprover_1782634611916.ts.bak",
+      "originalSize": 10892,
+      "createdAt": "2026-06-28T08:16:51.919Z",
+      "proposalId": "prop_1782634561506_b8ibun",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782634702367_7la7zy",
+      "filename": "continuousFineTuning.ts",
+      "backupPath": "continuousFineTuning_1782634702367.ts.bak",
+      "originalSize": 3408,
+      "createdAt": "2026-06-28T08:18:22.367Z",
+      "proposalId": "prop_1782634401503_b0jgce",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782635278417_qh0cxp",
+      "filename": "adaptiveRouter.ts",
+      "backupPath": "adaptiveRouter_1782635278416.ts.bak",
+      "originalSize": 10946,
+      "createdAt": "2026-06-28T08:27:58.417Z",
+      "proposalId": "prop_1782635219069_b301oy",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782635829384_fkma6p",
+      "filename": "telemetry.ts",
+      "backupPath": "telemetry_1782635829384.ts.bak",
+      "originalSize": 11884,
+      "createdAt": "2026-06-28T08:37:09.384Z",
+      "proposalId": "prop_1782635386905_kjrrc7",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782636287130_owoj8i",
+      "filename": "aiPlanning.ts",
+      "backupPath": "aiPlanning_1782636287129.ts.bak",
+      "originalSize": 30989,
+      "createdAt": "2026-06-28T08:44:47.130Z",
+      "proposalId": "prop_1782636129723_zz7y3a",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782636390398_hwz3fn",
+      "filename": "systemMemory.ts",
+      "backupPath": "systemMemory_1782636390397.ts.bak",
+      "originalSize": 12389,
+      "createdAt": "2026-06-28T08:46:30.398Z",
+      "proposalId": "prop_1782635979763_fgqo9y",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782636394805_2yc7pn",
+      "filename": "systemMemory.ts",
+      "backupPath": "systemMemory_1782636394805.ts.bak",
+      "originalSize": 12893,
+      "createdAt": "2026-06-28T08:46:34.805Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1782636395616_oe5xff",
+      "filename": "qualityToRSI.ts",
+      "backupPath": "qualityToRSI_1782636395616.ts.bak",
+      "originalSize": 5817,
+      "createdAt": "2026-06-28T08:46:35.616Z",
+      "proposalId": "prop_1782636287092_a5obce",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782636460001_i9994u",
+      "filename": "qualityToRSI.ts",
+      "backupPath": "qualityToRSI_1782636460000.ts.bak",
+      "originalSize": 5840,
+      "createdAt": "2026-06-28T08:47:40.001Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1782636538008_ior4ss",
+      "filename": "aiPlanning.ts",
+      "backupPath": "aiPlanning_1782636538007.ts.bak",
+      "originalSize": 31164,
+      "createdAt": "2026-06-28T08:48:58.008Z",
+      "proposalId": "prop_1782636129723_zz7y3a",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782636558930_7efyiv",
+      "filename": "evalFramework.ts",
+      "backupPath": "evalFramework_1782636558929.ts.bak",
+      "originalSize": 42234,
+      "createdAt": "2026-06-28T08:49:18.930Z",
+      "proposalId": "prop_1782635812739_pidsq4",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782636599987_mvsoic",
+      "filename": "telemetry.ts",
+      "backupPath": "telemetry_1782636599987.ts.bak",
+      "originalSize": 12058,
+      "createdAt": "2026-06-28T08:49:59.987Z",
+      "proposalId": "prop_1782635386905_kjrrc7",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782637074783_mlgcxo",
+      "filename": "docGenerator.ts",
+      "backupPath": "docGenerator_1782637074782.ts.bak",
+      "originalSize": 12911,
+      "createdAt": "2026-06-28T08:57:54.783Z",
+      "proposalId": "prop_1782637019069_ffk7v2",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782637137707_vvi1ct",
+      "filename": "multiAgentBus.ts",
+      "backupPath": "multiAgentBus_1782637137706.ts.bak",
+      "originalSize": 6185,
+      "createdAt": "2026-06-28T08:58:57.707Z",
+      "proposalId": "prop_1782636970798_9mabl3",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782637199050_0xxhv3",
+      "filename": "knowledgeTransfer.ts",
+      "backupPath": "knowledgeTransfer_1782637199050.ts.bak",
+      "originalSize": 15089,
+      "createdAt": "2026-06-28T08:59:59.050Z",
+      "proposalId": "prop_1782636796275_giabea",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782637254284_oc2qsv",
+      "filename": "qualityToRSI.ts",
+      "backupPath": "qualityToRSI_1782637254284.ts.bak",
+      "originalSize": 5817,
+      "createdAt": "2026-06-28T09:00:54.284Z",
+      "proposalId": "prop_1782636287092_a5obce",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782637318982_smxseo",
+      "filename": "qualityToRSI.ts",
+      "backupPath": "qualityToRSI_1782637318981.ts.bak",
+      "originalSize": 5840,
+      "createdAt": "2026-06-28T09:01:58.982Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1782637368799_0u66io",
+      "filename": "telemetry.ts",
+      "backupPath": "telemetry_1782637368796.ts.bak",
+      "originalSize": 12058,
+      "createdAt": "2026-06-28T09:02:48.799Z",
+      "proposalId": "prop_1782635386905_kjrrc7",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782637815135_b2o32o",
+      "filename": "codebaseAnalyzer.ts",
+      "backupPath": "codebaseAnalyzer_1782637815134.ts.bak",
+      "originalSize": 11014,
+      "createdAt": "2026-06-28T09:10:15.135Z",
+      "proposalId": "prop_1782637765981_2ehwtm",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782637819469_c1qnaf",
+      "filename": "codebaseAnalyzer.ts",
+      "backupPath": "codebaseAnalyzer_1782637819468.ts.bak",
+      "originalSize": 11102,
+      "createdAt": "2026-06-28T09:10:19.469Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1782637878242_p7hn5k",
+      "filename": "auditLog.ts",
+      "backupPath": "auditLog_1782637878242.ts.bak",
+      "originalSize": 11039,
+      "createdAt": "2026-06-28T09:11:18.242Z",
+      "proposalId": "prop_1782637632799_1hdfok",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782638156491_41cu4m",
+      "filename": "vectorMemory.ts",
+      "backupPath": "vectorMemory_1782638156491.ts.bak",
+      "originalSize": 13982,
+      "createdAt": "2026-06-28T09:15:56.491Z",
+      "proposalId": "prop_1782638096920_nth4ft",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782638218906_8nour4",
+      "filename": "auditLog.ts",
+      "backupPath": "auditLog_1782638218906.ts.bak",
+      "originalSize": 11245,
+      "createdAt": "2026-06-28T09:16:58.906Z",
+      "proposalId": "prop_1782637632799_1hdfok",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782638524577_avq27a",
+      "filename": "aiMemory.ts",
+      "backupPath": "aiMemory_1782638524577.ts.bak",
+      "originalSize": 3343,
+      "createdAt": "2026-06-28T09:22:04.577Z",
+      "proposalId": "prop_1782638490227_alw92h",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782638596804_zamzyc",
+      "filename": "workspace.ts",
+      "backupPath": "workspace_1782638596803.ts.bak",
+      "originalSize": 13333,
+      "createdAt": "2026-06-28T09:23:16.804Z",
+      "proposalId": "prop_1782638437819_2so1n0",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782638653911_2yeik3",
+      "filename": "selfMonitor.ts",
+      "backupPath": "selfMonitor_1782638653910.ts.bak",
+      "originalSize": 27177,
+      "createdAt": "2026-06-28T09:24:13.911Z",
+      "proposalId": "prop_1782637989130_9ef3t8",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782638689208_rzligl",
+      "filename": "auditLog.ts",
+      "backupPath": "auditLog_1782638689207.ts.bak",
+      "originalSize": 11245,
+      "createdAt": "2026-06-28T09:24:49.208Z",
+      "proposalId": "prop_1782637632799_1hdfok",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782638785439_eorcfy",
+      "filename": "evalFramework.ts",
+      "backupPath": "evalFramework_1782638785438.ts.bak",
+      "originalSize": 42765,
+      "createdAt": "2026-06-28T09:26:25.439Z",
+      "proposalId": "prop_1782635812739_pidsq4",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782639117757_54zbp4",
+      "filename": "evalFramework.ts",
+      "backupPath": "evalFramework_1782639117756.ts.bak",
+      "originalSize": 42765,
+      "createdAt": "2026-06-28T09:31:57.757Z",
+      "proposalId": "prop_1782635812739_pidsq4",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782639696693_qppzbh",
+      "filename": "autoRebuild.ts",
+      "backupPath": "autoRebuild_1782639696693.ts.bak",
+      "originalSize": 14055,
+      "createdAt": "2026-06-28T09:41:36.693Z",
+      "proposalId": "prop_1782639671319_r36ejz",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782639766360_4krl33",
+      "filename": "observability.ts",
+      "backupPath": "observability_1782639766360.ts.bak",
+      "originalSize": 11011,
+      "createdAt": "2026-06-28T09:42:46.360Z",
+      "proposalId": "prop_1782639470976_okwkgh",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782639833028_sgs20f",
+      "filename": "contextCompressionDaemon.ts",
+      "backupPath": "contextCompressionDaemon_1782639833027.ts.bak",
+      "originalSize": 9537,
+      "createdAt": "2026-06-28T09:43:53.028Z",
+      "proposalId": "prop_1782639382098_rlm6ik",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782639892572_xvaisw",
+      "filename": "systemMemory.ts",
+      "backupPath": "systemMemory_1782639892572.ts.bak",
+      "originalSize": 12389,
+      "createdAt": "2026-06-28T09:44:52.572Z",
+      "proposalId": "prop_1782638766540_5110mx",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782639895092_wh2vhi",
+      "filename": "systemMemory.ts",
+      "backupPath": "systemMemory_1782639895092.ts.bak",
+      "originalSize": 12660,
+      "createdAt": "2026-06-28T09:44:55.092Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1782639911591_49pkpw",
+      "filename": "workspace.ts",
+      "backupPath": "workspace_1782639911591.ts.bak",
+      "originalSize": 13463,
+      "createdAt": "2026-06-28T09:45:11.591Z",
+      "proposalId": "prop_1782638437819_2so1n0",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782640791873_tomkxy",
+      "filename": "dependencyGraph.ts",
+      "backupPath": "dependencyGraph_1782640791873.ts.bak",
+      "originalSize": 16591,
+      "createdAt": "2026-06-28T09:59:51.873Z",
+      "proposalId": "prop_1782640727034_tnxbfa",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782641299768_tgb8my",
+      "filename": "rbac.ts",
+      "backupPath": "rbac_1782641299768.ts.bak",
+      "originalSize": 15213,
+      "createdAt": "2026-06-28T10:08:19.768Z",
+      "proposalId": "prop_1782640820870_m58sam",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782641325382_u22de7",
+      "filename": "storage.ts",
+      "backupPath": "storage_1782641325381.ts.bak",
+      "originalSize": 2932,
+      "createdAt": "2026-06-28T10:08:45.382Z",
+      "proposalId": "prop_1782640636676_0si02l",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782641796863_20yju4",
+      "filename": "rbac.ts",
+      "backupPath": "rbac_1782641796863.ts.bak",
+      "originalSize": 15348,
+      "createdAt": "2026-06-28T10:16:36.863Z",
+      "proposalId": "prop_1782640820870_m58sam",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782641877500_skc2va",
+      "filename": "selfDocumentation.ts",
+      "backupPath": "selfDocumentation_1782641877500.ts.bak",
+      "originalSize": 6137,
+      "createdAt": "2026-06-28T10:17:57.500Z",
+      "proposalId": "prop_1782641667227_jsfr9h",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782642333462_2s1ft5",
+      "filename": "selfModel.ts",
+      "backupPath": "selfModel_1782642333461.ts.bak",
+      "originalSize": 16499,
+      "createdAt": "2026-06-28T10:25:33.462Z",
+      "proposalId": "prop_1782642305470_mf90am",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782642397618_9v2wmj",
+      "filename": "proposalFeedback.ts",
+      "backupPath": "proposalFeedback_1782642397618.ts.bak",
+      "originalSize": 7947,
+      "createdAt": "2026-06-28T10:26:37.618Z",
+      "proposalId": "prop_1782641927137_w70mca",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782642434471_kf78a7",
+      "filename": "rbac.ts",
+      "backupPath": "rbac_1782642434470.ts.bak",
+      "originalSize": 15348,
+      "createdAt": "2026-06-28T10:27:14.471Z",
+      "proposalId": "prop_1782640820870_m58sam",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782642568427_kqqp8c",
+      "filename": "multiAgentImprover.ts",
+      "backupPath": "multiAgentImprover_1782642568427.ts.bak",
+      "originalSize": 10921,
+      "createdAt": "2026-06-28T10:29:28.427Z",
+      "proposalId": "prop_1782642546139_qa8s38",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782642631605_nnte3e",
+      "filename": "rsiEventBus.ts",
+      "backupPath": "rsiEventBus_1782642631605.ts.bak",
+      "originalSize": 5008,
+      "createdAt": "2026-06-28T10:30:31.605Z",
+      "proposalId": "prop_1782642465980_ny3tk5",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782642694298_630jya",
+      "filename": "selfKnowledgeBase.ts",
+      "backupPath": "selfKnowledgeBase_1782642694298.ts.bak",
+      "originalSize": 23877,
+      "createdAt": "2026-06-28T10:31:34.298Z",
+      "proposalId": "prop_1782642213136_jvy7w5",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782642740081_xla6df",
+      "filename": "contextAwareness.ts",
+      "backupPath": "contextAwareness_1782642740080.ts.bak",
+      "originalSize": 10488,
+      "createdAt": "2026-06-28T10:32:20.081Z",
+      "proposalId": "prop_1782642024923_1gma4s",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782642780421_8xmyuh",
+      "filename": "selfDocumentation.ts",
+      "backupPath": "selfDocumentation_1782642780421.ts.bak",
+      "originalSize": 6396,
+      "createdAt": "2026-06-28T10:33:00.421Z",
+      "proposalId": "prop_1782641667227_jsfr9h",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782643715729_9qarde",
+      "filename": "taskDecomposer.ts",
+      "backupPath": "taskDecomposer_1782643715729.ts.bak",
+      "originalSize": 19230,
+      "createdAt": "2026-06-28T10:48:35.729Z",
+      "proposalId": "prop_1782643658784_fwqmb2",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782644098310_5rbbkq",
+      "filename": "hotReload.ts",
+      "backupPath": "hotReload_1782644098310.ts.bak",
+      "originalSize": 18072,
+      "createdAt": "2026-06-28T10:54:58.310Z",
+      "proposalId": "prop_1782644076809_2elakf",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782644219758_1s50af",
+      "filename": "tokenBudgetManager.ts",
+      "backupPath": "tokenBudgetManager_1782644219758.ts.bak",
+      "originalSize": 14249,
+      "createdAt": "2026-06-28T10:56:59.758Z",
+      "proposalId": "prop_1782644176507_rcdsxs",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782644253808_64u247",
+      "filename": "ai.ts",
+      "backupPath": "ai_1782644253808.ts.bak",
+      "originalSize": 460,
+      "createdAt": "2026-06-28T10:57:33.808Z",
+      "proposalId": "prop_1782643923254_jjd1ep",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782644784889_ujmy3i",
+      "filename": "circuitBreaker.ts",
+      "backupPath": "circuitBreaker_1782644784889.ts.bak",
+      "originalSize": 10060,
+      "createdAt": "2026-06-28T11:06:24.889Z",
+      "proposalId": "prop_1782644742322_acsno0",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782644940970_pf93bk",
+      "filename": "tenantManager.ts",
+      "backupPath": "tenantManager_1782644940970.ts.bak",
+      "originalSize": 12178,
+      "createdAt": "2026-06-28T11:09:00.970Z",
+      "proposalId": "prop_1782644433008_26kyls",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782644960480_gja9e7",
+      "filename": "tenantManager.ts",
+      "backupPath": "tenantManager_1782644960480.ts.bak",
+      "originalSize": 12661,
+      "createdAt": "2026-06-28T11:09:20.480Z",
+      "proposalId": "prop_1782644433008_26kyls",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782645456447_0u5871",
+      "filename": "utilityFunction.ts",
+      "backupPath": "utilityFunction_1782645456447.ts.bak",
+      "originalSize": 17484,
+      "createdAt": "2026-06-28T11:17:36.447Z",
+      "proposalId": "prop_1782645164276_wwp8m7",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782645499818_qtumg7",
+      "filename": "aiStreaming.ts",
+      "backupPath": "aiStreaming_1782645499818.ts.bak",
+      "originalSize": 27980,
+      "createdAt": "2026-06-28T11:18:19.818Z",
+      "proposalId": "prop_1782644811119_cz0yxi",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782645545647_mmrl64",
+      "filename": "adaptiveEval.ts",
+      "backupPath": "adaptiveEval_1782645545647.ts.bak",
+      "originalSize": 28841,
+      "createdAt": "2026-06-28T11:19:05.647Z",
+      "proposalId": "prop_1782645412603_2nlnwn",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782645780787_j8st4f",
+      "filename": "dependencyAuditor.ts",
+      "backupPath": "dependencyAuditor_1782645780787.ts.bak",
+      "originalSize": 10208,
+      "createdAt": "2026-06-28T11:23:00.787Z",
+      "proposalId": "prop_1782645728480_dzrxi0",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782645804788_zsartt",
+      "filename": "distributedProofConsensus.ts",
+      "backupPath": "distributedProofConsensus_1782645804787.ts.bak",
+      "originalSize": 17441,
+      "createdAt": "2026-06-28T11:23:24.788Z",
+      "proposalId": "prop_1782645587465_ddml1p",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782645807290_0qlftg",
+      "filename": "distributedProofConsensus.ts",
+      "backupPath": "distributedProofConsensus_1782645807290.ts.bak",
+      "originalSize": 17580,
+      "createdAt": "2026-06-28T11:23:27.290Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1782645823999_e1hi0w",
+      "filename": "adaptiveEval.ts",
+      "backupPath": "adaptiveEval_1782645823999.ts.bak",
+      "originalSize": 28888,
+      "createdAt": "2026-06-28T11:23:43.999Z",
+      "proposalId": "prop_1782645412603_2nlnwn",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782646334790_7q39kg",
+      "filename": "aiStreaming.ts",
+      "backupPath": "aiStreaming_1782646334790.ts.bak",
+      "originalSize": 28184,
+      "createdAt": "2026-06-28T11:32:14.790Z",
+      "proposalId": "prop_1782644811119_cz0yxi",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782646364663_oc0po8",
+      "filename": "contextAwareness.ts",
+      "backupPath": "contextAwareness_1782646364662.ts.bak",
+      "originalSize": 10657,
+      "createdAt": "2026-06-28T11:32:44.663Z",
+      "proposalId": "prop_1782646319473_c6nd35",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782646477332_jz9ggm",
+      "filename": "contextBus.ts",
+      "backupPath": "contextBus_1782646477331.ts.bak",
+      "originalSize": 19625,
+      "createdAt": "2026-06-28T11:34:37.332Z",
+      "proposalId": "prop_1782646441646_afj5h1",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782646555258_ezy9ra",
+      "filename": "episodicConsolidation.ts",
+      "backupPath": "episodicConsolidation_1782646555258.ts.bak",
+      "originalSize": 12181,
+      "createdAt": "2026-06-28T11:35:55.258Z",
+      "proposalId": "prop_1782646288464_cxoumz",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782647060304_12lfkv",
+      "filename": "agentStateMachine.ts",
+      "backupPath": "agentStateMachine_1782647060304.ts.bak",
+      "originalSize": 4137,
+      "createdAt": "2026-06-28T11:44:20.304Z",
+      "proposalId": "prop_1782647018190_fw3sbb",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782647578577_r6wpqm",
+      "filename": "agentOrchestrator.ts",
+      "backupPath": "agentOrchestrator_1782647578577.ts.bak",
+      "originalSize": 24388,
+      "createdAt": "2026-06-28T11:52:58.577Z",
+      "proposalId": "prop_1782646991846_odkiq2",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782647626674_0zrtss",
+      "filename": "scheduler.ts",
+      "backupPath": "scheduler_1782647626674.ts.bak",
+      "originalSize": 17823,
+      "createdAt": "2026-06-28T11:53:46.674Z",
+      "proposalId": "prop_1782647524718_uolihn",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782647977523_rmlb4l",
+      "filename": "evalSeed.ts",
+      "backupPath": "evalSeed_1782647977523.ts.bak",
+      "originalSize": 13815,
+      "createdAt": "2026-06-28T11:59:37.523Z",
+      "proposalId": "prop_1782647933994_j7zuqr",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782647979933_s5d6l4",
+      "filename": "evalSeed.ts",
+      "backupPath": "evalSeed_1782647979933.ts.bak",
+      "originalSize": 13968,
+      "createdAt": "2026-06-28T11:59:39.933Z",
+      "reason": "pre-rollback"
+    },
+    {
+      "id": "bak_1782648023460_ib71m6",
+      "filename": "contextManager.ts",
+      "backupPath": "contextManager_1782648023459.ts.bak",
+      "originalSize": 12830,
+      "createdAt": "2026-06-28T12:00:23.460Z",
+      "proposalId": "prop_1782647776144_1d9inl",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782648050505_7xs0oj",
+      "filename": "swarmOrchestrator.ts",
+      "backupPath": "swarmOrchestrator_1782648050505.ts.bak",
+      "originalSize": 12946,
+      "createdAt": "2026-06-28T12:00:50.505Z",
+      "proposalId": "prop_1782647621647_igzczk",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782648175134_o6bbbj",
+      "filename": "visionModule.ts",
+      "backupPath": "visionModule_1782648175134.ts.bak",
+      "originalSize": 8046,
+      "createdAt": "2026-06-28T12:02:55.134Z",
+      "proposalId": "prop_1782647191497_kd6bd2",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782648609310_n3049u",
+      "filename": "crossInstanceRlhf.ts",
+      "backupPath": "crossInstanceRlhf_1782648609310.ts.bak",
+      "originalSize": 13076,
+      "createdAt": "2026-06-28T12:10:09.310Z",
+      "proposalId": "prop_1782647349204_44wv3u",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782649068844_wt50dp",
+      "filename": "swarmTestnet.ts",
+      "backupPath": "swarmTestnet_1782649068844.ts.bak",
+      "originalSize": 13036,
+      "createdAt": "2026-06-28T12:17:48.844Z",
+      "proposalId": "prop_1782648857158_ds2zeo",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782649106909_h5exml",
+      "filename": "loraBackendDetector.ts",
+      "backupPath": "loraBackendDetector_1782649106909.ts.bak",
+      "originalSize": 13438,
+      "createdAt": "2026-06-28T12:18:26.909Z",
+      "proposalId": "prop_1782648530319_iwvq5t",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782649549575_stz9az",
+      "filename": "loraBackendDetector.ts",
+      "backupPath": "loraBackendDetector_1782649549575.ts.bak",
+      "originalSize": 13597,
+      "createdAt": "2026-06-28T12:25:49.575Z",
+      "proposalId": "prop_1782648530319_iwvq5t",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782649883861_gwwntk",
+      "filename": "adaptivePartitions.ts",
+      "backupPath": "adaptivePartitions_1782649883861.ts.bak",
+      "originalSize": 7956,
+      "createdAt": "2026-06-28T12:31:23.861Z",
+      "proposalId": "prop_1782649431276_fwqd0z",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782649918513_qz8ad8",
+      "filename": "loraBackendDetector.ts",
+      "backupPath": "loraBackendDetector_1782649918513.ts.bak",
+      "originalSize": 13597,
+      "createdAt": "2026-06-28T12:31:58.513Z",
+      "proposalId": "prop_1782648530319_iwvq5t",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782650288363_6k0k86",
+      "filename": "selfConsistency.ts",
+      "backupPath": "selfConsistency_1782650288363.ts.bak",
+      "originalSize": 14633,
+      "createdAt": "2026-06-28T12:38:08.363Z",
+      "proposalId": "prop_1782650254441_acl0b2",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782650812992_wbsddu",
+      "filename": "swarmOrchestrator.ts",
+      "backupPath": "swarmOrchestrator_1782650812992.ts.bak",
+      "originalSize": 13024,
+      "createdAt": "2026-06-28T12:46:52.992Z",
+      "proposalId": "prop_1782647621647_igzczk",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782650876562_c39cni",
+      "filename": "agentTypes.ts",
+      "backupPath": "agentTypes_1782650876562.ts.bak",
+      "originalSize": 2852,
+      "createdAt": "2026-06-28T12:47:56.562Z",
+      "proposalId": "prop_1782650773196_ktncns",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782651467263_ub2zrl",
+      "filename": "aiTokens.ts",
+      "backupPath": "aiTokens_1782651467263.ts.bak",
+      "originalSize": 9414,
+      "createdAt": "2026-06-28T12:57:47.263Z",
+      "proposalId": "prop_1782651413211_zk3e3t",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782651494083_ct458n",
+      "filename": "tokenBudgetManager.ts",
+      "backupPath": "tokenBudgetManager_1782651494083.ts.bak",
+      "originalSize": 14541,
+      "createdAt": "2026-06-28T12:58:14.083Z",
+      "proposalId": "prop_1782651450960_up3587",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782652177104_qrz0qk",
+      "filename": "localLora.ts",
+      "backupPath": "localLora_1782652177104.ts.bak",
+      "originalSize": 7650,
+      "createdAt": "2026-06-28T13:09:37.104Z",
+      "proposalId": "prop_1782651646803_x6f28y",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782652283449_ax4seh",
+      "filename": "agentTypes.ts",
+      "backupPath": "agentTypes_1782652283449.ts.bak",
+      "originalSize": 3956,
+      "createdAt": "2026-06-28T13:11:23.449Z",
+      "proposalId": "prop_1782652233129_62oiul",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782652332974_4j6xee",
+      "filename": "learnedConstraints.ts",
+      "backupPath": "learnedConstraints_1782652332973.ts.bak",
+      "originalSize": 7424,
+      "createdAt": "2026-06-28T13:12:12.974Z",
+      "proposalId": "prop_1782652015395_mxjyzb",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782653124246_rfkpa6",
+      "filename": "importGraph.ts",
+      "backupPath": "importGraph_1782653124246.ts.bak",
+      "originalSize": 13291,
+      "createdAt": "2026-06-28T13:25:24.246Z",
+      "proposalId": "prop_1782652977626_1na54a",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782653586042_8fw9n9",
+      "filename": "autoHealing.ts",
+      "backupPath": "autoHealing_1782653586042.ts.bak",
+      "originalSize": 15651,
+      "createdAt": "2026-06-28T13:33:06.042Z",
+      "proposalId": "prop_1782653361227_d88csc",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782653755735_2mgfvh",
+      "filename": "cloudProvisioning.ts",
+      "backupPath": "cloudProvisioning_1782653755735.ts.bak",
+      "originalSize": 14175,
+      "createdAt": "2026-06-28T13:35:55.735Z",
+      "proposalId": "prop_1782653717992_jv9wrz",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782654044849_9phv5i",
+      "filename": "behavioralRegressionEngine.ts",
+      "backupPath": "behavioralRegressionEngine_1782654044849.ts.bak",
+      "originalSize": 13260,
+      "createdAt": "2026-06-28T13:40:44.849Z",
+      "proposalId": "prop_1782654016316_g4of3k",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782654593291_iioo8j",
+      "filename": "codeRunner.ts",
+      "backupPath": "codeRunner_1782654593291.ts.bak",
+      "originalSize": 6628,
+      "createdAt": "2026-06-28T13:49:53.291Z",
+      "proposalId": "prop_1782654547530_1sp4hq",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782654659052_jn0i1y",
+      "filename": "llmRouter.ts",
+      "backupPath": "llmRouter_1782654659052.ts.bak",
+      "originalSize": 14788,
+      "createdAt": "2026-06-28T13:50:59.052Z",
+      "proposalId": "prop_1782654206636_56pa1c",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782655236614_yb5kty",
+      "filename": "proofVerifier.ts",
+      "backupPath": "proofVerifier_1782655236614.ts.bak",
+      "originalSize": 21065,
+      "createdAt": "2026-06-28T14:00:36.614Z",
+      "proposalId": "prop_1782654614969_qlpxjv",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782655283306_w2uluw",
+      "filename": "costOptimizer.ts",
+      "backupPath": "costOptimizer_1782655283306.ts.bak",
+      "originalSize": 12399,
+      "createdAt": "2026-06-28T14:01:23.306Z",
+      "proposalId": "prop_1782655146138_rzpdl1",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782655696033_cobq0s",
+      "filename": "federatedLoraSharing.ts",
+      "backupPath": "federatedLoraSharing_1782655696033.ts.bak",
+      "originalSize": 9672,
+      "createdAt": "2026-06-28T14:08:16.033Z",
+      "proposalId": "prop_1782655597356_avschv",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782656295694_t8ozm2",
+      "filename": "crossInstanceRlhf.ts",
+      "backupPath": "crossInstanceRlhf_1782656295694.ts.bak",
+      "originalSize": 13294,
+      "createdAt": "2026-06-28T14:18:15.694Z",
+      "proposalId": "prop_1782656250117_worev6",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782656821454_xcgal8",
+      "filename": "dbPostgres.ts",
+      "backupPath": "dbPostgres_1782656821454.ts.bak",
+      "originalSize": 7704,
+      "createdAt": "2026-06-28T14:27:01.454Z",
+      "proposalId": "prop_1782656782007_2jlvxt",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782656900261_e0b8r7",
+      "filename": "crossModalSelfImprovement.ts",
+      "backupPath": "crossModalSelfImprovement_1782656900260.ts.bak",
+      "originalSize": 16672,
+      "createdAt": "2026-06-28T14:28:20.261Z",
+      "proposalId": "prop_1782656179871_0yakdi",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782656974141_twiqmh",
+      "filename": "zeroShotTransferEngine.ts",
+      "backupPath": "zeroShotTransferEngine_1782656974141.ts.bak",
+      "originalSize": 13038,
+      "createdAt": "2026-06-28T14:29:34.141Z",
+      "proposalId": "prop_1782656433187_sfo5y8",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782657567241_6j247j",
+      "filename": "dockerSandbox.ts",
+      "backupPath": "dockerSandbox_1782657567241.ts.bak",
+      "originalSize": 3713,
+      "createdAt": "2026-06-28T14:39:27.241Z",
+      "proposalId": "prop_1782657497906_k19qkd",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782657685975_3okr4p",
+      "filename": "hotReload.ts",
+      "backupPath": "hotReload_1782657685975.ts.bak",
+      "originalSize": 18219,
+      "createdAt": "2026-06-28T14:41:25.975Z",
+      "proposalId": "prop_1782657131226_h088r0",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782657745107_6kzpdy",
+      "filename": "zeroShotTransferEngine.ts",
+      "backupPath": "zeroShotTransferEngine_1782657745106.ts.bak",
+      "originalSize": 13124,
+      "createdAt": "2026-06-28T14:42:25.107Z",
+      "proposalId": "prop_1782656433187_sfo5y8",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782657754098_3fnd0f",
+      "filename": "hotReload.ts",
+      "backupPath": "hotReload_1782657754098.ts.bak",
+      "originalSize": 18332,
+      "createdAt": "2026-06-28T14:42:34.098Z",
+      "proposalId": "prop_1782657131226_h088r0",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782657830252_2ei2fx",
+      "filename": "ebpfGrounding.ts",
+      "backupPath": "ebpfGrounding_1782657830251.ts.bak",
+      "originalSize": 14184,
+      "createdAt": "2026-06-28T14:43:50.252Z",
+      "proposalId": "prop_1782657563390_xus7t6",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782658310851_sxpk8m",
+      "filename": "rsiEngine.ts",
+      "backupPath": "rsiEngine_1782658310851.ts.bak",
+      "originalSize": 141238,
+      "createdAt": "2026-06-28T14:51:50.851Z",
+      "proposalId": "prop_1782657917597_0ek15s",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782658526321_feqvnp",
+      "filename": "evalGoalDiscovery.ts",
+      "backupPath": "evalGoalDiscovery_1782658526313.ts.bak",
+      "originalSize": 7188,
+      "createdAt": "2026-06-28T14:55:26.321Z",
+      "proposalId": "prop_1782658216323_wpf6og",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782658571627_dupdyx",
+      "filename": "ebpfGrounding.ts",
+      "backupPath": "ebpfGrounding_1782658571625.ts.bak",
+      "originalSize": 13992,
+      "createdAt": "2026-06-28T14:56:11.627Z",
+      "proposalId": "prop_1782657563390_xus7t6",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782658625926_8pg6gq",
+      "filename": "evalFramework.ts",
+      "backupPath": "evalFramework_1782658625925.ts.bak",
+      "originalSize": 42765,
+      "createdAt": "2026-06-28T14:57:05.926Z",
+      "proposalId": "prop_1782658492507_knwp1h",
+      "reason": "pre-apply"
+    },
+    {
+      "id": "bak_1782658681528_pxx3zo",
+      "filename": "rsiEngine.ts",
+      "backupPath": "rsiEngine_1782658681527.ts.bak",
+      "originalSize": 141426,
+      "createdAt": "2026-06-28T14:58:01.528Z",
+      "proposalId": "prop_1782657917597_0ek15s",
+      "reason": "pre-apply"
     }
   ],
   "audit": [
@@ -4399,6 +5454,2634 @@
       "result": "success",
       "details": "Previewed proposal: No change",
       "timestamp": "2026-06-27T04:54:11.979Z"
+    },
+    {
+      "id": "audit_1782632250426_wlaabn",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-28T07:37:30.426Z"
+    },
+    {
+      "id": "audit_1782632250435_evxavg",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-28T07:37:30.435Z"
+    },
+    {
+      "id": "audit_1782632555238_d8h96d",
+      "action": "test",
+      "proposalId": "prop_1782632496327_81ajdt",
+      "filename": "grounding.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/grounding.test.ts > extractFactualClaims > should execute without throwing 4ms\n ✓ server/grounding.test.ts > extractFactualClaims > should return correc",
+      "timestamp": "2026-06-28T07:42:35.238Z"
+    },
+    {
+      "id": "audit_1782632555244_q8yt33",
+      "action": "apply",
+      "proposalId": "prop_1782632496327_81ajdt",
+      "filename": "grounding.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to extractFactualClaims and groundAnswer",
+      "timestamp": "2026-06-28T07:42:35.244Z"
+    },
+    {
+      "id": "audit_1782632841777_6kou1r",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-28T07:47:21.777Z"
+    },
+    {
+      "id": "audit_1782632841785_ubtux5",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-28T07:47:21.785Z"
+    },
+    {
+      "id": "audit_1782633288166_6xf5bg",
+      "action": "test",
+      "proposalId": "prop_1782633218758_vf0i60",
+      "filename": "memory.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/memory.test.ts > MemoryModule.listMemories > should execute without throwing 3ms\n ✓ server/memory.test.ts > MemoryModule.listMemories > should return co",
+      "timestamp": "2026-06-28T07:54:48.166Z"
+    },
+    {
+      "id": "audit_1782633288170_56zcbc",
+      "action": "apply",
+      "proposalId": "prop_1782633218758_vf0i60",
+      "filename": "memory.ts",
+      "result": "success",
+      "details": "Applied proposal: Add timeout to fetch call in autoExtractMemories",
+      "timestamp": "2026-06-28T07:54:48.170Z"
+    },
+    {
+      "id": "audit_1782633452615_gj5lac",
+      "action": "test",
+      "proposalId": "prop_1782633413365_mo5k9y",
+      "filename": "evalFramework.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/evalFramework.test.ts > evalFramework > module loads without errors 2ms\n ✓ server/evalFramework.test.ts > evalFramework > EVAL_TASKS is an array of task",
+      "timestamp": "2026-06-28T07:57:32.615Z"
+    },
+    {
+      "id": "audit_1782633452619_ss3q98",
+      "action": "apply",
+      "proposalId": "prop_1782633413365_mo5k9y",
+      "filename": "evalFramework.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to getEvalHistory and getEvalTrend",
+      "timestamp": "2026-06-28T07:57:32.619Z"
+    },
+    {
+      "id": "audit_1782633855396_kvpgg1",
+      "action": "test",
+      "proposalId": "prop_1782633823977_isfp5w",
+      "filename": "codeIntel.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/codeIntel.test.ts > readPackageJson > should execute without throwing 5ms\n ✓ server/codeIntel.test.ts > readPackageJson > should return correct type 1ms",
+      "timestamp": "2026-06-28T08:04:15.396Z"
+    },
+    {
+      "id": "audit_1782633855400_30g1pb",
+      "action": "apply",
+      "proposalId": "prop_1782633823977_isfp5w",
+      "filename": "codeIntel.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to searchWorkspaceCode pattern parameter",
+      "timestamp": "2026-06-28T08:04:15.400Z"
+    },
+    {
+      "id": "audit_1782633897981_fjds8x",
+      "action": "test",
+      "proposalId": "prop_1782633215519_yglvrn",
+      "filename": "toolSynthesis.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/toolSynthesis.test.ts > validateToolSource > should execute without throwing 61ms\n ✓ server/toolSynthesis.test.ts > validateToolSource > should return c",
+      "timestamp": "2026-06-28T08:04:57.981Z"
+    },
+    {
+      "id": "audit_1782633897996_zntofq",
+      "action": "apply",
+      "proposalId": "prop_1782633215519_yglvrn",
+      "filename": "toolSynthesis.ts",
+      "result": "success",
+      "details": "Applied proposal: Add error type narrowing in catch blocks",
+      "timestamp": "2026-06-28T08:04:57.996Z"
+    },
+    {
+      "id": "audit_1782634505197_glwkgl",
+      "action": "test",
+      "proposalId": "prop_1782634476148_qonkf7",
+      "filename": "llmProvider.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/llmProvider.test.ts > resolveProviderFromEnv > should execute without throwing\n[v6.17] Startup provider: kimi (LLM_MODEL=(not set), DEEPSEEK_KEY=s",
+      "timestamp": "2026-06-28T08:15:05.197Z"
+    },
+    {
+      "id": "audit_1782634505203_6966dx",
+      "action": "apply",
+      "proposalId": "prop_1782634476148_qonkf7",
+      "filename": "llmProvider.ts",
+      "result": "success",
+      "details": "Applied proposal: Parallelize fallback chain retries with Promise.allSettled",
+      "timestamp": "2026-06-28T08:15:05.203Z"
+    },
+    {
+      "id": "audit_1782634536999_yhcdtu",
+      "action": "test",
+      "proposalId": "prop_1782633990701_429zmn",
+      "filename": "ollamaAutoSetup.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/ollamaAutoSetup.test.ts > ollamaAutoSetup > triggerModelPull returns a result object for a known model\n[2026-06-28T08:15:36.676Z] [INFO ] [ollamaA",
+      "timestamp": "2026-06-28T08:15:36.999Z"
+    },
+    {
+      "id": "audit_1782634537005_4l6wnq",
+      "action": "apply",
+      "proposalId": "prop_1782633990701_429zmn",
+      "filename": "ollamaAutoSetup.ts",
+      "result": "success",
+      "details": "Applied proposal: Add error type narrowing in catch blocks",
+      "timestamp": "2026-06-28T08:15:37.005Z"
+    },
+    {
+      "id": "audit_1782634614965_sbcmny",
+      "action": "test",
+      "proposalId": "prop_1782634561506_b8ibun",
+      "filename": "multiAgentImprover.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/multiAgentImprover.test.ts > multiAgentImprover > module loads without errors\n[MultiAgentImprover] Initialized — enabled (4 specialist agents acti",
+      "timestamp": "2026-06-28T08:16:54.965Z"
+    },
+    {
+      "id": "audit_1782634614969_0ea27i",
+      "action": "apply",
+      "proposalId": "prop_1782634561506_b8ibun",
+      "filename": "multiAgentImprover.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null check before accessing securityVote properties",
+      "timestamp": "2026-06-28T08:16:54.969Z"
+    },
+    {
+      "id": "audit_1782634649775_89745j",
+      "action": "apply",
+      "proposalId": "prop_1782634401503_b0jgce",
+      "filename": "continuousFineTuning.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/continuousFineTuning.ts(66,7): error TS2322: Type 'string | undefined' is not assignable to type 'string'.",
+      "timestamp": "2026-06-28T08:17:29.775Z"
+    },
+    {
+      "id": "audit_1782634683030_0by49p",
+      "action": "apply",
+      "proposalId": "prop_1782634401503_b0jgce",
+      "filename": "continuousFineTuning.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1782634401503_b0jgce after syntax error",
+      "timestamp": "2026-06-28T08:18:03.030Z"
+    },
+    {
+      "id": "audit_1782634696712_fpqevh",
+      "action": "apply",
+      "proposalId": "prop_1782634401503_b0jgce",
+      "filename": "continuousFineTuning.ts",
+      "result": "success",
+      "details": "Refinement fixed syntax errors for prop_1782634401503_b0jgce",
+      "timestamp": "2026-06-28T08:18:16.713Z"
+    },
+    {
+      "id": "audit_1782634705361_t0cwpc",
+      "action": "test",
+      "proposalId": "prop_1782634401503_b0jgce",
+      "filename": "continuousFineTuning.ts",
+      "result": "success",
+      "details": "FineTuning.test.ts > continuousFineTuning > runNightlyFineTuningCycle result has rlaifPairsGenerated field\n[2026-06-28T08:18:24.960Z] [INFO ] [continuousFineTuning] [NightlyCycle] Starting continuous ",
+      "timestamp": "2026-06-28T08:18:25.361Z"
+    },
+    {
+      "id": "audit_1782634705367_py12cm",
+      "action": "apply",
+      "proposalId": "prop_1782634401503_b0jgce",
+      "filename": "continuousFineTuning.ts",
+      "result": "success",
+      "details": "Applied proposal: Handle optional modelId in fine-tuning cycle",
+      "timestamp": "2026-06-28T08:18:25.367Z"
+    },
+    {
+      "id": "audit_1782634726971_u8dgjl",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-28T08:18:46.971Z"
+    },
+    {
+      "id": "audit_1782634726979_twhdb8",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-28T08:18:46.979Z"
+    },
+    {
+      "id": "audit_1782635282800_ze78fe",
+      "action": "test",
+      "proposalId": "prop_1782635219069_b301oy",
+      "filename": "adaptiveRouter.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/adaptiveRouter.test.ts > recordSuccess > should execute without throwing 18ms\n ✓ server/adaptiveRouter.test.ts > recordSuccess > should handle empty/nul",
+      "timestamp": "2026-06-28T08:28:02.800Z"
+    },
+    {
+      "id": "audit_1782635282806_23jcvf",
+      "action": "apply",
+      "proposalId": "prop_1782635219069_b301oy",
+      "filename": "adaptiveRouter.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to exported functions",
+      "timestamp": "2026-06-28T08:28:02.806Z"
+    },
+    {
+      "id": "audit_1782635835607_69wjtv",
+      "action": "test",
+      "proposalId": "prop_1782635386905_kjrrc7",
+      "filename": "telemetry.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/telemetry.test.ts > telemetry > initTelemetry is exported as a function 10ms\n ✓ server/telemetry.test.ts > telemetry > recordRsiCycle accepts a valid Rs",
+      "timestamp": "2026-06-28T08:37:15.607Z"
+    },
+    {
+      "id": "audit_1782635835616_3865h5",
+      "action": "apply",
+      "proposalId": "prop_1782635386905_kjrrc7",
+      "filename": "telemetry.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to recordError and normalizeEndpoint",
+      "timestamp": "2026-06-28T08:37:15.616Z"
+    },
+    {
+      "id": "audit_1782636305723_rauah2",
+      "action": "test",
+      "proposalId": "prop_1782636129723_zz7y3a",
+      "filename": "aiPlanning.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/aiPlanning.test.ts > generateSubQueries > should execute without throwing\n[v6.17] Startup provider: kimi (LLM_MODEL=(not set), DEEPSEEK_KEY=set)\n\n",
+      "timestamp": "2026-06-28T08:45:05.724Z"
+    },
+    {
+      "id": "audit_1782636305731_zzaf2k",
+      "action": "apply",
+      "proposalId": "prop_1782636129723_zz7y3a",
+      "filename": "aiPlanning.ts",
+      "result": "success",
+      "details": "Applied proposal: Add timeout guard to fetch calls",
+      "timestamp": "2026-06-28T08:45:05.731Z"
+    },
+    {
+      "id": "audit_1782636394796_7uviyo",
+      "action": "test",
+      "proposalId": "prop_1782635979763_fgqo9y",
+      "filename": "systemMemory.ts",
+      "result": "failure",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/systemMemory.test.ts > systemMemory > module loads without errors 4ms\n × server/systemMemory.test.ts > systemMemory > recordSystemLearning stores a lear",
+      "timestamp": "2026-06-28T08:46:34.796Z"
+    },
+    {
+      "id": "audit_1782636394817_n1s3m4",
+      "action": "rollback",
+      "proposalId": "prop_1782635979763_fgqo9y",
+      "filename": "systemMemory.ts",
+      "result": "success",
+      "details": "Rolled back systemMemory.ts to backup bak_1782636390398_hwz3fn",
+      "timestamp": "2026-06-28T08:46:34.817Z"
+    },
+    {
+      "id": "audit_1782636394827_15r1dl",
+      "action": "rollback",
+      "proposalId": "prop_1782635979763_fgqo9y",
+      "filename": "systemMemory.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back systemMemory.ts to 2026-06-28T08:46:30.398Z",
+      "timestamp": "2026-06-28T08:46:34.827Z"
+    },
+    {
+      "id": "audit_1782636459993_6ngvtu",
+      "action": "test",
+      "proposalId": "prop_1782636287092_a5obce",
+      "filename": "qualityToRSI.ts",
+      "result": "failure",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/qualityToRSI.test.ts > feedQualityToRSI > should execute without throwing\n[2026-06-28T08:46:40.628Z] [INFO ] [qualityToRSI] Skipping quality propo",
+      "timestamp": "2026-06-28T08:47:39.993Z"
+    },
+    {
+      "id": "audit_1782636460013_xm781a",
+      "action": "rollback",
+      "proposalId": "prop_1782636287092_a5obce",
+      "filename": "qualityToRSI.ts",
+      "result": "success",
+      "details": "Rolled back qualityToRSI.ts to backup bak_1782636395616_oe5xff",
+      "timestamp": "2026-06-28T08:47:40.013Z"
+    },
+    {
+      "id": "audit_1782636460021_kapmp8",
+      "action": "rollback",
+      "proposalId": "prop_1782636287092_a5obce",
+      "filename": "qualityToRSI.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back qualityToRSI.ts to 2026-06-28T08:46:35.616Z",
+      "timestamp": "2026-06-28T08:47:40.021Z"
+    },
+    {
+      "id": "audit_1782636557358_sb35ki",
+      "action": "test",
+      "proposalId": "prop_1782636129723_zz7y3a",
+      "filename": "aiPlanning.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/aiPlanning.test.ts > generateSubQueries > should execute without throwing\n[v6.17] Startup provider: kimi (LLM_MODEL=(not set), DEEPSEEK_KEY=set)\n\n",
+      "timestamp": "2026-06-28T08:49:17.358Z"
+    },
+    {
+      "id": "audit_1782636557365_pj483d",
+      "action": "apply",
+      "proposalId": "prop_1782636129723_zz7y3a",
+      "filename": "aiPlanning.ts",
+      "result": "success",
+      "details": "Applied proposal: Add timeout guard to fetch calls",
+      "timestamp": "2026-06-28T08:49:17.365Z"
+    },
+    {
+      "id": "audit_1782636564781_9zdtit",
+      "action": "test",
+      "proposalId": "prop_1782635812739_pidsq4",
+      "filename": "evalFramework.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/evalFramework.test.ts > evalFramework > module loads without errors 4ms\n ✓ server/evalFramework.test.ts > evalFramework > EVAL_TASKS is an array of task",
+      "timestamp": "2026-06-28T08:49:24.781Z"
+    },
+    {
+      "id": "audit_1782636564788_8fsu4w",
+      "action": "apply",
+      "proposalId": "prop_1782635812739_pidsq4",
+      "filename": "evalFramework.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to runEvaluation for error resilience",
+      "timestamp": "2026-06-28T08:49:24.788Z"
+    },
+    {
+      "id": "audit_1782636604654_kpn8hj",
+      "action": "test",
+      "proposalId": "prop_1782635386905_kjrrc7",
+      "filename": "telemetry.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/telemetry.test.ts > telemetry > initTelemetry is exported as a function 3ms\n ✓ server/telemetry.test.ts > telemetry > recordRsiCycle accepts a valid Rsi",
+      "timestamp": "2026-06-28T08:50:04.654Z"
+    },
+    {
+      "id": "audit_1782636604662_njthzz",
+      "action": "apply",
+      "proposalId": "prop_1782635386905_kjrrc7",
+      "filename": "telemetry.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to recordError and normalizeEndpoint",
+      "timestamp": "2026-06-28T08:50:04.662Z"
+    },
+    {
+      "id": "audit_1782637081469_m6perm",
+      "action": "test",
+      "proposalId": "prop_1782637019069_ffk7v2",
+      "filename": "docGenerator.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/docGenerator.test.ts > runDocGeneration > should execute without throwing\n[DocGenerator] Running documentation analysis...\n[DocGenerator] 817 modu",
+      "timestamp": "2026-06-28T08:58:01.469Z"
+    },
+    {
+      "id": "audit_1782637081482_2tgoy0",
+      "action": "apply",
+      "proposalId": "prop_1782637019069_ffk7v2",
+      "filename": "docGenerator.ts",
+      "result": "success",
+      "details": "Applied proposal: Add error type narrowing in catch blocks",
+      "timestamp": "2026-06-28T08:58:01.482Z"
+    },
+    {
+      "id": "audit_1782637142562_2utyre",
+      "action": "test",
+      "proposalId": "prop_1782636970798_9mabl3",
+      "filename": "multiAgentBus.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/multiAgentBus.test.ts > registerAgent > registers an agent and it appears in getAgentStates 5ms\n ✓ server/multiAgentBus.test.ts > registerAgent > regist",
+      "timestamp": "2026-06-28T08:59:02.562Z"
+    },
+    {
+      "id": "audit_1782637142571_x7ockp",
+      "action": "apply",
+      "proposalId": "prop_1782636970798_9mabl3",
+      "filename": "multiAgentBus.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to exported functions",
+      "timestamp": "2026-06-28T08:59:02.571Z"
+    },
+    {
+      "id": "audit_1782637204778_w4skk5",
+      "action": "test",
+      "proposalId": "prop_1782636796275_giabea",
+      "filename": "knowledgeTransfer.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/knowledgeTransfer.test.ts > knowledgeTransfer > initKnowledgeTransfer runs without throwing\n[2026-06-28T09:00:03.924Z] [INFO ] [knowledgeTransfer]",
+      "timestamp": "2026-06-28T09:00:04.778Z"
+    },
+    {
+      "id": "audit_1782637204787_cu3n7l",
+      "action": "apply",
+      "proposalId": "prop_1782636796275_giabea",
+      "filename": "knowledgeTransfer.ts",
+      "result": "success",
+      "details": "Applied proposal: Add error type narrowing in catch blocks",
+      "timestamp": "2026-06-28T09:00:04.787Z"
+    },
+    {
+      "id": "audit_1782637318970_4o7rr1",
+      "action": "test",
+      "proposalId": "prop_1782636287092_a5obce",
+      "filename": "qualityToRSI.ts",
+      "result": "failure",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/qualityToRSI.test.ts > feedQualityToRSI > should execute without throwing\n[2026-06-28T09:00:59.772Z] [INFO ] [qualityToRSI] Skipping quality propo",
+      "timestamp": "2026-06-28T09:01:58.970Z"
+    },
+    {
+      "id": "audit_1782637318995_tl5csw",
+      "action": "rollback",
+      "proposalId": "prop_1782636287092_a5obce",
+      "filename": "qualityToRSI.ts",
+      "result": "success",
+      "details": "Rolled back qualityToRSI.ts to backup bak_1782637254284_oc2qsv",
+      "timestamp": "2026-06-28T09:01:58.995Z"
+    },
+    {
+      "id": "audit_1782637319004_lo4vg5",
+      "action": "rollback",
+      "proposalId": "prop_1782636287092_a5obce",
+      "filename": "qualityToRSI.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back qualityToRSI.ts to 2026-06-28T09:00:54.284Z",
+      "timestamp": "2026-06-28T09:01:59.004Z"
+    },
+    {
+      "id": "audit_1782637374229_b0nmzq",
+      "action": "test",
+      "proposalId": "prop_1782635386905_kjrrc7",
+      "filename": "telemetry.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/telemetry.test.ts > telemetry > initTelemetry is exported as a function 3ms\n ✓ server/telemetry.test.ts > telemetry > recordRsiCycle accepts a valid Rsi",
+      "timestamp": "2026-06-28T09:02:54.229Z"
+    },
+    {
+      "id": "audit_1782637374240_jbgoqb",
+      "action": "apply",
+      "proposalId": "prop_1782635386905_kjrrc7",
+      "filename": "telemetry.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to recordError and normalizeEndpoint",
+      "timestamp": "2026-06-28T09:02:54.240Z"
+    },
+    {
+      "id": "audit_1782637436909_uoqv4w",
+      "action": "apply",
+      "proposalId": "prop_1782637131387_8c5quf",
+      "filename": "testGenerator.ts",
+      "result": "blocked",
+      "details": "sandboxVerifier.quickValidate rejected proposal: Unbalanced braces: 189 open, 184 close",
+      "timestamp": "2026-06-28T09:03:56.909Z"
+    },
+    {
+      "id": "audit_1782637819461_htyk8s",
+      "action": "test",
+      "proposalId": "prop_1782637765981_2ehwtm",
+      "filename": "codebaseAnalyzer.ts",
+      "result": "failure",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n\n Test Files  1 failed (1)\n      Tests  no tests\n   Start at  09:10:17\n   Duration  1.23s (transform 285ms, setup 229ms, collect 0ms, tests 0ms, environment 0ms, ",
+      "timestamp": "2026-06-28T09:10:19.461Z"
+    },
+    {
+      "id": "audit_1782637819481_85iaud",
+      "action": "rollback",
+      "proposalId": "prop_1782637765981_2ehwtm",
+      "filename": "codebaseAnalyzer.ts",
+      "result": "success",
+      "details": "Rolled back codebaseAnalyzer.ts to backup bak_1782637815135_b2o32o",
+      "timestamp": "2026-06-28T09:10:19.481Z"
+    },
+    {
+      "id": "audit_1782637819489_pihkr0",
+      "action": "rollback",
+      "proposalId": "prop_1782637765981_2ehwtm",
+      "filename": "codebaseAnalyzer.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back codebaseAnalyzer.ts to 2026-06-28T09:10:15.135Z",
+      "timestamp": "2026-06-28T09:10:19.489Z"
+    },
+    {
+      "id": "audit_1782637882499_amiaik",
+      "action": "test",
+      "proposalId": "prop_1782637632799_1hdfok",
+      "filename": "auditLog.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/auditLog.test.ts > auditLog > exports audit, auditRsiEvent, getRecentAuditEvents 20ms\n ✓ server/auditLog.test.ts > auditLog > getRecentAuditEvents retur",
+      "timestamp": "2026-06-28T09:11:22.499Z"
+    },
+    {
+      "id": "audit_1782637882507_zeuy3m",
+      "action": "apply",
+      "proposalId": "prop_1782637632799_1hdfok",
+      "filename": "auditLog.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to audit function",
+      "timestamp": "2026-06-28T09:11:22.507Z"
+    },
+    {
+      "id": "audit_1782638163620_ckjej7",
+      "action": "test",
+      "proposalId": "prop_1782638096920_nth4ft",
+      "filename": "vectorMemory.ts",
+      "result": "success",
+      "details": "me/ubuntu/andromeda/\u001b[39mnode_modules/\u001b[4m.pnpm\u001b[24m/@vitest+runner@3.2.6/node_modules/\u001b[4m@vitest/runner\u001b[24m/dist/chunk-hooks.js:752:26\n    at \u001b[90mfile:///home/ubuntu/andromeda/\u001b[39mnode_modules/\u001b[",
+      "timestamp": "2026-06-28T09:16:03.620Z"
+    },
+    {
+      "id": "audit_1782638163631_2vss6u",
+      "action": "apply",
+      "proposalId": "prop_1782638096920_nth4ft",
+      "filename": "vectorMemory.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to async functions for error resilience",
+      "timestamp": "2026-06-28T09:16:03.631Z"
+    },
+    {
+      "id": "audit_1782638223790_raibji",
+      "action": "test",
+      "proposalId": "prop_1782637632799_1hdfok",
+      "filename": "auditLog.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/auditLog.test.ts > auditLog > exports audit, auditRsiEvent, getRecentAuditEvents 8ms\n ✓ server/auditLog.test.ts > auditLog > getRecentAuditEvents return",
+      "timestamp": "2026-06-28T09:17:03.790Z"
+    },
+    {
+      "id": "audit_1782638223811_qs4sr3",
+      "action": "apply",
+      "proposalId": "prop_1782637632799_1hdfok",
+      "filename": "auditLog.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to audit function",
+      "timestamp": "2026-06-28T09:17:03.811Z"
+    },
+    {
+      "id": "audit_1782638529102_uiat9l",
+      "action": "test",
+      "proposalId": "prop_1782638490227_alw92h",
+      "filename": "aiMemory.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/aiMemory.test.ts > aiMemory > getAndromedaMemoryPathPublic returns a non-empty string path 9ms\n ✓ server/aiMemory.test.ts > aiMemory > getAndromedaMemor",
+      "timestamp": "2026-06-28T09:22:09.102Z"
+    },
+    {
+      "id": "audit_1782638529119_am1602",
+      "action": "apply",
+      "proposalId": "prop_1782638490227_alw92h",
+      "filename": "aiMemory.ts",
+      "result": "success",
+      "details": "Applied proposal: Add error type narrowing in catch blocks",
+      "timestamp": "2026-06-28T09:22:09.119Z"
+    },
+    {
+      "id": "audit_1782638603482_y6e37c",
+      "action": "test",
+      "proposalId": "prop_1782638437819_2so1n0",
+      "filename": "workspace.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/workspace.test.ts > workspace — Path Resolution > getServerDir returns a non-empty string 4ms\n ✓ server/workspace.test.ts > workspace — Path Resolution ",
+      "timestamp": "2026-06-28T09:23:23.482Z"
+    },
+    {
+      "id": "audit_1782638603503_m749ly",
+      "action": "apply",
+      "proposalId": "prop_1782638437819_2so1n0",
+      "filename": "workspace.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to async functions for error resilience",
+      "timestamp": "2026-06-28T09:23:23.503Z"
+    },
+    {
+      "id": "audit_1782638656561_5ils68",
+      "action": "test",
+      "proposalId": "prop_1782637989130_9ef3t8",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/selfMonitor.test.ts > selfMonitor > module loads without errors 10ms\n ✓ server/selfMonitor.test.ts > selfMonitor > exports are defined 2ms\n ✓ server/sel",
+      "timestamp": "2026-06-28T09:24:16.561Z"
+    },
+    {
+      "id": "audit_1782638656565_2af4wi",
+      "action": "apply",
+      "proposalId": "prop_1782637989130_9ef3t8",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Applied proposal: Consolidate setInterval timers into single dispatch loop",
+      "timestamp": "2026-06-28T09:24:16.565Z"
+    },
+    {
+      "id": "audit_1782638691861_7pszes",
+      "action": "test",
+      "proposalId": "prop_1782637632799_1hdfok",
+      "filename": "auditLog.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/auditLog.test.ts > auditLog > exports audit, auditRsiEvent, getRecentAuditEvents 2ms\n ✓ server/auditLog.test.ts > auditLog > getRecentAuditEvents return",
+      "timestamp": "2026-06-28T09:24:51.861Z"
+    },
+    {
+      "id": "audit_1782638691867_y0788z",
+      "action": "apply",
+      "proposalId": "prop_1782637632799_1hdfok",
+      "filename": "auditLog.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to audit function",
+      "timestamp": "2026-06-28T09:24:51.867Z"
+    },
+    {
+      "id": "audit_1782638765121_6rwi28",
+      "action": "apply",
+      "proposalId": "prop_1782637131387_8c5quf",
+      "filename": "testGenerator.ts",
+      "result": "blocked",
+      "details": "sandboxVerifier.quickValidate rejected proposal: Unbalanced braces: 189 open, 184 close",
+      "timestamp": "2026-06-28T09:26:05.121Z"
+    },
+    {
+      "id": "audit_1782638794811_xb8lbk",
+      "action": "test",
+      "proposalId": "prop_1782635812739_pidsq4",
+      "filename": "evalFramework.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/evalFramework.test.ts > evalFramework > module loads without errors 7ms\n ✓ server/evalFramework.test.ts > evalFramework > EVAL_TASKS is an array of task",
+      "timestamp": "2026-06-28T09:26:34.811Z"
+    },
+    {
+      "id": "audit_1782638794838_3u05ne",
+      "action": "apply",
+      "proposalId": "prop_1782635812739_pidsq4",
+      "filename": "evalFramework.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to runEvaluation for error resilience",
+      "timestamp": "2026-06-28T09:26:34.838Z"
+    },
+    {
+      "id": "audit_1782638822064_d6bzfm",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-28T09:27:02.064Z"
+    },
+    {
+      "id": "audit_1782638822074_eydbp4",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-28T09:27:02.074Z"
+    },
+    {
+      "id": "audit_1782639120641_uxvtgc",
+      "action": "test",
+      "proposalId": "prop_1782635812739_pidsq4",
+      "filename": "evalFramework.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/evalFramework.test.ts > evalFramework > module loads without errors 2ms\n ✓ server/evalFramework.test.ts > evalFramework > EVAL_TASKS is an array of task",
+      "timestamp": "2026-06-28T09:32:00.641Z"
+    },
+    {
+      "id": "audit_1782639120646_qjmrq8",
+      "action": "apply",
+      "proposalId": "prop_1782635812739_pidsq4",
+      "filename": "evalFramework.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to runEvaluation for error resilience",
+      "timestamp": "2026-06-28T09:32:00.646Z"
+    },
+    {
+      "id": "audit_1782639703052_1221h5",
+      "action": "test",
+      "proposalId": "prop_1782639671319_r36ejz",
+      "filename": "autoRebuild.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/autoRebuild.test.ts > setAutoRebuildConfig > should execute without throwing\n[2026-06-28T09:41:38.915Z] [INFO ] [autoRebuild] Config updated: {\"0\"",
+      "timestamp": "2026-06-28T09:41:43.052Z"
+    },
+    {
+      "id": "audit_1782639703057_c3t3m9",
+      "action": "apply",
+      "proposalId": "prop_1782639671319_r36ejz",
+      "filename": "autoRebuild.ts",
+      "result": "success",
+      "details": "Applied proposal: Add error type narrowing in catch blocks",
+      "timestamp": "2026-06-28T09:41:43.057Z"
+    },
+    {
+      "id": "audit_1782639768922_5sv2bf",
+      "action": "test",
+      "proposalId": "prop_1782639470976_okwkgh",
+      "filename": "observability.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/observability.test.ts > observability > module loads without errors 4ms\n ✓ server/observability.test.ts > observability > incrementCounter increments a ",
+      "timestamp": "2026-06-28T09:42:48.922Z"
+    },
+    {
+      "id": "audit_1782639768930_d7vbgi",
+      "action": "apply",
+      "proposalId": "prop_1782639470976_okwkgh",
+      "filename": "observability.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to histogram and counter functions",
+      "timestamp": "2026-06-28T09:42:48.930Z"
+    },
+    {
+      "id": "audit_1782639786102_ckpg93",
+      "action": "apply",
+      "proposalId": "prop_1782637131387_8c5quf",
+      "filename": "testGenerator.ts",
+      "result": "blocked",
+      "details": "sandboxVerifier.quickValidate rejected proposal: Unbalanced braces: 189 open, 184 close",
+      "timestamp": "2026-06-28T09:43:06.102Z"
+    },
+    {
+      "id": "audit_1782639835922_l73vs1",
+      "action": "test",
+      "proposalId": "prop_1782639382098_rlm6ik",
+      "filename": "contextCompressionDaemon.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/contextCompressionDaemon.test.ts > startContextCompressionDaemon > should execute without throwing\n[ContextCompressionDaemon] Started — monitoring",
+      "timestamp": "2026-06-28T09:43:55.922Z"
+    },
+    {
+      "id": "audit_1782639835930_duh4a9",
+      "action": "apply",
+      "proposalId": "prop_1782639382098_rlm6ik",
+      "filename": "contextCompressionDaemon.ts",
+      "result": "success",
+      "details": "Applied proposal: Add error type narrowing in catch blocks",
+      "timestamp": "2026-06-28T09:43:55.930Z"
+    },
+    {
+      "id": "audit_1782639895082_46lu29",
+      "action": "test",
+      "proposalId": "prop_1782638766540_5110mx",
+      "filename": "systemMemory.ts",
+      "result": "failure",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/systemMemory.test.ts > systemMemory > module loads without errors 6ms\n × server/systemMemory.test.ts > systemMemory > recordSystemLearning stores a lear",
+      "timestamp": "2026-06-28T09:44:55.082Z"
+    },
+    {
+      "id": "audit_1782639895099_ozlwn3",
+      "action": "rollback",
+      "proposalId": "prop_1782638766540_5110mx",
+      "filename": "systemMemory.ts",
+      "result": "success",
+      "details": "Rolled back systemMemory.ts to backup bak_1782639892572_xvaisw",
+      "timestamp": "2026-06-28T09:44:55.099Z"
+    },
+    {
+      "id": "audit_1782639895106_m4hw0p",
+      "action": "rollback",
+      "proposalId": "prop_1782638766540_5110mx",
+      "filename": "systemMemory.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back systemMemory.ts to 2026-06-28T09:44:52.572Z",
+      "timestamp": "2026-06-28T09:44:55.106Z"
+    },
+    {
+      "id": "audit_1782639914116_63xks2",
+      "action": "test",
+      "proposalId": "prop_1782638437819_2so1n0",
+      "filename": "workspace.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/workspace.test.ts > workspace — Path Resolution > getServerDir returns a non-empty string 2ms\n ✓ server/workspace.test.ts > workspace — Path Resolution ",
+      "timestamp": "2026-06-28T09:45:14.116Z"
+    },
+    {
+      "id": "audit_1782639914121_9mrbyf",
+      "action": "apply",
+      "proposalId": "prop_1782638437819_2so1n0",
+      "filename": "workspace.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to async functions for error resilience",
+      "timestamp": "2026-06-28T09:45:14.121Z"
+    },
+    {
+      "id": "audit_1782639953477_rnu8w7",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-28T09:45:53.477Z"
+    },
+    {
+      "id": "audit_1782639953487_bbgx2f",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-28T09:45:53.487Z"
+    },
+    {
+      "id": "audit_1782640747101_qfa0to",
+      "action": "apply",
+      "proposalId": "prop_1782637131387_8c5quf",
+      "filename": "testGenerator.ts",
+      "result": "blocked",
+      "details": "sandboxVerifier.quickValidate rejected proposal: Unbalanced braces: 189 open, 184 close",
+      "timestamp": "2026-06-28T09:59:07.101Z"
+    },
+    {
+      "id": "audit_1782640794724_jgbg9o",
+      "action": "test",
+      "proposalId": "prop_1782640727034_tnxbfa",
+      "filename": "dependencyGraph.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/dependencyGraph.test.ts > dependencyGraph > buildGraph resolves to stats object\n[DependencyGraph] Built graph: 0 files, 0 edges\n\n ✓ server/depende",
+      "timestamp": "2026-06-28T09:59:54.724Z"
+    },
+    {
+      "id": "audit_1782640794730_ixf7fg",
+      "action": "apply",
+      "proposalId": "prop_1782640727034_tnxbfa",
+      "filename": "dependencyGraph.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to async functions for error resilience",
+      "timestamp": "2026-06-28T09:59:54.730Z"
+    },
+    {
+      "id": "audit_1782641237813_di0yyf",
+      "action": "apply",
+      "proposalId": "prop_1782641035206_asoa9t",
+      "filename": "aiPlanning.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/aiPlanning.ts(274,22): error TS2304: Cannot find name 'plan'.\nserver/aiPlanning.ts(290,25): error TS2304: Cannot find name 'plan'.\nserver/aiPlanning.ts(312,14): error TS2304: Cannot find name '",
+      "timestamp": "2026-06-28T10:07:17.813Z"
+    },
+    {
+      "id": "audit_1782641302435_polsfw",
+      "action": "test",
+      "proposalId": "prop_1782640820870_m58sam",
+      "filename": "rbac.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/rbac.test.ts > rbac > exports roleAtLeast 7ms\n ✓ server/rbac.test.ts > rbac > admin satisfies admin requirement 1ms\n ✓ server/rbac.test.ts > rbac > gues",
+      "timestamp": "2026-06-28T10:08:22.435Z"
+    },
+    {
+      "id": "audit_1782641302442_bztcfp",
+      "action": "apply",
+      "proposalId": "prop_1782640820870_m58sam",
+      "filename": "rbac.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation for external parameters in RBAC middleware",
+      "timestamp": "2026-06-28T10:08:22.442Z"
+    },
+    {
+      "id": "audit_1782641327863_u99gqg",
+      "action": "test",
+      "proposalId": "prop_1782640636676_0si02l",
+      "filename": "storage.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/storage.test.ts > storage > module loads without errors 2ms\n ✓ server/storage.test.ts > storage > exports are defined 1ms\n ✓ server/storage.test.ts > st",
+      "timestamp": "2026-06-28T10:08:47.863Z"
+    },
+    {
+      "id": "audit_1782641327868_9or6u9",
+      "action": "apply",
+      "proposalId": "prop_1782640636676_0si02l",
+      "filename": "storage.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to async functions for error resilience",
+      "timestamp": "2026-06-28T10:08:47.868Z"
+    },
+    {
+      "id": "audit_1782641367374_hvbj6c",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-28T10:09:27.374Z"
+    },
+    {
+      "id": "audit_1782641367384_18j4yl",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-28T10:09:27.385Z"
+    },
+    {
+      "id": "audit_1782641707318_0sq4w5",
+      "action": "apply",
+      "proposalId": "prop_1782637131387_8c5quf",
+      "filename": "testGenerator.ts",
+      "result": "blocked",
+      "details": "sandboxVerifier.quickValidate rejected proposal: Unbalanced braces: 189 open, 184 close",
+      "timestamp": "2026-06-28T10:15:07.318Z"
+    },
+    {
+      "id": "audit_1782641738671_oqnty9",
+      "action": "apply",
+      "proposalId": "prop_1782641035206_asoa9t",
+      "filename": "aiPlanning.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/aiPlanning.ts(274,22): error TS2304: Cannot find name 'plan'.\nserver/aiPlanning.ts(290,25): error TS2304: Cannot find name 'plan'.\nserver/aiPlanning.ts(312,14): error TS2304: Cannot find name '",
+      "timestamp": "2026-06-28T10:15:38.671Z"
+    },
+    {
+      "id": "audit_1782641801075_h1s0aw",
+      "action": "test",
+      "proposalId": "prop_1782640820870_m58sam",
+      "filename": "rbac.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/rbac.test.ts > rbac > exports roleAtLeast 4ms\n ✓ server/rbac.test.ts > rbac > admin satisfies admin requirement 1ms\n ✓ server/rbac.test.ts > rbac > gues",
+      "timestamp": "2026-06-28T10:16:41.075Z"
+    },
+    {
+      "id": "audit_1782641801083_dvyh0o",
+      "action": "apply",
+      "proposalId": "prop_1782640820870_m58sam",
+      "filename": "rbac.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation for external parameters in RBAC middleware",
+      "timestamp": "2026-06-28T10:16:41.083Z"
+    },
+    {
+      "id": "audit_1782641881651_fzbeus",
+      "action": "test",
+      "proposalId": "prop_1782641667227_jsfr9h",
+      "filename": "selfDocumentation.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/selfDocumentation.test.ts > selfDocumentation > module loads without errors 5ms\n ✓ server/selfDocumentation.test.ts > selfDocumentation > getChangelog r",
+      "timestamp": "2026-06-28T10:18:01.651Z"
+    },
+    {
+      "id": "audit_1782641881661_iz2hb3",
+      "action": "apply",
+      "proposalId": "prop_1782641667227_jsfr9h",
+      "filename": "selfDocumentation.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to updateSelfDocumentation",
+      "timestamp": "2026-06-28T10:18:01.661Z"
+    },
+    {
+      "id": "audit_1782642338003_48k3lx",
+      "action": "test",
+      "proposalId": "prop_1782642305470_mf90am",
+      "filename": "selfModel.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/selfModel.test.ts\n[RecursionGuard] Initialized. Rate: 20/hr, Depth: 5, Cooldown: 15min\n\nstdout | server/selfModel.test.ts\n[Sandbox] Docker availab",
+      "timestamp": "2026-06-28T10:25:38.003Z"
+    },
+    {
+      "id": "audit_1782642338008_zjw3uc",
+      "action": "apply",
+      "proposalId": "prop_1782642305470_mf90am",
+      "filename": "selfModel.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to async functions for error resilience",
+      "timestamp": "2026-06-28T10:25:38.008Z"
+    },
+    {
+      "id": "audit_1782642400181_55ui2r",
+      "action": "test",
+      "proposalId": "prop_1782641927137_w70mca",
+      "filename": "proposalFeedback.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/proposalFeedback.test.ts > proposalFeedback > should record rejection feedback correctly\n[ProposalFeedback] Recorded rejection for /path/to/target",
+      "timestamp": "2026-06-28T10:26:40.181Z"
+    },
+    {
+      "id": "audit_1782642400191_k67i3s",
+      "action": "apply",
+      "proposalId": "prop_1782641927137_w70mca",
+      "filename": "proposalFeedback.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to recordRejectionFeedback",
+      "timestamp": "2026-06-28T10:26:40.191Z"
+    },
+    {
+      "id": "audit_1782642437103_5a8y2g",
+      "action": "test",
+      "proposalId": "prop_1782640820870_m58sam",
+      "filename": "rbac.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/rbac.test.ts > rbac > exports roleAtLeast 7ms\n ✓ server/rbac.test.ts > rbac > admin satisfies admin requirement 1ms\n ✓ server/rbac.test.ts > rbac > gues",
+      "timestamp": "2026-06-28T10:27:17.103Z"
+    },
+    {
+      "id": "audit_1782642437109_rvv6vb",
+      "action": "apply",
+      "proposalId": "prop_1782640820870_m58sam",
+      "filename": "rbac.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation for external parameters in RBAC middleware",
+      "timestamp": "2026-06-28T10:27:17.109Z"
+    },
+    {
+      "id": "audit_1782642570954_0c3dhq",
+      "action": "test",
+      "proposalId": "prop_1782642546139_qa8s38",
+      "filename": "multiAgentImprover.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/multiAgentImprover.test.ts > multiAgentImprover > module loads without errors\n[MultiAgentImprover] Initialized — enabled (4 specialist agents acti",
+      "timestamp": "2026-06-28T10:29:30.954Z"
+    },
+    {
+      "id": "audit_1782642570959_m4nnpf",
+      "action": "apply",
+      "proposalId": "prop_1782642546139_qa8s38",
+      "filename": "multiAgentImprover.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null check before accessing securityVote.reasoning",
+      "timestamp": "2026-06-28T10:29:30.959Z"
+    },
+    {
+      "id": "audit_1782642634067_p1ny3g",
+      "action": "test",
+      "proposalId": "prop_1782642465980_ny3tk5",
+      "filename": "rsiEventBus.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/rsiEventBus.test.ts > rsiEventBus > emitRsiEvent does not throw for valid event types 12ms\n ✓ server/rsiEventBus.test.ts > rsiEventBus > getSseClientCou",
+      "timestamp": "2026-06-28T10:30:34.067Z"
+    },
+    {
+      "id": "audit_1782642634072_4c875z",
+      "action": "apply",
+      "proposalId": "prop_1782642465980_ny3tk5",
+      "filename": "rsiEventBus.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to emitRsiEvent and registerSseClient",
+      "timestamp": "2026-06-28T10:30:34.072Z"
+    },
+    {
+      "id": "audit_1782642697106_cbxo54",
+      "action": "test",
+      "proposalId": "prop_1782642213136_jvy7w5",
+      "filename": "selfKnowledgeBase.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/selfKnowledgeBase.test.ts > selfKnowledgeBase > initKnowledgeBase does not throw if available\n[KnowledgeBase] Initialized. 3 decisions, 0 issues, ",
+      "timestamp": "2026-06-28T10:31:37.106Z"
+    },
+    {
+      "id": "audit_1782642697115_w1c4zn",
+      "action": "apply",
+      "proposalId": "prop_1782642213136_jvy7w5",
+      "filename": "selfKnowledgeBase.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to recordModificationOutcome",
+      "timestamp": "2026-06-28T10:31:37.116Z"
+    },
+    {
+      "id": "audit_1782642742667_sbd3x8",
+      "action": "test",
+      "proposalId": "prop_1782642024923_1gma4s",
+      "filename": "contextAwareness.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/contextAwareness.test.ts > getCurrentUsage > should execute without throwing 3ms\n ✓ server/contextAwareness.test.ts > getCurrentUsage > should return co",
+      "timestamp": "2026-06-28T10:32:22.667Z"
+    },
+    {
+      "id": "audit_1782642742672_ej1hsm",
+      "action": "apply",
+      "proposalId": "prop_1782642024923_1gma4s",
+      "filename": "contextAwareness.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to recordContextUsage and predictTruncation",
+      "timestamp": "2026-06-28T10:32:22.672Z"
+    },
+    {
+      "id": "audit_1782642807869_6o9vik",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-28T10:33:27.869Z"
+    },
+    {
+      "id": "audit_1782642807879_au1vkr",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-28T10:33:27.880Z"
+    },
+    {
+      "id": "audit_1782643265769_nvhh45",
+      "action": "apply",
+      "proposalId": "prop_1782643214134_wbi2mv",
+      "filename": "selfReview.ts",
+      "result": "blocked",
+      "details": "sandboxVerifier.quickValidate rejected proposal: Unbalanced braces: 133 open, 127 close",
+      "timestamp": "2026-06-28T10:41:05.769Z"
+    },
+    {
+      "id": "audit_1782643681033_wvdd7f",
+      "action": "apply",
+      "proposalId": "prop_1782643482300_y8st9x",
+      "filename": "recursiveGoals.ts",
+      "result": "blocked",
+      "details": "sandboxVerifier.quickValidate rejected proposal: Unbalanced braces: 200 open, 202 close",
+      "timestamp": "2026-06-28T10:48:01.033Z"
+    },
+    {
+      "id": "audit_1782643718514_37nabx",
+      "action": "test",
+      "proposalId": "prop_1782643658784_fwqmb2",
+      "filename": "taskDecomposer.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/taskDecomposer.test.ts > analyzeComplexity > should execute without throwing 10ms\n ✓ server/taskDecomposer.test.ts > analyzeComplexity > should return c",
+      "timestamp": "2026-06-28T10:48:38.514Z"
+    },
+    {
+      "id": "audit_1782643718519_g53gmp",
+      "action": "apply",
+      "proposalId": "prop_1782643658784_fwqmb2",
+      "filename": "taskDecomposer.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to decomposeQuery and helpers",
+      "timestamp": "2026-06-28T10:48:38.519Z"
+    },
+    {
+      "id": "audit_1782644101066_ddj8n5",
+      "action": "test",
+      "proposalId": "prop_1782644076809_2elakf",
+      "filename": "hotReload.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/hotReload.test.ts > hotReload > getHotReloadStatus returns expected shape 13ms\n ✓ server/hotReload.test.ts > hotReload > getReloadHistory returns an arr",
+      "timestamp": "2026-06-28T10:55:01.066Z"
+    },
+    {
+      "id": "audit_1782644101072_mtgmbj",
+      "action": "apply",
+      "proposalId": "prop_1782644076809_2elakf",
+      "filename": "hotReload.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to async functions for error resilience",
+      "timestamp": "2026-06-28T10:55:01.072Z"
+    },
+    {
+      "id": "audit_1782644223204_dvrojj",
+      "action": "test",
+      "proposalId": "prop_1782644176507_rcdsxs",
+      "filename": "tokenBudgetManager.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/tokenBudgetManager.test.ts > initTokenBudgetManager > should execute without throwing\n[TokenBudget] Initialized: 131072 token window, 95% hard cap",
+      "timestamp": "2026-06-28T10:57:03.204Z"
+    },
+    {
+      "id": "audit_1782644223214_wllt6r",
+      "action": "apply",
+      "proposalId": "prop_1782644176507_rcdsxs",
+      "filename": "tokenBudgetManager.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to exported functions",
+      "timestamp": "2026-06-28T10:57:03.214Z"
+    },
+    {
+      "id": "audit_1782644260871_0uvzfn",
+      "action": "test",
+      "proposalId": "prop_1782643923254_jjd1ep",
+      "filename": "ai.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/ai.test.ts > ai module > should load without errors 2ms\n\n Test Files  1 passed (1)\n      Tests  1 passed (1)\n   Start at  10:57:35\n   Duration  5.32s (t",
+      "timestamp": "2026-06-28T10:57:40.871Z"
+    },
+    {
+      "id": "audit_1782644260877_2lxm40",
+      "action": "apply",
+      "proposalId": "prop_1782643923254_jjd1ep",
+      "filename": "ai.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to exported functions",
+      "timestamp": "2026-06-28T10:57:40.877Z"
+    },
+    {
+      "id": "audit_1782644787845_f82z88",
+      "action": "test",
+      "proposalId": "prop_1782644742322_acsno0",
+      "filename": "circuitBreaker.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/circuitBreaker.test.ts > getCircuitBreaker > should execute without throwing 3ms\n ✓ server/circuitBreaker.test.ts > getCircuitBreaker > should return co",
+      "timestamp": "2026-06-28T11:06:27.845Z"
+    },
+    {
+      "id": "audit_1782644787854_575shp",
+      "action": "apply",
+      "proposalId": "prop_1782644742322_acsno0",
+      "filename": "circuitBreaker.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to constructor and public methods",
+      "timestamp": "2026-06-28T11:06:27.854Z"
+    },
+    {
+      "id": "audit_1782644809331_6zvsj0",
+      "action": "apply",
+      "proposalId": "prop_1782644574394_nrwhmt",
+      "filename": "manifest.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/manifest.ts(357,59): error TS2339: Property 'totalEntries' does not exist on type 'object'.\nserver/manifest.ts(357,97): error TS2339: Property 'totalEntries' does not exist on type 'object'.\nse",
+      "timestamp": "2026-06-28T11:06:49.331Z"
+    },
+    {
+      "id": "audit_1782644828912_s0yh1s",
+      "action": "apply",
+      "proposalId": "prop_1782644574394_nrwhmt",
+      "filename": "manifest.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/manifest.ts(357,59): error TS2339: Property 'totalEntries' does not exist on type 'object'.\nserver/manifest.ts(357,97): error TS2339: Property 'totalEntries' does not exist on type 'object'.\nse",
+      "timestamp": "2026-06-28T11:07:08.912Z"
+    },
+    {
+      "id": "audit_1782644856663_r42ehw",
+      "action": "apply",
+      "proposalId": "prop_1782644574394_nrwhmt",
+      "filename": "manifest.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1782644574394_nrwhmt after syntax error",
+      "timestamp": "2026-06-28T11:07:36.663Z"
+    },
+    {
+      "id": "audit_1782644892117_qj3akp",
+      "action": "apply",
+      "proposalId": "prop_1782644574394_nrwhmt",
+      "filename": "manifest.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1782644574394_nrwhmt after syntax error",
+      "timestamp": "2026-06-28T11:08:12.117Z"
+    },
+    {
+      "id": "audit_1782644944845_zo1f9t",
+      "action": "test",
+      "proposalId": "prop_1782644433008_26kyls",
+      "filename": "tenantManager.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/tenantManager.test.ts\n[2026-06-28T11:09:04.269Z] [INFO ] [tenantManager] [tenantManager] Loaded 1 tenants from disk\n[2026-06-28T11:09:04.275Z] [IN",
+      "timestamp": "2026-06-28T11:09:04.845Z"
+    },
+    {
+      "id": "audit_1782644944854_b1rbf6",
+      "action": "apply",
+      "proposalId": "prop_1782644433008_26kyls",
+      "filename": "tenantManager.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to exported functions",
+      "timestamp": "2026-06-28T11:09:04.854Z"
+    },
+    {
+      "id": "audit_1782644967213_geblkp",
+      "action": "test",
+      "proposalId": "prop_1782644433008_26kyls",
+      "filename": "tenantManager.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/tenantManager.test.ts\n[2026-06-28T11:09:26.484Z] [INFO ] [tenantManager] [tenantManager] Loaded 1 tenants from disk\n[2026-06-28T11:09:26.486Z] [IN",
+      "timestamp": "2026-06-28T11:09:27.213Z"
+    },
+    {
+      "id": "audit_1782644967223_en46ze",
+      "action": "apply",
+      "proposalId": "prop_1782644433008_26kyls",
+      "filename": "tenantManager.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to exported functions",
+      "timestamp": "2026-06-28T11:09:27.223Z"
+    },
+    {
+      "id": "audit_1782645459068_hr1wrg",
+      "action": "test",
+      "proposalId": "prop_1782645164276_wwp8m7",
+      "filename": "utilityFunction.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/utilityFunction.test.ts > calibrate > returns current weights when not enough history\n[UtilityFunction] Calibration skipped: only 0 outcomes (need",
+      "timestamp": "2026-06-28T11:17:39.068Z"
+    },
+    {
+      "id": "audit_1782645459074_njjsnr",
+      "action": "apply",
+      "proposalId": "prop_1782645164276_wwp8m7",
+      "filename": "utilityFunction.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to recordRSIOutcome",
+      "timestamp": "2026-06-28T11:17:39.074Z"
+    },
+    {
+      "id": "audit_1782645507327_jjzauh",
+      "action": "test",
+      "proposalId": "prop_1782644811119_cz0yxi",
+      "filename": "aiStreaming.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/aiStreaming.test.ts > aiStreaming > module loads without error 2ms\n ✓ server/aiStreaming.test.ts > aiStreaming > exports at least one function 1ms\n ✓ se",
+      "timestamp": "2026-06-28T11:18:27.327Z"
+    },
+    {
+      "id": "audit_1782645507333_tca6s0",
+      "action": "apply",
+      "proposalId": "prop_1782644811119_cz0yxi",
+      "filename": "aiStreaming.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to streamChat and streamContinue",
+      "timestamp": "2026-06-28T11:18:27.333Z"
+    },
+    {
+      "id": "audit_1782645549191_cyflzv",
+      "action": "test",
+      "proposalId": "prop_1782645412603_2nlnwn",
+      "filename": "adaptiveEval.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/adaptiveEval.test.ts > analyzeGaps > should execute without throwing 2ms\n ✓ server/adaptiveEval.test.ts > analyzeGaps > should return correct type 1ms\n ",
+      "timestamp": "2026-06-28T11:19:09.191Z"
+    },
+    {
+      "id": "audit_1782645549196_i0pbxc",
+      "action": "apply",
+      "proposalId": "prop_1782645412603_2nlnwn",
+      "filename": "adaptiveEval.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before accessing gapAnalysis properties in generateBenchmarks",
+      "timestamp": "2026-06-28T11:19:09.196Z"
+    },
+    {
+      "id": "audit_1782645783365_vie9mc",
+      "action": "test",
+      "proposalId": "prop_1782645728480_dzrxi0",
+      "filename": "dependencyAuditor.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/dependencyAuditor.test.ts > dependencyAuditor > startDependencyAuditor does not throw\n[DependencyAuditor] Started — auditing every 6 hours\n\n ✓ ser",
+      "timestamp": "2026-06-28T11:23:03.365Z"
+    },
+    {
+      "id": "audit_1782645783371_4k8gx9",
+      "action": "apply",
+      "proposalId": "prop_1782645728480_dzrxi0",
+      "filename": "dependencyAuditor.ts",
+      "result": "success",
+      "details": "Applied proposal: Add error type narrowing in catch blocks",
+      "timestamp": "2026-06-28T11:23:03.371Z"
+    },
+    {
+      "id": "audit_1782645807282_ax1t6z",
+      "action": "test",
+      "proposalId": "prop_1782645587465_ddml1p",
+      "filename": "distributedProofConsensus.ts",
+      "result": "failure",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n\n Test Files  1 failed (1)\n      Tests  no tests\n   Start at  11:23:26\n   Duration  695ms (transform 172ms, setup 108ms, collect 0ms, tests 0ms, environment 0ms, ",
+      "timestamp": "2026-06-28T11:23:27.282Z"
+    },
+    {
+      "id": "audit_1782645807298_eww2ey",
+      "action": "rollback",
+      "proposalId": "prop_1782645587465_ddml1p",
+      "filename": "distributedProofConsensus.ts",
+      "result": "success",
+      "details": "Rolled back distributedProofConsensus.ts to backup bak_1782645804788_zsartt",
+      "timestamp": "2026-06-28T11:23:27.298Z"
+    },
+    {
+      "id": "audit_1782645807303_8x4qvb",
+      "action": "rollback",
+      "proposalId": "prop_1782645587465_ddml1p",
+      "filename": "distributedProofConsensus.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back distributedProofConsensus.ts to 2026-06-28T11:23:24.788Z",
+      "timestamp": "2026-06-28T11:23:27.303Z"
+    },
+    {
+      "id": "audit_1782645826858_6vtn6a",
+      "action": "test",
+      "proposalId": "prop_1782645412603_2nlnwn",
+      "filename": "adaptiveEval.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/adaptiveEval.test.ts > analyzeGaps > should execute without throwing 2ms\n ✓ server/adaptiveEval.test.ts > analyzeGaps > should return correct type 1ms\n ",
+      "timestamp": "2026-06-28T11:23:46.859Z"
+    },
+    {
+      "id": "audit_1782645826864_d197qj",
+      "action": "apply",
+      "proposalId": "prop_1782645412603_2nlnwn",
+      "filename": "adaptiveEval.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before accessing gapAnalysis properties in generateBenchmarks",
+      "timestamp": "2026-06-28T11:23:46.864Z"
+    },
+    {
+      "id": "audit_1782645863445_g084kk",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-28T11:24:23.445Z"
+    },
+    {
+      "id": "audit_1782645863456_hzkn9f",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-28T11:24:23.456Z"
+    },
+    {
+      "id": "audit_1782646341760_ln71zt",
+      "action": "test",
+      "proposalId": "prop_1782644811119_cz0yxi",
+      "filename": "aiStreaming.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/aiStreaming.test.ts > aiStreaming > module loads without error 2ms\n ✓ server/aiStreaming.test.ts > aiStreaming > exports at least one function 1ms\n ✓ se",
+      "timestamp": "2026-06-28T11:32:21.760Z"
+    },
+    {
+      "id": "audit_1782646341766_kvkqg2",
+      "action": "apply",
+      "proposalId": "prop_1782644811119_cz0yxi",
+      "filename": "aiStreaming.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to streamChat and streamContinue",
+      "timestamp": "2026-06-28T11:32:21.766Z"
+    },
+    {
+      "id": "audit_1782646367689_vb10va",
+      "action": "test",
+      "proposalId": "prop_1782646319473_c6nd35",
+      "filename": "contextAwareness.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/contextAwareness.test.ts > getCurrentUsage > should execute without throwing 2ms\n ✓ server/contextAwareness.test.ts > getCurrentUsage > should return co",
+      "timestamp": "2026-06-28T11:32:47.689Z"
+    },
+    {
+      "id": "audit_1782646367695_es94tx",
+      "action": "apply",
+      "proposalId": "prop_1782646319473_c6nd35",
+      "filename": "contextAwareness.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to predictTruncation",
+      "timestamp": "2026-06-28T11:32:47.695Z"
+    },
+    {
+      "id": "audit_1782646480965_fqdv8a",
+      "action": "test",
+      "proposalId": "prop_1782646441646_afj5h1",
+      "filename": "contextBus.ts",
+      "result": "success",
+      "details": "extbusModule.createChannel > should return correct type 1ms\n ✓ server/contextBus.test.ts > ContextbusModule.createChannel > should handle empty/null inputs gracefully 1ms\n ✓ server/contextBus.test.ts ",
+      "timestamp": "2026-06-28T11:34:40.965Z"
+    },
+    {
+      "id": "audit_1782646480974_isssdi",
+      "action": "apply",
+      "proposalId": "prop_1782646441646_afj5h1",
+      "filename": "contextBus.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to publish function",
+      "timestamp": "2026-06-28T11:34:40.974Z"
+    },
+    {
+      "id": "audit_1782646512336_iegxxt",
+      "action": "apply",
+      "proposalId": "prop_1782646288464_cxoumz",
+      "filename": "episodicConsolidation.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/episodicConsolidation.ts(189,69): error TS2304: Cannot find name 'successes'.\nserver/episodicConsolidation.ts(189,93): error TS2304: Cannot find name 'failures'.",
+      "timestamp": "2026-06-28T11:35:12.336Z"
+    },
+    {
+      "id": "audit_1782646536818_tzqhos",
+      "action": "apply",
+      "proposalId": "prop_1782646288464_cxoumz",
+      "filename": "episodicConsolidation.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1782646288464_cxoumz after syntax error",
+      "timestamp": "2026-06-28T11:35:36.818Z"
+    },
+    {
+      "id": "audit_1782646550028_yy6y0t",
+      "action": "apply",
+      "proposalId": "prop_1782646288464_cxoumz",
+      "filename": "episodicConsolidation.ts",
+      "result": "success",
+      "details": "Refinement fixed syntax errors for prop_1782646288464_cxoumz",
+      "timestamp": "2026-06-28T11:35:50.028Z"
+    },
+    {
+      "id": "audit_1782646557910_5whz6o",
+      "action": "test",
+      "proposalId": "prop_1782646288464_cxoumz",
+      "filename": "episodicConsolidation.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/episodicConsolidation.test.ts > initEpisodicConsolidation > should execute without throwing\n[EpisodicConsolidate] Startup: 0 episodes → 0 lessons\n",
+      "timestamp": "2026-06-28T11:35:57.910Z"
+    },
+    {
+      "id": "audit_1782646557918_y1po74",
+      "action": "apply",
+      "proposalId": "prop_1782646288464_cxoumz",
+      "filename": "episodicConsolidation.ts",
+      "result": "success",
+      "details": "Applied proposal: Fix variable scope in summariseCluster error handling",
+      "timestamp": "2026-06-28T11:35:57.918Z"
+    },
+    {
+      "id": "audit_1782646593504_oevych",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-28T11:36:33.504Z"
+    },
+    {
+      "id": "audit_1782646593514_ff631p",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-28T11:36:33.514Z"
+    },
+    {
+      "id": "audit_1782647062750_v003ci",
+      "action": "test",
+      "proposalId": "prop_1782647018190_fw3sbb",
+      "filename": "agentStateMachine.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/agentStateMachine.test.ts > AgentStateMachine > starts in IDLE state with empty history 4ms\n ✓ server/agentStateMachine.test.ts > AgentStateMachine > tr",
+      "timestamp": "2026-06-28T11:44:22.750Z"
+    },
+    {
+      "id": "audit_1782647062759_qjror7",
+      "action": "apply",
+      "proposalId": "prop_1782647018190_fw3sbb",
+      "filename": "agentStateMachine.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to transition method",
+      "timestamp": "2026-06-28T11:44:22.759Z"
+    },
+    {
+      "id": "audit_1782647555317_p0soa5",
+      "action": "apply",
+      "proposalId": "prop_1782647349204_44wv3u",
+      "filename": "crossInstanceRlhf.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/crossInstanceRlhf.ts(155,5): error TS2739: Type '{ judgeNodeId: any; proposalId: string; score: number; approved: boolean; reasoning: string; }' is missing the following properties from type 'J",
+      "timestamp": "2026-06-28T11:52:35.317Z"
+    },
+    {
+      "id": "audit_1782647581085_ds32iz",
+      "action": "test",
+      "proposalId": "prop_1782646991846_odkiq2",
+      "filename": "agentOrchestrator.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/agentOrchestrator.test.ts > getDefaultAgents > should execute without throwing 10ms\n ✓ server/agentOrchestrator.test.ts > getDefaultAgents > should retu",
+      "timestamp": "2026-06-28T11:53:01.085Z"
+    },
+    {
+      "id": "audit_1782647581090_ufoo36",
+      "action": "apply",
+      "proposalId": "prop_1782646991846_odkiq2",
+      "filename": "agentOrchestrator.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to async functions for reliability",
+      "timestamp": "2026-06-28T11:53:01.090Z"
+    },
+    {
+      "id": "audit_1782647629145_rp0pzw",
+      "action": "test",
+      "proposalId": "prop_1782647524718_uolihn",
+      "filename": "scheduler.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/scheduler.test.ts > initScheduler > should execute without throwing\n[Scheduler] Initialized: 1 tasks, 1 timers restored\n\nstdout | server/scheduler",
+      "timestamp": "2026-06-28T11:53:49.145Z"
+    },
+    {
+      "id": "audit_1782647629150_kvhmcb",
+      "action": "apply",
+      "proposalId": "prop_1782647524718_uolihn",
+      "filename": "scheduler.ts",
+      "result": "success",
+      "details": "Applied proposal: Add timeout to webhook fetch call in executeTask",
+      "timestamp": "2026-06-28T11:53:49.150Z"
+    },
+    {
+      "id": "audit_1782647979924_l8ev9y",
+      "action": "test",
+      "proposalId": "prop_1782647933994_j7zuqr",
+      "filename": "evalSeed.ts",
+      "result": "failure",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n\n Test Files  1 failed (1)\n      Tests  no tests\n   Start at  11:59:38\n   Duration  656ms (transform 146ms, setup 86ms, collect 0ms, tests 0ms, environment 0ms, p",
+      "timestamp": "2026-06-28T11:59:39.924Z"
+    },
+    {
+      "id": "audit_1782647979945_y4t044",
+      "action": "rollback",
+      "proposalId": "prop_1782647933994_j7zuqr",
+      "filename": "evalSeed.ts",
+      "result": "success",
+      "details": "Rolled back evalSeed.ts to backup bak_1782647977523_rmlb4l",
+      "timestamp": "2026-06-28T11:59:39.945Z"
+    },
+    {
+      "id": "audit_1782647979952_arekkm",
+      "action": "rollback",
+      "proposalId": "prop_1782647933994_j7zuqr",
+      "filename": "evalSeed.ts",
+      "result": "success",
+      "details": "Auto-rollback after test failure: Rolled back evalSeed.ts to 2026-06-28T11:59:37.523Z",
+      "timestamp": "2026-06-28T11:59:39.953Z"
+    },
+    {
+      "id": "audit_1782648027297_kq6ca4",
+      "action": "test",
+      "proposalId": "prop_1782647776144_1d9inl",
+      "filename": "contextManager.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/contextManager.test.ts > estimateTokens > should execute without throwing 3ms\n ✓ server/contextManager.test.ts > estimateTokens > should return correct ",
+      "timestamp": "2026-06-28T12:00:27.297Z"
+    },
+    {
+      "id": "audit_1782648027303_tyacin",
+      "action": "apply",
+      "proposalId": "prop_1782647776144_1d9inl",
+      "filename": "contextManager.ts",
+      "result": "success",
+      "details": "Applied proposal: Add error type narrowing in catch blocks",
+      "timestamp": "2026-06-28T12:00:27.303Z"
+    },
+    {
+      "id": "audit_1782648053438_1m9mwb",
+      "action": "test",
+      "proposalId": "prop_1782647621647_igzczk",
+      "filename": "swarmOrchestrator.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/swarmOrchestrator.test.ts > swarmOrchestrator > peer registry > starts with an empty peer list 101ms\n ✓ server/swarmOrchestrator.test.ts > swarmOrchestr",
+      "timestamp": "2026-06-28T12:00:53.438Z"
+    },
+    {
+      "id": "audit_1782648053444_bodoyh",
+      "action": "apply",
+      "proposalId": "prop_1782647621647_igzczk",
+      "filename": "swarmOrchestrator.ts",
+      "result": "success",
+      "details": "Applied proposal: Add error type narrowing in catch blocks",
+      "timestamp": "2026-06-28T12:00:53.444Z"
+    },
+    {
+      "id": "audit_1782648070767_kalxa7",
+      "action": "apply",
+      "proposalId": "prop_1782647349204_44wv3u",
+      "filename": "crossInstanceRlhf.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/crossInstanceRlhf.ts(155,5): error TS2739: Type '{ judgeNodeId: any; proposalId: string; score: number; approved: boolean; reasoning: string; }' is missing the following properties from type 'J",
+      "timestamp": "2026-06-28T12:01:10.767Z"
+    },
+    {
+      "id": "audit_1782648120430_7zzwmi",
+      "action": "apply",
+      "proposalId": "prop_1782647349204_44wv3u",
+      "filename": "crossInstanceRlhf.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1782647349204_44wv3u after syntax error",
+      "timestamp": "2026-06-28T12:02:00.430Z"
+    },
+    {
+      "id": "audit_1782648177636_alaph7",
+      "action": "test",
+      "proposalId": "prop_1782647191497_kd6bd2",
+      "filename": "visionModule.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/visionModule.test.ts > detectVisionProvider > returns mock when no API keys are set 2ms\n ✓ server/visionModule.test.ts > detectMimeType > detects jpeg 1",
+      "timestamp": "2026-06-28T12:02:57.636Z"
+    },
+    {
+      "id": "audit_1782648177642_ejwqio",
+      "action": "apply",
+      "proposalId": "prop_1782647191497_kd6bd2",
+      "filename": "visionModule.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to async functions for reliability",
+      "timestamp": "2026-06-28T12:02:57.642Z"
+    },
+    {
+      "id": "audit_1782648212814_etg3as",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-28T12:03:32.814Z"
+    },
+    {
+      "id": "audit_1782648212825_b0ewzf",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-28T12:03:32.825Z"
+    },
+    {
+      "id": "audit_1782648529065_xg2eum",
+      "action": "apply",
+      "proposalId": "prop_1782647349204_44wv3u",
+      "filename": "crossInstanceRlhf.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/crossInstanceRlhf.ts(155,5): error TS2739: Type '{ judgeNodeId: any; proposalId: string; score: number; approved: boolean; reasoning: string; }' is missing the following properties from type 'J",
+      "timestamp": "2026-06-28T12:08:49.065Z"
+    },
+    {
+      "id": "audit_1782648575317_ozhryh",
+      "action": "apply",
+      "proposalId": "prop_1782647349204_44wv3u",
+      "filename": "crossInstanceRlhf.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1782647349204_44wv3u after syntax error",
+      "timestamp": "2026-06-28T12:09:35.317Z"
+    },
+    {
+      "id": "audit_1782648603502_ypvxt8",
+      "action": "apply",
+      "proposalId": "prop_1782647349204_44wv3u",
+      "filename": "crossInstanceRlhf.ts",
+      "result": "success",
+      "details": "Refinement fixed syntax errors for prop_1782647349204_44wv3u",
+      "timestamp": "2026-06-28T12:10:03.502Z"
+    },
+    {
+      "id": "audit_1782648613668_offzi2",
+      "action": "test",
+      "proposalId": "prop_1782647349204_44wv3u",
+      "filename": "crossInstanceRlhf.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/crossInstanceRlhf.test.ts > crossInstanceRlhf > approves a high-quality proposal with passing tests\n[2026-06-28T12:10:13.103Z] [INFO ] [crossInsta",
+      "timestamp": "2026-06-28T12:10:13.668Z"
+    },
+    {
+      "id": "audit_1782648613685_uwflu8",
+      "action": "apply",
+      "proposalId": "prop_1782647349204_44wv3u",
+      "filename": "crossInstanceRlhf.ts",
+      "result": "success",
+      "details": "Applied proposal: Fix JudgeVerdict type mismatch in runLocalJudge",
+      "timestamp": "2026-06-28T12:10:13.685Z"
+    },
+    {
+      "id": "audit_1782649071449_5796wm",
+      "action": "test",
+      "proposalId": "prop_1782648857158_ds2zeo",
+      "filename": "swarmTestnet.ts",
+      "result": "success",
+      "details": "tnet > getMessageLog > records messages during proposal broadcast\n[2026-06-28T12:17:51.145Z] [INFO ] [swarmTestnet] [swarmTestnet] Initialized 5 nodes (0 Byzantine)\n[2026-06-28T12:17:51.145Z] [INFO ] ",
+      "timestamp": "2026-06-28T12:17:51.449Z"
+    },
+    {
+      "id": "audit_1782649071455_96dk14",
+      "action": "apply",
+      "proposalId": "prop_1782648857158_ds2zeo",
+      "filename": "swarmTestnet.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to submitProposal and runScenario",
+      "timestamp": "2026-06-28T12:17:51.455Z"
+    },
+    {
+      "id": "audit_1782649110767_lnaquo",
+      "action": "test",
+      "proposalId": "prop_1782648530319_iwvq5t",
+      "filename": "loraBackendDetector.ts",
+      "result": "success",
+      "details": "> detectLoraBackend > simulation is always available\n[2026-06-28T12:18:30.125Z] [INFO ] [loraBackendDetector] [loraBackendDetector] Detecting available LoRA backends...\n\nstdout | server/loraBackendDet",
+      "timestamp": "2026-06-28T12:18:30.767Z"
+    },
+    {
+      "id": "audit_1782649110773_050rpr",
+      "action": "apply",
+      "proposalId": "prop_1782648530319_iwvq5t",
+      "filename": "loraBackendDetector.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to async functions for error handling",
+      "timestamp": "2026-06-28T12:18:30.773Z"
+    },
+    {
+      "id": "audit_1782649134973_f19egj",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-28T12:18:54.973Z"
+    },
+    {
+      "id": "audit_1782649134989_ost1jr",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-28T12:18:54.989Z"
+    },
+    {
+      "id": "audit_1782649449856_f825xm",
+      "action": "apply",
+      "proposalId": "prop_1782649431276_fwqd0z",
+      "filename": "adaptivePartitions.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/adaptivePartitions.ts(156,1): error TS1128: Declaration or statement expected.",
+      "timestamp": "2026-06-28T12:24:09.856Z"
+    },
+    {
+      "id": "audit_1782649504383_ocw9kb",
+      "action": "apply",
+      "proposalId": "prop_1782649431276_fwqd0z",
+      "filename": "adaptivePartitions.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1782649431276_fwqd0z after syntax error",
+      "timestamp": "2026-06-28T12:25:04.383Z"
+    },
+    {
+      "id": "audit_1782649535681_o156lv",
+      "action": "apply",
+      "proposalId": "prop_1782649431276_fwqd0z",
+      "filename": "adaptivePartitions.ts",
+      "result": "success",
+      "details": "Refinement fixed syntax errors for prop_1782649431276_fwqd0z",
+      "timestamp": "2026-06-28T12:25:35.681Z"
+    },
+    {
+      "id": "audit_1782649553036_l6fo69",
+      "action": "test",
+      "proposalId": "prop_1782648530319_iwvq5t",
+      "filename": "loraBackendDetector.ts",
+      "result": "success",
+      "details": " > detectLoraBackend > simulation is always available\n[2026-06-28T12:25:52.495Z] [INFO ] [loraBackendDetector] [loraBackendDetector] Detecting available LoRA backends...\n\nstdout | server/loraBackendDe",
+      "timestamp": "2026-06-28T12:25:53.036Z"
+    },
+    {
+      "id": "audit_1782649553042_hpoyd4",
+      "action": "apply",
+      "proposalId": "prop_1782648530319_iwvq5t",
+      "filename": "loraBackendDetector.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to async functions for error handling",
+      "timestamp": "2026-06-28T12:25:53.042Z"
+    },
+    {
+      "id": "audit_1782649589017_aavy3v",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-28T12:26:29.017Z"
+    },
+    {
+      "id": "audit_1782649589029_82k3xn",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-28T12:26:29.029Z"
+    },
+    {
+      "id": "audit_1782649887229_31s9e0",
+      "action": "test",
+      "proposalId": "prop_1782649431276_fwqd0z",
+      "filename": "adaptivePartitions.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/adaptivePartitions.test.ts > adaptivePartitions > module loads without errors 2ms\n ✓ server/adaptivePartitions.test.ts > adaptivePartitions > exports ar",
+      "timestamp": "2026-06-28T12:31:27.229Z"
+    },
+    {
+      "id": "audit_1782649887235_hyn489",
+      "action": "apply",
+      "proposalId": "prop_1782649431276_fwqd0z",
+      "filename": "adaptivePartitions.ts",
+      "result": "success",
+      "details": "Applied proposal: Input Validation for Adaptive Partition Calculation",
+      "timestamp": "2026-06-28T12:31:27.235Z"
+    },
+    {
+      "id": "audit_1782649921940_nhdpso",
+      "action": "test",
+      "proposalId": "prop_1782648530319_iwvq5t",
+      "filename": "loraBackendDetector.ts",
+      "result": "success",
+      "details": "> detectLoraBackend > simulation is always available\n[2026-06-28T12:32:01.306Z] [INFO ] [loraBackendDetector] [loraBackendDetector] Detecting available LoRA backends...\n\nstdout | server/loraBackendDet",
+      "timestamp": "2026-06-28T12:32:01.940Z"
+    },
+    {
+      "id": "audit_1782649921945_1p8q4w",
+      "action": "apply",
+      "proposalId": "prop_1782648530319_iwvq5t",
+      "filename": "loraBackendDetector.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to async functions for error handling",
+      "timestamp": "2026-06-28T12:32:01.945Z"
+    },
+    {
+      "id": "audit_1782650291086_fcnk9m",
+      "action": "test",
+      "proposalId": "prop_1782650254441_acl0b2",
+      "filename": "selfConsistency.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/selfConsistency.test.ts > checkSelfConsistency > should execute without throwing 3ms\n ✓ server/selfConsistency.test.ts > checkSelfConsistency > should r",
+      "timestamp": "2026-06-28T12:38:11.086Z"
+    },
+    {
+      "id": "audit_1782650291092_sc3j0i",
+      "action": "apply",
+      "proposalId": "prop_1782650254441_acl0b2",
+      "filename": "selfConsistency.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to async functions for reliability",
+      "timestamp": "2026-06-28T12:38:11.092Z"
+    },
+    {
+      "id": "audit_1782650326432_ver5iv",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-28T12:38:46.432Z"
+    },
+    {
+      "id": "audit_1782650326442_u4azub",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-28T12:38:46.442Z"
+    },
+    {
+      "id": "audit_1782650815574_pd70ce",
+      "action": "test",
+      "proposalId": "prop_1782647621647_igzczk",
+      "filename": "swarmOrchestrator.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/swarmOrchestrator.test.ts > swarmOrchestrator > peer registry > starts with an empty peer list 125ms\n ✓ server/swarmOrchestrator.test.ts > swarmOrchestr",
+      "timestamp": "2026-06-28T12:46:55.574Z"
+    },
+    {
+      "id": "audit_1782650815580_npq8ii",
+      "action": "apply",
+      "proposalId": "prop_1782647621647_igzczk",
+      "filename": "swarmOrchestrator.ts",
+      "result": "success",
+      "details": "Applied proposal: Add error type narrowing in catch blocks",
+      "timestamp": "2026-06-28T12:46:55.580Z"
+    },
+    {
+      "id": "audit_1782650878968_wkp1z1",
+      "action": "test",
+      "proposalId": "prop_1782650773196_ktncns",
+      "filename": "agentTypes.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/agentTypes.test.ts > agentTypes > module loads without throwing 31ms\n ✓ server/agentTypes.test.ts > agentTypes > exports at least one symbol (type-only ",
+      "timestamp": "2026-06-28T12:47:58.968Z"
+    },
+    {
+      "id": "audit_1782650878974_rthal3",
+      "action": "apply",
+      "proposalId": "prop_1782650773196_ktncns",
+      "filename": "agentTypes.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to AgentConfig fields",
+      "timestamp": "2026-06-28T12:47:58.974Z"
+    },
+    {
+      "id": "audit_1782651470461_y2w189",
+      "action": "test",
+      "proposalId": "prop_1782651413211_zk3e3t",
+      "filename": "aiTokens.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/aiTokens.test.ts > aiTokens > module loads without error 2ms\n ✓ server/aiTokens.test.ts > aiTokens > exports at least one function 1ms\n ✓ server/aiToken",
+      "timestamp": "2026-06-28T12:57:50.461Z"
+    },
+    {
+      "id": "audit_1782651470469_hmj7zh",
+      "action": "apply",
+      "proposalId": "prop_1782651413211_zk3e3t",
+      "filename": "aiTokens.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to calculateMaxTokens and countTokens",
+      "timestamp": "2026-06-28T12:57:50.469Z"
+    },
+    {
+      "id": "audit_1782651500117_e6vj7z",
+      "action": "test",
+      "proposalId": "prop_1782651450960_up3587",
+      "filename": "tokenBudgetManager.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/tokenBudgetManager.test.ts > initTokenBudgetManager > should execute without throwing\n[TokenBudget] Initialized: 131072 token window, 95% hard cap",
+      "timestamp": "2026-06-28T12:58:20.117Z"
+    },
+    {
+      "id": "audit_1782651500127_mhabvs",
+      "action": "apply",
+      "proposalId": "prop_1782651450960_up3587",
+      "filename": "tokenBudgetManager.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to recordUsage and canFitResponse",
+      "timestamp": "2026-06-28T12:58:20.127Z"
+    },
+    {
+      "id": "audit_1782652100194_8vr1q4",
+      "action": "apply",
+      "proposalId": "prop_1782652077227_c0blgy",
+      "filename": "algorithmicDiscoveryV2.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/algorithmicDiscoveryV2.ts(89,11): error TS2741: Property 'anomaly_detection' is missing in type '{ context_compression: () => number; proposal_ranking: () => 85 | 50; goal_decomposition: () => ",
+      "timestamp": "2026-06-28T13:08:20.194Z"
+    },
+    {
+      "id": "audit_1782652179543_z8kx3u",
+      "action": "test",
+      "proposalId": "prop_1782651646803_x6f28y",
+      "filename": "localLora.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/localLora.test.ts > localLora > should write the python script if it does not exist 63ms\n ✓ server/localLora.test.ts > localLora > should extract datase",
+      "timestamp": "2026-06-28T13:09:39.543Z"
+    },
+    {
+      "id": "audit_1782652179549_o7sahu",
+      "action": "apply",
+      "proposalId": "prop_1782651646803_x6f28y",
+      "filename": "localLora.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null check for datasetPath before use",
+      "timestamp": "2026-06-28T13:09:39.549Z"
+    },
+    {
+      "id": "audit_1782652285788_zoilnk",
+      "action": "test",
+      "proposalId": "prop_1782652233129_62oiul",
+      "filename": "agentTypes.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/agentTypes.test.ts > agentTypes > module loads without throwing 29ms\n ✓ server/agentTypes.test.ts > agentTypes > exports at least one symbol (type-only ",
+      "timestamp": "2026-06-28T13:11:25.788Z"
+    },
+    {
+      "id": "audit_1782652285795_1s4hvp",
+      "action": "apply",
+      "proposalId": "prop_1782652233129_62oiul",
+      "filename": "agentTypes.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to validateAgentConfig parameters",
+      "timestamp": "2026-06-28T13:11:25.795Z"
+    },
+    {
+      "id": "audit_1782652335573_3xuu4j",
+      "action": "test",
+      "proposalId": "prop_1782652015395_mxjyzb",
+      "filename": "learnedConstraints.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/learnedConstraints.test.ts > learnedConstraints > addLearnedConstraint adds a new constraint and returns it 7ms\n ✓ server/learnedConstraints.test.ts > l",
+      "timestamp": "2026-06-28T13:12:15.573Z"
+    },
+    {
+      "id": "audit_1782652335580_vwobtq",
+      "action": "apply",
+      "proposalId": "prop_1782652015395_mxjyzb",
+      "filename": "learnedConstraints.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to checkLearnedConstraints and disableConstraint",
+      "timestamp": "2026-06-28T13:12:15.580Z"
+    },
+    {
+      "id": "audit_1782652371961_a1nxfn",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-28T13:12:51.961Z"
+    },
+    {
+      "id": "audit_1782652371972_hvplut",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-28T13:12:51.972Z"
+    },
+    {
+      "id": "audit_1782652889548_68la5k",
+      "action": "apply",
+      "proposalId": "prop_1782652834140_n3cvon",
+      "filename": "andromedaMemoryWriter.ts",
+      "result": "blocked",
+      "details": "sandboxVerifier.quickValidate rejected proposal: Unbalanced braces: 50 open, 52 close",
+      "timestamp": "2026-06-28T13:21:29.548Z"
+    },
+    {
+      "id": "audit_1782653137888_fpnq48",
+      "action": "test",
+      "proposalId": "prop_1782652977626_1na54a",
+      "filename": "importGraph.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/importGraph.test.ts > importGraph > buildImportGraph returns a graph object with nodes and edges\n[2026-06-28T13:25:37.123Z] [INFO ] [importGraph] ",
+      "timestamp": "2026-06-28T13:25:37.888Z"
+    },
+    {
+      "id": "audit_1782653137901_gx04d3",
+      "action": "apply",
+      "proposalId": "prop_1782652977626_1na54a",
+      "filename": "importGraph.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to async functions for reliability",
+      "timestamp": "2026-06-28T13:25:37.901Z"
+    },
+    {
+      "id": "audit_1782653591127_g7w5yz",
+      "action": "test",
+      "proposalId": "prop_1782653361227_d88csc",
+      "filename": "autoHealing.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/autoHealing.test.ts > autoHealing > checkMemoryHealth > returns a HealthCheck with a valid status 199ms\n ✓ server/autoHealing.test.ts > autoHealing > ch",
+      "timestamp": "2026-06-28T13:33:11.127Z"
+    },
+    {
+      "id": "audit_1782653591138_7jbrv4",
+      "action": "apply",
+      "proposalId": "prop_1782653361227_d88csc",
+      "filename": "autoHealing.ts",
+      "result": "success",
+      "details": "Applied proposal: Add error type narrowing in catch blocks",
+      "timestamp": "2026-06-28T13:33:11.138Z"
+    },
+    {
+      "id": "audit_1782653758205_13hp2a",
+      "action": "test",
+      "proposalId": "prop_1782653717992_jv9wrz",
+      "filename": "cloudProvisioning.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/cloudProvisioning.test.ts > cloudProvisioning > detectAvailableProviders returns array of available providers 86ms\nstdout | server/cloudProvisioning.tes",
+      "timestamp": "2026-06-28T13:35:58.205Z"
+    },
+    {
+      "id": "audit_1782653758212_orae5f",
+      "action": "apply",
+      "proposalId": "prop_1782653717992_jv9wrz",
+      "filename": "cloudProvisioning.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to async functions for error handling",
+      "timestamp": "2026-06-28T13:35:58.212Z"
+    },
+    {
+      "id": "audit_1782653799508_0v54ju",
+      "action": "apply",
+      "proposalId": "prop_1782653581720_7r959v",
+      "filename": "fileEngineAnalysis.ts",
+      "result": "blocked",
+      "details": "sandboxVerifier.quickValidate rejected proposal: Unbalanced braces: 302 open, 305 close",
+      "timestamp": "2026-06-28T13:36:39.508Z"
+    },
+    {
+      "id": "audit_1782654047283_22kds2",
+      "action": "test",
+      "proposalId": "prop_1782654016316_g4of3k",
+      "filename": "behavioralRegressionEngine.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/behavioralRegressionEngine.test.ts > initBehavioralRegressionEngine > should execute without throwing\n[BehavioralRegression] Initialized — CI Stag",
+      "timestamp": "2026-06-28T13:40:47.283Z"
+    },
+    {
+      "id": "audit_1782654047290_v3t8s1",
+      "action": "apply",
+      "proposalId": "prop_1782654016316_g4of3k",
+      "filename": "behavioralRegressionEngine.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to extractContracts",
+      "timestamp": "2026-06-28T13:40:47.290Z"
+    },
+    {
+      "id": "audit_1782654596224_7zdh3e",
+      "action": "test",
+      "proposalId": "prop_1782654547530_1sp4hq",
+      "filename": "codeRunner.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/codeRunner.test.ts > Code Executor > module loads without errors 47ms\n ✓ server/codeRunner.test.ts > Code Executor > handles large code input gracefully",
+      "timestamp": "2026-06-28T13:49:56.224Z"
+    },
+    {
+      "id": "audit_1782654596231_9x99et",
+      "action": "apply",
+      "proposalId": "prop_1782654547530_1sp4hq",
+      "filename": "codeRunner.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to async functions for reliability",
+      "timestamp": "2026-06-28T13:49:56.231Z"
+    },
+    {
+      "id": "audit_1782654661667_pu8mfv",
+      "action": "test",
+      "proposalId": "prop_1782654206636_56pa1c",
+      "filename": "llmRouter.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/llmRouter.test.ts > llmRouter > routeQuery > returns a routing decision object\n[v6.17] Startup provider: kimi (LLM_MODEL=(not set), DEEPSEEK_KEY=s",
+      "timestamp": "2026-06-28T13:51:01.667Z"
+    },
+    {
+      "id": "audit_1782654661673_4pih7d",
+      "action": "apply",
+      "proposalId": "prop_1782654206636_56pa1c",
+      "filename": "llmRouter.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to routeQuery and applyRouting",
+      "timestamp": "2026-06-28T13:51:01.673Z"
+    },
+    {
+      "id": "audit_1782655185829_csggn5",
+      "action": "apply",
+      "proposalId": "prop_1782654614969_qlpxjv",
+      "filename": "proofVerifier.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/proofVerifier.ts(396,7): error TS2739: Type '{ score: number; violations: never[]; backend: \"heuristic\"; timestamp: number; codeHash: string; }' is missing the following properties from type 'P",
+      "timestamp": "2026-06-28T13:59:45.829Z"
+    },
+    {
+      "id": "audit_1782655216757_bbw7ut",
+      "action": "apply",
+      "proposalId": "prop_1782654614969_qlpxjv",
+      "filename": "proofVerifier.ts",
+      "result": "failure",
+      "details": "Refined proposal prop_1782654614969_qlpxjv after syntax error",
+      "timestamp": "2026-06-28T14:00:16.757Z"
+    },
+    {
+      "id": "audit_1782655230179_bz8hx7",
+      "action": "apply",
+      "proposalId": "prop_1782654614969_qlpxjv",
+      "filename": "proofVerifier.ts",
+      "result": "success",
+      "details": "Refinement fixed syntax errors for prop_1782654614969_qlpxjv",
+      "timestamp": "2026-06-28T14:00:30.179Z"
+    },
+    {
+      "id": "audit_1782655239314_tkzj69",
+      "action": "test",
+      "proposalId": "prop_1782654614969_qlpxjv",
+      "filename": "proofVerifier.ts",
+      "result": "success",
+      "details": "erver/proofVerifier.test.ts > verifyProposal > returns a valid result for a safe proposal\n[ProofVerifier] ✓ server/testModule.ts — level: tlc, confidence: 20.0%, outcome: unknown\n\nstdout | server/proo",
+      "timestamp": "2026-06-28T14:00:39.314Z"
+    },
+    {
+      "id": "audit_1782655239321_jtmuob",
+      "action": "apply",
+      "proposalId": "prop_1782654614969_qlpxjv",
+      "filename": "proofVerifier.ts",
+      "result": "success",
+      "details": "Applied proposal: Add error handling and correct ProofResult type in heuristic verification",
+      "timestamp": "2026-06-28T14:00:39.321Z"
+    },
+    {
+      "id": "audit_1782655285814_a2dclb",
+      "action": "test",
+      "proposalId": "prop_1782655146138_rzpdl1",
+      "filename": "costOptimizer.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/costOptimizer.test.ts > costOptimizer > scoreProposalComplexity > scores critical RSI files high 7ms\n ✓ server/costOptimizer.test.ts > costOptimizer > s",
+      "timestamp": "2026-06-28T14:01:25.814Z"
+    },
+    {
+      "id": "audit_1782655285821_ylvbzo",
+      "action": "apply",
+      "proposalId": "prop_1782655146138_rzpdl1",
+      "filename": "costOptimizer.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to recordCost function",
+      "timestamp": "2026-06-28T14:01:25.821Z"
+    },
+    {
+      "id": "audit_1782655320799_rgfm5p",
+      "action": "apply",
+      "proposalId": "prop_1782654943704_5vbs4b",
+      "filename": "agentSystemPrompt.ts",
+      "result": "failure",
+      "details": "Syntax check failed: server/agentSystemPrompt.ts(12,43): error TS2304: Cannot find name 'ToolDefinition'.",
+      "timestamp": "2026-06-28T14:02:00.799Z"
+    },
+    {
+      "id": "audit_1782655698670_lux0or",
+      "action": "test",
+      "proposalId": "prop_1782655597356_avschv",
+      "filename": "federatedLoraSharing.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/federatedLoraSharing.test.ts > federatedLoraSharing > packageLocalLoraWeights packages weights and saves to state\n[2026-06-28T14:08:18.337Z] [INFO",
+      "timestamp": "2026-06-28T14:08:18.670Z"
+    },
+    {
+      "id": "audit_1782655698677_he6xvb",
+      "action": "apply",
+      "proposalId": "prop_1782655597356_avschv",
+      "filename": "federatedLoraSharing.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to receiveLoraPackage and receiveToolProposal",
+      "timestamp": "2026-06-28T14:08:18.677Z"
+    },
+    {
+      "id": "audit_1782655749125_tqyjmy",
+      "action": "preview",
+      "proposalId": "test-diff-001",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: Test diff",
+      "timestamp": "2026-06-28T14:09:09.126Z"
+    },
+    {
+      "id": "audit_1782655749142_y36t12",
+      "action": "preview",
+      "proposalId": "test-diff-002",
+      "filename": "selfMonitor.ts",
+      "result": "success",
+      "details": "Previewed proposal: No change",
+      "timestamp": "2026-06-28T14:09:09.142Z"
+    },
+    {
+      "id": "audit_1782656298291_6ywt6x",
+      "action": "test",
+      "proposalId": "prop_1782656250117_worev6",
+      "filename": "crossInstanceRlhf.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/crossInstanceRlhf.test.ts > crossInstanceRlhf > approves a high-quality proposal with passing tests\n[2026-06-28T14:18:17.955Z] [INFO ] [crossInsta",
+      "timestamp": "2026-06-28T14:18:18.291Z"
+    },
+    {
+      "id": "audit_1782656298298_3f50kq",
+      "action": "apply",
+      "proposalId": "prop_1782656250117_worev6",
+      "filename": "crossInstanceRlhf.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to fetchPeerVerdict for reliability",
+      "timestamp": "2026-06-28T14:18:18.298Z"
+    },
+    {
+      "id": "audit_1782656828941_6eu4vi",
+      "action": "test",
+      "proposalId": "prop_1782656782007_2jlvxt",
+      "filename": "dbPostgres.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/dbPostgres.test.ts > dbPostgres > module loads without throwing 314ms\n ✓ server/dbPostgres.test.ts > dbPostgres > exports at least one symbol 7ms\n\n Test",
+      "timestamp": "2026-06-28T14:27:08.941Z"
+    },
+    {
+      "id": "audit_1782656829029_wc28rs",
+      "action": "apply",
+      "proposalId": "prop_1782656782007_2jlvxt",
+      "filename": "dbPostgres.ts",
+      "result": "success",
+      "details": "Applied proposal: Parallelize independent await calls in getPgStatus",
+      "timestamp": "2026-06-28T14:27:09.029Z"
+    },
+    {
+      "id": "audit_1782656906760_alpmxw",
+      "action": "test",
+      "proposalId": "prop_1782656179871_0yakdi",
+      "filename": "crossModalSelfImprovement.ts",
+      "result": "success",
+      "details": " {\\n    \\u001b[33m...\\u001b[39mactual\\u001b[33m,\\u001b[39m\\n    \\u001b[90m// your mocked methods\\u001b[39m\\n  }\\n})\"}\n\nstderr | server/crossModalSelfImprovement.test.ts > CrossModalSelfImprovementMana",
+      "timestamp": "2026-06-28T14:28:26.760Z"
+    },
+    {
+      "id": "audit_1782656906773_sylxmt",
+      "action": "apply",
+      "proposalId": "prop_1782656179871_0yakdi",
+      "filename": "crossModalSelfImprovement.ts",
+      "result": "success",
+      "details": "Applied proposal: Add error type narrowing in catch blocks",
+      "timestamp": "2026-06-28T14:28:26.773Z"
+    },
+    {
+      "id": "audit_1782656980929_hc2skl",
+      "action": "test",
+      "proposalId": "prop_1782656433187_sfo5y8",
+      "filename": "zeroShotTransferEngine.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/zeroShotTransferEngine.test.ts > zeroShotTransferEngine > module loads without throwing\n[2026-06-28T14:29:39.964Z] [INFO ] [zeroShotTransfer] [Zer",
+      "timestamp": "2026-06-28T14:29:40.929Z"
+    },
+    {
+      "id": "audit_1782656980957_2bv37t",
+      "action": "apply",
+      "proposalId": "prop_1782656433187_sfo5y8",
+      "filename": "zeroShotTransferEngine.ts",
+      "result": "success",
+      "details": "Applied proposal: Add error type narrowing in catch blocks",
+      "timestamp": "2026-06-28T14:29:40.957Z"
+    },
+    {
+      "id": "audit_1782657572223_hyatwa",
+      "action": "test",
+      "proposalId": "prop_1782657497906_k19qkd",
+      "filename": "dockerSandbox.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/dockerSandbox.test.ts > isDockerAvailable > returns true when docker info succeeds 4ms\n ✓ server/dockerSandbox.test.ts > executeInSandbox > executes pyt",
+      "timestamp": "2026-06-28T14:39:32.223Z"
+    },
+    {
+      "id": "audit_1782657572241_fk18gt",
+      "action": "apply",
+      "proposalId": "prop_1782657497906_k19qkd",
+      "filename": "dockerSandbox.ts",
+      "result": "success",
+      "details": "Applied proposal: Add input validation to executeInSandbox",
+      "timestamp": "2026-06-28T14:39:32.241Z"
+    },
+    {
+      "id": "audit_1782657693575_kts0lf",
+      "action": "test",
+      "proposalId": "prop_1782657131226_h088r0",
+      "filename": "hotReload.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/hotReload.test.ts > hotReload > getHotReloadStatus returns expected shape 12ms\n ✓ server/hotReload.test.ts > hotReload > getReloadHistory returns an arr",
+      "timestamp": "2026-06-28T14:41:33.575Z"
+    },
+    {
+      "id": "audit_1782657693594_qs57r7",
+      "action": "apply",
+      "proposalId": "prop_1782657131226_h088r0",
+      "filename": "hotReload.ts",
+      "result": "success",
+      "details": "Applied proposal: Replace 'any' types with specific types in hotReload.ts",
+      "timestamp": "2026-06-28T14:41:33.594Z"
+    },
+    {
+      "id": "audit_1782657752514_ql2xqr",
+      "action": "test",
+      "proposalId": "prop_1782656433187_sfo5y8",
+      "filename": "zeroShotTransferEngine.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/zeroShotTransferEngine.test.ts > zeroShotTransferEngine > module loads without throwing\n[2026-06-28T14:42:31.756Z] [INFO ] [zeroShotTransfer] [Zer",
+      "timestamp": "2026-06-28T14:42:32.514Z"
+    },
+    {
+      "id": "audit_1782657752529_0bmmie",
+      "action": "apply",
+      "proposalId": "prop_1782656433187_sfo5y8",
+      "filename": "zeroShotTransferEngine.ts",
+      "result": "success",
+      "details": "Applied proposal: Add error type narrowing in catch blocks",
+      "timestamp": "2026-06-28T14:42:32.529Z"
+    },
+    {
+      "id": "audit_1782657761569_py2e7m",
+      "action": "test",
+      "proposalId": "prop_1782657131226_h088r0",
+      "filename": "hotReload.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/hotReload.test.ts > hotReload > getHotReloadStatus returns expected shape 15ms\n ✓ server/hotReload.test.ts > hotReload > getReloadHistory returns an arr",
+      "timestamp": "2026-06-28T14:42:41.569Z"
+    },
+    {
+      "id": "audit_1782657761583_65tnr6",
+      "action": "apply",
+      "proposalId": "prop_1782657131226_h088r0",
+      "filename": "hotReload.ts",
+      "result": "success",
+      "details": "Applied proposal: Replace 'any' types with specific types in hotReload.ts",
+      "timestamp": "2026-06-28T14:42:41.583Z"
+    },
+    {
+      "id": "audit_1782657837740_hxnz6m",
+      "action": "test",
+      "proposalId": "prop_1782657563390_xus7t6",
+      "filename": "ebpfGrounding.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/ebpfGrounding.test.ts > ebpfGrounding > detectEbpfCapability > returns a valid capability string 257ms\n ✓ server/ebpfGrounding.test.ts > ebpfGrounding >",
+      "timestamp": "2026-06-28T14:43:57.740Z"
+    },
+    {
+      "id": "audit_1782657837773_z64xv4",
+      "action": "apply",
+      "proposalId": "prop_1782657563390_xus7t6",
+      "filename": "ebpfGrounding.ts",
+      "result": "success",
+      "details": "Applied proposal: Consolidate setInterval timers into single dispatch loop",
+      "timestamp": "2026-06-28T14:43:57.773Z"
+    },
+    {
+      "id": "audit_1782658372457_dqgt5y",
+      "action": "test",
+      "proposalId": "prop_1782657917597_0ek15s",
+      "filename": "rsiEngine.ts",
+      "result": "success",
+      "details": "server/rsiEngine.test.ts > runRSICycle > should execute without throwing\n[RSIEngine] Starting cycle rsi-1782658342242-gyr31i (cycle #1)\n\n ✓ server/rsiEngine.test.ts > measureBenchmark > should handle ",
+      "timestamp": "2026-06-28T14:52:52.457Z"
+    },
+    {
+      "id": "audit_1782658372573_rc885s",
+      "action": "apply",
+      "proposalId": "prop_1782657917597_0ek15s",
+      "filename": "rsiEngine.ts",
+      "result": "success",
+      "details": "Applied proposal: Parallelize sequential await calls in runRSICycle",
+      "timestamp": "2026-06-28T14:52:52.573Z"
+    },
+    {
+      "id": "audit_1782658537094_l2oqx1",
+      "action": "test",
+      "proposalId": "prop_1782658216323_wpf6og",
+      "filename": "evalGoalDiscovery.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\nstdout | server/evalGoalDiscovery.test.ts > evalGoalDiscovery > discoverGoalsFromEval returns an array of goals\n[EvalGoalDiscovery] No weak tasks found — no goals",
+      "timestamp": "2026-06-28T14:55:37.094Z"
+    },
+    {
+      "id": "audit_1782658537109_bre77z",
+      "action": "apply",
+      "proposalId": "prop_1782658216323_wpf6og",
+      "filename": "evalGoalDiscovery.ts",
+      "result": "success",
+      "details": "Applied proposal: Add null guard before JSON.parse in loadHistory",
+      "timestamp": "2026-06-28T14:55:37.109Z"
+    },
+    {
+      "id": "audit_1782658578921_ajawi7",
+      "action": "test",
+      "proposalId": "prop_1782657563390_xus7t6",
+      "filename": "ebpfGrounding.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/ebpfGrounding.test.ts > ebpfGrounding > detectEbpfCapability > returns a valid capability string 231ms\n ✓ server/ebpfGrounding.test.ts > ebpfGrounding >",
+      "timestamp": "2026-06-28T14:56:18.921Z"
+    },
+    {
+      "id": "audit_1782658578936_y8ur2i",
+      "action": "apply",
+      "proposalId": "prop_1782657563390_xus7t6",
+      "filename": "ebpfGrounding.ts",
+      "result": "success",
+      "details": "Applied proposal: Consolidate setInterval timers into single dispatch loop",
+      "timestamp": "2026-06-28T14:56:18.936Z"
+    },
+    {
+      "id": "audit_1782658632114_6dpgqn",
+      "action": "test",
+      "proposalId": "prop_1782658492507_knwp1h",
+      "filename": "evalFramework.ts",
+      "result": "success",
+      "details": "\n RUN  v3.2.6 /home/ubuntu/andromeda\n\n ✓ server/evalFramework.test.ts > evalFramework > module loads without errors 4ms\n ✓ server/evalFramework.test.ts > evalFramework > EVAL_TASKS is an array of task",
+      "timestamp": "2026-06-28T14:57:12.114Z"
+    },
+    {
+      "id": "audit_1782658632138_o81aml",
+      "action": "apply",
+      "proposalId": "prop_1782658492507_knwp1h",
+      "filename": "evalFramework.ts",
+      "result": "success",
+      "details": "Applied proposal: Add try/catch to getEvalHistory and getEvalTrend for error resilience",
+      "timestamp": "2026-06-28T14:57:12.138Z"
+    },
+    {
+      "id": "audit_1782658746630_5s2zcy",
+      "action": "test",
+      "proposalId": "prop_1782657917597_0ek15s",
+      "filename": "rsiEngine.ts",
+      "result": "success",
+      "details": "rver/rsiEngine.test.ts > runRSICycle > should execute without throwing\n[RSIEngine] Starting cycle rsi-1782658714716-elz2yn (cycle #1)\n\n ✓ server/rsiEngine.test.ts > measureBenchmark > should handle in",
+      "timestamp": "2026-06-28T14:59:06.630Z"
+    },
+    {
+      "id": "audit_1782658746778_n0w21w",
+      "action": "apply",
+      "proposalId": "prop_1782657917597_0ek15s",
+      "filename": "rsiEngine.ts",
+      "result": "success",
+      "details": "Applied proposal: Parallelize sequential await calls in runRSICycle",
+      "timestamp": "2026-06-28T14:59:06.778Z"
     }
   ]
 }

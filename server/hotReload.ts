@@ -136,8 +136,9 @@ function typeCheckFile(filePath: string): { success: boolean; errors: string[] }
       timeout: 30_000,
     });
     return { success: true, errors: [] };
-  } catch (err: any) {
-    const output = err?.stdout?.toString?.() || err?.stderr?.toString?.() || "";
+  } catch (err: unknown) {
+    const error = err as { stdout?: { toString?: () => string }; stderr?: { toString?: () => string } };
+    const output = error?.stdout?.toString?.() || error?.stderr?.toString?.() || "";
     const errors = (output || "").split("\n").filter((l: string) => l.includes("error TS")).slice(0, 10);
     return { success: errors.length === 0, errors };
   }
@@ -261,16 +262,20 @@ export async function hotReloadModified(): Promise<HotReloadResult[]> {
   const results: HotReloadResult[] = [];
 
   for (const config of RELOADABLE_MODULES) {
-    const fullPath = path.join(getServerDir(), `${config.path}.ts`);
-    if (!fs.existsSync(fullPath)) continue;
+    try {
+      const fullPath = path.join(getServerDir(), `${config.path}.ts`);
+      if (!fs.existsSync(fullPath)) continue;
 
-    const stat = fs.statSync(fullPath);
-    const registered = moduleRegistry.get(config.path);
+      const stat = fs.statSync(fullPath);
+      const registered = moduleRegistry.get(config.path);
 
-    // Reload if file was modified after last load
-    if (!registered || stat.mtimeMs > registered.loadedAt) {
-      const result = await hotReloadModule(config.path);
-      results.push(result);
+      // Reload if file was modified after last load
+      if (!registered || stat.mtimeMs > registered.loadedAt) {
+        const result = await hotReloadModule(config.path);
+        results.push(result);
+      }
+    } catch (err) {
+      console.warn(`[HotReload] Error reloading ${config.path}: ${(err as Error).message}`);
     }
   }
 

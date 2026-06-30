@@ -122,7 +122,7 @@ function loadPatterns(): void {
       for (const p of raw) localPatterns.set(p.patternId, p);
       log.info(`Loaded ${localPatterns.size} improvement patterns`);
     }
-  } catch (err) { log.caught("non-fatal", err); }
+  } catch (err) { log.caught("non-fatal", err instanceof Error ? err : new Error(String(err))); }
 }
 
 function savePatterns(): void {
@@ -130,7 +130,7 @@ function savePatterns(): void {
     const dir = path.dirname(PATTERNS_FILE);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(PATTERNS_FILE, JSON.stringify(Array.from(localPatterns.values()), null, 2), "utf-8");
-  } catch (err) { log.caught("non-fatal", err); }
+  } catch (err) { log.caught("non-fatal", err instanceof Error ? err : new Error(String(err))); }
 }
 
 // ─── Pattern Learning ────────────────────────────────────────────────────────

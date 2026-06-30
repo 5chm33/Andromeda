@@ -659,15 +659,16 @@ export async function chatCompletion(
     // v12.3.1: On 429 (quota/rate-limit) or 402 (insufficient balance), try fallback providers
     if (resp.status === 429 || resp.status === 402) {
       const fallbacks = buildFallbackChain(provider.id);
-      for (const fb of fallbacks) {
-        log.warn(`[FallbackChain] ${provider.id} returned ${resp.status} — retrying with ${fb.id}`);
-        const fbResp = await fetch(fb.apiUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${fb.apiKey}`, ...(fb.headers ?? {}) },
-          body: JSON.stringify({ ...body, model: fb.model }),
-          signal: options?.signal,
-        });
-        if (fbResp.ok) {
+      const results = await Promise.allSettled(
+        fallbacks.map(async (fb) => {
+          log.warn(`[FallbackChain] ${provider.id} returned ${resp.status} — retrying with ${fb.id}`);
+          const fbResp = await fetch(fb.apiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${fb.apiKey}`, ...(fb.headers ?? {}) },
+            body: JSON.stringify({ ...body, model: fb.model }),
+            signal: options?.signal,
+          });
+          if (!fbResp.ok) throw new Error(`Fallback ${fb.id} returned ${fbResp.status}`);
           const fbJson = (await fbResp.json()) as any;
           const fbChoice = fbJson.choices?.[0];
           const fbMsg = fbChoice?.message;
@@ -680,8 +681,14 @@ export async function chatCompletion(
             finishReason: fbChoice?.finish_reason ?? "stop",
             usage: { promptTokens: fbUsage.prompt_tokens ?? 0, completionTokens: fbUsage.completion_tokens ?? 0, totalTokens: fbUsage.total_tokens ?? 0 },
           };
+        })
+      );
+      for (const result of results) {
+        if (result.status === "fulfilled") {
+          return result.value;
         }
       }
+      // If all fallbacks failed, fall through to original error handling
     }
     throw new Error(`LLM API error ${resp.status}: ${errText}`);
   }

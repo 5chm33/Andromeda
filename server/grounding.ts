@@ -46,6 +46,9 @@ export interface FactCheckResult {
  * followed by specific attributes, and quoted strings.
  */
 export function extractFactualClaims(answer: string): string[] {
+  if (typeof answer !== 'string' || answer.length === 0) {
+    return [];
+  }
   const claims: string[] = [];
 
   const claimPatterns = [
