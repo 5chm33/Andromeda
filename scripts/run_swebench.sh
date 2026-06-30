@@ -7,7 +7,7 @@
 set -euo pipefail
 
 LOG=/tmp/swebench_runner.log
-AGENT=~/swebench_agent.py
+AGENT=~/swebench_sota_agent_v3.py
 VENV=~/swebench-env
 ANDROMEDA=~/andromeda
 RESULTS=$ANDROMEDA/data/swebench
@@ -72,7 +72,7 @@ EVAL_DIR="$RESULTS/${VERIFIED_RUN}_eval"
 mkdir -p "$EVAL_DIR"
 
 python3 -m swebench.harness.run_evaluation \
-    --dataset_name "princeton-nlp/SWE-bench_Verified" \
+    --dataset_name "SWE-bench/SWE-bench_Verified" \
     --split test \
     --predictions_path "$PRED_FILE" \
     --max_workers 2 \
@@ -138,7 +138,7 @@ if [ -f "$FULL_PRED_FILE" ]; then
     log "Full predictions: $FULL_COUNT / 2294"
 
     python3 -m swebench.harness.run_evaluation \
-        --dataset_name "princeton-nlp/SWE-bench" \
+        --dataset_name "SWE-bench/SWE-bench" \
         --split test \
         --predictions_path "$FULL_PRED_FILE" \
         --max_workers 2 \
