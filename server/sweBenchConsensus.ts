@@ -41,8 +41,8 @@ const execAsync = promisify(exec);
 /** Number of parallel agents to run per instance. 4 is the sweet spot for cost/quality. */
 export const DEFAULT_AGENT_COUNT = 4;
 
-/** Maximum chars of file content to show in prompts. */
-const MAX_FILE_CHARS = 8000;
+/** Skeleton context: maximum chars of fully-expanded function bodies to include. */
+const MAX_EXPANDED_CHARS = 20000;
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -76,33 +76,104 @@ export interface ConsensusResult {
 // ─── Prompt Building ──────────────────────────────────────────────────────────
 
 /**
- * Smart truncation: for large files, find the relevant function/class section
- * and show that with surrounding context instead of the first N chars.
+ * Builds a skeleton context view of a Python file for large files.
+ *
+ * Replaces the old smartTruncate approach (which showed a random window of lines)
+ * with a structured view: all class/function signatures (skeleton) plus fully
+ * expanded bodies for any function whose name matches the issue keywords.
+ *
+ * This gives the LLM the full structural map of the file plus the exact code it
+ * needs, without wasting tokens on irrelevant function bodies.
  */
-function smartTruncate(content: string, keywords: string[]): { text: string; startLine: number } {
+function buildSkeletonContext(
+  filePath: string,
+  content: string,
+  keywords: string[]
+): string {
+  if (content.length <= 12000) return content;
+
   const lines = content.split('\n');
-  if (content.length <= MAX_FILE_CHARS) {
-    return { text: content, startLine: 1 };
+  const skeletonLines: string[] = [];
+  const functionBodies: Map<string, { start: number; end: number; name: string }> = new Map();
+
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    const trimmed = line.trim();
+    const defMatch = trimmed.match(/^(class|def)\s+(\w+)/);
+    if (defMatch) {
+      const name = defMatch[2];
+      const bodyStart = i;
+      const baseIndent = line.match(/^(\s*)/)?.[1]?.length ?? 0;
+      let j = i + 1;
+      while (j < lines.length) {
+        const nextTrimmed = lines[j].trim();
+        if (nextTrimmed.length === 0) { j++; continue; }
+        const nextIndent = lines[j].match(/^(\s*)/)?.[1]?.length ?? 0;
+        if (nextIndent <= baseIndent && nextTrimmed.length > 0) break;
+        j++;
+      }
+      functionBodies.set(name, { start: bodyStart, end: j - 1, name });
+      skeletonLines.push(line);
+      if (i + 1 < lines.length && lines[i + 1].trim().startsWith('"""')) {
+        skeletonLines.push(lines[i + 1]);
+        if (!lines[i + 1].trim().endsWith('"""')) {
+          let k = i + 2;
+          while (k < lines.length && !lines[k].includes('"""')) k++;
+          if (k < lines.length) skeletonLines.push(lines[k]);
+        }
+      }
+      skeletonLines.push('    ...');
+      i = j;
+      continue;
+    }
+    if (
+      trimmed.startsWith('import ') ||
+      trimmed.startsWith('from ') ||
+      trimmed.startsWith('@') ||
+      trimmed.startsWith('#') ||
+      (trimmed.length > 0 && !trimmed.startsWith(' ') && line.match(/^[A-Z_][A-Z0-9_]*\s*=/))
+    ) {
+      skeletonLines.push(line);
+    }
+    i++;
   }
 
-  // Find the most relevant section based on keywords
-  let bestLine = 0;
-  let bestScore = 0;
-  for (let i = 0; i < lines.length; i++) {
-    const score = keywords.filter(kw => lines[i].toLowerCase().includes(kw.toLowerCase())).length;
-    if (score > bestScore) {
-      bestScore = score;
-      bestLine = i;
+  const relevantNames = new Set<string>();
+  for (const [name] of functionBodies) {
+    const nameLower = name.toLowerCase();
+    if (keywords.some(kw => nameLower.includes(kw) || kw.includes(nameLower))) {
+      relevantNames.add(name);
     }
   }
 
-  // Show 50 lines before and as many after as fit
-  const startLine = Math.max(0, bestLine - 50);
-  const maxLines = Math.floor(MAX_FILE_CHARS / 80);
-  const endLine = Math.min(lines.length, startLine + maxLines);
-  const section = lines.slice(startLine, endLine).join('\n');
+  let result = `# File: ${filePath} (${lines.length} lines total \u2014 skeleton view)\n`;
+  result += `# Fully expanded: ${relevantNames.size > 0 ? [...relevantNames].join(', ') : '(none matched \u2014 showing skeleton only)'}\n\n`;
+  result += skeletonLines.join('\n') + '\n\n';
 
-  return { text: section, startLine: startLine + 1 };
+  let expandedChars = result.length;
+  for (const name of relevantNames) {
+    const body = functionBodies.get(name);
+    if (!body) continue;
+    const bodyText = lines.slice(body.start, body.end + 1).join('\n');
+    if (expandedChars + bodyText.length > MAX_EXPANDED_CHARS) break;
+    result += `# === EXPANDED: ${name} ===\n${bodyText}\n\n`;
+    expandedChars += bodyText.length;
+  }
+
+  if (relevantNames.size === 0) {
+    let count = 0;
+    for (const [name, body] of functionBodies) {
+      if (count >= 3) break;
+      const bodyText = lines.slice(body.start, body.end + 1).join('\n');
+      if (expandedChars + bodyText.length > MAX_EXPANDED_CHARS) break;
+      result += `# === EXPANDED: ${name} ===\n${bodyText}\n\n`;
+      expandedChars += bodyText.length;
+      count++;
+    }
+  }
+
+  return result;
 }
 
 /**
@@ -126,15 +197,14 @@ export function buildAgentPrompt(
 
   const styleHint = styleHints[agentConfig.name] || styleHints.conservative;
 
-  // Build file sections
-  const keywords = issueDescription.toLowerCase().split(/\s+/).filter(w => w.length > 4);
+  // Build file sections using skeleton context (replaces naive smartTruncate)
+  const keywords = [
+    ...issueDescription.toLowerCase().split(/\s+/).filter(w => w.length > 4),
+    ...failToPassTests.flatMap(t => t.split('::').map(p => p.toLowerCase())),
+  ].filter((v, idx, arr) => arr.indexOf(v) === idx).slice(0, 40);
   const fileSections = Object.entries(fileContents).map(([fp, content]) => {
-    const { text, startLine } = smartTruncate(content, keywords);
-    const truncated = text.length < content.length;
-    const header = truncated
-      ? `### ${fp} (showing lines ${startLine}+, file is ${content.split('\n').length} lines total)`
-      : `### ${fp}`;
-    return `${header}\n\`\`\`python\n${text}\n\`\`\``;
+    const contextView = buildSkeletonContext(fp, content, keywords);
+    return `### ${fp}\n\`\`\`python\n${contextView}\n\`\`\``;
   }).join('\n\n');
 
   // Include failing test names AND test code so LLM knows exactly what to make pass

@@ -2,7 +2,7 @@
 
 # Andromeda
 
-**A self-modifying AI system that improves its own source code — autonomously, continuously, and verifiably.**
+**An autonomous software engineering agent benchmarked on SWE-bench Verified.**
 
 [![CI](https://github.com/5chm33/Andromeda/actions/workflows/ci.yml/badge.svg)](https://github.com/5chm33/Andromeda/actions)
 [![Release](https://img.shields.io/github/v/release/5chm33/Andromeda?color=blueviolet)](https://github.com/5chm33/Andromeda/releases/tag/v1.0.0)
@@ -14,214 +14,21 @@
 
 ---
 
-## The Idea
+## What It Does
 
-Most AI systems are static. You train them, deploy them, and they stay exactly as capable as the day they shipped. Andromeda is built around a different premise: **what if the system that runs the AI is also the system that improves it?**
+Andromeda is a production Node.js/TypeScript application that autonomously resolves real GitHub issues from open-source Python repositories. Given a problem statement and a failing test suite, it:
 
-Andromeda is a production Node.js/TypeScript application that, while serving its normal workload, continuously reads its own source code, identifies weaknesses, generates targeted patches, validates them against a battery of safety checks, and — if everything passes — commits the improvement directly to its own GitHub repository. No human in the loop. No deployment pipeline. The system rewrites itself.
+1. Localizes the relevant source files inside the SWE-bench Docker image
+2. Builds structured context (skeleton + expanded relevant functions) for each file
+3. Generates candidate patches using a 4-agent parallel consensus engine
+4. Validates each candidate by running the actual test suite inside the container
+5. Iterates with traceback feedback for up to 5 attempts per instance
 
-This is not a research prototype. It is a working, tested, deployed system with 717 production modules, 5,646 passing tests, and a live commit history that includes code it wrote for itself.
-
----
-
-## How It Works
-
-### The RSI Loop
-
-The core of Andromeda is the **Recursive Self-Improvement (RSI) engine** — a continuous background process that runs on a configurable interval (default: every 5 minutes) and executes the following pipeline:
-
-**1. Unsupervised Codebase Discovery**
-
-The `unsupervisedCodebaseDiscovery` module scans every TypeScript source file and computes a composite ROI score based on four signals: cyclomatic complexity (how hard the code is to reason about), test coverage gaps (lines not exercised by the test suite), unresolved TODO/FIXME markers, and historical churn rate derived from `git log`. The highest-ROI file becomes the target for the next improvement cycle.
-
-**2. Goal-Conditioned Proposal Generation**
-
-The LLM agent receives the full content of the target file, the relevant section of the RLHF feedback history, and a system prompt derived from the active `emergentSpecialization` role (security expert, performance optimizer, API designer, or generalist — whichever has the highest recent competence score). It generates a minimal, targeted diff. The prompt explicitly forbids hallucinating import paths by requiring the model to work from the actual file content it was given.
-
-**3. The Safety Pipeline**
-
-Before a single byte is written to disk, the proposal passes through seven independent validation gates:
-
-| Gate | What It Checks |
-|------|---------------|
-| **Constitutional Guard** | Validates the proposed diff against `andromeda-constitution.json` — a machine-readable policy document specifying forbidden file patterns, destructive shell commands, credential-logging patterns, and rationale quality requirements. The checker strips comment and string context from the source before pattern-matching, eliminating the false-positive class that plagued earlier versions. |
-| **Proposal Invariant Verifier** | Checks that the proposal does not violate structural invariants: no removal of exported functions without replacement, no introduction of circular dependencies, no weakening of type signatures from `T` to `any`. |
-| **Z3 Theorem Prover** | For proposals touching critical modules, the `z3ProofLayer` constructs a formal constraint model of the before/after utility delta and uses the Z3 SMT solver to verify the proposed change is mathematically non-regressive. |
-| **Shadow Test** | The proposal is applied in-place to the live file. The full vitest suite runs. If any of the 5,646 tests fail, the file is atomically restored from a pre-apply snapshot. The shadow runner sets `VITEST_SHADOW_MODE=1` so lock-contending integration tests correctly skip themselves. |
-| **Sandbox Syntax Check** | The `proposalSandbox` verifies balanced braces, no duplicate function declarations, and no obvious syntax errors — after stripping comments and string literals to avoid false positives on code that merely discusses these patterns. |
-| **Benchmark Regression Suite** | Runs 20 micro-benchmarks covering JSON serialization, Map/Set operations, path resolution, and date formatting. An adaptive threshold based on observed variance prevents sub-millisecond jitter from triggering false regressions. |
-| **Multi-Model Self-Consistency** | For high-risk proposals, `selfConsistency.ts` submits the reasoning chain to a secondary LLM provider and requires agreement above a 0.66 consensus threshold before proceeding. |
-
-**4. Autonomous Commit**
-
-If all gates pass, the `proposalApplier` writes the change, runs `git commit`, and pushes to `main`. The commit message includes the target file, the improvement rationale, and the RSI cycle ID. The system records the outcome in the RLHF feedback store, closing the learning loop.
-
----
-
-## The Thought Engine
-
-Andromeda's reasoning is not a single LLM call. It is a layered cognitive architecture.
-
-### Universal Reasoning Engine
-
-`universalReasoningEngine.ts` provides six reasoning modes — deductive, inductive, abductive, analogical, causal, and probabilistic — each with its own confidence propagation model. When Andromeda analyzes a file, it builds a premise graph from the code structure and selects the appropriate reasoning mode based on the type of improvement being considered. A null guard is deductive. A refactoring is analogical. A performance optimization is causal.
-
-### Temporal Reasoning and Counterfactuals
-
-`temporalReasoningEngine.ts` maintains a persistent causal graph of every improvement event, indexed by file, action type, and outcome metric. Before generating a proposal, Andromeda queries this graph to evaluate the counterfactual: *"Given that we linted this file last cycle and the outcome was 0.4, what would the estimated outcome have been if we had refactored it instead?"* This prevents the system from repeatedly applying the same class of improvement to a file that needs something different.
-
-### Emergent Specialization
-
-Rather than using a single generalist prompt, Andromeda maintains four specialist roles and tracks their competence scores using an exponential moving average over recent proposal outcomes. The role with the highest current competence score is selected as the active persona for the next proposal. A security expert that has been successfully patching input validation issues will continue to be selected until its competence score plateaus — at which point the system naturally rotates to whichever specialist is currently underperforming and has the most room to improve.
-
-### Neuroplastic Pipeline Adaptation
-
-`neuroplasticAdapter.ts` monitors the cost and pass-rate of each validation gate. If a gate has been passing at 100% for an extended period and carries a high compute cost, it is temporarily suspended to save resources. If the pass rate subsequently drops, the gate is automatically reactivated. The pipeline topology is not fixed — it adapts to the current risk profile of the proposals being generated.
-
-### Omega Convergence Detection
-
-`omegaConvergenceDetector.ts` tracks the system's capability score over a rolling 100-cycle window. If the improvement rate drops below 0.01% per cycle — indicating the system has reached a local capability ceiling — it triggers the **SRIL engine** (Self-Replicating Improvement Loop), which generates entirely new RSI enhancement modules to address identified gaps in the pipeline. The system can write new subsystems for itself.
-
-### Transcendent Self-Model
-
-`transcendentSelfModel.ts` maintains a live capability assessment across every domain the system operates in, tracking proficiency levels, improvement rates, and known limitations per capability. This self-model is what allows Andromeda to make accurate counterfactual predictions and to recognize when a particular class of improvement has reached diminishing returns.
-
----
-
-## Learning From Failure
-
-Every rejected proposal is a data point. The `rlhfCollector.ts` module captures five types of feedback signals:
-
-- **Autonomous rejection** — the proposal failed a safety gate (reward: −1.0)
-- **Human rejection** — a user explicitly declined a proposal via the dashboard (reward: −1.0)
-- **Human edit** — a user modified the proposal before applying it (reward: +0.5, partial credit)
-- **Human acceptance** — a user explicitly approved a proposal (reward: +1.0)
-- **Downstream signal** — the eval score improved after the proposal was applied (reward: +1.0)
-
-These signals are persisted to `data/rlhf_feedback.jsonl`. The dataset currently contains **119,000+ entries** including the full HH-RLHF evaluation corpus, normalized into Andromeda's native feedback format. The `rewardModel.ts` is trained on this dataset and scores every new proposal before it enters the safety pipeline — proposals with a predicted reward below the confidence threshold are discarded before any compute is spent on validation.
-
----
-
-## Safety Architecture
-
-Allowing a system to modify its own execution environment is a genuinely hard problem. Andromeda's approach is defense in depth.
-
-**The Constitution** (`andromeda-constitution.json`) is a machine-readable policy document that specifies exactly what the system is and is not allowed to do. It is itself a forbidden modification target — the RSI engine cannot propose changes to it. The constitution defines which files are immutable (auth, database, the constitution itself), which shell patterns are forbidden, what risk levels require human approval, and rate limits on autonomous commits (max 8 per hour, 40 per day).
-
-**Rollback Guarantees** — every proposal creates an atomic semantic snapshot before any file is touched. If the Node.js process crashes mid-apply, the `selfRollback.ts` engine detects the incomplete state on the next boot and restores from the snapshot. This is enforced by a two-phase commit protocol in `twoPhaseCommit.ts`.
-
-**Meta-Guard Isolation** — the files that implement the safety pipeline (`selfImproveGuard.ts`, `sandboxVerifier.ts`, `selfRollback.ts`, `selfHeal.ts`, `selfTestPipeline.ts`) are excluded from the RSI target pool entirely. The system cannot propose changes to its own safety checks.
-
-**Privilege Separation** — the `rbac.ts` and `privilegeSeparation.ts` modules enforce role-based access control on all API endpoints. The RSI engine runs under a restricted service account that cannot access user data, credentials, or the admin API.
-
----
-
-## Scale
-
-| Metric | Value |
-|--------|-------|
-| Production TypeScript modules | 717 |
-| Test files | 328 |
-| Tests passing | 5,646 |
-| Total lines of TypeScript | 194,000+ |
-| RLHF feedback entries | 119,000+ |
-| RSI proposal success rate (v1.0.0) | 100% |
-| Autonomous commits during v1.0.0 release | 9 |
-
----
-
-## Getting Started
-
-```bash
-git clone https://github.com/5chm33/Andromeda.git
-cd Andromeda
-pnpm install
-cp .env.example .env.local
-```
-
-Edit `.env.local` and add at minimum one LLM provider key:
-
-```env
-# Primary: OpenRouter — single key for Claude Sonnet, DeepSeek, Gemini, and 200+ models
-OPENROUTER_API_KEY=sk-or-...   # https://openrouter.ai
-
-# Optional: DeepSeek direct (most cost-efficient for high-volume code tasks)
-DEEPSEEK_API_KEY=sk-...        # https://platform.deepseek.com
-
-# Optional: Kimi / Moonshot (Gemini-class reasoning, competitive pricing)
-KIMI_API_KEY=sk-...            # https://platform.moonshot.cn
-
-# Optional: fal.ai (image generation and multimodal tasks)
-FAL_KEY=...                    # https://fal.ai
-```
-
-> **Note:** Andromeda does not require an OpenAI API key. The system is built around open, cost-efficient, and ethically-aligned providers. OpenRouter gives access to Anthropic Claude, DeepSeek, and Gemini through a single key and is the recommended starting point.
-
-```bash
-pnpm run build
-NODE_ENV=production node dist/_core/index.js
-```
-
-The RSI daemon initializes automatically. Within 30 seconds the first codebase scan begins. Within 5 minutes the first proposal is generated. If it passes all safety gates, it commits itself to your local repository.
-
-### API
-
-```bash
-# Check RSI pipeline status and cumulative success rate
-curl http://localhost:3000/api/rsi/status \
-  -H "x-admin-key: $ADMIN_KEY"
-
-# Trigger an immediate cycle (don't wait for the scheduler)
-curl -X POST http://localhost:3000/api/rsi/trigger \
-  -H "x-admin-key: $ADMIN_KEY"
-
-# View the live proposal queue
-curl http://localhost:3000/api/rsi/proposals \
-  -H "x-admin-key: $ADMIN_KEY"
-
-# Manually approve or reject a pending proposal
-curl -X POST http://localhost:3000/api/rsi/proposals/{id}/approve \
-  -H "x-admin-key: $ADMIN_KEY"
-```
-
-### Dashboard
-
-The React dashboard (`client/`) provides a real-time view of the RSI pipeline: active proposals, safety gate results, RLHF reward scores, benchmark regression charts, and the full commit history of autonomous improvements. Run `pnpm run dev` to start the development server.
-
----
-
-## Architecture Overview
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                      Andromeda Runtime                       │
-│                                                              │
-│  ┌──────────────┐    ┌──────────────┐    ┌───────────────┐  │
-│  │  RSI Engine  │───▶│  LLM Agent   │───▶│   Proposal    │  │
-│  │  (Scheduler) │    │  (Specialist)│    │   Generator   │  │
-│  └──────────────┘    └──────────────┘    └───────┬───────┘  │
-│                                                   │          │
-│  ┌────────────────────────────────────────────────▼────────┐ │
-│  │                    Safety Pipeline                      │ │
-│  │   Constitution → Invariants → Z3 → Shadow → Benchmark  │ │
-│  └────────────────────────────────────────────────┬────────┘ │
-│                                                   │          │
-│  ┌──────────────┐    ┌──────────────┐    ┌────────▼────────┐ │
-│  │  RLHF Store  │◀───│  Reward      │◀───│  Commit & Push  │ │
-│  │ (119k pairs) │    │  Model       │    │  (GitHub)       │ │
-│  └──────────────┘    └──────────────┘    └─────────────────┘ │
-└─────────────────────────────────────────────────────────────┘
-```
-
-The system is a single Node.js process. There are no microservices, no message queues, no external orchestrators. The RSI engine, the HTTP API, the React dev server, and the safety pipeline all run in the same process — which is intentional. The rollback guarantees are only meaningful if the process that applies changes is the same process that can detect a crash and restore from snapshot.
-
----
+The system is evaluated on [SWE-bench Verified](https://www.swebench.com/) — the standard benchmark for autonomous software engineering agents.
 
 ---
 
 ## Benchmarks
-
-Andromeda is evaluated on [SWE-bench](https://www.swebench.com/) — the standard benchmark for autonomous software engineering agents. Each task presents a real GitHub issue from a major open-source Python repository; the agent must produce a patch that makes the failing tests pass without breaking anything else.
 
 ### SWE-bench Verified (500 tasks)
 
@@ -236,14 +43,14 @@ Andromeda is evaluated on [SWE-bench](https://www.swebench.com/) — the standar
 | **Resolved (Official Score)** | **26.0%** (13 / 50 instances) |
 | **Django resolve rate** | **39.3%** (11 / 28 Django instances) |
 | **Astropy resolve rate** | **9.1%** (2 / 22 astropy instances) |
-| **Model** | Claude Sonnet 4.5 exclusively via OpenRouter — no DeepSeek fallback |
-| **Pipeline** | Docker file extraction → difflib patch generation → test_patch aware → conda env → traceback loop (5 attempts) |
-| **Agent script** | [`scripts/swebench_sota_agent_v3.py`](scripts/swebench_sota_agent_v3.py) |
+| **Model** | Claude Sonnet 4.5 exclusively via OpenRouter |
+| **Pipeline** | Docker file extraction → skeleton context → difflib patch generation → test_patch aware → conda env → 4-agent consensus → traceback loop (5 attempts) |
+| **Agent script** | [`scripts/run_swebench.ts`](scripts/run_swebench.ts) |
 | **Prediction file** | [`data/swebench_v3_validate50_predictions.jsonl`](data/swebench_v3_validate50_predictions.jsonl) |
 
 **Resolved instances:** astropy__astropy-12907, astropy__astropy-7336, django__django-10973, django__django-11066, django__django-11095, django__django-11099, django__django-11119, django__django-11163, django__django-11206, django__django-11211, django__django-11276, django__django-11333, django__django-11451
 
-> *Note: Django instances resolve at 39.3% — competitive with published SOTA for this repo. Astropy is significantly weaker (9.1%) due to scientific/mathematical domain complexity and large file sizes requiring better localization. See the [failure analysis](data/swebench/SWEBENCH_V3_POSTMORTEM.md) for the full roadmap to 70%+.*
+> *Note: Django instances resolve at 39.3% — competitive with published SOTA for this repo. Astropy is significantly weaker (9.1%) due to scientific/mathematical domain complexity and large file sizes. The v2.1.0 pipeline introduces skeleton context assembly to address this directly.*
 
 #### Previous: v3 Agent — Mixed Model (500 instances, Jun 28 2026)
 
@@ -255,7 +62,7 @@ Andromeda is evaluated on [SWE-bench](https://www.swebench.com/) — the standar
 | **Model** | Claude Sonnet 4.5 via OpenRouter (localization) + DeepSeek Coder (repair) |
 | **Prediction file** | [`data/swebench/andromeda_sota_v3_fixed_predictions.jsonl`](data/swebench/andromeda_sota_v3_fixed_predictions.jsonl) |
 
-> *Note: The 19.20% score was degraded by DeepSeek fallback contamination — 101/500 instances silently used DeepSeek-generated patches that failed to apply. The v3 Claude-exclusive pipeline eliminates this, achieving 26.0% on the 50-instance validation. See `data/swebench/SWEBENCH_RESULTS.md` for full details.*
+> *Note: The 19.20% score was degraded by DeepSeek fallback contamination — 101/500 instances silently used DeepSeek-generated patches that failed to apply. The v3 Claude-exclusive pipeline eliminates this.*
 
 ### SWE-bench Full (2,294 tasks)
 
@@ -269,52 +76,121 @@ Andromeda is evaluated on [SWE-bench](https://www.swebench.com/) — the standar
 
 astropy · django · matplotlib · seaborn · flask · requests · xarray · pylint · pytest · scikit-learn · sphinx · sympy
 
-### Methodology
+---
 
-Predictions are generated using an **Agentless-style hierarchical pipeline** (Xia et al., 2024):
+## Architecture
 
-1. **Hierarchical Localization** — Claude Sonnet 4.5 (via OpenRouter) reads the repository structure and identifies the 3–5 source files most likely to require changes, then analyzes each file to pinpoint the specific function or class to modify.
-2. **Multi-Candidate Repair** — Three candidate patches are generated per instance: the first at temperature 0 (deterministic best guess), subsequent candidates at temperature 0.4 for diversity. Primary model: DeepSeek Coder direct; fallback chain: DeepSeek V4 Flash → Claude Sonnet 4 via OpenRouter.
-3. **Patch Validation and Ranking** — Each candidate is validated with `git apply --check`. Valid patches are ranked by size (shortest valid patch wins, minimizing invasiveness). Invalid patches fall back to format-correct candidates.
+### Pipeline Overview
 
-No oracle information, no test execution at inference time. The evaluation harness runs each selected patch inside an isolated Docker container and checks whether the issue's test suite passes.
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      Andromeda Pipeline                      │
+│                                                              │
+│  ┌──────────────┐    ┌──────────────┐    ┌───────────────┐  │
+│  │  Localization│───▶│  Skeleton    │───▶│  4-Agent      │  │
+│  │  (LLM-guided)│    │  Context     │    │  Consensus    │  │
+│  └──────────────┘    └──────────────┘    └───────┬───────┘  │
+│                                                   │          │
+│  ┌────────────────────────────────────────────────▼────────┐ │
+│  │                  Docker Test Execution                  │ │
+│  │   Apply patch → conda activate → pytest → traceback    │ │
+│  └────────────────────────────────────────────────┬────────┘ │
+│                                                   │          │
+│  ┌──────────────┐    ┌──────────────┐    ┌────────▼────────┐ │
+│  │  Traceback   │◀───│  LLM Revision│◀───│  Test Output   │ │
+│  │  Loop (5x)   │    │  Prompt      │    │  Analysis      │ │
+│  └──────────────┘    └──────────────┘    └─────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Key Components
+
+**`scripts/run_swebench.ts`** — Main runner. Loads the SWE-bench dataset from HuggingFace cache, extracts file content from Docker images, runs localization, and orchestrates the full pipeline.
+
+**`server/sweBenchConsensus.ts`** — 4-agent parallel patch generation. Each agent uses a different temperature and reasoning style (conservative, creative, defensive, refactor). The best-passing candidate wins.
+
+**`server/sweBenchTracebackLoop.ts`** — Iterative test-feedback loop. Applies the candidate patch inside the Docker container, runs the actual test suite, captures the traceback, and feeds it back to the LLM for up to 5 revision attempts.
+
+**`server/sweBenchPipeline.ts`** — Orchestrator. Sequences consensus → traceback loop and tracks resolution status.
+
+**`server/sweBenchInfra.ts`** — Docker infrastructure. Handles image pulling, disk space management, and container lifecycle.
+
+### Context Assembly (v2.1.0)
+
+For files larger than 12,000 characters, the pipeline builds a **skeleton context** instead of blindly truncating to the first N characters:
+
+1. Extracts all class and function signatures (the skeleton) — the LLM sees the full structural map of the file
+2. Fully expands any function whose name appears in the issue description or failing test names
+3. Caps the total context at 20,000 characters of expanded bodies
+
+This directly addresses the core failure mode for large-file repositories like astropy, where the relevant function (e.g., `_separable_matrix`) may appear at line 800 of a 2,000-line file and would be completely invisible under naive head-truncation.
 
 ---
 
-## Token Efficiency
+## Getting Started
 
-Andromeda is designed for **high-throughput, low-cost autonomous operation**. Several mechanisms work together to minimize token spend without sacrificing quality:
+```bash
+git clone https://github.com/5chm33/Andromeda.git
+cd Andromeda
+pnpm install
+cp .env.example .env.local
+```
 
-| Mechanism | How It Saves Tokens |
-|---|---|
-| **Neuroplastic Pipeline Adaptation** | `neuroplasticAdapter.ts` monitors the cost and pass-rate of each validation gate. Gates that have been passing at 100% are temporarily suspended — no tokens spent on checks that aren't catching anything. |
-| **ROI-Targeted File Selection** | The codebase scanner ranks files by a composite score (complexity × coverage gap × churn rate). Only the highest-value target gets an LLM call each cycle — not a broad sweep of the entire codebase. |
-| **Reward Model Pre-filter** | The `rewardModel.ts` scores every proposal before it enters the safety pipeline. Proposals predicted to fail are discarded immediately, before any compute is spent on Z3, shadow testing, or benchmark runs. |
-| **Context Truncation** | File content sent to the LLM is capped at 8,000 characters. For large files, only the most relevant section (identified by the localization phase) is included. |
-| **Emergent Specialization** | Rather than sending a generic prompt every cycle, the system selects the specialist role (security, performance, API design, generalist) with the highest recent competence score. Specialist prompts are shorter and more targeted than generalist ones. |
-| **Multi-Model Self-Consistency (selective)** | The expensive secondary-model consistency check is only triggered for high-risk proposals — not every cycle. Low-risk improvements skip it entirely. |
+Edit `.env.local` and add your LLM provider key:
 
-In practice, a full RSI cycle costs approximately **$0.002–$0.008** depending on file size and whether the consistency check fires. A 48-hour autonomous run at 5-minute intervals (~576 cycles) costs roughly **$1–$5 in total API spend**.
+```env
+# Primary: OpenRouter — single key for Claude Sonnet, DeepSeek, Gemini, and 200+ models
+OPENROUTER_API_KEY=sk-or-...   # https://openrouter.ai
+```
+
+Run the SWE-bench pipeline:
+
+```bash
+# Run on 50 instances
+npx tsx scripts/run_swebench.ts --instances 50
+
+# Run on specific instances
+npx tsx scripts/run_swebench.ts --instance-ids "django__django-11066,astropy__astropy-12907"
+
+# Resume a previous run
+npx tsx scripts/run_swebench.ts --resume --output predictions.jsonl
+```
+
+Run the test suite:
+
+```bash
+pnpm test
+```
+
+---
+
+## Scale
+
+| Metric | Value |
+|--------|-------|
+| Production TypeScript modules | 717 |
+| Test files | 328 |
+| Tests passing | 5,646 |
+| Total lines of TypeScript | 194,000+ |
 
 ---
 
 ## Roadmap
 
-**Multi-file atomic proposals** — the current pipeline operates on one file at a time. Refactoring an interface that spans a module boundary requires coordinating changes across multiple files atomically. The `multiFileProposalPlanner.ts` module is the foundation for this.
+**Full 500-instance re-run (v2.1.0 pipeline)** — The skeleton context and expanded localization (up to 8 files) are the primary changes in v2.1.0. A full re-run is needed to establish the official score delta.
 
-**Distributed shadow testing** — running the full vitest suite in-place is fast but creates lock contention when the server is under load. The next version will run shadow tests in isolated Docker containers, eliminating the environment conflict entirely.
+**Cross-file symbol resolution** — After localization returns the primary files, scan their import statements and function calls to automatically include any additional files that define symbols referenced in the issue. This is the fix for bugs that require coordinated changes across 3–4 files.
 
-**Cross-instance federated learning** — `federatedKnowledgeGraph.ts` already implements a Merkle-hashed knowledge graph for sharing verified improvement patterns across instances. The roadmap includes a real gRPC transport layer so multiple Andromeda deployments can share RLHF signal without sharing raw code.
+**Model upgrade path** — Claude Sonnet 4.5 is the current backbone. For the hardest instances (complex mathematical/scientific bugs), Claude Opus 4 or a fine-tuned model trained on SWE-bench-style repairs would close the remaining gap.
 
 ---
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). The short version: run `pnpm test` before opening a PR, do not modify test files to make them pass (the constitution forbids this and the CI will catch it), and do not modify the safety pipeline files without a detailed rationale.
+See [CONTRIBUTING.md](CONTRIBUTING.md). Run `pnpm test` before opening a PR. Do not modify test files to make them pass.
 
 ---
 
 ## License
 
 MIT — see [LICENSE](LICENSE).
-

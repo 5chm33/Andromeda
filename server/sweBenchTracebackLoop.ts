@@ -40,8 +40,103 @@ export const TEST_TIMEOUT_SECONDS = 300;
 /** Maximum number of traceback lines to include in the LLM feedback prompt. */
 const MAX_TRACEBACK_LINES = 150;
 
-/** Maximum chars of file content to show in prompts (prevents token overflow). */
-const MAX_FILE_CHARS = 8000;
+/** Skeleton context: maximum chars of fully-expanded function bodies to include. */
+const MAX_EXPANDED_CHARS = 20000;
+
+/**
+ * Builds a skeleton context view of a Python file for large files.
+ * Shared implementation with sweBenchConsensus.ts and run_swebench.ts.
+ */
+function buildSkeletonContext(
+  filePath: string,
+  content: string,
+  keywords: string[]
+): string {
+  if (content.length <= 12000) return content;
+
+  const lines = content.split('\n');
+  const skeletonLines: string[] = [];
+  const functionBodies: Map<string, { start: number; end: number; name: string }> = new Map();
+
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    const trimmed = line.trim();
+    const defMatch = trimmed.match(/^(class|def)\s+(\w+)/);
+    if (defMatch) {
+      const name = defMatch[2];
+      const bodyStart = i;
+      const baseIndent = line.match(/^(\s*)/)?.[1]?.length ?? 0;
+      let j = i + 1;
+      while (j < lines.length) {
+        const nextTrimmed = lines[j].trim();
+        if (nextTrimmed.length === 0) { j++; continue; }
+        const nextIndent = lines[j].match(/^(\s*)/)?.[1]?.length ?? 0;
+        if (nextIndent <= baseIndent && nextTrimmed.length > 0) break;
+        j++;
+      }
+      functionBodies.set(name, { start: bodyStart, end: j - 1, name });
+      skeletonLines.push(line);
+      if (i + 1 < lines.length && lines[i + 1].trim().startsWith('"""')) {
+        skeletonLines.push(lines[i + 1]);
+        if (!lines[i + 1].trim().endsWith('"""')) {
+          let k = i + 2;
+          while (k < lines.length && !lines[k].includes('"""')) k++;
+          if (k < lines.length) skeletonLines.push(lines[k]);
+        }
+      }
+      skeletonLines.push('    ...');
+      i = j;
+      continue;
+    }
+    if (
+      trimmed.startsWith('import ') ||
+      trimmed.startsWith('from ') ||
+      trimmed.startsWith('@') ||
+      trimmed.startsWith('#') ||
+      (trimmed.length > 0 && !trimmed.startsWith(' ') && line.match(/^[A-Z_][A-Z0-9_]*\s*=/))
+    ) {
+      skeletonLines.push(line);
+    }
+    i++;
+  }
+
+  const relevantNames = new Set<string>();
+  for (const [name] of functionBodies) {
+    const nameLower = name.toLowerCase();
+    if (keywords.some(kw => nameLower.includes(kw) || kw.includes(nameLower))) {
+      relevantNames.add(name);
+    }
+  }
+
+  let result = `# File: ${filePath} (${lines.length} lines total \u2014 skeleton view)\n`;
+  result += `# Fully expanded: ${relevantNames.size > 0 ? [...relevantNames].join(', ') : '(none matched \u2014 showing skeleton only)'}\n\n`;
+  result += skeletonLines.join('\n') + '\n\n';
+
+  let expandedChars = result.length;
+  for (const name of relevantNames) {
+    const body = functionBodies.get(name);
+    if (!body) continue;
+    const bodyText = lines.slice(body.start, body.end + 1).join('\n');
+    if (expandedChars + bodyText.length > MAX_EXPANDED_CHARS) break;
+    result += `# === EXPANDED: ${name} ===\n${bodyText}\n\n`;
+    expandedChars += bodyText.length;
+  }
+
+  if (relevantNames.size === 0) {
+    let count = 0;
+    for (const [name, body] of functionBodies) {
+      if (count >= 3) break;
+      const bodyText = lines.slice(body.start, body.end + 1).join('\n');
+      if (expandedChars + bodyText.length > MAX_EXPANDED_CHARS) break;
+      result += `# === EXPANDED: ${name} ===\n${bodyText}\n\n`;
+      expandedChars += bodyText.length;
+      count++;
+    }
+  }
+
+  return result;
+}
 
 // ─── Repo-Specific Test Commands ─────────────────────────────────────────────
 
@@ -273,12 +368,15 @@ export function buildRevisionPrompt(
   // Show the CURRENT state of the files (after the failed patch was applied)
   // This lets the LLM see exactly what it changed and why it's wrong
   const currentFiles = options?.fileContents ?? options?.originalFileContents;
+  // Build keywords from issue + test names for skeleton context
+  const skeletonKeywords = [
+    ...(options?.issueDescription ?? '').toLowerCase().split(/\s+/).filter(w => w.length > 4),
+    ...(options?.failToPassTests ?? []).flatMap(t => t.split('::').map(p => p.toLowerCase())),
+  ].filter((v, idx, arr) => arr.indexOf(v) === idx).slice(0, 40);
   const fileContext = currentFiles
     ? Object.entries(currentFiles).map(([fp, content]) => {
-        const truncated = content.length > MAX_FILE_CHARS
-          ? content.slice(0, MAX_FILE_CHARS) + '\n... [file truncated]'
-          : content;
-        return `### ${fp}\n\`\`\`python\n${truncated}\n\`\`\``;
+        const contextView = buildSkeletonContext(fp, content, skeletonKeywords);
+        return `### ${fp}\n\`\`\`python\n${contextView}\n\`\`\``;
       }).join('\n\n')
     : '';
 
@@ -462,10 +560,8 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
                 `docker exec ${containerName} cat /testbed/${fp} 2>/dev/null || true`
               );
               if (result.stdout.trim()) {
-                const content = result.stdout;
-                updatedContents[fp] = content.length > MAX_FILE_CHARS
-                  ? content.slice(0, MAX_FILE_CHARS) + '\n... [file truncated]'
-                  : content;
+                // Store full content — skeleton context is applied at prompt-build time
+                updatedContents[fp] = result.stdout;
               }
             } catch { /* ignore */ }
           }

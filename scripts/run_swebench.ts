@@ -1,5 +1,5 @@
 /**
- * run_swebench.ts — Andromeda SWE-bench Runner (v2.0.0)
+ * run_swebench.ts — Andromeda SWE-bench Runner (v2.1.0)
  *
  * This is the OFFICIAL runner that uses Andromeda's full pipeline:
  *   - Andromeda's LLM provider (Claude Sonnet 4.5 via OpenRouter)
@@ -204,7 +204,133 @@ async function listRepoFiles(dockerImage: string): Promise<string[]> {
 
 // ─── Phase 1: Localization ────────────────────────────────────────────────────
 
-const MAX_FILE_CHARS = 15000;
+/** Skeleton context: maximum chars of fully-expanded function bodies to include. */
+const MAX_EXPANDED_CHARS = 20000;
+
+/**
+ * Builds a skeleton context view of a Python file for large files.
+ *
+ * Instead of blindly truncating to the first N chars (which hides the relevant
+ * class/function if it appears later in the file), this function:
+ *   1. Extracts every class and function signature (the skeleton) — ~5-15 lines per class
+ *   2. Fully expands any function/class whose name appears in the issue or test names
+ *   3. Returns skeleton + expanded sections, capped at MAX_EXPANDED_CHARS
+ *
+ * This gives the LLM the full structural map of the file plus the exact code it needs,
+ * without wasting tokens on irrelevant function bodies.
+ */
+function buildSkeletonContext(
+  filePath: string,
+  content: string,
+  keywords: string[]
+): string {
+  // If the file is small enough, return it as-is
+  if (content.length <= 12000) return content;
+
+  const lines = content.split('\n');
+
+  // Step 1: Build the skeleton — collect all class/def signatures
+  // A signature is the def/class line plus any decorator lines immediately above it
+  const skeletonLines: string[] = [];
+  const functionBodies: Map<string, { start: number; end: number; name: string }> = new Map();
+
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    // Detect class or function definition
+    const defMatch = trimmed.match(/^(class|def)\s+(\w+)/);
+    if (defMatch) {
+      const name = defMatch[2];
+      const bodyStart = i;
+
+      // Find the end of this function/class body by indentation
+      const baseIndent = line.match(/^(\s*)/)?.[1]?.length ?? 0;
+      let j = i + 1;
+      while (j < lines.length) {
+        const nextTrimmed = lines[j].trim();
+        if (nextTrimmed.length === 0) { j++; continue; }
+        const nextIndent = lines[j].match(/^(\s*)/)?.[1]?.length ?? 0;
+        if (nextIndent <= baseIndent && nextTrimmed.length > 0) break;
+        j++;
+      }
+
+      functionBodies.set(name, { start: bodyStart, end: j - 1, name });
+
+      // Add signature line to skeleton (with its decorators)
+      skeletonLines.push(line);
+      // Add the docstring first line if present
+      if (i + 1 < lines.length && lines[i + 1].trim().startsWith('"""')) {
+        skeletonLines.push(lines[i + 1]);
+        if (!lines[i + 1].trim().endsWith('"""')) {
+          // Multi-line docstring — add closing line
+          let k = i + 2;
+          while (k < lines.length && !lines[k].includes('"""')) k++;
+          if (k < lines.length) skeletonLines.push(lines[k]);
+        }
+      }
+      skeletonLines.push('    ...');
+      i = j;
+      continue;
+    }
+
+    // Keep top-level imports, constants, and decorator lines in skeleton
+    if (
+      trimmed.startsWith('import ') ||
+      trimmed.startsWith('from ') ||
+      trimmed.startsWith('@') ||
+      trimmed.startsWith('#') ||
+      (trimmed.length > 0 && !trimmed.startsWith(' ') && line.match(/^[A-Z_][A-Z0-9_]*\s*=/)) // constants
+    ) {
+      skeletonLines.push(line);
+    }
+
+    i++;
+  }
+
+  // Step 2: Find which functions/classes are relevant to the issue
+  const relevantNames = new Set<string>();
+  for (const [name] of functionBodies) {
+    const nameLower = name.toLowerCase();
+    if (keywords.some(kw => nameLower.includes(kw) || kw.includes(nameLower))) {
+      relevantNames.add(name);
+    }
+  }
+
+  // Step 3: Build the output — skeleton + fully expanded relevant sections
+  let result = `# File: ${filePath} (${lines.length} lines total — skeleton view)\n`;
+  result += `# Fully expanded: ${relevantNames.size > 0 ? [...relevantNames].join(', ') : '(none matched — showing skeleton only)'}\n\n`;
+
+  // Add the skeleton
+  result += skeletonLines.join('\n') + '\n\n';
+
+  // Add fully expanded relevant functions
+  let expandedChars = result.length;
+  for (const name of relevantNames) {
+    const body = functionBodies.get(name);
+    if (!body) continue;
+    const bodyText = lines.slice(body.start, body.end + 1).join('\n');
+    if (expandedChars + bodyText.length > MAX_EXPANDED_CHARS) break;
+    result += `# === EXPANDED: ${name} ===\n${bodyText}\n\n`;
+    expandedChars += bodyText.length;
+  }
+
+  // If no relevant functions were found, expand the first 3 functions as fallback
+  if (relevantNames.size === 0) {
+    let count = 0;
+    for (const [name, body] of functionBodies) {
+      if (count >= 3) break;
+      const bodyText = lines.slice(body.start, body.end + 1).join('\n');
+      if (expandedChars + bodyText.length > MAX_EXPANDED_CHARS) break;
+      result += `# === EXPANDED: ${name} ===\n${bodyText}\n\n`;
+      expandedChars += bodyText.length;
+      count++;
+    }
+  }
+
+  return result;
+}
 
 /**
  * Uses the LLM to identify which files are most relevant to the issue.
@@ -252,11 +378,11 @@ async function localizeFiles(
     return allFiles.filter(f => !f.includes('test_') && !f.includes('/tests/')).slice(0, 20);
   }
 
-  // Ask LLM to pick the top 3 most relevant files
+  // Ask LLM to pick the top 6 most relevant files (increased from 3 — multi-file bugs need more)
   const testHint = failToPassTests.length > 0
-    ? `\n## Failing Tests (hint: the source files being tested are likely what needs fixing)\n${failToPassTests.slice(0, 5).join('\n')}\n`
+    ? `\n## Failing Tests (hint: the source files being tested are likely what needs fixing)\n${failToPassTests.slice(0, 8).join('\n')}\n`
     : '';
-  const prompt = `You are an expert software engineer. Given this GitHub issue and list of files, identify the 1-3 files most likely to need modification to fix the bug.
+  const prompt = `You are an expert software engineer. Given this GitHub issue and list of files, identify ALL files (up to 6) that likely need modification to fix the bug. Many bugs require changes to multiple files.
 
 ## Issue: ${instanceId}
 ${issueDescription.slice(0, 2000)}
@@ -264,7 +390,7 @@ ${testHint}
 ## Candidate Files
 ${candidates.slice(0, 30).join('\n')}
 
-Output ONLY a JSON array of file paths (most relevant first). Example: ["path/to/file.py"]
+Output ONLY a JSON array of file paths (most relevant first, up to 6). Example: ["path/to/file.py", "path/to/other.py"]
 `;
 
   try {
@@ -272,14 +398,14 @@ Output ONLY a JSON array of file paths (most relevant first). Example: ["path/to
     const match = response.match(/\[[\s\S]*?\]/);
     if (match) {
       const files = JSON.parse(match[0]) as string[];
-      const validFiles = files.filter(f => allFiles.includes(f)).slice(0, 5);
+      const validFiles = files.filter(f => allFiles.includes(f)).slice(0, 8);
       if (validFiles.length > 0) return validFiles;
       // LLM returned invalid paths — fall through to keyword candidates
     }
   } catch { /* fall through */ }
 
   // Fallback: return top keyword-scored candidates
-  return candidates.slice(0, 3);
+  return candidates.slice(0, 5);
 }
 
 /**
@@ -298,11 +424,15 @@ async function generateInitialPatch(
   const totalChars = Object.values(fileContents).reduce((s, c) => s + c.length, 0);
   const useDiffFormat = totalChars > 12000;  // Raised threshold — prefer complete-file format
 
+  // Build keywords from issue description + test names for skeleton context
+  const contextKeywords = [
+    ...issueDescription.toLowerCase().split(/\s+/).filter(w => w.length > 4),
+    ...failToPassTests.flatMap(t => t.split('::').map(p => p.toLowerCase())),
+  ].filter((v, i, a) => a.indexOf(v) === i).slice(0, 40);
+
   const fileSections = Object.entries(fileContents).map(([fp, content]) => {
-    const truncated = content.length > MAX_FILE_CHARS
-      ? content.slice(0, MAX_FILE_CHARS) + '\n... [truncated]'
-      : content;
-    return `### ${fp}\n\`\`\`python\n${truncated}\n\`\`\``;
+    const contextView = buildSkeletonContext(fp, content, contextKeywords);
+    return `### ${fp}\n\`\`\`python\n${contextView}\n\`\`\``;
   }).join('\n\n');
 
   // Include failing test names AND test code so LLM knows exactly what to make pass
@@ -514,12 +644,10 @@ async function main() {
       for (const fp of relevantFiles) {
         const content = await extractFileFromDocker(dockerImage, fp);
         if (content) {
-          // Truncate large files to MAX_FILE_CHARS to stay within LLM context
-          const truncated = content.length > MAX_FILE_CHARS
-            ? content.slice(0, MAX_FILE_CHARS) + '\n# ... [file truncated for context]'
-            : content;
-          fileContents[fp] = truncated;
-          console.log(`[Runner]   ${fp}: ${content.length} chars (${truncated.length} used)`);
+          // Store the FULL content — skeleton context is applied at prompt-build time
+          // so the diff generation always has the complete original to diff against
+          fileContents[fp] = content;
+          console.log(`[Runner]   ${fp}: ${content.length} chars (full content stored)`);
         }
       }
 
