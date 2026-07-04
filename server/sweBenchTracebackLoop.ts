@@ -380,6 +380,140 @@ export async function applyAndTest(
 }
 
 /**
+ * Extracts only the functions referenced in a traceback from a file's content.
+ * This dramatically reduces revision prompt size for large files (from 102k to ~10-15k chars).
+ *
+ * Strategy:
+ *   1. Parse the traceback for function names (e.g. "in test_foo", "in _bar", "File ..., in baz")
+ *   2. Find those function bodies in the file content
+ *   3. Return only those function bodies + imports/class headers
+ *
+ * Falls back to the full skeleton context if no functions are found.
+ */
+export function extractFunctionLevelContext(
+  filePath: string,
+  content: string,
+  traceback: string,
+  keywords: string[]
+): string {
+  if (content.length <= 8000) return content;  // Small files: return as-is
+
+  // Extract function names mentioned in the traceback
+  const tracebackFunctions = new Set<string>();
+  for (const line of traceback.split('\n')) {
+    // Match "in function_name" patterns from Python tracebacks
+    const inMatch = line.match(/\bin\s+(\w+)\b/);
+    if (inMatch) tracebackFunctions.add(inMatch[1]);
+    // Match "File ..., line N, in function_name"
+    const fileMatch = line.match(/File .+, line \d+, in (\w+)/);
+    if (fileMatch) tracebackFunctions.add(fileMatch[1]);
+    // Match AssertionError mentions of method names
+    const assertMatch = line.match(/self\.(\w+)/);
+    if (assertMatch) tracebackFunctions.add(assertMatch[1]);
+  }
+
+  // Also include keywords from the issue description and test names
+  const allKeywords = [
+    ...keywords,
+    ...[...tracebackFunctions].map(f => f.toLowerCase()),
+  ];
+
+  const lines = content.split('\n');
+  const functionBodies: Map<string, { start: number; end: number }> = new Map();
+  const importLines: string[] = [];
+  const classHeaderLines: string[] = [];
+
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    // Collect imports and module-level constants
+    if (
+      trimmed.startsWith('import ') ||
+      trimmed.startsWith('from ') ||
+      (trimmed.length > 0 && !trimmed.startsWith(' ') && line.match(/^[A-Z_][A-Z0-9_]*\s*=/))
+    ) {
+      importLines.push(line);
+      i++;
+      continue;
+    }
+
+    // Collect class headers (but not bodies)
+    const classMatch = trimmed.match(/^class\s+(\w+)/);
+    if (classMatch) {
+      classHeaderLines.push(line);
+      i++;
+      continue;
+    }
+
+    // Collect function bodies
+    const defMatch = trimmed.match(/^(def|async def)\s+(\w+)/);
+    if (defMatch) {
+      const name = defMatch[2];
+      const bodyStart = i;
+      const baseIndent = line.match(/^(\s*)/)?.[1]?.length ?? 0;
+      let j = i + 1;
+      while (j < lines.length) {
+        const nextTrimmed = lines[j].trim();
+        if (nextTrimmed.length === 0) { j++; continue; }
+        const nextIndent = lines[j].match(/^(\s*)/)?.[1]?.length ?? 0;
+        if (nextIndent <= baseIndent && nextTrimmed.length > 0) break;
+        j++;
+      }
+      functionBodies.set(name, { start: bodyStart, end: j - 1 });
+      i = j;
+      continue;
+    }
+
+    i++;
+  }
+
+  // Find relevant functions: traceback mentions + keyword matches
+  const relevantNames = new Set<string>();
+  for (const [name] of functionBodies) {
+    const nameLower = name.toLowerCase();
+    if (
+      tracebackFunctions.has(name) ||
+      allKeywords.some(kw => nameLower.includes(kw.toLowerCase()) || kw.toLowerCase().includes(nameLower))
+    ) {
+      relevantNames.add(name);
+    }
+  }
+
+  // If no relevant functions found, fall back to skeleton context
+  if (relevantNames.size === 0) {
+    return buildSkeletonContext(filePath, content, keywords);
+  }
+
+  // Build the output: imports + class headers + relevant function bodies
+  let result = `# File: ${filePath} (${lines.length} lines — function-level view)\n`;
+  result += `# Showing functions: ${[...relevantNames].join(', ')}\n\n`;
+  result += importLines.join('\n') + '\n\n';
+  if (classHeaderLines.length > 0) {
+    result += classHeaderLines.join('\n') + '\n\n';
+  }
+
+  let totalChars = result.length;
+  const MAX_FUNCTION_CHARS = 15000;
+
+  for (const name of relevantNames) {
+    const body = functionBodies.get(name);
+    if (!body) continue;
+    const bodyText = lines.slice(body.start, body.end + 1).join('\n');
+    if (totalChars + bodyText.length > MAX_FUNCTION_CHARS) {
+      // Still include a truncated version so the LLM knows the function exists
+      result += `# === ${name} (truncated — too large) ===\n${bodyText.slice(0, 1000)}\n...\n\n`;
+      break;
+    }
+    result += `# === ${name} ===\n${bodyText}\n\n`;
+    totalChars += bodyText.length;
+  }
+
+  return result;
+}
+
+/**
  * Builds the LLM prompt for generating a revised patch based on test failures.
  * Uses the "output complete file" approach for small files, targeted diff for large.
  */
@@ -406,7 +540,9 @@ export function buildRevisionPrompt(
   ].filter((v, idx, arr) => arr.indexOf(v) === idx).slice(0, 40);
   const fileContext = currentFiles
     ? Object.entries(currentFiles).map(([fp, content]) => {
-        const contextView = buildSkeletonContext(fp, content, skeletonKeywords);
+        // Use function-level context for large files to reduce prompt size
+        // (revision prompts were hitting 102k chars; this reduces to ~10-15k)
+        const contextView = extractFunctionLevelContext(fp, content, tracebackSummary, skeletonKeywords);
         return `### ${fp}\n\`\`\`python\n${contextView}\n\`\`\``;
       }).join('\n\n')
     : '';

@@ -15,6 +15,7 @@ import {
   extractTracebackSummary,
   buildRevisionPrompt,
   extractPatchFromLLMResponse,
+  extractFunctionLevelContext,
   MAX_ATTEMPTS,
 } from './sweBenchTracebackLoop.js';
 
@@ -184,6 +185,79 @@ describe('selectWinningPatch', () => {
     ];
     const { winner } = selectWinningPatch(candidates);
     expect(winner.agentName).toBe('b');
+  });
+});
+
+describe('extractFunctionLevelContext', () => {
+  // Build a synthetic large Python file (>8000 chars) with multiple functions
+  function makeLargeFile(): string {
+    const header = `import os\nimport sys\nfrom typing import List\n\n`;
+    const filler = `def unrelated_function_${Array.from({ length: 50 }, (_, i) => i).join('')}():\n    """Unrelated function."""\n    return None\n\n`;
+    const targetFn = `def fix_the_bug(queryset, value):\n    """The function that needs fixing."""\n    if value is None:\n        raise ValueError("value cannot be None")\n    return queryset.filter(value=value)\n\n`;
+    const testFn = `def test_fix_the_bug():\n    """Test for the bug fix."""\n    result = fix_the_bug([], 1)\n    assert result == []\n\n`;
+    // Pad to > 8000 chars (need ~500 lines of padding)
+    const padding = 'x = 1  # padding\n'.repeat(500);
+    return header + filler + targetFn + testFn + padding;
+  }
+
+  it('returns full content for small files (<=8000 chars)', () => {
+    const smallContent = 'def foo():\n    return 1\n';
+    const result = extractFunctionLevelContext('foo.py', smallContent, '', []);
+    expect(result).toBe(smallContent);
+  });
+
+  it('extracts functions mentioned in traceback for large files', () => {
+    const content = makeLargeFile();
+    expect(content.length).toBeGreaterThan(8000);
+
+    const traceback = `
+Traceback (most recent call last):
+  File "tests/test_query.py", line 42, in test_fix_the_bug
+    result = fix_the_bug([], None)
+  File "query.py", line 15, in fix_the_bug
+    raise ValueError("value cannot be None")
+ValueError: value cannot be None
+`;
+
+    const result = extractFunctionLevelContext('query.py', content, traceback, []);
+    // Should include the target function
+    expect(result).toContain('fix_the_bug');
+    // Should include imports
+    expect(result).toContain('import os');
+    // Should be much smaller than the original
+    expect(result.length).toBeLessThan(content.length);
+  });
+
+  it('includes imports and class headers in function-level view', () => {
+    const content = makeLargeFile();
+    const traceback = 'in fix_the_bug\nValueError: something';
+    const result = extractFunctionLevelContext('query.py', content, traceback, []);
+    expect(result).toContain('import os');
+    expect(result).toContain('import sys');
+  });
+
+  it('falls back to skeleton context when no functions match traceback', () => {
+    const content = makeLargeFile();
+    const traceback = 'in completely_nonexistent_function\nError: something';
+    const result = extractFunctionLevelContext('query.py', content, traceback, []);
+    // Should still return something (skeleton fallback)
+    expect(result.length).toBeGreaterThan(0);
+    expect(typeof result).toBe('string');
+  });
+
+  it('uses keywords to find relevant functions when traceback is empty', () => {
+    const content = makeLargeFile();
+    const result = extractFunctionLevelContext('query.py', content, '', ['fix_the_bug']);
+    expect(result).toContain('fix_the_bug');
+  });
+
+  it('includes the function-level view header comment', () => {
+    const content = makeLargeFile();
+    const traceback = 'in fix_the_bug\nError';
+    const result = extractFunctionLevelContext('query.py', content, traceback, []);
+    // The header contains either 'function-level view' or 'skeleton view'
+    expect(result).toMatch(/function-level view|skeleton view/);
+    expect(result).toContain('query.py');
   });
 });
 
