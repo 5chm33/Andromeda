@@ -304,6 +304,41 @@ export function extractFunctionLevelContext(
  * Builds the LLM prompt for generating a revised patch based on test failures.
  * Uses call-chain expanded context from sweBenchContextBuilder.ts.
  */
+/** Maximum characters of the previous patch to include in revision prompts. */
+const MAX_PATCH_IN_REVISION = 8000;
+
+/**
+ * Summarizes a large unified diff to show only the changed lines (+ and - lines)
+ * without the context lines, to reduce token usage in revision prompts.
+ */
+function summarizePatch(patch: string, maxChars = MAX_PATCH_IN_REVISION): string {
+  if (patch.length <= maxChars) return patch;
+
+  // Extract only the diff headers and changed lines (skip context lines)
+  const lines = patch.split('\n');
+  const summary: string[] = [];
+  let charCount = 0;
+
+  for (const line of lines) {
+    // Always include file headers and @@ markers
+    if (line.startsWith('diff ') || line.startsWith('---') || line.startsWith('+++') || line.startsWith('@@')) {
+      summary.push(line);
+      charCount += line.length + 1;
+    }
+    // Include changed lines (+ and -) but not context lines
+    else if (line.startsWith('+') || line.startsWith('-')) {
+      summary.push(line);
+      charCount += line.length + 1;
+    }
+    if (charCount > maxChars) {
+      summary.push(`... (${patch.length - charCount} more chars truncated)`);
+      break;
+    }
+  }
+
+  return summary.join('\n');
+}
+
 export function buildRevisionPrompt(
   instanceId: string,
   originalPatch: string,
@@ -350,15 +385,20 @@ export function buildRevisionPrompt(
 
   const testSection = testNames + testCode;
 
+  const patchSummary = summarizePatch(originalPatch);
+  const patchNote = originalPatch.length > MAX_PATCH_IN_REVISION
+    ? ` (summarized — original was ${originalPatch.length.toLocaleString()} chars; only changed lines shown)`
+    : '';
+
   return `You are an expert Python software engineer fixing a bug in a repository.
 
 ## Task
 Instance: ${instanceId}
 Attempt: ${attemptNumber} of ${MAX_ATTEMPTS}
 
-${issueSection}${testSection}${probeSection}## Your Previous Patch (which failed the tests)
+${issueSection}${testSection}${probeSection}## Your Previous Patch (which failed the tests)${patchNote}
 \`\`\`diff
-${originalPatch}
+${patchSummary}
 \`\`\`
 
 ## Test Failure Output
