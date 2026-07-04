@@ -811,7 +811,7 @@ async function main() {
       // ── Phases 2+3: Andromeda Pipeline (Consensus + Traceback Loop) ──────
       console.log('[Runner] Phase 2+3: Running Andromeda pipeline...');
       // Wrap in a 10-minute per-instance timeout to prevent stuck instances
-      const INSTANCE_TIMEOUT_MS = 10 * 60 * 1000;
+      const INSTANCE_TIMEOUT_MS = 25 * 60 * 1000;  // 25min: allows 5 traceback attempts × 300s each
       const result = await Promise.race([
         runSOTAPipeline(
           instance_id,
