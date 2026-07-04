@@ -581,11 +581,30 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
 
       // If we have more attempts, ask the LLM for a revision
       if (attempt < MAX_ATTEMPTS) {
-        // Extract CURRENT file state from container (after the patch was applied)
-        // This lets the LLM see exactly what its patch changed
+        // Extract CURRENT file state from container — only for files the patch touched.
+        // Using all 12 context files balloons the revision prompt to 150k+ chars and
+        // causes API timeouts. We only need the 1-3 files the LLM actually modified.
         if (fileContents) {
+          // Parse which files the current patch modifies
+          const patchedFiles = new Set<string>();
+          for (const line of currentPatch.split('\n')) {
+            const m = line.match(/^(?:---|\.\.\.|\.\.\.\.|diff --git a\/)(.+?)(?:\s|$)/);
+            if (!m) {
+              // Also match +++ b/path lines
+              const m2 = line.match(/^\+\+\+ b\/(.+)$/);
+              if (m2) patchedFiles.add(m2[1].trim());
+            }
+            // Match --- a/path lines
+            const m3 = line.match(/^--- a\/(.+)$/);
+            if (m3) patchedFiles.add(m3[1].trim());
+          }
+          // Fall back to all files if patch parsing yielded nothing
+          const filesToRead = patchedFiles.size > 0
+            ? [...patchedFiles].filter(fp => fp in fileContents)
+            : Object.keys(fileContents).slice(0, 3);  // max 3 files as safety limit
+
           const updatedContents: Record<string, string> = {};
-          for (const fp of Object.keys(fileContents)) {
+          for (const fp of filesToRead) {
             try {
               const result = await execAsync(
                 `docker exec ${containerName} cat /testbed/${fp} 2>/dev/null || true`
