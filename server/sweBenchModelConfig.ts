@@ -86,6 +86,19 @@ const PRESETS: Record<string, Omit<SWEBenchModelConfig, 'apiKey'>> = {
     timeoutMs: 240_000,  // Longer timeout for thinking
     promptCaching: false,
   },
+  /** Claude Sonnet 5 — direct Anthropic API, prompt caching, much cheaper than Fable */
+  'claude-sonnet-5': {
+    modelName: 'andromeda-v6-claude-sonnet-5',
+    modelId: 'claude-sonnet-5',
+    apiUrl: 'https://api.anthropic.com/v1/messages',
+    apiFormat: 'anthropic',
+    maxTokens: 16000,
+    temperature: 1,  // Required for Anthropic native API
+    extendedThinking: false,
+    thinkingBudget: 0,
+    timeoutMs: 300_000,
+    promptCaching: true,
+  },
   /** Claude Fable 5 — direct Anthropic API, prompt caching, SOTA model */
   'claude-fable-5': {
     modelName: 'andromeda-v6-claude-fable-5',
@@ -334,6 +347,16 @@ async function callAnthropicNative(
       .filter(b => b.type === 'text')
       .map(b => b.text ?? '')
       .join('\n');
+
+    // Log usage for Fable 5 cost tracking
+    if ((data as any).usage) {
+      const usage = (data as any).usage;
+      const input = usage.input_tokens || 0;
+      const output = usage.output_tokens || 0;
+      const cacheRead = usage.cache_read_input_tokens || 0;
+      const cacheWrite = usage.cache_creation_input_tokens || 0;
+      console.log(`[LLM] Anthropic Usage - Input: ${input}, Output: ${output}, Cache Read: ${cacheRead}, Cache Write: ${cacheWrite}`);
+    }
 
     return textContent;
   } finally {
