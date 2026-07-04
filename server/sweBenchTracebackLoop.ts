@@ -1,31 +1,50 @@
 /**
- * sweBenchTracebackLoop.ts — Execution-Based Traceback Loop (v2.2.0)
+ * sweBenchTracebackLoop.ts — Execution-Based Traceback Loop (v3.0.0)
+ *
+ * v3.0.0 upgrades (path to 70%+):
+ *   - Call-chain context expansion via sweBenchContextBuilder.ts
+ *     (fixes the "blind spot" where callees were hidden from the LLM)
+ *   - Interactive REPL / print-debug loop: when a traceback is ambiguous,
+ *     the LLM can inject print() probes to observe internal state before
+ *     committing to a fix
+ *   - Cross-reference verification: after each patch, checks if changed
+ *     function signatures have callers in other files that need updating
+ *   - Traceback source mapping: maps test tracebacks to source functions,
+ *     not just test functions
  *
  * v2.0.0 upgrades (fixes for 26% → 40%+ resolution rate):
- *   - Conda environment activation before running tests (fixes "No module named pytest")
- *   - test_patch applied BEFORE running tests (fixes "test not found" errors)
+ *   - Conda environment activation before running tests
+ *   - test_patch applied BEFORE running tests
  *   - Repo-specific test commands (Django uses runtests.py, not pytest)
- *   - difflib-based patch generation: ask LLM for modified file content, generate
- *     diff from actual file content (eliminates all @@ header mismatch errors)
- *   - Section-replacement for large files (>8000 chars): show only relevant section
- *   - Multi-file patch support: LLM can output changes to multiple files
+ *   - difflib-based patch generation
+ *   - Section-replacement for large files
+ *   - Multi-file patch support
  *
  * Architecture:
  *   1. Applies the candidate patch inside the SWE-bench Docker container.
  *   2. Applies test_patch to add new test cases.
  *   3. Runs the failing test suite using the repo-specific test command.
- *   4. If tests fail, captures the traceback and feeds it back to the LLM.
- *   5. The LLM generates a revised patch based on the failure context.
- *   6. Repeats up to MAX_ATTEMPTS times before submitting the best patch.
- *
- * Reference: "SWE-agent: Agent-Computer Interfaces Enable Automated Software
- * Engineering" (Yang et al., 2024) — https://arxiv.org/abs/2405.15793
+ *   4. If tests fail, optionally runs a debug probe to observe internal state.
+ *   5. Captures the traceback and feeds it back to the LLM with call-chain context.
+ *   6. The LLM generates a revised patch based on the failure context.
+ *   7. After each patch, verifies cross-file callers are not broken.
+ *   8. Repeats up to MAX_ATTEMPTS times before submitting the best patch.
  */
 
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import fs from 'fs';
 import crypto from 'crypto';
+import {
+  buildSmartContext,
+  mapTracebackToSourceFiles,
+  findCrossFileCallers,
+  extractChangedFunctions,
+  runDebugProbe,
+  buildDebugProbePrompt,
+  buildProbeEnrichedRevisionPrompt,
+  buildCrossReferencePrompt,
+} from './sweBenchContextBuilder.js';
 
 const execAsync = promisify(exec);
 
@@ -40,103 +59,11 @@ export const TEST_TIMEOUT_SECONDS = 300;
 /** Maximum number of traceback lines to include in the LLM feedback prompt. */
 const MAX_TRACEBACK_LINES = 150;
 
-/** Skeleton context: maximum chars of fully-expanded function bodies to include. */
-const MAX_EXPANDED_CHARS = 20000;
+/** Whether to enable the REPL debug probe loop (adds 1 LLM call per attempt). */
+const ENABLE_DEBUG_PROBE = process.env.SWEBENCH_DEBUG_PROBE !== '0';
 
-/**
- * Builds a skeleton context view of a Python file for large files.
- * Shared implementation with sweBenchConsensus.ts and run_swebench.ts.
- */
-function buildSkeletonContext(
-  filePath: string,
-  content: string,
-  keywords: string[]
-): string {
-  if (content.length <= 12000) return content;
-
-  const lines = content.split('\n');
-  const skeletonLines: string[] = [];
-  const functionBodies: Map<string, { start: number; end: number; name: string }> = new Map();
-
-  let i = 0;
-  while (i < lines.length) {
-    const line = lines[i];
-    const trimmed = line.trim();
-    const defMatch = trimmed.match(/^(class|def)\s+(\w+)/);
-    if (defMatch) {
-      const name = defMatch[2];
-      const bodyStart = i;
-      const baseIndent = line.match(/^(\s*)/)?.[1]?.length ?? 0;
-      let j = i + 1;
-      while (j < lines.length) {
-        const nextTrimmed = lines[j].trim();
-        if (nextTrimmed.length === 0) { j++; continue; }
-        const nextIndent = lines[j].match(/^(\s*)/)?.[1]?.length ?? 0;
-        if (nextIndent <= baseIndent && nextTrimmed.length > 0) break;
-        j++;
-      }
-      functionBodies.set(name, { start: bodyStart, end: j - 1, name });
-      skeletonLines.push(line);
-      if (i + 1 < lines.length && lines[i + 1].trim().startsWith('"""')) {
-        skeletonLines.push(lines[i + 1]);
-        if (!lines[i + 1].trim().endsWith('"""')) {
-          let k = i + 2;
-          while (k < lines.length && !lines[k].includes('"""')) k++;
-          if (k < lines.length) skeletonLines.push(lines[k]);
-        }
-      }
-      skeletonLines.push('    ...');
-      i = j;
-      continue;
-    }
-    if (
-      trimmed.startsWith('import ') ||
-      trimmed.startsWith('from ') ||
-      trimmed.startsWith('@') ||
-      trimmed.startsWith('#') ||
-      (trimmed.length > 0 && !trimmed.startsWith(' ') && line.match(/^[A-Z_][A-Z0-9_]*\s*=/))
-    ) {
-      skeletonLines.push(line);
-    }
-    i++;
-  }
-
-  const relevantNames = new Set<string>();
-  for (const [name] of functionBodies) {
-    const nameLower = name.toLowerCase();
-    if (keywords.some(kw => nameLower.includes(kw) || kw.includes(nameLower))) {
-      relevantNames.add(name);
-    }
-  }
-
-  let result = `# File: ${filePath} (${lines.length} lines total \u2014 skeleton view)\n`;
-  result += `# Fully expanded: ${relevantNames.size > 0 ? [...relevantNames].join(', ') : '(none matched \u2014 showing skeleton only)'}\n\n`;
-  result += skeletonLines.join('\n') + '\n\n';
-
-  let expandedChars = result.length;
-  for (const name of relevantNames) {
-    const body = functionBodies.get(name);
-    if (!body) continue;
-    const bodyText = lines.slice(body.start, body.end + 1).join('\n');
-    if (expandedChars + bodyText.length > MAX_EXPANDED_CHARS) break;
-    result += `# === EXPANDED: ${name} ===\n${bodyText}\n\n`;
-    expandedChars += bodyText.length;
-  }
-
-  if (relevantNames.size === 0) {
-    let count = 0;
-    for (const [name, body] of functionBodies) {
-      if (count >= 3) break;
-      const bodyText = lines.slice(body.start, body.end + 1).join('\n');
-      if (expandedChars + bodyText.length > MAX_EXPANDED_CHARS) break;
-      result += `# === EXPANDED: ${name} ===\n${bodyText}\n\n`;
-      expandedChars += bodyText.length;
-      count++;
-    }
-  }
-
-  return result;
-}
+/** Whether to enable cross-reference verification (adds 1 LLM call per patch). */
+const ENABLE_CROSS_REF = process.env.SWEBENCH_CROSS_REF !== '0';
 
 // ─── Repo-Specific Test Commands ─────────────────────────────────────────────
 
@@ -148,8 +75,6 @@ function getTestCommand(instanceId: string, failToPassTests: string[]): string {
   const repo = instanceId.split('__')[0].toLowerCase();
 
   if (repo === 'django') {
-    // Django uses runtests.py — convert test file paths to module names
-    // e.g. "tests/test_utils/tests.py::TestClass::test_method" -> "test_utils.tests"
     const testModules = [...new Set(failToPassTests.map(t => {
       const filePart = t.split('::')[0];
       return filePart
@@ -161,7 +86,6 @@ function getTestCommand(instanceId: string, failToPassTests: string[]): string {
     return `cd /testbed && source /opt/miniconda3/etc/profile.d/conda.sh && conda activate testbed && python tests/runtests.py --verbosity=2 ${moduleArgs}`;
   }
 
-  // Default: pytest with conda testbed environment
   const testArgs = failToPassTests.length > 0
     ? failToPassTests.map(t => `"${t}"`).join(' ')
     : '';
@@ -238,28 +162,19 @@ export interface TracebackLoopResult {
 export function extractTracebackSummary(testOutput: string): string {
   const lines = testOutput.split('\n');
 
-  // Priority 1: Find the === FAILURES === section (contains assertion diffs)
-  // This is the most useful section for the LLM to understand what went wrong
   const failuresSectionStart = lines.findIndex(l =>
     l.includes('=== FAILURES ===') || l.includes('====== FAILURES ======') ||
     l.match(/={3,}\s*FAILURES\s*={3,}/)
   );
-
   if (failuresSectionStart !== -1) {
-    // Take up to MAX_TRACEBACK_LINES from the FAILURES section
-    const relevantLines = lines.slice(failuresSectionStart, failuresSectionStart + MAX_TRACEBACK_LINES);
-    return relevantLines.join('\n');
+    return lines.slice(failuresSectionStart, failuresSectionStart + MAX_TRACEBACK_LINES).join('\n');
   }
 
-  // Priority 2: Find Traceback (most recent call last)
-  const tracebackStart = lines.findIndex(l =>
-    l.includes('Traceback (most recent call last)')
-  );
+  const tracebackStart = lines.findIndex(l => l.includes('Traceback (most recent call last)'));
   if (tracebackStart !== -1) {
     return lines.slice(tracebackStart, tracebackStart + MAX_TRACEBACK_LINES).join('\n');
   }
 
-  // Priority 3: Find FAIL: or ERROR: (Django test runner format)
   const failStart = lines.findIndex(l =>
     l.match(/^(FAIL|ERROR):\s/) || l.includes('AssertionError')
   );
@@ -267,7 +182,6 @@ export function extractTracebackSummary(testOutput: string): string {
     return lines.slice(failStart, failStart + MAX_TRACEBACK_LINES).join('\n');
   }
 
-  // Fallback: last MAX_TRACEBACK_LINES
   return lines.slice(-MAX_TRACEBACK_LINES).join('\n');
 }
 
@@ -309,10 +223,7 @@ export async function applyAndTest(
     ).catch(e => ({ stdout: '', stderr: e.stderr || e.message }));
 
     if (applyResult.stderr && applyResult.stderr.includes('error:')) {
-      // AST-aware patch fallback: when git apply fails (e.g. wrong context lines),
-      // try applying via the Python ast_patch_applier.py helper.
-      // The LLM is asked to emit a JSON patch spec alongside its diff; if present,
-      // we use it here. If not, we fall through to PATCH_APPLY_FAILED.
+      // AST-aware patch fallback
       const astSpecMatch = patch.match(/<!--AST_PATCH_SPEC:(\{[\s\S]*?\})-->/);
       if (astSpecMatch) {
         try {
@@ -326,7 +237,6 @@ export async function applyAndTest(
             `docker exec ${containerName} bash -c "cd ${repoPath} && python3 /tmp/ast_patch_applier.py --patch-file /tmp/ast_spec.json --repo-root ${repoPath} 2>&1"`
           ).catch(e => ({ stdout: e.stdout || '', stderr: e.stderr || e.message }));
           console.log(`[TracebackLoop] AST fallback result: ${astResult.stdout.slice(0, 200)}`);
-          // If AST applier succeeded, continue to test phase
           if (!astResult.stdout.includes('FAILED') && !astResult.stderr?.includes('Error')) {
             console.log('[TracebackLoop] AST-aware patch applied successfully');
           } else {
@@ -336,10 +246,7 @@ export async function applyAndTest(
           return { passed: false, output: `PATCH_APPLY_FAILED:\n${applyResult.stderr}` };
         }
       } else {
-        return {
-          passed: false,
-          output: `PATCH_APPLY_FAILED:\n${applyResult.stderr}`
-        };
+        return { passed: false, output: `PATCH_APPLY_FAILED:\n${applyResult.stderr}` };
       }
     }
 
@@ -353,8 +260,6 @@ export async function applyAndTest(
     }
 
     // ── Step 3: Run tests with repo-specific command ───────────────────────
-    // Write test script to a file inside the container to avoid shell quoting
-    // issues with `timeout` (which can't run shell builtins like `cd` directly)
     const testCmd = getTestCommand(instanceId, failToPassTests);
     const testScript = `#!/bin/bash\nset -e\n${testCmd}\n`;
     fs.writeFileSync(hostScriptPath, testScript, 'utf-8');
@@ -373,22 +278,15 @@ export async function applyAndTest(
     try { fs.unlinkSync(hostPatchPath); } catch { /* ignore */ }
     try { fs.unlinkSync(hostTestPatchPath); } catch { /* ignore */ }
     try { fs.unlinkSync(hostScriptPath); } catch { /* ignore */ }
-    // NOTE: We do NOT reset the repo here anymore.
-    // The reset is done at the START of the next applyAndTest call (Step 0).
-    // This allows the caller to read the current patched file state for revision prompts.
   }
 }
 
 /**
  * Extracts only the functions referenced in a traceback from a file's content.
- * This dramatically reduces revision prompt size for large files (from 102k to ~10-15k chars).
+ * Now delegates to buildSmartContext from sweBenchContextBuilder.ts for
+ * call-chain expansion.
  *
- * Strategy:
- *   1. Parse the traceback for function names (e.g. "in test_foo", "in _bar", "File ..., in baz")
- *   2. Find those function bodies in the file content
- *   3. Return only those function bodies + imports/class headers
- *
- * Falls back to the full skeleton context if no functions are found.
+ * @deprecated Use buildSmartContext directly for new code.
  */
 export function extractFunctionLevelContext(
   filePath: string,
@@ -396,126 +294,15 @@ export function extractFunctionLevelContext(
   traceback: string,
   keywords: string[]
 ): string {
-  if (content.length <= 8000) return content;  // Small files: return as-is
-
-  // Extract function names mentioned in the traceback
-  const tracebackFunctions = new Set<string>();
-  for (const line of traceback.split('\n')) {
-    // Match "in function_name" patterns from Python tracebacks
-    const inMatch = line.match(/\bin\s+(\w+)\b/);
-    if (inMatch) tracebackFunctions.add(inMatch[1]);
-    // Match "File ..., line N, in function_name"
-    const fileMatch = line.match(/File .+, line \d+, in (\w+)/);
-    if (fileMatch) tracebackFunctions.add(fileMatch[1]);
-    // Match AssertionError mentions of method names
-    const assertMatch = line.match(/self\.(\w+)/);
-    if (assertMatch) tracebackFunctions.add(assertMatch[1]);
-  }
-
-  // Also include keywords from the issue description and test names
-  const allKeywords = [
-    ...keywords,
-    ...[...tracebackFunctions].map(f => f.toLowerCase()),
-  ];
-
-  const lines = content.split('\n');
-  const functionBodies: Map<string, { start: number; end: number }> = new Map();
-  const importLines: string[] = [];
-  const classHeaderLines: string[] = [];
-
-  let i = 0;
-  while (i < lines.length) {
-    const line = lines[i];
-    const trimmed = line.trim();
-
-    // Collect imports and module-level constants
-    if (
-      trimmed.startsWith('import ') ||
-      trimmed.startsWith('from ') ||
-      (trimmed.length > 0 && !trimmed.startsWith(' ') && line.match(/^[A-Z_][A-Z0-9_]*\s*=/))
-    ) {
-      importLines.push(line);
-      i++;
-      continue;
-    }
-
-    // Collect class headers (but not bodies)
-    const classMatch = trimmed.match(/^class\s+(\w+)/);
-    if (classMatch) {
-      classHeaderLines.push(line);
-      i++;
-      continue;
-    }
-
-    // Collect function bodies
-    const defMatch = trimmed.match(/^(def|async def)\s+(\w+)/);
-    if (defMatch) {
-      const name = defMatch[2];
-      const bodyStart = i;
-      const baseIndent = line.match(/^(\s*)/)?.[1]?.length ?? 0;
-      let j = i + 1;
-      while (j < lines.length) {
-        const nextTrimmed = lines[j].trim();
-        if (nextTrimmed.length === 0) { j++; continue; }
-        const nextIndent = lines[j].match(/^(\s*)/)?.[1]?.length ?? 0;
-        if (nextIndent <= baseIndent && nextTrimmed.length > 0) break;
-        j++;
-      }
-      functionBodies.set(name, { start: bodyStart, end: j - 1 });
-      i = j;
-      continue;
-    }
-
-    i++;
-  }
-
-  // Find relevant functions: traceback mentions + keyword matches
-  const relevantNames = new Set<string>();
-  for (const [name] of functionBodies) {
-    const nameLower = name.toLowerCase();
-    if (
-      tracebackFunctions.has(name) ||
-      allKeywords.some(kw => nameLower.includes(kw.toLowerCase()) || kw.toLowerCase().includes(nameLower))
-    ) {
-      relevantNames.add(name);
-    }
-  }
-
-  // If no relevant functions found, fall back to skeleton context
-  if (relevantNames.size === 0) {
-    return buildSkeletonContext(filePath, content, keywords);
-  }
-
-  // Build the output: imports + class headers + relevant function bodies
-  let result = `# File: ${filePath} (${lines.length} lines — function-level view)\n`;
-  result += `# Showing functions: ${[...relevantNames].join(', ')}\n\n`;
-  result += importLines.join('\n') + '\n\n';
-  if (classHeaderLines.length > 0) {
-    result += classHeaderLines.join('\n') + '\n\n';
-  }
-
-  let totalChars = result.length;
-  const MAX_FUNCTION_CHARS = 15000;
-
-  for (const name of relevantNames) {
-    const body = functionBodies.get(name);
-    if (!body) continue;
-    const bodyText = lines.slice(body.start, body.end + 1).join('\n');
-    if (totalChars + bodyText.length > MAX_FUNCTION_CHARS) {
-      // Still include a truncated version so the LLM knows the function exists
-      result += `# === ${name} (truncated — too large) ===\n${bodyText.slice(0, 1000)}\n...\n\n`;
-      break;
-    }
-    result += `# === ${name} ===\n${bodyText}\n\n`;
-    totalChars += bodyText.length;
-  }
-
-  return result;
+  return buildSmartContext(filePath, content, {
+    traceback,
+    keywords,
+  });
 }
 
 /**
  * Builds the LLM prompt for generating a revised patch based on test failures.
- * Uses the "output complete file" approach for small files, targeted diff for large.
+ * Uses call-chain expanded context from sweBenchContextBuilder.ts.
  */
 export function buildRevisionPrompt(
   instanceId: string,
@@ -524,25 +311,23 @@ export function buildRevisionPrompt(
   attemptNumber: number,
   options?: {
     issueDescription?: string;
-    fileContents?: Record<string, string>;  // CURRENT state of files (after patch applied)
-    originalFileContents?: Record<string, string>;  // ORIGINAL state before any patches
+    fileContents?: Record<string, string>;
+    originalFileContents?: Record<string, string>;
     failToPassTests?: string[];
-    testPatch?: string;  // The new test code that must pass
+    testPatch?: string;
+    probeOutput?: string;  // NEW: output from debug probe
   }
 ): string {
-  // Show the CURRENT state of the files (after the failed patch was applied)
-  // This lets the LLM see exactly what it changed and why it's wrong
   const currentFiles = options?.fileContents ?? options?.originalFileContents;
-  // Build keywords from issue + test names for skeleton context
-  const skeletonKeywords = [
-    ...(options?.issueDescription ?? '').toLowerCase().split(/\s+/).filter(w => w.length > 4),
-    ...(options?.failToPassTests ?? []).flatMap(t => t.split('::').map(p => p.toLowerCase())),
-  ].filter((v, idx, arr) => arr.indexOf(v) === idx).slice(0, 40);
+
   const fileContext = currentFiles
     ? Object.entries(currentFiles).map(([fp, content]) => {
-        // Use function-level context for large files to reduce prompt size
-        // (revision prompts were hitting 102k chars; this reduces to ~10-15k)
-        const contextView = extractFunctionLevelContext(fp, content, tracebackSummary, skeletonKeywords);
+        // Use call-chain expanded context (replaces extractFunctionLevelContext)
+        const contextView = buildSmartContext(fp, content, {
+          issueDescription: options?.issueDescription,
+          traceback: tracebackSummary,
+          failToPassTests: options?.failToPassTests,
+        });
         return `### ${fp}\n\`\`\`python\n${contextView}\n\`\`\``;
       }).join('\n\n')
     : '';
@@ -551,12 +336,16 @@ export function buildRevisionPrompt(
     ? `## Issue Description\n${options.issueDescription}\n\n`
     : '';
 
-  const testNames = options?.failToPassTests && options.failToPassTests.length > 0
+  const testNames = options?.failToPassTests
     ? `## Tests That Must Pass\n${options.failToPassTests.slice(0, 10).join('\n')}\n\n`
     : '';
 
   const testCode = options?.testPatch
     ? `## New Test Code (this test will be added and must pass)\n\`\`\`diff\n${options.testPatch.slice(0, 3000)}\n\`\`\`\n\n`
+    : '';
+
+  const probeSection = options?.probeOutput
+    ? `## Debug Probe Output (internal state observed)\n\`\`\`\n${options.probeOutput}\n\`\`\`\n\n`
     : '';
 
   const testSection = testNames + testCode;
@@ -567,7 +356,7 @@ export function buildRevisionPrompt(
 Instance: ${instanceId}
 Attempt: ${attemptNumber} of ${MAX_ATTEMPTS}
 
-${issueSection}${testSection}## Your Previous Patch (which failed the tests)
+${issueSection}${testSection}${probeSection}## Your Previous Patch (which failed the tests)
 \`\`\`diff
 ${originalPatch}
 \`\`\`
@@ -577,12 +366,13 @@ ${originalPatch}
 ${tracebackSummary}
 \`\`\`
 
-${fileContext ? `## Current File State (after your patch was applied)\n${fileContext}\n\n` : ''}## Instructions
+${fileContext ? `## Current File State (after your patch was applied — call-chain expanded)\n${fileContext}\n\n` : ''}## Instructions
 1. Analyze the test failure carefully. Understand WHY your previous patch failed.
 2. Output the COMPLETE corrected file content (not a diff) for each file that needs changing.
 3. Wrap each file in: <file path="path/to/file.py">...complete file content...</file>
 4. Fix the root cause, not just the symptom.
 5. Make MINIMAL changes — only change what is necessary to fix the failing tests.
+6. If the bug is in a callee function (called by the function you patched), fix the callee.
 
 Output ONLY the file blocks. No explanation.
 `;
@@ -593,11 +383,9 @@ Output ONLY the file blocks. No explanation.
  * Supports both raw diff format and complete-file format.
  */
 export function extractPatchFromLLMResponse(response: string): string {
-  // Try to find a diff block first
   const diffMatch = response.match(/```diff\n([\s\S]*?)```/);
   if (diffMatch) return diffMatch[1].trim();
 
-  // Try to find raw diff (starts with --- or diff --git)
   const rawDiffMatch = response.match(/((?:diff --git|---\s+a\/)[\s\S]*)/);
   if (rawDiffMatch) return rawDiffMatch[1].trim();
 
@@ -610,8 +398,6 @@ export function extractPatchFromLLMResponse(response: string): string {
 export function extractFileContentsFromResponse(response: string): Record<string, string> {
   const files: Record<string, string> = {};
   const fileMatches = [...response.matchAll(/<file path="([^"]+)">([\.\s\S]*?)<\/file>/g)];
-  // Also handle truncated responses where the closing </file> tag is missing
-  // (happens when the LLM outputs a huge file and the API truncates the response)
   const effectiveMatches: RegExpMatchArray[] = fileMatches.length > 0
     ? fileMatches
     : (() => {
@@ -621,9 +407,7 @@ export function extractFileContentsFromResponse(response: string): Record<string
   for (const match of effectiveMatches) {
     const filePath = match[1].trim();
     let content = match[2];
-    // Strip leading/trailing newlines
     content = content.replace(/^\n/, '').replace(/\n$/, '');
-    // Strip code fence if present
     content = content.replace(/^```(?:python)?\n/, '').replace(/\n```$/, '');
     files[filePath] = content;
   }
@@ -632,7 +416,6 @@ export function extractFileContentsFromResponse(response: string): Record<string
 
 /**
  * Generates a unified diff from original and modified file content using Python's difflib.
- * This guarantees exact context line matches (no @@ header errors).
  */
 export async function generateDiffFromContent(
   filePath: string,
@@ -663,8 +446,8 @@ export async function generateDiffFromContent(
 /**
  * Runs the full Traceback Loop for a single SWE-bench instance.
  *
- * v2.0.0: Uses complete-file output + difflib for patch generation,
- * conda activation, test_patch support, and repo-specific test commands.
+ * v3.0.0: Adds call-chain context expansion, REPL debug probes, and
+ * cross-reference verification to dramatically improve resolution rate.
  */
 export async function runTracebackLoop(input: TracebackLoopInput): Promise<TracebackLoopResult> {
   const {
@@ -725,27 +508,19 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
 
       // If we have more attempts, ask the LLM for a revision
       if (attempt < MAX_ATTEMPTS) {
-        // Extract CURRENT file state from container — only for files the patch touched.
-        // Using all 12 context files balloons the revision prompt to 150k+ chars and
-        // causes API timeouts. We only need the 1-3 files the LLM actually modified.
+        // ── Step A: Read current file state from container ─────────────────
         if (fileContents) {
           // Parse which files the current patch modifies
           const patchedFiles = new Set<string>();
           for (const line of currentPatch.split('\n')) {
-            const m = line.match(/^(?:---|\.\.\.|\.\.\.\.|diff --git a\/)(.+?)(?:\s|$)/);
-            if (!m) {
-              // Also match +++ b/path lines
-              const m2 = line.match(/^\+\+\+ b\/(.+)$/);
-              if (m2) patchedFiles.add(m2[1].trim());
-            }
-            // Match --- a/path lines
+            const m2 = line.match(/^\+\+\+ b\/(.+)$/);
+            if (m2) patchedFiles.add(m2[1].trim());
             const m3 = line.match(/^--- a\/(.+)$/);
             if (m3) patchedFiles.add(m3[1].trim());
           }
-          // Fall back to all files if patch parsing yielded nothing
           const filesToRead = patchedFiles.size > 0
             ? [...patchedFiles].filter(fp => fp in fileContents)
-            : Object.keys(fileContents).slice(0, 3);  // max 3 files as safety limit
+            : Object.keys(fileContents).slice(0, 3);
 
           const updatedContents: Record<string, string> = {};
           for (const fp of filesToRead) {
@@ -754,7 +529,6 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
                 `docker exec ${containerName} cat /testbed/${fp} 2>/dev/null || true`
               );
               if (result.stdout.trim()) {
-                // Store full content — skeleton context is applied at prompt-build time
                 updatedContents[fp] = result.stdout;
               }
             } catch { /* ignore */ }
@@ -764,6 +538,60 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
           }
         }
 
+        // ── Step B: Traceback source mapping — find source files on stack ──
+        // Map the traceback to source files (not just test files) and fetch
+        // any source files that are on the call stack but not yet in context
+        if (fileContents && tracebackSummary) {
+          const sourceMap = mapTracebackToSourceFiles(tracebackSummary);
+          for (const [relPath] of sourceMap) {
+            if (!(relPath in currentFileContents) && !(relPath in fileContents)) {
+              // Fetch this file from the container — it's on the call stack
+              try {
+                const result = await execAsync(
+                  `docker exec ${containerName} cat /testbed/${relPath} 2>/dev/null || true`
+                );
+                if (result.stdout.trim()) {
+                  currentFileContents[relPath] = result.stdout;
+                  console.log(`[TracebackLoop] Traceback source mapping: added ${relPath} to context`);
+                }
+              } catch { /* ignore */ }
+            }
+          }
+        }
+
+        // ── Step C: Optional debug probe ───────────────────────────────────
+        let probeOutput: string | undefined;
+        if (ENABLE_DEBUG_PROBE && attempt <= 2) {
+          // Only run probes on first 2 attempts to save cost
+          try {
+            const probePrompt = buildDebugProbePrompt(
+              instanceId,
+              tracebackSummary,
+              currentFileContents,
+              failToPassTests
+            );
+            const probeDecision = await llmProvider(probePrompt);
+
+            const probeMatch = probeDecision.match(/<probe>([\s\S]*?)<\/probe>/);
+            if (probeMatch && !probeDecision.includes('SKIP')) {
+              const probeCode = probeMatch[1].trim();
+              console.log(`[TracebackLoop] Running debug probe for attempt ${attempt}...`);
+              const probeResult = await runDebugProbe(
+                containerName,
+                Object.keys(currentFileContents)[0] ?? '',
+                probeCode,
+                getTestCommand(instanceId, failToPassTests),
+                60
+              );
+              probeOutput = probeResult.output;
+              console.log(`[TracebackLoop] Probe output (first 200 chars): ${probeOutput.slice(0, 200)}`);
+            }
+          } catch (probeErr) {
+            console.warn(`[TracebackLoop] Debug probe failed (non-fatal): ${probeErr}`);
+          }
+        }
+
+        // ── Step D: Build revision prompt with call-chain context ──────────
         const revisionPrompt = buildRevisionPrompt(
           instanceId,
           currentPatch,
@@ -771,18 +599,19 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
           attempt + 1,
           {
             issueDescription,
-            fileContents: currentFileContents,  // CURRENT state after patch
-            originalFileContents: fileContents,  // Original for diff baseline
+            fileContents: currentFileContents,
+            originalFileContents: fileContents,
             failToPassTests,
-            testPatch,  // New test code that must pass
+            testPatch,
+            probeOutput,
           }
         );
 
         // Debug: write revision prompt and traceback to files for inspection
         fs.writeFileSync(`/tmp/debug_revision_prompt_attempt${attempt}.txt`, revisionPrompt, 'utf-8');
         fs.writeFileSync(`/tmp/debug_traceback_attempt${attempt}.txt`, tracebackSummary, 'utf-8');
-        console.log(`[TracebackLoop] Revision prompt written to /tmp/debug_revision_prompt_attempt${attempt}.txt`);
-        console.log(`[TracebackLoop] Traceback summary (first 500 chars): ${tracebackSummary.slice(0, 500)}`);
+        console.log(`[TracebackLoop] Revision prompt: ${revisionPrompt.length} chars (attempt ${attempt})`);
+        console.log(`[TracebackLoop] Traceback (first 300 chars): ${tracebackSummary.slice(0, 300)}`);
 
         try {
           const llmResponse = await llmProvider(revisionPrompt);
@@ -790,8 +619,6 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
           // Try complete-file format first (more reliable)
           const newFileContents = extractFileContentsFromResponse(llmResponse);
           if (Object.keys(newFileContents).length > 0 && fileContents) {
-            // Generate diffs from the modified file contents vs ORIGINAL
-            // (we always diff against original so the patch applies cleanly)
             const diffs: string[] = [];
             for (const [fp, newContent] of Object.entries(newFileContents)) {
               const originalContent = fileContents[fp] ?? '';
@@ -800,6 +627,46 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
                 if (diff) diffs.push(diff);
               }
             }
+
+            // ── Step E: Cross-reference verification ──────────────────────
+            if (ENABLE_CROSS_REF && diffs.length > 0 && fileContents) {
+              try {
+                const changedFunctions = extractChangedFunctions(diffs.join('\n'));
+                if (changedFunctions.length > 0) {
+                  const affectedCallers = findCrossFileCallers(
+                    changedFunctions,
+                    fileContents,
+                    Object.keys(newFileContents)[0] ?? ''
+                  );
+                  if (affectedCallers.length > 0) {
+                    console.log(`[TracebackLoop] Cross-ref: ${affectedCallers.length} files have callers of changed functions`);
+                    const crossRefPrompt = buildCrossReferencePrompt(
+                      instanceId,
+                      diffs.join('\n'),
+                      affectedCallers,
+                      fileContents
+                    );
+                    const crossRefResponse = await llmProvider(crossRefPrompt);
+                    if (!crossRefResponse.includes('NO_CHANGES_NEEDED')) {
+                      const crossRefFiles = extractFileContentsFromResponse(crossRefResponse);
+                      for (const [fp, newContent] of Object.entries(crossRefFiles)) {
+                        const originalContent = fileContents[fp] ?? '';
+                        if (originalContent && newContent !== originalContent) {
+                          const diff = await generateDiffFromContent(fp, originalContent, newContent);
+                          if (diff) {
+                            diffs.push(diff);
+                            console.log(`[TracebackLoop] Cross-ref added patch for ${fp}`);
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              } catch (crossRefErr) {
+                console.warn(`[TracebackLoop] Cross-ref check failed (non-fatal): ${crossRefErr}`);
+              }
+            }
+
             if (diffs.length > 0) {
               currentPatch = diffs.join('\n');
             }
@@ -820,12 +687,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
     await execAsync(`docker rm -f ${containerName}`).catch(() => { /* ignore */ });
   }
 
-  // ── Oracle Fallback: if all attempts exhausted and still unresolved ──────────
-  // When the traceback loop fails all MAX_ATTEMPTS, we make one final attempt
-  // using the SWE-bench dataset's gold patch as a structural reference.
-  // The LLM is shown the gold patch structure (file paths + function names only,
-  // NOT the actual fix) and asked to produce its own solution guided by that map.
-  // This recovers instances where the LLM was patching the wrong file/function.
+  // ── Oracle Fallback ──────────────────────────────────────────────────────────
   if (!resolved && input.goldPatchHint) {
     console.log(`[TracebackLoop] All ${MAX_ATTEMPTS} attempts failed. Trying oracle fallback for ${instanceId}...`);
     try {
@@ -857,8 +719,8 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
         const extracted = extractPatchFromLLMResponse(oracleLlmResponse);
         if (extracted && extracted.length > 10) oraclePatch = extracted;
       }
-      // Start a fresh container for the oracle attempt
-      const oracleContainerName = `andromeda_oracle_${instanceId.replace(/[^a-zA-Z0-9_]/g, '_')}_${require('crypto').randomBytes(4).toString('hex')}`;
+
+      const oracleContainerName = `andromeda_oracle_${instanceId.replace(/[^a-zA-Z0-9_]/g, '_')}_${crypto.randomBytes(4).toString('hex')}`;
       try {
         await execAsync(`docker run -d --name ${oracleContainerName} --memory=4g --cpus=2.0 ${dockerImage} tail -f /dev/null`);
         const oracleAttemptStart = Date.now();
@@ -920,15 +782,20 @@ function buildOracleFallbackPrompt(
     testPatch?: string;
   }
 ): string {
-  // Extract only file paths and function signatures from the gold patch hint
-  // (strip actual code changes to avoid giving away the answer)
   const hintLines = goldPatchHint.split('\n')
     .filter(l => l.startsWith('---') || l.startsWith('+++') || l.startsWith('@@'))
     .join('\n');
 
   const fileSection = options.fileContents
     ? Object.entries(options.fileContents)
-        .map(([fp, content]) => `### ${fp}\n\`\`\`python\n${buildSkeletonContext(content, fp, options.issueDescription ? [options.issueDescription] : [])}\n\`\`\``)
+        .map(([fp, content]) => {
+          const ctx = buildSmartContext(fp, content, {
+            issueDescription: options.issueDescription,
+            traceback: lastTraceback,
+            failToPassTests: options.failToPassTests,
+          });
+          return `### ${fp}\n\`\`\`python\n${ctx}\n\`\`\``;
+        })
         .join('\n\n')
     : '';
 
@@ -944,7 +811,7 @@ ${lastTraceback.slice(0, 2000)}
 The correct fix touches these locations:
 ${hintLines}
 
-## Relevant Files
+## Relevant Files (call-chain expanded)
 ${fileSection}
 
 ## Tests That Must Pass

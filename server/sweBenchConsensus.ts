@@ -33,6 +33,12 @@ import {
   generateDiffFromContent,
   TEST_TIMEOUT_SECONDS,
 } from './sweBenchTracebackLoop.js';
+import {
+  buildSmartContext,
+  findCrossFileCallers,
+  extractChangedFunctions,
+  buildCrossReferencePrompt,
+} from './sweBenchContextBuilder.js';
 
 const execAsync = promisify(exec);
 
@@ -75,106 +81,8 @@ export interface ConsensusResult {
 
 // ─── Prompt Building ──────────────────────────────────────────────────────────
 
-/**
- * Builds a skeleton context view of a Python file for large files.
- *
- * Replaces the old smartTruncate approach (which showed a random window of lines)
- * with a structured view: all class/function signatures (skeleton) plus fully
- * expanded bodies for any function whose name matches the issue keywords.
- *
- * This gives the LLM the full structural map of the file plus the exact code it
- * needs, without wasting tokens on irrelevant function bodies.
- */
-function buildSkeletonContext(
-  filePath: string,
-  content: string,
-  keywords: string[]
-): string {
-  if (content.length <= 12000) return content;
-
-  const lines = content.split('\n');
-  const skeletonLines: string[] = [];
-  const functionBodies: Map<string, { start: number; end: number; name: string }> = new Map();
-
-  let i = 0;
-  while (i < lines.length) {
-    const line = lines[i];
-    const trimmed = line.trim();
-    const defMatch = trimmed.match(/^(class|def)\s+(\w+)/);
-    if (defMatch) {
-      const name = defMatch[2];
-      const bodyStart = i;
-      const baseIndent = line.match(/^(\s*)/)?.[1]?.length ?? 0;
-      let j = i + 1;
-      while (j < lines.length) {
-        const nextTrimmed = lines[j].trim();
-        if (nextTrimmed.length === 0) { j++; continue; }
-        const nextIndent = lines[j].match(/^(\s*)/)?.[1]?.length ?? 0;
-        if (nextIndent <= baseIndent && nextTrimmed.length > 0) break;
-        j++;
-      }
-      functionBodies.set(name, { start: bodyStart, end: j - 1, name });
-      skeletonLines.push(line);
-      if (i + 1 < lines.length && lines[i + 1].trim().startsWith('"""')) {
-        skeletonLines.push(lines[i + 1]);
-        if (!lines[i + 1].trim().endsWith('"""')) {
-          let k = i + 2;
-          while (k < lines.length && !lines[k].includes('"""')) k++;
-          if (k < lines.length) skeletonLines.push(lines[k]);
-        }
-      }
-      skeletonLines.push('    ...');
-      i = j;
-      continue;
-    }
-    if (
-      trimmed.startsWith('import ') ||
-      trimmed.startsWith('from ') ||
-      trimmed.startsWith('@') ||
-      trimmed.startsWith('#') ||
-      (trimmed.length > 0 && !trimmed.startsWith(' ') && line.match(/^[A-Z_][A-Z0-9_]*\s*=/))
-    ) {
-      skeletonLines.push(line);
-    }
-    i++;
-  }
-
-  const relevantNames = new Set<string>();
-  for (const [name] of functionBodies) {
-    const nameLower = name.toLowerCase();
-    if (keywords.some(kw => nameLower.includes(kw) || kw.includes(nameLower))) {
-      relevantNames.add(name);
-    }
-  }
-
-  let result = `# File: ${filePath} (${lines.length} lines total \u2014 skeleton view)\n`;
-  result += `# Fully expanded: ${relevantNames.size > 0 ? [...relevantNames].join(', ') : '(none matched \u2014 showing skeleton only)'}\n\n`;
-  result += skeletonLines.join('\n') + '\n\n';
-
-  let expandedChars = result.length;
-  for (const name of relevantNames) {
-    const body = functionBodies.get(name);
-    if (!body) continue;
-    const bodyText = lines.slice(body.start, body.end + 1).join('\n');
-    if (expandedChars + bodyText.length > MAX_EXPANDED_CHARS) break;
-    result += `# === EXPANDED: ${name} ===\n${bodyText}\n\n`;
-    expandedChars += bodyText.length;
-  }
-
-  if (relevantNames.size === 0) {
-    let count = 0;
-    for (const [name, body] of functionBodies) {
-      if (count >= 3) break;
-      const bodyText = lines.slice(body.start, body.end + 1).join('\n');
-      if (expandedChars + bodyText.length > MAX_EXPANDED_CHARS) break;
-      result += `# === EXPANDED: ${name} ===\n${bodyText}\n\n`;
-      expandedChars += bodyText.length;
-      count++;
-    }
-  }
-
-  return result;
-}
+// buildSkeletonContext replaced by buildSmartContext from sweBenchContextBuilder.ts
+// which adds call-chain expansion, traceback source mapping, and cross-reference verification.
 
 /**
  * Builds a patch generation prompt for a given agent.
@@ -197,13 +105,12 @@ export function buildAgentPrompt(
 
   const styleHint = styleHints[agentConfig.name] || styleHints.conservative;
 
-  // Build file sections using skeleton context (replaces naive smartTruncate)
-  const keywords = [
-    ...issueDescription.toLowerCase().split(/\s+/).filter(w => w.length > 4),
-    ...failToPassTests.flatMap(t => t.split('::').map(p => p.toLowerCase())),
-  ].filter((v, idx, arr) => arr.indexOf(v) === idx).slice(0, 40);
+  // Build file sections using call-chain expanded context
   const fileSections = Object.entries(fileContents).map(([fp, content]) => {
-    const contextView = buildSkeletonContext(fp, content, keywords);
+    const contextView = buildSmartContext(fp, content, {
+      issueDescription,
+      failToPassTests,
+    });
     return `### ${fp}\n\`\`\`python\n${contextView}\n\`\`\``;
   }).join('\n\n');
 
@@ -334,6 +241,35 @@ export async function runConsensus(
             if (diff) diffs.push(diff);
           }
         }
+
+        // Cross-reference verification: check if changed functions have callers in other files
+        if (diffs.length > 0 && process.env.SWEBENCH_CROSS_REF !== '0') {
+          try {
+            const changedFunctions = extractChangedFunctions(diffs.join('\n'));
+            if (changedFunctions.length > 0) {
+              const primaryFile = Object.keys(newFileContents)[0] ?? '';
+              const affectedCallers = findCrossFileCallers(changedFunctions, fileContents, primaryFile);
+              if (affectedCallers.length > 0) {
+                console.log(`[Consensus] Agent ${agent.name}: cross-ref found ${affectedCallers.length} files with callers`);
+                const crossRefPrompt = buildCrossReferencePrompt(instanceId, diffs.join('\n'), affectedCallers, fileContents);
+                const crossRefResponse = await agent.llmProvider(crossRefPrompt);
+                if (!crossRefResponse.includes('NO_CHANGES_NEEDED')) {
+                  const crossRefFiles = extractFileContentsFromResponse(crossRefResponse);
+                  for (const [fp, newContent] of Object.entries(crossRefFiles)) {
+                    const originalContent = fileContents[fp] ?? '';
+                    if (originalContent && newContent !== originalContent) {
+                      const diff = await generateDiffFromContent(fp, originalContent, newContent);
+                      if (diff) { diffs.push(diff); console.log(`[Consensus] Cross-ref added patch for ${fp}`); }
+                    }
+                  }
+                }
+              }
+            }
+          } catch (crossRefErr) {
+            console.warn(`[Consensus] Cross-ref check failed (non-fatal):`, crossRefErr);
+          }
+        }
+
         if (diffs.length > 0) {
           return { agent, patch: diffs.join('\n'), durationMs: Date.now() - genStart };
         }

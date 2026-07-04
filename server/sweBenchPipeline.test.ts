@@ -207,8 +207,9 @@ describe('extractFunctionLevelContext', () => {
   });
 
   it('extracts functions mentioned in traceback for large files', () => {
-    const content = makeLargeFile();
-    expect(content.length).toBeGreaterThan(8000);
+    // buildSmartContext threshold is 10000 chars; pad to exceed it
+    const content = makeLargeFile() + 'x = 1  # extra padding\n'.repeat(100);
+    expect(content.length).toBeGreaterThan(10000);
 
     const traceback = `
 Traceback (most recent call last):
@@ -252,11 +253,13 @@ ValueError: value cannot be None
   });
 
   it('includes the function-level view header comment', () => {
-    const content = makeLargeFile();
+    // Must exceed 10000 chars to trigger buildSmartContext header generation
+    const content = makeLargeFile() + 'x = 1  # extra padding\n'.repeat(100);
+    expect(content.length).toBeGreaterThan(10000);
     const traceback = 'in fix_the_bug\nError';
     const result = extractFunctionLevelContext('query.py', content, traceback, []);
-    // The header contains either 'function-level view' or 'skeleton view'
-    expect(result).toMatch(/function-level view|skeleton view/);
+    // buildSmartContext now uses 'call-chain expanded view' or 'skeleton view'
+    expect(result).toMatch(/call-chain expanded view|skeleton view/);
     expect(result).toContain('query.py');
   });
 });
