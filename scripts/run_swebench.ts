@@ -634,10 +634,18 @@ Output ONLY the diff block.`;
 
   // Extract file contents and generate diff
   const fileMatches = [...response.matchAll(/<file path="([^"]+)">([\s\S]*?)<\/file>/g)];
-  console.log(`[Runner] Phase 1d: Found ${fileMatches.length} file blocks`);
-  if (fileMatches.length === 0) {
+  // Also handle truncated responses: <file path="..."> with no closing </file>
+  // This happens when the LLM outputs a huge file and the API truncates the response
+  const truncatedFileMatch = fileMatches.length === 0
+    ? response.match(/<file path="([^"]+)">([\s\S]+)$/)
+    : null;
+  const effectiveMatches: RegExpMatchArray[] = fileMatches.length > 0
+    ? [...fileMatches]
+    : truncatedFileMatch ? [truncatedFileMatch] : [];
+  console.log(`[Runner] Phase 1d: Found ${fileMatches.length} file blocks${truncatedFileMatch ? ' (1 truncated)' : ''}`);
+  if (effectiveMatches.length === 0) {
     // Fallback: try to extract a raw diff from the response
-    const diffMatch = response.match(/```diff\n([\s\S]*?)```/);
+    const diffMatch = response.match(/\`\`\`diff\n([\s\S]*?)\`\`\`/);
     if (diffMatch) {
       console.log('[Runner] Phase 1d: Falling back to raw diff extraction');
       return diffMatch[1].trim();
@@ -652,9 +660,19 @@ Output ONLY the diff block.`;
     console.log('[Runner] Phase 1d: Response preview:', response.slice(0, 300).replace(/\n/g, '\\n'));
     return '';
   }
+    // Try raw diff format (starts with --- or diff --git)
+    const rawDiff = response.match(/((?:diff --git|---\s+a\/)\n?[\s\S]*)/);
+    if (rawDiff) {
+      console.log('[Runner] Phase 1d: Falling back to raw diff (no code fence)');
+      return rawDiff[1].trim();
+    }
+    console.log('[Runner] Phase 1d: No patch found in LLM response');
+    console.log('[Runner] Phase 1d: Response preview:', response.slice(0, 300).replace(/\n/g, '\\n'));
+    return '';
+  }
 
   const diffs: string[] = [];
-  for (const match of fileMatches) {
+  for (const match of effectiveMatches) {
     const filePath = match[1].trim();
     let newContent = match[2].replace(/^\n/, '').replace(/\n$/, '');
     newContent = newContent.replace(/^```(?:python)?\n/, '').replace(/\n```$/, '');
