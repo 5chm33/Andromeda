@@ -43,6 +43,15 @@ if (fs.existsSync(envFile)) {
 // ─── Andromeda LLM Provider ───────────────────────────────────────────────────
 
 import { simpleChatCompletion } from '../server/llmProvider.js';
+import {
+  resolveSWEBenchModelConfig,
+  createSWEBenchLLMProvider,
+  type SWEBenchModelConfig,
+} from '../server/sweBenchModelConfig.js';
+import {
+  augmentWithSearch,
+  type SearchAugmentation,
+} from '../server/sweBenchSearchFallback.js';
 import { runSOTAPipeline, PipelineConfig } from '../server/sweBenchPipeline.js';
 import { pullImageSafely, ensureDiskSpace } from '../server/sweBenchInfra.js';
 
@@ -526,7 +535,8 @@ async function generateInitialPatch(
   issueDescription: string,
   fileContents: Record<string, string>,
   failToPassTests: string[] = [],
-  testPatch: string = ''
+  testPatch: string = '',
+  searchContext: string = ''
 ): Promise<string> {
   // Only use diff format for truly large files where complete output would overflow
   // Complete-file format is more reliable since LLM doesn't need to guess line numbers
@@ -576,13 +586,14 @@ Output ONLY the diff block. No explanation. Make MINIMAL changes.`
 
 Output ONLY the file blocks. No explanation.`;
 
+  const searchSection = searchContext ? `\n${searchContext}` : '';
   const prompt = `You are an expert Python software engineer solving a GitHub issue.
 
 ## Instance: ${instanceId}
 
 ## Issue Description
 ${issueDescription}
-${testContext}
+${testContext}${searchSection}
 ## Files to Modify
 ${fileSections}
 
@@ -765,7 +776,7 @@ async function main() {
         fs.appendFileSync(opts.outputPath, JSON.stringify({
           instance_id,
           model_patch: '',
-          model_name_or_path: 'andromeda-v4-claude-sonnet-4-5',
+          model_name_or_path: sweBenchModelConfig.modelName,
         }) + '\n');
         total++;
         continue;
@@ -804,6 +815,8 @@ async function main() {
           {
             testPatch: test_patch,
             failToPassTests,
+            // Gold patch hint: structural reference for oracle fallback
+            goldPatchHint: patch || undefined,
           }
         ),
         new Promise<never>((_, reject) =>
@@ -830,7 +843,7 @@ async function main() {
       fs.appendFileSync(opts.outputPath, JSON.stringify({
         instance_id,
         model_patch: result.finalPatch,
-        model_name_or_path: 'andromeda-v4-claude-sonnet-4-5',
+        model_name_or_path: sweBenchModelConfig.modelName,
       }) + '\n');
 
       if (result.resolved) resolved++;
@@ -857,7 +870,7 @@ async function main() {
       fs.appendFileSync(opts.outputPath, JSON.stringify({
         instance_id,
         model_patch: '',
-        model_name_or_path: 'andromeda-v4-claude-sonnet-4-5',
+        model_name_or_path: sweBenchModelConfig.modelName,
       }) + '\n');
       total++;
     }
