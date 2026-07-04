@@ -1,5 +1,5 @@
 /**
- * run_swebench.ts — Andromeda SWE-bench Runner (v2.1.0)
+ * run_swebench.ts — Andromeda SWE-bench Runner (v2.2.0)
  *
  * This is the OFFICIAL runner that uses Andromeda's full pipeline:
  *   - Andromeda's LLM provider (Claude Sonnet 4.5 via OpenRouter)
@@ -333,6 +333,82 @@ function buildSkeletonContext(
 }
 
 /**
+ * Cross-file symbol resolution: given a set of primary files and their content,
+ * scans each file for import statements and function calls, then searches the
+ * repository for the definitions of those symbols.
+ *
+ * This ensures that if file A calls function foo() defined in file B, file B is
+ * automatically included in the context — even if keyword matching missed it.
+ *
+ * Returns the expanded file list (primary files + any newly discovered files).
+ */
+function resolveSymbolDependencies(
+  primaryFiles: string[],
+  fileContents: Record<string, string>,
+  allFiles: string[]
+): string[] {
+  const discovered = new Set<string>(primaryFiles);
+
+  for (const [fp, content] of Object.entries(fileContents)) {
+    const lines = content.split('\n');
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+
+      // Pattern 1: from .module import Symbol  OR  from package.module import Symbol
+      const relImport = trimmed.match(/^from\s+\.([\w.]+)\s+import/);
+      if (relImport) {
+        const modulePart = relImport[1].replace(/\./g, '/');
+        const basePkg = fp.split('/').slice(0, -1).join('/');
+        const candidate = `${basePkg}/${modulePart}.py`;
+        if (allFiles.includes(candidate) && !discovered.has(candidate)) {
+          discovered.add(candidate);
+        }
+        continue;
+      }
+
+      // Pattern 2: from package.subpackage import Symbol
+      const absImport = trimmed.match(/^from\s+([\w.]+)\s+import/);
+      if (absImport) {
+        const parts = absImport[1].split('.');
+        // Try progressively shorter path matches
+        for (let len = parts.length; len >= 1; len--) {
+          const candidate = parts.slice(0, len).join('/') + '.py';
+          // Check if any allFiles path ends with this candidate
+          const match = allFiles.find(f =>
+            f === candidate ||
+            f.endsWith('/' + candidate) ||
+            f.endsWith('/' + parts.slice(0, len).join('/') + '/__init__.py')
+          );
+          if (match && !discovered.has(match)) {
+            discovered.add(match);
+            break;
+          }
+        }
+        continue;
+      }
+
+      // Pattern 3: import module.submodule
+      const directImport = trimmed.match(/^import\s+([\w.]+)/);
+      if (directImport) {
+        const parts = directImport[1].split('.');
+        for (let len = parts.length; len >= 1; len--) {
+          const candidate = parts.slice(0, len).join('/') + '.py';
+          const match = allFiles.find(f => f === candidate || f.endsWith('/' + candidate));
+          if (match && !discovered.has(match)) {
+            discovered.add(match);
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  // Cap at 12 files total to avoid context explosion
+  return [...discovered].slice(0, 12);
+}
+
+/**
  * Uses the LLM to identify which files are most relevant to the issue.
  * Returns a ranked list of file paths.
  */
@@ -406,6 +482,39 @@ Output ONLY a JSON array of file paths (most relevant first, up to 6). Example: 
 
   // Fallback: return top keyword-scored candidates
   return candidates.slice(0, 5);
+}
+
+/**
+ * Second-pass localization: after extracting file content, resolve symbol
+ * dependencies to find additional files the LLM didn't identify.
+ * This is the fix for multi-file bugs where the primary fix file imports
+ * from a helper that also needs changing.
+ */
+async function expandWithSymbolResolution(
+  primaryFiles: string[],
+  fileContents: Record<string, string>,
+  allFiles: string[],
+  dockerImage: string
+): Promise<Record<string, string>> {
+  const expanded = resolveSymbolDependencies(primaryFiles, fileContents, allFiles);
+  const newFiles = expanded.filter(f => !primaryFiles.includes(f));
+
+  if (newFiles.length === 0) {
+    console.log('[Runner] Phase 1c-ext: No additional symbol dependencies found');
+    return fileContents;
+  }
+
+  console.log(`[Runner] Phase 1c-ext: Symbol resolution found ${newFiles.length} additional file(s): ${newFiles.join(', ')}`);
+
+  const result = { ...fileContents };
+  for (const fp of newFiles) {
+    const content = await extractFileFromDocker(dockerImage, fp);
+    if (content) {
+      result[fp] = content;
+      console.log(`[Runner]   +${fp}: ${content.length} chars (symbol dependency)`);
+    }
+  }
+  return result;
 }
 
 /**
@@ -661,6 +770,13 @@ async function main() {
         total++;
         continue;
       }
+
+      // ── Phase 1c-ext: Cross-file symbol resolution ──────────────────────
+      const expandedFileContents = await expandWithSymbolResolution(
+        relevantFiles, fileContents, allFiles, dockerImage
+      );
+      // Use expanded set for all downstream phases
+      Object.assign(fileContents, expandedFileContents);
 
       // ── Phase 1d: Generate initial patch ────────────────────────────────
       console.log('[Runner] Phase 1d: Generating initial patch...');

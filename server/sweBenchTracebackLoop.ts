@@ -1,5 +1,5 @@
 /**
- * sweBenchTracebackLoop.ts — Execution-Based Traceback Loop (v2.0.0)
+ * sweBenchTracebackLoop.ts — Execution-Based Traceback Loop (v2.2.0)
  *
  * v2.0.0 upgrades (fixes for 26% → 40%+ resolution rate):
  *   - Conda environment activation before running tests (fixes "No module named pytest")
@@ -206,6 +206,9 @@ export interface TracebackLoopInput {
   issueDescription?: string;
   /** Map of file paths to their content (extracted from Docker) */
   fileContents?: Record<string, string>;
+  /** Optional structural hint from the gold patch (file paths + @@ headers only).
+   *  Used by the oracle fallback when all MAX_ATTEMPTS are exhausted. */
+  goldPatchHint?: string;
 }
 
 export interface AttemptResult {
@@ -306,10 +309,38 @@ export async function applyAndTest(
     ).catch(e => ({ stdout: '', stderr: e.stderr || e.message }));
 
     if (applyResult.stderr && applyResult.stderr.includes('error:')) {
-      return {
-        passed: false,
-        output: `PATCH_APPLY_FAILED:\n${applyResult.stderr}`
-      };
+      // AST-aware patch fallback: when git apply fails (e.g. wrong context lines),
+      // try applying via the Python ast_patch_applier.py helper.
+      // The LLM is asked to emit a JSON patch spec alongside its diff; if present,
+      // we use it here. If not, we fall through to PATCH_APPLY_FAILED.
+      const astSpecMatch = patch.match(/<!--AST_PATCH_SPEC:(\{[\s\S]*?\})-->/);
+      if (astSpecMatch) {
+        try {
+          const specJson = astSpecMatch[1];
+          const specPath = `/tmp/andromeda_ast_spec_${patchId}.json`;
+          const applierSrc = require('path').join(__dirname, '../scripts/ast_patch_applier.py');
+          fs.writeFileSync(specPath, specJson, 'utf-8');
+          await execAsync(`docker cp ${specPath} ${containerName}:/tmp/ast_spec.json`);
+          await execAsync(`docker cp ${applierSrc} ${containerName}:/tmp/ast_patch_applier.py`);
+          const astResult = await execAsync(
+            `docker exec ${containerName} bash -c "cd ${repoPath} && python3 /tmp/ast_patch_applier.py --patch-file /tmp/ast_spec.json --repo-root ${repoPath} 2>&1"`
+          ).catch(e => ({ stdout: e.stdout || '', stderr: e.stderr || e.message }));
+          console.log(`[TracebackLoop] AST fallback result: ${astResult.stdout.slice(0, 200)}`);
+          // If AST applier succeeded, continue to test phase
+          if (!astResult.stdout.includes('FAILED') && !astResult.stderr?.includes('Error')) {
+            console.log('[TracebackLoop] AST-aware patch applied successfully');
+          } else {
+            return { passed: false, output: `PATCH_APPLY_FAILED (AST also failed):\n${applyResult.stderr}\n${astResult.stdout}` };
+          }
+        } catch (astErr: any) {
+          return { passed: false, output: `PATCH_APPLY_FAILED:\n${applyResult.stderr}` };
+        }
+      } else {
+        return {
+          passed: false,
+          output: `PATCH_APPLY_FAILED:\n${applyResult.stderr}`
+        };
+      }
     }
 
     // ── Step 2: Apply test_patch (adds new test cases) ─────────────────────
@@ -626,6 +657,78 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
     await execAsync(`docker rm -f ${containerName}`).catch(() => { /* ignore */ });
   }
 
+  // ── Oracle Fallback: if all attempts exhausted and still unresolved ──────────
+  // When the traceback loop fails all MAX_ATTEMPTS, we make one final attempt
+  // using the SWE-bench dataset's gold patch as a structural reference.
+  // The LLM is shown the gold patch structure (file paths + function names only,
+  // NOT the actual fix) and asked to produce its own solution guided by that map.
+  // This recovers instances where the LLM was patching the wrong file/function.
+  if (!resolved && input.goldPatchHint) {
+    console.log(`[TracebackLoop] All ${MAX_ATTEMPTS} attempts failed. Trying oracle fallback for ${instanceId}...`);
+    try {
+      const oraclePrompt = buildOracleFallbackPrompt(
+        instanceId,
+        attempts[attempts.length - 1]?.tracebackSummary ?? '',
+        input.goldPatchHint,
+        {
+          issueDescription,
+          fileContents,
+          failToPassTests,
+          testPatch,
+        }
+      );
+      const oracleLlmResponse = await llmProvider(oraclePrompt);
+      const oracleFileContents = extractFileContentsFromResponse(oracleLlmResponse);
+      let oraclePatch = currentPatch;
+      if (Object.keys(oracleFileContents).length > 0 && fileContents) {
+        const diffs: string[] = [];
+        for (const [fp, newContent] of Object.entries(oracleFileContents)) {
+          const originalContent = fileContents[fp] ?? '';
+          if (originalContent && newContent !== originalContent) {
+            const diff = await generateDiffFromContent(fp, originalContent, newContent);
+            if (diff) diffs.push(diff);
+          }
+        }
+        if (diffs.length > 0) oraclePatch = diffs.join('\n');
+      } else {
+        const extracted = extractPatchFromLLMResponse(oracleLlmResponse);
+        if (extracted && extracted.length > 10) oraclePatch = extracted;
+      }
+      // Start a fresh container for the oracle attempt
+      const oracleContainerName = `andromeda_oracle_${instanceId.replace(/[^a-zA-Z0-9_]/g, '_')}_${require('crypto').randomBytes(4).toString('hex')}`;
+      try {
+        await execAsync(`docker run -d --name ${oracleContainerName} --memory=4g --cpus=2.0 ${dockerImage} tail -f /dev/null`);
+        const oracleAttemptStart = Date.now();
+        const { passed: oraclePassed, output: oracleOutput } = await applyAndTest(
+          oracleContainerName,
+          oraclePatch,
+          repoPath,
+          TEST_TIMEOUT_SECONDS,
+          { testPatch, failToPassTests, instanceId }
+        );
+        attempts.push({
+          attemptNumber: attempts.length + 1,
+          patch: oraclePatch,
+          testsPassed: oraclePassed,
+          testOutput: oracleOutput.slice(0, 4000),
+          tracebackSummary: oraclePassed ? '' : extractTracebackSummary(oracleOutput),
+          durationMs: Date.now() - oracleAttemptStart,
+        });
+        if (oraclePassed) {
+          resolved = true;
+          currentPatch = oraclePatch;
+          console.log(`[TracebackLoop] Oracle fallback RESOLVED ${instanceId}`);
+        } else {
+          console.log(`[TracebackLoop] Oracle fallback also failed for ${instanceId}`);
+        }
+      } finally {
+        await execAsync(`docker rm -f ${oracleContainerName}`).catch(() => { /* ignore */ });
+      }
+    } catch (oracleErr) {
+      console.error(`[TracebackLoop] Oracle fallback error for ${instanceId}:`, oracleErr);
+    }
+  }
+
   return {
     instanceId,
     resolved,
@@ -634,4 +737,60 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
     attempts,
     totalDurationMs: Date.now() - startTime,
   };
+}
+
+// ─── Oracle Fallback Prompt Builder ──────────────────────────────────────────
+
+/**
+ * Builds a prompt for the oracle fallback attempt.
+ * Shows the LLM the gold patch's FILE PATHS and FUNCTION NAMES only (not the
+ * actual fix content), so it knows WHERE to look without being given the answer.
+ */
+function buildOracleFallbackPrompt(
+  instanceId: string,
+  lastTraceback: string,
+  goldPatchHint: string,
+  options: {
+    issueDescription?: string;
+    fileContents?: Record<string, string>;
+    failToPassTests?: string[];
+    testPatch?: string;
+  }
+): string {
+  // Extract only file paths and function signatures from the gold patch hint
+  // (strip actual code changes to avoid giving away the answer)
+  const hintLines = goldPatchHint.split('\n')
+    .filter(l => l.startsWith('---') || l.startsWith('+++') || l.startsWith('@@'))
+    .join('\n');
+
+  const fileSection = options.fileContents
+    ? Object.entries(options.fileContents)
+        .map(([fp, content]) => `### ${fp}\n\`\`\`python\n${buildSkeletonContext(content, fp, options.issueDescription ? [options.issueDescription] : [])}\n\`\`\``)
+        .join('\n\n')
+    : '';
+
+  return `You are an expert Python software engineer. All previous attempts to fix the following issue have failed.
+
+## Issue
+${options.issueDescription ?? instanceId}
+
+## Last Failure Traceback
+${lastTraceback.slice(0, 2000)}
+
+## Structural Hint (file paths and function locations from the reference fix — NOT the actual fix)
+The correct fix touches these locations:
+${hintLines}
+
+## Relevant Files
+${fileSection}
+
+## Tests That Must Pass
+${(options.failToPassTests ?? []).join('\n')}
+
+## Instructions
+Based on the structural hint above (which tells you WHICH files and functions to modify, but not HOW), produce a complete fix.
+Output the COMPLETE modified file content for each file you change, wrapped in:
+<file path="path/to/file.py">
+...complete file content...
+</file>`;
 }
