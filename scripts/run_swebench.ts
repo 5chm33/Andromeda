@@ -707,9 +707,17 @@ async function main() {
   const instances = allInstances.filter(i => !processedIds.has(i.instance_id));
   console.log(`[Runner] Processing ${instances.length} instances (${processedIds.size} already done)`);
 
-  // Pipeline config using Andromeda's LLM
+  // Resolve model config from environment variables
+  const sweBenchModelConfig = resolveSWEBenchModelConfig();
+  const sweBenchLLM = createSWEBenchLLMProvider(sweBenchModelConfig);
+  console.log(`[Runner] Model: ${sweBenchModelConfig.modelName} (${sweBenchModelConfig.modelId})`);
+  if (sweBenchModelConfig.extendedThinking) {
+    console.log(`[Runner] Extended thinking enabled (budget: ${sweBenchModelConfig.thinkingBudget} tokens)`);
+  }
+
+  // Pipeline config using the configured LLM
   const pipelineConfig: PipelineConfig = {
-    llmProvider: andromedaLLM,
+    llmProvider: sweBenchLLM,
     agentCount: 4,
     maxTracebackAttempts: 5,
     useConsensus: true,
@@ -720,7 +728,7 @@ async function main() {
   let total = 0;
 
   for (const instance of instances) {
-    const { instance_id, problem_statement, hints_text, test_patch, FAIL_TO_PASS } = instance;
+    const { instance_id, repo, base_commit, problem_statement, hints_text, patch, test_patch, FAIL_TO_PASS, PASS_TO_PASS } = instance;
     const dockerImage = getDockerImageName(instance_id);
 
     console.log(`\n[Runner] ── Instance ${total + 1}/${instances.length}: ${instance_id} ──`);
