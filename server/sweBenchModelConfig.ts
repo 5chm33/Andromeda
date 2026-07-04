@@ -205,7 +205,7 @@ interface AnthropicMessage {
 interface AnthropicRequestBody {
   model: string;
   max_tokens: number;
-  temperature?: number;
+  // Note: temperature is intentionally omitted — claude-fable-5 does not support it
   system?: AnthropicTextBlock[];
   messages: AnthropicMessage[];
 }
@@ -252,12 +252,10 @@ export async function callSWEBenchLLM(
 async function callAnthropicNative(
   config: SWEBenchModelConfig,
   prompt: string,
-  temperature?: number
+  _temperature?: number  // Ignored: claude-fable-5 does not support temperature
 ): Promise<string> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), config.timeoutMs);
-
-  const effectiveTemp = temperature ?? config.temperature;
 
   // Split prompt into system + user if markers are present
   let systemText = '';
@@ -273,10 +271,12 @@ async function callAnthropicNative(
   }
 
   // Build the request body in Anthropic Messages format
+  // NOTE: claude-fable-5 does NOT support the temperature parameter
+  // (returns 400 "temperature is deprecated for this model").
+  // We omit it entirely for Anthropic native format.
   const body: AnthropicRequestBody = {
     model: config.modelId,
     max_tokens: config.maxTokens,
-    temperature: effectiveTemp,
     messages: [],
   };
 
