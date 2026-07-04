@@ -56,7 +56,7 @@ const PRESETS: Record<string, Omit<SWEBenchModelConfig, 'apiKey'>> = {
     temperature: 0.0,
     extendedThinking: false,
     thinkingBudget: 0,
-    timeoutMs: 180_000,
+    timeoutMs: 300_000,  // Increased: revision prompts with large files can be slow
   },
   /** Claude 3.7 Sonnet — extended thinking, best for complex reasoning */
   'claude-3-7': {
