@@ -536,8 +536,10 @@ async function generateInitialPatch(
   fileContents: Record<string, string>,
   failToPassTests: string[] = [],
   testPatch: string = '',
-  searchContext: string = ''
+  searchContext: string = '',
+  llmProvider?: (prompt: string, temperature?: number) => Promise<string>
 ): Promise<string> {
+  const callLLM = llmProvider ?? andromedaLLM;
   // Only use diff format for truly large files where complete output would overflow
   // Complete-file format is more reliable since LLM doesn't need to guess line numbers
   const totalChars = Object.values(fileContents).reduce((s, c) => s + c.length, 0);
@@ -606,8 +608,29 @@ ${outputInstructions}
   console.log('[Runner] Phase 1d: Calling LLM for initial patch...');
   fs.writeFileSync('/tmp/debug_prompt.txt', prompt, 'utf-8');
   console.log('[DEBUG] Full prompt written to /tmp/debug_prompt.txt');
-  const response = await andromedaLLM(prompt, 0.0);
+  let response = await callLLM(prompt, 0.0);
   console.log(`[Runner] Phase 1d: LLM responded (${response.length} chars)`);
+
+  // If the response looks like prose (no diff markers, no file blocks), retry once
+  // with a more forceful prompt that strips all context and just asks for the diff.
+  const hasDiffMarkers = response.includes('@@') || response.includes('--- a/') || response.includes('<file path=');
+  if (!hasDiffMarkers && response.length > 100) {
+    console.log('[Runner] Phase 1d: Response is prose, retrying with forceful diff prompt...');
+    const forcePrompt = `You are a Python engineer. Output ONLY a unified diff patch. No prose, no explanation.
+
+Fix this issue in ${instanceId}:
+${issueDescription.slice(0, 500)}
+
+Files to change:
+${Object.keys(fileContents).join(', ')}
+
+Format:
+\`\`\`diff\n--- a/file.py\n+++ b/file.py\n@@ -N,M +N,M @@\n-old\n+new\n\`\`\`
+
+Output ONLY the diff block.`;
+    response = await callLLM(forcePrompt, 0.0);
+    console.log(`[Runner] Phase 1d: Retry responded (${response.length} chars)`);
+  }
 
   // Extract file contents and generate diff
   const fileMatches = [...response.matchAll(/<file path="([^"]+)">([\s\S]*?)<\/file>/g)];
@@ -799,7 +822,7 @@ async function main() {
 
       // ── Phase 1d: Generate initial patch ────────────────────────────────
       console.log('[Runner] Phase 1d: Generating initial patch...');
-      const initialPatch = await generateInitialPatch(instance_id, issueDescription, fileContents, failToPassList, test_patch || '');
+      const initialPatch = await generateInitialPatch(instance_id, issueDescription, fileContents, failToPassList, test_patch || '', '', sweBenchLLM);
       console.log(`[Runner] Initial patch: ${initialPatch.length} chars`);
 
       // ── Parse FAIL_TO_PASS tests ─────────────────────────────────────────
