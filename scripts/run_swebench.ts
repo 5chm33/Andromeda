@@ -660,16 +660,6 @@ Output ONLY the diff block.`;
     console.log('[Runner] Phase 1d: Response preview:', response.slice(0, 300).replace(/\n/g, '\\n'));
     return '';
   }
-    // Try raw diff format (starts with --- or diff --git)
-    const rawDiff = response.match(/((?:diff --git|---\s+a\/)\n?[\s\S]*)/);
-    if (rawDiff) {
-      console.log('[Runner] Phase 1d: Falling back to raw diff (no code fence)');
-      return rawDiff[1].trim();
-    }
-    console.log('[Runner] Phase 1d: No patch found in LLM response');
-    console.log('[Runner] Phase 1d: Response preview:', response.slice(0, 300).replace(/\n/g, '\\n'));
-    return '';
-  }
 
   const diffs: string[] = [];
   for (const match of effectiveMatches) {
