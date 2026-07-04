@@ -473,8 +473,16 @@ export function extractPatchFromLLMResponse(response: string): string {
  */
 export function extractFileContentsFromResponse(response: string): Record<string, string> {
   const files: Record<string, string> = {};
-  const fileMatches = response.matchAll(/<file path="([^"]+)">([\s\S]*?)<\/file>/g);
-  for (const match of fileMatches) {
+  const fileMatches = [...response.matchAll(/<file path="([^"]+)">([\.\s\S]*?)<\/file>/g)];
+  // Also handle truncated responses where the closing </file> tag is missing
+  // (happens when the LLM outputs a huge file and the API truncates the response)
+  const effectiveMatches: RegExpMatchArray[] = fileMatches.length > 0
+    ? fileMatches
+    : (() => {
+        const truncated = response.match(/<file path="([^"]+)">([\s\S]+)$/);
+        return truncated ? [truncated] : [];
+      })();
+  for (const match of effectiveMatches) {
     const filePath = match[1].trim();
     let content = match[2];
     // Strip leading/trailing newlines
