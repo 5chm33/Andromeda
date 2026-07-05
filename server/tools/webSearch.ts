@@ -207,6 +207,32 @@ async function executeWebSearch(args: Record<string, unknown>, _ctx: ToolExecuti
   }
 }
 
+// ─── Pipeline-Accessible Search (Fix 25) ───────────────────────────────────────────────────────────────
+/**
+ * Direct Tavily search for use in the SWE-bench pipeline.
+ *
+ * Unlike the chat-agent web_search tool (which has a relevance gate and
+ * requires a ToolExecutionContext), this function can be called directly
+ * from run_swebench.ts and sweBenchTracebackLoop.ts to fetch external
+ * documentation, error message explanations, or library API references
+ * for hard instances that reference unfamiliar external packages.
+ *
+ * Returns a formatted markdown string suitable for inclusion in LLM prompts,
+ * or an empty string if TAVILY_API_KEY is not set or the search fails.
+ */
+export async function searchTavilyDirect(
+  query: string,
+  numResults = 3
+): Promise<string> {
+  if (!process.env.TAVILY_API_KEY) return '';
+  const results = await searchTavily(query, numResults);
+  if (results.length === 0) return '';
+  console.log(`[Tavily/Pipeline] Query: "${query.slice(0, 80)}" — ${results.length} results`);
+  return results
+    .map((r, i) => `[${i + 1}] **${r.title}**\n${r.snippet.slice(0, 400)}\nSource: ${r.url}`)
+    .join('\n\n');
+}
+
 // ─── Register ──────────────────────────────────────────────────────────────────
 registerTool({
   name: "web_search",

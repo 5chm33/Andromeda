@@ -326,7 +326,23 @@ export async function applyAndTest(
           `docker exec ${containerName} bash -c "cd ${repoPath} && git checkout -- . 2>/dev/null || true"`
         ).catch(() => { /* ignore */ });
 
-        // ── Fallback 2: AST-aware patch ──
+        // ── Fallback 2: git apply --unidiff-zero (strip context lines) ──────
+        // Some LLM-generated patches have correct +/- lines but wrong context
+        // lines. --unidiff-zero ignores context entirely and applies by line number.
+        const unidiffResult = await execAsync(
+          `docker exec ${containerName} bash -c "cd ${repoPath} && git apply --ignore-whitespace --unidiff-zero /tmp/candidate.diff 2>&1"`
+        ).catch(e => ({ stdout: '', stderr: e.stderr || e.message }));
+        const unidiffOutput = (unidiffResult.stdout || '') + (unidiffResult.stderr || '');
+        const unidiffApplied = !unidiffOutput.includes('error:') && !unidiffOutput.includes('patch does not apply');
+        if (unidiffApplied) {
+          console.log(`[TracebackLoop] Unidiff-zero fallback applied patch (git apply and fuzz both failed, --unidiff-zero succeeded)`);
+        } else {
+          // Reset any partial unidiff application
+          await execAsync(
+            `docker exec ${containerName} bash -c "cd ${repoPath} && git checkout -- . 2>/dev/null || true"`
+          ).catch(() => { /* ignore */ });
+
+        // ── Fallback 3: AST-aware patch ──
         const astSpecMatch = patch.match(/<!--AST_PATCH_SPEC:(\{[\s\S]*?\})-->/);
         if (astSpecMatch) {
           try {
@@ -351,6 +367,7 @@ export async function applyAndTest(
         } else {
           return { passed: false, output: `PATCH_APPLY_FAILED:\n${applyResult.stderr}` };
         }
+        } // end unidiff-zero else
       } // end fuzz else
     } // end git apply error block
 
@@ -410,6 +427,15 @@ export function extractFunctionLevelContext(
  */
 /** Maximum characters of the previous patch to include in revision prompts. */
 const MAX_PATCH_IN_REVISION = 8000;
+
+/**
+ * Hard cap on total revision prompt length (characters).
+ * Prompts exceeding this caused timeouts on Fable 5 for large Django instances
+ * (run 8 instances 23-26 had 216k-254k char prompts — all timed out and failed).
+ * When the assembled prompt would exceed this, we truncate the file context
+ * section only — the traceback is the most important signal and is never cut.
+ */
+const MAX_REVISION_PROMPT_CHARS = 120_000;
 
 /**
  * Summarizes a large unified diff to show only the changed lines (+ and - lines)
@@ -495,7 +521,7 @@ export function buildRevisionPrompt(
     ? ` (summarized — original was ${originalPatch.length.toLocaleString()} chars; only changed lines shown)`
     : '';
 
-  return `You are an expert Python software engineer fixing a bug in a repository.
+  const prompt = `You are an expert Python software engineer fixing a bug in a repository.
 
 ## Task
 Instance: ${instanceId}
@@ -529,6 +555,54 @@ ${fileContext ? `## Current File State (after your patch was applied — call-ch
 
 Output ONLY the diff block. No explanation.
 `;
+
+  // ── Fix 22: Hard cap on total prompt length ───────────────────────────────
+  // If the assembled prompt exceeds MAX_REVISION_PROMPT_CHARS, truncate the
+  // file context section (not the traceback — traceback is the key signal).
+  // This prevents timeouts on Fable 5 for large-file instances.
+  if (prompt.length > MAX_REVISION_PROMPT_CHARS) {
+    const overBy = prompt.length - MAX_REVISION_PROMPT_CHARS;
+    console.warn(
+      `[buildRevisionPrompt] Prompt is ${prompt.length.toLocaleString()} chars — ` +
+      `truncating file context by ${overBy.toLocaleString()} chars to stay under ` +
+      `${MAX_REVISION_PROMPT_CHARS.toLocaleString()} cap`
+    );
+    // Find the file context section and truncate it
+    const fileContextMarker = '## Current File State';
+    const markerIdx = prompt.indexOf(fileContextMarker);
+    if (markerIdx !== -1) {
+      // How many chars can we give to the file context section?
+      const allowedFileContextLen = Math.max(2000, MAX_REVISION_PROMPT_CHARS - markerIdx - 800);
+      const beforeContext = prompt.slice(0, markerIdx);
+      const contextSection = prompt.slice(markerIdx);
+      // Find where Instructions section starts (always after file context)
+      const instrIdx = contextSection.indexOf('## Instructions');
+      const contextBody = instrIdx !== -1 ? contextSection.slice(0, instrIdx) : contextSection;
+      const truncatedBody = contextBody.slice(0, allowedFileContextLen);
+      const truncNote = `\n\n> [File context truncated — original prompt was ${prompt.length.toLocaleString()} chars, capped at ${MAX_REVISION_PROMPT_CHARS.toLocaleString()}. Focus on the traceback above to identify the fix.]\n\n`;
+      const instructions = `## Instructions
+1. Analyze the test failure carefully. Understand WHY your previous patch failed.
+2. Output a TARGETED unified diff patch (git diff format) fixing ONLY the lines that need changing.
+3. Use the standard diff format:
+\`\`\`diff
+--- a/path/to/file.py
++++ b/path/to/file.py
+@@ -line,count +line,count @@
+-old line
++new line
+\`\`\`
+4. Fix the root cause, not just the symptom.
+5. Make MINIMAL changes — only change what is necessary to fix the failing tests.
+6. If the bug is in a callee function (called by the function you patched), fix the callee.
+7. NEVER output the complete file — only output the changed lines in diff format.
+
+Output ONLY the diff block. No explanation.
+`;
+      return beforeContext + truncatedBody + truncNote + instructions;
+    }
+  }
+
+  return prompt;
 }
 
 /**

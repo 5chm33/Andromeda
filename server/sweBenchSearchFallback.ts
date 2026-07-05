@@ -1,5 +1,5 @@
 /**
- * sweBenchSearchFallback.ts — Multi-Turn Search Augmentation (v1.0.0)
+ * sweBenchSearchFallback.ts — Multi-Turn Search Augmentation (v1.1.0)
  *
  * For SWE-bench instances where the issue involves external library behavior,
  * API changes, or undocumented edge cases, a web search step before patch
@@ -9,11 +9,16 @@
  * This module:
  *   1. Analyzes the issue description to determine if a search would help
  *   2. Generates targeted search queries (library name + error message)
- *   3. Fetches search results via the Brave Search API (or DuckDuckGo fallback)
+ *   3. Fetches search results via Tavily (primary, AI-optimized) with
+ *      Brave Search and DuckDuckGo as fallbacks
  *   4. Extracts relevant snippets and appends them to the patch generation prompt
  *
  * Integration point: called from generateInitialPatch() in run_swebench.ts
  * when SWEBENCH_SEARCH=1 env var is set.
+ *
+ * v1.1.0 (Fix 25): Tavily is now the primary search provider. Tavily is
+ * AI-optimized and returns higher-quality, more relevant snippets than
+ * Brave or DuckDuckGo for technical queries. Falls back to Brave then DDG.
  *
  * Search is intentionally conservative — only triggered when:
  *   - The issue mentions a specific version number (e.g. "since 3.2.1")
@@ -117,12 +122,47 @@ export function generateSearchQueries(
  * Falls back to DuckDuckGo instant answer API if Brave key is not set.
  */
 async function performSearch(query: string): Promise<SearchResult[]> {
-  const braveKey = process.env.BRAVE_SEARCH_API_KEY;
+  // Fix 25: Tavily is the primary provider (AI-optimized, higher relevance)
+  const tavilyKey = process.env.TAVILY_API_KEY;
+  if (tavilyKey) {
+    try {
+      const resp = await fetch('https://api.tavily.com/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          api_key: tavilyKey,
+          query,
+          max_results: 5,
+          search_depth: 'basic',
+          include_answer: false,
+          include_raw_content: false,
+        }),
+        signal: AbortSignal.timeout(12_000),
+      });
+      if (resp.ok) {
+        const data = (await resp.json()) as any;
+        const results: SearchResult[] = (data?.results ?? []).slice(0, 5).map((r: any) => ({
+          title: r.title ?? '',
+          url: r.url ?? '',
+          snippet: (r.content ?? r.snippet ?? '').slice(0, 500),
+        }));
+        if (results.length > 0) {
+          console.log(`[SearchFallback/Tavily] "${query.slice(0, 60)}" → ${results.length} results`);
+          return results;
+        }
+      }
+    } catch (err) {
+      console.warn(`[SearchFallback/Tavily] Failed, falling back: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
 
+  // Fallback 1: Brave Search
+  const braveKey = process.env.BRAVE_SEARCH_API_KEY;
   if (braveKey) {
     return searchViaBrave(query, braveKey);
   }
 
+  // Fallback 2: DuckDuckGo
   return searchViaDuckDuckGo(query);
 }
 

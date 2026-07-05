@@ -895,7 +895,21 @@ async function main() {
 
       // ── Phase 1d: Generate initial patch ────────────────────────────────
       console.log('[Runner] Phase 1d: Generating initial patch...');
-      const initialPatch = await generateInitialPatch(instance_id, issueDescription, fileContents, failToPassList, test_patch || '', '', sweBenchLLM);
+      // Phase 1d-pre: Search augmentation (Fix 25b)
+      // Fetch Tavily search context for instances with external-library signals.
+      // Gated by SWEBENCH_SEARCH=1 env var inside shouldSearchForContext().
+      let searchContextBlock = '';
+      try {
+        const searchAugmentation = await augmentWithSearch(instance_id, issueDescription);
+        if (searchAugmentation.searched && searchAugmentation.contextBlock) {
+          searchContextBlock = searchAugmentation.contextBlock;
+          console.log(`[Runner] Search augmentation: ${searchAugmentation.snippets.length} snippets from ${searchAugmentation.queries.length} queries`);
+        }
+      } catch (searchErr: any) {
+        console.warn(`[Runner] Search augmentation failed (non-fatal): ${searchErr.message}`);
+      }
+
+      const initialPatch = await generateInitialPatch(instance_id, issueDescription, fileContents, failToPassList, test_patch || '', searchContextBlock, sweBenchLLM);
       console.log(`[Runner] Initial patch: ${initialPatch.length} chars`);
 
       // ── Parse FAIL_TO_PASS tests ─────────────────────────────────────────
