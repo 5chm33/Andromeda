@@ -32,6 +32,7 @@ import os from "os";
 import { execSync } from "child_process";
 import { EventEmitter } from "events";
 import { createLogger } from "./logger.js";
+import { buildSmartContext } from "./sweBenchContextBuilder.js";  // Fix 30: smart context selection
 
 const log = createLogger("externalRepoFixer");
 
@@ -207,10 +208,23 @@ function buildAnalysisPrompt(filePath: string, content: string, language: string
   const ext = path.extname(filePath).toLowerCase();
   const langLabel = ext === ".py" ? "Python" : ext === ".ts" || ext === ".tsx" ? "TypeScript" : "JavaScript";
 
-  // Truncate very large files to first 20000 chars (enough for ~500 lines)
-  const contentForAnalysis = content.length > 20000
-    ? content.slice(0, 20000) + "\n\n// ... (file truncated for analysis)"
-    : content;
+  // Fix 30: Use buildSmartContext instead of naive truncation.
+  // buildSmartContext focuses on the most relevant functions (by size/complexity)
+  // and provides line numbers, giving the LLM much better signal for targeted fixes.
+  // For externalRepoFixer we use a generic "improve code quality" intent.
+  const contentForAnalysis = (() => {
+    try {
+      // Use a generic issue description that triggers quality-focused context selection
+      const smartCtx = buildSmartContext(path.basename(filePath), content, {
+        issueDescription: 'improve code quality fix bugs error handling null safety',
+        maxChars: 20000,
+      });
+      return smartCtx.length > 100 ? smartCtx : (content.length > 20000 ? content.slice(0, 20000) + '\n\n// ... (file truncated)' : content);
+    } catch {
+      // Fallback to naive truncation if buildSmartContext fails
+      return content.length > 20000 ? content.slice(0, 20000) + '\n\n// ... (file truncated for analysis)' : content;
+    }
+  })();
 
   return [
     {

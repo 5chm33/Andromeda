@@ -521,13 +521,27 @@ export function buildRevisionPrompt(
     ? ` (summarized — original was ${originalPatch.length.toLocaleString()} chars; only changed lines shown)`
     : '';
 
+  // ── Fix 28: Hard-instance escalation hint ────────────────────────────────
+  // After 2 failed attempts, add a targeted hint to push the LLM to think
+  // more broadly about the root cause (callee, different file, multi-file fix).
+  const hardInstanceHint = attemptNumber >= 3
+    ? `\n## ⚠️ Hard Instance — Previous Attempts Failed (${attemptNumber - 1}/${MAX_ATTEMPTS})
+Your previous ${attemptNumber - 1} attempt(s) all failed. This is a hard instance. Before generating a new patch:
+1. Read the test failure output VERY carefully — what exact assertion failed? What value was expected vs. actual?
+2. Consider: is the bug in a DIFFERENT function or file than the one you patched?
+3. Consider: does the fix require changing MORE THAN ONE function or file?
+4. Consider: is there a callee function that is returning the wrong type or value?
+5. Consider: does the test expect a specific exception type, message, or behavior that your patch doesn't produce?
+Think step by step before writing the patch.\n`
+    : '';
+
   const prompt = `You are an expert Python software engineer fixing a bug in a repository.
 
 ## Task
 Instance: ${instanceId}
 Attempt: ${attemptNumber} of ${MAX_ATTEMPTS}
 
-${issueSection}${testSection}${probeSection}## Your Previous Patch (which failed the tests)${patchNote}
+${issueSection}${testSection}${probeSection}${hardInstanceHint}## Your Previous Patch (which failed the tests)${patchNote}
 \`\`\`diff
 ${patchSummary}
 \`\`\`

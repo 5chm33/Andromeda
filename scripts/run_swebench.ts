@@ -611,12 +611,23 @@ Output ONLY the diff block. No explanation. Make MINIMAL changes.`
 Output ONLY the file blocks. No explanation.`;
 
   const searchSection = searchContext ? `\n${searchContext}` : '';
+
+  // ── Fix 29: Extract error/exception hint from issue description ───────────────────────
+  // Many hard instances mention a specific exception or expected behavior in the
+  // issue text. Surfacing this prominently helps the LLM target the exact fix.
+  const errorHintMatch = issueDescription.match(
+    /(?:raises?|throws?|error:|exception:|AssertionError|ValueError|TypeError|AttributeError|KeyError|IndexError|RuntimeError|NotImplementedError|DeprecationWarning|\w+Error)[^.\n]{0,200}/i
+  );
+  const errorHint = errorHintMatch
+    ? `\n## Key Error Signal (from issue)\n> ${errorHintMatch[0].trim()}\n`
+    : '';
+
   const prompt = `You are an expert Python software engineer solving a GitHub issue.
 
 ## Instance: ${instanceId}
 
 ## Issue Description
-${issueDescription}
+${issueDescription}${errorHint}
 ${testContext}${searchSection}
 ## Files to Modify
 ${fileSections}
