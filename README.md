@@ -24,7 +24,8 @@ Andromeda is a production Node.js/TypeScript application that autonomously resol
 4. **Generates candidate patches** using a 4-agent parallel consensus engine (conservative, creative, defensive, refactor styles)
 5. **Validates each candidate** by running the actual test suite inside the Docker container
 6. **Iterates with traceback feedback** for up to 5 revision attempts, with 3-tier model escalation
-7. **Applies patches robustly** using `fixHunkCounts` pre-processing + `git apply --fuzz=15` to handle LLM formatting drift
+7. **Applies patches robustly** using `fixHunkCounts` pre-processing + `git apply --fuzz=15` + `--unidiff-zero` fallback to handle LLM formatting drift
+8. **Detects Python version** in the testbed container to ensure probe scripts use compatible syntax (Python 3.5 vs 3.6+)
 
 The system is evaluated on [SWE-bench Verified](https://www.swebench.com/) — the standard benchmark for autonomous software engineering agents.
 
@@ -41,9 +42,11 @@ The system is evaluated on [SWE-bench Verified](https://www.swebench.com/) — t
 | v3 baseline | Jun 30 2026 | **26.0%** (13/50) | 9.1% (2/22) | 39.3% (11/28) | Skeleton context + 4-agent consensus |
 | Run 7 | Jun 2026 | **52.0%** (26/50) | 59.1% (13/22) | 46.4% (13/28) | Pipeline stabilization |
 | Run 8 | Jul 2026 | **66.0%** (33/50) | **77.3%** (17/22) | **57.1%** (16/28) | 2-tier escalation + 21 pipeline fixes |
-| Run 9 | Jul 2026 | 🔄 *in progress* | — | — | 3-tier escalation (Sonnet 4.5 → Sonnet 5 → Fable 5) |
+| Run 9 | Jul 2026 | **~70%** (partial — credits exhausted at inst. 24/50) | **72.7%** (16/22) | — | 3-tier escalation + Fixes 22–32 |
 
 **Run 8 is a +14 percentage point improvement over Run 7 in a single session — and a +40 point improvement over the v3 baseline.**
+
+Run 9 reached **72.7% on the astropy subset** before API credits were exhausted. The 3-tier escalation (Sonnet 5 as mid-tier) resolved instances that previously timed out, including astropy-13977 which had failed in run 8 after 770 seconds.
 
 ---
 
@@ -91,6 +94,26 @@ astropy · django · matplotlib · seaborn · flask · requests · xarray · pyl
 
 ## Architecture
 
+### Two Code Paths — Unified Intelligence
+
+Andromeda has two distinct code paths that share core components:
+
+**1. SWE-bench Evaluation Pipeline** (`scripts/run_swebench.ts` + `server/sweBench*.ts`)
+A specialized, purpose-built loop designed for the SWE-bench benchmark format. Takes a problem statement + Docker image + failing tests, and produces a git diff patch. This is what the benchmark scores measure.
+
+**2. Main Agent** (`server/reactEngine.ts` + `server/externalRepoFixer.ts`)
+A general-purpose ReAct (Reason + Act) loop that handles user requests via chat. Uses the same LLM infrastructure and `buildSmartContext` for code editing tasks. Improvements to the SWE-bench pipeline are ported back to this path.
+
+**Shared components** (improvements to either path benefit both):
+- `server/sweBenchContextBuilder.ts` — `buildSmartContext`, `runDebugProbe`, `buildDebugProbePrompt`
+- `server/sweBenchModelConfig.ts` — all LLM presets and escalation logic
+- `server/llmRouter.ts` — model routing (code tasks → Claude Sonnet 4.5 → Sonnet 5 → Fable 5)
+- `server/tools/webSearch.ts` — Tavily search (now exported for pipeline use)
+
+The SWE-bench benchmark is the highest-stress test available for a code agent — real GitHub issues, real test suites, no hints. A strong SWE-bench score is a credible, verifiable measure of the underlying intelligence that also powers the main agent.
+
+---
+
 ### Pipeline Overview
 
 ```
@@ -105,14 +128,15 @@ astropy · django · matplotlib · seaborn · flask · requests · xarray · pyl
 │                        └──────────────────┘          │          │
 │  ┌───────────────────────────────────────────────────▼────────┐  │
 │  │                   Docker Test Execution                    │  │
-│  │   fixHunkCounts → git apply --fuzz=15 → conda activate    │  │
-│  │   → pytest / python -m django test → capture traceback    │  │
+│  │   fixHunkCounts → git apply --fuzz=15 → --unidiff-zero    │  │
+│  │   → conda activate testbed → pytest / django test         │  │
+│  │   → capture traceback + Python version detection          │  │
 │  └───────────────────────────────────────────────────┬────────┘  │
 │                                                      │           │
 │  ┌──────────────┐   ┌──────────────────┐   ┌────────▼────────┐  │
 │  │  Traceback   │◀──│  3-Tier Model    │◀──│  Test Output   │  │
 │  │  Loop (5x)   │   │  Escalation      │   │  Analysis      │  │
-│  │              │   │  Sonnet 4.5 →    │   └─────────────────┘  │
+│  │  + 120k cap  │   │  Sonnet 4.5 →    │   └─────────────────┘  │
 │  └──────────────┘   │  Sonnet 5 →      │                        │
 │                     │  Fable 5         │                        │
 │                     └──────────────────┘                        │
@@ -121,13 +145,13 @@ astropy · django · matplotlib · seaborn · flask · requests · xarray · pyl
 
 ### Key Components
 
-**`scripts/run_swebench.ts`** — Main runner. Loads the SWE-bench dataset from HuggingFace cache, extracts file content from Docker images, runs localization, and orchestrates the full pipeline. Implements 3-tier model escalation via environment variables.
+**`scripts/run_swebench.ts`** — Main runner. Loads the SWE-bench dataset from HuggingFace cache, extracts file content from Docker images, runs localization, and orchestrates the full pipeline. Implements 3-tier model escalation via environment variables. Includes Fix 26 (proper Promise.race cleanup to prevent process crashes on instance timeout).
 
 **`server/sweBenchConsensus.ts`** — 4-agent parallel patch generation. Each agent uses a different temperature and reasoning style (conservative, creative, defensive, refactor). The best-passing candidate wins.
 
-**`server/sweBenchTracebackLoop.ts`** — Iterative test-feedback loop. Applies the candidate patch inside the Docker container, runs the actual test suite, captures the traceback, and feeds it back to the LLM for up to 5 revision attempts. Implements `fixHunkCounts` for robust patch application.
+**`server/sweBenchTracebackLoop.ts`** — Iterative test-feedback loop. Applies the candidate patch inside the Docker container, runs the actual test suite, captures the traceback, and feeds it back to the LLM for up to 5 revision attempts. Implements `fixHunkCounts` for robust patch application. Hard cap of 120k characters on revision prompts (Fix 22). Detects Python version in container for probe script compatibility (Fix 32).
 
-**`server/sweBenchContextBuilder.ts`** — Smart context assembly. Keyword-aware truncation with ±10-line padding anchored to the first keyword match. Builds skeleton context for large files. Handles the `maxChars=80000` budget for revision prompts.
+**`server/sweBenchContextBuilder.ts`** — Smart context assembly. Keyword-aware truncation with ±10-line padding anchored to the first keyword match. Builds skeleton context for large files. Handles the `maxChars=80000` budget for revision prompts. Exports `runDebugProbe` and `buildDebugProbePrompt` with Python version awareness.
 
 **`server/sweBenchModelConfig.ts`** — Model configuration. All LLM presets (Sonnet 4.5, Sonnet 5, Fable 5, Kimi, DeepSeek). Implements `createEscalatingLLMProvider` for 2-tier and 3-tier escalation.
 
@@ -135,7 +159,9 @@ astropy · django · matplotlib · seaborn · flask · requests · xarray · pyl
 
 **`server/sweBenchInfra.ts`** — Docker infrastructure. Handles image pulling, disk space management, and container lifecycle.
 
-**`server/tools/webSearch.ts`** — Web search integration. Tavily as primary provider (AI-optimized, high relevance). Falls back to Brave → SearXNG → DuckDuckGo. Includes a relevance gate to block self-referential queries. *Note: Web search is available in the chat agent but is not currently wired into the SWE-bench pipeline — the pipeline operates entirely from local file context.*
+**`server/externalRepoFixer.ts`** — Main agent's GitHub repo fixing path. Now uses `buildSmartContext` for intelligent context selection (Fix 30) and multi-attempt revision with model escalation (Fix 31).
+
+**`server/tools/webSearch.ts`** — Web search integration. Tavily as primary provider (AI-optimized, high relevance). Falls back to Brave → SearXNG → DuckDuckGo. Exports `searchTavilyDirect` for pipeline use (Fix 25a). Wired into `sweBenchSearchFallback.ts` as primary provider (Fix 25b).
 
 ---
 
@@ -148,6 +174,7 @@ For files larger than 12,000 characters, the pipeline builds a **smart context**
 3. Uses ±10-line padding around the first keyword match for precision anchoring
 4. Caps the total context at 40,000 characters for initial patches; 80,000 characters for revision prompts
 5. Resolves cross-file symbols by scanning imports and call chains, adding dependent files up to a 200,000 character total budget
+6. **Hard caps revision prompts at 120,000 characters** — truncates file context (not traceback) when exceeded (Fix 22)
 
 ---
 
@@ -163,45 +190,37 @@ The traceback loop uses a cost-efficient escalation strategy:
 
 ---
 
-## Roadmap to 70%+
+## Roadmap to 70%+ (Official 500-Instance)
 
-Based on run 8 failure analysis, here are the specific improvements that would push the score above 70%:
+The following improvements are implemented and ready. The primary remaining blocker is a funded 500-instance run for an official leaderboard submission.
 
-### 1. Fix Large-Context Revision Prompt Cap (Highest Impact — ~+4%)
+### Implemented (Fixes 22–32)
 
-**Problem:** Instances 23–26 all failed with 216k–254k character revision prompts. The prompts are too large for the model to reason effectively, and Fable 5 was timing out on them.
+| Fix | Description | Expected Impact |
+|-----|-------------|-----------------|
+| 22 | Hard 120k char cap on revision prompts | Eliminates large-context timeouts (~+4%) |
+| 23 | `git apply --unidiff-zero` as Fallback 2 | Recovers off-by-one context patches (~+2%) |
+| 25 | Tavily wired as primary search provider | Better search results when enabled |
+| 26 | Fix Promise.race crash on instance timeout | Prevents process death, all 50 instances complete |
+| 28 | Hard-instance hint in revision prompt (attempt ≥ 3) | Guides LLM to consider multi-file edits |
+| 29 | Error signal extraction for initial patch prompt | LLM sees exception type before first attempt |
+| 30 | `buildSmartContext` ported to `externalRepoFixer` | Main agent gets smarter context selection |
+| 31 | Multi-attempt revision + escalation in `externalRepoFixer` | Main agent retries with stronger model on failure |
+| 32 | Python version detection for probe scripts | Prevents SyntaxError on Python 3.5 testbeds |
 
-**Fix:** Add a hard cap of 120k characters on revision prompts. When the prompt would exceed this, truncate the file context (not the traceback) and add a note. This is a 2-line change in `buildRevisionPrompt`.
+### Remaining Gaps (Next Funded Run)
 
-### 2. Sonnet 5 as Mid-Tier (In Progress — Run 9)
+**1. Official 500-instance leaderboard submission** — The single highest-leverage action. A published score on the full SWE-bench Verified set converts this from a private repo to a verifiable, citable result. Based on 50-instance performance, expected range: 60–68% on the full set.
 
-**Problem:** Run 8 used Fable 5 as the only escalation target. Sonnet 5 is significantly cheaper and nearly as capable for medium-difficulty instances.
+**2. Hard django instance improvement** — Four instances (10097, 10554, 10880, 10914) consistently fail across all runs. These involve Django file storage internals and require either (a) retrieval-augmented context from Django source docs, or (b) multi-file diff strategy that edits test files as well as source files.
 
-**Fix:** Already implemented in Run 9 (3-tier: Sonnet 4.5 → Sonnet 5 → Fable 5). Expected to recover 2–3 instances that were timing out on Fable.
-
-### 3. Patch Application Retry with Context-Stripped Patch (~+2%)
-
-**Problem:** Some patches fail `git apply` even with `--fuzz=15` because the LLM generates patches against slightly wrong line numbers.
-
-**Fix:** On `git apply` failure, strip all context lines from the patch (leaving only `+` and `-` lines) and retry with `--unidiff-zero`. This is a known technique used by SWE-agent and similar systems.
-
-### 4. Test-Aware Initial Patch (~+2%)
-
-**Problem:** The initial patch is generated without seeing the failing test code. The LLM sometimes fixes the wrong thing because it doesn't know exactly what the test is asserting.
-
-**Fix:** Include the full content of the FAIL_TO_PASS test file in the initial patch prompt. This is already done for revision prompts but not initial patches.
-
-### 5. Wire Web Search into the Pipeline
-
-**Problem:** Tavily web search is integrated in the codebase but is only available in the chat agent — it is not called during the SWE-bench pipeline. For hard instances involving obscure library APIs or domain-specific knowledge (e.g., ERFA coordinate frames, CDS unit grammar), a targeted web search could provide the missing context.
-
-**Fix:** In the revision prompt builder, detect when the traceback references an external library and trigger a Tavily search for the relevant API documentation. Add the top 2 results to the revision prompt.
+**3. Test-aware initial patch** — Include the full FAIL_TO_PASS test file content in the initial patch prompt (currently only in revision prompts). Expected: ~+2%.
 
 ---
 
-## Pipeline Fixes Applied (Fixes 1–21)
+## All Pipeline Fixes (Fixes 1–32)
 
-This project improved from **26% → 66%** through 21 targeted fixes applied over a single development sprint:
+This project improved from **26% → 66%** (50-instance) through 32 targeted fixes:
 
 | Fix | Description |
 |-----|-------------|
@@ -222,6 +241,18 @@ This project improved from **26% → 66%** through 21 targeted fixes applied ove
 | 19 | Tavily web search integration (replaces Brave) |
 | 20 | 2-tier model escalation (Sonnet 4.5 → Fable 5) |
 | 21 | 3-tier model escalation (adds Sonnet 5 as mid-tier) |
+| 22 | Hard 120k char cap on revision prompts — eliminates large-context timeouts |
+| 23 | `git apply --unidiff-zero` as Fallback 2 in patch application chain |
+| 24 | Tavily exported as `searchTavilyDirect` for pipeline use |
+| 25 | Tavily wired as primary provider in `sweBenchSearchFallback.ts` |
+| 25b | `augmentWithSearch` wired into main run loop before patch generation |
+| 26 | Fix Promise.race timeout — clear timer + suppress background rejections |
+| 27 | Run 9 resume logic with dedicated output file |
+| 28 | Hard-instance escalation hint in revision prompt (attempt ≥ 3) |
+| 29 | Error signal extraction for initial patch prompt |
+| 30 | `buildSmartContext` ported to `externalRepoFixer` (main agent) |
+| 31 | Multi-attempt revision loop + model escalation in `externalRepoFixer` |
+| 32 | Python version detection for probe scripts — prevents SyntaxError on Python 3.5 |
 
 ---
 
@@ -243,14 +274,14 @@ OPENROUTER_API_KEY=sk-or-...   # https://openrouter.ai
 # Required for escalation: Anthropic direct — for Sonnet 5 and Fable 5
 ANTHROPIC_API_KEY=sk-ant-...   # https://console.anthropic.com
 
-# Optional: Tavily — for web search in chat agent
+# Optional: Tavily — for web search augmentation
 TAVILY_API_KEY=tvly-...        # https://tavily.com
 ```
 
 Run the SWE-bench pipeline:
 
 ```bash
-# Run 9 (3-tier escalation — recommended)
+# Run with 3-tier escalation (recommended)
 SWEBENCH_ESCALATION=1 \
 SWEBENCH_MID_PROVIDER=claude-sonnet-5 \
 SWEBENCH_STRONG_PROVIDER=claude-fable-5 \
@@ -279,8 +310,9 @@ pnpm test
 | Test files | 328 |
 | Tests passing | 5,646 |
 | Total lines of TypeScript | 194,000+ |
-| Pipeline fixes applied | 21 |
+| Pipeline fixes applied | 32 |
 | Score improvement (single sprint) | +40 percentage points (26% → 66%) |
+| Run 9 astropy subset (partial) | 72.7% (16/22) |
 
 ---
 
