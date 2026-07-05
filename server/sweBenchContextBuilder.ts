@@ -381,12 +381,36 @@ export function buildSmartContext(
     ...(options.failToPassTests ?? []).flatMap(t => t.split('::').map(p => p.toLowerCase())),
   ].filter((v, i, a) => a.indexOf(v) === i).slice(0, 50);
 
+  // Source 2a: Name-based keyword matching (function name contains keyword)
   for (const [name] of fileCtx.functions) {
     const nameLower = name.toLowerCase();
     if (keywords.some(kw => nameLower.includes(kw) || kw.includes(nameLower))) {
       seeds.add(name);
     }
   }
+
+  // Source 2b: Content-based keyword matching (function BODY contains keyword)
+  // This catches cases like _convert_data_to_col which contains 'NdarrayMixin'
+  // but whose name doesn't match any keyword from the issue description.
+  // These are seeded with HIGHEST priority (added to a separate set and prepended).
+  const contentSeeds = new Set<string>();
+  // Extract meaningful tokens from issue description (identifiers, class names, method names)
+  const contentKeywords = [
+    ...(options.issueDescription ?? '').match(/[A-Za-z_][A-Za-z0-9_]{3,}/g) ?? [],
+    ...(options.traceback ?? '').match(/[A-Za-z_][A-Za-z0-9_]{3,}/g) ?? [],
+  ].filter((v, i, a) => a.indexOf(v) === i).slice(0, 80);
+
+  for (const [name, fn] of fileCtx.functions) {
+    if (seeds.has(name)) continue; // already seeded by name
+    const bodyLower = fn.body.toLowerCase();
+    // Check if any content keyword appears in the function body
+    if (contentKeywords.some(kw => bodyLower.includes(kw.toLowerCase()))) {
+      contentSeeds.add(name);
+    }
+  }
+
+  // Merge content seeds into main seeds, but track them for priority ordering
+  for (const name of contentSeeds) seeds.add(name);
 
   // Source 3: Test-to-source mapping — if the file is a test file, skip it
   // (we want source functions, not test functions)
@@ -403,7 +427,20 @@ export function buildSmartContext(
   }
 
   // Build call-chain expanded context
-  const expanded = buildCallChainContext(fileCtx, seeds);
+  // Content-based seeds get highest priority: they contain the actual buggy code
+  const prioritySeeds = new Set<string>([
+    // Traceback-mentioned functions first (most specific)
+    ...[...seeds].filter(s => {
+      const tb = options.traceback ?? '';
+      return tb.includes(` in ${s}`) || tb.includes(`, in ${s}`);
+    }),
+    // Then content-based seeds (functions whose body contains issue keywords)
+    ...contentSeeds,
+    // Then name-matched seeds
+    ...seeds,
+  ]);
+
+  const expanded = buildCallChainContext(fileCtx, prioritySeeds);
   return expanded.content;
 }
 
