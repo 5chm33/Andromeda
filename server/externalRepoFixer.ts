@@ -314,52 +314,105 @@ function applySnippetReplacement(filePath: string, originalSnippet: string, prop
   }
 }
 
-/** Call the LLM to analyze a file and return a proposal */
+/**
+ * Call the LLM to analyze a file and return a proposal.
+ * Fix 31: Multi-attempt revision loop with model escalation (ported from SWE-bench pipeline).
+ * Attempt 1-2: fast model (Kimi/DeepSeek). Attempt 3: stronger model (OpenRouter/Claude).
+ * If snippet doesn't match on apply, feed the error back to the LLM for a corrected proposal.
+ */
 async function analyzeFileWithLLM(
   filePath: string,
   language: string,
   providerId: string
 ): Promise<{ title: string; rationale: string; category: string; confidence: number; originalSnippet: string; proposedSnippet: string } | null> {
+  const MAX_ATTEMPTS = 3;
+  // Escalate to a stronger model on the final attempt
+  const getProviderForAttempt = (attempt: number): string => {
+    if (attempt < MAX_ATTEMPTS) return providerId;
+    // Attempt 3: escalate to strongest available
+    if (process.env.OPENROUTER_API_KEY) return "openrouter";
+    if (process.env.ANTHROPIC_API_KEY) return "anthropic-direct";
+    return providerId; // fallback to same if no stronger model available
+  };
+
   try {
     const { simpleChatCompletion } = await import("./llmProvider.js");
     const content = fs.readFileSync(filePath, "utf-8");
     const messages = buildAnalysisPrompt(filePath, content, language);
 
-    const rawContent = await simpleChatCompletion(messages, {
-      maxTokens: 2000,
-      temperature: 0.2,
-      providerId,
-    });
+    let lastSnippetMismatch: string | null = null;
 
-    if (!rawContent) return null;
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+      const attemptProviderId = getProviderForAttempt(attempt);
 
-    // Parse JSON response
-    let parsed: any = null;
-    try {
-      // Strip markdown code fences if present
-      const cleaned = rawContent.replace(/^```(?:json)?\s*/m, "").replace(/\s*```\s*$/m, "").trim();
-      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-      if (jsonMatch) parsed = JSON.parse(jsonMatch[0]);
-    } catch {
-      return null;
+      // On retry: append the mismatch error to the conversation so the LLM can correct itself
+      const attemptMessages = [...messages];
+      if (lastSnippetMismatch && attempt > 1) {
+        attemptMessages.push({
+          role: "assistant",
+          content: lastSnippetMismatch,
+        } as any);
+        attemptMessages.push({
+          role: "user",
+          content: `The originalSnippet you provided does not exactly match any text in the file. The snippet must be a verbatim substring of the file content shown above. Please look at the file again carefully and provide a corrected JSON with an originalSnippet that is an EXACT copy of lines from the file. Return ONLY valid JSON.`,
+        } as any);
+      }
+
+      const rawContent = await simpleChatCompletion(attemptMessages, {
+        maxTokens: 2000,
+        temperature: attempt === 1 ? 0.2 : 0.4, // slightly higher temp on retries for variation
+        providerId: attemptProviderId,
+      });
+
+      if (!rawContent) continue;
+
+      // Parse JSON response
+      let parsed: any = null;
+      try {
+        const cleaned = rawContent.replace(/^```(?:json)?\s*/m, "").replace(/\s*```\s*$/m, "").trim();
+        const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+        if (jsonMatch) parsed = JSON.parse(jsonMatch[0]);
+      } catch {
+        continue;
+      }
+
+      if (!parsed) continue;
+      if (parsed.skip) return null; // LLM said code is already good
+
+      // Validate required fields
+      if (!parsed.originalSnippet || !parsed.proposedSnippet || !parsed.title) continue;
+      if (typeof parsed.confidence !== "number") parsed.confidence = 0.7;
+      if (parsed.confidence < 0.6) continue; // Low confidence — skip
+
+      const result = {
+        title: String(parsed.title).slice(0, 100),
+        rationale: String(parsed.rationale || "").slice(0, 500),
+        category: String(parsed.category || "improvement"),
+        confidence: parsed.confidence,
+        originalSnippet: String(parsed.originalSnippet),
+        proposedSnippet: String(parsed.proposedSnippet),
+      };
+
+      // Verify the snippet actually exists in the file before returning
+      // (saves a wasted apply attempt downstream)
+      if (content.includes(result.originalSnippet)) {
+        return result; // Exact match — return immediately
+      }
+
+      // Fuzzy check: if at least 80% of snippet lines match, accept it
+      // (applySnippetReplacement has its own fuzzy fallback)
+      const snippetLines = result.originalSnippet.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+      const matchCount = snippetLines.filter(l => content.includes(l)).length;
+      if (snippetLines.length > 0 && matchCount / snippetLines.length >= 0.8) {
+        return result; // Good enough — fuzzy apply will handle it
+      }
+
+      // Snippet doesn't match — save the raw response for the retry message
+      lastSnippetMismatch = rawContent;
+      log.warn(`[externalRepoFixer] Attempt ${attempt}/${MAX_ATTEMPTS}: snippet mismatch for ${path.basename(filePath)}, retrying...`);
     }
 
-    if (!parsed) return null;
-    if (parsed.skip) return null; // LLM said code is already good
-
-    // Validate required fields
-    if (!parsed.originalSnippet || !parsed.proposedSnippet || !parsed.title) return null;
-    if (typeof parsed.confidence !== "number") parsed.confidence = 0.7;
-    if (parsed.confidence < 0.6) return null; // Low confidence — skip
-
-    return {
-      title: String(parsed.title).slice(0, 100),
-      rationale: String(parsed.rationale || "").slice(0, 500),
-      category: String(parsed.category || "improvement"),
-      confidence: parsed.confidence,
-      originalSnippet: String(parsed.originalSnippet),
-      proposedSnippet: String(parsed.proposedSnippet),
-    };
+    return null; // All attempts failed
   } catch (err) {
     log.warn(`[externalRepoFixer] LLM analysis failed for ${path.basename(filePath)}: ${String(err).slice(0, 100)}`);
     return null;
