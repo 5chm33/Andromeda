@@ -75,22 +75,34 @@ function getTestCommand(instanceId: string, failToPassTests: string[]): string {
   const repo = instanceId.split('__')[0].toLowerCase();
 
   if (repo === 'django') {
-    const testModules = [...new Set(failToPassTests.map(t => {
-      // Django FAIL_TO_PASS format: "test_name (module.ClassName)"
-      // Extract module from parentheses, drop the class name (last segment)
+    // Django FAIL_TO_PASS entries can be:
+    //   1. "test_name (module.ClassName)" — standard format, extract module
+    //   2. "Description text" — docstring-based, no module, skip these
+    //   3. "tests/path/file.py::Class::test" — pytest style, convert path
+    const MODULE_RE = /^[a-zA-Z_][a-zA-Z0-9_.]*$/; // valid Python module path
+    const testModules = [...new Set(failToPassTests.flatMap(t => {
+      // Format 1: "test_name (module.ClassName)"
       const parenMatch = t.match(/\(([^)]+)\)/);
       if (parenMatch) {
         const fullModule = parenMatch[1]; // e.g. "auth_tests.test_validators.UsernameValidatorsTests"
+        // Validate it looks like a Python module path (no spaces, quotes, etc.)
+        if (!MODULE_RE.test(fullModule)) return []; // skip description-style entries
         const parts = fullModule.split('.');
         // Drop the last part (class name) to get the module path
-        return parts.slice(0, -1).join('.');
+        const mod = parts.slice(0, -1).join('.');
+        return mod ? [mod] : [];
       }
-      // Fallback: pytest-style "tests/module.py::ClassName::test_name"
-      const filePart = t.split('::')[0];
-      return filePart
-        .replace(/^tests\//, '')
-        .replace(/\.py$/, '')
-        .replace(/\//g, '.');
+      // Format 3: pytest-style "tests/module.py::ClassName::test_name"
+      if (t.includes('::')) {
+        const filePart = t.split('::')[0];
+        const mod = filePart
+          .replace(/^tests\//, '')
+          .replace(/\.py$/, '')
+          .replace(/\//g, '.');
+        return MODULE_RE.test(mod) ? [mod] : [];
+      }
+      // Format 2: plain description text — skip (can't extract a module)
+      return [];
     }))];
     const moduleArgs = testModules.length > 0 ? testModules.join(' ') : '';
     return `cd /testbed && source /opt/miniconda3/etc/profile.d/conda.sh && conda activate testbed && python tests/runtests.py --verbosity=2 ${moduleArgs}`;
