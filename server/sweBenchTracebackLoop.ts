@@ -429,6 +429,7 @@ export function buildRevisionPrompt(
           issueDescription: options?.issueDescription,
           traceback: tracebackSummary,
           failToPassTests: options?.failToPassTests,
+          maxChars: 80000,  // Larger budget for revision prompts — must see the buggy block
         });
         return `### ${fp}\n\`\`\`python\n${contextView}\n\`\`\``;
       }).join('\n\n')

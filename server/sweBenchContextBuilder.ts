@@ -401,6 +401,7 @@ export function buildSmartContext(
     traceback?: string;
     failToPassTests?: string[];
     keywords?: string[];
+    maxChars?: number;  // Override default MAX_CONTEXT_CHARS (e.g. larger budget for revision prompts)
   } = {}
 ): string {
   // Small files: return as-is
@@ -487,7 +488,8 @@ export function buildSmartContext(
     ...seeds,
   ]);
 
-  const expanded = buildCallChainContext(fileCtx, prioritySeeds, MAX_CONTEXT_CHARS, contentKeywords);
+  const contextBudget = options.maxChars ?? MAX_CONTEXT_CHARS;
+  const expanded = buildCallChainContext(fileCtx, prioritySeeds, contextBudget, contentKeywords);
   return expanded.content;
 }
 
