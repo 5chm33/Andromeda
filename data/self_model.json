@@ -1,15 +1,15 @@
 {
   "version": "100.0.0",
   "identity": "Andromeda — Autonomous Self-Improving AI System",
-  "uptime": 27176511,
-  "lastUpdated": 1782658939187,
+  "uptime": 359013,
+  "lastUpdated": 1783273702386,
   "capabilities": [
     {
       "name": "Self-Healing",
       "module": "selfHeal",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1782658939184,
+      "lastChecked": 1783273702371,
       "description": "Detects and recovers from runtime errors automatically"
     },
     {
@@ -17,7 +17,7 @@
       "module": "selfModify",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1782658939184,
+      "lastChecked": 1783273702371,
       "description": "Modifies own source code with safety checks"
     },
     {
@@ -25,7 +25,7 @@
       "module": "selfImprove",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1782658939184,
+      "lastChecked": 1783273702371,
       "description": "Analyzes code and generates improvement proposals"
     },
     {
@@ -33,7 +33,7 @@
       "module": "recursiveGoals",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1782658939184,
+      "lastChecked": 1783273702371,
       "description": "Tracks and executes hierarchical goals"
     },
     {
@@ -41,7 +41,7 @@
       "module": "streamIntegrityMonitor",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1782658939184,
+      "lastChecked": 1783273702371,
       "description": "Detects truncated or incomplete outputs"
     },
     {
@@ -49,7 +49,7 @@
       "module": "tokenBudgetManager",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1782658939184,
+      "lastChecked": 1783273702371,
       "description": "Manages token allocation across sessions"
     },
     {
@@ -57,7 +57,7 @@
       "module": "hotReload",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1782658939184,
+      "lastChecked": 1783273702371,
       "description": "Reloads modified modules without restart"
     },
     {
@@ -65,7 +65,7 @@
       "module": "gracefulDegradation",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1782658939184,
+      "lastChecked": 1783273702371,
       "description": "Falls back gracefully when APIs fail"
     },
     {
@@ -73,7 +73,7 @@
       "module": "recursionGuard",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1782658939184,
+      "lastChecked": 1783273702371,
       "description": "Prevents runaway self-modification loops"
     },
     {
@@ -81,7 +81,7 @@
       "module": "skillGraph",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1782658939184,
+      "lastChecked": 1783273702371,
       "description": "Learns error→fix patterns across sessions"
     },
     {
@@ -89,7 +89,7 @@
       "module": "consensusEngine",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1782658939184,
+      "lastChecked": 1783273702371,
       "description": "Multi-model voting for critical decisions"
     },
     {
@@ -97,7 +97,7 @@
       "module": "continuousImprover",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1782658939184,
+      "lastChecked": 1783273702371,
       "description": "Periodic autonomous improvement cycles"
     },
     {
@@ -105,7 +105,7 @@
       "module": "sandboxManager",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1782658939184,
+      "lastChecked": 1783273702371,
       "description": "Sandboxed code execution for safety"
     },
     {
@@ -113,7 +113,7 @@
       "module": "multiAgent",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1782658939184,
+      "lastChecked": 1783273702371,
       "description": "Spawns specialist agents for complex tasks"
     },
     {
@@ -121,7 +121,7 @@
       "module": "memory",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1782658939184,
+      "lastChecked": 1783273702371,
       "description": "Persistent memory storage and retrieval"
     },
     {
@@ -129,7 +129,7 @@
       "module": "selfMonitor",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1782658939184,
+      "lastChecked": 1783273702371,
       "description": "Tracks performance metrics and health"
     },
     {
@@ -137,7 +137,7 @@
       "module": "selfKnowledgeBase",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1782658939184,
+      "lastChecked": 1783273702371,
       "description": "Stores architectural decisions and learnings"
     },
     {
@@ -145,19 +145,11 @@
       "module": "autonomyOrchestrator",
       "enabled": true,
       "health": "healthy",
-      "lastChecked": 1782658939184,
+      "lastChecked": 1783273702371,
       "description": "Coordinates all autonomous subsystems"
     }
   ],
-  "activeGoals": [
-    {
-      "id": "mgoal_1782631763270_s44vr7",
-      "title": "Improve the Self-Improvement Pipeline",
-      "status": "active",
-      "progress": 0,
-      "startedAt": 1782631763270
-    }
-  ],
+  "activeGoals": [],
   "resources": {
     "0": "t",
     "1": "e",
@@ -171,7 +163,7 @@
     "9": "e",
     "tokensUsedToday": 0,
     "tokenBudgetRemaining": 0,
-    "apiCallsToday": 158,
+    "apiCallsToday": 0,
     "memoryEntriesCount": 0,
     "activeConnections": 0
   },

@@ -50,6 +50,246 @@
       "ip": "::1",
       "statusCode": 200,
       "durationMs": 733
+    },
+    {
+      "id": "log_1783273343137_b6yeh5",
+      "timestamp": "2026-07-05T17:42:23.137Z",
+      "method": "GET",
+      "path": "/health",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 200,
+      "durationMs": 1470,
+      "userAgent": "curl/7.81.0"
+    },
+    {
+      "id": "log_1783273344369_ta70z7",
+      "timestamp": "2026-07-05T17:42:24.369Z",
+      "method": "GET",
+      "path": "/status",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 401,
+      "durationMs": 987,
+      "userAgent": "curl/7.81.0"
+    },
+    {
+      "id": "log_1783273344569_cmhphk",
+      "timestamp": "2026-07-05T17:42:24.569Z",
+      "method": "GET",
+      "path": "/status",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 200,
+      "durationMs": 99,
+      "userAgent": "curl/7.81.0"
+    },
+    {
+      "id": "log_1783273358318_6shxhm",
+      "timestamp": "2026-07-05T17:42:38.318Z",
+      "method": "GET",
+      "path": "/health",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 200,
+      "durationMs": 3,
+      "userAgent": "curl/7.81.0"
+    },
+    {
+      "id": "log_1783273366189_bct8zy",
+      "timestamp": "2026-07-05T17:42:46.189Z",
+      "method": "GET",
+      "path": "/health",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 200,
+      "durationMs": 4,
+      "userAgent": "curl/7.81.0"
+    },
+    {
+      "id": "log_1783273366208_7zon7c",
+      "timestamp": "2026-07-05T17:42:46.208Z",
+      "method": "GET",
+      "path": "/status",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 401,
+      "durationMs": 3,
+      "userAgent": "curl/7.81.0"
+    },
+    {
+      "id": "log_1783273366228_3v3fcr",
+      "timestamp": "2026-07-05T17:42:46.228Z",
+      "method": "GET",
+      "path": "/status",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 200,
+      "durationMs": 4,
+      "userAgent": "curl/7.81.0"
+    },
+    {
+      "id": "log_1783273366246_r9esur",
+      "timestamp": "2026-07-05T17:42:46.246Z",
+      "method": "GET",
+      "path": "/status",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 403,
+      "durationMs": 2,
+      "userAgent": "curl/7.81.0"
+    },
+    {
+      "id": "log_1783273366267_e9ak4q",
+      "timestamp": "2026-07-05T17:42:46.266Z",
+      "method": "GET",
+      "path": "/jobs",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 200,
+      "durationMs": 4,
+      "userAgent": "curl/7.81.0"
+    },
+    {
+      "id": "log_1783273366305_k4gw79",
+      "timestamp": "2026-07-05T17:42:46.304Z",
+      "method": "POST",
+      "path": "/fix",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 400,
+      "durationMs": 19,
+      "userAgent": "curl/7.81.0"
+    },
+    {
+      "id": "log_1783273366326_sdzler",
+      "timestamp": "2026-07-05T17:42:46.325Z",
+      "method": "POST",
+      "path": "/fix",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 400,
+      "durationMs": 3,
+      "userAgent": "curl/7.81.0"
+    },
+    {
+      "id": "log_1783273366346_61yo9v",
+      "timestamp": "2026-07-05T17:42:46.346Z",
+      "method": "GET",
+      "path": "/fix/nonexistent-job-id",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 404,
+      "durationMs": 3,
+      "userAgent": "curl/7.81.0"
+    },
+    {
+      "id": "log_1783273370783_7ue9hb",
+      "timestamp": "2026-07-05T17:42:50.783Z",
+      "method": "POST",
+      "path": "/fix",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 202,
+      "durationMs": 531,
+      "userAgent": "curl/7.81.0"
+    },
+    {
+      "id": "log_1783273373772_fcvdlb",
+      "timestamp": "2026-07-05T17:42:53.772Z",
+      "method": "GET",
+      "path": "/health",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 200,
+      "durationMs": 2,
+      "userAgent": "node"
+    },
+    {
+      "id": "log_1783273378842_hnqq0j",
+      "timestamp": "2026-07-05T17:42:58.842Z",
+      "method": "GET",
+      "path": "/fix/fix-1783273370255-cc3h6m",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 200,
+      "durationMs": 3,
+      "userAgent": "curl/7.81.0"
+    },
+    {
+      "id": "log_1783273404254_ryrr7u",
+      "timestamp": "2026-07-05T17:43:24.253Z",
+      "method": "GET",
+      "path": "/fix/fix-1783273370255-cc3h6m",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 200,
+      "durationMs": 11,
+      "userAgent": "curl/7.81.0"
+    },
+    {
+      "id": "log_1783273404537_jx9r4t",
+      "timestamp": "2026-07-05T17:43:24.536Z",
+      "method": "GET",
+      "path": "/health",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 200,
+      "durationMs": 1,
+      "userAgent": "node"
+    },
+    {
+      "id": "log_1783273404613_7co0vi",
+      "timestamp": "2026-07-05T17:43:24.613Z",
+      "method": "GET",
+      "path": "/health",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 200,
+      "durationMs": 2,
+      "userAgent": "node"
+    },
+    {
+      "id": "log_1783273434588_hzrkzc",
+      "timestamp": "2026-07-05T17:43:54.588Z",
+      "method": "GET",
+      "path": "/health",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 200,
+      "durationMs": 2,
+      "userAgent": "node"
+    },
+    {
+      "id": "log_1783273438063_zj6a72",
+      "timestamp": "2026-07-05T17:43:58.063Z",
+      "method": "GET",
+      "path": "/fix/fix-1783273370255-cc3h6m",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 200,
+      "durationMs": 3,
+      "userAgent": "curl/7.81.0"
+    },
+    {
+      "id": "log_1783273702842_y50c7f",
+      "timestamp": "2026-07-05T17:48:22.842Z",
+      "method": "GET",
+      "path": "/fix/fix-1783273370255-cc3h6m",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 200,
+      "durationMs": 267,
+      "userAgent": "curl/7.81.0"
+    },
+    {
+      "id": "log_1783273705569_y9b8f0",
+      "timestamp": "2026-07-05T17:48:25.569Z",
+      "method": "GET",
+      "path": "/health",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 200,
+      "durationMs": 41,
+      "userAgent": "node"
+    },
+    {
+      "id": "log_1783273705608_i78lg5",
+      "timestamp": "2026-07-05T17:48:25.608Z",
+      "method": "GET",
+      "path": "/health",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 200,
+      "durationMs": 31,
+      "userAgent": "node"
+    },
+    {
+      "id": "log_1783273705669_q7bg8c",
+      "timestamp": "2026-07-05T17:48:25.669Z",
+      "method": "GET",
+      "path": "/health",
+      "ip": "::ffff:127.0.0.1",
+      "statusCode": 200,
+      "durationMs": 40,
+      "userAgent": "node"
     }
   ]
 }

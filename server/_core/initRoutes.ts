@@ -9,6 +9,7 @@ import { v7Router } from "../routes/v7Routes.js";
 import { v71Router } from "../routes/v71Routes.js";
 import { telemetryMiddleware } from "../telemetry.js";
 import { attachRbacContext, auditMiddleware, roleRateLimit } from "../rbac.js";
+import { createApiRouter } from "../routes/apiRoutes.js";
 /**
  * initRoutes.ts — v6.38
  *
@@ -29,7 +30,12 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
   app.use(auditMiddleware);
   app.use(roleRateLimit);
 
-  // ── v6.38: Admin routes (RBAC + audit log + tenant management) ──────────────
+  // ── v1.0.0: Public REST API product layer ─────────────────────────────────────────
+  // Exposes Andromeda's capabilities as a clean REST API for external clients.
+  // Endpoints: /api/v1/health, /api/v1/status, /api/v1/fix, /api/v1/jobs
+  app.use("/api/v1", createApiRouter());
+
+  // ── v6.38: Admin routes (RBAC + audit log + tenant management) ────────────
   app.use("/api/admin", adminRouter);
 
   // ── v6.39: Federated learning routes (multi-node RSI sync) ────────────────

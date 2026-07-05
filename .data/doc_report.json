@@ -1,7 +1,7 @@
 {
-  "timestamp": 1782637080729,
-  "totalModules": 817,
-  "documentedModules": 688,
+  "timestamp": 1783273341052,
+  "totalModules": 825,
+  "documentedModules": 695,
   "undocumentedExports": [
     {
       "filePath": "server/_core/imageGeneration.ts",
@@ -12298,6 +12298,12 @@
       "line": 0
     },
     {
+      "filePath": "server/routes/apiRoutes.ts",
+      "exportName": "createApiRouter",
+      "exportType": "function",
+      "line": 0
+    },
+    {
       "filePath": "server/routes/evalRoutes.ts",
       "exportName": "registerEvalRoutes",
       "exportType": "function",
@@ -14416,26 +14422,8 @@
       "line": 0
     },
     {
-      "filePath": "server/sweBenchHarness.ts",
-      "exportName": "runBaseline",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/sweBenchHarness.ts",
-      "exportName": "comparePrePostRsi",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/sweBenchHarness.ts",
-      "exportName": "getHarnessStatus",
-      "exportType": "function",
-      "line": 0
-    },
-    {
-      "filePath": "server/sweBenchHarness.ts",
-      "exportName": "resetHarnessStatus",
+      "filePath": "server/sweBenchConsensus.ts",
+      "exportName": "selectWinningPatch",
       "exportType": "function",
       "line": 0
     },
@@ -16208,7 +16196,7 @@
     {
       "filePath": "ARCHITECTURE.md",
       "type": "architecture",
-      "content": "Updated: 817 modules, 2700 undocumented exports"
+      "content": "Updated: 825 modules, 2698 undocumented exports"
     }
   ],
   "architectureUpdated": true

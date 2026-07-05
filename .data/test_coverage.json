@@ -1,8 +1,8 @@
 {
-  "timestamp": 1782653578454,
-  "totalModules": 817,
-  "testedModules": 302,
-  "untestedModules": 515,
+  "timestamp": 1783273334384,
+  "totalModules": 825,
+  "testedModules": 307,
+  "untestedModules": 518,
   "coveragePercent": 23,
   "moduleDetails": [
     {
@@ -10431,6 +10431,105 @@
       "coveragePercent": 0
     },
     {
+      "filePath": "server/sweBenchConsensus.ts",
+      "fileName": "sweBenchConsensus.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "buildAgentPrompt",
+        "parseTestCounts",
+        "selectWinningPatch",
+        "runConsensus",
+        "createDefaultAgents",
+        "DEFAULT_AGENT_COUNT"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "buildAgentPrompt",
+        "parseTestCounts",
+        "selectWinningPatch",
+        "runConsensus",
+        "createDefaultAgents",
+        "DEFAULT_AGENT_COUNT"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/sweBenchInfra.ts",
+      "fileName": "sweBenchInfra.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "getFreeDiskGb",
+        "pruneBuildCache",
+        "ensureDiskSpace",
+        "pullImageSafely",
+        "removeImage",
+        "evaluateInstance",
+        "runRobustEvaluation",
+        "DEFAULT_INFRA_CONFIG"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "getFreeDiskGb",
+        "pruneBuildCache",
+        "ensureDiskSpace",
+        "pullImageSafely",
+        "removeImage",
+        "evaluateInstance",
+        "runRobustEvaluation",
+        "DEFAULT_INFRA_CONFIG"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/sweBenchPipeline.ts",
+      "fileName": "sweBenchPipeline.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/sweBenchPipeline.test.ts",
+      "exportedFunctions": [
+        "runSOTAPipeline",
+        "runBatchSOTAPipeline"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "runSOTAPipeline",
+        "runBatchSOTAPipeline"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/sweBenchTracebackLoop.ts",
+      "fileName": "sweBenchTracebackLoop.ts",
+      "hasTestFile": false,
+      "exportedFunctions": [
+        "extractTracebackSummary",
+        "fixHunkCounts",
+        "applyAndTest",
+        "extractFunctionLevelContext",
+        "buildRevisionPrompt",
+        "extractPatchFromLLMResponse",
+        "extractFileContentsFromResponse",
+        "generateDiffFromContent",
+        "runTracebackLoop",
+        "MAX_ATTEMPTS",
+        "TEST_TIMEOUT_SECONDS"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "extractTracebackSummary",
+        "fixHunkCounts",
+        "applyAndTest",
+        "extractFunctionLevelContext",
+        "buildRevisionPrompt",
+        "extractPatchFromLLMResponse",
+        "extractFileContentsFromResponse",
+        "generateDiffFromContent",
+        "runTracebackLoop",
+        "MAX_ATTEMPTS",
+        "TEST_TIMEOUT_SECONDS"
+      ],
+      "coveragePercent": 0
+    },
+    {
       "filePath": "server/symbolMapper.ts",
       "fileName": "symbolMapper.ts",
       "hasTestFile": false,
@@ -10896,6 +10995,20 @@
       "testedFunctions": [],
       "untestedFunctions": [
         "registerVisualGroundingTools"
+      ],
+      "coveragePercent": 0
+    },
+    {
+      "filePath": "server/tools/webSearch.ts",
+      "fileName": "webSearch.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/tools/webSearch.test.ts",
+      "exportedFunctions": [
+        "searchTavilyDirect"
+      ],
+      "testedFunctions": [],
+      "untestedFunctions": [
+        "searchTavilyDirect"
       ],
       "coveragePercent": 0
     },
@@ -12862,6 +12975,29 @@
       "coveragePercent": 40
     },
     {
+      "filePath": "server/sweBenchHarness.ts",
+      "fileName": "sweBenchHarness.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/sweBenchHarness.test.ts",
+      "exportedFunctions": [
+        "runBaseline",
+        "comparePrePostRsi",
+        "getHarnessStatus",
+        "resetHarnessStatus",
+        "getPerformanceSummary"
+      ],
+      "testedFunctions": [
+        "getHarnessStatus",
+        "resetHarnessStatus"
+      ],
+      "untestedFunctions": [
+        "runBaseline",
+        "comparePrePostRsi",
+        "getPerformanceSummary"
+      ],
+      "coveragePercent": 40
+    },
+    {
       "filePath": "server/rsiScheduler.ts",
       "fileName": "rsiScheduler.ts",
       "hasTestFile": true,
@@ -13243,27 +13379,6 @@
       "coveragePercent": 50
     },
     {
-      "filePath": "server/sweBenchHarness.ts",
-      "fileName": "sweBenchHarness.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/sweBenchHarness.test.ts",
-      "exportedFunctions": [
-        "runBaseline",
-        "comparePrePostRsi",
-        "getHarnessStatus",
-        "resetHarnessStatus"
-      ],
-      "testedFunctions": [
-        "getHarnessStatus",
-        "resetHarnessStatus"
-      ],
-      "untestedFunctions": [
-        "runBaseline",
-        "comparePrePostRsi"
-      ],
-      "coveragePercent": 50
-    },
-    {
       "filePath": "server/testCoverageAnalyzer.ts",
       "fileName": "testCoverageAnalyzer.ts",
       "hasTestFile": true,
@@ -13463,16 +13578,6 @@
       "fileName": "webBrowse.ts",
       "hasTestFile": true,
       "testFilePath": "server/tools/webBrowse.test.ts",
-      "exportedFunctions": [],
-      "testedFunctions": [],
-      "untestedFunctions": [],
-      "coveragePercent": 50
-    },
-    {
-      "filePath": "server/tools/webSearch.ts",
-      "fileName": "webSearch.ts",
-      "hasTestFile": true,
-      "testFilePath": "server/tools/webSearch.test.ts",
       "exportedFunctions": [],
       "testedFunctions": [],
       "untestedFunctions": [],
@@ -13841,6 +13946,39 @@
       "untestedFunctions": [
         "getIntrospectionStats",
         "default"
+      ],
+      "coveragePercent": 60
+    },
+    {
+      "filePath": "server/sweBenchContextBuilder.ts",
+      "fileName": "sweBenchContextBuilder.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/sweBenchContextBuilder.test.ts",
+      "exportedFunctions": [
+        "parseFileContext",
+        "buildCallChainContext",
+        "buildSmartContext",
+        "mapTracebackToSourceFiles",
+        "findCrossFileCallers",
+        "extractChangedFunctions",
+        "runDebugProbe",
+        "buildDebugProbePrompt",
+        "buildProbeEnrichedRevisionPrompt",
+        "buildCrossReferencePrompt"
+      ],
+      "testedFunctions": [
+        "parseFileContext",
+        "buildCallChainContext",
+        "buildSmartContext",
+        "mapTracebackToSourceFiles",
+        "findCrossFileCallers",
+        "extractChangedFunctions"
+      ],
+      "untestedFunctions": [
+        "runDebugProbe",
+        "buildDebugProbePrompt",
+        "buildProbeEnrichedRevisionPrompt",
+        "buildCrossReferencePrompt"
       ],
       "coveragePercent": 60
     },
@@ -14730,6 +14868,27 @@
       "untestedFunctions": [
         "startSelfReflectionEngine",
         "stopSelfReflectionEngine"
+      ],
+      "coveragePercent": 75
+    },
+    {
+      "filePath": "server/sweBenchModelConfig.ts",
+      "fileName": "sweBenchModelConfig.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/sweBenchModelConfig.test.ts",
+      "exportedFunctions": [
+        "resolveSWEBenchModelConfig",
+        "callSWEBenchLLM",
+        "createSWEBenchLLMProvider",
+        "createEscalatingLLMProvider"
+      ],
+      "testedFunctions": [
+        "resolveSWEBenchModelConfig",
+        "callSWEBenchLLM",
+        "createSWEBenchLLMProvider"
+      ],
+      "untestedFunctions": [
+        "createEscalatingLLMProvider"
       ],
       "coveragePercent": 75
     },
@@ -16959,6 +17118,20 @@
       "coveragePercent": 100
     },
     {
+      "filePath": "server/routes/apiRoutes.ts",
+      "fileName": "apiRoutes.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/routes/apiRoutes.test.ts",
+      "exportedFunctions": [
+        "createApiRouter"
+      ],
+      "testedFunctions": [
+        "createApiRouter"
+      ],
+      "untestedFunctions": [],
+      "coveragePercent": 100
+    },
+    {
       "filePath": "server/routes/autonomyRoutes.ts",
       "fileName": "autonomyRoutes.ts",
       "hasTestFile": true,
@@ -17316,6 +17489,24 @@
         "getSwarmTestnet",
         "resetSwarmTestnet",
         "SwarmTestnet"
+      ],
+      "untestedFunctions": [],
+      "coveragePercent": 100
+    },
+    {
+      "filePath": "server/sweBenchSearchFallback.ts",
+      "fileName": "sweBenchSearchFallback.ts",
+      "hasTestFile": true,
+      "testFilePath": "server/sweBenchSearchFallback.test.ts",
+      "exportedFunctions": [
+        "shouldSearchForContext",
+        "generateSearchQueries",
+        "augmentWithSearch"
+      ],
+      "testedFunctions": [
+        "shouldSearchForContext",
+        "generateSearchQueries",
+        "augmentWithSearch"
       ],
       "untestedFunctions": [],
       "coveragePercent": 100

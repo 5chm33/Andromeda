@@ -521,19 +521,29 @@ export function buildRevisionPrompt(
     ? ` (summarized — original was ${originalPatch.length.toLocaleString()} chars; only changed lines shown)`
     : '';
 
-  // ── Fix 28: Hard-instance escalation hint ────────────────────────────────
+  // ── Fix 28 & 33: Hard-instance escalation hints ──────────────────────────
   // After 2 failed attempts, add a targeted hint to push the LLM to think
   // more broadly about the root cause (callee, different file, multi-file fix).
-  const hardInstanceHint = attemptNumber >= 3
-    ? `\n## ⚠️ Hard Instance — Previous Attempts Failed (${attemptNumber - 1}/${MAX_ATTEMPTS})
+  // At attempt 4-5, explicitly add MINIMAL CHANGE instruction to prevent over-engineering.
+  let hardInstanceHint = '';
+  if (attemptNumber >= 4) {
+    hardInstanceHint = `\n## ⚠️ Hard Instance — Final Attempts (${attemptNumber}/${MAX_ATTEMPTS})
+Your previous ${attemptNumber - 1} attempts failed. This is a hard instance. Before generating a new patch:
+1. Read the test failure output VERY carefully. What exact assertion failed?
+2. **CRITICAL: You may be over-engineering the fix.** Many hard bugs are TRIVIAL one-line fixes (e.g., adding a missing space, changing a default value from None to 0, or tweaking a regex).
+3. Look at the context again. Is there a simple, minimal change that satisfies the test?
+4. Make the **MINIMAL POSSIBLE CHANGE**. Do not rewrite entire functions unless absolutely necessary.
+Think step by step before writing the patch.\n`;
+  } else if (attemptNumber === 3) {
+    hardInstanceHint = `\n## ⚠️ Hard Instance — Previous Attempts Failed (${attemptNumber - 1}/${MAX_ATTEMPTS})
 Your previous ${attemptNumber - 1} attempt(s) all failed. This is a hard instance. Before generating a new patch:
 1. Read the test failure output VERY carefully — what exact assertion failed? What value was expected vs. actual?
 2. Consider: is the bug in a DIFFERENT function or file than the one you patched?
 3. Consider: does the fix require changing MORE THAN ONE function or file?
 4. Consider: is there a callee function that is returning the wrong type or value?
 5. Consider: does the test expect a specific exception type, message, or behavior that your patch doesn't produce?
-Think step by step before writing the patch.\n`
-    : '';
+Think step by step before writing the patch.\n`;
+  }
 
   const prompt = `You are an expert Python software engineer fixing a bug in a repository.
 
