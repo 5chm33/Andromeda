@@ -211,15 +211,25 @@ export function fixHunkCounts(patch: string): string {
       let j = i + 1;
       let oldCount = 0;
       let newCount = 0;
+      // Collect hunk lines first, then trim trailing empty context lines
+      // (split('\n') produces a trailing empty string that would be miscounted)
+      const hunkLines: string[] = [];
       while (j < lines.length) {
         const l = lines[j];
         if (l.startsWith('@@') || l.startsWith('diff ') ||
             l.startsWith('--- ') || l.startsWith('+++ ')) break;
+        hunkLines.push(l);
+        j++;
+      }
+      // Trim trailing empty context lines (artifact of split('\n') on patch text)
+      while (hunkLines.length > 0 && hunkLines[hunkLines.length - 1] === '') {
+        hunkLines.pop();
+      }
+      for (const l of hunkLines) {
         if (l.startsWith('-')) { oldCount++; }
         else if (l.startsWith('+')) { newCount++; }
         else if (l.startsWith('\\')) { /* no newline marker — skip */ }
         else { oldCount++; newCount++; }  // context line
-        j++;
       }
       result.push(`@@ -${oldStart},${oldCount} +${newStart},${newCount} @@${contextSuffix}`);
       i++;
