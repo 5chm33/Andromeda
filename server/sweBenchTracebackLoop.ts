@@ -223,32 +223,47 @@ export async function applyAndTest(
     ).catch(e => ({ stdout: '', stderr: e.stderr || e.message }));
 
     if (applyResult.stderr && applyResult.stderr.includes('error:')) {
-      // AST-aware patch fallback
-      const astSpecMatch = patch.match(/<!--AST_PATCH_SPEC:(\{[\s\S]*?\})-->/);
-      if (astSpecMatch) {
-        try {
-          const specJson = astSpecMatch[1];
-          const specPath = `/tmp/andromeda_ast_spec_${patchId}.json`;
-          const applierSrc = require('path').join(__dirname, '../scripts/ast_patch_applier.py');
-          fs.writeFileSync(specPath, specJson, 'utf-8');
-          await execAsync(`docker cp ${specPath} ${containerName}:/tmp/ast_spec.json`);
-          await execAsync(`docker cp ${applierSrc} ${containerName}:/tmp/ast_patch_applier.py`);
-          const astResult = await execAsync(
-            `docker exec ${containerName} bash -c "cd ${repoPath} && python3 /tmp/ast_patch_applier.py --patch-file /tmp/ast_spec.json --repo-root ${repoPath} 2>&1"`
-          ).catch(e => ({ stdout: e.stdout || '', stderr: e.stderr || e.message }));
-          console.log(`[TracebackLoop] AST fallback result: ${astResult.stdout.slice(0, 200)}`);
-          if (!astResult.stdout.includes('FAILED') && !astResult.stderr?.includes('Error')) {
-            console.log('[TracebackLoop] AST-aware patch applied successfully');
-          } else {
-            return { passed: false, output: `PATCH_APPLY_FAILED (AST also failed):\n${applyResult.stderr}\n${astResult.stdout}` };
+      // ── Fallback 1: patch -p1 --fuzz=5 (handles wrong line numbers from context-only diffs) ──
+      const fuzzResult = await execAsync(
+        `docker exec ${containerName} bash -c "cd ${repoPath} && patch -p1 --fuzz=5 --ignore-whitespace < /tmp/candidate.diff 2>&1 || true"`
+      ).catch(e => ({ stdout: e.stdout || '', stderr: e.stderr || e.message }));
+      const fuzzOutput = fuzzResult.stdout + (fuzzResult.stderr || '');
+      const fuzzApplied = fuzzOutput.includes('patching file') && !fuzzOutput.includes('FAILED') && !fuzzOutput.includes('can\'t find file') && !fuzzOutput.includes('No such file');
+      if (fuzzApplied) {
+        console.log(`[TracebackLoop] Fuzz fallback applied patch (git apply failed, patch --fuzz=5 succeeded)`);
+      } else {
+        // Reset any partial fuzz application
+        await execAsync(
+          `docker exec ${containerName} bash -c "cd ${repoPath} && git checkout -- . 2>/dev/null || true"`
+        ).catch(() => { /* ignore */ });
+
+        // ── Fallback 2: AST-aware patch ──
+        const astSpecMatch = patch.match(/<!--AST_PATCH_SPEC:(\{[\s\S]*?\})-->/);
+        if (astSpecMatch) {
+          try {
+            const specJson = astSpecMatch[1];
+            const specPath = `/tmp/andromeda_ast_spec_${patchId}.json`;
+            const applierSrc = require('path').join(__dirname, '../scripts/ast_patch_applier.py');
+            fs.writeFileSync(specPath, specJson, 'utf-8');
+            await execAsync(`docker cp ${specPath} ${containerName}:/tmp/ast_spec.json`);
+            await execAsync(`docker cp ${applierSrc} ${containerName}:/tmp/ast_patch_applier.py`);
+            const astResult = await execAsync(
+              `docker exec ${containerName} bash -c "cd ${repoPath} && python3 /tmp/ast_patch_applier.py --patch-file /tmp/ast_spec.json --repo-root ${repoPath} 2>&1"`
+            ).catch(e => ({ stdout: e.stdout || '', stderr: e.stderr || e.message }));
+            console.log(`[TracebackLoop] AST fallback result: ${astResult.stdout.slice(0, 200)}`);
+            if (!astResult.stdout.includes('FAILED') && !astResult.stderr?.includes('Error')) {
+              console.log('[TracebackLoop] AST-aware patch applied successfully');
+            } else {
+              return { passed: false, output: `PATCH_APPLY_FAILED (AST also failed):\n${applyResult.stderr}\n${astResult.stdout}` };
+            }
+          } catch (astErr: any) {
+            return { passed: false, output: `PATCH_APPLY_FAILED:\n${applyResult.stderr}` };
           }
-        } catch (astErr: any) {
+        } else {
           return { passed: false, output: `PATCH_APPLY_FAILED:\n${applyResult.stderr}` };
         }
-      } else {
-        return { passed: false, output: `PATCH_APPLY_FAILED:\n${applyResult.stderr}` };
-      }
-    }
+      } // end fuzz else
+    } // end git apply error block
 
     // ── Step 2: Apply test_patch (adds new test cases) ─────────────────────
     if (options?.testPatch && options.testPatch.trim().length > 10) {
