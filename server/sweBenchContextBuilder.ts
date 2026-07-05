@@ -209,7 +209,8 @@ function extractFunctionCalls(body: string): string[] {
 export function buildCallChainContext(
   fileCtx: FileContext,
   seedNames: Set<string>,
-  maxChars = MAX_CONTEXT_CHARS
+  maxChars = MAX_CONTEXT_CHARS,
+  contentKeywords: string[] = []
 ): ExpandedContext {
   const expanded = new Set<string>();
   const toExpand = new Set<string>(seedNames);
@@ -289,11 +290,39 @@ export function buildCallChainContext(
       .join('\n');
     const section = `# === ${name}${fn.className ? ` (in class ${fn.className})` : ''} === (lines ${fn.startLine}-${fn.endLine})\n${numberedBody}\n\n`;
     if (charCount + section.length > maxChars) {
-      // Include a truncated version so LLM knows the function exists
-      const truncatedLines = bodyLines.slice(0, 20)
-        .map((line, idx) => `${String(fn.startLine + idx).padStart(5)}: ${line}`)
+      // Keyword-aware truncation: instead of always showing the first 20 lines,
+      // find the most relevant window (lines around keyword matches) so the LLM
+      // sees the actual buggy code even in large functions.
+      const remainingBudget = Math.max(0, maxChars - charCount - 200);
+      const maxLines = Math.min(bodyLines.length, Math.floor(remainingBudget / 60));
+
+      if (maxLines < 5) {
+        // No budget left — just show the signature
+        const sig = `# === ${name} (budget exhausted — ${fn.body.length} chars, lines ${fn.startLine}-${fn.endLine}) ===\n${String(fn.startLine).padStart(5)}: ${bodyLines[0]}\n...\n\n`;
+        result += sig;
+        charCount += sig.length;
+        break;
+      }
+
+      // Find the best window: prefer lines that contain content keywords
+      let bestStart = 0;
+      let bestScore = -1;
+      for (let w = 0; w <= bodyLines.length - maxLines; w++) {
+        const window = bodyLines.slice(w, w + maxLines).join(' ').toLowerCase();
+        const score = contentKeywords.filter(kw => window.includes(kw.toLowerCase())).length;
+        if (score > bestScore) {
+          bestScore = score;
+          bestStart = w;
+        }
+      }
+
+      const windowLines = bodyLines.slice(bestStart, bestStart + maxLines);
+      const numberedWindow = windowLines
+        .map((line, idx) => `${String(fn.startLine + bestStart + idx).padStart(5)}: ${line}`)
         .join('\n');
-      const truncated = `# === ${name} (truncated — ${fn.body.length} chars, lines ${fn.startLine}-${fn.endLine}) ===\n${truncatedLines}\n...\n\n`;
+      const prefix = bestStart > 0 ? `...\n` : '';
+      const suffix = (bestStart + maxLines) < bodyLines.length ? `\n...` : '';
+      const truncated = `# === ${name} (truncated — ${fn.body.length} chars, lines ${fn.startLine}-${fn.endLine}) ===\n${prefix}${numberedWindow}${suffix}\n\n`;
       result += truncated;
       charCount += truncated.length;
       break;
@@ -440,7 +469,7 @@ export function buildSmartContext(
     ...seeds,
   ]);
 
-  const expanded = buildCallChainContext(fileCtx, prioritySeeds);
+  const expanded = buildCallChainContext(fileCtx, prioritySeeds, MAX_CONTEXT_CHARS, contentKeywords);
   return expanded.content;
 }
 
