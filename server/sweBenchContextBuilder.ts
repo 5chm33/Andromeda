@@ -32,7 +32,7 @@ const execAsync = promisify(exec);
 // ─── Configuration ────────────────────────────────────────────────────────────
 
 /** Maximum characters of expanded function bodies to include in context. */
-const MAX_CONTEXT_CHARS = 24000;
+const MAX_CONTEXT_CHARS = 40000;
 
 /** Maximum call-chain depth to follow (prevents infinite loops). */
 const MAX_CALL_DEPTH = 3;
@@ -247,11 +247,39 @@ export function buildCallChainContext(
     result += fileCtx.classHeaders.join('\n') + '\n\n';
   }
 
-  // Add expanded function bodies, respecting char budget
+  // Add expanded function bodies in PRIORITY ORDER:
+  // 1. Seed functions first (directly matched from traceback/keywords)
+  // 2. Then callees of seeds (depth 1), then callees of callees (depth 2), etc.
+  // This ensures the most relevant functions are included before the budget runs out.
+  const prioritized: string[] = [];
+  const remaining = new Set<string>(expanded);
+  // First pass: seeds
+  for (const name of seedNames) {
+    if (remaining.has(name)) {
+      prioritized.push(name);
+      remaining.delete(name);
+    }
+  }
+  // Second pass: direct callees of seeds (depth 1)
+  for (const name of [...prioritized]) {
+    const fn = fileCtx.functions.get(name);
+    if (!fn) continue;
+    for (const callee of fn.calls) {
+      if (remaining.has(callee)) {
+        prioritized.push(callee);
+        remaining.delete(callee);
+      }
+    }
+  }
+  // Third pass: everything else
+  for (const name of remaining) {
+    prioritized.push(name);
+  }
+
   let charCount = result.length;
   const expandedList: string[] = [];
 
-  for (const name of expanded) {
+  for (const name of prioritized) {
     const fn = fileCtx.functions.get(name);
     if (!fn) continue;
     const section = `# === ${name}${fn.className ? ` (in class ${fn.className})` : ''} ===\n${fn.body}\n\n`;
