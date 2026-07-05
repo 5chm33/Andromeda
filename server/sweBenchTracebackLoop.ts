@@ -198,11 +198,15 @@ export function fixHunkCounts(patch: string): string {
   let i = 0;
   while (i < lines.length) {
     const line = lines[i];
+    // Match full @@ -a,b +c,d @@ header
     const m = line.match(/^(@@ -(\d+)(?:,\d+)? \+(\d+)(?:,\d+)? @@)(.*)/);
-    if (m) {
-      const oldStart = parseInt(m[2], 10);
-      const newStart = parseInt(m[3], 10);
-      const contextSuffix = m[4];
+    // Also match bare @@ @@ (no line numbers — model omitted them)
+    const mBare = !m && line.match(/^@@\s*@@(.*)/);
+    if (m || mBare) {
+      // For bare @@ @@, use placeholder line 1 — patch --fuzz=15 will find the real location
+      const oldStart = m ? parseInt(m[2], 10) : 1;
+      const newStart = m ? parseInt(m[3], 10) : 1;
+      const contextSuffix = m ? m[4] : (mBare ? mBare[1] : '');
       // Count actual lines in this hunk
       let j = i + 1;
       let oldCount = 0;
