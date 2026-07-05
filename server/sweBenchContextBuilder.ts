@@ -282,10 +282,18 @@ export function buildCallChainContext(
   for (const name of prioritized) {
     const fn = fileCtx.functions.get(name);
     if (!fn) continue;
-    const section = `# === ${name}${fn.className ? ` (in class ${fn.className})` : ''} ===\n${fn.body}\n\n`;
+    // Add line numbers to each line so the LLM can generate valid @@ -line,count +line,count @@ headers
+    const bodyLines = fn.body.split('\n');
+    const numberedBody = bodyLines
+      .map((line, idx) => `${String(fn.startLine + idx).padStart(5)}: ${line}`)
+      .join('\n');
+    const section = `# === ${name}${fn.className ? ` (in class ${fn.className})` : ''} === (lines ${fn.startLine}-${fn.endLine})\n${numberedBody}\n\n`;
     if (charCount + section.length > maxChars) {
       // Include a truncated version so LLM knows the function exists
-      const truncated = `# === ${name} (truncated — ${fn.body.length} chars) ===\n${fn.body.slice(0, 800)}\n...\n\n`;
+      const truncatedLines = bodyLines.slice(0, 20)
+        .map((line, idx) => `${String(fn.startLine + idx).padStart(5)}: ${line}`)
+        .join('\n');
+      const truncated = `# === ${name} (truncated — ${fn.body.length} chars, lines ${fn.startLine}-${fn.endLine}) ===\n${truncatedLines}\n...\n\n`;
       result += truncated;
       charCount += truncated.length;
       break;
