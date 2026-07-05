@@ -76,6 +76,16 @@ function getTestCommand(instanceId: string, failToPassTests: string[]): string {
 
   if (repo === 'django') {
     const testModules = [...new Set(failToPassTests.map(t => {
+      // Django FAIL_TO_PASS format: "test_name (module.ClassName)"
+      // Extract module from parentheses, drop the class name (last segment)
+      const parenMatch = t.match(/\(([^)]+)\)/);
+      if (parenMatch) {
+        const fullModule = parenMatch[1]; // e.g. "auth_tests.test_validators.UsernameValidatorsTests"
+        const parts = fullModule.split('.');
+        // Drop the last part (class name) to get the module path
+        return parts.slice(0, -1).join('.');
+      }
+      // Fallback: pytest-style "tests/module.py::ClassName::test_name"
       const filePart = t.split('::')[0];
       return filePart
         .replace(/^tests\//, '')
