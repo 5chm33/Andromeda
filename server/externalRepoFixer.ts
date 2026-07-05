@@ -46,6 +46,7 @@ export type FixJobStatus =
   | "committing"
   | "pushing"
   | "pr_opened"
+  | "cross-repo"
   | "done"
   | "failed";
 
@@ -328,10 +329,16 @@ async function analyzeFileWithLLM(
   const MAX_ATTEMPTS = 3;
   // Escalate to a stronger model on the final attempt
   const getProviderForAttempt = (attempt: number): string => {
-    if (attempt < MAX_ATTEMPTS) return providerId;
-    // Attempt 3: escalate to strongest available
-    if (process.env.OPENROUTER_API_KEY) return "openrouter";
-    if (process.env.ANTHROPIC_API_KEY) return "anthropic-direct";
+    if (attempt === 1) return providerId;
+    // Attempt 2: escalate to Standard tier (Sonnet 4.5)
+    if (attempt === 2) {
+      if (process.env.ANTHROPIC_API_KEY) return "anthropic-direct";
+      if (process.env.OPENROUTER_API_KEY) return "openrouter";
+      return providerId;
+    }
+    // Attempt 3: escalate to Pro/Ultra tier (Sonnet 5 / Fable)
+    if (process.env.ANTHROPIC_API_KEY) return "anthropic-direct-fable";
+    if (process.env.OPENROUTER_API_KEY) return "openrouter-fable";
     return providerId; // fallback to same if no stronger model available
   };
 
@@ -665,7 +672,31 @@ async function runFixJob(job: FixJob, options: FixJobOptions): Promise<void> {
       throw new Error(`PR creation failed: ${String(e)}`);
     }
 
-    emit(job, "done", `PR opened: ${prUrl}`, 100, { prUrl });
+    emit(job, "pr_opened", `PR opened: ${prUrl}`, 90, { prUrl });
+
+    // ── Step 7: Cross-Repo Stigmergy (Propagate fixes) ──────────────────────
+    emit(job, "cross-repo" as FixJobStatus, "Checking for related repositories to propagate fixes...", 92);
+    try {
+      const { discoverRelatedRepos, runCrossRepoImprovement } = await import("./crossRepoRsi.js");
+      const relatedRepos = await discoverRelatedRepos({
+        githubToken: pat,
+        targetOrg: parsed.owner,
+        languageFilter: language
+      });
+      
+      if (relatedRepos.length > 0) {
+        emit(job, "cross-repo" as FixJobStatus, `Found ${relatedRepos.length} related repos. Propagating improvements...`, 95);
+        for (const relatedRepo of relatedRepos) {
+          await runCrossRepoImprovement(relatedRepo);
+        }
+      }
+    } catch (e) {
+      log.warn(`[externalRepoFixer] Cross-repo propagation failed (non-fatal): ${String(e)}`);
+    }
+    emit(job, "cross-repo" as FixJobStatus, "Cross-repo propagation complete", 98);
+
+    // ── Step 8: Clean up ──────────────────────────────────────────────────────
+    emit(job, "done", "Fix job completed successfully!", 100, { prUrl });
 
   } catch (err) {
     const msg = String(err);

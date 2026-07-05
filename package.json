@@ -16,6 +16,7 @@
     "test:federated": "npx tsx scripts/simulate-federated.ts",
     "test:eval": "npx tsx scripts/run-eval.ts",
     "db:push": "drizzle-kit generate && drizzle-kit migrate",
+    "daemon": "node dist/andromedaDaemon.js",
     "daemon:start": "pm2 start scripts/ecosystem.config.js",
     "daemon:stop": "pm2 stop andromeda-rsi",
     "daemon:status": "pm2 status andromeda-rsi",
