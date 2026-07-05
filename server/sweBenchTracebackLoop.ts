@@ -186,6 +186,50 @@ export function extractTracebackSummary(testOutput: string): string {
 }
 
 /**
+ * Fixes wrong @@ -a,b +c,d @@ line counts in a unified diff.
+ *
+ * LLMs frequently generate patches with incorrect hunk line counts, causing
+ * git apply to reject them as "corrupt patch". This function recounts the
+ * actual lines in each hunk and rewrites the @@ header accordingly.
+ */
+export function fixHunkCounts(patch: string): string {
+  const lines = patch.split('\n');
+  const result: string[] = [];
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    const m = line.match(/^(@@ -(\d+)(?:,\d+)? \+(\d+)(?:,\d+)? @@)(.*)/);
+    if (m) {
+      const oldStart = parseInt(m[2], 10);
+      const newStart = parseInt(m[3], 10);
+      const contextSuffix = m[4];
+      // Count actual lines in this hunk
+      let j = i + 1;
+      let oldCount = 0;
+      let newCount = 0;
+      while (j < lines.length) {
+        const l = lines[j];
+        if (l.startsWith('@@') || l.startsWith('diff ') ||
+            l.startsWith('--- ') || l.startsWith('+++ ')) break;
+        if (l.startsWith('-')) { oldCount++; }
+        else if (l.startsWith('+')) { newCount++; }
+        else if (l.startsWith('\\')) { /* no newline marker — skip */ }
+        else { oldCount++; newCount++; }  // context line
+        j++;
+      }
+      result.push(`@@ -${oldStart},${oldCount} +${newStart},${newCount} @@${contextSuffix}`);
+      i++;
+    } else {
+      result.push(line);
+      i++;
+    }
+  }
+  // Ensure trailing newline (missing newline causes "corrupt patch" in git apply)
+  const joined = result.join('\n');
+  return joined.endsWith('\n') ? joined : joined + '\n';
+}
+
+/**
  * Applies a patch to a running Docker container and runs the test suite.
  * Applies test_patch first to add new test cases (critical for SWE-bench).
  * Uses conda activation and repo-specific test commands.
@@ -215,7 +259,10 @@ export async function applyAndTest(
     ).catch(() => { /* ignore */ });
 
     // ── Step 1: Apply the model patch ──────────────────────────────────────
-    fs.writeFileSync(hostPatchPath, patch, 'utf-8');
+    // Pre-process: fix wrong @@ hunk line counts (LLMs frequently generate
+    // patches with incorrect counts, causing "corrupt patch" errors in git apply)
+    const fixedPatch = fixHunkCounts(patch);
+    fs.writeFileSync(hostPatchPath, fixedPatch, 'utf-8');
     await execAsync(`docker cp ${hostPatchPath} ${containerName}:/tmp/candidate.diff`);
 
     const applyResult = await execAsync(
