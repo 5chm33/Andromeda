@@ -724,6 +724,34 @@ export async function runRSICycle(): Promise<RSICycleResult> {
                 "fact",
                 ["rsi", "ci-failure", ciResult.failedStage ?? "unknown"]
               );
+              
+              // v18.0.1: Model Escalation Loop on CI Failure
+              // Eco -> Standard (Sonnet 4.5) -> Pro (Sonnet 5) -> Ultra (Fable)
+              const escalationLevel = (proposal as any)._escalationLevel || 0;
+              if (escalationLevel < 3) {
+                console.log(`[RSIEngine] Proposal ${proposal.id} failed CI. Escalating model tier and re-queuing (Level ${escalationLevel} -> ${escalationLevel + 1})`);
+                
+                let nextTier = "standard";
+                if (escalationLevel === 1) nextTier = "pro";
+                if (escalationLevel === 2) nextTier = "ultra";
+                const { analyzeAndPropose, loadProposals, saveProposals } = await import("./selfImprove.js");
+                
+                // Re-generate the proposal with a stronger model
+                try {
+                  const newProposal = await analyzeAndPropose(proposal.filePath, undefined, nextTier);
+                  if (newProposal) {
+                    (newProposal as any)._escalationLevel = escalationLevel + 1;
+                    const store = loadProposals();
+                    store.proposals.push(newProposal);
+                    saveProposals(store);
+                    console.log(`[RSIEngine] Successfully generated escalated proposal ${newProposal.id} with ${nextTier} tier model`);
+                  }
+                } catch (escErr) {
+                  console.warn(`[RSIEngine] Failed to generate escalated proposal: ${(escErr as Error).message}`);
+                }
+              } else {
+                console.warn(`[RSIEngine] Proposal ${proposal.id} exhausted escalation levels (max 3). Giving up.`);
+              }
             }
           } else {
             proposalsRejected++;

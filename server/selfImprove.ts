@@ -710,7 +710,8 @@ function generateSimpleDiff(original: string, proposed: string, filename: string
 
 export async function analyzeAndPropose(
   targetFile: string,
-  area?: string
+  area?: string,
+  forceTier?: string
 ): Promise<ImprovementProposal | null> {
   // v7.1.3: Validate env keys on first call (deferred from module load to avoid ESM race)
   validateEnvKeysOnce();
@@ -1011,8 +1012,8 @@ export async function analyzeAndPropose(
   function buildProviderFallbackChain(a?: string): string[] {
     // v7.1.6: Use already-imported llmProvider functions (imported below via dynamic import)
     // getProviderForTier and tierForArea are resolved after the await import("./llmProvider.js") below
-    const tier = tierForArea_fn(a);
-    const primary = getProviderForTier_fn(tier);
+    const tier = forceTier || tierForArea_fn(a);
+    const primary = getProviderForTier_fn(tier as any);
     // Build fallback: primary → eco fallbacks → last resort
     const hasDeepSeek = !!process.env.DEEPSEEK_API_KEY;
     const hasKimi = !!process.env.KIMI_API_KEY;
@@ -1029,7 +1030,11 @@ export async function analyzeAndPropose(
     }
     // v10.3: openai (sandbox Gemini proxy) as final fallback — always available in sandbox
     if (!chain.includes("openai") && hasOpenAI) chain.push("openai");
-    if (chain.length === 0) chain.push("openai");
+    
+    // v18.0.2: Ultimate zero-cost fallback — Ollama (local)
+    if (!chain.includes("ollama")) chain.push("ollama");
+    
+    if (chain.length === 0) chain.push("ollama");
     return chain;
   }
   const { simpleChatCompletion, getProviderForTier: getProviderForTier_fn, tierForArea: tierForArea_fn } = await import("./llmProvider.js");

@@ -189,6 +189,34 @@ const DEFAULT_PROVIDERS: Record<string, Omit<LLMProviderConfig, "apiKey">> = {
       "anthropic-version": "2023-06-01",
     },
   },
+  "claude-sonnet-5": {
+    id: "claude-sonnet-5",
+    name: "Anthropic Claude Sonnet 5",
+    apiUrl: "https://api.anthropic.com/v1/chat/completions",
+    model: "claude-sonnet-5",
+    maxTokens: 16000,
+    temperature: 0.5,
+    supportsTools: true,
+    supportsVision: true,
+    supportsStreaming: true,
+    headers: {
+      "anthropic-version": "2023-06-01",
+    },
+  },
+  "claude-fable": {
+    id: "claude-fable",
+    name: "Anthropic Claude Fable",
+    apiUrl: "https://api.anthropic.com/v1/chat/completions",
+    model: "claude-fable",
+    maxTokens: 16000,
+    temperature: 0.5,
+    supportsTools: true,
+    supportsVision: true,
+    supportsStreaming: true,
+    headers: {
+      "anthropic-version": "2023-06-01",
+    },
+  },
   custom: {
     id: "custom",
     name: "Custom Provider",
@@ -485,7 +513,7 @@ export function listProviders(): Array<{ id: string; name: string }> {
 // The tier is selected automatically based on task type, or can be overridden
 // by setting LLM_TIER=eco|standard|pro in .env.local.
 
-export type LLMTier = "eco" | "standard" | "pro";
+export type LLMTier = "eco" | "standard" | "pro" | "ultra";
 
 /**
  * Returns the provider ID assigned to a given quality/cost tier.
@@ -495,12 +523,11 @@ export type LLMTier = "eco" | "standard" | "pro";
 export function getProviderForTier(tier: LLMTier): string {
   const override = process.env.LLM_TIER as LLMTier | undefined;
   const effectiveTier = override ?? tier;
-
   const hasDeepSeek = !!process.env.DEEPSEEK_API_KEY;
   const hasKimi = !!process.env.KIMI_API_KEY;
   const hasOpenRouter = !!process.env.OPENROUTER_API_KEY;
 
-    switch (effectiveTier) {
+  switch (effectiveTier) {
     case "eco":
       // v12.2.2: Kimi first (free, excellent code quality) — only fall back to DeepSeek if Kimi unavailable
       // This prevents burning DeepSeek Pro tokens on routine proposal generation
@@ -509,18 +536,23 @@ export function getProviderForTier(tier: LLMTier): string {
       if (hasDeepSeek) return "deepseek";          // DeepSeek Flash as last resort
       return "deepseek"; // fallback (will fail gracefully)
     case "standard":
-      // Mid-tier — Kimi k2.6 (best free coding model) or DeepSeek Reasoner
+      // Mid-tier — Sonnet 4.5
+      if (hasOpenRouter) return "anthropic";                         // Claude via OpenRouter
+      if (process.env.ANTHROPIC_API_KEY) return "anthropic-direct";
       if (hasKimi) return "kimi";
       if (hasDeepSeek) return "deepseek-reasoner";
-      if (hasOpenRouter) return "openrouter-fast";
       return "deepseek";
     case "pro":
-      // v9.16.2: Premium — use OpenRouter for complex decisions (Claude Sonnet 3.5)
-      // The user explicitly requested OpenRouter for complex tasks as it was not draining budget.
-      if (hasOpenRouter) return "anthropic";                         // Claude via OpenRouter
-      if (process.env.ANTHROPIC_API_KEY) return "anthropic-direct";  // Direct Claude (fallback)
-      if (hasKimi) return "kimi";                                    // Kimi as last resort
-      if (hasDeepSeek) return "deepseek-reasoner";                   // DeepSeek deep-think guard
+      // Premium — Sonnet 5
+      if (process.env.ANTHROPIC_API_KEY) return "claude-sonnet-5";
+      if (hasOpenRouter) return "anthropic";                         
+      if (hasKimi) return "kimi";                                    
+      if (hasDeepSeek) return "deepseek-reasoner";                   
+      return "deepseek";
+    case "ultra":
+      // Ultimate fallback — Fable
+      if (process.env.ANTHROPIC_API_KEY) return "claude-fable";
+      if (process.env.OPENROUTER_API_KEY) return "anthropic";
       return "deepseek";
     default:
       return "deepseek";
