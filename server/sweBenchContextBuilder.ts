@@ -617,14 +617,18 @@ ${fileSections}
 ${failToPassTests.join('\n')}
 
 ## Instructions
-Using the debug probe output above to understand the internal state, output the COMPLETE corrected
-file content for each file you need to change:
+Using the debug probe output above to understand the internal state, output a TARGETED unified diff
+patch (git diff format) fixing ONLY the lines that need changing:
 
-<file path="path/to/file.py">
-[complete corrected file content]
-</file>
+\`\`\`diff
+--- a/path/to/file.py
++++ b/path/to/file.py
+@@ -line,count +line,count @@
+-old line
++new line
+\`\`\`
 
-Output ONLY the file blocks. No explanation.
+NEVER output the complete file. Output ONLY the diff block. No explanation.
 `;
 }
 
@@ -662,11 +666,16 @@ Check if any of these callers need to be updated to match your changes.
 ${callerSections}
 
 ## Instructions
-If any callers need updating, output the COMPLETE corrected file content:
-<file path="path/to/file.py">
-[complete corrected file content]
-</file>
+If any callers need updating, output a TARGETED unified diff patch (git diff format) for each file:
+\`\`\`diff
+--- a/path/to/file.py
++++ b/path/to/file.py
+@@ -line,count +line,count @@
+-old line
++new line
+\`\`\`
 
+NEVER output the complete file. Output ONLY the diff blocks.
 If no callers need updating, output: NO_CHANGES_NEEDED
 `;
 }

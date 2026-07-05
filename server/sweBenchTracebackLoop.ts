@@ -408,13 +408,21 @@ ${tracebackSummary}
 
 ${fileContext ? `## Current File State (after your patch was applied — call-chain expanded)\n${fileContext}\n\n` : ''}## Instructions
 1. Analyze the test failure carefully. Understand WHY your previous patch failed.
-2. Output the COMPLETE corrected file content (not a diff) for each file that needs changing.
-3. Wrap each file in: <file path="path/to/file.py">...complete file content...</file>
+2. Output a TARGETED unified diff patch (git diff format) fixing ONLY the lines that need changing.
+3. Use the standard diff format:
+\`\`\`diff
+--- a/path/to/file.py
++++ b/path/to/file.py
+@@ -line,count +line,count @@
+-old line
++new line
+\`\`\`
 4. Fix the root cause, not just the symptom.
 5. Make MINIMAL changes — only change what is necessary to fix the failing tests.
 6. If the bug is in a callee function (called by the function you patched), fix the callee.
+7. NEVER output the complete file — only output the changed lines in diff format.
 
-Output ONLY the file blocks. No explanation.
+Output ONLY the diff block. No explanation.
 `;
 }
 
@@ -655,47 +663,67 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
 
         try {
           const llmResponse = await llmProvider(revisionPrompt);
+          console.log(`[TracebackLoop] Revision response: ${llmResponse.length} chars`);
 
-          // Try complete-file format first (more reliable)
-          const newFileContents = extractFileContentsFromResponse(llmResponse);
-          if (Object.keys(newFileContents).length > 0 && fileContents) {
-            const diffs: string[] = [];
-            for (const [fp, newContent] of Object.entries(newFileContents)) {
-              const originalContent = fileContents[fp] ?? '';
-              if (originalContent && newContent !== originalContent) {
-                const diff = await generateDiffFromContent(fp, originalContent, newContent);
-                if (diff) diffs.push(diff);
+          // Primary path: extract unified diff directly (LLM now instructed to output diffs)
+          const revisedPatch = extractPatchFromLLMResponse(llmResponse);
+          let newPatch = (revisedPatch && revisedPatch.length > 10) ? revisedPatch : null;
+
+          // Fallback: if LLM still output <file> blocks, convert them to diffs
+          if (!newPatch) {
+            const newFileContents = extractFileContentsFromResponse(llmResponse);
+            if (Object.keys(newFileContents).length > 0 && fileContents) {
+              const diffs: string[] = [];
+              for (const [fp, newContent] of Object.entries(newFileContents)) {
+                const originalContent = fileContents[fp] ?? '';
+                if (originalContent && newContent !== originalContent) {
+                  const diff = await generateDiffFromContent(fp, originalContent, newContent);
+                  if (diff) diffs.push(diff);
+                }
               }
+              if (diffs.length > 0) newPatch = diffs.join('\n');
             }
+          }
 
+          if (newPatch) {
             // ── Step E: Cross-reference verification ──────────────────────
-            if (ENABLE_CROSS_REF && diffs.length > 0 && fileContents) {
+            if (ENABLE_CROSS_REF && fileContents) {
               try {
-                const changedFunctions = extractChangedFunctions(diffs.join('\n'));
+                const changedFunctions = extractChangedFunctions(newPatch);
                 if (changedFunctions.length > 0) {
+                  // Determine primary changed file from the patch
+                  const primaryFileMatch = newPatch.match(/^\+\+\+ b\/(.+)$/m);
+                  const primaryFile = primaryFileMatch ? primaryFileMatch[1].trim() : '';
                   const affectedCallers = findCrossFileCallers(
                     changedFunctions,
                     fileContents,
-                    Object.keys(newFileContents)[0] ?? ''
+                    primaryFile
                   );
                   if (affectedCallers.length > 0) {
                     console.log(`[TracebackLoop] Cross-ref: ${affectedCallers.length} files have callers of changed functions`);
                     const crossRefPrompt = buildCrossReferencePrompt(
                       instanceId,
-                      diffs.join('\n'),
+                      newPatch,
                       affectedCallers,
                       fileContents
                     );
                     const crossRefResponse = await llmProvider(crossRefPrompt);
                     if (!crossRefResponse.includes('NO_CHANGES_NEEDED')) {
-                      const crossRefFiles = extractFileContentsFromResponse(crossRefResponse);
-                      for (const [fp, newContent] of Object.entries(crossRefFiles)) {
-                        const originalContent = fileContents[fp] ?? '';
-                        if (originalContent && newContent !== originalContent) {
-                          const diff = await generateDiffFromContent(fp, originalContent, newContent);
-                          if (diff) {
-                            diffs.push(diff);
-                            console.log(`[TracebackLoop] Cross-ref added patch for ${fp}`);
+                      // Cross-ref now returns diffs; also accept <file> blocks as fallback
+                      const crossRefDiff = extractPatchFromLLMResponse(crossRefResponse);
+                      if (crossRefDiff && crossRefDiff.length > 10) {
+                        newPatch = newPatch + '\n' + crossRefDiff;
+                        console.log(`[TracebackLoop] Cross-ref added diff patch`);
+                      } else {
+                        const crossRefFiles = extractFileContentsFromResponse(crossRefResponse);
+                        for (const [fp, newContent] of Object.entries(crossRefFiles)) {
+                          const originalContent = fileContents[fp] ?? '';
+                          if (originalContent && newContent !== originalContent) {
+                            const diff = await generateDiffFromContent(fp, originalContent, newContent);
+                            if (diff) {
+                              newPatch = newPatch + '\n' + diff;
+                              console.log(`[TracebackLoop] Cross-ref added file-block patch for ${fp}`);
+                            }
                           }
                         }
                       }
@@ -707,15 +735,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
               }
             }
 
-            if (diffs.length > 0) {
-              currentPatch = diffs.join('\n');
-            }
-          } else {
-            // Fall back to raw diff extraction
-            const revisedPatch = extractPatchFromLLMResponse(llmResponse);
-            if (revisedPatch && revisedPatch.length > 10) {
-              currentPatch = revisedPatch;
-            }
+            currentPatch = newPatch;
           }
         } catch (llmError) {
           console.error(`[TracebackLoop] LLM revision failed for ${instanceId}:`, llmError);
