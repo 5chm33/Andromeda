@@ -63,7 +63,7 @@ import { buildSmartContext } from '../server/sweBenchContextBuilder.js';
 async function andromedaLLM(prompt: string, temperature = 0.0): Promise<string> {
   // Use a 180-second hard timeout to allow for large file responses
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 180_000);
+  const timeoutId = setTimeout(() => controller.abort(), 300_000);  // 5 min — allow for large contexts
   try {
     return await simpleChatCompletion(
       [{ role: 'user', content: prompt }],
@@ -517,10 +517,19 @@ async function expandWithSymbolResolution(
   console.log(`[Runner] Phase 1c-ext: Symbol resolution found ${newFiles.length} additional file(s): ${newFiles.join(', ')}`);
 
   const result = { ...fileContents };
+  // Cap total context size to avoid LLM timeout on huge files (e.g., representation.py = 142k)
+  // buildSmartContext will truncate each file, but we still need a total budget
+  const TOTAL_CHAR_BUDGET = 200_000;
+  let totalChars = Object.values(fileContents).reduce((s, c) => s + c.length, 0);
   for (const fp of newFiles) {
+    if (totalChars >= TOTAL_CHAR_BUDGET) {
+      console.log(`[Runner]   (skipping ${fp} — total char budget ${TOTAL_CHAR_BUDGET} reached)`);
+      continue;
+    }
     const content = await extractFileFromDocker(dockerImage, fp);
     if (content) {
       result[fp] = content;
+      totalChars += content.length;
       console.log(`[Runner]   +${fp}: ${content.length} chars (symbol dependency)`);
     }
   }
