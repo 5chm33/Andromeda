@@ -98,10 +98,16 @@ describe('extractPatchFromLLMResponse', () => {
     expect(patch).toContain('--- a/foo.py');
   });
 
-  it('returns the full response as fallback when no diff is found', () => {
+  it('returns empty string when no diff is found (prevents corrupted patches from error messages)', () => {
     const response = 'I cannot generate a patch for this.';
     const patch = extractPatchFromLLMResponse(response);
-    expect(patch).toBe(response.trim());
+    expect(patch).toBe('');
+  });
+
+  it('returns empty string for error messages like Internet access disabled', () => {
+    const response = 'Internet access disabled';
+    const patch = extractPatchFromLLMResponse(response);
+    expect(patch).toBe('');
   });
 });
 

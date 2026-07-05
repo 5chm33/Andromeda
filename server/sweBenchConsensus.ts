@@ -255,10 +255,11 @@ export async function runConsensus(
         }
       }
 
-      // If still no patch, use raw response as last resort
-      if (!patch || patch.length < 10) {
-        patch = response.trim();
-      }
+      // NOTE: We intentionally do NOT fall back to raw response text.
+      // If no valid diff or file block is found, patch stays empty and this
+      // agent is excluded from evaluation. Using raw response as a patch
+      // corrupts the container when the model returns an error message
+      // (e.g. "Internet access disabled") instead of a diff.
 
       // Cross-reference verification: check if changed functions have callers in other files
       if (patch.length > 10 && process.env.SWEBENCH_CROSS_REF !== '0') {

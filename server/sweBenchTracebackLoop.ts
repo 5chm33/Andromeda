@@ -453,7 +453,10 @@ export function extractPatchFromLLMResponse(response: string): string {
   const rawDiffMatch = response.match(/((?:diff --git|---\s+a\/)[\s\S]*)/);
   if (rawDiffMatch) return rawDiffMatch[1].trim();
 
-  return response.trim();
+  // NOTE: Do NOT fall back to raw response text. If the model returned an error
+  // message (e.g. "Internet access disabled"), returning it as a patch would
+  // corrupt the container. Return empty string so the attempt is skipped.
+  return '';
 }
 
 /**
