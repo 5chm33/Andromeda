@@ -54,6 +54,7 @@ import {
 } from '../server/sweBenchSearchFallback.js';
 import { runSOTAPipeline, PipelineConfig } from '../server/sweBenchPipeline.js';
 import { pullImageSafely, ensureDiskSpace } from '../server/sweBenchInfra.js';
+import { buildSmartContext } from '../server/sweBenchContextBuilder.js';
 
 /**
  * Andromeda's LLM provider for SWE-bench.
@@ -552,7 +553,13 @@ async function generateInitialPatch(
   ].filter((v, i, a) => a.indexOf(v) === i).slice(0, 40);
 
   const fileSections = Object.entries(fileContents).map(([fp, content]) => {
-    const contextView = buildSkeletonContext(fp, content, contextKeywords);
+    // Use buildSmartContext (with line numbers) instead of buildSkeletonContext
+    // so the model generates correct @@ -line,count headers in unified diffs
+    const contextView = buildSmartContext(fp, content, {
+      issueDescription,
+      failToPassTests,
+      keywords: contextKeywords,
+    });
     return `### ${fp}\n\`\`\`python\n${contextView}\n\`\`\``;
   }).join('\n\n');
 

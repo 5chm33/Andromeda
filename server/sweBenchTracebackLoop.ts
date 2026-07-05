@@ -224,14 +224,14 @@ export async function applyAndTest(
 
     const applyOutput = (applyResult.stdout || '') + (applyResult.stderr || '');
     if (applyOutput.includes('error:') || applyOutput.includes('unrecognized input') || applyOutput.includes('patch does not apply')) {
-      // ── Fallback 1: patch -p1 --fuzz=5 (handles wrong line numbers from context-only diffs) ──
+      // ── Fallback 1: patch -p1 --fuzz=15 (handles wrong line numbers from context-only diffs) ──
       const fuzzResult = await execAsync(
-        `docker exec ${containerName} bash -c "cd ${repoPath} && patch -p1 --fuzz=5 --ignore-whitespace < /tmp/candidate.diff 2>&1 || true"`
+        `docker exec ${containerName} bash -c "cd ${repoPath} && patch -p1 --fuzz=15 --ignore-whitespace < /tmp/candidate.diff 2>&1 || true"`
       ).catch(e => ({ stdout: e.stdout || '', stderr: e.stderr || e.message }));
       const fuzzOutput = fuzzResult.stdout + (fuzzResult.stderr || '');
       const fuzzApplied = fuzzOutput.includes('patching file') && !fuzzOutput.includes('FAILED') && !fuzzOutput.includes('can\'t find file') && !fuzzOutput.includes('No such file');
       if (fuzzApplied) {
-        console.log(`[TracebackLoop] Fuzz fallback applied patch (git apply failed, patch --fuzz=5 succeeded)`);
+        console.log(`[TracebackLoop] Fuzz fallback applied patch (git apply failed, patch --fuzz=15 succeeded)`);
       } else {
         // Reset any partial fuzz application
         await execAsync(

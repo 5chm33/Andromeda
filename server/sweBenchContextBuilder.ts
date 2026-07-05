@@ -304,15 +304,33 @@ export function buildCallChainContext(
         break;
       }
 
-      // Find the best window: prefer lines that contain content keywords
+      // Find the best window: anchor to the FIRST line that contains a keyword,
+      // then expand ±10 lines to show the full code block (not just the matching line).
+      // This ensures the model sees complete if/for/with blocks, not isolated lines.
+      let anchorLine = -1;
+      for (let li = 0; li < bodyLines.length; li++) {
+        const lineLower = bodyLines[li].toLowerCase();
+        if (contentKeywords.some(kw => lineLower.includes(kw.toLowerCase()))) {
+          anchorLine = li;
+          break;
+        }
+      }
+      // If no keyword match found, fall back to sliding window scoring
       let bestStart = 0;
-      let bestScore = -1;
-      for (let w = 0; w <= bodyLines.length - maxLines; w++) {
-        const window = bodyLines.slice(w, w + maxLines).join(' ').toLowerCase();
-        const score = contentKeywords.filter(kw => window.includes(kw.toLowerCase())).length;
-        if (score > bestScore) {
-          bestScore = score;
-          bestStart = w;
+      if (anchorLine >= 0) {
+        // Center window on anchor with ±10 line padding, then clip to valid range
+        bestStart = Math.max(0, anchorLine - 10);
+        // Ensure window doesn't exceed maxLines budget
+        bestStart = Math.min(bestStart, Math.max(0, bodyLines.length - maxLines));
+      } else {
+        let bestScore = -1;
+        for (let w = 0; w <= bodyLines.length - maxLines; w++) {
+          const window = bodyLines.slice(w, w + maxLines).join(' ').toLowerCase();
+          const score = contentKeywords.filter(kw => window.includes(kw.toLowerCase())).length;
+          if (score > bestScore) {
+            bestScore = score;
+            bestStart = w;
+          }
         }
       }
 
