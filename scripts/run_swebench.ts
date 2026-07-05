@@ -768,25 +768,46 @@ async function main() {
     console.log(`[Runner] Extended thinking enabled (budget: ${sweBenchModelConfig.thinkingBudget} tokens)`);
   }
 
-  // ── Tiered model escalation for traceback loop ──────────────────────────────
-  // SWEBENCH_ESCALATION=1 enables escalation: Sonnet 4.5 for attempts 1-2, Fable for 3+.
-  // SWEBENCH_STRONG_PROVIDER overrides the strong model (default: claude-fable-5).
+  // ── Tiered model escalation ──────────────────────────────────────────────────
+  // SWEBENCH_ESCALATION=1  enables escalation.
+  // SWEBENCH_MID_PROVIDER   mid-tier model for attempts 3-4 (default: claude-sonnet-5)
+  // SWEBENCH_STRONG_PROVIDER strong model for attempt 5 only (default: claude-fable-5)
+  //
+  // 3-tier schedule (with SWEBENCH_MID_PROVIDER set):
+  //   attempts 1-2 → base (Sonnet 4.5 via OpenRouter, cheap)
+  //   attempts 3-4 → mid  (Sonnet 5 direct Anthropic, smart+affordable)
+  //   attempt  5   → strong (Fable 5 direct Anthropic, SOTA, last resort)
+  //
+  // 2-tier schedule (SWEBENCH_MID_PROVIDER not set):
+  //   attempts 1-2 → base
+  //   attempts 3+  → strong
   let escalatingLLMProvider: PipelineConfig['escalatingLLMProvider'] | undefined;
   if (process.env.SWEBENCH_ESCALATION === '1') {
-    const strongProviderName = process.env.SWEBENCH_STRONG_PROVIDER ?? 'claude-fable-5';
-    const strongPresets: Record<string, string> = {
-      'claude-fable-5': 'claude-fable-5',
-      'claude-sonnet-5': 'claude-sonnet-5',
-      'openai-o3': 'openai-o3',
+    const resolveConfig = (providerKey: string): SWEBenchModelConfig => {
+      const savedProvider = process.env.SWEBENCH_PROVIDER;
+      process.env.SWEBENCH_PROVIDER = providerKey;
+      const cfg = resolveSWEBenchModelConfig();
+      if (savedProvider !== undefined) process.env.SWEBENCH_PROVIDER = savedProvider;
+      else delete process.env.SWEBENCH_PROVIDER;
+      return cfg;
     };
-    const strongProviderKey = strongPresets[strongProviderName] ?? 'claude-fable-5';
-    const savedProvider = process.env.SWEBENCH_PROVIDER;
-    process.env.SWEBENCH_PROVIDER = strongProviderKey;
-    const strongConfig = resolveSWEBenchModelConfig();
-    if (savedProvider !== undefined) process.env.SWEBENCH_PROVIDER = savedProvider;
-    else delete process.env.SWEBENCH_PROVIDER;
-    escalatingLLMProvider = createEscalatingLLMProvider(sweBenchModelConfig, strongConfig, 3);
-    console.log(`[Runner] Escalation enabled: attempts 1-2 → ${sweBenchModelConfig.modelId}, attempts 3+ → ${strongConfig.modelId}`);
+
+    const strongProviderKey = process.env.SWEBENCH_STRONG_PROVIDER ?? 'claude-fable-5';
+    const strongConfig = resolveConfig(strongProviderKey);
+
+    const midProviderKey = process.env.SWEBENCH_MID_PROVIDER ?? 'claude-sonnet-5';
+    const midConfig = resolveConfig(midProviderKey);
+
+    // 3-tier: base → mid (attempt 3) → strong (attempt 5)
+    escalatingLLMProvider = createEscalatingLLMProvider(
+      sweBenchModelConfig, strongConfig, 3, midConfig, 5
+    );
+    console.log(
+      `[Runner] Escalation (3-tier): ` +
+      `attempts 1-2 → ${sweBenchModelConfig.modelId}, ` +
+      `attempts 3-4 → ${midConfig.modelId}, ` +
+      `attempt 5 → ${strongConfig.modelId}`
+    );
   }
 
   // Pipeline config using the configured LLM

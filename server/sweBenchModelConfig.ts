@@ -472,26 +472,44 @@ export function createSWEBenchLLMProvider(
 /**
  * Creates a tiered escalating LLM provider for the traceback loop.
  *
- * Strategy:
- *   - Attempts 1-2: use the base model (e.g., claude-sonnet-4-5 via OpenRouter)
- *   - Attempts 3+:  escalate to the strong model (e.g., claude-fable-5 direct Anthropic)
+ * Supports 2-tier or 3-tier escalation:
  *
- * Both configs are resolved once at startup and reused across attempts.
+ *   2-tier (midConfig omitted):
+ *     - Attempts 1 to (escalateAt-1): baseConfig
+ *     - Attempts escalateAt+:         strongConfig
+ *
+ *   3-tier (midConfig provided):
+ *     - Attempts 1 to (escalateAt-1):   baseConfig   (cheap/fast)
+ *     - Attempts escalateAt to (maxAt-1): midConfig  (medium — e.g. Sonnet 5)
+ *     - Attempts maxAt+:                strongConfig (heavy — e.g. Fable 5)
+ *
+ * All configs are resolved once at startup and reused across attempts.
  *
  * @param baseConfig   Config for early revision attempts (cheap/fast)
- * @param strongConfig Config for later revision attempts (expensive/powerful)
- * @param escalateAt   Attempt number at which to switch to strongConfig (default: 3)
+ * @param strongConfig Config for the heaviest revision attempts
+ * @param escalateAt   Attempt at which to switch from base → mid (or base → strong in 2-tier). Default: 3
+ * @param midConfig    Optional medium config for 3-tier escalation
+ * @param maxAt        Attempt at which to switch from mid → strong in 3-tier. Default: 5
  */
 export function createEscalatingLLMProvider(
   baseConfig: SWEBenchModelConfig,
   strongConfig: SWEBenchModelConfig,
-  escalateAt = 3
+  escalateAt = 3,
+  midConfig?: SWEBenchModelConfig,
+  maxAt = 5
 ): (attempt: number) => (prompt: string) => Promise<string> {
   const baseLLM = createSWEBenchLLMProvider(baseConfig);
   const strongLLM = createSWEBenchLLMProvider(strongConfig);
+  const midLLM = midConfig ? createSWEBenchLLMProvider(midConfig) : null;
   return (attempt: number) => {
-    if (attempt >= escalateAt) {
+    if (midLLM && attempt >= maxAt) {
+      // 3-tier: attempt maxAt+ → strong
       return (prompt: string) => strongLLM(prompt, 0.2);
+    }
+    if (attempt >= escalateAt) {
+      // 2-tier: attempt escalateAt+ → strong; 3-tier: escalateAt to maxAt-1 → mid
+      const provider = midLLM ?? strongLLM;
+      return (prompt: string) => provider(prompt, 0.2);
     }
     return (prompt: string) => baseLLM(prompt, 0.2);
   };
