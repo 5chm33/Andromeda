@@ -528,6 +528,11 @@ async function expandWithSymbolResolution(
     }
     const content = await extractFileFromDocker(dockerImage, fp);
     if (content) {
+      // Skip if adding this file would push us over budget
+      if (totalChars + content.length > TOTAL_CHAR_BUDGET) {
+        console.log(`[Runner]   (skipping ${fp} — would exceed char budget: ${totalChars + content.length} > ${TOTAL_CHAR_BUDGET})`);
+        continue;
+      }
       result[fp] = content;
       totalChars += content.length;
       console.log(`[Runner]   +${fp}: ${content.length} chars (symbol dependency)`);
