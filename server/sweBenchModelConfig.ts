@@ -99,7 +99,7 @@ const PRESETS: Record<string, Omit<SWEBenchModelConfig, 'apiKey'>> = {
     temperature: 1,  // Required for Anthropic native API
     extendedThinking: false,
     thinkingBudget: 0,
-    timeoutMs: 300_000,
+    timeoutMs: 600_000,  // 10 min — adaptive thinking can take 5-8 min for complex prompts
     promptCaching: true,
   },
   /** Claude Fable 5 — direct Anthropic API, prompt caching, SOTA model */
@@ -115,7 +115,7 @@ const PRESETS: Record<string, Omit<SWEBenchModelConfig, 'apiKey'>> = {
     temperature: 1,  // Required for Anthropic native API
     extendedThinking: false,
     thinkingBudget: 0,
-    timeoutMs: 300_000,
+    timeoutMs: 600_000,  // 10 min — adaptive thinking can take 5-8 min for complex prompts
     promptCaching: true,  // CRITICAL: reduces input token cost by ~90% on cache hits
   },
   /** OpenAI o3 — frontier reasoning model */
