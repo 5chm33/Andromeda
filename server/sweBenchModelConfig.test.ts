@@ -101,7 +101,7 @@ describe('resolveSWEBenchModelConfig', () => {
     expect(config.apiFormat).toBe('anthropic');
     expect(config.promptCaching).toBe(true);
     expect(config.temperature).toBe(1);
-    expect(config.maxTokens).toBe(16000);
+    expect(config.maxTokens).toBe(32000);  // 32k needed: adaptive thinking (~16k) + text output (~8k)
   });
 
   it('uses ANTHROPIC_FABLE_API_KEY for claude-fable-5 preset', () => {

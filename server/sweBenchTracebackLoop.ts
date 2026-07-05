@@ -664,6 +664,8 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
         try {
           const llmResponse = await llmProvider(revisionPrompt);
           console.log(`[TracebackLoop] Revision response: ${llmResponse.length} chars`);
+          // Debug: save LLM response to file for inspection
+          fs.writeFileSync(`/tmp/debug_revision_response_attempt${attempt}.txt`, llmResponse, 'utf-8');
 
           // Primary path: extract unified diff directly (LLM now instructed to output diffs)
           const revisedPatch = extractPatchFromLLMResponse(llmResponse);

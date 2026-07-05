@@ -92,7 +92,10 @@ const PRESETS: Record<string, Omit<SWEBenchModelConfig, 'apiKey'>> = {
     modelId: 'claude-sonnet-5',
     apiUrl: 'https://api.anthropic.com/v1/messages',
     apiFormat: 'anthropic',
-    maxTokens: 16000,
+    // NOTE: claude-sonnet-5 uses adaptive thinking which consumes tokens before the text output.
+    // max_tokens must be large enough for thinking (~16k) + actual text response (~8k).
+    // The model supports up to 128k output tokens.
+    maxTokens: 32000,
     temperature: 1,  // Required for Anthropic native API
     extendedThinking: false,
     thinkingBudget: 0,
@@ -105,7 +108,10 @@ const PRESETS: Record<string, Omit<SWEBenchModelConfig, 'apiKey'>> = {
     modelId: 'claude-fable-5',
     apiUrl: 'https://api.anthropic.com/v1/messages',
     apiFormat: 'anthropic',
-    maxTokens: 16000,
+    // NOTE: claude-fable-5 uses adaptive thinking which consumes tokens before the text output.
+    // max_tokens must be large enough for thinking (~16k) + actual text response (~8k).
+    // The model supports up to 128k output tokens.
+    maxTokens: 32000,
     temperature: 1,  // Required for Anthropic native API
     extendedThinking: false,
     thinkingBudget: 0,
