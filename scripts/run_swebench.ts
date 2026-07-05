@@ -920,27 +920,40 @@ async function main() {
 
       // ── Phases 2+3: Andromeda Pipeline (Consensus + Traceback Loop) ──────
       console.log('[Runner] Phase 2+3: Running Andromeda pipeline...');
-      // Wrap in a 10-minute per-instance timeout to prevent stuck instances
+      // Fix 26: Proper instance timeout that:
+      //   1. Clears the timer when pipeline resolves first (prevents Node.js hang)
+      //   2. Silently catches the background pipeline rejection after timeout
+      //      (prevents unhandled rejection crash that was killing the process)
       const INSTANCE_TIMEOUT_MS = 25 * 60 * 1000;  // 25min: allows 5 traceback attempts × 300s each
+      let instanceTimeoutId: ReturnType<typeof setTimeout> | null = null;
+      const pipelinePromise = runSOTAPipeline(
+        instance_id,
+        dockerImage,
+        issueDescription,
+        fileContents,
+        initialPatch,
+        pipelineConfig,
+        {
+          testPatch: test_patch,
+          failToPassTests,
+          // Gold patch hint: structural reference for oracle fallback
+          goldPatchHint: patch || undefined,
+        }
+      );
+      // Suppress unhandled rejection from background pipeline after timeout
+      pipelinePromise.catch(() => { /* silently ignore — timeout already handled */ });
       const result = await Promise.race([
-        runSOTAPipeline(
-          instance_id,
-          dockerImage,
-          issueDescription,
-          fileContents,
-          initialPatch,
-          pipelineConfig,
-          {
-            testPatch: test_patch,
-            failToPassTests,
-            // Gold patch hint: structural reference for oracle fallback
-            goldPatchHint: patch || undefined,
-          }
-        ),
-        new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error(`Instance timeout after ${INSTANCE_TIMEOUT_MS / 1000}s`)), INSTANCE_TIMEOUT_MS)
-        )
-      ]);
+        pipelinePromise,
+        new Promise<never>((_, reject) => {
+          instanceTimeoutId = setTimeout(
+            () => reject(new Error(`Instance timeout after ${INSTANCE_TIMEOUT_MS / 1000}s`)),
+            INSTANCE_TIMEOUT_MS
+          );
+        }),
+      ]).finally(() => {
+        // Always clear the timeout timer to prevent Node.js from hanging
+        if (instanceTimeoutId !== null) clearTimeout(instanceTimeoutId);
+      });
 
       const durationSec = ((Date.now() - instanceStart) / 1000).toFixed(0);
       const status = result.resolved ? '✅ RESOLVED' : '❌ unresolved';
