@@ -72,6 +72,8 @@ export type FixJobOptions = {
   prTitle?: string;
   /** PR body (default: auto-generated) */
   prBody?: string;
+  /** Optional webhook URL to call when job completes or fails */
+  callbackUrl?: string;
 };
 
 export type FixJob = {
@@ -461,6 +463,22 @@ async function runFixJob(job: FixJob, options: FixJobOptions): Promise<void> {
   const branchPrefix = options.branchPrefix ?? "andromeda/fix";
   const branchName = `${branchPrefix}-${Date.now()}`;
   const tmpDir = path.join(os.tmpdir(), `andromeda-fix-${job.id}`);
+  const callbackUrl = options.callbackUrl;
+
+  // Helper to trigger webhook
+  const fireWebhook = async (status: string, payload: any) => {
+    if (!callbackUrl) return;
+    try {
+      await fetch(callbackUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobId: job.id, repoUrl: options.repoUrl, status, ...payload }),
+      });
+      log.info(`[${job.id}] Webhook fired successfully to ${callbackUrl}`);
+    } catch (e) {
+      log.warn(`[${job.id}] Webhook delivery failed to ${callbackUrl}: ${String(e)}`);
+    }
+  };
 
   try {
     // ── Step 1: Clone ─────────────────────────────────────────────────────────
@@ -697,10 +715,12 @@ async function runFixJob(job: FixJob, options: FixJobOptions): Promise<void> {
 
     // ── Step 8: Clean up ──────────────────────────────────────────────────────
     emit(job, "done", "Fix job completed successfully!", 100, { prUrl });
+    await fireWebhook("done", { prUrl, message: "Fix job completed successfully!" });
 
   } catch (err) {
     const msg = String(err);
     emit(job, "failed", msg, 0, { error: msg });
+    await fireWebhook("failed", { error: msg });
   } finally {
     // Clean up temp directory
     try {

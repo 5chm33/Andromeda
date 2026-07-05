@@ -209,7 +209,7 @@ export function createApiRouter(): Router {
       return;
     }
 
-    const { repoUrl, maxFiles, githubPat, branchPrefix, prTitle, prBody } = req.body ?? {};
+    const { repoUrl, maxFiles, githubPat, branchPrefix, prTitle, prBody, callbackUrl } = req.body ?? {};
 
     if (!repoUrl || typeof repoUrl !== "string") {
       res.status(400).json({
@@ -237,6 +237,7 @@ export function createApiRouter(): Router {
         branchPrefix: branchPrefix ?? "andromeda/fix",
         prTitle,
         prBody,
+        callbackUrl,
       });
 
       res.status(202).json({

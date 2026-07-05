@@ -172,6 +172,20 @@ const DEFAULT_PROVIDERS: Record<string, Omit<LLMProviderConfig, "apiKey">> = {
     supportsVision: false,
     supportsStreaming: true,
   },
+  // v12.3.0: GitHub Models API — free access to GPT-4o, Llama 3, Mistral
+  // Uses the user's existing GITHUB_TOKEN (PAT) for zero-cost standard-tier reasoning.
+  "github-models": {
+    id: "github-models",
+    name: "GitHub Models (GPT-4o)",
+    apiUrl: "https://models.inference.ai.azure.com/chat/completions",
+    model: "gpt-4o",
+    maxTokens: 4096,
+    temperature: 0.7,
+    supportsTools: true,
+    supportsVision: true,
+    supportsStreaming: true,
+    supportsJsonMode: true,
+  },
   // v7.1.7: Direct Anthropic API — bypasses OpenRouter entirely.
   // Uses the OpenAI-compatible endpoint so no format changes needed.
   // Preferred when ANTHROPIC_API_KEY is set and OpenRouter has no credits.
@@ -299,6 +313,7 @@ const PROVIDER_PRICING: Record<string, ProviderPricing> = {
   "kimi":               { inputPerMillion: 0.15,  outputPerMillion: 0.60  }, // Kimi k2.6
   "groq":               { inputPerMillion: 0.05,  outputPerMillion: 0.08  }, // Llama 3.3 70B
   "openai":             { inputPerMillion: 2.50,  outputPerMillion: 10.00 }, // GPT-4o
+  "github-models":      { inputPerMillion: 0.00,  outputPerMillion: 0.00  }, // Free via GitHub PAT
   "ollama":             { inputPerMillion: 0.00,  outputPerMillion: 0.00  }, // local, free
 };
 
@@ -441,6 +456,7 @@ export function getProviderApiKey(id: string): string {
     case "deepseek-v4-flash":
     case "deepseek-reasoner": return process.env.DEEPSEEK_API_KEY ?? "";
     case "openai": return process.env.OPENAI_API_KEY ?? "";
+    case "github-models": return process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN ?? "";
     case "groq": return process.env.GROQ_API_KEY ?? "";
     case "openrouter":
     case "openrouter-fast": return process.env.OPENROUTER_API_KEY ?? "";
@@ -526,6 +542,7 @@ export function getProviderForTier(tier: LLMTier): string {
   const hasDeepSeek = !!process.env.DEEPSEEK_API_KEY;
   const hasKimi = !!process.env.KIMI_API_KEY;
   const hasOpenRouter = !!process.env.OPENROUTER_API_KEY;
+  const hasGithubModels = !!(process.env.GITHUB_TOKEN || process.env.GH_TOKEN);
 
   switch (effectiveTier) {
     case "eco":
@@ -534,11 +551,12 @@ export function getProviderForTier(tier: LLMTier): string {
       if (hasKimi) return "kimi";
       if (hasOpenRouter) return "openrouter-fast"; // Gemini Flash via OpenRouter
       if (hasDeepSeek) return "deepseek";          // DeepSeek Flash as last resort
-      return "deepseek"; // fallback (will fail gracefully)
+      return "ollama"; // absolute final zero-cost fallback
     case "standard":
       // Mid-tier — Sonnet 4.5
       if (hasOpenRouter) return "anthropic";                         // Claude via OpenRouter
       if (process.env.ANTHROPIC_API_KEY) return "anthropic-direct";
+      if (hasGithubModels) return "github-models";                   // Free GPT-4o via GitHub Models API
       if (hasKimi) return "kimi";
       if (hasDeepSeek) return "deepseek-reasoner";
       return "deepseek";
