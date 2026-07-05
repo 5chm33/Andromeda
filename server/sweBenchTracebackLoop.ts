@@ -148,6 +148,11 @@ export interface TracebackLoopInput {
   repoPath?: string;
   /** LLM provider function: given a prompt, returns a revised patch */
   llmProvider: (prompt: string) => Promise<string>;
+  /** Optional escalating LLM provider: given an attempt number (1-based), returns a provider.
+   *  If provided, this overrides llmProvider for revision attempts.
+   *  Attempt 1 = first revision (after initial patch failed).
+   *  Use this to escalate to stronger models on later attempts. */
+  escalatingLLMProvider?: (attempt: number) => (prompt: string) => Promise<string>;
   /** The original issue description (for context in revision prompts) */
   issueDescription?: string;
   /** Map of file paths to their content (extracted from Docker) */
@@ -611,9 +616,15 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
     failToPassTests = [],
     repoPath = '/testbed',
     llmProvider,
+    escalatingLLMProvider,
     issueDescription,
     fileContents,
   } = input;
+
+  // Helper: get the appropriate LLM provider for a given revision attempt.
+  // If escalatingLLMProvider is set, use it; otherwise fall back to llmProvider.
+  const getRevisionLLM = (attempt: number): ((prompt: string) => Promise<string>) =>
+    escalatingLLMProvider ? escalatingLLMProvider(attempt) : llmProvider;
 
   const containerName = `andromeda_traceback_${instanceId.replace(/[^a-zA-Z0-9_]/g, '_')}_${crypto.randomBytes(4).toString('hex')}`;
   const startTime = Date.now();
@@ -767,7 +778,8 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
         console.log(`[TracebackLoop] Traceback (first 300 chars): ${tracebackSummary.slice(0, 300)}`);
 
         try {
-          const llmResponse = await llmProvider(revisionPrompt);
+          const revisionLLM = getRevisionLLM(attempt);
+          const llmResponse = await revisionLLM(revisionPrompt);
           console.log(`[TracebackLoop] Revision response: ${llmResponse.length} chars`);
           // Debug: save LLM response to file for inspection
           fs.writeFileSync(`/tmp/debug_revision_response_attempt${attempt}.txt`, llmResponse, 'utf-8');

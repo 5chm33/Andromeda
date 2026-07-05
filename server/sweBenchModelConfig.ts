@@ -468,3 +468,31 @@ export function createSWEBenchLLMProvider(
   return (prompt: string, temperature?: number) =>
     callSWEBenchLLM(config, prompt, temperature);
 }
+
+/**
+ * Creates a tiered escalating LLM provider for the traceback loop.
+ *
+ * Strategy:
+ *   - Attempts 1-2: use the base model (e.g., claude-sonnet-4-5 via OpenRouter)
+ *   - Attempts 3+:  escalate to the strong model (e.g., claude-fable-5 direct Anthropic)
+ *
+ * Both configs are resolved once at startup and reused across attempts.
+ *
+ * @param baseConfig   Config for early revision attempts (cheap/fast)
+ * @param strongConfig Config for later revision attempts (expensive/powerful)
+ * @param escalateAt   Attempt number at which to switch to strongConfig (default: 3)
+ */
+export function createEscalatingLLMProvider(
+  baseConfig: SWEBenchModelConfig,
+  strongConfig: SWEBenchModelConfig,
+  escalateAt = 3
+): (attempt: number) => (prompt: string) => Promise<string> {
+  const baseLLM = createSWEBenchLLMProvider(baseConfig);
+  const strongLLM = createSWEBenchLLMProvider(strongConfig);
+  return (attempt: number) => {
+    if (attempt >= escalateAt) {
+      return (prompt: string) => strongLLM(prompt, 0.2);
+    }
+    return (prompt: string) => baseLLM(prompt, 0.2);
+  };
+}

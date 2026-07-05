@@ -61,6 +61,10 @@ export interface PipelineConfig {
   useConsensus?: boolean;
   /** Whether to run traceback loop (Phase 3). Default: true. */
   useTracebackLoop?: boolean;
+  /** Optional escalating LLM provider for traceback loop.
+   *  Given an attempt number (1-based), returns the LLM provider to use for that revision.
+   *  Allows using stronger models on later attempts (e.g., Fable on attempt 3+). */
+  escalatingLLMProvider?: (attempt: number) => (prompt: string) => Promise<string>;
 }
 
 export interface PipelineResult {
@@ -166,6 +170,7 @@ export async function runSOTAPipeline(
       failToPassTests: options?.failToPassTests,
       repoPath: '/testbed',
       llmProvider: (prompt) => llmProvider(prompt, 0.2),
+      escalatingLLMProvider: config.escalatingLLMProvider,
       issueDescription,
       fileContents,
     };

@@ -46,6 +46,7 @@ import { simpleChatCompletion } from '../server/llmProvider.js';
 import {
   resolveSWEBenchModelConfig,
   createSWEBenchLLMProvider,
+  createEscalatingLLMProvider,
   type SWEBenchModelConfig,
 } from '../server/sweBenchModelConfig.js';
 import {
@@ -767,6 +768,27 @@ async function main() {
     console.log(`[Runner] Extended thinking enabled (budget: ${sweBenchModelConfig.thinkingBudget} tokens)`);
   }
 
+  // ── Tiered model escalation for traceback loop ──────────────────────────────
+  // SWEBENCH_ESCALATION=1 enables escalation: Sonnet 4.5 for attempts 1-2, Fable for 3+.
+  // SWEBENCH_STRONG_PROVIDER overrides the strong model (default: claude-fable-5).
+  let escalatingLLMProvider: PipelineConfig['escalatingLLMProvider'] | undefined;
+  if (process.env.SWEBENCH_ESCALATION === '1') {
+    const strongProviderName = process.env.SWEBENCH_STRONG_PROVIDER ?? 'claude-fable-5';
+    const strongPresets: Record<string, string> = {
+      'claude-fable-5': 'claude-fable-5',
+      'claude-sonnet-5': 'claude-sonnet-5',
+      'openai-o3': 'openai-o3',
+    };
+    const strongProviderKey = strongPresets[strongProviderName] ?? 'claude-fable-5';
+    const savedProvider = process.env.SWEBENCH_PROVIDER;
+    process.env.SWEBENCH_PROVIDER = strongProviderKey;
+    const strongConfig = resolveSWEBenchModelConfig();
+    if (savedProvider !== undefined) process.env.SWEBENCH_PROVIDER = savedProvider;
+    else delete process.env.SWEBENCH_PROVIDER;
+    escalatingLLMProvider = createEscalatingLLMProvider(sweBenchModelConfig, strongConfig, 3);
+    console.log(`[Runner] Escalation enabled: attempts 1-2 → ${sweBenchModelConfig.modelId}, attempts 3+ → ${strongConfig.modelId}`);
+  }
+
   // Pipeline config using the configured LLM
   const pipelineConfig: PipelineConfig = {
     llmProvider: sweBenchLLM,
@@ -774,6 +796,7 @@ async function main() {
     maxTracebackAttempts: 5,
     useConsensus: true,
     useTracebackLoop: true,
+    escalatingLLMProvider,
   };
 
   let resolved = 0;
