@@ -222,7 +222,8 @@ export async function applyAndTest(
       `docker exec ${containerName} bash -c "cd ${repoPath} && git apply --ignore-whitespace /tmp/candidate.diff 2>&1"`
     ).catch(e => ({ stdout: '', stderr: e.stderr || e.message }));
 
-    if (applyResult.stderr && applyResult.stderr.includes('error:')) {
+    const applyOutput = (applyResult.stdout || '') + (applyResult.stderr || '');
+    if (applyOutput.includes('error:') || applyOutput.includes('unrecognized input') || applyOutput.includes('patch does not apply')) {
       // ── Fallback 1: patch -p1 --fuzz=5 (handles wrong line numbers from context-only diffs) ──
       const fuzzResult = await execAsync(
         `docker exec ${containerName} bash -c "cd ${repoPath} && patch -p1 --fuzz=5 --ignore-whitespace < /tmp/candidate.diff 2>&1 || true"`
