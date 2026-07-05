@@ -624,10 +624,26 @@ export async function runDebugProbe(
   const hostProbePath = `/tmp/andromeda_probe_${probeId}.py`;
 
   try {
+    // Fix 32: Detect Python version in container so probe code is compatible
+    let pythonVersion = '3';
+    try {
+      const versionResult = await execAsync(
+        `docker exec ${containerName} bash -c "python3 --version 2>&1 || python --version 2>&1"`,
+        { maxBuffer: 1024 }
+      ).catch(e => ({ stdout: e.stdout || '', stderr: e.stderr || '' }));
+      const versionMatch = (versionResult.stdout || '').match(/Python (\d+\.\d+)/);
+      if (versionMatch) pythonVersion = versionMatch[1];
+    } catch { /* ignore */ }
+
+    const isPython35 = pythonVersion.startsWith('3.5') || pythonVersion.startsWith('3.4') || pythonVersion.startsWith('3.3');
+
     // Write the probe script
-    const probeScript = `
+    // Fix 32: Add UTF-8 encoding declaration (required for Python 3.5 with non-ASCII files)
+    const probeScript = `# -*- coding: utf-8 -*-
 import sys
+import io
 sys.path.insert(0, '/testbed')
+# Python version: ${pythonVersion}${isPython35 ? ' (legacy — avoid f-strings, use .format() or % formatting)' : ''}
 
 # Probe code injected by Andromeda debug loop
 ${probeCode}
@@ -662,12 +678,17 @@ export function buildDebugProbePrompt(
   instanceId: string,
   traceback: string,
   fileContents: Record<string, string>,
-  failToPassTests: string[]
+  failToPassTests: string[],
+  pythonVersion?: string  // Fix 32: pass detected Python version
 ): string {
   const fileList = Object.keys(fileContents).join(', ');
+  const isPython35 = pythonVersion && (pythonVersion.startsWith('3.5') || pythonVersion.startsWith('3.4'));
+  const versionNote = pythonVersion
+    ? `\n**Python version in testbed: ${pythonVersion}**${isPython35 ? ' — IMPORTANT: Do NOT use f-strings (Python 3.6+). Use \'%s\' % var or str.format() instead. Also use open(path, encoding=\'utf-8\') for file reads.' : ''}\n`
+    : '';
 
   return `You are debugging a failing test in ${instanceId}.
-
+${versionNote}
 ## Test Failure
 \`\`\`
 ${traceback.slice(0, 2000)}
@@ -686,7 +707,7 @@ If you want to run a probe, output:
 import sys
 sys.path.insert(0, '/testbed')
 # Your debug code here
-print("variable =", some_variable)
+print('variable = ' + str(some_variable))
 </probe>
 
 If you don't need a probe, output: SKIP

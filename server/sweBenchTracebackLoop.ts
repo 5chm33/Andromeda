@@ -726,6 +726,20 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
       `docker run -d --name ${containerName} --memory=4g --cpus=2.0 ${dockerImage} tail -f /dev/null`
     );
 
+    // Fix 32: Detect Python version in container for probe script compatibility
+    let containerPythonVersion: string | undefined;
+    try {
+      const pvResult = await execAsync(
+        `docker exec ${containerName} bash -c "source /opt/miniconda3/etc/profile.d/conda.sh && conda activate testbed 2>/dev/null; python3 --version 2>&1 || python --version 2>&1"`,
+        { maxBuffer: 1024 }
+      ).catch(e => ({ stdout: e.stdout || '', stderr: e.stderr || '' }));
+      const pvMatch = (pvResult.stdout || '').match(/Python (\d+\.\d+)/);
+      if (pvMatch) {
+        containerPythonVersion = pvMatch[1];
+        console.log(`[TracebackLoop] Detected Python ${containerPythonVersion} in container`);
+      }
+    } catch { /* non-fatal */ }
+
     // Track current file state — updated after each attempt so LLM sees what it changed
     let currentFileContents: Record<string, string> = { ...(fileContents ?? {}) };
 
@@ -820,7 +834,8 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
               instanceId,
               tracebackSummary,
               currentFileContents,
-              failToPassTests
+              failToPassTests,
+              containerPythonVersion  // Fix 32: pass detected Python version
             );
             const probeDecision = await llmProvider(probePrompt);
 
