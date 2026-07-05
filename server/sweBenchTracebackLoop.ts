@@ -498,8 +498,10 @@ Output ONLY the diff block. No explanation.
  * Supports both raw diff format and complete-file format.
  */
 export function extractPatchFromLLMResponse(response: string): string {
-  const diffMatch = response.match(/```diff\n([\s\S]*?)```/);
-  if (diffMatch) return diffMatch[1].trim();
+  // Extract the LAST ```diff block — LLMs often generate an initial (incorrect)
+  // patch and then self-correct with a better one at the end of the response.
+  const allDiffMatches = [...response.matchAll(/```diff\n([\s\S]*?)```/g)];
+  if (allDiffMatches.length > 0) return allDiffMatches[allDiffMatches.length - 1][1].trim();
 
   const rawDiffMatch = response.match(/((?:diff --git|---\s+a\/)[\s\S]*)/);
   if (rawDiffMatch) return rawDiffMatch[1].trim();
