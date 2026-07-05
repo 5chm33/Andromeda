@@ -1,15 +1,17 @@
 /**
  * webSearch.ts — Web Search Tool
- * Andromeda v6.14
+ * Andromeda v6.15
  *
- * Changes in v6.14:
- *  - Brave Search API as primary provider (BRAVE_SEARCH_API_KEY)
+ * Changes in v6.15:
+ *  - Tavily Search API as primary provider (TAVILY_API_KEY) — AI-optimized,
+ *    high-relevance results designed for agent use cases
+ *  - Brave Search API as secondary provider (BRAVE_SEARCH_API_KEY, opt-in)
  *  - Strict relevance gate: only fires for queries that genuinely need
  *    real-time external data. Self-assessment, code tasks, and internal
  *    reasoning are blocked before any API call is made.
- *  - Default result count reduced from 5 → 3 (configurable via num_results)
+ *  - Default result count reduced to 3 (configurable via num_results)
  *  - Every search call is cost-logged to console with query + result count
- *  - Fallback chain: Brave → SearXNG → DuckDuckGo instant answer
+ *  - Fallback chain: Tavily → Brave (if enabled) → SearXNG → DuckDuckGo
  */
 import { registerTool } from "./toolRegistry";
 import type { ToolExecutionContext, ToolResult } from "./toolRegistry";
@@ -54,7 +56,41 @@ function shouldBlockSearch(query: string): { blocked: boolean; reason: string } 
   return { blocked: false, reason: "passed relevance gate" };
 }
 
-// ─── Brave Search ──────────────────────────────────────────────────────────────
+// ─── Tavily Search (primary — AI-optimized, high relevance) ───────────────────
+async function searchTavily(query: string, count: number): Promise<Array<{ title: string; url: string; snippet: string }>> {
+  const apiKey = process.env.TAVILY_API_KEY;
+  if (!apiKey) return [];
+  try {
+    const resp = await fetch("https://api.tavily.com/search", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        api_key: apiKey,
+        query,
+        max_results: count,
+        search_depth: "basic",
+        include_answer: false,
+        include_raw_content: false,
+      }),
+      signal: AbortSignal.timeout(12_000),
+    });
+    if (!resp.ok) {
+      if (resp.status === 401 || resp.status === 403) console.warn(`[Tavily] Auth failure (${resp.status}) — check TAVILY_API_KEY`);
+      return [];
+    }
+    const data = (await resp.json()) as any;
+    return (data?.results ?? []).slice(0, count).map((r: any) => ({
+      title: r.title ?? "",
+      url: r.url ?? "",
+      snippet: r.content ?? r.snippet ?? "",
+    }));
+  } catch (err) {
+    console.warn("[Tavily] Request failed:", err instanceof Error ? err.message : String(err));
+    return [];
+  }
+}
+
+// ─── Brave Search (secondary, opt-in) ─────────────────────────────────────────
 async function searchBrave(query: string, count: number): Promise<Array<{ title: string; url: string; snippet: string }>> {
   const apiKey = process.env.BRAVE_SEARCH_API_KEY;
   if (!apiKey) return [];
@@ -83,7 +119,7 @@ async function searchSearxng(query: string, count: number): Promise<Array<{ titl
 // ─── DuckDuckGo Instant Answer Fallback ───────────────────────────────────────
 async function searchDDG(query: string, count: number): Promise<Array<{ title: string; url: string; snippet: string }>> {
   const resp = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1&t=Andromeda`, {
-    headers: { "User-Agent": "Andromeda/6.14 (search fallback)" },
+    headers: { "User-Agent": "Andromeda/6.15 (search fallback)" },
     signal: AbortSignal.timeout(8_000),
   });
   const data = (await resp.json()) as any;
@@ -120,35 +156,37 @@ async function executeWebSearch(args: Record<string, unknown>, _ctx: ToolExecuti
     };
   }
 
-  // ── Cost log ──────────────────────────────────────────────────────────────
-  // v8.4.0: Brave is OPT-IN only. Set BRAVE_SEARCH_ENABLED=true in .env.local to enable.
-  // Default: SearXNG (free) → DuckDuckGo (free). Brave (paid) requires explicit opt-in.
-  // This prevents runaway costs ($120/2 days) from agent tool calls.
   const startMs = Date.now();
+  const tavilyEnabled = !!process.env.TAVILY_API_KEY;
   const braveEnabled = process.env.BRAVE_SEARCH_ENABLED === "true" && !!process.env.BRAVE_SEARCH_API_KEY;
-  const provider = braveEnabled ? "Brave" : process.env.SEARXNG_URL ? "SearXNG" : "DuckDuckGo";
-  if (braveEnabled) {
-    (global as any).__braveQueryCount = ((global as any).__braveQueryCount ?? 0) + 1;
-    const count: number = (global as any).__braveQueryCount;
-    const estimatedCost = (count * 0.003).toFixed(3);
-    console.log(`[WebSearch/Brave] QUERY #${count} | ~$${estimatedCost} session cost | "${query.slice(0, 80)}" | max_results: ${numResults}`);
-  } else {
-    console.log(`[WebSearch] QUERY: "${query}" | max_results: ${numResults} | provider: ${provider}`);
-  }
+  const provider = tavilyEnabled ? "Tavily" : braveEnabled ? "Brave" : process.env.SEARXNG_URL ? "SearXNG" : "DuckDuckGo";
+
+  console.log(`[WebSearch] QUERY: "${query.slice(0, 80)}" | max_results: ${numResults} | provider: ${provider}`);
 
   try {
     let results: Array<{ title: string; url: string; snippet: string }> = [];
 
-    // v8.4.0: Only call Brave when BRAVE_SEARCH_ENABLED=true is set in .env.local
-    if (braveEnabled) {
+    // 1. Tavily (primary — AI-optimized, high relevance)
+    if (tavilyEnabled) {
+      results = await searchTavily(query, numResults);
+      if (results.length > 0) console.log(`[WebSearch/Tavily] Got ${results.length} results`);
+    }
+
+    // 2. Brave (secondary, opt-in)
+    if (results.length === 0 && braveEnabled) {
+      if (tavilyEnabled) console.log("[WebSearch] Tavily returned 0 results, trying Brave...");
       results = await searchBrave(query, numResults);
     }
+
+    // 3. SearXNG fallback
     if (results.length === 0 && process.env.SEARXNG_URL) {
-      if (braveEnabled) console.log("[WebSearch] Brave returned 0 results, trying SearXNG...");
+      console.log("[WebSearch] Trying SearXNG fallback...");
       results = await searchSearxng(query, numResults);
     }
+
+    // 4. DuckDuckGo last resort
     if (results.length === 0) {
-      console.log("[WebSearch] Primary sources empty, trying DuckDuckGo fallback...");
+      console.log("[WebSearch] Trying DuckDuckGo fallback...");
       results = await searchDDG(query, numResults);
     }
 
@@ -179,7 +217,7 @@ registerTool({
     type: "function",
     function: {
       name: "web_search",
-      description: "Search the web using Brave Search API (primary) with SearXNG and DuckDuckGo fallbacks. Returns titles, URLs, and snippets. ONLY call for queries requiring real-time external data. Self-assessment, grading, code analysis, and internal reasoning queries are blocked by the relevance gate.",
+      description: "Search the web using Tavily (primary, AI-optimized) with Brave, SearXNG, and DuckDuckGo fallbacks. Returns titles, URLs, and snippets. ONLY call for queries requiring real-time external data. Self-assessment, grading, code analysis, and internal reasoning queries are blocked by the relevance gate.",
       parameters: {
         type: "object",
         properties: {
