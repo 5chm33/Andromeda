@@ -132,8 +132,16 @@ export async function runSOTAPipeline(
     for (const c of consensusResult.candidates) {
       console.log(`[Consensus] Agent ${c.agentName}: passed=${c.testsPassed}, output=${c.testOutput?.slice(0, 400)}`);
     }
+    // Only use the consensus patch if it resolved OR if it's a targeted diff
+    // (shorter than the original initialPatch * 10 as a heuristic for full-file rewrites)
+    // This prevents a failed full-file-rewrite consensus patch from poisoning the traceback loop
     if (consensusResult.winningPatch) {
-      bestPatch = consensusResult.winningPatch;
+      const isTargetedDiff = consensusResult.winningPatch.length < Math.max(initialPatch.length * 10, 50000);
+      if (consensusResult.resolved || isTargetedDiff) {
+        bestPatch = consensusResult.winningPatch;
+      } else {
+        console.log(`[Pipeline] Consensus patch rejected (${consensusResult.winningPatch.length} chars — likely full-file rewrite). Keeping original initialPatch (${initialPatch.length} chars) for traceback loop.`);
+      }
     }
 
     // If consensus already resolved it, skip the traceback loop

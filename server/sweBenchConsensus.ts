@@ -139,20 +139,25 @@ ${fileSections}
 ## Your Task
 ${styleHint}
 
-Output the COMPLETE corrected content for each file you need to change.
-Use this exact format for each file:
+Output a TARGETED unified diff patch (git diff format) fixing ONLY the lines that need changing.
+Use this exact format:
 
-<file path="path/to/file.py">
-[complete corrected file content here]
-</file>
+\`\`\`diff
+--- a/path/to/file.py
++++ b/path/to/file.py
+@@ -line,count +line,count @@
+-old line
++new line
+\`\`\`
 
 Rules:
-- Output ONLY the file blocks. No explanation before or after.
-- Include the COMPLETE file content (not just the changed section).
+- Output ONLY the diff block. No explanation before or after.
+- NEVER output the complete file — only output the changed lines in diff format.
 - Make MINIMAL changes — only change what is necessary to fix the bug.
 - Fix the root cause, not just the symptom.
-- If multiple files need changing, output multiple <file> blocks.
+- If multiple files need changing, output multiple diff blocks inside a single \`\`\`diff fence.
 - Your fix MUST make the failing tests listed above pass.
+- Use accurate line numbers based on the file content shown above.
 `;
 }
 
@@ -230,54 +235,58 @@ export async function runConsensus(
     try {
       const response = await agent.llmProvider(prompt);
 
-      // Try complete-file format first
-      const newFileContents = extractFileContentsFromResponse(response);
-      if (Object.keys(newFileContents).length > 0) {
-        const diffs: string[] = [];
-        for (const [fp, newContent] of Object.entries(newFileContents)) {
-          const originalContent = fileContents[fp] ?? '';
-          if (originalContent && newContent !== originalContent) {
-            const diff = await generateDiffFromContent(fp, originalContent, newContent);
-            if (diff) diffs.push(diff);
-          }
-        }
+      // Primary path: extract unified diff directly (agents now instructed to output diffs)
+      const diffMatch = response.match(/```diff\n?([\s\S]*?)```/);
+      let patch = diffMatch ? diffMatch[1].trim() : '';
 
-        // Cross-reference verification: check if changed functions have callers in other files
-        if (diffs.length > 0 && process.env.SWEBENCH_CROSS_REF !== '0') {
-          try {
-            const changedFunctions = extractChangedFunctions(diffs.join('\n'));
-            if (changedFunctions.length > 0) {
-              const primaryFile = Object.keys(newFileContents)[0] ?? '';
-              const affectedCallers = findCrossFileCallers(changedFunctions, fileContents, primaryFile);
-              if (affectedCallers.length > 0) {
-                console.log(`[Consensus] Agent ${agent.name}: cross-ref found ${affectedCallers.length} files with callers`);
-                const crossRefPrompt = buildCrossReferencePrompt(instanceId, diffs.join('\n'), affectedCallers, fileContents);
-                const crossRefResponse = await agent.llmProvider(crossRefPrompt);
-                if (!crossRefResponse.includes('NO_CHANGES_NEEDED')) {
-                  const crossRefFiles = extractFileContentsFromResponse(crossRefResponse);
-                  for (const [fp, newContent] of Object.entries(crossRefFiles)) {
-                    const originalContent = fileContents[fp] ?? '';
-                    if (originalContent && newContent !== originalContent) {
-                      const diff = await generateDiffFromContent(fp, originalContent, newContent);
-                      if (diff) { diffs.push(diff); console.log(`[Consensus] Cross-ref added patch for ${fp}`); }
-                    }
-                  }
-                }
-              }
+      // Fallback: if agent still output <file> blocks, convert them to diffs
+      if (!patch || patch.length < 10) {
+        const newFileContents = extractFileContentsFromResponse(response);
+        if (Object.keys(newFileContents).length > 0) {
+          const diffs: string[] = [];
+          for (const [fp, newContent] of Object.entries(newFileContents)) {
+            const originalContent = fileContents[fp] ?? '';
+            if (originalContent && newContent !== originalContent) {
+              const diff = await generateDiffFromContent(fp, originalContent, newContent);
+              if (diff) diffs.push(diff);
             }
-          } catch (crossRefErr) {
-            console.warn(`[Consensus] Cross-ref check failed (non-fatal):`, crossRefErr);
           }
-        }
-
-        if (diffs.length > 0) {
-          return { agent, patch: diffs.join('\n'), durationMs: Date.now() - genStart };
+          if (diffs.length > 0) patch = diffs.join('\n');
         }
       }
 
-      // Fall back to raw diff extraction
-      const diffMatch = response.match(/```diff\n?([\s\S]*?)(?:```|$)/);
-      const patch = diffMatch ? diffMatch[1].trim() : response.trim();
+      // If still no patch, use raw response as last resort
+      if (!patch || patch.length < 10) {
+        patch = response.trim();
+      }
+
+      // Cross-reference verification: check if changed functions have callers in other files
+      if (patch.length > 10 && process.env.SWEBENCH_CROSS_REF !== '0') {
+        try {
+          const changedFunctions = extractChangedFunctions(patch);
+          if (changedFunctions.length > 0) {
+            const primaryFile = patch.match(/\+\+\+ b\/(.+)/)?.[1]?.trim() ?? '';
+            const affectedCallers = findCrossFileCallers(changedFunctions, fileContents, primaryFile);
+            if (affectedCallers.length > 0) {
+              console.log(`[Consensus] Agent ${agent.name}: cross-ref found ${affectedCallers.length} files with callers`);
+              const crossRefPrompt = buildCrossReferencePrompt(instanceId, patch, affectedCallers, fileContents);
+              const crossRefResponse = await agent.llmProvider(crossRefPrompt);
+              if (!crossRefResponse.includes('NO_CHANGES_NEEDED')) {
+                // Cross-ref response is also a diff now
+                const crossRefDiffMatch = crossRefResponse.match(/```diff\n?([\s\S]*?)```/);
+                const crossRefPatch = crossRefDiffMatch ? crossRefDiffMatch[1].trim() : '';
+                if (crossRefPatch && crossRefPatch.length > 10) {
+                  patch = patch + '\n' + crossRefPatch;
+                  console.log(`[Consensus] Cross-ref added additional patch`);
+                }
+              }
+            }
+          }
+        } catch (crossRefErr) {
+          console.warn(`[Consensus] Cross-ref check failed (non-fatal):`, crossRefErr);
+        }
+      }
+
       return { agent, patch, durationMs: Date.now() - genStart };
 
     } catch (error) {
