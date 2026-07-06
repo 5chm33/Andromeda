@@ -180,7 +180,8 @@ async function consolidateRelatedMemories(): Promise<void> {
     if (entry.isConsolidated) continue;
     for (const tag of entry.tags) {
       if (!tagGroups.has(tag)) tagGroups.set(tag, []);
-      tagGroups.get(tag)!.push(entry);
+      const group = tagGroups.get(tag);
+      if (group) group.push(entry);
     }
   }
 
