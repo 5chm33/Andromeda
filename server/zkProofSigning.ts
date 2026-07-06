@@ -328,7 +328,7 @@ export function shouldAcceptProposal(
   commitment: ProposalCommitment,
   minTrustScore = 0.3
 ): boolean {
-  if (!commitment) return false;
+  if (!commitment || !commitment.instanceId) return false;
   const registry = loadTrustRegistry();
   const peer = registry.trustedPeers[commitment.instanceId];
 
