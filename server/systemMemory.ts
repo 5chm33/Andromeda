@@ -365,12 +365,13 @@ export function initSystemMemory(): void {
   console.log(`[SystemMemory] Initialized — ${store.learnings.length} learnings, ${store.errorPatterns.length} error patterns`);
 
   // Run consolidation every 24 hours
-  setInterval(() => {
+  const consolidationInterval = setInterval(() => {
     const result = consolidateMemory();
     if (result.removed > 0) {
       console.log(`[SystemMemory] Consolidated: ${result.removed} entries removed`);
     }
   }, 24 * 60 * 60 * 1000);
+  consolidationInterval.unref();
 }
 
 /**
