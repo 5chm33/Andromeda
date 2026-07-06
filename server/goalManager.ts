@@ -891,7 +891,12 @@ export async function loadGoalsFromDb(): Promise<number> {
       // Skip if already in memory (shouldn't happen on fresh start)
       if (goals.has(row.id)) continue;
 
-      const metadata = typeof row.metadata === "string" ? JSON.parse(row.metadata) : (row.metadata || {});
+      let metadata: Record<string, any> = {};
+      try {
+        metadata = typeof row.metadata === "string" ? JSON.parse(row.metadata) : (row.metadata || {});
+      } catch (parseErr) {
+        console.warn(`[GoalManager] Failed to parse metadata for goal ${row.id}:`, (parseErr as Error).message);
+      }
 
       const goal: Goal = {
         id: row.id,
