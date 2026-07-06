@@ -204,6 +204,19 @@ export function selectModelForProposal(
   consecutiveFailures: number,
   forceLocal: boolean = false,
 ): RoutingDecision {
+  // Input validation
+  if (typeof complexityScore !== 'number' || complexityScore < 0 || complexityScore > 10) {
+    complexityScore = 5;
+  }
+  if (!['low', 'medium', 'high'].includes(impact)) {
+    impact = 'medium';
+  }
+  if (typeof dependentCount !== 'number' || dependentCount < 0) {
+    dependentCount = 0;
+  }
+  if (typeof consecutiveFailures !== 'number' || consecutiveFailures < 0) {
+    consecutiveFailures = 0;
+  }
   // Force local if requested (e.g. Ollama is available and we want zero cost)
   if (forceLocal) {
     const localModels = getAvailableModels("local");
