@@ -366,6 +366,9 @@ function computeConsensus(votes: SpecialistVote[]): ConsensusDecision {
   for (const vote of votes) {
     const specialist = SPECIALISTS.find(s => s.role === vote.role);
     const weight = specialist?.weight ?? 0.2;
+    if (!specialist) {
+      log.warn(`[SwarmVoting] Unknown specialist role: ${vote.role}, using default weight`);
+    }
     weightedSum += (vote.approve ? 1 : 0) * weight * vote.confidence;
     totalWeight += weight;
     allIssues.push(...vote.criticalIssues);
