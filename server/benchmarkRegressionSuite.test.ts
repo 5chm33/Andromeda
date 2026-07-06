@@ -29,6 +29,7 @@ vi.mock("node:fs", async (importOriginal) => {
       return actual.readFileSync(p, enc as BufferEncoding);
     }),
     writeFileSync: vi.fn(),
+    appendFileSync: vi.fn(),
     mkdirSync: vi.fn(),
   };
 });
