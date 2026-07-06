@@ -244,6 +244,7 @@ export function scoreFileRelevance(
   instruction: string,
   allEntries: FileEntry[]
 ): number {
+  if (!entry) return 0;
   let score = 0;
   const instructionLower = instruction.toLowerCase();
   const pathLower = entry.path.toLowerCase();
