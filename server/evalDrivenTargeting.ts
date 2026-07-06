@@ -191,7 +191,7 @@ export async function getTargetedFiles(): Promise<string[]> {
         for (const f of files) targetFiles.add(f);
       }
     }
-  } catch { /* non-fatal */ }
+  } catch (err: any) { log.warn("getTargetedFiles: benchmark report error", err.message); }
 
   try {
     const adaptiveEvalMod = await import("./adaptiveEval.js") as any;
@@ -206,7 +206,7 @@ export async function getTargetedFiles(): Promise<string[]> {
         }
       }
     }
-  } catch { /* non-fatal */ }
+  } catch (err: any) { log.warn("getTargetedFiles: adaptive eval error", err.message); }
 
-  return Array.from(targetFiles);
+  return targetFiles ? Array.from(targetFiles) : [];
 }
