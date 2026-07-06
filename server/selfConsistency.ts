@@ -148,13 +148,13 @@ async function queryDeepSeek(prompt: string): Promise<{ content: string; latency
   );
 }
 
-// v5.39: Kimi (moonshot-v1-8k) as third consistency provider
+// v5.39: Kimi (kimi-k2) as third consistency provider
 async function queryKimi(prompt: string): Promise<{ content: string; latencyMs: number }> {
   return queryProvider(
     prompt,
     `${KIMI_API_URL}/chat/completions`,
     getKimiKey(),
-    "moonshot-v1-8k"
+    "kimi-k2"
   );
 }
 
@@ -311,7 +311,7 @@ export async function checkSelfConsistency(check: ConsistencyCheck): Promise<Con
         const parsed = parseEvaluation(result.content);
         evaluations.push({
           provider: "kimi",
-          model: "moonshot-v1-8k",
+          model: "kimi-k2",
           agrees: parsed.agrees,
           confidence: parsed.confidence,
           explanation: parsed.explanation,
