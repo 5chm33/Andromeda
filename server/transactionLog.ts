@@ -110,6 +110,10 @@ export function rollbackTransaction(txnId: string): { success: boolean; filesRes
   // Restore in reverse order
   for (let i = txn.changes.length - 1; i >= 0; i--) {
     const change = txn.changes[i];
+    if (!change || !change.filePath) {
+      errors.push("Invalid change entry: missing filePath");
+      continue;
+    }
     try {
       const absPath = path.isAbsolute(change.filePath)
         ? change.filePath
