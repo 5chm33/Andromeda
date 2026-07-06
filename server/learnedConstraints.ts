@@ -194,7 +194,7 @@ export function checkLearnedConstraints(snippet: string): LearnedConstraint | nu
         if (constraint.pattern == null) continue;
         matches = new RegExp(constraint.pattern, "i").test(snippet);
       } catch {
-        matches = snippet.includes(constraint.pattern ?? '');
+        matches = constraint.pattern != null && snippet.includes(constraint.pattern);
       }
       if (matches) return constraint;
     } catch { /* skip malformed constraint */ }
