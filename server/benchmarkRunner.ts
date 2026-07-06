@@ -110,11 +110,7 @@ async function benchmarkToolRegistry(): Promise<BenchmarkResult[]> {
       throw new Error("tool registry module returned empty");
     }
     const start = performance.now();
-    if (toolRegistry) {
-      Object.keys(toolRegistry);
-    } else {
-      throw new Error('tool registry module returned empty');
-    }
+    Object.keys(toolRegistry);
     const duration = performance.now() - start;
     results.push({
       name: "tool_registry_lookup",
