@@ -306,11 +306,12 @@ pnpm test
 
 | Metric | Value |
 |--------|-------|
-| Production TypeScript modules | 717 |
-| Test files | 328 |
-| Tests passing | 5,646 |
-| Total lines of TypeScript | 194,000+ |
+| Production TypeScript modules | 826 |
+| Test files | 415 |
+| Tests passing | 5,646+ |
+| Total lines of TypeScript | 228,000+ |
 | Pipeline fixes applied | 32 |
+| Autonomous RSI Commits | 249 |
 | Score improvement (single sprint) | +40 percentage points (26% → 66%) |
 | Run 9 astropy subset (partial) | 72.7% (16/22) |
 
