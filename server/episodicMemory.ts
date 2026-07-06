@@ -183,7 +183,8 @@ export async function synthesizeLessons(goal: string): Promise<string> {
       { role: "system", content: "You are a learning system. Synthesize past experience into actionable lessons. Be concise." },
       { role: "user", content: prompt }
     ]);
-  } catch {
+  } catch (error) {
+    console.error('Error synthesizing lessons:', error);
     return chain.lessonsLearned.join("; ") || "No clear lessons yet.";
   }
 }
