@@ -189,7 +189,54 @@ import { resetBenchmarkBaseline } from "../externalBenchmarkGate.js";
 import { initConsensusConfig } from "../consensusConfig";
 import { initRewardCalibrator } from "../rewardCalibrator";
 import { initDependencyUpdateRsi } from "../dependencyUpdateRsi";
-// Roadmap Items (v46-v55) deferred
+import { spawnAgent, terminateAgent, getActiveAgents, _resetSpawnControllerForTest } from "../agentSpawnController.js";
+import { registerLifecycle, transitionState, heartbeat, recordTaskOutcome, _resetLifecycleManagerForTest } from "../agentLifecycleManager.js";
+import { subscribe, publish, getQueueDepth, _resetBusForTest } from "../agentCommunicationBus.js";
+import { writeMemory, readMemory, grantAccess, _resetMemoryBrokerForTest } from "../agentMemoryBroker.js";
+import { registerCapabilities, findAgentsWithCapability, getRegistryStats, _resetCapabilityRegistryForTest } from "../agentCapabilityRegistry.js";
+import { createPlan, addStep, assignStep, completeStep, getPlan, _resetCoordinatorForTest } from "../agentCoordinator.js";
+import { registerNode, selectAgent, getStats as getLBStats, _resetLoadBalancerForTest } from "../agentLoadBalancer.js";
+import { registerCircuitBreaker, canCall, recordSuccess as recordCBSuccess, recordFailure as recordCBFailure, _resetFaultToleranceForTest } from "../agentFaultTolerance.js";
+import { createSnapshot, rollback as rollbackSnapshot, diffSnapshots, _resetVersionControlForTest } from "../agentVersionControl.js";
+import { setPolicy as setSecurityPolicy, checkCapability, checkTopicAccess, _resetSecuritySandboxForTest } from "../agentSecuritySandbox.js";
+import { recordSample, getReport as getPerfReport, getSLACompliance, _resetProfilerForTest } from "../agentPerformanceProfiler.js";
+import { registerWorkflow, startExecution, recordStageResult, finalizeExecution, _resetOrchestrationEngineForTest } from "../agentOrchestrationEngine.js";
+import { registerGoalVector, evaluateAlignment, updateObjectiveValue, _resetGoalAlignmentForTest } from "../agentGoalAlignment.js";
+import { evaluateAction, getAuditLog as getEthicsLog, getBlockedActionCount, _resetEthicsEnforcerForTest } from "../agentEthicsEnforcer.js";
+import { logEvent, queryLog, verifyIntegrity, _resetAuditLoggerForTest } from "../agentAuditLogger.js";
+import { createCheckpoint, rollbackToCheckpoint, listCheckpoints, _resetRollbackManagerForTest } from "../agentRollbackManager.js";
+import { evaluateHealth, unquarantine, getHealingRecord, _resetSelfHealerForTest } from "../agentSelfHealer.js";
+import { recordSnapshot, getTrend, getEconomyHealth, _resetEconomyMonitorForTest } from "../agentEconomyMonitor.js";
+import { publishArtifact, requestKnowledge, searchArtifacts, _resetKnowledgeSharerForTest } from "../agentKnowledgeSharer.js";
+import { recordSkillUsage, recommendSpecialization, getProfile as getSkillProfile, _resetSpecializationEngineForTest } from "../agentSpecializationEngine.js";
+import { recordGeneration, getEvolutionTrend, getTopAgents as getTopEvolvedAgents, _resetEvolutionTrackerForTest } from "../agentEvolutionTracker.js";
+import { submitObservation, aggregateInsight, getObservationCount, _resetCollectiveIntelligenceForTest } from "../agentCollectiveIntelligence.js";
+import { recordBehaviorSignal, getPatterns as getEmergencePatterns, getNoveltyScore, _resetEmergenceDetectorV50ForTest } from "../agentEmergenceDetectorV50.js";
+import { optimize, getLatestResult as getLatestOptResult, _resetEconomyOptimizerForTest } from "../agentEconomyOptimizer.js";
+import { parseOpenApiJson, parseMarkdownDoc, getEndpointsByTag, getEndpointsByMethod } from "../apiDocumentationParser.js";
+import { inferSchema, schemaToPseudoTypeScript } from "../apiSchemaInferrer.js";
+import { generateClient, generateClientFromEndpoints } from "../apiClientGenerator.js";
+import { registerCredential, getAuthHeader, refreshToken as refreshApiToken, isCredentialValid, _resetAuthManagerForTest } from "../apiAuthManager.js";
+import { configureRateLimit, tryAcquire, getStatus as getRateLimitStatus, _resetRateLimiterForTest } from "../apiRateLimiter.js";
+import { registerApi, recordCall as recordApiCall, getHealthReport, getAllHealthReports, _resetApiHealthMonitorForTest } from "../apiHealthMonitor.js";
+import { createWorkflow, startExecution as startWorkflowExecution, getWorkflow, listWorkflows, _resetWorkflowComposerForTest } from "../apiWorkflowComposer.js";
+import { applyMapping, normalizeResponse, flattenObject } from "../apiDataTransformer.js";
+import { configureRecovery, decideRecovery, recordSuccess, isCircuitOpen, _resetErrorRecoveryForTest } from "../apiErrorRecovery.js";
+import { registerMigration, adaptRequest, getCompatibilityReport, _resetVersionAdapterForTest } from "../apiVersionAdapter.js";
+import { cacheKey, get as cacheGet, set as cacheSet, invalidate as cacheInvalidate, getStats as getCacheStats, _resetCachingLayerForTest } from "../apiCachingLayer.js";
+import { auditApiSecurity, getSecurityGrade, _resetSecurityAuditorForTest } from "../apiSecurityAuditor.js";
+import { registerTestCase, runTestCase, runTestSuite, _resetIntegrationTesterForTest } from "../apiIntegrationTester.js";
+import { recordBenchmarkRun, setBaseline, getBenchmarkReport, _resetBenchmarkerForTest } from "../apiPerformanceBenchmarker.js";
+import { registerCostConfig, recordApiUsage, getCostRecord, getOptimizationRecommendations, _resetCostOptimizerForTest } from "../apiCostOptimizer.js";
+import { registerDependency, getDependencyGraph, getDependentsOf, getDependenciesOf, _resetDependencyMapperForTest } from "../apiDependencyMapper.js";
+import { compareSchemas, _resetChangeDetectorForTest } from "../apiChangeDetector.js";
+import { registerMigrationScript, runMigration, getMigrationHistory, getPendingMigrations, isApplied, _resetMigrationEngineForTest } from "../apiMigrationEngine.js";
+import { addKnowledge, searchKnowledge, getKnowledgeByCategory, updateKnowledge, _resetKnowledgeBaseForTest } from "../apiKnowledgeBase.js";
+import { registerApiProfile, getRecommendations, _resetRecommendationEngineForTest } from "../apiRecommendationEngine.js";
+import { createCompositionPlan, getExecutionOrder, _resetCompositionPlannerForTest } from "../apiCompositionPlanner.js";
+import { startDeployment, recordHealthCheck as recordDeployHealthCheck, finalizeDeployment, getDeploymentRecord, getDeploymentsByApi, _resetDeploymentAutomatorForTest } from "../apiDeploymentAutomator.js";
+import { recordMetricSnapshot, addAlertRule, getDashboardView, resolveAlert, _resetMonitoringDashboardForTest } from "../apiMonitoringDashboard.js";
+import { registerProxy, simulateCall, resetCircuit, getProxyHealth, _resetSelfHealingProxyForTest } from "../apiSelfHealingProxy.js";
 import { registerAgent, registerHandler, sendMessage, getAgentStatus, listActiveAgents, getMessageLog, updateAgentStatus, _resetUniversalAgentInterfaceForTest } from "../universalAgentInterface.js";
 import { setContext, getContext, queryContext, removeContext, getContextSnapshot, _resetOmniscientContextForTest } from "../omniscientContextManager.js";
 import { recordLearningEvent, getLearnedPatterns, getLearningStats, _resetPerpetualLearningForTest } from "../perpetualLearningEngine.js";
@@ -704,6 +751,97 @@ export function startDaemons(): void {
   } catch (durErr) {
     console.warn("[v18.0.0] Dependency update RSI failed to start:", (durErr as Error).message);
   }
+
+  // ── v19.0.0: Wire previously orphaned RSI/Core modules ───────────────────────
+  import("../adversarialSelfPlay.js").then(({ initAdversarialSelfPlay }) => {
+    initAdversarialSelfPlay();
+    console.log("[Init] v19.0.0: Adversarial Self-Play initialized.");
+  }).catch(err => console.warn("[Init] Failed to load adversarialSelfPlay:", err));
+
+  import("../autonomousDocSynthesizer.js").then(({ initDocSynthesizer }) => {
+    initDocSynthesizer();
+    console.log("[Init] v19.0.0: Autonomous Doc Synthesizer initialized.");
+  }).catch(err => console.warn("[Init] Failed to load autonomousDocSynthesizer:", err));
+
+  import("../constitutionalAmendment.js").then(({ initConstitutionalAmendment }) => {
+    initConstitutionalAmendment();
+    console.log("[Init] v19.0.0: Constitutional Amendment Engine initialized.");
+  }).catch(err => console.warn("[Init] Failed to load constitutionalAmendment:", err));
+
+  import("../dynamicModelWeights.js").then(({ initDynamicWeights }) => {
+    initDynamicWeights();
+    console.log("[Init] v19.0.0: Dynamic Model Weights initialized.");
+  }).catch(err => console.warn("[Init] Failed to load dynamicModelWeights:", err));
+
+  import("../emergentAbstractionEngine.js").then(({ initAbstractionEngine }) => {
+    initAbstractionEngine();
+    console.log("[Init] v19.0.0: Emergent Abstraction Engine initialized.");
+  }).catch(err => console.warn("[Init] Failed to load emergentAbstractionEngine:", err));
+
+  import("../emergentFineTuner.js").then(({ initEmergentFineTuner }) => {
+    initEmergentFineTuner();
+    console.log("[Init] v19.0.0: Emergent Fine Tuner initialized.");
+  }).catch(err => console.warn("[Init] Failed to load emergentFineTuner:", err));
+
+  import("../humanInTheLoopGate.js").then(({ initHumanInTheLoopGate }) => {
+    initHumanInTheLoopGate();
+    console.log("[Init] v19.0.0: Human-in-the-Loop Gate initialized.");
+  }).catch(err => console.warn("[Init] Failed to load humanInTheLoopGate:", err));
+
+  import("../incrementalAstInvalidator.js").then(({ initIncrementalInvalidator }) => {
+    initIncrementalInvalidator();
+    console.log("[Init] v19.0.0: Incremental AST Invalidator initialized.");
+  }).catch(err => console.warn("[Init] Failed to load incrementalAstInvalidator:", err));
+
+  import("../llmCallCache.js").then(({ initLlmCache }) => {
+    initLlmCache();
+    console.log("[Init] v19.0.0: LLM Call Cache initialized.");
+  }).catch(err => console.warn("[Init] Failed to load llmCallCache:", err));
+
+  import("../metaMetaRsi.js").then(({ initMetaMetaRsi }) => {
+    initMetaMetaRsi();
+    console.log("[Init] v19.0.0: Meta-Meta RSI initialized.");
+  }).catch(err => console.warn("[Init] Failed to load metaMetaRsi:", err));
+
+  import("../multiModalCodeReader.js").then(({ initMultiModalReader }) => {
+    initMultiModalReader();
+    console.log("[Init] v19.0.0: Multi-Modal Code Reader initialized.");
+  }).catch(err => console.warn("[Init] Failed to load multiModalCodeReader:", err));
+
+  import("../polyglotRsi.js").then(({ initPolyglotRsi }) => {
+    initPolyglotRsi();
+    console.log("[Init] v19.0.0: Polyglot RSI initialized.");
+  }).catch(err => console.warn("[Init] Failed to load polyglotRsi:", err));
+
+  import("../predictiveFailurePrevention.js").then(({ initFailurePredictor }) => {
+    initFailurePredictor();
+    console.log("[Init] v19.0.0: Predictive Failure Prevention initialized.");
+  }).catch(err => console.warn("[Init] Failed to load predictiveFailurePrevention:", err));
+
+  import("../probabilisticTypeInference.js").then(({ initTypeProfileStore }) => {
+    initTypeProfileStore();
+    console.log("[Init] v19.0.0: Probabilistic Type Inference initialized.");
+  }).catch(err => console.warn("[Init] Failed to load probabilisticTypeInference:", err));
+
+  import("../sandboxManager.js").then(({ initSandbox }) => {
+    initSandbox();
+    console.log("[Init] v19.0.0: Sandbox Manager initialized.");
+  }).catch(err => console.warn("[Init] Failed to load sandboxManager:", err));
+
+  import("../selfHealingInfra.js").then(({ initSelfHealingDaemon }) => {
+    initSelfHealingDaemon();
+    console.log("[Init] v19.0.0: Self-Healing Infrastructure initialized.");
+  }).catch(err => console.warn("[Init] Failed to load selfHealingInfra:", err));
+
+  import("../swarmCoordinator.js").then(({ initSwarmCoordinator }) => {
+    initSwarmCoordinator();
+    console.log("[Init] v19.0.0: Swarm Coordinator initialized.");
+  }).catch(err => console.warn("[Init] Failed to load swarmCoordinator:", err));
+
+  import("../temporalSelfModel.js").then(({ initTemporalSelfModel }) => {
+    initTemporalSelfModel();
+    console.log("[Init] v19.0.0: Temporal Self-Model initialized.");
+  }).catch(err => console.warn("[Init] Failed to load temporalSelfModel:", err));
 
   // v46 — Sub-Agent Economy I
   console.log("[Init] Sub-Agent Economy I initialized (marketplace, auctioneer, bidder, broker, rewards, reputation).");
