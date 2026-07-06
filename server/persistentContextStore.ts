@@ -113,6 +113,9 @@ export function initPersistentContextStore(): void {
  * Store a tool output or message to persistent storage.
  */
 export function storeContext(entry: Omit<ContextEntry, "id">): string {
+  if (!entry || typeof entry !== 'object' || !entry.sessionId || typeof entry.sessionId !== 'string') {
+    throw new Error('storeContext: invalid entry — sessionId is required');
+  }
   ensureStoreDir();
   const id = `ctx_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
   const fullEntry: ContextEntry = { ...entry, id };
