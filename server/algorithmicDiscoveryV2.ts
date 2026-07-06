@@ -329,7 +329,9 @@ function persistRegistry(): void {
   try {
     fs.mkdirSync(path.dirname(REGISTRY_FILE), { recursive: true });
     fs.writeFileSync(REGISTRY_FILE, JSON.stringify(registry, null, 2));
-  } catch { /* non-fatal */ }
+  } catch (err) {
+    log.warn(`[AlgoDiscoveryV2] Failed to persist registry:`, err);
+  }
 }
 
 function loadRegistry(): void {
@@ -338,7 +340,9 @@ function loadRegistry(): void {
       registry = JSON.parse(fs.readFileSync(REGISTRY_FILE, "utf-8"));
       log.info(`[AlgoDiscoveryV2] Loaded registry with ${Object.keys(registry.algorithms).length} algorithms`);
     }
-  } catch { /* non-fatal */ }
+  } catch (err) {
+    log.warn(`[AlgoDiscoveryV2] Failed to load registry:`, err);
+  }
 }
 
 // ─── Stats & Queries ───────────────────────────────────────────────────────────
