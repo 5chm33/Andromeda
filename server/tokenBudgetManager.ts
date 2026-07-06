@@ -394,7 +394,7 @@ export function getBudgetStats(): BudgetStats {
  * Get detailed budget info for a specific session (for debugging)
  */
 export function getSessionDetail(sessionId: string): SessionState | null {
-  return sessions.get(sessionId) || null;
+  return sessions.get(sessionId) ?? null;
 }
 
 // ── Configuration ─────────────────────────────────────────────────────────────
