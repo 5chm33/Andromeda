@@ -224,7 +224,8 @@ export function analyzeCodeSafety(
     }
 
     // Detect eval() usage
-    if (/\beval\s*\(/.test(line) && !/\/\/.*eval/.test(line)) {
+        // Detect eval() usage
+    if (/\beval\s*\(/.test(line) && !line.includes('//') && !line.includes('/*')) {
       violations.push({
         property: "privilege_safety",
         description: `Dynamic code execution via eval() at line ${lineNum}`,
