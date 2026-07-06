@@ -357,7 +357,7 @@ export function getUnreadCount(agentId: string): Record<string, number> {
  * Claim a piece of work so other agents know not to duplicate it.
  */
 export function claimWork(agentId: string, taskDescription: string, channel: string, ttlMs: number = 5 * 60 * 1000): AgentWorkClaim | null {
-  if (!agentId || !taskDescription || !channel) return null;
+  if (typeof agentId !== 'string' || !agentId || typeof taskDescription !== 'string' || !taskDescription || typeof channel !== 'string' || !channel) return null;
   // Check if similar work is already claimed
   const now = Date.now();
   const activeClaims = workClaims.filter(c => c.expiresAt > now);
