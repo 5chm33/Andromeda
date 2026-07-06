@@ -367,6 +367,9 @@ export function createIsolatedContext(
   taskId: string,
   options?: { taskType?: string; parentTaskId?: string }
 ): string {
+  if (typeof taskId !== 'string' || taskId.trim().length === 0) {
+    throw new Error('taskId must be a non-empty string');
+  }
   // Evict expired contexts
   const now = Date.now();
   for (const [id, ctx] of Array.from(isolatedContexts.entries())) {
