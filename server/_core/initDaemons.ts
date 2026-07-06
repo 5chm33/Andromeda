@@ -843,6 +843,26 @@ export function startDaemons(): void {
     console.log("[Init] v19.0.0: Temporal Self-Model initialized.");
   }).catch(err => console.warn("[Init] Failed to load temporalSelfModel:", err));
 
+  import("../federatedRLHF.js").then(({ startFederatedSync }) => {
+    startFederatedSync();
+    console.log("[Init] v19.0.0: Federated RLHF Sync initialized.");
+  }).catch(err => console.warn("[Init] Failed to load federatedRLHF:", err));
+
+  import("../knowledgeBaseConsolidation.js").then(({ startKBConsolidationDaemon }) => {
+    startKBConsolidationDaemon();
+    console.log("[Init] v19.0.0: Knowledge Base Consolidation Daemon initialized.");
+  }).catch(err => console.warn("[Init] Failed to load knowledgeBaseConsolidation:", err));
+
+  import("../memoryConsolidation.js").then(({ startConsolidation }) => {
+    startConsolidation();
+    console.log("[Init] v19.0.0: Memory Consolidation initialized.");
+  }).catch(err => console.warn("[Init] Failed to load memoryConsolidation:", err));
+
+  import("../parallelRsi.js").then(({ startParallelRsi }) => {
+    startParallelRsi();
+    console.log("[Init] v19.0.0: Parallel RSI initialized.");
+  }).catch(err => console.warn("[Init] Failed to load parallelRsi:", err));
+
   // v46 — Sub-Agent Economy I
   console.log("[Init] Sub-Agent Economy I initialized (marketplace, auctioneer, bidder, broker, rewards, reputation).");
 
