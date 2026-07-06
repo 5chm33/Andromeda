@@ -396,6 +396,9 @@ export function routeTask(
   taskDescription: string,
   config?: Partial<{ minConfidence: number }>
 ): RoutingDecision {
+  if (typeof taskDescription !== "string" || taskDescription.trim().length === 0) {
+    throw new Error("routeTask: taskDescription must be a non-empty string");
+  }
   const minConfidence = config?.minConfidence ?? 0.4;
   const model = loadSelfModel();
   const context = extractTaskContext(taskDescription);
