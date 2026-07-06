@@ -251,7 +251,14 @@ function loadState(): void {
   try {
     if (existsSync(MODEL_PATH)) {
       const raw = readFileSync(MODEL_PATH, "utf-8");
-      const saved = JSON.parse(raw) as SemanticSelfModelState;
+      let saved: SemanticSelfModelState;
+      try {
+        saved = JSON.parse(raw) as SemanticSelfModelState;
+      } catch (parseError) {
+        console.warn(`[SemanticSelfModel] Failed to parse ${MODEL_PATH}, reinitializing:`, parseError);
+        initializeState();
+        return;
+      }
       // Merge saved state with baseline (new modules may have been added)
       _state = {
         ...saved,
