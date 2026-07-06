@@ -254,7 +254,14 @@ async function processClusters(
     }
 
     console.log(`[EpisodicConsolidate] Summarising "${clusterKey}" (${clusterEps.length} episodes)…`);
-    const lesson = await summariseCluster(clusterKey, clusterEps);
+    let lesson: string;
+    try {
+      lesson = await summariseCluster(clusterKey, clusterEps);
+    } catch (error) {
+      console.error(`[EpisodicConsolidate] Failed to summarise cluster "${clusterKey}":`, error);
+      keepEpisodes.push(...clusterEps);
+      continue;
+    }
 
     const successCount = clusterEps.filter(e => e.outcome === "success").length;
     const tagFreq = new Map<string, number>();
