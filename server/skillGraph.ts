@@ -119,6 +119,10 @@ export function learnFromError(
   fixCode?: string,
   success = true
 ): void {
+  if (!error || !module || !fixApplied) {
+    console.warn('[SkillGraph] learnFromError called with invalid arguments');
+    return;
+  }
   const pattern = extractPattern(error);
   const node = graph.get(module) || {
     module,
@@ -330,17 +334,41 @@ export function runLearningPipeline(): { decayed: number; propagated: number } {
   return { decayed: beforePatterns - afterPatterns, propagated };
 }
 
+let saveInterval: ReturnType<typeof setInterval> | null = null;
+let decayInterval: ReturnType<typeof setInterval> | null = null;
+
+let dispatchInterval: NodeJS.Timeout | null = null;
+
 export function initSkillGraph(): void {
   loadGraph();
   // Seed bootstrap patterns if graph is empty (first run)
   if (graph.size === 0) {
     seedBootstrapPatterns();
   }
-  // Auto-save every 5 minutes
-  setInterval(saveGraph, 5 * 60 * 1000);
-  // Run decay every 30 minutes
-  setInterval(decayStalePatterns, 30 * 60 * 1000);
+  // Single dispatch loop: auto-save every 5 min, decay every 30 min
+  const SAVE_INTERVAL_MS = 5 * 60 * 1000;
+  const DECAY_INTERVAL_MS = 30 * 60 * 1000;
+  let lastSave = Date.now();
+  let lastDecay = Date.now();
+  dispatchInterval = setInterval(() => {
+    const now = Date.now();
+    if (now - lastSave >= SAVE_INTERVAL_MS) {
+      saveGraph();
+      lastSave = now;
+    }
+    if (now - lastDecay >= DECAY_INTERVAL_MS) {
+      decayStalePatterns();
+      lastDecay = now;
+    }
+  }, 60_000); // check every minute
   console.log(`[SkillGraph] Initialized. ${graph.size} modules, ${Array.from(graph.values()).reduce((s, n) => s + n.knownPatterns.length, 0)} patterns loaded.`);
+}
+
+export function stopSkillGraph(): void {
+  if (dispatchInterval) {
+    clearInterval(dispatchInterval);
+    dispatchInterval = null;
+  }
 }
 
 /** Seed the skill graph with known patterns from Andromeda's development history */
