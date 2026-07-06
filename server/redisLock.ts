@@ -146,6 +146,9 @@ async function withInProcessLock<T>(
   try {
     const result = await fn();
     return { skipped: false, result };
+  } catch (err) {
+    log.error(`[redisLock] Lock "${key}" callback threw: ${(err as Error).message}`);
+    throw err;
   } finally {
     _inProcessLocks.delete(key);
     resolveGuard();
