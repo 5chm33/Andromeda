@@ -353,6 +353,10 @@ export function getRsiSchedulerStatus(): {
  * @param hours  New interval in hours (1–168)
  */
 export function setRsiScheduleHours(hours: number): boolean {
+  if (typeof hours !== 'number' || isNaN(hours)) {
+    log.warn("[rsiScheduler] Invalid hours parameter — must be a number");
+    return false;
+  }
   const clamped = Math.max(1, Math.min(168, Math.round(hours)));
   const task = _taskId ? getTask(_taskId) : findExistingTask();
   if (!task) {
