@@ -150,8 +150,14 @@ export function getEventHistory(limit = 20): RsiEvent[] {
 // ─── Heartbeat ────────────────────────────────────────────────────────────────
 
 // Send a heartbeat every 30 seconds to keep connections alive
-setInterval(() => {
+const heartbeatInterval = setInterval(() => {
   if (clients.size > 0) {
     emitRsiEvent("heartbeat", { clientCount: clients.size });
   }
-}, 30_000).unref();
+}, 30_000);
+heartbeatInterval.unref();
+
+/** Stop the heartbeat timer (call during cleanup) */
+export function stopHeartbeat(): void {
+  clearInterval(heartbeatInterval);
+}
