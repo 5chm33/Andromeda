@@ -111,9 +111,11 @@ export async function publish(
     }
     await Promise.all(deliveries);
   } else {
-    const handlers = subscribers.get(to) ?? [];
-    for (const handler of handlers) {
-      await Promise.resolve(handler(msg));
+    const handlers = subscribers.get(to);
+    if (handlers) {
+      for (const handler of handlers) {
+        await Promise.resolve(handler(msg));
+      }
     }
   }
 
