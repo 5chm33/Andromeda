@@ -357,9 +357,13 @@ export async function measureBenchmark(): Promise<BenchmarkBreakdown> {
   // v11.10.1: Measure actual test-to-source file ratio (was a copy-paste bug
   // that ran tsc again — identical to Dimension 1). Count .test.ts files vs
   // .ts source files in server/ to get a real coverage proxy.
+  // v20.3.0: Fixed — use process.cwd()/server/ instead of fileURLToPath(import.meta.url)
+  // which resolves to dist/_core/ (the compiled bundle directory, containing no .ts files).
   try {
     const { readdirSync: rds3 } = await import("fs");
-    const serverDir3 = path.dirname(fileURLToPath(import.meta.url));
+    // Always resolve to the source server/ directory relative to project root.
+    // fileURLToPath(import.meta.url) resolves to dist/_core/ at runtime — wrong directory.
+    const serverDir3 = path.resolve(process.cwd(), "server");
     const allTs3 = rds3(serverDir3).filter((f: string) => f.endsWith(".ts") && !f.endsWith(".d.ts"));
     const testFiles3 = allTs3.filter((f: string) => f.endsWith(".test.ts") || f.endsWith(".spec.ts"));
     const sourceFiles3 = allTs3.filter((f: string) => !f.endsWith(".test.ts") && !f.endsWith(".spec.ts"));
