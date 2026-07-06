@@ -368,10 +368,12 @@ export class EpistemicModel {
 
     for (const arg of debate.arguments) {
       const agent = this.agents.get(arg.agentId);
-      const trustWeight = agent
-        ? 0.5 + 0.5 * (Array.from(this.agents.values())
-            .reduce((sum, a) => sum + a.getTrust(arg.agentId), 0) / Math.max(1, this.agents.size))
-        : 0.5;
+      if (!agent) {
+        log.warn(`[epistemic] Skipping argument from unknown agent: ${arg.agentId}`);
+        continue;
+      }
+      const trustWeight = 0.5 + 0.5 * (Array.from(this.agents.values())
+            .reduce((sum, a) => sum + a.getTrust(arg.agentId), 0) / Math.max(1, this.agents.size));
 
       const weight = arg.strength * trustWeight;
       totalWeight += weight;
