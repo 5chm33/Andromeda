@@ -220,7 +220,7 @@ function calculateProviderScore(
   // Latency score (0-25 points)
   if (m && m.avgLatencyMs > 0) {
     if (maxLatencyMs && m.avgLatencyMs > maxLatencyMs) score -= 20;
-    else score += Math.max(0, 25 - (m.avgLatencyMs / 200)); // Lower latency = higher score
+    score += Math.max(0, 25 - ((m?.avgLatencyMs ?? 0) / 200)); // Lower latency = higher score
   } else {
     score += 15; // Unknown latency — moderate score
   }
