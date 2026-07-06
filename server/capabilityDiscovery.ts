@@ -122,7 +122,7 @@ async function runDiscoveryCycle(): Promise<void> {
       temperature: 0.4,
     }); // v6.16: routes to DeepSeek, not OpenRouter
 
-    const content = response.content || "[]";
+    const content = response?.content || "[]";
     const jsonMatch = content.match(/\[[\s\S]*\]/);
     if (!jsonMatch) return;
 
