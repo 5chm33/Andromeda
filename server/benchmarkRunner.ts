@@ -369,7 +369,7 @@ export function startBenchmarkRunner(): void {
 
   _intervalId = setInterval(async () => {
     try { await runBenchmarks(); } catch (err) { console.warn("[BenchmarkRunner] Run failed:", err); }
-  }, BENCHMARK_INTERVAL_MS);
+  }, BENCHMARK_INTERVAL_MS).unref();
 
   console.log(`[BenchmarkRunner] Started — benchmarking every ${BENCHMARK_INTERVAL_MS / 3600000} hours`);
 }
