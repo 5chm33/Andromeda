@@ -84,8 +84,9 @@ Instructions: ${instructions}`;
     const cleaned = response.replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
     plan = JSON.parse(cleaned);
   } catch (err) {
-    errors.push(`Failed to generate edit plan: ${err}`);
-    log.error("Edit plan generation failed:", err);
+    const errMsg = err instanceof Error ? err.message : String(err);
+    errors.push(`Failed to generate edit plan: ${errMsg}`);
+    log.error("Edit plan generation failed:", errMsg);
     return { base64Zip, summary: "Failed to generate edit plan", editsApplied: 0, errors };
   }
 
