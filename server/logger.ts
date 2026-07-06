@@ -29,7 +29,10 @@ const MAX_LOG_FILES = 5;
 // Ensure log directory exists
 try {
   fs.mkdirSync(LOG_DIR, { recursive: true });
-} catch { /* non-fatal — logging to file is best-effort */ }
+} catch (err) {
+  const errMsg = err instanceof Error ? err.message : String(err);
+  console.warn(`Failed to create log directory: ${errMsg}`);
+}
 
 // ── Log File Rotation ─────────────────────────────────────────────────────────
 function getLogFilePath(): string {
