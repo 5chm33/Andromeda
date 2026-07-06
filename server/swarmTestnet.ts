@@ -333,6 +333,9 @@ export class SwarmTestnet extends EventEmitter {
    * Run a full testnet scenario with N proposals.
    */
   async runScenario(proposalCount: number): Promise<TestnetResult> {
+    if (!Number.isInteger(proposalCount) || proposalCount < 0) {
+      throw new Error('Invalid proposalCount: must be a non-negative integer');
+    }
     if (this.nodes.size === 0) this.initialize();
 
     const scenarioStart = Date.now();
