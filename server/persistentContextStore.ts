@@ -168,6 +168,7 @@ function readSessionFile(sessionId: string): ContextEntry[] {
 
 export function retrieveContext(sessionId: string, id: string): ContextEntry | null {
   const entries = readSessionFile(sessionId);
+  if (!entries) return null;
   return entries.find(e => e.id === id) ?? null;
 }
 
