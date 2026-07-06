@@ -18,7 +18,7 @@
 
 import { existsSync, mkdirSync, writeFileSync, rmSync } from "fs";
 import { join, basename } from "path";
-import { execSync } from "child_process";
+import { execSync, spawnSync } from "child_process";
 import { tmpdir } from "os";
 
 // ── Types ───────────────────────────────────────────────────────────────────
@@ -141,30 +141,36 @@ async function verifyInLocalSandbox(req: VerificationRequest, start: number): Pr
     writeFileSync(join(sandboxDir, "tsconfig.json"), JSON.stringify(tsconfig, null, 2));
 
     // Run TypeScript check
+    // v20.3.1: Use spawnSync with array args to prevent command injection.
     try {
-      execSync(`pnpm exec tsc --noEmit --project tsconfig.json 2>&1`, {
+      const tscResult = spawnSync("pnpm", ["exec", "tsc", "--noEmit", "--project", "tsconfig.json"], {
         cwd: sandboxDir,
         timeout: 30_000,
-        stdio: "pipe",
+        encoding: "utf-8",
       });
-      result.typeCheckPassed = true;
-    } catch (err: any) {
-      const output = err.stdout?.toString() || err.stderr?.toString() || "";
-      result.typeCheckPassed = false;
-      // Parse errors
-      const errorLines = output.split("\n").filter((l: string) => l.includes("error TS"));
-      result.errors.push(...errorLines.slice(0, 10));
-      if (errorLines.length === 0) {
-        // tsc might have failed for other reasons — check if it's just missing imports
-        const missingImports = output.includes("Cannot find module");
-        if (missingImports) {
-          // Missing imports are expected in isolated check — treat as warning
-          result.warnings.push("Missing imports (expected in isolated check)");
-          result.typeCheckPassed = true; // Soft pass
-        } else {
-          result.errors.push(output.slice(0, 500));
+      if (tscResult.status === 0) {
+        result.typeCheckPassed = true;
+      } else {
+        const output = (tscResult.stdout || "") + (tscResult.stderr || "");
+        result.typeCheckPassed = false;
+        // Parse errors
+        const errorLines = output.split("\n").filter((l: string) => l.includes("error TS"));
+        result.errors.push(...errorLines.slice(0, 10));
+        if (errorLines.length === 0) {
+          // tsc might have failed for other reasons — check if it's just missing imports
+          const missingImports = output.includes("Cannot find module");
+          if (missingImports) {
+            // Missing imports are expected in isolated check — treat as warning
+            result.warnings.push("Missing imports (expected in isolated check)");
+            result.typeCheckPassed = true; // Soft pass
+          } else {
+            result.errors.push(output.slice(0, 500));
+          }
         }
       }
+    } catch (err: any) {
+      result.typeCheckPassed = false;
+      result.errors.push(String(err?.message || err));
     }
 
     // Basic syntax validation (always works regardless of imports)
@@ -191,19 +197,21 @@ async function verifyInLocalSandbox(req: VerificationRequest, start: number): Pr
       const testFile = req.filePath.replace(".ts", ".test.ts");
       if (existsSync(testFile)) {
         try {
-          execSync(`pnpm exec vitest run ${basename(testFile)} --reporter=verbose 2>&1`, {
+          const vitestResult = spawnSync("pnpm", ["exec", "vitest", "run", basename(testFile), "--reporter=verbose"], {
             cwd: sandboxDir,
             timeout: 30_000,
-            stdio: "pipe",
+            encoding: "utf-8",
           });
-          result.testsPassed = true;
+          result.testsPassed = vitestResult.status === 0;
+          if (!result.testsPassed) {
+            result.warnings.push("Tests failed in sandbox");
+          }
         } catch {
           result.testsPassed = false;
           result.warnings.push("Tests failed in sandbox");
         }
       }
     }
-
     result.passed = result.typeCheckPassed && (result.testsPassed !== false);
     if (result.passed) passCount++;
     else failCount++;
