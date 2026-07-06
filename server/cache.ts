@@ -240,15 +240,29 @@ function hashKey(input: string): string {
 }
 
 export function searchCacheKey(query: string, model: string): string {
+  if (typeof query !== "string" || typeof model !== "string") {
+    throw new TypeError(`searchCacheKey requires string inputs, got query: ${typeof query}, model: ${typeof model}`);
+  }
   return `search:${hashKey(query + model)}`;
 }
 
 export function aiCacheKey(messages: Array<{ role: string; content: string }>): string {
-  const content = messages.map(m => `${m.role}:${m.content}`).join("|");
+  if (!Array.isArray(messages)) {
+    throw new TypeError(`aiCacheKey requires array input, got: ${typeof messages}`);
+  }
+  const content = messages.map(m => {
+    if (typeof m?.role !== "string" || typeof m?.content !== "string") {
+      throw new TypeError(`aiCacheKey requires messages with string role and content`);
+    }
+    return `${m.role}:${m.content}`;
+  }).join("|");
   return `ai:${hashKey(content)}`;
 }
 
 export function browseCacheKey(url: string): string {
+  if (typeof url !== "string") {
+    throw new TypeError(`browseCacheKey requires string input, got: ${typeof url}`);
+  }
   return `browse:${hashKey(url)}`;
 }
 
