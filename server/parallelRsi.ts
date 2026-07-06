@@ -154,6 +154,17 @@ export async function runParallelCycle(options: {
     throw new Error("[ParallelRSI] Cycle already running — cannot start another");
   }
 
+  // Validate input options
+  if (options.maxProposalsPerWorker !== undefined && (typeof options.maxProposalsPerWorker !== 'number' || options.maxProposalsPerWorker < 1)) {
+    throw new Error("[ParallelRSI] maxProposalsPerWorker must be a positive number");
+  }
+  if (options.maxAppliesTotal !== undefined && (typeof options.maxAppliesTotal !== 'number' || options.maxAppliesTotal < 0)) {
+    throw new Error("[ParallelRSI] maxAppliesTotal must be a non-negative number");
+  }
+  if (options.workerGroups !== undefined && (!Array.isArray(options.workerGroups) || options.workerGroups.length === 0)) {
+    throw new Error("[ParallelRSI] workerGroups must be a non-empty array");
+  }
+
   _isRunning = true;
   _cycleCount++;
   const cycleNum = _cycleCount;
