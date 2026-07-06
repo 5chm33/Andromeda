@@ -156,7 +156,7 @@ export function reviewCode(code: string, language?: "typescript" | "python" | "b
   // 2. Security scan
   if (config.categories.includes("security")) {
     for (const pattern of SECURITY_PATTERNS) {
-      if (!pattern.lang.includes(lang)) continue;
+      if (!pattern.lang || !pattern.lang.includes(lang)) continue;
       const lines = code.split("\n");
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
