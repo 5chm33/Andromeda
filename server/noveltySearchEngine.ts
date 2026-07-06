@@ -207,7 +207,8 @@ export async function runNoveltySearchCycle(): Promise<NoveltyDiscovery | null> 
 
     return discovery;
   } catch (err) {
-    log.warn("[NoveltySearch] Discovery cycle failed:", err);
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    log.warn("[NoveltySearch] Discovery cycle failed:", errorMessage);
     return null;
   }
 }
