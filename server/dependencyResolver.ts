@@ -349,13 +349,17 @@ export async function installDependency(request: DependencyRequest): Promise<Ins
       timeout: config.timeout,
       encoding: "utf-8",
     });
-        const output = String(stdout ?? "");
+    const output = String(stdout ?? "");
     // Verify installation if sandbox verify is enabled
     if (config.sandboxVerify) {
       const verified = verifyInstallation(request);
       if (!verified) {
         // Rollback
-        try { await execAsyncSandbox(uninstallCmd).catch(() => {}); } catch {}
+        try {
+          await execAsyncSandbox(uninstallCmd);
+        } catch (rollbackErr) {
+          console.warn(`Rollback failed for ${request.name}:`, rollbackErr);
+        }
         const result: InstallResult = {
           request,
           success: false,
