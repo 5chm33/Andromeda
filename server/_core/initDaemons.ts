@@ -588,13 +588,13 @@ export function startDaemons(): void {
   try {
     initConsensusConfig();
 
-  // v19.0.0
-  initConsolidationV2();
-  resetBenchmarkBaseline();
+    // v19.0.0
+    initConsolidationV2();
+    resetBenchmarkBaseline();
 
-  // v20.0.0
-  initUcdDaemon(process.cwd());
-  initGlobalMemory();
+    // v20.0.0
+    initUcdDaemon(process.cwd());
+    initGlobalMemory();
 
     // v28
     initBootstrapper({ operatorEmail: "admin@example.com", enableSystemd: false, enableAutoUpdate: true });
@@ -713,20 +713,20 @@ export function startDaemons(): void {
     initOmegaStateManager();
 
 
-  initSummarizer();
+    initSummarizer();
 
-  // v21.0.0
-  initHypothesisEngine();
-  initPaperWriter();
-  initNeuromorphicMemory();
-  initNasEngine();
+    // v21.0.0
+    initHypothesisEngine();
+    initPaperWriter();
+    initNeuromorphicMemory();
+    initNasEngine();
 
-  // v22.0.0
-  initMetaRsi();
-  initCausalModel();
-  initNtdlMemory();
-  initBenchmarkSynthesizer();
-  initConstitutionalAI();
+    // v22.0.0
+    initMetaRsi();
+    initCausalModel();
+    initNtdlMemory();
+    initBenchmarkSynthesizer();
+    initConstitutionalAI();
 
 
 
