@@ -214,6 +214,17 @@ export async function routeLoraTraining(
 ): Promise<LoraTrainingResult> {
   const startMs = Date.now();
 
+  // Validate inputs
+  if (!request || typeof request !== 'object') {
+    throw new Error('routeLoraTraining: request must be a non-null object');
+  }
+  if (typeof request.modelId !== 'string' || request.modelId.trim() === '') {
+    throw new Error('routeLoraTraining: request.modelId must be a non-empty string');
+  }
+  if (preferredBackend !== undefined && !['ollama', 'huggingface', 'replicate', 'local-peft', 'simulation'].includes(preferredBackend)) {
+    throw new Error(`routeLoraTraining: invalid preferredBackend "${preferredBackend}"`);
+  }
+
   // Detect backends if no preference given
   let backend: LoraBackend;
   if (preferredBackend) {
