@@ -528,8 +528,8 @@ function findDuplicatePairs(): { idA: string; idB: string; similarity: number }[
       comparisons++;
 
       // Quick length check — very different lengths are unlikely duplicates
-      const lenRatio = Math.min(memories[i].text.length, memories[j].text.length) /
-                       Math.max(memories[i].text.length, memories[j].text.length);
+      const lenRatio = Math.min(memories[i]?.text?.length ?? 0, memories[j]?.text?.length ?? 0) /
+                       Math.max(memories[i]?.text?.length ?? 0, memories[j]?.text?.length ?? 0);
       if (lenRatio < 0.5) continue;
 
       // Compute similarity (reuse existing textSimilarity + substring check)
