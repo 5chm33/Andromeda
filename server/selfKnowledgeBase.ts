@@ -272,7 +272,7 @@ export function resolveIssue(issueId: string, rootCause: string, resolvedBy?: st
  */
 export function getOpenIssues(filter?: { severity?: KnownIssue["severity"]; module?: string }): KnownIssue[] {
   const store = loadStore();
-  let issues = (store.issues || []).filter(i => i.status !== "resolved" && i.status !== "wontfix");
+  let issues = (store.issues ?? []).filter(i => i.status !== "resolved" && i.status !== "wontfix");
 
   if (filter?.severity) issues = issues.filter(i => i.severity === filter.severity);
   if (filter?.module) issues = issues.filter(i => i.affectedModules.includes(filter.module!));
