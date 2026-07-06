@@ -530,7 +530,7 @@ export function getOptimalConfig(taskType: TaskProfile["type"], constraints?: {
 
   // Calculate average latencies
   for (const [_modelId, stats] of Object.entries(recentPerf)) {
-    if (!stats || !stats.latencies || stats.latencies.length === 0) continue;
+    if (!stats?.latencies || stats.latencies.length === 0) continue;
     stats.avgLatency = stats.latencies.reduce((a, b) => a + b, 0) / stats.latencies.length;
   }
 
