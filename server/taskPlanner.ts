@@ -403,7 +403,19 @@ export async function dispatchParallelSteps(
     `[TaskPlanner] Dispatching ${steps.length} steps in parallel: ${steps.map(s => s.id).join(", ")}`
   );
 
-  const results = await Promise.allSettled(steps.map(step => executor(step)));
+  let results: PromiseSettledResult<string>[];
+  try {
+    results = await Promise.allSettled(steps.map(step => executor(step)));
+  } catch (err) {
+    console.error("[TaskPlanner] Parallel dispatch failed unexpectedly:", err);
+    // Mark all steps as failed
+    for (const step of steps) {
+      step.status = "failed";
+      step.error = String(err);
+      plan.updatedAt = Date.now();
+    }
+    return;
+  }
 
   for (let i = 0; i < steps.length; i++) {
     const step = steps[i];
