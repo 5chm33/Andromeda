@@ -260,6 +260,10 @@ export function shareToolProposal(
  * Receives a tool proposal from a peer node.
  */
 export function receiveToolProposal(proposal: SharedToolProposal): void {
+  if (!proposal || typeof proposal !== 'object' || !proposal.proposalId || !proposal.sourceNodeId || !proposal.toolName) {
+    log.warn("Invalid tool proposal received — missing required fields", { proposal });
+    return;
+  }
   const state = loadState();
   const existing = state.toolProposals.find((p) => p.proposalId === proposal.proposalId);
   if (!existing) {
