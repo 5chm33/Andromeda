@@ -17,9 +17,9 @@ let _analyzableFiles: Set<string> | null = null;
 async function getAnalyzableFileSet(): Promise<Set<string>> {
   if (_analyzableFiles) return _analyzableFiles;
   try {
-    const { getAnalyzableFiles } = await import("./selfImprove.js") as any;
-    if (typeof getAnalyzableFiles === "function") {
-      _analyzableFiles = new Set(getAnalyzableFiles().map((f: string) => path.basename(f)));
+    const module = await import("./selfImprove.js") as { getAnalyzableFiles?: () => string[] };
+    if (typeof module.getAnalyzableFiles === "function") {
+      _analyzableFiles = new Set(module.getAnalyzableFiles().map((f: string) => path.basename(f)));
       return _analyzableFiles;
     }
   } catch { /* fallback below */ }
