@@ -76,7 +76,7 @@ export function validateAgentConfig(config: AgentConfig): AgentConfig {
   if (typeof config.temperature !== 'number' || config.temperature < 0 || config.temperature > 2) {
     throw new Error(`Invalid temperature: ${config.temperature}. Must be between 0 and 2.`);
   }
-  if (typeof config.workspaceDir !== 'string' || config.workspaceDir.trim().length === 0) {
+  if (typeof config.workspaceDir !== 'string' || !config.workspaceDir || config.workspaceDir.trim().length === 0) {
     throw new Error('workspaceDir must be a non-empty string.');
   }
   if (typeof config.onEvent !== 'function') {
