@@ -41,12 +41,17 @@ import { registerSystemRoutes } from "./routes/systemRoutes.js";
 const activeAgentSessions = new Map<string, ReactEngine>();
 
 // Cleanup completed/interrupted sessions every 5 minutes
-setInterval(() => {
+const sessionCleanupInterval = setInterval(() => {
   for (const [id, engine] of Array.from(activeAgentSessions.entries())) {
     const st = engine.getState();
     if (st === "completed" || st === "interrupted") activeAgentSessions.delete(id);
   }
-}, 5 * 60_000).unref();
+}, 5 * 60_000);
+sessionCleanupInterval.unref();
+
+export function stopSessionCleanup(): void {
+  clearInterval(sessionCleanupInterval);
+}
 
 // ── Rate limiters ──────────────────────────────────────────────────────────────
 
