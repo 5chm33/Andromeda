@@ -127,6 +127,11 @@ function countMatches(text: string, patterns: RegExp[]): number {
 }
 
 export function classifyTask(query: string, hasImages?: boolean): { type: TaskType; confidence: number } {
+  // Input validation
+  if (typeof query !== 'string' || query.trim().length === 0) {
+    return { type: "general", confidence: 0.3 };
+  }
+
   // If images are attached, it's almost certainly a vision task
   if (hasImages) {
     return { type: "vision", confidence: 0.95 };
@@ -190,8 +195,8 @@ const DEFAULT_ROUTING_TABLE: Record<TaskType, string[]> = {
 
 function selectProvider(taskType: TaskType): string {
   // Check for manual override first
-  if (routingConfig.overrides[taskType]) {
-    return routingConfig.overrides[taskType]!;
+  if (routingConfig?.overrides?.[taskType]) {
+    return routingConfig.overrides[taskType];
   }
 
   // Get the candidate list
