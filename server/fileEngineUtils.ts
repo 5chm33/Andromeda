@@ -299,6 +299,15 @@ export async function runChunkedAnalysis(
   model: string = "deepseek/deepseek-chat",
   emit?: SSEEmitter
 ): Promise<{ analysis: string; chunksProcessed: number; totalFiles: number }> {
+  if (typeof base64Zip !== "string" || base64Zip.length === 0) {
+    throw new Error("runChunkedAnalysis: base64Zip must be a non-empty string");
+  }
+  if (typeof instruction !== "string" || instruction.length === 0) {
+    throw new Error("runChunkedAnalysis: instruction must be a non-empty string");
+  }
+  if (typeof apiKey !== "string" || apiKey.length === 0) {
+    throw new Error("runChunkedAnalysis: apiKey must be a non-empty string");
+  }
   const zipBuffer = Buffer.from(base64Zip, "base64");
   const zip = await JSZip.loadAsync(zipBuffer);
   const index = await buildFileIndex(zip);
