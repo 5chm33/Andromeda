@@ -296,9 +296,19 @@ export function quickValidate(content: string, filePath: string): { valid: boole
   const ext = filePath.split(".").pop() || "";
 
   if (/^(ts|tsx|js|jsx)$/.test(ext)) {
-    // Check brace balance
-    const openBraces = (content.match(/\{/g) || []).length;
-    const closeBraces = (content.match(/\}/g) || []).length;
+    // Check brace balance — strip string/template literals and comments first
+    // to avoid false positives from braces inside strings, regex, or JSDoc.
+    // v19.1.0: Previously counted raw braces in full file content, which caused
+    // false rejections on files with braces inside template literals or regex
+    // patterns (e.g. 302 open, 305 close in a valid file).
+    const strippedForBraces = content
+      .replace(/\/\*[\s\S]*?\*\//g, " ")   // block comments
+      .replace(/\/\/[^\n]*/g, " ")          // single-line comments
+      .replace(/`[^`]*`/g, '""')             // template literals (simplified)
+      .replace(/"(?:[^"\\]|\\.)*"/g, '""')  // double-quoted strings
+      .replace(/\'(?:[^\'\\]|\\.)*\'/g, "''"); // single-quoted strings
+    const openBraces = (strippedForBraces.match(/\{/g) || []).length;
+    const closeBraces = (strippedForBraces.match(/\}/g) || []).length;
     if (openBraces !== closeBraces) {
       issues.push(`Unbalanced braces: ${openBraces} open, ${closeBraces} close`);
     }

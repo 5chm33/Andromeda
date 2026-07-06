@@ -123,6 +123,18 @@ vi.mock("better-sqlite3", () => {
   return { default: DatabaseMock };
 });
 
+// ─── llmProvider mock ───────────────────────────────────────────────────────
+// Prevents real API calls in tests that don't explicitly override this mock.
+// Any test that needs real LLM behaviour should call vi.unmock('./llmProvider.js')
+// or provide its own vi.mock('./llmProvider.js', ...) override.
+vi.mock("./llmProvider.js", () => ({
+  simpleChatCompletion: vi.fn(async () => "MOCK_LLM_RESPONSE"),
+  getProviderForTier: vi.fn(() => ({ provider: "mock", model: "mock-model" })),
+  tierForArea: vi.fn(() => "eco"),
+  buildMessages: vi.fn((msgs: unknown[]) => msgs),
+  default: {},
+}));
+
 // ─── @lydell/node-pty mock ────────────────────────────────────────────────────
 vi.mock("@lydell/node-pty", () => {
   const mockPty = {
