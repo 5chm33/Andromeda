@@ -1185,6 +1185,8 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
   // debate the highest-priority improvement. The winning brief is injected into the
   // user message so the LLM writes exactly what the debate consensus agreed upon.
   // Runs in structural mode (useLLM: false) — zero token cost.
+  // v20.5.0: Track debate winner here so it can be stored on the proposal for RLAIF feedback.
+  let _debateWinnerForProposal: string | undefined;
   try {
     const { runDebateProtocol } = await import("./multiAgentDebate.js");
     const debateResult = await runDebateProtocol(targetFile, contentForAnalysis, { useLLM: false });
@@ -1195,6 +1197,7 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
         (userMsg as any).content += `\n\n--- DEBATE CONSENSUS (${consensusType}) ---\n${debateResult.winningBrief}\nLead agent: ${debateResult.winner}\nConstraints: ${(debateResult.constraints ?? []).slice(0, 2).join("; ")}\n--- END DEBATE ---`;
       }
       log.info(`[v13.0.0] Debate (${debateResult.strongConsensus ? "strong" : "weak"} consensus): ${debateResult.winner} — ${String(debateResult.winningBrief).slice(0, 80)}`);
+      _debateWinnerForProposal = debateResult.winner;
     }
   } catch { /* non-fatal — debate is advisory only */ }
   // v18.0.0: Genealogy-Guided Generation — inject rejected proposal patterns into LLM prompt.
@@ -1594,6 +1597,10 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
   if ((parsed as any)._criticScore !== undefined) {
     (proposal as any)._criticScore = (parsed as any)._criticScore;
     (proposal as any)._criticStrategy = (parsed as any)._criticStrategy;
+  }
+  // v20.5.0: Carry debate winner forward so rsiEngine can record RLAIF feedback
+  if (_debateWinnerForProposal) {
+    (proposal as any)._debateWinner = _debateWinnerForProposal;
   }
 
   // v6.28 A1: Register in dedup hash set before saving

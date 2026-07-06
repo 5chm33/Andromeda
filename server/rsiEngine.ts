@@ -728,6 +728,14 @@ export async function runRSICycle(): Promise<RSICycleResult> {
             consecutiveAutoApplies++;
             appliedFiles.push(sanitizedPath);
               console.log(`[RSIEngine] CI PASSED — proposal ${proposal.id} committed to ${proposal.filePath}`);
+              // v20.5.0: RLAIF feedback — record debate winner success so weights update correctly
+              try {
+                const debateWinner = (proposal as any)._debateWinner;
+                if (debateWinner) {
+                  const { recordDebateOutcome } = await import("./multiAgentDebate.js");
+                  recordDebateOutcome(debateWinner, true);
+                }
+              } catch { /* non-fatal */ }
               // v6.30: Mirror to DB
               const { dbSaveProposal } = await import("./rsiDb.js");
               dbSaveProposal({ ...proposal, status: "applied" } as any).catch(() => {});
@@ -739,6 +747,14 @@ export async function runRSICycle(): Promise<RSICycleResult> {
               console.warn(`[RSIEngine] CI FAILED at stage "${ciResult.failedStage}" — ${ciResult.rolledBack ? "rolled back" : "no rollback"}`);
               proposalsRejected++;
               errors.push(`Proposal ${proposal.id} rejected by CI (${ciResult.failedStage}): ${failSummary}`);
+              // v20.5.0: RLAIF feedback — record debate winner failure so weights penalize correctly
+              try {
+                const debateWinner = (proposal as any)._debateWinner;
+                if (debateWinner) {
+                  const { recordDebateOutcome } = await import("./multiAgentDebate.js");
+                  recordDebateOutcome(debateWinner, false);
+                }
+              } catch { /* non-fatal */ }
               // v12.7.0: Record _failReason so the dashboard shows the rejection cause
               try {
                 const { loadProposals: _lp2, saveProposals: _sp2 } = await import("./selfImprove.js");
