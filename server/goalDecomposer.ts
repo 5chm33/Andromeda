@@ -121,8 +121,13 @@ export async function decomposeDiscoveries(
 ): Promise<DecomposedGoal[]> {
   const results: DecomposedGoal[] = [];
 
-  // Filter to significant gaps only
-  const significant = discoveries.filter(d => d.avgScore < 70);
+  // Validate and filter to significant gaps only
+  const valid = discoveries.filter(d =>
+    d && typeof d.id === 'string' && typeof d.category === 'string' &&
+    typeof d.title === 'string' && typeof d.description === 'string' &&
+    Array.isArray(d.failedTaskIds) && typeof d.avgScore === 'number'
+  );
+  const significant = valid.filter(d => d.avgScore < 70);
   if (significant.length === 0) {
     log.info("[goalDecomposer] No significant gaps to decompose (all categories ≥ 70%)");
     return results;
@@ -183,6 +188,11 @@ export async function decomposeDiscoveries(
 export async function decomposeSingleDiscovery(
   discovery: DiscoveredGoal,
 ): Promise<DecomposedGoal | null> {
-  const results = await decomposeDiscoveries([discovery]);
-  return results[0] ?? null;
+  try {
+    const results = await decomposeDiscoveries([discovery]);
+    return results[0] ?? null;
+  } catch (err) {
+    log.warn(`[goalDecomposer] decomposeSingleDiscovery failed: ${(err as Error).message}`);
+    return null;
+  }
 }
