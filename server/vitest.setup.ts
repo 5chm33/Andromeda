@@ -125,15 +125,34 @@ vi.mock("better-sqlite3", () => {
 
 // ─── llmProvider mock ───────────────────────────────────────────────────────
 // Prevents real API calls in tests that don't explicitly override this mock.
+// Uses importOriginal so all non-LLM exports (getActiveProvider, listProviders,
+// etc.) pass through unchanged — only the actual LLM call functions are mocked.
 // Any test that needs real LLM behaviour should call vi.unmock('./llmProvider.js')
 // or provide its own vi.mock('./llmProvider.js', ...) override.
-vi.mock("./llmProvider.js", () => ({
-  simpleChatCompletion: vi.fn(async () => "MOCK_LLM_RESPONSE"),
-  getProviderForTier: vi.fn(() => ({ provider: "mock", model: "mock-model" })),
-  tierForArea: vi.fn(() => "eco"),
-  buildMessages: vi.fn((msgs: unknown[]) => msgs),
-  default: {},
-}));
+vi.mock("./llmProvider.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./llmProvider.js")>();
+  return {
+    ...actual,
+    simpleChatCompletion: vi.fn(async () => "MOCK_LLM_RESPONSE"),
+    chatCompletion: vi.fn(async () => ({
+      content: "MOCK_LLM_RESPONSE",
+      role: "assistant",
+      model: "mock-model",
+      usage: { prompt_tokens: 10, completion_tokens: 20, total_tokens: 30 },
+    })),
+    backgroundChatCompletion: vi.fn(async () => ({
+      content: "MOCK_LLM_RESPONSE",
+      role: "assistant",
+      model: "mock-model",
+      usage: { prompt_tokens: 10, completion_tokens: 20, total_tokens: 30 },
+    })),
+    backgroundSimpleCompletion: vi.fn(async () => "MOCK_LLM_RESPONSE"),
+    streamChatCompletion: vi.fn(async function* () {
+      yield { delta: "MOCK_LLM_RESPONSE", done: false };
+      yield { delta: "", done: true };
+    }),
+  };
+});
 
 // ─── @lydell/node-pty mock ────────────────────────────────────────────────────
 vi.mock("@lydell/node-pty", () => {

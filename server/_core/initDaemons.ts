@@ -894,6 +894,7 @@ export function startDaemons(): void {
   console.log("[Init] Grand Unification initialized (universalAgentInterface, omniscientContextManager, perpetualLearningEngine, adaptiveGoalHierarchy, transcendentSelfModel, grandUnificationMonitor).");
 
   // v73 — Semantic Search Engine (Knowledge Retrieval)
-  await import("../semanticSearchEngine").catch(e => console.error("[Init] Failed to load semanticSearchEngine:", e));
-  console.log("[Init] Semantic Search Engine initialized (embedding-based corpus search, cosine similarity ranking).");
+  import("../semanticSearchEngine")
+    .then(() => console.log("[Init] Semantic Search Engine initialized (embedding-based corpus search, cosine similarity ranking)."))
+    .catch(e => console.error("[Init] Failed to load semanticSearchEngine:", e));
 }
