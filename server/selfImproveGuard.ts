@@ -630,7 +630,7 @@ export async function guardedApply(proposalId: string): Promise<{
       });
       if (matchedFilePattern) {
         addAudit("apply", "blocked", `Constitution v1.4.0: ${proposal.targetFile} matches forbidden file pattern '${matchedFilePattern}'. Test files must not be autonomously modified.`, proposalId, proposal.targetFile);
-        rejectProposal(proposalId);
+        rejectProposal(proposalId, `Constitution v1.4.0: forbidden file pattern '${matchedFilePattern}'`);
         return { success: false, message: `Constitution forbids autonomous modification of test files matching '${matchedFilePattern}'. Test files are the ground truth for correctness.` };
       }
       // Check forbidden patterns in proposed content
@@ -668,7 +668,7 @@ export async function guardedApply(proposalId: string): Promise<{
         addAudit("apply", "blocked", `Constitution: proposed content contains forbidden pattern '${matchedPattern}'`, proposalId, proposal.targetFile);
         // Auto-expire proposals that have been constitution-blocked 3+ times — they will never pass
         if (blockCount >= 2) {
-          rejectProposal(proposalId);
+          rejectProposal(proposalId, `Auto-expired: constitution-blocked ${blockCount + 1} times (forbidden pattern: '${matchedPattern}')`);
           addAudit("expire", "success", `Auto-expired: constitution-blocked ${blockCount + 1} times (pattern: '${matchedPattern}')`, proposalId, proposal.targetFile);
           log.info(`Auto-expired proposal ${proposalId} after ${blockCount + 1} constitution blocks`);
           return { success: false, message: `Proposal auto-expired: constitution-blocked ${blockCount + 1} times for pattern '${matchedPattern}'.` };
@@ -707,7 +707,7 @@ export async function guardedApply(proposalId: string): Promise<{
   if (config.proposalExpiryMs > 0) {
     const age = Date.now() - proposal.createdAt;
     if (age > config.proposalExpiryMs) {
-      rejectProposal(proposalId);
+      rejectProposal(proposalId, `Proposal expired after ${Math.round(age / 3600000)}h`);
       addAudit("expire", "success", `Proposal expired after ${Math.round(age / 3600000)}h`, proposalId, proposal.targetFile);
       return { success: false, message: "Proposal has expired and was auto-rejected" };
     }
@@ -1047,7 +1047,7 @@ export function sweepExpiredProposals(): number {
   let expired = 0;
   for (const p of pending) {
     if (Date.now() - p.createdAt > store.config.proposalExpiryMs) {
-      rejectProposal(p.id);
+      rejectProposal(p.id, `Auto-expired: proposal age exceeded limit`);
       addAudit("expire", "success", `Auto-expired: ${p.title}`, p.id, p.targetFile);
       expired++;
     }

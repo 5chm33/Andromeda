@@ -1633,6 +1633,7 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
   // the proposal status is ALWAYS set to 'rejected' before returning.
   // This is the only reliable way to prevent proposals from staying stuck in 'processing'.
   let _applySucceeded = false;
+  let _lastUncaughtErr: Error | undefined;
   try {
 
   // v5.48: Track retry count to prevent infinite retry loops
@@ -2606,6 +2607,11 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
       message: `Guard unavailable — proposal ${proposalId} queued for retry when guard is restored`,
     };
   }
+  } catch (_outerErr: unknown) {
+    // v20.0.0: Capture any exception that escaped all inner try/catch blocks.
+    // Store the actual error message so we know WHAT failed, not just that something did.
+    _lastUncaughtErr = _outerErr instanceof Error ? _outerErr : new Error(String(_outerErr));
+    console.error(`[SelfImprove] Uncaught exception in applyProposal for ${proposalId}:`, _lastUncaughtErr.message);
   } finally {
     // v9.8.5 DEFINITIVE FIX: If an unhandled exception escaped all inner catch blocks,
     // the proposal will still be in 'processing' status. Reset it to 'rejected' here.
@@ -2615,19 +2621,28 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
       const finalProp = finalStore.proposals.find(p => p.id === proposalId);
       if (finalProp && (finalProp.status as string) === 'processing') {
         finalProp.status = 'rejected' as any;
-        (finalProp as any)._failReason = (finalProp as any)._failReason || 'Unhandled exception in applyProposal';
+        // v20.0.0: Store the actual exception message, not just a generic string.
+        (finalProp as any)._failReason = (finalProp as any)._failReason
+          || (_lastUncaughtErr ? `Uncaught exception: ${_lastUncaughtErr.message}` : 'Unhandled exception in applyProposal');
         saveProposals(finalStore);
-        console.warn(`[SelfImprove] finally: reset stuck 'processing' proposal ${proposalId} to 'rejected'`);
+        console.warn(`[SelfImprove] finally: reset stuck 'processing' proposal ${proposalId} to 'rejected': ${(finalProp as any)._failReason}`);
       }
     }
   }
 }
 
-export function rejectProposal(proposalId: string): boolean {
+export function rejectProposal(proposalId: string, reason?: string): boolean {
   const store = loadProposals();
   const proposal = store.proposals.find(p => p.id === proposalId);
   if (!proposal) return false;
   proposal.status = "rejected";
+  // v20.0.0: Always record why a proposal was rejected so the feedback loop
+  // can learn from it. Without _failReason the proposal shows as '?' in stats.
+  if (reason && !(proposal as any)._failReason) {
+    (proposal as any)._failReason = reason;
+  } else if (!(proposal as any)._failReason) {
+    (proposal as any)._failReason = 'Rejected via rejectProposal() — no reason provided';
+  }
   saveProposals(store);
   return true;
 }

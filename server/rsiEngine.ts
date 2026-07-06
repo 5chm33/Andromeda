@@ -490,8 +490,18 @@ export async function runRSICycle(): Promise<RSICycleResult> {
           const { getHardeningTargets, recordRsiAttempt } = await import("./selfHealingChaos.js");
           const hardeningTargets = getHardeningTargets(FILES_PER_CYCLE);
           for (const ht of hardeningTargets) {
-            targets.push(ht.moduleFile);
-            recordRsiAttempt(ht.moduleName);
+            // v20.0.0: Only push hardening targets that are in ANALYZABLE_FILES.
+            // Chaos tests create targets like 'criticalModule' and 'highModule'
+            // (test fixture names) that don't exist on disk. Pushing them causes
+            // analyzeAndPropose to throw "not in analyzable files" which is then
+            // caught by the finally block and logged as "Unhandled exception".
+            const htBasename = ht.moduleFile.replace(/^server\//, "");
+            if (ANALYZABLE_FILES.includes(htBasename)) {
+              targets.push(ht.moduleFile);
+              recordRsiAttempt(ht.moduleName);
+            } else {
+              log.warn(`[RSIEngine] Skipping hardening target '${ht.moduleName}' — '${ht.moduleFile}' is not in ANALYZABLE_FILES`);
+            }
           }
         } catch { /* non-fatal if selfHealingChaos not available */ }
 
