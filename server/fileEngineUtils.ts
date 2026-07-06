@@ -344,19 +344,27 @@ Be concise — this is one chunk of a larger analysis.
 ${chunkContent}`;
 
     try {
-      const response = await fetchWithRetry(getFileEngineApiUrl(), {
-        method: "POST",
-        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", ...getFileEngineProviderHeaders() },
-        body: JSON.stringify({
-          model,
-          messages: [
-            { role: "system", content: "You are a code analyst. Analyze this code chunk concisely." },
-            { role: "user", content: chunkPrompt },
-          ],
-          max_tokens: 3000,
-          temperature: 0.3,
-        }),
-      }, DEFAULT_RETRY_CONFIG, emit);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000);
+      let response;
+      try {
+        response = await fetchWithRetry(getFileEngineApiUrl(), {
+          method: "POST",
+          headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", ...getFileEngineProviderHeaders() },
+          body: JSON.stringify({
+            model,
+            messages: [
+              { role: "system", content: "You are a code analyst. Analyze this code chunk concisely." },
+              { role: "user", content: chunkPrompt },
+            ],
+            max_tokens: 3000,
+            temperature: 0.3,
+          }),
+          signal: controller.signal,
+        }, DEFAULT_RETRY_CONFIG, emit);
+      } finally {
+        clearTimeout(timeoutId);
+      }
 
       if (response.ok) {
         const data = (await response.json()) as any;
