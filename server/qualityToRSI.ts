@@ -56,7 +56,16 @@ export async function feedQualityToRSI(): Promise<number> {
       .sort((a, b) => (a.severity === "high" ? -1 : 1) - (b.severity === "high" ? -1 : 1))
       .slice(0, MAX_QUALITY_PROPOSALS_PER_RUN);
 
-    const { analyzeAndPropose } = await import("./selfImprove.js");
+let _analyzeAndPropose: typeof import("./selfImprove.js").analyzeAndPropose | null = null;
+async function getAnalyzeAndPropose() {
+  if (_analyzeAndPropose) return _analyzeAndPropose;
+  const module = await import("./selfImprove.js");
+  _analyzeAndPropose = module.analyzeAndPropose;
+  return _analyzeAndPropose;
+}
+
+// ... later in the code:
+    const analyzeAndPropose = await getAnalyzeAndPropose();
     const allowlist = await getAnalyzableFileSet();
     for (const qp of sorted) {
       // Validate and normalize file paths to prevent path traversal
