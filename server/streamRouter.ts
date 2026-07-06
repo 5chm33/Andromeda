@@ -100,6 +100,9 @@ function sseWrite(res: Response, data: object): void {
  * @param app Express application instance
  */
 export function registerStreamRoutes(app: Express): void {
+  if (!app || typeof app.use !== "function") {
+    throw new Error("registerStreamRoutes: invalid Express app instance");
+  }
   const deps: Record<string, unknown> = { activeAgentSessions };
 
   // Delegate to focused route modules
