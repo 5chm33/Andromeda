@@ -161,22 +161,24 @@ function generateFixProposals(
   const proposals: FixProposal[] = [];
 
   // Security fix proposals
-  for (const vuln of vulnerabilities.filter(v => v.fixAvailable)) {
+  for (const vuln of (vulnerabilities || []).filter(v => v && v.fixAvailable)) {
+    if (!vuln.name || !vuln.severity) continue;
     proposals.push({
       id: `fix_${vuln.name}_${Date.now()}`,
       type: "security_patch",
       package: vuln.name,
-      currentVersion: vuln.currentVersion,
+      currentVersion: vuln.currentVersion || "unknown",
       proposedVersion: vuln.fixedVersion || "latest",
       severity: vuln.severity,
       autoFixable: vuln.severity === "critical" || vuln.severity === "high",
       command: `pnpm audit --fix`,
-      rationale: `Security vulnerability (${vuln.severity}): ${vuln.title}`,
+      rationale: `Security vulnerability (${vuln.severity}): ${vuln.title || "No title"}`,
     });
   }
 
   // Version bump proposals for outdated packages (only major/minor bumps)
-  for (const pkg of outdated) {
+  for (const pkg of (outdated || [])) {
+    if (!pkg || !pkg.name || !pkg.current || !pkg.latest) continue;
     if (pkg.current === pkg.latest) continue;
     const isMajor = pkg.current.split(".")[0] !== pkg.latest.split(".")[0];
     proposals.push({
@@ -184,10 +186,10 @@ function generateFixProposals(
       type: "version_bump",
       package: pkg.name,
       currentVersion: pkg.current,
-      proposedVersion: isMajor ? pkg.wanted : pkg.latest,
+      proposedVersion: isMajor ? (pkg.wanted || pkg.latest) : pkg.latest,
       severity: isMajor ? "moderate" : "low",
-      autoFixable: !isMajor, // Only auto-fix minor/patch bumps
-      command: isMajor ? `pnpm add ${pkg.name}@${pkg.wanted}` : `pnpm add ${pkg.name}@${pkg.latest}`,
+      autoFixable: !isMajor,
+      command: isMajor ? `pnpm add ${pkg.name}@${pkg.wanted || pkg.latest}` : `pnpm add ${pkg.name}@${pkg.latest}`,
       rationale: `Package outdated: ${pkg.current} → ${pkg.latest}${isMajor ? " (MAJOR version change — review needed)" : ""}`,
     });
   }
