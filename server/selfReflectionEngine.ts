@@ -61,6 +61,14 @@ function ensureDataDir(): void {
  * Called by reactEngine.ts after each tool call or response.
  */
 export function recordInteraction(type: "success" | "failure" | "partial", notes: string): void {
+  if (!["success", "failure", "partial"].includes(type)) {
+    console.warn("[SelfReflection] Invalid interaction type:", type);
+    return;
+  }
+  if (typeof notes !== "string" || notes.length === 0) {
+    console.warn("[SelfReflection] Invalid notes in recordInteraction");
+    return;
+  }
   sessionInteractionCount++;
   if (type === "failure" || type === "partial") {
     sessionFailures.push(`[${new Date().toISOString()}] ${notes}`);
@@ -73,6 +81,10 @@ export function recordInteraction(type: "success" | "failure" | "partial", notes
  * Log a decision to the decision journal for explainability.
  */
 export function logDecision(entry: Omit<DecisionEntry, "timestamp">): void {
+  if (!entry || typeof entry !== "object") {
+    console.warn("[SelfReflection] Invalid entry in logDecision");
+    return;
+  }
   ensureDataDir();
   const fullEntry: DecisionEntry = {
     timestamp: new Date().toISOString(),
@@ -243,15 +255,16 @@ function parseReflectionResponse(content: string): ReflectionEntry | null {
 
   try {
     const parsed = JSON.parse(jsonMatch[0]);
+    if (!parsed || typeof parsed !== 'object') return null;
     return {
       timestamp: new Date().toISOString(),
       sessionCount: sessionInteractionCount,
-      themes: parsed.themes || [],
-      failures: parsed.failures || [],
-      improvements: parsed.improvements || [],
-      capabilityGaps: parsed.capabilityGaps || [],
-      confidenceScore: parsed.confidenceScore || 0.5,
-      rawReflection: parsed.rawReflection || content,
+      themes: Array.isArray(parsed.themes) ? parsed.themes : [],
+      failures: Array.isArray(parsed.failures) ? parsed.failures : [],
+      improvements: Array.isArray(parsed.improvements) ? parsed.improvements : [],
+      capabilityGaps: Array.isArray(parsed.capabilityGaps) ? parsed.capabilityGaps : [],
+      confidenceScore: typeof parsed.confidenceScore === 'number' ? parsed.confidenceScore : 0.5,
+      rawReflection: typeof parsed.rawReflection === 'string' ? parsed.rawReflection : content,
     };
   } catch {
     return null;
