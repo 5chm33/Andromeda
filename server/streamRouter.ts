@@ -94,7 +94,7 @@ function sseWrite(res: Response, data: object): void {
   res.write(`data: ${JSON.stringify(data)}\n\n`);
   // flush() is available when compression middleware is active (not in standard Express types)
   const r = res as Response & { flush?: () => void };
-  if (typeof r.flush === "function") r.flush();
+  if (typeof r.flush === "function") r.flush?.();
 }
 
 // ── Main registration function ─────────────────────────────────────────────────
