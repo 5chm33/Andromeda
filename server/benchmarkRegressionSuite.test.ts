@@ -6,37 +6,38 @@
  * 2. The 1ms MIN_BASELINE_MS floor — sub-1ms benchmarks are skipped
  * 3. Baseline recording on first run
  * 4. Improvement detection and baseline update
+ *
+ * v19.2.0: Switched from vi.mock() factory to vi.spyOn() in beforeEach to
+ * ensure fs methods are properly intercepted on the default export object.
+ * The vi.mock() factory approach with ...actual spread does not reliably mock
+ * methods on the default export (vi.isMockFunction returns false for writeFileSync),
+ * causing real filesystem writes that pollute the test environment in CI.
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import fs from "node:fs";
-import path from "node:path";
-
-// ─── Mock fs so we don't touch real baseline files ───────────────────────────
-
-vi.mock("node:fs", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("node:fs")>();
-  return {
-    ...actual,
-    existsSync: vi.fn((p: string) => {
-      // Allow bench-tmp dir creation
-      if (String(p).includes("bench-tmp")) return true;
-      if (String(p).includes("benchmark-baselines")) return false;
-      return actual.existsSync(p);
-    }),
-    readFileSync: vi.fn((p: string, enc?: unknown) => {
-      if (String(p).includes("benchmark-baselines")) return "{}";
-      return actual.readFileSync(p, enc as BufferEncoding);
-    }),
-    writeFileSync: vi.fn(),
-    appendFileSync: vi.fn(),
-    mkdirSync: vi.fn(),
-  };
-});
 
 describe("benchmarkRegressionSuite", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    // Use vi.spyOn to properly intercept fs methods on the default export object.
+    // This ensures the mocks are applied to the same object that benchmarkRegressionSuite.ts uses.
+    vi.spyOn(fs, "existsSync").mockImplementation((p: fs.PathLike) => {
+      const s = String(p);
+      // Allow bench-tmp dir check to return true (dir exists)
+      if (s.includes("bench-tmp")) return true;
+      // Pretend baseline file doesn't exist — forces first-run recording
+      if (s.includes("benchmark-baselines")) return false;
+      // Default: file doesn't exist
+      return false;
+    });
+    vi.spyOn(fs, "readFileSync").mockImplementation((p: any, enc?: any) => {
+      if (String(p).includes("benchmark-baselines")) return "{}";
+      // For bench-tmp reads, return a valid JSON string
+      return "{}";
+    });
+    vi.spyOn(fs, "writeFileSync").mockImplementation(() => { /* no-op */ });
+    vi.spyOn(fs, "appendFileSync").mockImplementation(() => { /* no-op */ });
+    vi.spyOn(fs, "mkdirSync").mockImplementation(() => undefined);
   });
 
   afterEach(() => {
