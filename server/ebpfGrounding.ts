@@ -345,25 +345,26 @@ export class EbpfMonitor extends EventEmitter {
 
   private _processEbpfLine(line: string): void {
     try {
-      const event = JSON.parse(line);
+      const parsed = JSON.parse(line);
+      if (typeof parsed !== 'object' || parsed === null) return;
       this.eventCount++;
 
-      if (event.ANOMALY) {
+      if (typeof parsed.ANOMALY === 'string') {
         const anomaly: KernelAnomaly = {
-          type: event.ANOMALY as AnomalyType,
-          description: `Forbidden syscall '${event.syscall}' detected in PID ${event.pid}`,
+          type: parsed.ANOMALY as AnomalyType,
+          description: `Forbidden syscall '${String(parsed.syscall ?? '')}' detected in PID ${Number(parsed.pid) ?? 0}`,
           timestamp: Date.now(),
           severity: "critical",
-          metadata: event,
+          metadata: parsed,
         };
         this._reportAnomaly(anomaly);
-      } else {
+      } else if (typeof parsed.syscall !== 'undefined') {
         const syscallEvent: SyscallEvent = {
-          syscall: String(event.syscall),
-          pid: event.pid,
+          syscall: String(parsed.syscall),
+          pid: Number(parsed.pid) || 0,
           timestamp: Date.now(),
-          latencyNs: event.latency_ns,
-          returnCode: event.ret,
+          latencyNs: Number(parsed.latency_ns) || 0,
+          returnCode: parsed.ret !== undefined ? Number(parsed.ret) : undefined,
         };
 
         if (syscallEvent.latencyNs > this.config.maxLatencyNs) {
