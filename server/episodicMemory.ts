@@ -108,23 +108,28 @@ export async function recordEpisode(data: {
  * Returns the top-k most relevant episodes.
  */
 export async function getEpisodicMemory(goal: string, topK: number = 5): Promise<Episode[]> {
-  const episodes = loadAllEpisodes();
-  if (episodes.length === 0) return [];
+  try {
+    const episodes = loadAllEpisodes();
+    if (episodes.length === 0) return [];
 
-  const goalTokens = tokenize(goal);
+    const goalTokens = tokenize(goal);
 
-  const scored = episodes.map(ep => {
-    const epTokens = tokenize(ep.goal + " " + ep.summary + " " + (ep.failedStep ?? ""));
-    const overlap = [...goalTokens].filter(t => epTokens.has(t)).length;
-    const score = overlap / Math.max(goalTokens.size, 1);
-    return { ep, score };
-  });
+    const scored = episodes.map(ep => {
+      const epTokens = tokenize(ep.goal + " " + ep.summary + " " + (ep.failedStep ?? ""));
+      const overlap = [...goalTokens].filter(t => epTokens.has(t)).length;
+      const score = overlap / Math.max(goalTokens.size, 1);
+      return { ep, score };
+    });
 
-  return scored
-    .filter(s => s.score > 0.1)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, topK)
-    .map(s => s.ep);
+    return scored
+      .filter(s => s.score > 0.1)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, topK)
+      .map(s => s.ep);
+  } catch (error) {
+    console.error('Error retrieving episodic memory:', error);
+    return [];
+  }
 }
 
 // ─── Causal Chain Reconstruction ─────────────────────────────────────────────
