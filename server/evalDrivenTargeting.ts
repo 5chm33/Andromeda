@@ -106,29 +106,30 @@ export async function runEvalDrivenTargeting(): Promise<number> {
         fs.writeFileSync(baselinePath, JSON.stringify(persistedBaselines, null, 2), "utf-8");
       }
     }
-  } catch (err: any) {
-    log.warn("Could not process benchmark degradations:", err.message);
+  } catch (err: unknown) {
+    log.warn("Could not process benchmark degradations:", err instanceof Error ? err.message : String(err));
   }
 
   // 2. Adaptive eval gaps
   try {
-    const adaptiveEvalMod = await import("./adaptiveEval.js") as any;
-    const getGapAnalysis = adaptiveEvalMod.getGapAnalysis;
+    const adaptiveEvalMod = await import("./adaptiveEval.js");
+    const getGapAnalysis = (adaptiveEvalMod as Record<string, unknown>).getGapAnalysis;
     if (typeof getGapAnalysis === "function") {
       const gaps = await getGapAnalysis();
       if (Array.isArray(gaps)) {
         for (const gap of gaps) {
-          const category = (gap.category || "").toLowerCase().replace(/\s+/g, "-");
-          const files = CATEGORY_FILE_MAP[category] || [];
+          const category = ((gap as Record<string, unknown>).category || "") as string;
+          const normalizedCategory = category.toLowerCase().replace(/\s+/g, "-");
+          const files = CATEGORY_FILE_MAP[normalizedCategory] || [];
           for (const f of files) targetFiles.add(f);
           if (files.length > 0) {
-            log.info(`Eval gap: ${gap.category} → targeting ${files.length} files`);
+            log.info(`Eval gap: ${category} → targeting ${files.length} files`);
           }
         }
       }
     }
-  } catch (err: any) {
-    log.warn("Could not read eval gap analysis:", err.message);
+  } catch (err: unknown) {
+    log.warn("Could not read eval gap analysis:", err instanceof Error ? err.message : String(err));
   }
 
   if (targetFiles.size === 0) {
@@ -166,12 +167,12 @@ export async function runEvalDrivenTargeting(): Promise<number> {
         await analyzeAndPropose(absFile);
         submitted++;
         log.info(`Targeted proposal submitted for: ${relFile}`);
-      } catch (err: any) {
-        log.warn(`Failed to submit targeted proposal for ${relFile}:`, err.message);
+      } catch (err: unknown) {
+        log.warn(`Failed to submit targeted proposal for ${relFile}:`, err instanceof Error ? err.message : String(err));
       }
     }
-  } catch (err: any) {
-    log.warn("Could not import selfImprove for targeted proposals:", err.message);
+  } catch (err: unknown) {
+    log.warn("Could not import selfImprove for targeted proposals:", err instanceof Error ? err.message : String(err));
   }
 
   log.info(`Eval-driven targeting complete: ${submitted} targeted proposals submitted for ${targetFiles.size} files`);
