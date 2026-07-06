@@ -79,12 +79,17 @@ export async function recordEpisode(data: {
   parentEpisodeId?: string;
   duration?: number;
 }): Promise<Episode> {
+  if (!data || typeof data.goal !== 'string' || !data.goal.trim() ||
+      typeof data.outcome !== 'string' || !['success','partial_failure','failure','abandoned'].includes(data.outcome) ||
+      typeof data.summary !== 'string' || !data.summary.trim()) {
+    throw new Error('Invalid episode data: goal, outcome, and summary are required');
+  }
   const episode: Episode = {
     id: `ep_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
     timestamp: Date.now(),
-    goal: data.goal,
+    goal: data.goal.trim(),
     outcome: data.outcome,
-    summary: data.summary,
+    summary: data.summary.trim(),
     failedStep: data.failedStep,
     errorContext: data.errorContext,
     parentEpisodeId: data.parentEpisodeId,
