@@ -170,12 +170,17 @@ function checkRateLimit(identifier: string, limit: number): { allowed: boolean; 
 }
 
 // Clean up old rate limit entries periodically
-setInterval(() => {
+const rateLimitCleanupInterval = setInterval(() => {
   const now = Date.now();
   for (const [key, entry] of Array.from(rateLimitWindows)) {
     if (now - entry.windowStart > 120000) rateLimitWindows.delete(key);
   }
-}, 60000).unref();
+}, 60000);
+rateLimitCleanupInterval.unref();
+
+export function stopRateLimitCleanup(): void {
+  clearInterval(rateLimitCleanupInterval);
+}
 
 // ─── API Key Management ───────────────────────────────────────────────────────
 
