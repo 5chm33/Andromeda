@@ -276,18 +276,21 @@ export async function vectorStoreBatch(entries: Array<{ id: string; text: string
   // Guard against non-array inputs (e.g. {} passed in tests or by RSI proposals)
   if (!Array.isArray(entries)) return;
   if (entries.length === 0) return;
+  // v20.1.0: Filter out entries with undefined/null id or text to prevent TypeError
+  const validEntries = entries.filter(e => e.id != null && typeof e.id === 'string' && e.text != null);
+  if (validEntries.length === 0) return;
 
   const store = loadVectorStore();
-  const texts = entries.map(e => e.text);
+  const texts = validEntries.map(e => e.text);
   const vectors = await getEmbeddings(texts);
 
-  for (let i = 0; i < entries.length; i++) {
+  for (let i = 0; i < validEntries.length; i++) {
     // Remove existing
-    store.entries = store.entries.filter(e => e.id !== entries[i].id);
+    store.entries = store.entries.filter(e => e.id !== validEntries[i].id);
     store.entries.push({
-      id: entries[i].id,
+      id: validEntries[i].id,
       vector: vectors[i],
-      text: entries[i].text,
+      text: validEntries[i].text,
       model: activeEmbeddingProvider,
       createdAt: Date.now(),
     });

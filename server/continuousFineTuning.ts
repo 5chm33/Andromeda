@@ -43,18 +43,22 @@ export async function runNightlyFineTuningCycle(modelId: string = "mistralai/Mis
     log.info(`[NightlyCycle] Step 2: Exporting combined DPO dataset...`);
     const exportResult = exportDpoDataset();
     
-    if (!exportResult.success || !exportResult.path) {
-      throw new Error(`Dataset export failed: ${exportResult.error || "Unknown error"}`);
-    }
-    
-    if (exportResult.count == null || exportResult.count < 10) {
-      log.warn(`[NightlyCycle] Insufficient data (${exportResult.count} pairs). Aborting training.`);
+    // v20.1.0: Gracefully handle insufficient data (expected on fresh installs)
+    // Only throw for unexpected errors (e.g. filesystem failure), not for empty dataset.
+    if (!exportResult.success || exportResult.count == null || exportResult.count < 10) {
+      const reason = exportResult.count == null || exportResult.count === 0
+        ? `Insufficient data (${exportResult.count ?? 0} pairs — need 10+)`
+        : `Dataset export failed: ${exportResult.error || "Unknown error"}`;
+      log.warn(`[NightlyCycle] Aborting training: ${reason}`);
       return {
         success: false,
         rlaifPairsGenerated: newPairs.length,
-        totalDatasetSize: exportResult.count,
-        error: "Insufficient data"
+        totalDatasetSize: exportResult.count ?? 0,
+        error: reason
       };
+    }
+    if (!exportResult.path) {
+      throw new Error(`Dataset export succeeded but path is missing`);
     }
 
     // 3. Trigger LoRA Training

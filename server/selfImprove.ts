@@ -2612,6 +2612,7 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
     // Store the actual error message so we know WHAT failed, not just that something did.
     _lastUncaughtErr = _outerErr instanceof Error ? _outerErr : new Error(String(_outerErr));
     console.error(`[SelfImprove] Uncaught exception in applyProposal for ${proposalId}:`, _lastUncaughtErr.message);
+    return { success: false, message: `Unhandled exception: ${_lastUncaughtErr.message}` };
   } finally {
     // v9.8.5 DEFINITIVE FIX: If an unhandled exception escaped all inner catch blocks,
     // the proposal will still be in 'processing' status. Reset it to 'rejected' here.

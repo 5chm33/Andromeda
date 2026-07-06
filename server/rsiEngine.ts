@@ -500,7 +500,7 @@ export async function runRSICycle(): Promise<RSICycleResult> {
               targets.push(ht.moduleFile);
               recordRsiAttempt(ht.moduleName);
             } else {
-              log.warn(`[RSIEngine] Skipping hardening target '${ht.moduleName}' — '${ht.moduleFile}' is not in ANALYZABLE_FILES`);
+              console.warn(`[RSIEngine] Skipping hardening target '${ht.moduleName}' — '${ht.moduleFile}' is not in ANALYZABLE_FILES`);
             }
           }
         } catch { /* non-fatal if selfHealingChaos not available */ }

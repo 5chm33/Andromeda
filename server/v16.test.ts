@@ -127,7 +127,7 @@ describe("benchmarkRegressionSuite", () => {
     const result = await runRegressionCheck("server/tokenBudgetManager.ts");
     expect(result).toHaveProperty("passed");
     expect(result).toHaveProperty("regressions");
-    expect(result).toHaveProperty("regressions");
+    expect(result).toHaveProperty("benchmarksRun");
     expect(typeof result.passed).toBe("boolean");
     expect(Array.isArray(result.regressions)).toBe(true);
   });
