@@ -144,6 +144,10 @@ export class CircuitBreaker {
    * Equivalent to the success path inside execute().
    */
   recordSuccess(): void {
+    if (this.state === 'open') {
+      console.warn(`[CircuitBreaker:${this.name}] recordSuccess() called while OPEN — ignoring`);
+      return;
+    }
     this.totalRequests++;
     this.onSuccess();
   }
@@ -153,6 +157,10 @@ export class CircuitBreaker {
    * Equivalent to the failure path inside execute().
    */
   recordFailure(error: unknown): void {
+    if (this.state === 'open') {
+      console.warn(`[CircuitBreaker:${this.name}] recordFailure() called while OPEN — ignoring`);
+      return;
+    }
     this.totalRequests++;
     this.onFailure(error);
   }
