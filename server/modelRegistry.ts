@@ -587,6 +587,28 @@ export function getOptimalConfig(taskType: TaskProfile["type"], constraints?: {
  * Record a performance observation for model optimization.
  */
 export function recordPerformance(record: PerformanceRecord): void {
+  // Validate required fields
+  if (!record || typeof record.modelId !== 'string' || !record.modelId) {
+    console.warn('[ModelRegistry] Invalid performance record: missing or invalid modelId');
+    return;
+  }
+  if (typeof record.taskType !== 'string' || !record.taskType) {
+    console.warn('[ModelRegistry] Invalid performance record: missing or invalid taskType');
+    return;
+  }
+  if (typeof record.timestamp !== 'number' || record.timestamp <= 0) {
+    console.warn('[ModelRegistry] Invalid performance record: missing or invalid timestamp');
+    return;
+  }
+  if (typeof record.latencyMs !== 'number' || record.latencyMs < 0) {
+    console.warn('[ModelRegistry] Invalid performance record: invalid latencyMs');
+    return;
+  }
+  if (typeof record.success !== 'boolean') {
+    console.warn('[ModelRegistry] Invalid performance record: invalid success flag');
+    return;
+  }
+
   performanceHistory.push(record);
   if (performanceHistory.length > MAX_PERF_HISTORY) {
     performanceHistory.splice(0, performanceHistory.length - MAX_PERF_HISTORY);
