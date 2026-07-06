@@ -196,6 +196,15 @@ export function createTask<TInput>(
   input: TInput,
   originInstanceId: string
 ): SwarmTask<TInput> {
+  if (typeof type !== "string" || type.trim().length === 0) {
+    throw new Error("createTask: 'type' must be a non-empty string");
+  }
+  if (input === null || input === undefined) {
+    throw new Error("createTask: 'input' must not be null or undefined");
+  }
+  if (typeof originInstanceId !== "string" || originInstanceId.trim().length === 0) {
+    throw new Error("createTask: 'originInstanceId' must be a non-empty string");
+  }
   const signed = signProposal({ type, input });
   const task: SwarmTask<TInput> = {
     id: `task-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
