@@ -330,12 +330,12 @@ function normalizeEndpoint(path: string): string {
 export function telemetryMiddleware() {
   return (req: any, res: any, next: any) => {
     const start = Date.now();
-    res.on("finish", () => {
-      const endpoint = normalizeEndpoint(req.path);
+    res?.on("finish", () => {
+      const endpoint = req?.path ? normalizeEndpoint(req.path) : 'unknown';
       recordLatency({
         endpoint,
-        method: req.method,
-        statusCode: res.statusCode,
+        method: req?.method ?? 'UNKNOWN',
+        statusCode: res?.statusCode ?? 0,
         durationMs: Date.now() - start,
       });
     });
