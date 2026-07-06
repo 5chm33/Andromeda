@@ -44,7 +44,7 @@ function getChangelogPath(): string {
     throw new Error("process.cwd() returned undefined");
   }
   const workspaceDir = path.resolve(cwd, "workspace");
-  if (!fs.existsSync(workspaceDir)) fs.mkdirSync(workspaceDir, { recursive: true });
+  if (workspaceDir && !fs.existsSync(workspaceDir)) fs.mkdirSync(workspaceDir, { recursive: true });
   return path.join(workspaceDir, ".andromeda_changelog.json");
 }
 
