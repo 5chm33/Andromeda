@@ -283,6 +283,9 @@ export function computeDelta(
   minDelta = 0.0,
   weights?: Partial<UtilityWeights>
 ): UtilityDelta {
+  if (!before || !after) {
+    throw new Error('computeDelta requires both before and after states');
+  }
   const scoreBefore = compute(before, weights);
   const scoreAfter = compute(after, weights);
   const delta = scoreAfter.total - scoreBefore.total;
