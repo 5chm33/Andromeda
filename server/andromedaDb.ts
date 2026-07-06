@@ -266,6 +266,10 @@ export interface FeedbackEntry {
 
 /** Record a thumbs up/down rating */
 export function recordFeedback(entry: FeedbackEntry): number {
+  if (!entry || typeof entry.sessionId !== 'string' || typeof entry.messageId !== 'string' || typeof entry.query !== 'string' || typeof entry.response !== 'string' || (entry.rating !== 1 && entry.rating !== -1)) {
+    console.warn("[andromedaDb] recordFeedback: invalid entry");
+    return -1;
+  }
   try {
     const db = getDb();
     const result = db.prepare(`
