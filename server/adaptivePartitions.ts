@@ -168,11 +168,11 @@ export function inferComplexitySignals(
   let conversationTurns = 0;
 
   for (const msg of messages) {
-    if (msg.role === "user") conversationTurns++;
-    if (msg.role === "assistant" && msg.tool_calls) {
+    if (msg?.role === "user") conversationTurns++;
+    if (msg?.role === "assistant" && msg?.tool_calls) {
       toolCallCount += (msg.tool_calls as unknown[]).length;
     }
-    if (msg.role === "tool") {
+    if (msg?.role === "tool") {
       const tokens = estimateTokens(msg.content || "");
       totalToolOutputTokens += tokens;
       toolOutputCount++;
