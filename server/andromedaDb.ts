@@ -343,6 +343,10 @@ export interface EvalRecording {
 
 /** Record a real user interaction for later eval replay */
 export function recordEval(entry: EvalRecording): number {
+  if (!entry || typeof entry.sessionId !== 'string' || typeof entry.query !== 'string' || typeof entry.response !== 'string' || !Array.isArray(entry.toolsUsed)) {
+    console.warn("[andromedaDb] recordEval: invalid entry");
+    return -1;
+  }
   try {
     const db = getDb();
     const result = db.prepare(`
