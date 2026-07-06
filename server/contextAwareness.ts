@@ -94,8 +94,9 @@ export function recordContextUsage(
 export function getCurrentUsage(sessionId: string): ContextUsage | null {
   // Find the most recent usage for this session
   for (let i = usageHistory.length - 1; i >= 0; i--) {
-    if (usageHistory[i].sessionId === sessionId) {
-      return usageHistory[i];
+    const usage = usageHistory[i];
+    if (usage && usage.sessionId === sessionId) {
+      return usage;
     }
   }
   return null;
