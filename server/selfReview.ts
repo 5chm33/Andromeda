@@ -159,7 +159,8 @@ export function reviewCode(code: string, language?: "typescript" | "python" | "b
       if (!pattern.lang.includes(lang)) continue;
       const lines = code.split("\n");
       for (let i = 0; i < lines.length; i++) {
-        if (pattern.regex.test(lines[i]) && issues.length < config.maxIssues) {
+        const line = lines[i];
+        if (line && pattern.regex.test(line) && issues.length < config.maxIssues) {
           issues.push({
             id: `issue_${issueCounter++}`,
             severity: pattern.severity,
