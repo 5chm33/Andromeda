@@ -447,15 +447,15 @@ export async function browserExtractData(sessionId: string): Promise<BrowserActi
       session.page.evaluate(() => document.body?.innerText?.slice(0, 50000) ?? ""),
       session.page.evaluate(() =>
         Array.from(document.querySelectorAll("a[href]") ?? []).slice(0, 100).map(a => ({
-          text: (a as HTMLAnchorElement).innerText?.trim().slice(0, 100) ?? "",
-          href: (a as HTMLAnchorElement).href,
+          text: (a as HTMLAnchorElement)?.innerText?.trim().slice(0, 100) ?? "",
+          href: (a as HTMLAnchorElement)?.href ?? "",
         }))
       ),
       session.page.evaluate(() =>
         Array.from(document.querySelectorAll("input, textarea, select") ?? []).slice(0, 50).map(el => ({
-          type: (el as HTMLInputElement).type ?? el.tagName.toLowerCase(),
-          name: (el as HTMLInputElement).name ?? (el as HTMLInputElement).id ?? "",
-          value: (el as HTMLInputElement).value ?? "",
+          type: (el as HTMLInputElement)?.type ?? el?.tagName?.toLowerCase() ?? "",
+          name: (el as HTMLInputElement)?.name ?? (el as HTMLInputElement)?.id ?? "",
+          value: (el as HTMLInputElement)?.value ?? "",
         }))
       ),
     ]);
@@ -491,17 +491,21 @@ export async function browserEval(js: string, sessionId: string): Promise<Browse
  * Close a specific browser session (or all sessions if no ID given).
  */
 export async function closeBrowser(sessionId?: string): Promise<void> {
-  if (sessionId) {
-    const session = sessions.get(sessionId);
-    if (session) {
-      await session.browser.close().catch(() => {});
-      sessions.delete(sessionId);
+  try {
+    if (sessionId) {
+      const session = sessions.get(sessionId);
+      if (session) {
+        await session.browser.close().catch(() => {});
+        sessions.delete(sessionId);
+      }
+    } else {
+      for (const [id, session] of sessions) {
+        await session.browser.close().catch(() => {});
+        sessions.delete(id);
+      }
     }
-  } else {
-    for (const [id, session] of sessions) {
-      await session.browser.close().catch(() => {});
-      sessions.delete(id);
-    }
+  } catch (err) {
+    console.error("closeBrowser error:", err);
   }
 }
 
