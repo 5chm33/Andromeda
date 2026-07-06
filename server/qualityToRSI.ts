@@ -49,7 +49,7 @@ export async function feedQualityToRSI(): Promise<number> {
   try {
     const { getLastQualityReport } = await import("./codeQualityMonitor.js");
     const report = getLastQualityReport();
-    if (!report || report.refactoringProposals.length === 0) return 0;
+    if (!report || typeof report !== 'object' || !Array.isArray(report.refactoringProposals) || report.refactoringProposals.length === 0) return 0;
 
     const sorted = [...report.refactoringProposals]
       .filter(p => p.severity === "high" || p.severity === "medium")
