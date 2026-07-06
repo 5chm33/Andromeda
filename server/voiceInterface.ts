@@ -61,25 +61,30 @@ async function transcribeWithOpenAI(
   audioPath: string,
   options: VoiceOptions
 ): Promise<TranscriptionResult> {
-  const { default: OpenAI } = await import('openai');
-  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-  const startTime = Date.now();
+  try {
+    const { default: OpenAI } = await import('openai');
+    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const startTime = Date.now();
 
-  const audioStream = fs.createReadStream(audioPath);
-  const response = await client.audio.transcriptions.create({
-    file: audioStream as any,
-    model: 'whisper-1',
-    language: options.language,
-    response_format: 'verbose_json',
-  });
+    const audioStream = fs.createReadStream(audioPath);
+    const response = await client.audio.transcriptions.create({
+      file: audioStream as any,
+      model: 'whisper-1',
+      language: options.language,
+      response_format: 'verbose_json',
+    });
 
-  return {
-    text: response.text,
-    confidence: 0.95,
-    language: (response as any).language ?? options.language ?? 'en',
-    durationMs: Date.now() - startTime,
-    provider: 'openai',
-  };
+    return {
+      text: response.text,
+      confidence: 0.95,
+      language: (response as any).language ?? options.language ?? 'en',
+      durationMs: Date.now() - startTime,
+      provider: 'openai',
+    };
+  } catch (error: any) {
+    console.error('[VoiceInterface] transcribeWithOpenAI failed:', error.message);
+    throw error;
+  }
 }
 
 /**
