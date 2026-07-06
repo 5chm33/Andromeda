@@ -2762,6 +2762,9 @@ function gitCommitSelfImprovement(
     GIT_AUTHOR_EMAIL: "andromeda@local",
     GIT_COMMITTER_NAME: "Andromeda AI",
     GIT_COMMITTER_EMAIL: "andromeda@local",
+    // v20.2.0: Prevent git from hanging on credential prompts — fail fast instead of ETIMEDOUT
+    GIT_TERMINAL_PROMPT: "0",
+    GIT_ASKPASS: "/bin/true",
   };
 
     try {
