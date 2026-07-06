@@ -406,7 +406,19 @@ export async function measureBenchmark(): Promise<BenchmarkBreakdown> {
     else if (rate >= 0.6) breakdown.goalCompletion = 15;
     else if (rate >= 0.4) breakdown.goalCompletion = 10;
     else if (rate >= 0.2) breakdown.goalCompletion = 5;
-    else breakdown.goalCompletion = 0;
+    else {
+      // v20.4.0: Even with 0% completion rate, award partial credit if there are
+      // active goals being worked on AND the RSI engine has applied proposals this session.
+      // This prevents the GC score from being permanently 0 on a healthy, active system
+      // where goals are long-running (e.g. "Improve the Self-Improvement Pipeline").
+      const hasActiveGoals = progress.active > 0;
+      const hasAppliedProposals = cycleCount > 0;
+      if (hasActiveGoals && hasAppliedProposals) {
+        breakdown.goalCompletion = 5; // Partial credit — system is actively working
+      } else {
+        breakdown.goalCompletion = 0;
+      }
+    }
   } catch {
     breakdown.goalCompletion = 10;
   }

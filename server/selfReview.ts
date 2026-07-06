@@ -82,6 +82,7 @@ let config: ReviewConfig = {
 
 const SECURITY_PATTERNS: { regex: RegExp; message: string; severity: ReviewSeverity; lang: string[] }[] = [
   // Universal
+  { regex: /eval\s*\(/, message: "Use of eval() is a security risk — consider alternatives", severity: "critical", lang: ["typescript", "python"] },
   { regex: /Function\s*\(/, message: "Use of Function() constructor is a security risk — consider alternatives", severity: "critical", lang: ["typescript", "python"] },
   { regex: /exec\s*\(.*\$\{/, message: "Template literal in exec() — potential command injection", severity: "critical", lang: ["typescript"] },
   { regex: /child_process.*exec\(.*\+/, message: "String concatenation in exec() — potential command injection", severity: "critical", lang: ["typescript"] },

@@ -748,6 +748,34 @@ export async function analyzeAndPropose(
     }
   }
 
+  // v20.4.1: Category rotation — if this file already has proposals of the same area/category,
+  // rotate to a different category to avoid monotonous improvement patterns.
+  // This prevents the engine from generating 5 consecutive 'input validation' proposals
+  // for the same file across different cycles.
+  try {
+    const store = loadProposals();
+    const fileProposals = store.proposals.filter(
+      p => p.targetFile === targetFile && (p.status === "applied" || p.status === "pending")
+    );
+    if (fileProposals.length >= 2) {
+      const recentCategories = fileProposals.slice(-3).map(p => p.category || "");
+      const dominantCategory = recentCategories.filter(c => c === recentCategories[0]).length >= 2
+        ? recentCategories[0] : null;
+      if (dominantCategory && dominantCategory === area) {
+        // Rotate to a different area to encourage diversity
+        const rotationMap: Record<string, string> = {
+          reliability: "performance",
+          performance: "security",
+          security: "architecture",
+          architecture: "reliability",
+          readability: "performance",
+        };
+        area = rotationMap[area] || "performance";
+        log.info(`[v20.4.1 rotation] ${targetFile}: rotating area from ${dominantCategory} to ${area} for diversity`);
+      }
+    }
+  } catch { /* non-fatal */ }
+
   // v6.28 A4: Resolve the actual source file path FIRST so we read the real
   // current content — not a stale snapshot — before generating any diff.
   const filePath = resolveServerFile(targetFile);
@@ -1119,15 +1147,19 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
    - Renaming variables for readability
    - Adding blank lines or removing trailing whitespace
    These are banned because they waste tokens and do not improve system behavior.
-7. PREFERRED improvement types (in priority order):
-   - Add missing null/undefined checks before property access
-   - Add try/catch around async operations that can throw
-   - Fix missing error handling in catch blocks (replace empty catch with log.warn)
-   - Add input validation to functions that receive external data
-   - Fix race conditions in async code
-   - Improve retry logic with exponential backoff
-   - Add timeout guards to fetch/LLM calls
-   If none of these exist in the file, propose a performance or reliability improvement.`,
+7. PREFERRED improvement types (in priority order, ROTATE through these — do NOT repeat the same type for the same file):
+   - Fix race conditions in async code (highest value)
+   - Improve retry logic with exponential backoff (high value)
+   - Add timeout guards to fetch/LLM calls (high value)
+   - Replace sequential awaits with Promise.all() for parallel execution (high value)
+   - Fix memory leaks (event listeners, intervals, streams not cleaned up) (high value)
+   - Replace 'any' types with specific TypeScript types (medium value)
+   - Add missing null/undefined checks before property access (medium value)
+   - Add try/catch around async operations that can throw (medium value)
+   - Fix missing error handling in catch blocks (replace empty catch with log.warn) (medium value)
+   - Add input validation to functions that receive external data (LOW PRIORITY — only if none of the above apply)
+   IMPORTANT: 'Add input validation' is the LOWEST priority. If you have already proposed input validation for this file in a previous cycle, you MUST choose a different improvement type.
+   If none of these exist in the file, propose a structural refactor or test coverage improvement.`,
     },
     {
       role: "user",
