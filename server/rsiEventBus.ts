@@ -82,7 +82,11 @@ export function emitRsiEvent(type: RsiEventType, data: Record<string, unknown> =
 
   for (const [id, client] of clients) {
     try {
-      client.res.write(payload);
+      if (!client.res.writableEnded) {
+        client.res.write(payload);
+      } else {
+        deadClients.push(id);
+      }
     } catch {
       deadClients.push(id);
     }
