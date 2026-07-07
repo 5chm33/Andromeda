@@ -337,7 +337,7 @@ export function recordRoutingOutcome(
   actualLatencyMs: number,
 ): void {
   // Update the model's tracked success rate (exponential moving average)
-  const model = MODEL_REGISTRY.find(m => m.modelId === decision.selectedModel.modelId);
+  const model = MODEL_REGISTRY.find(m => m.modelId === decision.selectedModel?.modelId);
   if (model) {
     const alpha = 0.1; // Learning rate
     model.successRate = model.successRate * (1 - alpha) + (success ? 1 : 0) * alpha;
