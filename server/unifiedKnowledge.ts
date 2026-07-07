@@ -149,16 +149,39 @@ export async function queryUnifiedKnowledge(options: UnifiedQueryOptions): Promi
         const { getSkillsForModule } = await import("./skillGraph");
         const skills = getSkillsForModule ? getSkillsForModule(query) : [];
         const skillsArray = Array.isArray(skills) ? skills : [];
-        const entries = skillsArray.map((s: any) => ({
-          id: `sg_${s.id || s.name || Math.random().toString(36).slice(2)}`,
-          source: "skillGraph" as const,
-          content: `${s.name || ""}: ${s.description || s.content || JSON.stringify(s)}`,
-          relevance: 0,
-          importance: 0,
-          timestamp: s.lastUsed || s.createdAt || Date.now(),
-          tags: s.tags || ["skill"],
-          deduplicated: false,
-        }));
+const entries = skillsArray.map((s: unknown) => {
+  if (typeof s !== 'object' || s === null) {
+    return {
+      id: `sg_${Math.random().toString(36).slice(2)}`,
+      source: "skillGraph" as const,
+      content: "",
+      relevance: 0,
+      importance: 0,
+      timestamp: Date.now(),
+      tags: ["skill"],
+      deduplicated: false,
+    };
+  }
+  const skill = s as Record<string, unknown>;
+  const id = typeof skill.id === 'string' ? skill.id : typeof skill.name === 'string' ? skill.name : Math.random().toString(36).slice(2);
+  const name = typeof skill.name === 'string' ? skill.name : "";
+  const description = typeof skill.description === 'string' ? skill.description : typeof skill.content === 'string' ? skill.content : "";
+  const content = `${name}: ${description}`;
+  const lastUsed = typeof skill.lastUsed === 'number' ? skill.lastUsed : undefined;
+  const createdAt = typeof skill.createdAt === 'number' ? skill.createdAt : undefined;
+  const timestamp = lastUsed || createdAt || Date.now();
+  const tags = Array.isArray(skill.tags) ? skill.tags.filter((t): t is string => typeof t === 'string') : ["skill"];
+  return {
+    id: `sg_${id}`,
+    source: "skillGraph" as const,
+    content,
+    relevance: 0,
+    importance: 0,
+    timestamp,
+    tags,
+    deduplicated: false,
+  };
+});
         sourceCounts.skillGraph = entries.length;
         allEntries.push(...entries);
       } catch {
@@ -173,13 +196,13 @@ export async function queryUnifiedKnowledge(options: UnifiedQueryOptions): Promi
         const { queryLearnings } = await import("./systemMemory");
         const memories = queryLearnings ? queryLearnings({ category: "modification" }) : [];
         const entries = (Array.isArray(memories) ? memories : []).map((m: any) => ({
-          id: `sm_${m.id || Math.random().toString(36).slice(2)}`,
+          id: `sm_${m?.id || Math.random().toString(36).slice(2)}`,
           source: "systemMemory" as const,
-          content: typeof m === "string" ? m : m.content || m.text || JSON.stringify(m),
+          content: typeof m === "string" ? m : m?.content || m?.text || JSON.stringify(m ?? {}),
           relevance: 0,
           importance: 0,
-          timestamp: m.timestamp || m.createdAt || Date.now(),
-          tags: m.tags || ["system"],
+          timestamp: m?.timestamp || m?.createdAt || Date.now(),
+          tags: m?.tags || ["system"],
           deduplicated: false,
         }));
         sourceCounts.systemMemory = entries.length;
