@@ -198,14 +198,17 @@ export function receiveLoraPackage(
   fs.writeFileSync(outputPath, rawBytes);
 
   // Update state
-  const state = loadState();
-  const existing = state.packages.find((p) => p.packageId === pkg.packageId);
-  if (!existing) {
-    pkg.mergeCount = (pkg.mergeCount ?? 0) + 1;
-    state.packages.push(pkg);
-    state.totalMerges += 1;
-    saveState(state);
-  }
+const state = loadState();
+if (!state || !state.packages) {
+  throw new Error('Invalid state: packages array is missing');
+}
+const existing = state.packages.find((p) => p.packageId === pkg.packageId);
+if (!existing) {
+  pkg.mergeCount = (pkg.mergeCount ?? 0) + 1;
+  state.packages.push(pkg);
+  state.totalMerges += 1;
+  saveState(state);
+}
 
   log.info("Received and saved LoRA package from peer", {
     packageId: pkg.packageId,
