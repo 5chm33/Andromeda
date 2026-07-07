@@ -173,50 +173,55 @@ const CAPABILITY_MAP: Array<{ name: string; module: string; description: string 
 ];
 
 async function discoverCapabilities(): Promise<CapabilityStatus[]> {
-  // v5.35: Eagerly load autonomyOrchestrator for capability discovery
-  const orchMod = await getAutonomyOrchestrator().catch(() => ({}));
+  try {
+    // v5.35: Eagerly load autonomyOrchestrator for capability discovery
+    const orchMod = await getAutonomyOrchestrator().catch(() => ({}));
 
-  // v5.29: Use direct static imports — dynamic import/require doesn't work in esbuild bundle
-  const moduleRegistry: Record<string, { mod: any; check: string }> = {
-    selfHeal: { mod: _selfHeal, check: "getHealStatus" },
-    selfModify: { mod: _selfModify, check: "getModifyStats" },
-    selfImprove: { mod: _selfImprove, check: "analyzeAndPropose" },
-    recursiveGoals: { mod: _recursiveGoals, check: "listMetaGoals" },
-    streamIntegrityMonitor: { mod: _streamIntegrityMonitor, check: "checkCompleteness" },
-    tokenBudgetManager: { mod: _tokenBudgetManager, check: "allocateTokens" },
-    hotReload: { mod: _hotReload, check: "hotReloadModule" },
-    gracefulDegradation: { mod: _gracefulDegradation, check: "getDegradationStats" },
-    recursionGuard: { mod: _recursionGuard, check: "enterRecursion" },
-    skillGraph: { mod: _skillGraph, check: "getGraphStats" },
-    consensusEngine: { mod: _consensusEngine, check: "getConsensusStats" },
-    continuousImprover: { mod: _continuousImprover, check: "getImproverStats" },
-    selfMonitor: { mod: _selfMonitor, check: "getHealthReport" },
-    selfKnowledgeBase: { mod: _selfKnowledgeBase, check: "recordLearning" },
-    autonomyOrchestrator: { mod: orchMod, check: "getOrchestratorStats" },
-    sandboxManager: { mod: _sandboxManager, check: "initSandbox" },
-    multiAgent: { mod: _multiAgent, check: "runTeamAgent" },
-    memory: { mod: _memory, check: "storeMemory" },
-  };
+    // v5.29: Use direct static imports — dynamic import/require doesn't work in esbuild bundle
+    const moduleRegistry: Record<string, { mod: any; check: string }> = {
+      selfHeal: { mod: _selfHeal, check: "getHealStatus" },
+      selfModify: { mod: _selfModify, check: "getModifyStats" },
+      selfImprove: { mod: _selfImprove, check: "analyzeAndPropose" },
+      recursiveGoals: { mod: _recursiveGoals, check: "listMetaGoals" },
+      streamIntegrityMonitor: { mod: _streamIntegrityMonitor, check: "checkCompleteness" },
+      tokenBudgetManager: { mod: _tokenBudgetManager, check: "allocateTokens" },
+      hotReload: { mod: _hotReload, check: "hotReloadModule" },
+      gracefulDegradation: { mod: _gracefulDegradation, check: "getDegradationStats" },
+      recursionGuard: { mod: _recursionGuard, check: "enterRecursion" },
+      skillGraph: { mod: _skillGraph, check: "getGraphStats" },
+      consensusEngine: { mod: _consensusEngine, check: "getConsensusStats" },
+      continuousImprover: { mod: _continuousImprover, check: "getImproverStats" },
+      selfMonitor: { mod: _selfMonitor, check: "getHealthReport" },
+      selfKnowledgeBase: { mod: _selfKnowledgeBase, check: "recordLearning" },
+      autonomyOrchestrator: { mod: orchMod, check: "getOrchestratorStats" },
+      sandboxManager: { mod: _sandboxManager, check: "initSandbox" },
+      multiAgent: { mod: _multiAgent, check: "runTeamAgent" },
+      memory: { mod: _memory, check: "storeMemory" },
+    };
 
-  const capabilities: CapabilityStatus[] = [];
-  for (const cap of CAPABILITY_MAP) {
-    const entry = moduleRegistry[cap.module];
-    let available = false;
-    if (entry) {
-      try {
-        available = typeof entry.mod[entry.check] === "function";
-      } catch { available = false; }
+    const capabilities: CapabilityStatus[] = [];
+    for (const cap of CAPABILITY_MAP) {
+      const entry = moduleRegistry[cap.module];
+      let available = false;
+      if (entry) {
+        try {
+          available = typeof entry.mod[entry.check] === "function";
+        } catch { available = false; }
+      }
+      capabilities.push({
+        name: cap.name,
+        module: cap.module,
+        enabled: available,
+        health: available ? "healthy" : "unavailable",
+        lastChecked: Date.now(),
+        description: cap.description,
+      });
     }
-    capabilities.push({
-      name: cap.name,
-      module: cap.module,
-      enabled: available,
-      health: available ? "healthy" : "unavailable",
-      lastChecked: Date.now(),
-      description: cap.description,
-    });
+    return capabilities;
+  } catch (err) {
+    console.error("[SelfModel] discoverCapabilities failed:", err);
+    return [];
   }
-  return capabilities;
 }
 
 // ── Public API ──────────────────────────────────────────────────────────────
@@ -354,10 +359,28 @@ export async function initSelfModel(): Promise<void> {
 
   console.log("[SelfModel] Initialized — capability sync scheduled in 10s");
 
-  // Refresh every 5 minutes
-  setInterval(async () => {
-    try { await refreshSelfModel(); } catch { /* non-critical */ }
+  // Refresh every 5 minutes with 30s timeout protection
+  const REFRESH_TIMEOUT_MS = 30_000;
+  const refreshInterval = setInterval(async () => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REFRESH_TIMEOUT_MS);
+    
+    try {
+      await Promise.race([
+        refreshSelfModel(),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('refreshSelfModel timeout')), REFRESH_TIMEOUT_MS)
+        )
+      ]);
+    } catch (err) {
+      console.warn('[SelfModel] Refresh failed:', err instanceof Error ? err.message : 'unknown error');
+    } finally {
+      clearTimeout(timeoutId);
+    }
   }, 5 * 60 * 1000);
+  
+  // Allow process to exit if this is the only remaining timer
+  if (refreshInterval.unref) refreshInterval.unref();
 }
 
 /**
