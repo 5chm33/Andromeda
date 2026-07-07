@@ -464,6 +464,9 @@ export function getProviderApiKey(id: string): string {
     case "anthropic": return process.env.OPENROUTER_API_KEY ?? process.env.ANTHROPIC_API_KEY ?? "";
     // v7.1.7: anthropic-direct uses the direct Anthropic API key (no OpenRouter)
     case "anthropic-direct": return process.env.ANTHROPIC_API_KEY ?? "";
+    // v20.5.0: claude-sonnet-5 and claude-fable use direct Anthropic API key
+    case "claude-sonnet-5":
+    case "claude-fable": return process.env.ANTHROPIC_API_KEY ?? "";
     default: return process.env.DEEPSEEK_API_KEY ?? "";
   }
 }
@@ -587,11 +590,12 @@ export function getProviderForTier(tier: LLMTier): string {
 export function tierForArea(area?: string): LLMTier {
   if (!area) return "eco";
   const a = area.toLowerCase();
-  // Pro tier: security-critical or architecture-level changes
-  if (/security|auth|constitution|orchestrat|circuit.break/.test(a)) return "pro";
-  // Standard tier: complex coding tasks
-  if (/performance|feature|refactor|architect|multi.file/.test(a)) return "standard";
-  // Eco tier: everything else
+  // Pro tier (Sonnet 5): security-critical, architecture-level, or multi-file changes
+  // v20.5.0: expanded to include performance and refactor — these benefit most from deeper reasoning
+  if (/security|auth|constitution|orchestrat|circuit.break|architect|multi.file|performance|refactor/.test(a)) return "pro";
+  // Standard tier: feature additions, complex coding
+  if (/feature|algorithm|concurren|async|type.safe/.test(a)) return "standard";
+  // Eco tier: everything else (readability, docs, validation guards)
   return "eco";
 }
 

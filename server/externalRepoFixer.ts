@@ -29,7 +29,7 @@
 import fs from "fs";
 import path from "path";
 import os from "os";
-import { execSync } from "child_process";
+import { spawnSync } from "child_process";
 import { EventEmitter } from "events";
 import { createLogger } from "./logger.js";
 import { buildSmartContext } from "./sweBenchContextBuilder.js";  // Fix 30: smart context selection
@@ -125,8 +125,18 @@ function emit(job: FixJob, status: FixJobStatus, message: string, progress: numb
   log.info(`[${job.id}] ${status}: ${message}`);
 }
 
-function run(cmd: string, cwd: string): string {
-  return execSync(cmd, { cwd, encoding: "utf8", stdio: "pipe" });
+// v20.5.0: Use spawnSync with array args to prevent shell injection (no shell interpolation)
+function run(cmd: string, cwd: string, env?: NodeJS.ProcessEnv): string {
+  // Split the command into program + args, respecting quoted strings
+  const parts = cmd.match(/(?:[^\s"']+|"[^"]*"|'[^']*')+/g) ?? [];
+  const prog = parts[0];
+  if (!prog) throw new Error(`Empty command: ${cmd}`);
+  const args = parts.slice(1).map(a => a.replace(/^["']|["']$/g, ""));
+  const result = spawnSync(prog, args, { cwd, encoding: "utf8", stdio: "pipe", env: { ...process.env, ...env } });
+  if (result.status !== 0) {
+    throw new Error(result.stderr || `Command failed: ${cmd}`);
+  }
+  return result.stdout ?? "";
 }
 
 /** Extract owner/repo from a GitHub URL */
@@ -485,9 +495,21 @@ async function runFixJob(job: FixJob, options: FixJobOptions): Promise<void> {
     emit(job, "cloning", `Cloning ${options.repoUrl}...`, 5);
     fs.mkdirSync(tmpDir, { recursive: true });
 
-    const cloneUrl = pat ? injectPat(options.repoUrl, pat) : options.repoUrl;
+    // v20.5.0: Use spawnSync directly for clone to avoid URL injection risk
+    // Pass PAT via GIT_ASKPASS env var instead of embedding in URL
+    const cloneEnv: NodeJS.ProcessEnv = {};
+    const cloneUrl = options.repoUrl; // never inject PAT into URL
+    if (pat) {
+      // Write a temporary askpass script so the PAT never appears in process args
+      const askpassScript = path.join(tmpDir, "askpass.sh");
+      fs.writeFileSync(askpassScript, `#!/bin/sh\necho '${pat.replace(/'/g, "'\\''")}'
+`, { mode: 0o700 });
+      cloneEnv.GIT_ASKPASS = askpassScript;
+      cloneEnv.GIT_TERMINAL_PROMPT = "0";
+    }
     try {
-      run(`git clone --depth 1 "${cloneUrl}" repo`, tmpDir);
+      const cloneResult = spawnSync("git", ["clone", "--depth", "1", cloneUrl, "repo"], { cwd: tmpDir, encoding: "utf8", stdio: "pipe", env: { ...process.env, ...cloneEnv } });
+      if (cloneResult.status !== 0) throw new Error(cloneResult.stderr || "git clone failed");
     } catch (e) {
       throw new Error(`Clone failed: ${String(e)}`);
     }
@@ -620,8 +642,17 @@ async function runFixJob(job: FixJob, options: FixJobOptions): Promise<void> {
     }
 
     try {
-      const pushUrl = injectPat(options.repoUrl, pat);
-      run(`git push "${pushUrl}" "${branchName}"`, repoDir);
+      // v20.5.0: Use GIT_ASKPASS env var for push to keep PAT out of git reflog and process args
+      const pushEnv: NodeJS.ProcessEnv = {};
+      if (pat) {
+        const askpassScript = path.join(tmpDir, "askpass_push.sh");
+        fs.writeFileSync(askpassScript, `#!/bin/sh\necho '${pat.replace(/'/g, "'\\''")}'
+`, { mode: 0o700 });
+        pushEnv.GIT_ASKPASS = askpassScript;
+        pushEnv.GIT_TERMINAL_PROMPT = "0";
+      }
+      const pushResult = spawnSync("git", ["push", options.repoUrl, branchName], { cwd: repoDir, encoding: "utf8", stdio: "pipe", env: { ...process.env, ...pushEnv } });
+      if (pushResult.status !== 0) throw new Error(pushResult.stderr || "git push failed");
     } catch (e) {
       throw new Error(`Push failed: ${String(e)}`);
     }
@@ -672,15 +703,20 @@ async function runFixJob(job: FixJob, options: FixJobOptions): Promise<void> {
 
     let prUrl = "";
     try {
-      const response = execSync(
-        `curl -s -X POST \
-          -H "Authorization: token ${pat}" \
-          -H "Content-Type: application/json" \
-          -d '${prPayload.replace(/'/g, "'\\''")}' \
-          "https://api.github.com/repos/${parsed.owner}/${parsed.repo}/pulls"`,
-        { encoding: "utf8" }
+      // v20.5.0: Use Node.js fetch instead of curl to keep PAT out of process args
+      const prResponse = await fetch(
+        `https://api.github.com/repos/${parsed.owner}/${parsed.repo}/pulls`,
+        {
+          method: "POST",
+          headers: {
+            "Authorization": `token ${pat}`,
+            "Content-Type": "application/json",
+            "User-Agent": "Andromeda-RSI",
+          },
+          body: prPayload,
+        }
       );
-      const prData = JSON.parse(response);
+      const prData = await prResponse.json() as { html_url?: string; message?: string };
       prUrl = prData.html_url ?? "";
       if (!prUrl) {
         const errMsg = prData.message ?? JSON.stringify(prData);

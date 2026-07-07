@@ -70,7 +70,9 @@ const MODEL_PROFILES: ModelCostProfile[] = [
   { modelId: "anthropic/claude-haiku-4", providerName: "OpenRouter (Claude Haiku 4)", costPer1kInputTokens: 0.0008, costPer1kOutputTokens: 0.004, maxComplexityScore: 8, isLocal: false },
   { modelId: "deepseek-reasoner", providerName: "DeepSeek Reasoner", costPer1kInputTokens: 0.00055, costPer1kOutputTokens: 0.00219, maxComplexityScore: 8, isLocal: false },
   // Premium
-  { modelId: "anthropic/claude-sonnet-4", providerName: "OpenRouter (Claude Sonnet 4)", costPer1kInputTokens: 0.003, costPer1kOutputTokens: 0.015, maxComplexityScore: 10, isLocal: false },
+  { modelId: "anthropic/claude-sonnet-4", providerName: "OpenRouter (Claude Sonnet 4)", costPer1kInputTokens: 0.003, costPer1kOutputTokens: 0.015, maxComplexityScore: 7, isLocal: false },
+  // v20.5.0: Sonnet 5 for high-complexity proposals (score 8+) — architectural, security, multi-file
+  { modelId: "claude-sonnet-5", providerName: "Anthropic (Claude Sonnet 5)", costPer1kInputTokens: 0.003, costPer1kOutputTokens: 0.015, maxComplexityScore: 10, isLocal: false },
   { modelId: "anthropic/claude-opus-4", providerName: "OpenRouter (Claude Opus 4)", costPer1kInputTokens: 0.015, costPer1kOutputTokens: 0.075, maxComplexityScore: 10, isLocal: false },
 ];
 
@@ -157,9 +159,22 @@ export function selectCostOptimalModel(
     return { modelId: fallback.modelId, profile: fallback, reason: `Hourly budget cap reached ($${HOURLY_BUDGET_USD}) — forced to ${fallback.providerName}` };
   }
 
+  // v20.5.0: For high-complexity proposals (score >= 8), prefer Sonnet 5 directly
+  // This ensures architectural, security, and multi-file changes get deep reasoning
+  const hasAnthropicDirect = !!process.env.ANTHROPIC_API_KEY;
+  const hasOpenRouter = !!process.env.OPENROUTER_API_KEY;
+  if (complexity.score >= 8 && hasAnthropicDirect) {
+    const sonnet5 = MODEL_PROFILES.find(m => m.modelId === "claude-sonnet-5")!;
+    return { modelId: sonnet5.modelId, profile: sonnet5, reason: `Complexity ${complexity.score}/10 ≥ 8 → escalating to Sonnet 5 for deep reasoning` };
+  }
+
   // Find cheapest model that meets the complexity requirement
   const eligible = MODEL_PROFILES
     .filter(m => m.maxComplexityScore >= complexity.score)
+    // Filter out Sonnet 5 if no Anthropic direct key, and Sonnet 4 if no OpenRouter
+    .filter(m => m.modelId !== "claude-sonnet-5" || hasAnthropicDirect)
+    .filter(m => m.modelId !== "anthropic/claude-sonnet-4" || hasOpenRouter)
+    .filter(m => m.modelId !== "anthropic/claude-opus-4" || hasOpenRouter)
     .filter(m => !m.isLocal || ollamaAvailable)
     .sort((a, b) => (a.costPer1kInputTokens + a.costPer1kOutputTokens) - (b.costPer1kInputTokens + b.costPer1kOutputTokens));
 
