@@ -140,26 +140,31 @@ export async function ingestDocument(
   source: string,
   metadata: Record<string, string | number | boolean> = {}
 ): Promise<{ documentId: string; chunksStored: number }> {
-  const documentId = createHash("sha256").update(source + content.slice(0, 100)).digest("hex").slice(0, 16);
-  const chunks = chunkDocument(content, source);
+  try {
+    const documentId = createHash("sha256").update(source + content.slice(0, 100)).digest("hex").slice(0, 16);
+    const chunks = chunkDocument(content, source);
 
-  log.info(`Ingesting ${source}: ${chunks.length} chunks from ${content.length} chars`);
+    log.info(`Ingesting ${source}: ${chunks.length} chunks from ${content.length} chars`);
 
-  const entries = chunks.map((chunk, i) => ({
-    id: `${documentId}_chunk_${i}`,
-    text: `[Source: ${source}]\n\n${chunk}`,
-    metadata: {
-      ...metadata,
-      documentId,
-      source,
-      chunkIndex: i,
-      totalChunks: chunks.length,
-    },
-  }));
+    const entries = chunks.map((chunk, i) => ({
+      id: `${documentId}_chunk_${i}`,
+      text: `[Source: ${source}]\n\n${chunk}`,
+      metadata: {
+        ...metadata,
+        documentId,
+        source,
+        chunkIndex: i,
+        totalChunks: chunks.length,
+      },
+    }));
 
-  await vectorStoreBatch(entries);
+    await vectorStoreBatch(entries);
 
-  return { documentId, chunksStored: chunks.length };
+    return { documentId, chunksStored: chunks.length };
+  } catch (error) {
+    log.error(`Failed to ingest document from ${source}: ${error}`);
+    throw error;
+  }
 }
 
 /**
