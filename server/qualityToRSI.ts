@@ -65,8 +65,10 @@ async function getAnalyzeAndPropose() {
 }
 
 // ... later in the code:
-    const analyzeAndPropose = await getAnalyzeAndPropose();
-    const allowlist = await getAnalyzableFileSet();
+    const [analyzeAndPropose, allowlist] = await Promise.all([
+      getAnalyzeAndPropose(),
+      getAnalyzableFileSet()
+    ]);
     for (const qp of sorted) {
       // Validate and normalize file paths to prevent path traversal
       if (!qp.filePath || typeof qp.filePath !== 'string') {
