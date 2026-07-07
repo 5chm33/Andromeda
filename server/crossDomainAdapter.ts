@@ -271,7 +271,8 @@ export async function generateDomainProposal(artifactId: string): Promise<Domain
     log.info(`[CrossDomain] Generated proposal ${proposal.id} for ${artifact.domain}:${artifact.name}`);
     return proposal;
   } catch (err) {
-    log.warn(`[CrossDomain] Failed to generate proposal for ${artifactId}:`, err);
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    log.warn(`[CrossDomain] Failed to generate proposal for ${artifactId}: ${errorMessage}`);
     return null;
   }
 }
