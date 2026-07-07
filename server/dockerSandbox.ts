@@ -143,9 +143,9 @@ export async function executeInSandbox(
       };
     }
     return {
-      stdout: error.stdout ?? '',
-      stderr: error.stderr ?? error.message,
-      exitCode: error.code ?? 1,
+      stdout: error?.stdout ?? '',
+      stderr: error?.stderr ?? error?.message ?? 'Unknown error',
+      exitCode: error?.code ?? 1,
       durationMs: Date.now() - startTime,
       timeout: false,
     };
