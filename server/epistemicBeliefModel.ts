@@ -366,7 +366,15 @@ export class EpistemicModel {
     let againstScore = 0;
     let totalWeight = 0;
 
+    const startTime = Date.now();
+    const MAX_RESOLUTION_TIME_MS = 30000;
+
     for (const arg of debate.arguments) {
+      if (Date.now() - startTime > MAX_RESOLUTION_TIME_MS) {
+        log.warn(`[epistemic] Debate resolution timeout after ${MAX_RESOLUTION_TIME_MS}ms, using partial results`);
+        break;
+      }
+
       const agent = this.agents.get(arg.agentId);
       if (!agent) {
         log.warn(`[epistemic] Skipping argument from unknown agent: ${arg.agentId}`);
