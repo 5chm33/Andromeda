@@ -191,11 +191,12 @@ export async function verifyModule(moduleName: "initSafety" | "fsWatcher"): Prom
       specPath,
     };
   } catch (error) {
-    log.error(`Failed to generate spec for ${moduleName}`, { error: String(error) });
+    const errorMessage = error instanceof Error ? error.message : String(error ?? 'Unknown error');
+    log.error(`Failed to generate spec for ${moduleName}`, { error: errorMessage });
     return {
       moduleName,
       passed: false,
-      output: `Error: ${String(error)}`,
+      output: `Error: ${errorMessage}`,
       specPath: "",
     };
   }
