@@ -310,6 +310,7 @@ function getAdaptiveTierWeights(): Record<number, number> {
   // Average actual usage over recent history
   const avgUsage: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
   for (const usage of tierUsageHistory) {
+    if (!usage) continue;
     for (let t = 1; t <= 6; t++) {
       avgUsage[t] += usage[t] || 0;
     }
