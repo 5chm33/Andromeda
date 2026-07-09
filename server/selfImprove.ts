@@ -1150,17 +1150,25 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
    - Adding blank lines or removing trailing whitespace
    These are banned because they waste tokens and do not improve system behavior.
 7. PREFERRED improvement types (in priority order, ROTATE through these — do NOT repeat the same type for the same file):
+   TIER 0 — CAPABILITY IMPROVEMENTS (HIGHEST PRIORITY — these improve what the system can actually do):
+   - Improve SWE-bench task handling: better multi-file diff application, better context assembly, better test execution (CRITICAL — directly improves benchmark score)
+   - Improve the RSI improvement selection: smarter file targeting, better complexity scoring, better area rotation (CRITICAL — improves what gets improved)
+   - Improve LLM prompt quality: better system prompts, better few-shot examples, better context injection (CRITICAL — improves output quality)
+   - Improve error recovery: better rollback logic, better failure analysis, better retry strategies (HIGH — reduces wasted cycles)
+   - Improve the RLAIF feedback loop: better signal collection, better weight adjustment, better pattern generalization (HIGH — improves learning)
+   TIER 1 — RELIABILITY IMPROVEMENTS (apply when no Tier 0 improvements exist in this file):
    - Fix race conditions in async code (highest value)
    - Improve retry logic with exponential backoff (high value)
    - Add timeout guards to fetch/LLM calls (high value)
    - Replace sequential awaits with Promise.all() for parallel execution (high value)
    - Fix memory leaks (event listeners, intervals, streams not cleaned up) (high value)
+   TIER 2 — CODE QUALITY (apply only when no Tier 0 or Tier 1 improvements exist):
    - Replace 'any' types with specific TypeScript types (medium value)
    - Add missing null/undefined checks before property access (medium value)
    - Add try/catch around async operations that can throw (medium value)
    - Fix missing error handling in catch blocks (replace empty catch with log.warn) (medium value)
    - Add input validation to functions that receive external data (LOW PRIORITY — only if none of the above apply)
-   IMPORTANT: 'Add input validation' is the LOWEST priority. If you have already proposed input validation for this file in a previous cycle, you MUST choose a different improvement type.
+   IMPORTANT: 'Add input validation' and 'Add null checks' are TIER 2 ONLY. If you have already proposed these for this file in a previous cycle, you MUST choose a Tier 0 or Tier 1 improvement instead.
    If none of these exist in the file, propose a structural refactor or test coverage improvement.`,
     },
     {
@@ -1186,12 +1194,15 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
   // Five specialized agents (Security, Performance, Reliability, TypeScript, Architecture)
   // debate the highest-priority improvement. The winning brief is injected into the
   // user message so the LLM writes exactly what the debate consensus agreed upon.
-  // Runs in structural mode (useLLM: false) — zero token cost.
   // v20.5.0: Track debate winner here so it can be stored on the proposal for RLAIF feedback.
+  // v20.6.0: Enabled LLM debate (useLLM: true) — each agent now uses an LLM call to reason
+  //          about the file rather than running static regex checks. This produces higher-quality
+  //          debate briefs that steer the main generation toward architectural improvements
+  //          rather than defaulting to null guards and try/catch wrapping.
   let _debateWinnerForProposal: string | undefined;
   try {
     const { runDebateProtocol } = await import("./multiAgentDebate.js");
-    const debateResult = await runDebateProtocol(targetFile, contentForAnalysis, { useLLM: false });
+    const debateResult = await runDebateProtocol(targetFile, contentForAnalysis, { useLLM: true });
     if (debateResult?.winningBrief) {
       const userMsg = llmMessages[llmMessages.length - 1];
       if (userMsg && userMsg.role === "user") {
