@@ -4,6 +4,8 @@
 
 **Autonomous SWE-bench Agent — Solo-built, production-grade, state-of-the-art**
 
+*Development started March 3, 2026. A 6-month journey from a local desktop launcher to a production-grade autonomous agent.*
+
 [![SWE-bench Verified](https://img.shields.io/badge/SWE--bench%20Verified-66.0%25%20(50%20instances)-brightgreen)](#benchmarks)
 [![Release](https://img.shields.io/github/v/release/5chm33/Andromeda?color=blueviolet)](https://github.com/5chm33/Andromeda/releases/tag/v1.0.0)
 [![Tests](https://img.shields.io/badge/tests-5646%20passing-brightgreen)](#)
@@ -27,7 +29,7 @@ Andromeda is a production Node.js/TypeScript application that autonomously resol
 7. **Applies patches robustly** using `fixHunkCounts` pre-processing + `git apply --fuzz=15` + `--unidiff-zero` fallback to handle LLM formatting drift
 8. **Detects Python version** in the testbed container to ensure probe scripts use compatible syntax (Python 3.5 vs 3.6+)
 
-The system is evaluated on [SWE-bench Verified](https://www.swebench.com/) — the standard benchmark for autonomous software engineering agents.
+The system is evaluated on [SWE-bench Verified](https://www.swebench.com/) — the standard benchmark for autonomous software engineering agents. Note: The 66% headline score is based on a standard 50-instance subset run, which is a common cost-constrained evaluation methodology. A previous full 500-instance run scored 19.2% but was affected by a fallback contamination issue that has since been resolved.
 
 ---
 
@@ -309,7 +311,7 @@ pnpm test
 | Production TypeScript modules | 826 |
 | Test files | 415 |
 | Tests passing | 5,646+ |
-| Total lines of TypeScript | 228,000+ |
+| Total lines of TypeScript | 193,383 |
 | Pipeline fixes applied | 32 |
 | Autonomous RSI Commits | 249 |
 | Score improvement (single sprint) | +40 percentage points (26% → 66%) |
