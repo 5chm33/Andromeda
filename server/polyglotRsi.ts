@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 import fs from "fs";
 import path from "path";
 
@@ -38,7 +38,8 @@ export function detectLanguage(filePath: string): SupportedLanguage {
  */
 function validatePython(filePath: string): PolyglotValidationResult {
   try {
-    execSync(`python3 -c "import ast; ast.parse(open('${filePath}').read())"`, { stdio: 'pipe' });
+    // Security: use execFileSync with argument array — filePath is never interpolated into a shell string
+    execFileSync("python3", ["-c", "import ast,sys; ast.parse(open(sys.argv[1]).read())", filePath], { stdio: "pipe" });
     return { isValid: true, score: 100, errors: [] };
   } catch (error: any) {
     const errorMsg = error.stderr ? error.stderr.toString() : error.message;
@@ -51,7 +52,8 @@ function validatePython(filePath: string): PolyglotValidationResult {
  */
 function validateShell(filePath: string): PolyglotValidationResult {
   try {
-    execSync(`bash -n ${filePath}`, { stdio: 'pipe' });
+    // Security: use execFileSync with argument array — filePath is passed as a literal arg, never shell-interpolated
+    execFileSync("bash", ["-n", filePath], { stdio: "pipe" });
     return { isValid: true, score: 100, errors: [] };
   } catch (error: any) {
     const errorMsg = error.stderr ? error.stderr.toString() : error.message;

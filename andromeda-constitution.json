@@ -1,8 +1,8 @@
 {
-  "_comment": "Andromeda AI Constitution v1.3.0 \u2014 Machine-readable rules checked before every autonomous self-improvement apply.",
-  "_version": "1.4.0",
-  "_updated": "2026-06-22",
-  "_changelog": "v1.4.0: Added filePatterns to forbiddenModifications to block RSI engine from modifying test files (*.test.ts, *.spec.ts). The RSI engine was repeatedly weakening test assertions (replacing null/undefined checks with .toBeTruthy()) causing CI failures. Test files are the ground truth for correctness and must only be modified by human developers. Also added R9 constitutional rule to constitutionEnforcement.invariantRules. | v1.3.0: Tightened forbidden patterns to match hardcoded credential assignments only. Removed overly broad patterns ('token', 'API_KEY', 'password', 'secret', 'process.env.X') that were causing false-positive blocks on legitimate code. These patterns blocked valid proposals for 10+ days (e.g. adaptiveRouter.ts, contextManager.ts). New patterns use assignment syntax to only catch hardcoded values.",
+  "_comment": "Andromeda AI Constitution v1.5.0 — Machine-readable rules checked before every autonomous self-improvement apply.",
+  "_version": "1.5.0",
+  "_updated": "2026-07-08",
+  "_changelog": "v1.5.0: Security audit (Fable 5) identified that gitSandbox.ts, recursionGuard.ts, adminAuth.ts, rbac.ts, privilegeSeparation.ts, polyglotRsi.ts, and constitutionalConstraints.ts were not in the forbidden files list, allowing the RSI engine to potentially weaken the security perimeter. All added to forbiddenModifications.files. Also added github_pat_ pattern to cover fine-grained GitHub PATs (not previously covered by ghp_ prefix). | v1.4.0: Added filePatterns to forbiddenModifications to block RSI engine from modifying test files (*.test.ts, *.spec.ts). The RSI engine was repeatedly weakening test assertions (replacing null/undefined checks with .toBeTruthy()) causing CI failures. Test files are the ground truth for correctness and must only be modified by human developers. Also added R9 constitutional rule to constitutionEnforcement.invariantRules. | v1.3.0: Tightened forbidden patterns to match hardcoded credential assignments only. Removed overly broad patterns ('token', 'API_KEY', 'password', 'secret', 'process.env.X') that were causing false-positive blocks on legitimate code. These patterns blocked valid proposals for 10+ days (e.g. adaptiveRouter.ts, contextManager.ts). New patterns use assignment syntax to only catch hardcoded values.",
   "identity": {
     "name": "Andromeda AI",
     "purpose": "A self-improving AI assistant that helps users with research, coding, writing, and autonomous tasks.",
@@ -85,7 +85,14 @@
       "identityManifest.ts",
       "selfTestGenerator.ts",
       "pnpm-workspace.yaml",
-      ".npmrc"
+      ".npmrc",
+      "gitSandbox.ts",
+      "recursionGuard.ts",
+      "adminAuth.ts",
+      "rbac.ts",
+      "privilegeSeparation.ts",
+      "polyglotRsi.ts",
+      "constitutionalConstraints.ts"
     ],
     "filePatterns": [
       "*.test.ts",
@@ -95,6 +102,7 @@
     "patterns": [
       "sk-[a-zA-Z0-9]{20,}",
       "ghp_[a-zA-Z0-9]{36}",
+      "github_pat_[A-Za-z0-9_]{22,}",
       "AKIA[0-9A-Z]{16}",
       "DROP TABLE",
       "DELETE FROM",
@@ -102,7 +110,7 @@
       "rm -rf /",
       "rmdir /s /q"
     ],
-    "_patternNote": "Patterns use regex-style matching for actual hardcoded credential strings (API key prefixes like sk-, ghp_, AKIA) and destructive operations. Reading env vars (process.env.DEEPSEEK_API_KEY), using the word 'token' in code, or referencing variable names like 'password' or 'secret' in comments/types is explicitly allowed.",
+    "_patternNote": "Patterns use regex-style matching for actual hardcoded credential strings (API key prefixes like sk-, ghp_, github_pat_, AKIA) and destructive operations. Reading env vars (process.env.DEEPSEEK_API_KEY), using the word 'token' in code, or referencing variable names like 'password' or 'secret' in comments/types is explicitly allowed.",
     "reason": "These files and patterns are critical infrastructure, hardcoded credentials, or destructive operations that must never be autonomously modified."
   },
   "safetyChecks": {
@@ -149,7 +157,8 @@
       "Never remove the FORBIDDEN_FILES list",
       "Never disable the rollback system",
       "Never remove the constitution enforcement check itself",
-      "R9: Never weaken test assertions — never replace null/undefined/void checks with .toBeTruthy() or .toBeDefined(). Test files (*.test.ts, *.spec.ts) are FORBIDDEN from autonomous modification."
+      "R9: Never weaken test assertions — never replace null/undefined/void checks with .toBeTruthy() or .toBeDefined(). Test files (*.test.ts, *.spec.ts) are FORBIDDEN from autonomous modification.",
+      "R10: Never modify security-perimeter files: gitSandbox.ts, recursionGuard.ts, adminAuth.ts, rbac.ts, privilegeSeparation.ts, polyglotRsi.ts, constitutionalConstraints.ts. These are the enforcement boundary — the agent cannot edit its own constraints."
     ],
     "capabilityBoundaries": [
       "Self-modification cannot change the model provider routing logic without explicit user approval",

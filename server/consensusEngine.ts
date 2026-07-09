@@ -144,13 +144,18 @@ Respond with ONLY a JSON object:
       console.warn(`[Consensus] Model ${model} attempt ${attempt + 1}/${maxRetries} failed: ${(err as Error).message}`);
     }
   }
-  // All retries exhausted — provider is unreachable, abstain rather than vote no.
-  // Counting a network failure as a "no" vote was causing false rejections (v12.7.0 fix).
+  // All retries exhausted — provider is unreachable.
+  // Security fix (v6.26 — Fable 5 audit F-6): an unreachable reviewer must BLOCK, not approve.
+  // Previous behaviour (approved: true, confidence: 0) was framed as "abstain" but downstream
+  // vote counting treated it as an approval, meaning a network outage or expired API key
+  // degraded toward passing proposals rather than deferring them.
+  // The correct default for a safety gate is fail-closed: if the check can't complete, refuse.
+  console.warn(`[Consensus] Model ${model} unreachable after ${maxRetries} retries — blocking proposal (fail-closed). Error: ${lastError?.message}`);
   return {
     model,
-    approved: true,  // abstain: don't penalise proposal for provider being down
-    confidence: 0,   // zero confidence signals this was an abstain, not a real approval
-    reasoning: `Abstain (provider unreachable after ${maxRetries} retries): ${lastError?.message}`,
+    approved: false,  // fail-closed: unreachable reviewer blocks, does not approve
+    confidence: 0,
+    reasoning: `BLOCKED — provider unreachable after ${maxRetries} retries (fail-closed safety policy): ${lastError?.message}`,
     responseTime: Date.now() - start,
   };
 }

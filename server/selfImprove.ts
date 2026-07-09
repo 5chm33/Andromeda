@@ -104,8 +104,10 @@ const KEY_PATTERNS: RegExp[] = [
   /sk-or-v1-[A-Za-z0-9_-]{20,}/g,
   // HuggingFace token
   /hf_[A-Za-z0-9]{20,}/g,
-  // GitHub PAT
+  // GitHub classic PAT
   /ghp_[A-Za-z0-9]{20,}/g,
+  // GitHub fine-grained PAT (current default format since 2022)
+  /github_pat_[A-Za-z0-9_]{22,}/g,
   // Bearer token in Authorization header
   /Bearer\s+[A-Za-z0-9._~+/=-]{20,}/g,
 ];

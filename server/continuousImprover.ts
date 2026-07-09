@@ -517,7 +517,8 @@ async function runImprovementCycle(): Promise<CycleResult> {
             // Sanitize all potential token patterns from all error output channels
             const rawMsg = (pushErr.stderr || pushErr.stdout || pushErr.message || pushErr.toString());
             const safeMsg = rawMsg
-              .replace(/ghp_[A-Za-z0-9]{36}/g, "ghp_***")
+              .replace(/ghp_[A-Za-z0-9]{20,}/g, "ghp_***")
+              .replace(/github_pat_[A-Za-z0-9_]{22,}/g, "github_pat_***")  // fine-grained PATs
               .replace(/gho_[A-Za-z0-9]{36}/g, "gho_***")
               .replace(/ghu_[A-Za-z0-9]{36}/g, "ghu_***")
               .replace(/ghs_[A-Za-z0-9]{36}/g, "ghs_***")

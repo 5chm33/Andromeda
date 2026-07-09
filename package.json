@@ -3,6 +3,10 @@
   "version": "100.0.0",
   "type": "module",
   "license": "MIT",
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=11"
+  },
   "scripts": {
     "dev": "cross-env NODE_ENV=development tsx watch server/_core/index.ts",
     "typecheck": "tsc --noEmit",
