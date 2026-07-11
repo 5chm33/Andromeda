@@ -3,7 +3,7 @@
  *
  * Provides a unified, runtime-configurable LLM provider for the SWE-bench
  * pipeline. Supports:
- *   - anthropic/claude-sonnet-4-5 (current default, via OpenRouter)
+ *   - anthropic/claude-sonnet-5 (current default, direct Anthropic API)
  *   - anthropic/claude-3-7-sonnet (extended thinking, +~15pp estimated)
  *   - claude-fable-5 (direct Anthropic API, prompt caching, SOTA model)
  *   - openai/o3 (reasoning model, +~20pp estimated)
@@ -13,7 +13,7 @@
  * Configuration priority:
  *   1. SWEBENCH_MODEL env var (e.g. "anthropic/claude-3-7-sonnet")
  *   2. SWEBENCH_PROVIDER env var ("openai-o3" | "claude-3-7" | "claude-sonnet" | "claude-fable-5")
- *   3. Default: anthropic/claude-sonnet-4-5 (current baseline)
+ *   3. Default: claude-sonnet-5 (upgraded baseline — v4.1)
  *
  * Extended thinking:
  *   Set SWEBENCH_THINKING=1 to enable extended thinking for claude-3-7-sonnet.
@@ -167,14 +167,14 @@ const PRESETS: Record<string, Omit<SWEBenchModelConfig, 'apiKey'>> = {
  * Priority:
  *   1. SWEBENCH_MODEL env var → custom OpenRouter model ID
  *   2. SWEBENCH_PROVIDER env var → preset name
- *   3. Default: claude-sonnet
+ *   3. Default: claude-sonnet-5 (upgraded — v4.1)
  */
 export function resolveSWEBenchModelConfig(): SWEBenchModelConfig {
   // Priority 1: Explicit model ID override (always uses OpenRouter)
   const customModel = process.env.SWEBENCH_MODEL;
   if (customModel) {
     const apiKey = process.env.OPENROUTER_API_KEY ?? process.env.ANTHROPIC_API_KEY ?? '';
-    const base = PRESETS['claude-sonnet'];  // Use claude-sonnet defaults
+    const base = PRESETS['claude-sonnet-5'];  // v4.1: default upgraded to claude-sonnet-5
     return {
       ...base,
       apiKey,
@@ -184,8 +184,9 @@ export function resolveSWEBenchModelConfig(): SWEBenchModelConfig {
   }
 
   // Priority 2: Preset name
-  const providerName = process.env.SWEBENCH_PROVIDER ?? 'claude-sonnet';
-  const preset = PRESETS[providerName] ?? PRESETS['claude-sonnet'];
+  // v4.1: Default upgraded from claude-sonnet (4.5) to claude-sonnet-5
+  const providerName = process.env.SWEBENCH_PROVIDER ?? 'claude-sonnet-5';
+  const preset = PRESETS[providerName] ?? PRESETS['claude-sonnet-5'];
 
   // Select the correct API key based on the preset's API format
   let apiKey: string;

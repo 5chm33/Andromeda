@@ -60,6 +60,7 @@ import { buildSmartContext } from '../server/sweBenchContextBuilder.js';
 /**
  * Andromeda's LLM provider for SWE-bench.
  * Routes to Claude Sonnet 4.5 via OpenRouter.
+ * v4.1: maxTokens raised to 16384 to handle multi-file complete-file outputs
  */
 async function andromedaLLM(prompt: string, temperature = 0.0): Promise<string> {
   // Use a 180-second hard timeout to allow for large file responses
@@ -69,7 +70,7 @@ async function andromedaLLM(prompt: string, temperature = 0.0): Promise<string> 
     return await simpleChatCompletion(
       [{ role: 'user', content: prompt }],
       {
-        maxTokens: 8192,  // Increased to handle large file outputs
+        maxTokens: 16384,  // v4.1: raised for multi-file complete-file outputs (was 8192)
         temperature,
         providerId: 'anthropic',  // → anthropic/claude-sonnet-4-5 via OpenRouter
         signal: controller.signal,
