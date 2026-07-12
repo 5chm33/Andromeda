@@ -35,14 +35,14 @@ describe('resolveSWEBenchModelConfig', () => {
     Object.assign(process.env, originalEnv);
   });
 
-  it('returns claude-sonnet preset by default', () => {
+  it('returns claude-sonnet-5 preset by default (v4.1 upgrade)', () => {
     const config = resolveSWEBenchModelConfig();
-    expect(config.modelId).toBe('anthropic/claude-sonnet-4-5');
+    expect(config.modelId).toBe('claude-sonnet-5');  // v4.1: upgraded from anthropic/claude-sonnet-4-5
     expect(config.modelName).toContain('claude-sonnet');
     expect(config.extendedThinking).toBe(false);
-    expect(config.maxTokens).toBe(16000);
-    expect(config.apiFormat).toBe('openrouter');
-    expect(config.promptCaching).toBe(false);
+    expect(config.maxTokens).toBe(32000);  // claude-sonnet-5 preset uses 32k
+    expect(config.apiFormat).toBe('anthropic');  // direct Anthropic API (not OpenRouter)
+    expect(config.promptCaching).toBe(true);  // prompt caching enabled for cost savings
   });
 
   it('returns claude-3-7 preset when SWEBENCH_PROVIDER=claude-3-7', () => {
@@ -62,10 +62,10 @@ describe('resolveSWEBenchModelConfig', () => {
     expect(config.temperature).toBe(1); // Required for extended thinking
   });
 
-  it('does not enable extended thinking for claude-sonnet even with SWEBENCH_THINKING=1', () => {
+  it('does not enable extended thinking for claude-sonnet-5 even with SWEBENCH_THINKING=1', () => {
     process.env.SWEBENCH_THINKING = '1';
     const config = resolveSWEBenchModelConfig();
-    expect(config.extendedThinking).toBe(false); // claude-sonnet preset has it hardcoded false
+    expect(config.extendedThinking).toBe(false); // claude-sonnet-5 preset has it hardcoded false
   });
 
   it('returns o3 preset when SWEBENCH_PROVIDER=openai-o3', () => {
@@ -133,23 +133,24 @@ describe('resolveSWEBenchModelConfig', () => {
     expect(config.modelId).toBe('custom/model');
   });
 
-  it('falls back to claude-sonnet for unknown SWEBENCH_PROVIDER', () => {
+  it('falls back to claude-sonnet-5 for unknown SWEBENCH_PROVIDER (v4.1)', () => {
     process.env.SWEBENCH_PROVIDER = 'nonexistent-provider';
     const config = resolveSWEBenchModelConfig();
-    expect(config.modelId).toBe('anthropic/claude-sonnet-4-5');
+    expect(config.modelId).toBe('claude-sonnet-5');  // v4.1: fallback upgraded to claude-sonnet-5
   });
 
-  it('picks up OPENROUTER_API_KEY for OpenRouter presets', () => {
-    process.env.OPENROUTER_API_KEY = 'test-key-123';
+  it('picks up ANTHROPIC_API_KEY for default claude-sonnet-5 preset (v4.1)', () => {
+    // v4.1: default is now claude-sonnet-5 (Anthropic native format), so it uses ANTHROPIC_API_KEY
+    process.env.ANTHROPIC_API_KEY = 'anthropic-key-123';
     const config = resolveSWEBenchModelConfig();
-    expect(config.apiKey).toBe('test-key-123');
+    expect(config.apiKey).toBe('anthropic-key-123');
   });
 
-  it('falls back to ANTHROPIC_API_KEY when OPENROUTER_API_KEY is not set', () => {
-    delete process.env.OPENROUTER_API_KEY;
-    process.env.ANTHROPIC_API_KEY = 'anthropic-key-456';
+  it('picks up OPENROUTER_API_KEY for OpenRouter presets (e.g. claude-sonnet)', () => {
+    process.env.SWEBENCH_PROVIDER = 'claude-sonnet';  // explicitly use OpenRouter preset
+    process.env.OPENROUTER_API_KEY = 'openrouter-key-456';
     const config = resolveSWEBenchModelConfig();
-    expect(config.apiKey).toBe('anthropic-key-456');
+    expect(config.apiKey).toBe('openrouter-key-456');
   });
 
   it('returns empty apiKey when no key env vars are set', () => {
