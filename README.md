@@ -186,8 +186,8 @@ The traceback loop uses a cost-efficient escalation strategy:
 
 | Attempt | Model | Purpose |
 |---------|-------|---------|
-| 1–2 | Claude Sonnet 4.5 (OpenRouter) | Fast, cheap — resolves ~60% of instances |
-| 3–4 | Claude Sonnet 5 (Anthropic direct) | Smart + affordable — handles medium complexity |
+| 1–2 | Claude Sonnet 5 (Anthropic direct) | Fast, smart — resolves ~60% of instances (v4.1: upgraded from Sonnet 4.5) |
+| 3–4 | Claude Sonnet 5 (Anthropic direct) | Same model, additional attempts with traceback context |
 | 5 | Claude Fable 5 (Anthropic direct) | Strongest available — last resort for hard cases |
 
 ---
@@ -212,7 +212,7 @@ The following improvements are implemented and ready. The primary remaining bloc
 
 ### Remaining Gaps (Next Funded Run)
 
-**1. Official 500-instance leaderboard submission** — The single highest-leverage action. A published score on the full SWE-bench Verified set converts this from a private repo to a verifiable, citable result. Based on 50-instance performance, expected range: 60–68% on the full set.
+**1. Official 500-instance leaderboard submission** — The single highest-leverage action. A published score on the full SWE-bench Verified set converts this from a private repo to a verifiable, citable result. Based on 50-instance performance with the v3 pipeline, expected range: 60–68% on the full set. The v4 agent (200K context, multi-file patches, Sonnet 5 primary, no fallback contamination) is expected to score higher on a fresh unbiased 100-instance random sample — the recommended next evaluation step.
 
 **2. Hard django instance improvement** — Four instances (10097, 10554, 10880, 10914) consistently fail across all runs. These involve Django file storage internals and require either (a) retrieval-augmented context from Django source docs, or (b) multi-file diff strategy that edits test files as well as source files.
 
