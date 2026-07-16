@@ -285,6 +285,103 @@ def pull_image(image_name: str, timeout: int = 600) -> bool:
 
 # ── Docker Test Execution ─────────────────────────────────────────────────────
 
+# ── Test Runner Detection ────────────────────────────────────────────────────
+
+# Repos known to use specific test runners (extend as needed)
+_JEST_REPOS = {
+    "vercel/next.js", "facebook/react", "facebook/jest",
+    "microsoft/TypeScript", "microsoft/vscode",
+    "expressjs/express", "nestjs/nest",
+}
+_MOCHA_REPOS = {
+    "mochajs/mocha", "nodejs/node",
+}
+_VITEST_REPOS = {
+    "vitejs/vite", "vitest-dev/vitest",
+}
+_CARGO_REPOS = {
+    "rust-lang/rust", "tokio-rs/tokio", "serde-rs/serde",
+}
+_GO_REPOS = {
+    "golang/go", "kubernetes/kubernetes",
+}
+
+
+def _detect_test_runner(repo: str) -> str:
+    """Return the test runner to use for a given repo slug."""
+    if repo in _JEST_REPOS:
+        return "jest"
+    if repo in _MOCHA_REPOS:
+        return "mocha"
+    if repo in _VITEST_REPOS:
+        return "vitest"
+    if repo in _CARGO_REPOS:
+        return "cargo"
+    if repo in _GO_REPOS:
+        return "go"
+    # Heuristic: repos with JS/TS keywords in name
+    repo_lower = repo.lower()
+    if any(kw in repo_lower for kw in ["node", "react", "vue", "angular", "typescript", "javascript", "next", "nuxt", "svelte"]):
+        return "jest"  # most JS projects use jest
+    return "pytest"  # default: Python
+
+
+def _build_test_command(repo: str, tests: list, capture_traceback: bool) -> str:
+    """Build the appropriate test command for the repo's language and test runner."""
+    import shlex
+    runner = _detect_test_runner(repo)
+
+    if runner == "pytest":
+        if repo == "django/django":
+            test_args = " ".join(
+                t.replace("tests.", "").replace(".", "/").rsplit("/", 1)[0]
+                for t in tests[:3]
+            )
+            return f"python -m pytest {test_args} -x -q 2>&1 | tail -30"
+        else:
+            test_ids = " ".join(shlex.quote(t) for t in tests[:5])
+            tb_flag = "--tb=short" if capture_traceback else "--tb=no"
+            return f"python -m pytest {test_ids} {tb_flag} -x -q 2>&1 | tail -60"
+
+    elif runner == "jest":
+        # Jest: install deps if needed, then run matching test files
+        test_patterns = " ".join(shlex.quote(t) for t in tests[:5])
+        return (
+            f"([ -f package.json ] && (npm install --silent 2>/dev/null || pnpm install --silent 2>/dev/null || true)); "
+            f"npx jest --testPathPattern={shlex.quote('|'.join(tests[:5]))} "
+            f"--no-coverage --forceExit 2>&1 | tail -60"
+        )
+
+    elif runner == "vitest":
+        test_patterns = "|".join(tests[:5])
+        return (
+            f"([ -f package.json ] && (npm install --silent 2>/dev/null || pnpm install --silent 2>/dev/null || true)); "
+            f"npx vitest run --reporter=verbose 2>&1 | tail -60"
+        )
+
+    elif runner == "mocha":
+        test_patterns = " ".join(shlex.quote(t) for t in tests[:5])
+        return (
+            f"([ -f package.json ] && npm install --silent 2>/dev/null || true); "
+            f"npx mocha {test_patterns} 2>&1 | tail -60"
+        )
+
+    elif runner == "cargo":
+        # Rust: cargo test with test name filter
+        test_filter = tests[0].split("::")[-1] if tests else ""
+        return f"cargo test {shlex.quote(test_filter)} 2>&1 | tail -60"
+
+    elif runner == "go":
+        # Go: go test with -run filter
+        test_filter = tests[0].split("/")[-1] if tests else "."
+        return f"go test ./... -run {shlex.quote(test_filter)} -v 2>&1 | tail -60"
+
+    else:
+        # Unknown: try pytest as last resort
+        test_ids = " ".join(shlex.quote(t) for t in tests[:5])
+        return f"python -m pytest {test_ids} -x -q 2>&1 | tail -60"
+
+
 def run_test_in_docker(
     instance: dict,
     patch: str,
@@ -319,16 +416,8 @@ def run_test_in_docker(
         import shlex
         repo = instance.get("repo", "")
 
-        if repo == "django/django":
-            test_args = " ".join(
-                t.replace("tests.", "").replace(".", "/").rsplit("/", 1)[0]
-                for t in tests[:3]
-            )
-            test_cmd = f"python -m pytest {test_args} -x -q 2>&1 | tail -30"
-        else:
-            test_ids = " ".join(shlex.quote(t) for t in tests[:5])
-            tb_flag = "--tb=short" if capture_traceback else "--tb=no"
-            test_cmd = f"python -m pytest {test_ids} {tb_flag} -x -q 2>&1 | tail -60"
+        # Detect language/test runner from repo name and instance metadata
+        test_cmd = _build_test_command(repo, tests, capture_traceback)
 
         docker_script = f"""#!/bin/bash
 set -e
