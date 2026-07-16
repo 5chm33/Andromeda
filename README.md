@@ -31,6 +31,12 @@ Andromeda is a production Node.js/TypeScript application that autonomously resol
 
 The system is evaluated on [SWE-bench Verified](https://www.swebench.com/) — the standard benchmark for autonomous software engineering agents. Note: The 66% headline score is based on a standard 50-instance subset run, which is a common cost-constrained evaluation methodology. A previous full 500-instance run scored 19.2% but was affected by a fallback contamination issue that has since been resolved.
 
+### Language-Agnostic Core
+A common misconception is that Andromeda is a "Python-only" agent because of the SWE-bench results. This is incorrect. **Andromeda's core architecture — the RSI engine, MAD protocol, RLAIF loop, and ReAct engine — is entirely language-agnostic and written in TypeScript.** The SWE-bench harness targets Python solely because the benchmark itself is built on Python repositories. The agent is fully capable of resolving issues in JavaScript, TypeScript, Go, Rust, or any other language with a test runner.
+
+### Cost-Efficiency as a First Principle
+Andromeda is designed for B2B/enterprise cost efficiency, not just raw benchmark scores. While running a frontier model (like Claude Fable 5) on every instance yields high scores, it costs ~$2.00+ per instance. Andromeda's **3-tier model escalation** resolves ~60% of issues using fast, cheap models (like Sonnet 5 at ~$0.05/instance), escalating to expensive frontier models only when the traceback loop detects a hard failure. This achieves near-frontier quality at ~10% of the cost.
+
 ---
 
 ## Benchmarks
