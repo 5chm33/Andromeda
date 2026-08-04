@@ -1226,6 +1226,39 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
     }
   } catch { /* non-fatal — genealogy guidance is advisory only */ }
 
+  // v5.0.0 (Elicit #4): Hypothesis-Before-Editing Protocol
+  // Before generating a patch, run a bounded probe on the file to form a structured
+  // hypothesis. This is the largest single quality lever: investigation before editing
+  // reduces patch failures by forcing the agent to confirm its assumption before writing code.
+  try {
+    const { runProbe, recordHypothesis, formatHypothesisForPrompt } = await import("./agentToolInterface.js");
+    const filename = path.basename(targetFile);
+    // Run a quick grep probe to find the most likely improvement target
+    const probeCommand = area === "performance"
+      ? `grep -n 'await.*await\|for.*await\|setTimeout\|setInterval' ${filename}`
+      : area === "security"
+      ? `grep -n 'eval(\|exec(\|shell\|innerHTML\|dangerouslySet' ${filename}`
+      : area === "reliability"
+      ? `grep -n 'catch.*{}\|catch.*console\|Promise.all\|race condition' ${filename}`
+      : `grep -n 'TODO\|FIXME\|HACK\|any\b\|@ts-ignore' ${filename}`;
+    const probeResult = runProbe("bash", ["-c", probeCommand], path.dirname(targetFile));
+    if (probeResult.success && probeResult.output.trim()) {
+      const hypothesis = recordHypothesis(
+        targetFile,
+        `The file ${filename} has a ${area ?? "general"} improvement opportunity`,
+        `The probe found: ${probeResult.output.slice(0, 200)}`,
+        `The probe found nothing matching the expected pattern`,
+        probeCommand
+      );
+      const hypothesisContext = formatHypothesisForPrompt(hypothesis);
+      const userMsg = llmMessages[llmMessages.length - 1];
+      if (userMsg && userMsg.role === "user") {
+        (userMsg as any).content += `\n\n${hypothesisContext}`;
+      }
+      log.info(`[v5.0.0 hypothesis] ${filename}: probe found ${probeResult.output.split("\n").length} lines of evidence`);
+    }
+  } catch { /* non-fatal — hypothesis protocol is advisory only */ }
+
   // v13.0.0: Semantic Safety Score — block or flag high-risk proposals before LLM call.
   // Prevents expensive generation for changes that would cascade-break the codebase.
   try {
