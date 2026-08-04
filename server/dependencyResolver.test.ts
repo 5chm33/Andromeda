@@ -4,9 +4,11 @@ import { describe, it, expect, vi } from "vitest";
 // The function makes outbound HTTP requests which cause flaky timeouts.
 vi.mock("./dependencyResolver.js", async (importOriginal) => {
   const actual = await importOriginal<typeof import("./dependencyResolver.js")>();
+  const mockUpdateResult = { checkedAt: Date.now(), totalPackages: 10, updatesAvailable: [], errors: [] };
   return {
     ...actual,
-    checkForUpdates: vi.fn().mockResolvedValue({ checked: true, updates: [], timestamp: Date.now() }),
+    checkForUpdates: vi.fn().mockResolvedValue(mockUpdateResult),
+    getLastUpdateCheck: vi.fn().mockReturnValue(mockUpdateResult),
   };
 });
 import { parseErrorForDependencies, scanImportsForDependencies, diffManifestDependencies, installDependency, installBatch, addPendingRequest, getPendingRequests, clearPendingRequests, autoResolve, rollbackInstall, rollbackAll, getResolverConfig, setResolverConfig, getInstallHistory, getResolverStats, checkForUpdates, getLastUpdateCheck, autoUpdatePatches, scanVulnerabilities, getLastVulnScan } from "./dependencyResolver.js";
