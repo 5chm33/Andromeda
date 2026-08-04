@@ -286,13 +286,46 @@ export function runBounded(
 /**
  * Run a lightweight read-only probe (no writes, no network, 5s limit).
  * Used for the hypothesis investigation step before generating a patch.
+ * Calls spawnSync directly with explore mode limits — does NOT route through
+ * runBounded because explore mode's canExecute=false gate would block it.
+ * Probes are read-only commands (grep, find, cat) that investigate the codebase.
  */
 export function runProbe(
   command: string,
   args: string[],
   cwd: string
 ): AgentToolResult {
-  return runBounded(command, args, cwd, "explore");
+  const limits = MODE_LIMITS["explore"];
+  const start = Date.now();
+  try {
+    const result = spawnSync(command, args, {
+      cwd,
+      timeout: limits.timeoutMs,          // 5_000ms — enforced by explore mode
+      maxBuffer: limits.maxOutputBytes,
+      encoding: "utf-8",
+      env: {
+        ...process.env,
+        // Strip all API keys — probes must not make network calls
+        ANTHROPIC_API_KEY: "",
+        OPENROUTER_API_KEY: "",
+        OPENAI_API_KEY: "",
+        DEEPSEEK_API_KEY: "",
+      },
+    });
+    const output = ((result.stdout || "") + (result.stderr || "")).slice(0, limits.maxOutputBytes);
+    const timedOut = result.signal === "SIGTERM" || result.error?.message?.includes("ETIMEDOUT");
+    if (timedOut) {
+      return { success: false, output, error: `Probe timed out after ${limits.timeoutMs}ms` };
+    }
+    return {
+      success: result.status === 0,
+      output,
+      error: result.status !== 0 ? `Exit code ${result.status}` : undefined,
+      evidence: { filesRead: [], commandsRun: [`${command} ${args.join(" ")}`], testsExecuted: [], durationMs: Date.now() - start },
+    };
+  } catch (err) {
+    return { success: false, output: "", error: String(err) };
+  }
 }
 
 /**
