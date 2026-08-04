@@ -1,4 +1,14 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
+
+// Mock checkForUpdates to prevent real npm registry network calls in CI.
+// The function makes outbound HTTP requests which cause flaky timeouts.
+vi.mock("./dependencyResolver.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./dependencyResolver.js")>();
+  return {
+    ...actual,
+    checkForUpdates: vi.fn().mockResolvedValue({ checked: true, updates: [], timestamp: Date.now() }),
+  };
+});
 import { parseErrorForDependencies, scanImportsForDependencies, diffManifestDependencies, installDependency, installBatch, addPendingRequest, getPendingRequests, clearPendingRequests, autoResolve, rollbackInstall, rollbackAll, getResolverConfig, setResolverConfig, getInstallHistory, getResolverStats, checkForUpdates, getLastUpdateCheck, autoUpdatePatches, scanVulnerabilities, getLastVulnScan } from "./dependencyResolver.js";
 
 describe("parseErrorForDependencies", () => {

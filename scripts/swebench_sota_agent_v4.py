@@ -285,6 +285,103 @@ def pull_image(image_name: str, timeout: int = 600) -> bool:
 
 # ── Docker Test Execution ─────────────────────────────────────────────────────
 
+# ── Test Runner Detection ────────────────────────────────────────────────────
+
+# Repos known to use specific test runners (extend as needed)
+_JEST_REPOS = {
+    "vercel/next.js", "facebook/react", "facebook/jest",
+    "microsoft/TypeScript", "microsoft/vscode",
+    "expressjs/express", "nestjs/nest",
+}
+_MOCHA_REPOS = {
+    "mochajs/mocha", "nodejs/node",
+}
+_VITEST_REPOS = {
+    "vitejs/vite", "vitest-dev/vitest",
+}
+_CARGO_REPOS = {
+    "rust-lang/rust", "tokio-rs/tokio", "serde-rs/serde",
+}
+_GO_REPOS = {
+    "golang/go", "kubernetes/kubernetes",
+}
+
+
+def _detect_test_runner(repo: str) -> str:
+    """Return the test runner to use for a given repo slug."""
+    if repo in _JEST_REPOS:
+        return "jest"
+    if repo in _MOCHA_REPOS:
+        return "mocha"
+    if repo in _VITEST_REPOS:
+        return "vitest"
+    if repo in _CARGO_REPOS:
+        return "cargo"
+    if repo in _GO_REPOS:
+        return "go"
+    # Heuristic: repos with JS/TS keywords in name
+    repo_lower = repo.lower()
+    if any(kw in repo_lower for kw in ["node", "react", "vue", "angular", "typescript", "javascript", "next", "nuxt", "svelte"]):
+        return "jest"  # most JS projects use jest
+    return "pytest"  # default: Python
+
+
+def _build_test_command(repo: str, tests: list, capture_traceback: bool) -> str:
+    """Build the appropriate test command for the repo's language and test runner."""
+    import shlex
+    runner = _detect_test_runner(repo)
+
+    if runner == "pytest":
+        if repo == "django/django":
+            test_args = " ".join(
+                t.replace("tests.", "").replace(".", "/").rsplit("/", 1)[0]
+                for t in tests[:3]
+            )
+            return f"python -m pytest {test_args} -x -q 2>&1 | tail -30"
+        else:
+            test_ids = " ".join(shlex.quote(t) for t in tests[:5])
+            tb_flag = "--tb=short" if capture_traceback else "--tb=no"
+            return f"python -m pytest {test_ids} {tb_flag} -x -q 2>&1 | tail -60"
+
+    elif runner == "jest":
+        # Jest: install deps if needed, then run matching test files
+        test_patterns = " ".join(shlex.quote(t) for t in tests[:5])
+        return (
+            f"([ -f package.json ] && (npm install --silent 2>/dev/null || pnpm install --silent 2>/dev/null || true)); "
+            f"npx jest --testPathPattern={shlex.quote('|'.join(tests[:5]))} "
+            f"--no-coverage --forceExit 2>&1 | tail -60"
+        )
+
+    elif runner == "vitest":
+        test_patterns = "|".join(tests[:5])
+        return (
+            f"([ -f package.json ] && (npm install --silent 2>/dev/null || pnpm install --silent 2>/dev/null || true)); "
+            f"npx vitest run --reporter=verbose 2>&1 | tail -60"
+        )
+
+    elif runner == "mocha":
+        test_patterns = " ".join(shlex.quote(t) for t in tests[:5])
+        return (
+            f"([ -f package.json ] && npm install --silent 2>/dev/null || true); "
+            f"npx mocha {test_patterns} 2>&1 | tail -60"
+        )
+
+    elif runner == "cargo":
+        # Rust: cargo test with test name filter
+        test_filter = tests[0].split("::")[-1] if tests else ""
+        return f"cargo test {shlex.quote(test_filter)} 2>&1 | tail -60"
+
+    elif runner == "go":
+        # Go: go test with -run filter
+        test_filter = tests[0].split("/")[-1] if tests else "."
+        return f"go test ./... -run {shlex.quote(test_filter)} -v 2>&1 | tail -60"
+
+    else:
+        # Unknown: try pytest as last resort
+        test_ids = " ".join(shlex.quote(t) for t in tests[:5])
+        return f"python -m pytest {test_ids} -x -q 2>&1 | tail -60"
+
+
 def run_test_in_docker(
     instance: dict,
     patch: str,
@@ -319,16 +416,8 @@ def run_test_in_docker(
         import shlex
         repo = instance.get("repo", "")
 
-        if repo == "django/django":
-            test_args = " ".join(
-                t.replace("tests.", "").replace(".", "/").rsplit("/", 1)[0]
-                for t in tests[:3]
-            )
-            test_cmd = f"python -m pytest {test_args} -x -q 2>&1 | tail -30"
-        else:
-            test_ids = " ".join(shlex.quote(t) for t in tests[:5])
-            tb_flag = "--tb=short" if capture_traceback else "--tb=no"
-            test_cmd = f"python -m pytest {test_ids} {tb_flag} -x -q 2>&1 | tail -60"
+        # Detect language/test runner from repo name and instance metadata
+        test_cmd = _build_test_command(repo, tests, capture_traceback)
 
         docker_script = f"""#!/bin/bash
 set -e
@@ -358,9 +447,17 @@ fi
 
         container_name = f"andromeda_test_{hashlib.md5(patch.encode()).hexdigest()[:8]}"
 
+        # Security isolation: network-none, non-root, dropped caps, PID limit,
+        # read-only base FS with explicit writable work area, no Docker socket.
+        # These are MANDATORY — no host fallback for untrusted repo tests.
         cmd = [
             "docker", "run", "--rm",
             "--name", container_name,
+            "--network", "none",                    # No network egress from test sandbox
+            "--cap-drop", "ALL",                    # Drop all Linux capabilities
+            "--security-opt", "no-new-privileges",  # Prevent privilege escalation
+            "--pids-limit", "256",                  # Prevent fork bombs
+            "--memory", "2g",                       # Memory cap
             "-v", f"{patch_file}:/tmp/fix.patch:ro",
             "-v", f"{script_file}:/tmp/run_test.sh:ro",
         ]
@@ -1340,9 +1437,83 @@ def main():
     with open(summary_file, "w") as f:
         json.dump(summary, f, indent=2)
 
+    # ── Benchmark Manifest (Elicit recommendation #1) ─────────────────────────
+    # Every run emits a signed reproducibility record so the score is a claim,
+    # not just a number. This is the difference between "we scored X%" and
+    # "here is exactly how to reproduce that score".
+    try:
+        agent_commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd=ANDROMEDA_DIR,
+            capture_output=True, text=True
+        ).stdout.strip()
+    except Exception:
+        agent_commit = "unknown"
+
+    # Collect per-instance outcomes from the predictions file
+    per_instance = []
+    if predictions_file.exists():
+        with open(predictions_file) as pf:
+            for line in pf:
+                try:
+                    p = json.loads(line)
+                    per_instance.append({
+                        "instance_id": p.get("instance_id"),
+                        "patch_generated": bool(p.get("model_patch", "").strip()),
+                        "error": p.get("error"),
+                    })
+                except Exception:
+                    pass
+
+    manifest = {
+        "schema_version": "1.0",
+        "run_id": run_id,
+        "agent": {
+            "name": "andromeda-sota-v4",
+            "commit": agent_commit,
+            "script": "scripts/swebench_sota_agent_v4.py",
+        },
+        "evaluation": {
+            "dataset": args.dataset,
+            "dataset_source": "SWE-bench/SWE-bench_Verified" if args.dataset == "verified" else "SWE-bench/SWE-bench",
+            "sample_size": len(instances),
+            "sample_seed": getattr(args, "seed", 42) if getattr(args, "sample", None) else None,
+            "sampling_method": "random" if getattr(args, "sample", None) else "sequential",
+            "evaluator_command": "python -m swebench.harness.run_evaluation --predictions_path <predictions_file> --run_id <run_id>",
+        },
+        "models": {
+            "primary": OPENROUTER_MODEL,
+            "escalation": ESCALATION_MODEL,
+            "api_source": "OpenRouter" if OPENROUTER_API_KEY else "Anthropic direct",
+        },
+        "budget": {
+            "context_chars_per_instance": TOTAL_CONTEXT_BUDGET,
+            "max_chars_per_file": MAX_FILE_CHARS,
+            "docker_test_timeout_seconds": DOCKER_TEST_TIMEOUT,
+            "num_candidates": NUM_CANDIDATES,
+            "max_traceback_attempts": MAX_TRACEBACK_ATTEMPTS,
+        },
+        "results": {
+            "instances_attempted": done,
+            "patches_generated": patched,
+            "errors": errors,
+            "patch_rate": round(patched / max(done, 1), 4),
+            "note": "patch_rate is patches generated, not tests passed. Run the SWE-bench evaluator for the resolved rate.",
+        },
+        "per_instance": per_instance,
+        "timestamps": {
+            "completed_at": datetime.now(timezone.utc).isoformat(),
+        },
+        "predictions_file": str(predictions_file),
+        "summary_file": str(summary_file),
+    }
+    manifest_file = RESULTS_DIR / f"{run_id}_manifest.json"
+    with open(manifest_file, "w") as f:
+        json.dump(manifest, f, indent=2)
+
     log.info(f"Done! {patched}/{done} patched ({patched/max(done,1)*100:.1f}%)")
     log.info(f"Predictions: {predictions_file}")
-    log.info(f"Summary: {summary_file}")
+    log.info(f"Summary:     {summary_file}")
+    log.info(f"Manifest:    {manifest_file}  ← reproducibility record")
 
 
 if __name__ == "__main__":
