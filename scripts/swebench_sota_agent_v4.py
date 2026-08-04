@@ -1429,9 +1429,83 @@ def main():
     with open(summary_file, "w") as f:
         json.dump(summary, f, indent=2)
 
+    # ── Benchmark Manifest (Elicit recommendation #1) ─────────────────────────
+    # Every run emits a signed reproducibility record so the score is a claim,
+    # not just a number. This is the difference between "we scored X%" and
+    # "here is exactly how to reproduce that score".
+    try:
+        agent_commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd=ANDROMEDA_DIR,
+            capture_output=True, text=True
+        ).stdout.strip()
+    except Exception:
+        agent_commit = "unknown"
+
+    # Collect per-instance outcomes from the predictions file
+    per_instance = []
+    if predictions_file.exists():
+        with open(predictions_file) as pf:
+            for line in pf:
+                try:
+                    p = json.loads(line)
+                    per_instance.append({
+                        "instance_id": p.get("instance_id"),
+                        "patch_generated": bool(p.get("model_patch", "").strip()),
+                        "error": p.get("error"),
+                    })
+                except Exception:
+                    pass
+
+    manifest = {
+        "schema_version": "1.0",
+        "run_id": run_id,
+        "agent": {
+            "name": "andromeda-sota-v4",
+            "commit": agent_commit,
+            "script": "scripts/swebench_sota_agent_v4.py",
+        },
+        "evaluation": {
+            "dataset": args.dataset,
+            "dataset_source": "SWE-bench/SWE-bench_Verified" if args.dataset == "verified" else "SWE-bench/SWE-bench",
+            "sample_size": len(instances),
+            "sample_seed": getattr(args, "seed", 42) if getattr(args, "sample", None) else None,
+            "sampling_method": "random" if getattr(args, "sample", None) else "sequential",
+            "evaluator_command": "python -m swebench.harness.run_evaluation --predictions_path <predictions_file> --run_id <run_id>",
+        },
+        "models": {
+            "primary": OPENROUTER_MODEL,
+            "escalation": ESCALATION_MODEL,
+            "api_source": "OpenRouter" if OPENROUTER_API_KEY else "Anthropic direct",
+        },
+        "budget": {
+            "context_chars_per_instance": TOTAL_CONTEXT_BUDGET,
+            "max_chars_per_file": MAX_FILE_CHARS,
+            "docker_test_timeout_seconds": DOCKER_TEST_TIMEOUT,
+            "num_candidates": NUM_CANDIDATES,
+            "max_traceback_attempts": MAX_TRACEBACK_ATTEMPTS,
+        },
+        "results": {
+            "instances_attempted": done,
+            "patches_generated": patched,
+            "errors": errors,
+            "patch_rate": round(patched / max(done, 1), 4),
+            "note": "patch_rate is patches generated, not tests passed. Run the SWE-bench evaluator for the resolved rate.",
+        },
+        "per_instance": per_instance,
+        "timestamps": {
+            "completed_at": datetime.now(timezone.utc).isoformat(),
+        },
+        "predictions_file": str(predictions_file),
+        "summary_file": str(summary_file),
+    }
+    manifest_file = RESULTS_DIR / f"{run_id}_manifest.json"
+    with open(manifest_file, "w") as f:
+        json.dump(manifest, f, indent=2)
+
     log.info(f"Done! {patched}/{done} patched ({patched/max(done,1)*100:.1f}%)")
     log.info(f"Predictions: {predictions_file}")
-    log.info(f"Summary: {summary_file}")
+    log.info(f"Summary:     {summary_file}")
+    log.info(f"Manifest:    {manifest_file}  ← reproducibility record")
 
 
 if __name__ == "__main__":
