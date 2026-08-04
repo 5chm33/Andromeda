@@ -122,6 +122,50 @@ const MODE_LIMITS: Record<ToolMode, ResourceLimits> = {
   },
 };
 
+// ─── Command Allowlist ───────────────────────────────────────────────────────
+
+/**
+ * Commands that may be executed via runBounded/runProbe.
+ * Anything not in this set is rejected before spawnSync is called.
+ * This prevents the tool interface from being used as an arbitrary shell.
+ */
+const ALLOWED_COMMANDS = new Set([
+  // Test runners
+  "npx", "pnpm", "node", "python3", "python",
+  // Read-only investigation tools
+  "grep", "find", "cat", "head", "tail", "wc", "ls", "stat",
+  // Version control (read-only ops only — no push/commit via tool interface)
+  "git",
+  // TypeScript compiler
+  "tsc",
+  // Patch application (candidate/promote only)
+  "patch",
+  // Diff tool (for diffPreview)
+  "diff",
+]);
+
+/**
+ * Validate that a command is on the allowlist and the cwd is a canonical
+ * path that does not escape the repo root (prevents path traversal).
+ * Returns an error string if invalid, null if valid.
+ */
+function validateCommandAndCwd(
+  command: string,
+  cwd: string,
+  repoRoot: string = process.cwd()
+): string | null {
+  const base = path.basename(command);
+  if (!ALLOWED_COMMANDS.has(base) && !ALLOWED_COMMANDS.has(command)) {
+    return `Command '${command}' is not on the allowed command list`;
+  }
+  const resolvedCwd = path.resolve(cwd);
+  const resolvedRoot = path.resolve(repoRoot);
+  if (!resolvedCwd.startsWith(resolvedRoot + path.sep) && resolvedCwd !== resolvedRoot) {
+    return `Working directory '${cwd}' is outside the repository root '${repoRoot}'`;
+  }
+  return null;
+}
+
 // ─── Tool implementations ─────────────────────────────────────────────────────
 
 /**
@@ -242,16 +286,23 @@ export function listTests(
 /**
  * Run a bounded command with strict resource limits.
  * Only available in 'candidate' and 'promote' modes.
+ * Command must be on the ALLOWED_COMMANDS allowlist.
+ * cwd must be within the repo root (no path traversal).
  */
 export function runBounded(
   command: string,
   args: string[],
   cwd: string,
-  mode: ToolMode = "candidate"
+  mode: ToolMode = "candidate",
+  repoRoot: string = process.cwd()
 ): AgentToolResult {
   const caps = MODE_CAPABILITIES[mode];
   if (!caps.canExecute) {
     return { success: false, output: "", error: `Mode '${mode}' does not permit command execution` };
+  }
+  const validationError = validateCommandAndCwd(command, cwd, repoRoot);
+  if (validationError) {
+    return { success: false, output: "", error: validationError };
   }
   const limits = MODE_LIMITS[mode];
   const start = Date.now();
@@ -289,12 +340,19 @@ export function runBounded(
  * Calls spawnSync directly with explore mode limits — does NOT route through
  * runBounded because explore mode's canExecute=false gate would block it.
  * Probes are read-only commands (grep, find, cat) that investigate the codebase.
+ * Command must be on the ALLOWED_COMMANDS allowlist.
  */
 export function runProbe(
   command: string,
   args: string[],
-  cwd: string
+  cwd: string,
+  repoRoot: string = process.cwd()
 ): AgentToolResult {
+  // Validate command allowlist even for probes
+  const validationError = validateCommandAndCwd(command, cwd, repoRoot);
+  if (validationError) {
+    return { success: false, output: "", error: validationError };
+  }
   const limits = MODE_LIMITS["explore"];
   const start = Date.now();
   try {
