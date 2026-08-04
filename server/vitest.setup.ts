@@ -11,6 +11,10 @@
  */
 import { vi } from "vitest";
 
+// Unit tests must not boot the production autonomy runtime. Individual
+// integration tests can opt in explicitly with ANDROMEDA_START_DAEMONS=true.
+process.env.ANDROMEDA_DISABLE_BACKGROUND_DAEMONS = "true";
+
 // ─── canvas mock ─────────────────────────────────────────────────────────────
 vi.mock("canvas", () => {
   const mockCtx = {
