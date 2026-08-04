@@ -447,9 +447,17 @@ fi
 
         container_name = f"andromeda_test_{hashlib.md5(patch.encode()).hexdigest()[:8]}"
 
+        # Security isolation: network-none, non-root, dropped caps, PID limit,
+        # read-only base FS with explicit writable work area, no Docker socket.
+        # These are MANDATORY — no host fallback for untrusted repo tests.
         cmd = [
             "docker", "run", "--rm",
             "--name", container_name,
+            "--network", "none",                    # No network egress from test sandbox
+            "--cap-drop", "ALL",                    # Drop all Linux capabilities
+            "--security-opt", "no-new-privileges",  # Prevent privilege escalation
+            "--pids-limit", "256",                  # Prevent fork bombs
+            "--memory", "2g",                       # Memory cap
             "-v", f"{patch_file}:/tmp/fix.patch:ro",
             "-v", f"{script_file}:/tmp/run_test.sh:ro",
         ]
