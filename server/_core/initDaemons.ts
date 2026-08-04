@@ -408,9 +408,26 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 /**
+ * Background daemons are intentionally opt-in for tests. Starting timers,
+ * network listeners, worker pools, and file-writing jobs from a unit test makes
+ * test outcomes order-dependent and can leave resources alive after the test.
+ * Production startup remains enabled by default; set ANDROMEDA_START_DAEMONS=true
+ * to force it, or ANDROMEDA_DISABLE_BACKGROUND_DAEMONS=true to suppress it.
+ */
+export function isBackgroundDaemonStartupEnabled(): boolean {
+  if (process.env.ANDROMEDA_START_DAEMONS === "true") return true;
+  return process.env.ANDROMEDA_DISABLE_BACKGROUND_DAEMONS !== "true";
+}
+
+/**
  * Start all background daemons. Called after server.listen() succeeds.
  */
 export function startDaemons(): void {
+  if (!isBackgroundDaemonStartupEnabled()) {
+    console.info("[Init] Background daemons disabled by environment");
+    return;
+  }
+
   // v5.75: Generate ANDROMEDA.md — grounds the model in actual file structure
   try {
     const serverDir = resolve(__dirname, "..");
