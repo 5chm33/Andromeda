@@ -503,7 +503,14 @@ function runLightweightSyntaxCheck(content: string): { pass: boolean; errors: st
 
 // ─── Test Runner ──────────────────────────────────────────────────────────────
 
-function runTests(targetFile?: string): { pass: boolean; output: string } {
+/**
+ * Runs the validation suite for a proposed autonomous change.
+ *
+ * An indeterminate test result is unsafe evidence for promotion. Timeouts,
+ * process termination, and runner failures therefore fail closed; callers may
+ * retain the proposal for replay, but must not apply it automatically.
+ */
+export function runTests(targetFile?: string): { pass: boolean; output: string } {
   try {
     // v11.0.1: Use pre-imported _spawnSync (ESM-safe)
     const isWindows = process.platform === "win32";
@@ -554,10 +561,11 @@ function runTests(targetFile?: string): { pass: boolean; output: string } {
     if (result.error) {
       const errMsg = `Test runner spawn failed: ${result.error.message}`;
       log.error(`Test runner error: ${errMsg}`);
-      // ETIMEDOUT = tests took too long. Don't block the proposal — log and pass.
+      // A timeout provides no evidence that the candidate is safe. Preserve
+      // the candidate for diagnostic replay, but never promote it automatically.
       if ((result.error as NodeJS.ErrnoException).code === "ETIMEDOUT") {
-        log.warn("Test timeout — treating as pass");
-        return { pass: true, output: `Tests timed out after 300s — treated as pass` };
+        log.warn("Test timeout — blocking autonomous application");
+        return { pass: false, output: "Tests timed out after 300s — autonomous application blocked" };
       }
       return { pass: false, output: errMsg };
     }
@@ -570,10 +578,10 @@ function runTests(targetFile?: string): { pass: boolean; output: string } {
     if (output) log.debug(`Test output:\n${output.slice(-500)}`);
     log.info(`Test exit code: ${result.status} | signal: ${result.signal}`);
 
-    // null status = killed/timed out — treat as pass to avoid blocking valid proposals
+    // A killed process is an indeterminate validation result, not a passing test.
     if (result.status === null) {
-      log.warn(`Tests killed (signal: ${result.signal}) — treating as pass`);
-      return { pass: true, output: `Tests killed by signal ${result.signal} — treated as pass` };
+      log.warn(`Tests killed (signal: ${result.signal}) — blocking autonomous application`);
+      return { pass: false, output: `Tests killed by signal ${result.signal} — autonomous application blocked` };
     }
 
     return { pass: result.status === 0, output };
