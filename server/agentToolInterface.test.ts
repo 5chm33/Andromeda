@@ -39,6 +39,12 @@ import { spawnSync } from "child_process";
 const mockSpawnSync = vi.mocked(spawnSync);
 const mockReadFileSync = vi.mocked(fs.readFileSync);
 
+// Clear all mocks between tests so call indices are predictable
+beforeEach(() => {
+  mockSpawnSync.mockClear();
+  mockReadFileSync.mockClear();
+});
+
 describe("agentToolInterface — mode capability gates", () => {
   it("explore mode blocks command execution", () => {
     const result = runBounded("echo", ["hello"], "/tmp", "explore");
@@ -85,6 +91,7 @@ describe("agentToolInterface — timeout fail-closed", () => {
   it("runProbe uses explore mode limits (5s, no network)", () => {
     mockSpawnSync.mockReturnValueOnce({ status: 0, stdout: "result", stderr: "", signal: null, pid: 1, output: [], error: undefined } as any);
     runProbe("grep", ["-rn", "pattern", "."], "/tmp");
+    // calls[0] is safe here because beforeEach clears the mock before each test
     const call = mockSpawnSync.mock.calls[0];
     const opts = call[2] as any;
     expect(opts.timeout).toBe(5_000);
