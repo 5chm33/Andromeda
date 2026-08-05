@@ -12,6 +12,7 @@
  * - Execution audit trail
  */
 
+import { buildHardenedDockerArgs } from "./hardenedSandbox.js";
 import { spawn, execSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
@@ -194,20 +195,34 @@ async function executeInDocker(req: SandboxRequest): Promise<SandboxResult> {
                  lang === "shell" ? `bash /workspace/${scriptName}` :
                  `node /workspace/${scriptName}`;
 
-  const dockerArgs = [
-    "run", "--rm",
-    "--memory", config.memoryLimit,
-    "--cpus", config.cpuLimit,
-    "--pids-limit", "100",
-    "-v", `${workspaceDir}:/workspace`,
-    "-w", "/workspace",
-  ];
-
-  if (!req.networkAccess && !config.networkEnabled) {
-    dockerArgs.push("--network", "none");
+  // Use hardenedSandbox for untrusted_repair mode; basic args for trusted_local
+  const _sandboxMode = (req as any).executionMode ?? "trusted_local";
+  let dockerArgs: string[];
+  if (_sandboxMode === "untrusted_repair") {
+    const _hardened = buildHardenedDockerArgs({
+      image,
+      containerName: `andromeda_sandbox_${Date.now()}`,
+      mode: "untrusted_repair",
+      memoryLimit: config.memoryLimit,
+      cpuLimit: config.cpuLimit,
+      writableMounts: [`${workspaceDir}:/workspace`],
+      runAsNobody: false,
+    });
+    dockerArgs = ["run", "--rm", ..._hardened.args, image, "sh", "-c", runCmd];
+  } else {
+    dockerArgs = [
+      "run", "--rm",
+      "--memory", config.memoryLimit,
+      "--cpus", config.cpuLimit,
+      "--pids-limit", "100",
+      "-v", `${workspaceDir}:/workspace`,
+      "-w", "/workspace",
+    ];
+    if (!req.networkAccess && !config.networkEnabled) {
+      dockerArgs.push("--network", "none");
+    }
+    dockerArgs.push(image, "sh", "-c", runCmd);
   }
-
-  dockerArgs.push(image, "sh", "-c", runCmd);
 
   const start = Date.now();
   let stdout = "";
