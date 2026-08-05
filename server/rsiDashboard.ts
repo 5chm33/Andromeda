@@ -250,23 +250,23 @@ async function _buildSnapshot(): Promise<DashboardSnapshot> {
     const { getHardeningTargets } = await import("./selfHealingChaos.js");
     const targets = getHardeningTargets();
     snapshot.chaos.hardeningTargets = targets.length;
-    snapshot.chaos.criticalTargets = targets.filter(t => (t as any).escalationLevel === "L3").length;
+    snapshot.chaos.criticalTargets = targets.filter((t: any) => (t as any).escalationLevel === "L3").length;
   } catch { /* non-fatal */ }
 
   try {
     const { listProposals } = await import("./selfImprove.js");
     const all = listProposals();
-    snapshot.proposals.pending = all.filter(p => p.status === "pending").length;
-    snapshot.proposals.applied = all.filter(p => p.status === "applied").length;
-    snapshot.proposals.rejected = all.filter(p => p.status === "rejected").length;
-    snapshot.proposals.processing = all.filter(p => p.status === "approved").length; // 'approved' = in-flight/processing
+    snapshot.proposals.pending = all.filter((p: any) => p.status === "pending").length;
+    snapshot.proposals.applied = all.filter((p: any) => p.status === "applied").length;
+    snapshot.proposals.rejected = all.filter((p: any) => p.status === "rejected").length;
+    snapshot.proposals.processing = all.filter((p: any) => p.status === "approved").length; // 'approved' = in-flight/processing
 
     // Last 5 applied proposals
     snapshot.proposals.recentlyApplied = all
-      .filter(p => p.status === "applied")
-      .sort((a, b) => b.createdAt - a.createdAt)
+      .filter((p: any) => p.status === "applied")
+      .sort((a: any, b: any) => b.createdAt - a.createdAt)
       .slice(0, 5)
-      .map(p => ({
+      .map((p: any) => ({
         id: p.id,
         title: p.title,
         targetFile: p.targetFile,
@@ -548,7 +548,7 @@ function _getDashboardHtml(): string {
       if (d.proposals.recentlyApplied.length === 0) {
         container.innerHTML = '<p style="color:#8b949e;font-size:13px">No proposals applied yet.</p>';
       } else {
-        container.innerHTML = d.proposals.recentlyApplied.map(p => \`
+        container.innerHTML = d.proposals.recentlyApplied.map((p: any) => \`
           <div class="proposal-item">
             <div class="proposal-title">\${p.title}</div>
             <div class="proposal-meta">\${p.targetFile} · \${p.area} · confidence \${(p.confidence * 100).toFixed(0)}%</div>

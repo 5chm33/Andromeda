@@ -25,6 +25,10 @@ export interface DpoPair {
  * Finds queries that have both a positive (rating=1) and negative (rating=-1) response.
  */
 export function extractDpoDataset(minPairs = 10): DpoPair[] {
+  if (typeof minPairs !== 'number' || minPairs < 1 || !Number.isFinite(minPairs)) {
+    log.warn(`[Distillation] Invalid minPairs: ${minPairs}, defaulting to 10`);
+    minPairs = 10;
+  }
   const db = getDb();
   
   // Find queries that have at least one positive and one negative rating

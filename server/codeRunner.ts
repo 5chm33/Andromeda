@@ -162,6 +162,12 @@ const DANGEROUS_PATTERNS: RegExp[] = [
 ];
 
 export async function executeCode(code: string, languageHint?: string): Promise<RunResult> {
+  if (typeof code !== 'string' || code.length === 0) {
+    return { stdout: "", stderr: "Invalid or empty code provided", exitCode: -1, language: languageHint || "unknown", durationMs: 0 };
+  }
+  if (languageHint !== undefined && typeof languageHint !== 'string') {
+    return { stdout: "", stderr: "Invalid language hint provided", exitCode: -1, language: "unknown", durationMs: 0 };
+  }
   if (code.length > MAX_CODE_SIZE) {
     return { stdout: "", stderr: `Code too large: ${(code.length/1024).toFixed(0)}KB exceeds ${MAX_CODE_SIZE/1024}KB limit`, exitCode: -1, language: languageHint || "unknown", durationMs: 0 };
   }

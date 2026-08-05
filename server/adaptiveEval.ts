@@ -585,24 +585,30 @@ export async function runAdaptiveEval(options: {
   const gap = analyzeGaps();
   log.info(`[adaptiveEval] Gap analysis: weakest=${gap.weakestCategory}(${(gap.overallPassRate * 100).toFixed(0)}% overall)`);
 
-  // Step 2: Optionally generate new benchmarks
+  // Step 2 & 3: Parallelize task generation with task selection preparation
+  const activeBenchmarks = adaptiveBenchmarks.filter(b => b.lifecycle === "active");
+  
   let newTasksGenerated = 0;
-  if (generateNew) {
-    try {
-      const newTasks = await generateBenchmarks({
+  const generationPromise = generateNew
+    ? generateBenchmarks({
         count: newTaskCount,
         gapAnalysis: gap,
         signal,
-      });
-      newTasksGenerated = newTasks.length;
-    } catch (err) {
-      log.warn(`[adaptiveEval] New task generation failed: ${(err as Error).message}`);
-    }
-  }
+      }).catch((err) => {
+        log.warn(`[adaptiveEval] New task generation failed: ${(err as Error).message}`);
+        return [];
+      })
+    : Promise.resolve([]);
 
-  // Step 3: Select tasks — weighted toward weak categories
-  const activeBenchmarks = adaptiveBenchmarks.filter(b => b.lifecycle === "active");
-  const selectedTasks = selectWeightedTasks(gap, activeBenchmarks, totalTaskBudget);
+  // Wait for generation, then merge and select
+  const newTasks = await generationPromise;
+  newTasksGenerated = newTasks.length;
+  
+  // Select tasks from combined pool (existing + newly generated)
+  const allAvailableBenchmarks = newTasks.length > 0 
+    ? [...activeBenchmarks, ...newTasks.filter(t => t.lifecycle === "active")]
+    : activeBenchmarks;
+  const selectedTasks = selectWeightedTasks(gap, allAvailableBenchmarks, totalTaskBudget);
 
   const staticTaskCount = selectedTasks.filter(t => !t.id.startsWith("adp_") && !t.id.startsWith("tmpl_")).length;
   const generatedTaskCount = selectedTasks.length - staticTaskCount;

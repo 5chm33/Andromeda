@@ -50,9 +50,11 @@ vi.mock('child_process', () => ({
     on: vi.fn(),
     kill: vi.fn(),
   }),
+  spawnSync: vi.fn(),
 }));
 
 import * as Module from './selfImproveGuard.js';
+import { spawnSync } from 'child_process';
 
 import { mkdtempSync, rmSync } from "fs";
 import { tmpdir } from "os";
@@ -96,6 +98,40 @@ describe('selfImproveGuard', () => {
     } catch (e) {
       expect(Module.getAuditLog).toBeDefined();
     }
+  });
+
+  it('blocks autonomous application when validation times out', () => {
+    vi.mocked(spawnSync).mockReturnValue({
+      error: Object.assign(new Error('timed out'), { code: 'ETIMEDOUT' }),
+      status: null,
+      signal: 'SIGTERM',
+      stdout: '',
+      stderr: '',
+      pid: 0,
+      output: [],
+    } as any);
+
+    const result = Module.runTests('server/example.ts');
+
+    expect(result.pass).toBe(false);
+    expect(result.output).toContain('autonomous application blocked');
+  });
+
+  it('blocks autonomous application when the test runner is killed', () => {
+    vi.mocked(spawnSync).mockReturnValue({
+      error: undefined,
+      status: null,
+      signal: 'SIGKILL',
+      stdout: '',
+      stderr: '',
+      pid: 0,
+      output: [],
+    } as any);
+
+    const result = Module.runTests('server/example.ts');
+
+    expect(result.pass).toBe(false);
+    expect(result.output).toContain('autonomous application blocked');
   });
 
 });

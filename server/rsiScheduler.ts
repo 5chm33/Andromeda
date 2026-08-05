@@ -207,7 +207,7 @@ async function runRsiTrigger(): Promise<void> {
     // v9.0: Check that the current system state has positive utility improvement
     // potential before triggering an autonomous RSI cycle.
     try {
-      const { computeDelta, createStateSnapshot } = await import("./experimental/utilityFunction.js");
+      const { computeDelta, createStateSnapshot } = await import("./utilityFunction.js");
       const currentState = createStateSnapshot();
       const delta = computeDelta(currentState, currentState);
       if (!delta.meetsThreshold) {

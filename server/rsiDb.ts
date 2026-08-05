@@ -209,7 +209,9 @@ export async function dbLoadCycles(limit = 50): Promise<RSICycleResult[]> {
          FROM rsi_cycles ORDER BY completed_at DESC LIMIT ?`,
         [limit]
       );
-      return (rows[0] as any[]).map((r: any) => ({
+      const rowsData = rows[0] as any[] | undefined;
+      if (!rowsData) return [];
+      return rowsData.map((r: any) => ({
         cycleId: r.cycle_id,
         startedAt: r.started_at,
         completedAt: r.completed_at,

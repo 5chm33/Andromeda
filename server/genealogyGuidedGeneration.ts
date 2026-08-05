@@ -23,7 +23,7 @@ import {
   getGenealogyStats,
   getGenealogyGraph,
   type GenealogyNode,
-} from "./experimental/proposalGenealogy.js";
+} from "./proposalGenealogy.js";
 
 const log = createLogger("genealogyGuidedGeneration");
 

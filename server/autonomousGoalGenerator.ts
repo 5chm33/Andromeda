@@ -170,7 +170,7 @@ async function analyzeErrorPatterns(): Promise<GeneratedGoal[]> {
       const metrics = report.metrics as Record<string, any>;
 
       // High error rate
-      if (metrics.error_rate && metrics.error_rate.current > 0.1) {
+      if (metrics?.error_rate && metrics.error_rate.current > 0.1) {
         goals.push(createGoal({
           title: "Reduce error rate below 10%",
           description: `Current error rate is ${(metrics.error_rate.current * 100).toFixed(1)}%. Analyze recent errors and implement fixes.`,
@@ -183,7 +183,7 @@ async function analyzeErrorPatterns(): Promise<GeneratedGoal[]> {
       }
 
       // High truncation rate
-      if (metrics.truncation_rate && metrics.truncation_rate.current > 0.15) {
+      if (metrics?.truncation_rate && metrics.truncation_rate.current > 0.15) {
         goals.push(createGoal({
           title: "Reduce truncation rate below 15%",
           description: `Current truncation rate is ${(metrics.truncation_rate.current * 100).toFixed(1)}%. Optimize context management and token budgets.`,
@@ -197,7 +197,7 @@ async function analyzeErrorPatterns(): Promise<GeneratedGoal[]> {
       }
 
       // High latency
-      if (metrics.response_latency && metrics.response_latency.current > 20000) {
+      if (metrics?.response_latency && metrics.response_latency.current > 20000) {
         goals.push(createGoal({
           title: "Reduce response latency below 20s",
           description: `Average response latency is ${(metrics.response_latency.current / 1000).toFixed(1)}s. Optimize LLM calls and caching.`,
@@ -211,7 +211,7 @@ async function analyzeErrorPatterns(): Promise<GeneratedGoal[]> {
       }
 
       // High tool failure rate
-      if (metrics.tool_failure_rate && metrics.tool_failure_rate.current > 0.15) {
+      if (metrics?.tool_failure_rate && metrics.tool_failure_rate.current > 0.15) {
         goals.push(createGoal({
           title: "Reduce tool failure rate below 15%",
           description: `Tool failure rate is ${(metrics.tool_failure_rate.current * 100).toFixed(1)}%. Investigate failing tools and add error handling.`,

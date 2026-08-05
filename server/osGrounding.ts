@@ -144,10 +144,11 @@ export function getDiskMetrics(): DiskMetrics {
     const usagePercent = parseInt(parts[4], 10);
 
     return { workspacePath, totalGb, usedGb, freeGb, usagePercent };
-  } catch {
-    log.warn("Failed to get disk metrics", { workspacePath });
-    return { workspacePath, totalGb: 0, usedGb: 0, freeGb: 0, usagePercent: 0 };
-  }
+  } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      log.warn("Failed to get disk metrics", { workspacePath, error: errorMsg });
+      return { workspacePath, totalGb: 0, usedGb: 0, freeGb: 0, usagePercent: 0 };
+    }
 }
 
 // ── Docker Management ─────────────────────────────────────────────────────────

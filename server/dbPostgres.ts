@@ -59,23 +59,28 @@ async function createPgDb() {
  * Lazy-initialised on first call; subsequent calls return the cached promise.
  */
 export async function getPgDb(): Promise<PgDb | null> {
-  if (!process.env.POSTGRES_URL) {
-    _pgAvailable = false;
+  try {
+    if (!process.env.POSTGRES_URL) {
+      _pgAvailable = false;
+      return null;
+    }
+    if (!_pgDbPromise) {
+      _pgDbPromise = createPgDb().then(db => {
+        _pgAvailable = true;
+        log.info("[dbPostgres] Connected to Postgres successfully");
+        return db;
+      }).catch(err => {
+        _pgAvailable = false;
+        log.warn(`[dbPostgres] Connection failed: ${(err as Error).message} — falling back to JSON store`);
+        _pgDbPromise = null; // allow retry on next call
+        return null;
+      });
+    }
+    return _pgDbPromise;
+  } catch (err) {
+    log.error(`[dbPostgres] getPgDb unexpected error: ${(err as Error).message}`);
     return null;
   }
-  if (!_pgDbPromise) {
-    _pgDbPromise = createPgDb().then(db => {
-      _pgAvailable = true;
-      log.info("[dbPostgres] Connected to Postgres successfully");
-      return db;
-    }).catch(err => {
-      _pgAvailable = false;
-      log.warn(`[dbPostgres] Connection failed: ${(err as Error).message} — falling back to JSON store`);
-      _pgDbPromise = null; // allow retry on next call
-      return null;
-    });
-  }
-  return _pgDbPromise;
 }
 
 /**

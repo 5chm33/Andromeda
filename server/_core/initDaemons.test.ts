@@ -11,6 +11,10 @@ describe("initDaemons", () => {
     expect(initDaemons.startDaemons.length).toBe(0);
   });
 
+  it("disables background daemon startup in the unit-test environment", () => {
+    expect(initDaemons.isBackgroundDaemonStartupEnabled()).toBe(false);
+  });
+
   it("tests startDaemons execution for coverage", async () => {
     try {
       await initDaemons.startDaemons();

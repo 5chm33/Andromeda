@@ -270,21 +270,36 @@ export function fixHunkCounts(patch: string): string {
   return joined.endsWith('\n') ? joined : joined + '\n';
 }
 
+export type PatchApplicationOptions = {
+  testPatch?: string;
+  failToPassTests?: string[];
+  instanceId?: string;
+  /**
+   * Enables legacy recovery strategies that can apply a patch despite a
+   * context mismatch. This is intentionally opt-in: such patches may be
+   * useful for exploratory diagnosis, but are not trustworthy promotion
+   * evidence until an exact diff can be generated and revalidated.
+   */
+  allowRecoveryPatchApplication?: boolean;
+};
+
+/** Recovery patch application is unsafe by default and must be explicitly enabled. */
+export function allowRecoveryPatchApplication(options?: PatchApplicationOptions): boolean {
+  return options?.allowRecoveryPatchApplication === true;
+}
+
 /**
  * Applies a patch to a running Docker container and runs the test suite.
- * Applies test_patch first to add new test cases (critical for SWE-bench).
- * Uses conda activation and repo-specific test commands.
+ * Candidate and test patches must apply exactly by default. Legacy fuzzy
+ * recovery is available only for exploratory debugging through an explicit
+ * option, never as implicit promotion evidence.
  */
 export async function applyAndTest(
   containerName: string,
   patch: string,
   repoPath: string,
   timeoutSeconds: number,
-  options?: {
-    testPatch?: string;
-    failToPassTests?: string[];
-    instanceId?: string;
-  }
+  options?: PatchApplicationOptions
 ): Promise<{ passed: boolean; output: string }> {
   const patchId = crypto.randomBytes(4).toString('hex');
   const hostPatchPath = `/tmp/andromeda_patch_${patchId}.diff`;
@@ -312,7 +327,15 @@ export async function applyAndTest(
 
     const applyOutput = (applyResult.stdout || '') + (applyResult.stderr || '');
     if (applyOutput.includes('error:') || applyOutput.includes('unrecognized input') || applyOutput.includes('patch does not apply')) {
-      // ── Fallback 1: patch -p1 --fuzz=15 (handles wrong line numbers from context-only diffs) ──
+      if (!allowRecoveryPatchApplication(options)) {
+        return {
+          passed: false,
+          output: `PATCH_APPLY_FAILED (exact application required):\n${applyOutput}`,
+        };
+      }
+
+      // ── Explicit exploratory recovery only: patch -p1 --fuzz=15 ─────────
+      // These paths must not be treated as automatic-promotion evidence.
       const fuzzResult = await execAsync(
         `docker exec ${containerName} bash -c "cd ${repoPath} && patch -p1 --fuzz=15 --ignore-whitespace < /tmp/candidate.diff 2>&1 || true"`
       ).catch(e => ({ stdout: e.stdout || '', stderr: e.stderr || e.message }));
@@ -375,9 +398,16 @@ export async function applyAndTest(
     if (options?.testPatch && options.testPatch.trim().length > 10) {
       fs.writeFileSync(hostTestPatchPath, options.testPatch, 'utf-8');
       await execAsync(`docker cp ${hostTestPatchPath} ${containerName}:/tmp/test_patch.diff`);
-      await execAsync(
+      const testPatchResult = await execAsync(
         `docker exec ${containerName} bash -c "cd ${repoPath} && git apply --ignore-whitespace /tmp/test_patch.diff 2>&1"`
-      ).catch(() => { /* test_patch failures are non-fatal */ });
+      ).catch(e => ({ stdout: '', stderr: e.stderr || e.message }));
+      const testPatchOutput = (testPatchResult.stdout || '') + (testPatchResult.stderr || '');
+      if (testPatchOutput.includes('error:') || testPatchOutput.includes('unrecognized input') || testPatchOutput.includes('patch does not apply')) {
+        return {
+          passed: false,
+          output: `TEST_PATCH_APPLY_FAILED (exact application required):\n${testPatchOutput}`,
+        };
+      }
     }
 
     // ── Step 3: Run tests with repo-specific command ───────────────────────

@@ -286,7 +286,7 @@ async function runCycle(): Promise<CycleResult> {
         const report = getHealthReport();
         // Find degrading metrics
         const degrading = Object.entries(report.metrics)
-          .filter(([_, m]) => (m as any).trend === "falling" && (m as any).samples > 5);
+          .filter(([_, m]) => m != null && (m as any).trend === "falling" && (m as any).samples > 5);
 
         if (degrading.length > 0) {
           const [metricName] = degrading[0];

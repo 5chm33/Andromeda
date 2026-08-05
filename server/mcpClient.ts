@@ -180,49 +180,53 @@ export function disconnectAll(): void {
 
 async function connectStdio(conn: MCPConnection): Promise<void> {
   return new Promise((resolve, reject) => {
-    const proc = spawn(conn.config.command!, conn.config.args ?? [], {
-      stdio: ["pipe", "pipe", "pipe"],
-      env: { ...process.env, ...conn.config.env },
-    });
+    try {
+      const proc = spawn(conn.config.command!, conn.config.args ?? [], {
+        stdio: ["pipe", "pipe", "pipe"],
+        env: { ...process.env, ...conn.config.env },
+      });
 
-    conn.process = proc;
+      conn.process = proc;
 
-    proc.on("error", (err) => {
-      conn.status = "error";
-      conn.error = err.message;
-      reject(err);
-    });
-
-    proc.on("exit", (code) => {
-      if (conn.status === "connected") {
-        conn.status = "disconnected";
-      }
-    });
-
-    // Parse JSON-RPC responses from stdout
-    proc.stdout!.on("data", (data: Buffer) => {
-      conn.stdioBuf += data.toString();
-      processStdioBuffer(conn);
-    });
-
-    proc.stderr!.on("data", (data: Buffer) => {
-      // Log stderr but don't fail
-      console.error(`[MCP:${conn.config.id}] stderr:`, data.toString().trim());
-    });
-
-    // Send initialize request
-    setTimeout(async () => {
-      try {
-        await sendJsonRpc(conn, "initialize", {
-          protocolVersion: "2024-11-05",
-          capabilities: {},
-          clientInfo: { name: "Andromeda", version: "5.5" },
-        });
-        resolve();
-      } catch (err) {
+      proc.on("error", (err) => {
+        conn.status = "error";
+        conn.error = err.message;
         reject(err);
-      }
-    }, 500);
+      });
+
+      proc.on("exit", (code) => {
+        if (conn.status === "connected") {
+          conn.status = "disconnected";
+        }
+      });
+
+      // Parse JSON-RPC responses from stdout
+      proc.stdout!.on("data", (data: Buffer) => {
+        conn.stdioBuf += data.toString();
+        processStdioBuffer(conn);
+      });
+
+      proc.stderr!.on("data", (data: Buffer) => {
+        // Log stderr but don't fail
+        console.error(`[MCP:${conn.config.id}] stderr:`, data.toString().trim());
+      });
+
+      // Send initialize request
+      setTimeout(async () => {
+        try {
+          await sendJsonRpc(conn, "initialize", {
+            protocolVersion: "2024-11-05",
+            capabilities: {},
+            clientInfo: { name: "Andromeda", version: "5.5" },
+          });
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      }, 500);
+    } catch (err) {
+      reject(err);
+    }
   });
 }
 

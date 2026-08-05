@@ -29,14 +29,14 @@ export function registerGodelRoutes(app: Express): void {
 
   app.get("/api/godel/proof/status", async (_req, res) => {
     try {
-      const { getVerificationStats } = await import("../experimental/proofVerifier.js");
+      const { getVerificationStats } = await import("../proofVerifier.js");
       res.json(getVerificationStats());
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });
 
   app.post("/api/godel/proof/verify", async (req, res) => {
     try {
-      const { verifyCommitProposal } = await import("../experimental/proofVerifier.js");
+      const { verifyCommitProposal } = await import("../proofVerifier.js");
       const { filePath, proposedContent, rationale, preConditions, postConditions, expectedUtilityDelta, warnOnly } = req.body ?? {};
       if (!filePath || !proposedContent || !rationale) {
         res.status(400).json({ error: "filePath, proposedContent, and rationale are required" });
@@ -58,7 +58,7 @@ export function registerGodelRoutes(app: Express): void {
 
   app.get("/api/godel/utility/snapshot", async (_req, res) => {
     try {
-      const { createStateSnapshot, compute, explain, getWeights } = await import("../experimental/utilityFunction.js");
+      const { createStateSnapshot, compute, explain, getWeights } = await import("../utilityFunction.js");
       const snapshot = createStateSnapshot();
       const score = compute(snapshot);
       const weights = getWeights();
@@ -68,14 +68,14 @@ export function registerGodelRoutes(app: Express): void {
 
   app.get("/api/godel/utility/weights", async (_req, res) => {
     try {
-      const { getWeights } = await import("../experimental/utilityFunction.js");
+      const { getWeights } = await import("../utilityFunction.js");
       res.json(getWeights());
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });
 
   app.post("/api/godel/utility/calibrate", async (_req, res) => {
     try {
-      const { calibrate, getUtilityHistory, setWeights } = await import("../experimental/utilityFunction.js");
+      const { calibrate, getUtilityHistory, setWeights } = await import("../utilityFunction.js");
       const history = getUtilityHistory();
       const newWeights = calibrate(history);
       setWeights(newWeights);
@@ -87,14 +87,14 @@ export function registerGodelRoutes(app: Express): void {
 
   app.get("/api/godel/semantic/stats", async (_req, res) => {
     try {
-      const { getSemanticModelStats } = await import("../experimental/semanticSelfModel.js");
+      const { getSemanticModelStats } = await import("../semanticSelfModel.js");
       res.json(getSemanticModelStats());
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });
 
   app.get("/api/godel/semantic/modules", async (_req, res) => {
     try {
-      const { getAllModules, getTopModulesByImpact, getHighRiskModules } = await import("../experimental/semanticSelfModel.js");
+      const { getAllModules, getTopModulesByImpact, getHighRiskModules } = await import("../semanticSelfModel.js");
       res.json({
         all: getAllModules(),
         topByImpact: getTopModulesByImpact(10),
@@ -105,7 +105,7 @@ export function registerGodelRoutes(app: Express): void {
 
   app.post("/api/godel/semantic/predict", async (req, res) => {
     try {
-      const { impactPredict } = await import("../experimental/semanticSelfModel.js");
+      const { impactPredict } = await import("../semanticSelfModel.js");
       const { targetModule, changeType } = req.body ?? {};
       if (!targetModule) {
         res.status(400).json({ error: "targetModule is required" });
@@ -123,7 +123,7 @@ export function registerGodelRoutes(app: Express): void {
 
   app.post("/api/godel/causal/analyze", async (req, res) => {
     try {
-      const { getRootCauseAnalyzer } = await import("../experimental/causalReasoning.js");
+      const { getRootCauseAnalyzer } = await import("../causalReasoning.js");
       const { failures, maxChains } = req.body ?? {};
       if (!failures || !Array.isArray(failures) || failures.length === 0) {
         res.status(400).json({ error: "failures[] array is required (each: { id, description, timestamp, severity })" });
@@ -139,7 +139,7 @@ export function registerGodelRoutes(app: Express): void {
 
   app.post("/api/godel/mcts/plan", async (req, res) => {
     try {
-      const { planWithMCTS } = await import("../experimental/mctsPlanningEngine.js");
+      const { planWithMCTS } = await import("../mctsPlanningEngine.js");
       const { goal, context, iterations, useLLM } = req.body ?? {};
       if (!goal) {
         res.status(400).json({ error: "goal is required" });
@@ -159,7 +159,7 @@ export function registerGodelRoutes(app: Express): void {
 
   app.get("/api/godel/epistemic/debates", async (_req, res) => {
     try {
-      const { getEpistemicModel } = await import("../experimental/epistemicBeliefModel.js");
+      const { getEpistemicModel } = await import("../epistemicBeliefModel.js");
       const model = getEpistemicModel();
       res.json(model.getDebates());
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
@@ -167,7 +167,7 @@ export function registerGodelRoutes(app: Express): void {
 
   app.post("/api/godel/epistemic/debate", async (req, res) => {
     try {
-      const { getEpistemicModel } = await import("../experimental/epistemicBeliefModel.js");
+      const { getEpistemicModel } = await import("../epistemicBeliefModel.js");
       const { proposalId, topic } = req.body ?? {};
       if (!proposalId || !topic) {
         res.status(400).json({ error: "proposalId and topic are required" });
@@ -183,7 +183,7 @@ export function registerGodelRoutes(app: Express): void {
 
   app.get("/api/godel/ast/stats", async (_req, res) => {
     try {
-      const { getKnowledgeGraph } = await import("../experimental/astKnowledgeGraph.js");
+      const { getKnowledgeGraph } = await import("../astKnowledgeGraph.js");
       const kg = getKnowledgeGraph();
       res.json(kg.getStats());
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
@@ -191,7 +191,7 @@ export function registerGodelRoutes(app: Express): void {
 
   app.post("/api/godel/ast/impact", async (req, res) => {
     try {
-      const { getKnowledgeGraph } = await import("../experimental/astKnowledgeGraph.js");
+      const { getKnowledgeGraph } = await import("../astKnowledgeGraph.js");
       const { nodeId, maxDepth } = req.body ?? {};
       if (!nodeId) {
         res.status(400).json({ error: "nodeId is required" });
@@ -205,7 +205,7 @@ export function registerGodelRoutes(app: Express): void {
 
   app.post("/api/godel/ast/search", async (req, res) => {
     try {
-      const { getKnowledgeGraph } = await import("../experimental/astKnowledgeGraph.js");
+      const { getKnowledgeGraph } = await import("../astKnowledgeGraph.js");
       const { query, type: nodeType, limit } = req.body ?? {};
       if (!query && !nodeType) {
         res.status(400).json({ error: "query or type is required" });
