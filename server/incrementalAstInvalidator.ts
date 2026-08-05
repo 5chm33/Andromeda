@@ -191,7 +191,7 @@ export async function invalidateChangedFiles(
   }
 
   try {
-    const { getKnowledgeGraph } = await import("./experimental/astKnowledgeGraph.js");
+    const { getKnowledgeGraph } = await import("./astKnowledgeGraph.js");
     const graph = getKnowledgeGraph();
 
     // Find direct importers of the modified file
@@ -201,7 +201,7 @@ export async function invalidateChangedFiles(
     if (filesToReparse.length > MAX_INCREMENTAL_FILES) {
       // Too many files changed — trigger a full rebuild
       log.info(`[IncrementalAST] ${filesToReparse.length} files need reparse — triggering full rebuild`);
-      const { buildKnowledgeGraph } = await import("./experimental/astKnowledgeGraph.js");
+      const { buildKnowledgeGraph } = await import("./astKnowledgeGraph.js");
       buildKnowledgeGraph(serverDir);
       _cache.lastFullRebuild = Date.now();
       result.reparsed = filesToReparse;
