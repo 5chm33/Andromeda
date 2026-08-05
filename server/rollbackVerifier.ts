@@ -232,7 +232,7 @@ function _extractTestCount(output: string): number {
 async function _escalateFailure(result: VerificationResult): Promise<void> {
   try {
     // Dynamically import to avoid circular dependency
-    const { processChaosResults } = await import("./experimental/selfHealingChaos.js");
+    const { processChaosResults } = await import("./selfHealingChaos.js");
     await processChaosResults([
       {
         moduleName: "selfRollback",
