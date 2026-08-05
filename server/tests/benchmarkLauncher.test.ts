@@ -135,6 +135,85 @@ describe("BenchmarkLauncher: canary abort logic", () => {
   });
 });
 
+describe("BenchmarkLauncher: smoke-gate fail-closed for scored runs (v5.4)", () => {
+  let tmpDir: string;
+  let smokeResultPath: string;
+
+  beforeEach(() => {
+    tmpDir = makeTmpDir();
+    // Point SMOKE_RESULT_FILE at our temp dir by writing to the expected location
+    // The loadSmokeResult() function uses process.cwd()/.smoke-results/latest.json
+    // We write a smoke result there for these tests.
+    smokeResultPath = path.join(process.cwd(), ".smoke-results", "latest.json");
+    fs.mkdirSync(path.dirname(smokeResultPath), { recursive: true });
+  });
+
+  afterEach(() => {
+    // Clean up the smoke result file after each test
+    try { fs.unlinkSync(smokeResultPath); } catch { /* ignore */ }
+  });
+
+  it("rejects a scored run when smoke result has unresolved image digest", () => {
+    // Write a smoke result with an unresolved digest
+    fs.writeFileSync(smokeResultPath, JSON.stringify({
+      passed: true,
+      evidence: {
+        completedAt: new Date().toISOString(),
+        imageDigest: "sha256:unresolved-not-pulled",  // unresolved — must be rejected for scored runs
+        harnessRevision: "abc123",
+      },
+    }));
+    const config = makeConfig({ scoredRun: true, harnessRevision: "abc123" });
+    const result = runPreLaunchChecklist(config);
+    const smokeCheck = result.checks.find(c => c.id === "smoke-bundle")!;
+    // For a scored run, unresolved digest must be rejected (fail closed)
+    expect(smokeCheck.passed).toBe(false);
+    expect(smokeCheck.blocksLaunch).toBe(true);
+  });
+
+  it("rejects a scored run when smoke result has missing harness revision", () => {
+    // Write a smoke result without a harness revision
+    fs.writeFileSync(smokeResultPath, JSON.stringify({
+      passed: true,
+      evidence: {
+        completedAt: new Date().toISOString(),
+        imageDigest: "sha256:abc123def456abc123def456abc123def456abc123def456abc123def456abc12345",
+        // harnessRevision intentionally omitted
+      },
+    }));
+    const config = makeConfig({
+      scoredRun: true,
+      imageRef: "swebench/sweb.eval@sha256:abc123def456abc123def456abc123def456abc123def456abc123def456abc12345",
+      harnessRevision: "abc123",
+    });
+    const result = runPreLaunchChecklist(config);
+    const smokeCheck = result.checks.find(c => c.id === "smoke-bundle")!;
+    // For a scored run, missing harness revision must be rejected (fail closed)
+    expect(smokeCheck.passed).toBe(false);
+    expect(smokeCheck.blocksLaunch).toBe(true);
+  });
+
+  it("accepts a scored run when smoke result has exact digest and harness match", () => {
+    const digest = "abc123def456abc123def456abc123def456abc123def456abc123def456abc12345";
+    fs.writeFileSync(smokeResultPath, JSON.stringify({
+      passed: true,
+      evidence: {
+        completedAt: new Date().toISOString(),
+        imageDigest: `sha256:${digest}`,
+        harnessRevision: "abc123",
+      },
+    }));
+    const config = makeConfig({
+      scoredRun: true,
+      imageRef: `swebench/sweb.eval@sha256:${digest}`,
+      harnessRevision: "abc123",
+    });
+    const result = runPreLaunchChecklist(config);
+    const smokeCheck = result.checks.find(c => c.id === "smoke-bundle")!;
+    expect(smokeCheck.passed).toBe(true);
+  });
+});
+
 describe("BenchmarkLauncher: report recording", () => {
   it("correctly categorizes all 6 outcome types", () => {
     const config = makeConfig();

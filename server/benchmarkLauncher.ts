@@ -194,11 +194,29 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
     const smokeImageDigest = evidence.imageDigest as string | undefined;
     const smokeHarnessRev = evidence.harnessRevision as string | undefined;
 
-    const smokeImageMatch = !smokeImageDigest || smokeImageDigest === "sha256:unresolved-not-pulled"
-      ? true // Accept if smoke was run without image (CI without Docker)
-      : config.imageRef.includes(smokeImageDigest);
+    // v5.4: Fail closed for scored runs — both fields must be present and exactly equal.
+    // An unresolved/missing digest is NOT a valid match for a scored run.
+    let smokeImageMatch: boolean;
+    if (config.scoredRun) {
+      // Scored run: require exact digest match; missing or unresolved digest = fail
+      smokeImageMatch = !!(smokeImageDigest &&
+        smokeImageDigest !== "sha256:unresolved-not-pulled" &&
+        config.imageRef.includes(smokeImageDigest));
+    } else {
+      // Development run: accept unresolved digest (CI without Docker)
+      smokeImageMatch = !smokeImageDigest || smokeImageDigest === "sha256:unresolved-not-pulled"
+        ? true
+        : config.imageRef.includes(smokeImageDigest);
+    }
 
-    const smokeHarnessMatch = !smokeHarnessRev || smokeHarnessRev === config.harnessRevision;
+    let smokeHarnessMatch: boolean;
+    if (config.scoredRun) {
+      // Scored run: require harness revision to be present and exactly equal
+      smokeHarnessMatch = !!(smokeHarnessRev && smokeHarnessRev === config.harnessRevision);
+    } else {
+      // Development run: accept missing harness revision
+      smokeHarnessMatch = !smokeHarnessRev || smokeHarnessRev === config.harnessRevision;
+    }
     const smokeNotStale = smokeAge < SMOKE_MAX_AGE_MS;
     const smokePassed = smokeResult.passed;
 

@@ -759,14 +759,16 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
   const containerName = `andromeda_traceback_${instanceId.replace(/[^a-zA-Z0-9_]/g, '_')}_${crypto.randomBytes(4).toString('hex')}`;
   const startTime = Date.now();
   const attempts: AttemptResult[] = [];
-  let currentPatch = initialPatch;
+    let currentPatch = initialPatch;
   let resolved = false;
-
+  // v5.4: declared in outer scope so the finally block can clean up the volume
+  let _seededVolumeOuter: { volumeName: string } | null = null;
   try {
     // Start the container (detached, so we can exec into it repeatedly)
-    // v5.2: Use shared hardened builder — all isolation controls in one place.
-    // writableWorktree:true omits --read-only so patch application can write to /testbed.
-    // The container is still network-isolated, capability-dropped, and PID-limited.
+    // v5.4: Use shared hardened builder — all isolation controls in one place.
+    // v5.4: writableWorktree:true mounts a pre-seeded named volume at /testbed.
+    // --read-only is ALWAYS present; only /testbed (via volume) and /tmp (via tmpfs) are writable.
+    // The container is network-isolated, capability-dropped, and PID-limited.
     // v5.2: Resolve image to immutable digest before creating the repair container.
     // SWE-bench official images are pre-pulled from Docker Hub and have digests.
     // If the image is already pinned (name@sha256:...) it is accepted immediately.
@@ -789,6 +791,23 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
     _rootUidException = "SWE-bench testbed images use root UID for conda environment setup. " +
       "Non-root execution is not supported by the official swebench/sweb.eval images. " +
       `Instance: ${instanceId}, Image: ${_resolvedImage.resolvedRef}`;
+
+    // v5.4: Seed a named volume with the image's /testbed contents BEFORE starting
+    // the repair container. A --tmpfs /testbed would mask the repository (Docker mounts
+    // do not merge); a seeded volume preserves all repository files while keeping the
+    // root FS read-only. The volume is cleaned up in the finally block below.
+    const { seedWorktreeVolume, removeWorktreeVolume } = await import("./hardenedSandbox.js");
+    const _worktreeVolumeName = `andromeda-worktree-${containerName}`;
+    let _seededVolume: Awaited<ReturnType<typeof seedWorktreeVolume>> | null = null;
+    try {
+      _seededVolume = seedWorktreeVolume(_resolvedImage.resolvedRef, _worktreeVolumeName, repoPath);
+      _seededVolumeOuter = _seededVolume; // expose to outer finally scope
+    } catch (seedErr) {
+      throw new Error(
+        `[TracebackLoop] Failed to seed worktree volume for "${instanceId}": ${(seedErr as Error).message}`
+      );
+    }
+
     const _mainHardened = buildHardenedDockerArgs({
       image: _resolvedImage.resolvedRef,  // use resolved ref (may include digest)
       containerName,
@@ -797,7 +816,8 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
       pidsLimit: 256,
       wallClockLimitMs: MAX_ATTEMPTS * TEST_TIMEOUT_SECONDS * 1000 + 60_000,
       mode: "untrusted_repair",  // v5.2: treat SWE instances as untrusted
-      writableWorktree: true,    // patch application writes to /testbed
+      writableWorktree: true,    // patch application writes to /testbed via seeded volume
+      worktreeVolumeName: _seededVolume.volumeName,  // v5.4: pre-seeded volume name
       runAsNobody: false,        // EXCEPTION: SWE-bench images require root for conda (recorded above)
     });
     await execAsync(`docker run -d ${_mainHardened.args.join(" ")} ${_resolvedImage.resolvedRef} tail -f /dev/null`);
@@ -1043,6 +1063,13 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
 
   } finally {
     await execAsync(`docker rm -f ${containerName}`).catch(() => { /* ignore */ });
+    // v5.4: Clean up the seeded worktree volume after the repair container exits.
+    if (_seededVolumeOuter !== null) {
+      try {
+        const { removeWorktreeVolume: _rmVol } = await import("./hardenedSandbox.js");
+        _rmVol(_seededVolumeOuter.volumeName);
+      } catch { /* ignore cleanup errors */ }
+    }
   }
 
   // ── Oracle Fallback ──────────────────────────────────────────────────────────

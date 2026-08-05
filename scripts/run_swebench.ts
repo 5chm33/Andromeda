@@ -1,5 +1,18 @@
 /**
- * run_swebench.ts — Andromeda SWE-bench Runner (v2.2.0)
+ * run_swebench.ts — Andromeda SWE-bench Runner (v5.4.0)
+ *
+ * v5.4.0: Wired BenchmarkLauncher as the mandatory scored-run gate.
+ * For scored runs (SWEBENCH_SCORED=1), the runner MUST pass the 7-item
+ * pre-launch checklist before dispatching any instance. The checklist:
+ *   1. Smoke bundle passed for same image digest + harness revision
+ *   2. No credentials in repair container
+ *   3. allowRecoveryPatchApplication:false for scored runs
+ *   4. Task list frozen and hashed before launch
+ *   5. Non-pushing by construction (BENCHMARK_MODE=scored)
+ *   6. Structured report (6 outcome categories, never collapsed)
+ *   7. Canary slice before full batch with abort threshold
+ *
+ * Original runner (v2.2.0):
  *
  * This is the OFFICIAL runner that uses Andromeda's full pipeline:
  *   - Andromeda's LLM provider (Claude Sonnet 4.5 via OpenRouter)
@@ -56,6 +69,8 @@ import {
 import { runSOTAPipeline, PipelineConfig } from '../server/sweBenchPipeline.js';
 import { pullImageSafely, ensureDiskSpace } from '../server/sweBenchInfra.js';
 import { buildSmartContext } from '../server/sweBenchContextBuilder.js';
+import { BenchmarkLauncher, type BenchmarkRunConfig, type InstanceResult, type BenchmarkReport } from '../server/benchmarkLauncher.js';
+import { resolveImageDigest } from '../server/sweBenchImageResolver.js';
 
 /**
  * Andromeda's LLM provider for SWE-bench.
@@ -772,6 +787,79 @@ async function main() {
   const instances = allInstances.filter(i => !processedIds.has(i.instance_id));
   console.log(`[Runner] Processing ${instances.length} instances (${processedIds.size} already done)`);
 
+  // ── v5.4: BenchmarkLauncher pre-flight gate (scored runs only) ──────────────
+  // SWEBENCH_SCORED=1 activates the full 7-item checklist.
+  // Without it, the runner operates in development mode (no gate).
+  const isScoredRun = process.env.SWEBENCH_SCORED === '1';
+  let _benchLauncher: BenchmarkLauncher | null = null;
+  let _benchReport: BenchmarkReport | null = null;
+  let _benchRunStartMs = Date.now();
+
+  if (isScoredRun) {
+    console.log('[Runner] SWEBENCH_SCORED=1 — running pre-flight checklist...');
+
+    // Step 1: Resolve the image digest for the first instance (all instances share the same registry).
+    // For a scored run, the image must be pinned to a digest.
+    const firstDockerImage = instances.length > 0 ? getDockerImageName(instances[0].instance_id) : 'unknown';
+    let resolvedImageRef = firstDockerImage;
+    try {
+      const ri = resolveImageDigest(firstDockerImage, 'trusted_local', false);
+      resolvedImageRef = ri.resolvedRef;
+      console.log(`[Runner] Resolved image: ${resolvedImageRef}`);
+    } catch (e) {
+      console.warn(`[Runner] Image resolution failed (proceeding with tag): ${(e as Error).message}`);
+    }
+
+    // Step 2: Resolve model config for metadata
+    const _preflightModelConfig = resolveSWEBenchModelConfig();
+
+    // Step 3: Build the task list file (write instances to a temp file for hashing)
+    const taskListPath = path.join(process.env.HOME!, 'andromeda/data/swebench/scored_task_list.json');
+    fs.mkdirSync(path.dirname(taskListPath), { recursive: true });
+    fs.writeFileSync(taskListPath, JSON.stringify(instances.map(i => i.instance_id), null, 2));
+
+    // Step 4: Build the run bundle path
+    const runBundlePath = path.join(
+      process.env.HOME!,
+      `andromeda/data/swebench/run_bundle_${Date.now()}.json`
+    );
+
+    // Step 5: Construct BenchmarkLauncher and call preflight()
+    const launcherConfig: BenchmarkRunConfig = {
+      imageRef: resolvedImageRef,
+      taskListPath,
+      modelId: _preflightModelConfig.modelId,
+      promptTemplateHash: process.env.SWEBENCH_PROMPT_HASH ?? 'unset',
+      temperature: _preflightModelConfig.temperature ?? 0.0,
+      topP: 1.0,
+      maxRetries: 5,
+      instanceTimeoutMs: 25 * 60 * 1000,
+      concurrency: 1,
+      spendCapUsd: parseFloat(process.env.SWEBENCH_SPEND_CAP ?? '500'),
+      canarySliceSize: parseInt(process.env.SWEBENCH_CANARY_SIZE ?? '5', 10),
+      canaryAbortThreshold: parseFloat(process.env.SWEBENCH_CANARY_THRESHOLD ?? '0.6'),
+      scoredRun: true,
+      runBundlePath,
+      agentVersion: '5.4.0',
+      harnessRevision: process.env.SWEBENCH_HARNESS_REVISION ?? 'unset',
+    };
+
+    _benchLauncher = new BenchmarkLauncher(launcherConfig);
+
+    // preflight() throws if any blocking check fails — the run cannot start
+    const preflightResult = _benchLauncher.preflight();
+
+    // Step 6: Set BENCHMARK_MODE=scored BEFORE any worker imports/starts
+    process.env.BENCHMARK_MODE = 'scored';
+    console.log('[Runner] BENCHMARK_MODE=scored set — git mutations are now blocked.');
+
+    // Step 7: Write the run manifest before dispatching the canary
+    _benchLauncher.writeRunBundle(preflightResult.runMetadata!);
+    _benchReport = BenchmarkLauncher.buildEmptyReport(preflightResult.runMetadata!);
+    _benchRunStartMs = Date.now();
+    console.log(`[Runner] Run manifest written. Canary slice: ${launcherConfig.canarySliceSize} instances.`);
+  }
+
   // Resolve model config from environment variables
   const sweBenchModelConfig = resolveSWEBenchModelConfig();
   const sweBenchLLM = createSWEBenchLLMProvider(sweBenchModelConfig);
@@ -995,6 +1083,29 @@ async function main() {
       const rate = (resolved / total * 100).toFixed(1);
       console.log(`[Runner] Running score: ${resolved}/${total} = ${rate}%`);
 
+      // v5.4: Record per-instance outcome in the benchmark report
+      if (_benchReport && _benchLauncher) {
+        const instanceResult: InstanceResult = {
+          instanceId: instance_id,
+          outcome: result.resolved ? 'resolved' : 'test_failure',
+          imageDigest: getDockerImageName(instance_id),
+          exactApply: true, // pipeline uses exact apply; fuzzy is blocked in scored mode
+          fuzzyRecoveryAttempted: false,
+          durationMs: Date.now() - instanceStart,
+        };
+        BenchmarkLauncher.recordInstance(_benchReport, instanceResult);
+
+        // v5.4: Canary abort check — after canary slice, check infra failure rate
+        const canarySize = parseInt(process.env.SWEBENCH_CANARY_SIZE ?? '5', 10);
+        if (total === canarySize && _benchLauncher.shouldAbortAfterCanary(_benchReport.instances)) {
+          console.error(`[Runner] Canary abort triggered after ${canarySize} instances. Stopping run.`);
+          _benchReport.completedAt = new Date().toISOString();
+          _benchReport.wallClockMs = Date.now() - _benchRunStartMs;
+          _benchLauncher.writeReport(_benchReport);
+          process.exit(1);
+        }
+      }
+
     } catch (err: any) {
       console.error(`[Runner] Instance ${instance_id} failed:`, err.message);
       console.error(`[Runner] Stack:`, err.stack?.split('\n').slice(0,8).join('\n'));
@@ -1016,12 +1127,43 @@ async function main() {
         model_name_or_path: sweBenchModelConfig.modelName,
       }) + '\n');
       total++;
+
+      // v5.4: Record infra failure in the benchmark report
+      if (_benchReport && _benchLauncher) {
+        const instanceResult: InstanceResult = {
+          instanceId: instance_id,
+          outcome: 'infra_failure',
+          imageDigest: getDockerImageName(instance_id),
+          exactApply: false,
+          fuzzyRecoveryAttempted: false,
+          durationMs: Date.now() - instanceStart,
+          errorMessage: err.message?.slice(0, 200),
+        };
+        BenchmarkLauncher.recordInstance(_benchReport, instanceResult);
+
+        // v5.4: Canary abort check for infra failures too
+        const canarySize = parseInt(process.env.SWEBENCH_CANARY_SIZE ?? '5', 10);
+        if (total === canarySize && _benchLauncher.shouldAbortAfterCanary(_benchReport.instances)) {
+          console.error(`[Runner] Canary abort triggered after ${canarySize} instances. Stopping run.`);
+          _benchReport.completedAt = new Date().toISOString();
+          _benchReport.wallClockMs = Date.now() - _benchRunStartMs;
+          _benchLauncher.writeReport(_benchReport);
+          process.exit(1);
+        }
+      }
     }
   }
 
   console.log(`\n[Runner] ══ COMPLETE ══`);
   console.log(`[Runner] Resolved: ${resolved}/${total} = ${(resolved / total * 100).toFixed(1)}%`);
   console.log(`[Runner] Predictions: ${opts.outputPath}`);
+
+  // v5.4: Write the final benchmark report for scored runs
+  if (_benchReport && _benchLauncher) {
+    _benchReport.completedAt = new Date().toISOString();
+    _benchReport.wallClockMs = Date.now() - _benchRunStartMs;
+    _benchLauncher.writeReport(_benchReport);
+  }
 }
 
 main().catch(err => {

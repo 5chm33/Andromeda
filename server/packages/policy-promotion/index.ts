@@ -60,6 +60,11 @@ export interface SandboxControlRecord {
   readOnly: boolean;
   /** Path of the writable worktree overlay (null when root FS is fully read-only). */
   writableWorktreePath?: string | null;
+  /**
+   * v5.4: true when the writable worktree is a pre-seeded named volume (not a tmpfs).
+   * A seeded volume preserves the image's /testbed contents; a tmpfs would mask them.
+   */
+  worktreeVolumeSeeded?: boolean;
   effectiveUser: string;
   imageDigest: string;
   hostDockerSocketMounted: boolean;
