@@ -44,6 +44,12 @@ export interface HardenedSandboxConfig {
   mode: "trusted_local" | "untrusted_repair";
   /** Whether to run as nobody (default: true). */
   runAsNobody?: boolean;
+  /**
+   * When true, omit --read-only so the worktree is writable.
+   * Use for repair containers where patch application must write to /testbed.
+   * The container is still network-isolated, capability-dropped, and PID-limited.
+   */
+  writableWorktree?: boolean;
 }
 
 export interface HardenedDockerArgs {
@@ -132,7 +138,8 @@ export function buildHardenedDockerArgs(config: HardenedSandboxConfig): Hardened
     `--pids-limit=${pids}`,
     `--memory=${memory}`,
     `--cpus=${cpus}`,
-    "--read-only",
+    // --read-only is omitted when writableWorktree:true (repair containers need to write to /testbed)
+    ...(config.writableWorktree ? [] : ["--read-only"]),
     // Writable tmpfs for /tmp and /var/tmp (needed by most build tools)
     "--tmpfs", "/tmp:rw,noexec,nosuid,size=256m",
     "--tmpfs", "/var/tmp:rw,noexec,nosuid,size=64m",
@@ -163,7 +170,7 @@ export function buildHardenedDockerArgs(config: HardenedSandboxConfig): Hardened
     memoryLimit: memory,
     cpuLimit: cpus,
     wallClockLimitMs: wallClock,
-    readOnly: true,
+    readOnly: !config.writableWorktree,
     effectiveUser: user || "default",
     imageDigest: config.image,
     hostDockerSocketMounted: false,
