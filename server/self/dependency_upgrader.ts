@@ -6,6 +6,7 @@
  */
 
 import { execSync } from 'child_process';
+import { gitSandbox } from '../gitSandbox';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
@@ -139,9 +140,8 @@ export async function runUpgradeSession(
 
   // Snapshot before upgrades
   try {
-    execSync('git add package.json package-lock.json && git commit -m "chore: snapshot before auto-upgrade"', { 
-      cwd: projectRoot, stdio: 'pipe' 
-    });
+    gitSandbox('git add package.json package-lock.json', { cwd: projectRoot, encoding: 'utf8', stdio: 'pipe' });
+    gitSandbox('git commit -m "chore: snapshot before auto-upgrade"', { cwd: projectRoot, encoding: 'utf8', stdio: 'pipe' });
   } catch { /* might not be a git repo or nothing to commit */ }
 
   for (const pkg of safeToUpgrade) {
