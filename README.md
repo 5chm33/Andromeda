@@ -7,7 +7,7 @@
 *Development started March 3, 2026. Built as a solo project to explore deterministic validation and cost-aware model routing.*
 
 [![Release](https://img.shields.io/github/v/release/5chm33/Andromeda?color=blueviolet)](https://github.com/5chm33/Andromeda/releases/tag/v5.0.0)
-[![Tests](https://img.shields.io/badge/tests-5787%20passing-brightgreen)](#)
+[![Tests](https://img.shields.io/badge/tests-5545%20passing-brightgreen)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](#)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 
