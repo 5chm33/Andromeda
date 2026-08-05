@@ -1226,23 +1226,29 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
     }
   } catch { /* non-fatal — genealogy guidance is advisory only */ }
 
-  // v5.0.0 (Elicit #4): Hypothesis-Before-Editing Protocol
-  // Before generating a patch, run a bounded probe on the file to form a structured
-  // hypothesis. This is the largest single quality lever: investigation before editing
-  // reduces patch failures by forcing the agent to confirm its assumption before writing code.
+  // v5.2.0 (Elicit enforcement contract §4): ProbeVerdict State Machine
+  // The probe is no longer advisory. A verdict of "confirmed" is REQUIRED for
+  // autonomous editing. "refuted", "inconclusive", or "execution_failed" abort
+  // the generation and return null (no patch, no commit).
+  //
+  // Verdict states:
+  //   confirmed         — probe found evidence matching the improvement hypothesis
+  //   refuted           — probe found evidence that contradicts the hypothesis
+  //   inconclusive      — probe ran but found nothing useful
+  //   execution_failed  — probe failed to run (allowlist rejection, timeout, etc.)
+  let _probeVerdict: "confirmed" | "refuted" | "inconclusive" | "execution_failed" = "execution_failed";
+  let _probeOutputHash = "";
   try {
     const { runProbe, recordHypothesis, formatHypothesisForPrompt } = await import("./agentToolInterface.js");
+    const { createHash } = await import("crypto");
     const filename = path.basename(targetFile);
-    // Construct a structured grep probe rather than invoking a shell. This keeps
-    // the investigation step inside the typed tool allowlist and avoids making
-    // generated probe text executable.
     const probePattern = area === "performance"
       ? "await.*await|for.*await|setTimeout|setInterval"
       : area === "security"
-      ? "eval\\(|exec\\(|shell|innerHTML|dangerouslySet"
+      ? "eval\(|exec\(|shell|innerHTML|dangerouslySet"
       : area === "reliability"
-      ? "catch.*\\{\\}|catch.*console|Promise\\.all|race condition"
-      : "TODO|FIXME|HACK|any\\b|@ts-ignore";
+      ? "catch.*\{\}|catch.*console|Promise\.all|race condition"
+      : "TODO|FIXME|HACK|any\b|@ts-ignore";
     const probeArgs = ["-nE", probePattern, filename];
     const probeCommand = `grep -nE ${JSON.stringify(probePattern)} ${JSON.stringify(filename)}`;
     const probeResult = runProbe(
@@ -1251,22 +1257,44 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
       path.dirname(targetFile),
       path.resolve(process.cwd()),
     );
-    if (probeResult.success && probeResult.output.trim()) {
-      const hypothesis = recordHypothesis(
-        targetFile,
-        `The file ${filename} has a ${area ?? "general"} improvement opportunity`,
-        `The probe found: ${probeResult.output.slice(0, 200)}`,
-        `The probe found nothing matching the expected pattern`,
-        probeCommand
-      );
-      const hypothesisContext = formatHypothesisForPrompt(hypothesis);
-      const userMsg = llmMessages[llmMessages.length - 1];
-      if (userMsg && userMsg.role === "user") {
-        (userMsg as any).content += `\n\n${hypothesisContext}`;
+    if (!probeResult.success) {
+      _probeVerdict = "execution_failed";
+      log.warn(`[v5.2.0 probe] ${filename}: probe execution failed — ${probeResult.output.slice(0, 120)}`);
+    } else {
+      const probeOutput = probeResult.output.trim();
+      _probeOutputHash = createHash("sha256").update(probeOutput).digest("hex");
+      if (probeOutput.length > 0) {
+        // Probe found evidence — hypothesis is confirmed
+        _probeVerdict = "confirmed";
+        const hypothesis = recordHypothesis(
+          targetFile,
+          `The file ${filename} has a ${area ?? "general"} improvement opportunity`,
+          `The probe found: ${probeOutput.slice(0, 200)}`,
+          `The probe found nothing matching the expected pattern`,
+          probeCommand
+        );
+        const hypothesisContext = formatHypothesisForPrompt(hypothesis);
+        const userMsg = llmMessages[llmMessages.length - 1];
+        if (userMsg && userMsg.role === "user") {
+          (userMsg as any).content += `\n\n${hypothesisContext}`;
+        }
+        log.info(`[v5.2.0 probe] ${filename}: confirmed — ${probeOutput.split("\n").length} line(s) of evidence`);
+      } else {
+        // Probe ran but found nothing — inconclusive (no evidence for or against)
+        _probeVerdict = "inconclusive";
+        log.info(`[v5.2.0 probe] ${filename}: inconclusive — no pattern matches found`);
       }
-      log.info(`[v5.0.0 hypothesis] ${filename}: probe found ${probeResult.output.split("\n").length} lines of evidence`);
     }
-  } catch { /* non-fatal — hypothesis protocol is advisory only */ }
+  } catch (probeErr: any) {
+    _probeVerdict = "execution_failed";
+    log.warn(`[v5.2.0 probe] probe threw: ${String(probeErr).slice(0, 120)}`);
+  }
+  // GATE: Only "confirmed" probes may proceed to autonomous editing.
+  // "refuted", "inconclusive", and "execution_failed" abort here.
+  if (_probeVerdict !== "confirmed") {
+    log.info(`[v5.2.0 probe] BLOCKED autonomous edit for ${path.basename(targetFile)}: probe verdict is '${_probeVerdict}' (must be 'confirmed')`);
+    return null;
+  }
 
   // v13.0.0: Semantic Safety Score — block or flag high-risk proposals before LLM call.
   // Prevents expensive generation for changes that would cascade-break the codebase.
