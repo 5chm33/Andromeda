@@ -64,12 +64,22 @@ export function initSandbox(): void {
 
 // ─── Request validation ──────────────────────────────────────────────────────
 
+/**
+ * executionMode controls the fallback policy:
+ *   "trusted_local"   — user-initiated scratch work; local fallback is permitted.
+ *   "untrusted_repair" — autonomous repository analysis, candidate validation,
+ *                        or promotion; MUST fail closed if Docker is unavailable.
+ */
+export type SandboxExecutionMode = "trusted_local" | "untrusted_repair";
+
 export interface SandboxRequest {
   code: string;
   language?: string;
   files?: Array<{ name: string; content: string }>;
   timeout?: number;
   networkAccess?: boolean;
+  /** Defaults to "trusted_local" for backwards compatibility. */
+  executionMode?: SandboxExecutionMode;
 }
 
 export interface SandboxResult {
@@ -325,6 +335,26 @@ export async function executeSandboxed(req: SandboxRequest): Promise<SandboxResu
     if (config.useDocker && dockerAvailable) {
       return await executeInDocker(req);
     } else {
+      // Fail closed for untrusted_repair mode — local execution is not permitted
+      // for autonomous repository analysis, candidate validation, or promotion.
+      // This prevents a convenience fallback from becoming the implicit production path.
+      const mode: SandboxExecutionMode = req.executionMode ?? "trusted_local";
+      if (mode === "untrusted_repair") {
+        return {
+          stdout: "",
+          stderr: [
+            "[Sandbox] FAIL CLOSED: Docker is required for untrusted_repair mode but is unavailable.",
+            "Autonomous repair, candidate validation, and promotion cannot run without a verified Docker runtime.",
+            "Start Docker and retry, or set executionMode to 'trusted_local' for interactive scratch work.",
+          ].join("\n"),
+          exitCode: -1,
+          language: req.language || "unknown",
+          durationMs: 0,
+          filesCreated: [],
+          filesModified: [],
+          sandboxType: "local",
+        };
+      }
       return await executeLocally(req);
     }
   } finally {
