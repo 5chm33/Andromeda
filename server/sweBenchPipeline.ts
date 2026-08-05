@@ -65,6 +65,23 @@ export interface PipelineConfig {
    *  Given an attempt number (1-based), returns the LLM provider to use for that revision.
    *  Allows using stronger models on later attempts (e.g., Fable on attempt 3+). */
   escalatingLLMProvider?: (attempt: number) => (prompt: string) => Promise<string>;
+  /**
+   * Evaluation mode controlling what information is visible to the model.
+   *
+   * 'scored_strict' (default for SWEBENCH_SCORED=1):
+   *   The model sees only the issue text and repository state.
+   *   test_patch and FAIL_TO_PASS names are NEVER inserted into any
+   *   model-visible prompt (initial generation, consensus, smart-context
+   *   retrieval, revision prompts). The evaluator still applies test_patch
+   *   after prediction — that is correct and expected.
+   *   Results are comparable with published SWE-bench strict scores.
+   *
+   * 'test_aware' (default for development runs):
+   *   test_patch code and FAIL_TO_PASS names are inserted into prompts as
+   *   hints. Useful for development iteration but NOT comparable with
+   *   published SWE-bench scores. Label results separately.
+   */
+  evalMode?: 'scored_strict' | 'test_aware';
 }
 
 export interface PipelineResult {
@@ -115,7 +132,13 @@ export async function runSOTAPipeline(
     maxTracebackAttempts = 5,
     useConsensus = true,
     useTracebackLoop = true,
+    evalMode = 'test_aware',
   } = config;
+  // In scored_strict mode the model must not see test_patch or FAIL_TO_PASS.
+  // The evaluator still applies test_patch after prediction — that is correct.
+  const isStrict = evalMode === 'scored_strict';
+  const promptTestPatch = isStrict ? undefined : options?.testPatch;
+  const promptFailToPass = isStrict ? undefined : options?.failToPassTests;
 
   let bestPatch = initialPatch;
   const phases: PipelineResult['phases'] = {};
@@ -131,8 +154,8 @@ export async function runSOTAPipeline(
       fileContents,
       agents,
       {
-        testPatch: options?.testPatch,
-        failToPassTests: options?.failToPassTests,
+        testPatch: promptTestPatch,
+        failToPassTests: promptFailToPass,
       }
     );
 
@@ -176,8 +199,14 @@ export async function runSOTAPipeline(
       instanceId,
       dockerImage,
       initialPatch: bestPatch,
+      // testPatch is always passed for evaluation (the evaluator applies it);
+      // promptTestPatch is undefined in scored_strict so it never enters prompts.
       testPatch: options?.testPatch,
       failToPassTests: options?.failToPassTests,
+      // These two are the prompt-visible variants — undefined in scored_strict.
+      promptTestPatch,
+      promptFailToPassTests: promptFailToPass,
+      evalMode,
       repoPath: '/testbed',
       llmProvider: (prompt) => llmProvider(prompt, 0.2),
       escalatingLLMProvider: config.escalatingLLMProvider,

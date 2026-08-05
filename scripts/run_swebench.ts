@@ -925,6 +925,11 @@ async function main() {
     useConsensus: true,
     useTracebackLoop: true,
     escalatingLLMProvider,
+    // scored_strict: model sees only issue text + repo state.
+    // test_patch and FAIL_TO_PASS names are blocked from all prompts.
+    // test_aware: test hints inserted (development only — NOT comparable
+    // with published SWE-bench scores; label results separately).
+    evalMode: isScoredRun ? 'scored_strict' : 'test_aware',
   };
 
   let resolved = 0;
@@ -972,8 +977,12 @@ async function main() {
       // ── Phase 1b: Localize relevant files ───────────────────────────────
       const issueDescription = `${problem_statement}\n\n${hints_text || ''}`.trim();
       const failToPassList: string[] = JSON.parse(FAIL_TO_PASS || '[]');
+      // In scored_strict mode, test names and test code must not enter any
+      // model-visible prompt. Use empty arrays/strings for all prompt builders.
+      const promptFailToPassList = isScoredRun ? [] : failToPassList;
+      const promptTestPatch = isScoredRun ? '' : (test_patch || '');
       console.log('[Runner] Phase 1b: Localizing relevant files...');
-      const relevantFiles = await localizeFiles(instance_id, issueDescription, allFiles, failToPassList);
+      const relevantFiles = await localizeFiles(instance_id, issueDescription, allFiles, promptFailToPassList);
       console.log(`[Runner] Relevant files: ${relevantFiles.join(', ')}`);
 
       // ── Phase 1c: Extract file content from Docker ───────────────────────
@@ -1023,7 +1032,7 @@ async function main() {
         console.warn(`[Runner] Search augmentation failed (non-fatal): ${searchErr.message}`);
       }
 
-      const initialPatch = await generateInitialPatch(instance_id, issueDescription, fileContents, failToPassList, test_patch || '', searchContextBlock, sweBenchLLM);
+      const initialPatch = await generateInitialPatch(instance_id, issueDescription, fileContents, promptFailToPassList, promptTestPatch, searchContextBlock, sweBenchLLM);
       console.log(`[Runner] Initial patch: ${initialPatch.length} chars`);
 
       // ── Parse FAIL_TO_PASS tests ─────────────────────────────────────────

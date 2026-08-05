@@ -142,10 +142,28 @@ export interface TracebackLoopInput {
   dockerImage: string;
   /** The initial candidate patch (unified diff format) */
   initialPatch: string;
-  /** The test_patch from the SWE-bench dataset (adds new test cases) */
+  /** The test_patch from the SWE-bench dataset (adds new test cases).
+   * Always passed for evaluation (the evaluator applies it before running tests).
+   * NEVER used in model-visible prompts — use promptTestPatch for that. */
   testPatch?: string;
-  /** The failing tests that need to pass (FAIL_TO_PASS field) */
+  /** The failing tests that need to pass (FAIL_TO_PASS field).
+   * Always passed for evaluation (used to build the test command).
+   * NEVER used in model-visible prompts — use promptFailToPassTests for that. */
   failToPassTests?: string[];
+  /**
+   * Prompt-visible variant of testPatch.
+   * Set to undefined in scored_strict mode; set to testPatch in test_aware mode.
+   * All prompt builders MUST use this field, never testPatch directly.
+   */
+  promptTestPatch?: string;
+  /**
+   * Prompt-visible variant of failToPassTests.
+   * Set to undefined in scored_strict mode; set to failToPassTests in test_aware mode.
+   * All prompt builders MUST use this field, never failToPassTests directly.
+   */
+  promptFailToPassTests?: string[];
+  /** Evaluation mode. 'scored_strict' blocks all test data from prompts. */
+  evalMode?: 'scored_strict' | 'test_aware';
   /** The repository root path inside the container (default: /testbed) */
   repoPath?: string;
   /** LLM provider function: given a prompt, returns a revised patch */
@@ -756,12 +774,20 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
     initialPatch,
     testPatch,
     failToPassTests = [],
+    promptTestPatch,
+    promptFailToPassTests,
+    evalMode = 'test_aware',
     repoPath = '/testbed',
     llmProvider,
     escalatingLLMProvider,
     issueDescription,
     fileContents,
   } = input;
+  // In scored_strict mode, these are the prompt-safe variants (undefined).
+  // In test_aware mode they equal testPatch / failToPassTests.
+  // All prompt builders below use these variables, never testPatch/failToPassTests.
+  const _promptTestPatch = evalMode === 'scored_strict' ? undefined : (promptTestPatch ?? testPatch);
+  const _promptFailToPass = evalMode === 'scored_strict' ? undefined : (promptFailToPassTests ?? failToPassTests);
 
   // Helper: get the appropriate LLM provider for a given revision attempt.
   // If escalatingLLMProvider is set, use it; otherwise fall back to llmProvider.
@@ -956,7 +982,8 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
               instanceId,
               tracebackSummary,
               currentFileContents,
-              failToPassTests,
+              // scored_strict: _promptFailToPass is undefined
+              _promptFailToPass ?? [],
               containerPythonVersion  // Fix 32: pass detected Python version
             );
             const probeDecision = await llmProvider(probePrompt);
@@ -990,8 +1017,9 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
             issueDescription,
             fileContents: currentFileContents,
             originalFileContents: fileContents,
-            failToPassTests,
-            testPatch,
+            // scored_strict: _promptFailToPass and _promptTestPatch are undefined
+            failToPassTests: _promptFailToPass,
+            testPatch: _promptTestPatch,
             probeOutput,
           }
         );
@@ -1118,8 +1146,9 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
         {
           issueDescription,
           fileContents,
-          failToPassTests,
-          testPatch,
+          // scored_strict: _promptFailToPass and _promptTestPatch are undefined
+          failToPassTests: _promptFailToPass,
+          testPatch: _promptTestPatch,
         }
       );
       const oracleLlmResponse = await llmProvider(oraclePrompt);
