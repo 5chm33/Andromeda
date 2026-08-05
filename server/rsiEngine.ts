@@ -503,7 +503,7 @@ export async function runRSICycle(): Promise<RSICycleResult> {
         // v14.0.0: Prioritize chaos-identified hardening targets before normal rotation
         let targets: string[] = [];
         try {
-          const { getHardeningTargets, recordRsiAttempt } = await import("./experimental/selfHealingChaos.js");
+          const { getHardeningTargets, recordRsiAttempt } = await import("./selfHealingChaos.js");
           const hardeningTargets = getHardeningTargets(FILES_PER_CYCLE);
           for (const ht of hardeningTargets) {
             // v20.0.0: Only push hardening targets that are in ANALYZABLE_FILES.
@@ -580,7 +580,7 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     // v15.0.0: Proposal Ranker — deduplicate and rank proposals by composite score
     if (proposals.length > 1) {
       try {
-        const { rankProposals, formatRankingSummary } = await import("./experimental/proposalRanker.js");
+        const { rankProposals, formatRankingSummary } = await import("./proposalRanker.js");
         const { loadProposals: lpRank } = await import("./selfImprove.js");
         const fullState = lpRank();
         const rankable = proposals.map(p => {
@@ -2237,6 +2237,40 @@ export async function runRSICycle(): Promise<RSICycleResult> {
       [1000, "rlaifJudge", (m) => { { m.generateRlaifPairs(); }; }],
       [1000, "security", (m) => { { m.getAuditLog(); }; }],
       [1000, "streamRouter", (m) => { { void m; }; }],
+      // ── Neuromorphic & Spiking Networks ──────────────────────────────────────
+      [500,  "spikingNeuron", (m) => { m.injectCurrent("rsi-probe", 1.0, Date.now()); }],
+      [500,  "spikingNeuron", (m) => { m.getNeuron("rsi-probe"); }],
+      [1000, "spikingNetworkSimulator", (m) => { m.runTimestep("rsi-net", Date.now()); }],
+      [1000, "spikingNetworkSimulator", (m) => { m.getSimulation("rsi-net"); }],
+      [500,  "temporalPatternDetector", (m) => { m.detectPatterns(Date.now()); }],
+      [1000, "temporalPatternDetector", (m) => { m.getPatterns(); }],
+      [1000, "neuralPopulationCoder", (m) => { m.getCodes(); }],
+      // ── Swarm & Collective Intelligence ──────────────────────────────────────
+      [500,  "pheromoneTrailManager", (m) => { m.evaporatePheromones(); }],
+      [1000, "pheromoneTrailManager", (m) => { m.getNeighbors("rsi-root"); }],
+      [500,  "stigmergyEngine", (m) => { m.evaporateField("rsi-field"); }],
+      [1000, "stigmergyEngine", (m) => { m.getField("rsi-field"); }],
+      [500,  "swarmParticleOptimizer", (m) => { m.getSwarm("rsi-swarm"); }],
+      [1000, "crowdWisdomAggregator", (m) => { m.getEstimates(); }],
+      [1000, "emergentBehaviorDetector", (m) => { m.getEvents(); }],
+      // ── Evolutionary & Population Optimization ────────────────────────────────
+      [500,  "populationEvolver", (m) => { m.getState("rsi-pop"); }],
+      [1000, "annealingScheduler", (m) => { m.getSession("rsi-anneal"); }],
+      [1000, "quantumInspiredOptimizer", (m) => { void m; }],
+      [1000, "fitnessLandscapeMapper", (m) => { m.getLatestAnalysis(); }],
+      // ── Reinforcement Learning & Policy ───────────────────────────────────────
+      [500,  "rewardCalculator", (m) => { m.getCumulativeReward("rsi-agent"); }],
+      [1000, "policyOptimizer", (m) => { m.getPolicy("rsi-policy"); }],
+      // ── Planning & Simulation ─────────────────────────────────────────────────
+      [500,  "monteCarloPlanner", (m) => { m.getTreeSize("rsi-tree"); }],
+      [1000, "simulationEngine", (m) => { m.getSimulation("rsi-sim"); }],
+      // ── Plasticity & Adaptation ───────────────────────────────────────────────
+      [500,  "neuroplasticAdapter", (m) => { m.evaluatePipelinePlasticity(); }],
+      [1000, "hyperparameterTuner", (m) => { m.getExperiment("rsi-tuning"); }],
+      // ── Pareto & Multi-Objective ──────────────────────────────────────────────
+      [1000, "paretoOptimizer", (m) => { m.computeParetoFront(); }],
+      // ── Game Theory ───────────────────────────────────────────────────────────
+      [1000, "gameStateManager", (m) => { m.getGame("rsi-game"); }],
     ];
     // Run probes that are due this cycle
     for (const [interval, mod, probe] of _probeRegistry) {
@@ -2250,7 +2284,7 @@ export async function runRSICycle(): Promise<RSICycleResult> {
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
   // Also re-warm the system prompt cache so the next chat response reflects the updated model.
-  import("./experimental/semanticSelfModel.js").then(m => {
+  import("./semanticSelfModel.js").then(m => {
     // updateFromRSICycle expects per-module data; use the first applied file as a proxy
     for (const file of (appliedFiles.length > 0 ? appliedFiles : ["unknown"])) {
       m.updateFromRSICycle({
@@ -2266,7 +2300,7 @@ export async function runRSICycle(): Promise<RSICycleResult> {
   }).catch(() => {});
 
   // v9.0: Record RSI outcome in utility function for auto-calibration
-  import("./experimental/utilityFunction.js").then(m => {
+  import("./utilityFunction.js").then(m => {
     m.recordRSIOutcome({
       cycleId,
       proposalId: cycleId,
