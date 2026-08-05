@@ -29,6 +29,7 @@
 import fs from "fs";
 import path from "path";
 import os from "os";
+import { gitSandbox } from "./gitSandbox";
 import { spawnSync } from "child_process";
 import { EventEmitter } from "events";
 import { createLogger } from "./logger.js";
@@ -652,8 +653,8 @@ async function runFixJob(job: FixJob, options: FixJobOptions): Promise<void> {
         pushEnv.GIT_ASKPASS = askpassScript;
         pushEnv.GIT_TERMINAL_PROMPT = "0";
       }
-      const pushResult = spawnSync("git", ["push", options.repoUrl, branchName], { cwd: repoDir, encoding: "utf8", stdio: "pipe", env: { ...process.env, ...pushEnv } });
-      if (pushResult.status !== 0) throw new Error(pushResult.stderr || "git push failed");
+      const pushResult = gitSandbox(`git push "${options.repoUrl}" ${branchName}`, { cwd: repoDir, encoding: "utf8", stdio: "pipe", env: { ...process.env, ...pushEnv }, timeout: 60_000 });
+      if (!pushResult && pushResult !== "") throw new Error("git push failed");
     } catch (e) {
       throw new Error(`Push failed: ${String(e)}`);
     }

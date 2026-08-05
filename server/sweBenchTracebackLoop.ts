@@ -35,6 +35,7 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import fs from 'fs';
 import crypto from 'crypto';
+import { buildHardenedDockerArgs } from "./hardenedSandbox.js";
 import {
   buildSmartContext,
   mapTracebackToSourceFiles,
@@ -1060,7 +1061,15 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
 
       const oracleContainerName = `andromeda_oracle_${instanceId.replace(/[^a-zA-Z0-9_]/g, '_')}_${crypto.randomBytes(4).toString('hex')}`;
       try {
-        await execAsync(`docker run -d --name ${oracleContainerName} --memory=4g --cpus=2.0 ${dockerImage} tail -f /dev/null`);
+        const _oracleHardened = buildHardenedDockerArgs({
+          image: dockerImage,
+          containerName: oracleContainerName,
+          mode: "untrusted_repair",
+          memoryLimit: "4g",
+          cpuLimit: "2.0",
+          runAsNobody: false, // testbed images run as root; --user=nobody breaks conda
+        });
+        await execAsync(`docker run -d ${_oracleHardened.args.join(" ")} ${dockerImage} tail -f /dev/null`);
         const oracleAttemptStart = Date.now();
         const { passed: oraclePassed, output: oracleOutput } = await applyAndTest(
           oracleContainerName,

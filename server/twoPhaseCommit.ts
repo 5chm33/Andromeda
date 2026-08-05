@@ -22,6 +22,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as crypto from "crypto";
 import { execSync } from "child_process";
+import { gitSandbox } from "./gitSandbox";
 import { fileURLToPath } from "url";
 import { validateProposal, isForbiddenFile, type SafetyValidationResult } from "./safetySupervisor.js";
 import { checkFailurePattern, recordFailure, type FailureCheck } from "./failurePatternMemory.js";
@@ -104,9 +105,9 @@ function createGitStableState(projectRoot: string, filePath: string): string | n
       });
     }
     // Stage all changes and create a stable-state commit
-    execSync("git add -A", { cwd: projectRoot, encoding: "utf8", timeout: 10_000, stdio: ["pipe", "pipe", "pipe"] });
+    gitSandbox("git add -A", { cwd: projectRoot, encoding: "utf8", timeout: 10_000, stdio: ["pipe", "pipe", "pipe"] });
     const msg = `stable-state before modifying ${path.basename(filePath)} [${new Date().toISOString()}]`;
-    execSync(`git commit --allow-empty -m "${msg}"`, {
+    gitSandbox(`git commit --allow-empty -m "${msg}"`, {
       cwd: projectRoot, encoding: "utf8", timeout: 10_000, stdio: ["pipe", "pipe", "pipe"],
     });
     const sha = execSync("git rev-parse HEAD", { cwd: projectRoot, encoding: "utf8", timeout: 5_000 }).trim();

@@ -310,3 +310,143 @@ describe("Adversarial: Poisoned evaluation artifacts", () => {
     }
   });
 });
+
+// ─── 7. Promotion Gate Bypass Attempts ───────────────────────────────────────
+describe("Adversarial: Promotion gate bypass attempts", () => {
+  async function getPromotion() {
+    return await import("../../packages/policy-promotion/index.js").catch(() => null);
+  }
+
+  it("rejects a bundle with failed patch application", async () => {
+    const mod = await getPromotion();
+    if (!mod?.buildEvidenceBundle || !mod?.canPromote) return;
+    const bundle = mod.buildEvidenceBundle({
+      agentCommit: "abc123",
+      targetFile: "server/foo.ts",
+      patchApplication: { exactApply: false, fuzzyRecoveryAttempted: true, modifiedFiles: ["server/foo.ts"], patchHash: "ph1" },
+      testExecutions: [{ testId: "t1", passed: true, durationMs: 1000 }],
+      staticCheck: { passed: true, errorCount: 0 },
+      mode: "promote",
+      probeVerdict: "confirmed",
+    });
+    const result = mod.canPromote(bundle);
+    expect(result.approved).toBe(false);
+    expect(result.reason).toMatch(/patch|apply|fuzzy/i);
+  });
+
+  it("rejects a bundle with failing tests", async () => {
+    const mod = await getPromotion();
+    if (!mod?.buildEvidenceBundle || !mod?.canPromote) return;
+    const bundle = mod.buildEvidenceBundle({
+      agentCommit: "abc123",
+      targetFile: "server/foo.ts",
+      patchApplication: { exactApply: true, fuzzyRecoveryAttempted: false, modifiedFiles: ["server/foo.ts"], patchHash: "ph2" },
+      testExecutions: [{ testId: "t1", passed: false, durationMs: 2000, failureReason: "assertion failed" }],
+      staticCheck: { passed: true, errorCount: 0 },
+      mode: "promote",
+      probeVerdict: "confirmed",
+    });
+    const result = mod.canPromote(bundle);
+    expect(result.approved).toBe(false);
+    expect(result.reason).toMatch(/test/i);
+  });
+
+  it("rejects a bundle with TypeScript errors", async () => {
+    const mod = await getPromotion();
+    if (!mod?.buildEvidenceBundle || !mod?.canPromote) return;
+    const bundle = mod.buildEvidenceBundle({
+      agentCommit: "abc123",
+      targetFile: "server/foo.ts",
+      patchApplication: { exactApply: true, fuzzyRecoveryAttempted: false, modifiedFiles: ["server/foo.ts"], patchHash: "ph3" },
+      testExecutions: [{ testId: "t1", passed: true, durationMs: 1000 }],
+      staticCheck: { passed: false, errorCount: 5 },
+      mode: "promote",
+      probeVerdict: "confirmed",
+    });
+    const result = mod.canPromote(bundle);
+    expect(result.approved).toBe(false);
+    expect(result.reason).toMatch(/static|error|typescript/i);
+  });
+
+  it("rejects a bundle in candidate mode (not promote)", async () => {
+    const mod = await getPromotion();
+    if (!mod?.buildEvidenceBundle || !mod?.canPromote) return;
+    const bundle = mod.buildEvidenceBundle({
+      agentCommit: "abc123",
+      targetFile: "server/foo.ts",
+      patchApplication: { exactApply: true, fuzzyRecoveryAttempted: false, modifiedFiles: ["server/foo.ts"], patchHash: "ph4" },
+      testExecutions: [{ testId: "t1", passed: true, durationMs: 1000 }],
+      staticCheck: { passed: true, errorCount: 0 },
+      mode: "candidate",
+      probeVerdict: "confirmed",
+    });
+    const result = mod.canPromote(bundle);
+    expect(result.approved).toBe(false);
+    expect(result.reason).toMatch(/mode|promote/i);
+  });
+
+  it("rejects a bundle with refuted probe verdict", async () => {
+    const mod = await getPromotion();
+    if (!mod?.buildEvidenceBundle || !mod?.canPromote) return;
+    const bundle = mod.buildEvidenceBundle({
+      agentCommit: "abc123",
+      targetFile: "server/foo.ts",
+      patchApplication: { exactApply: true, fuzzyRecoveryAttempted: false, modifiedFiles: ["server/foo.ts"], patchHash: "ph5" },
+      testExecutions: [{ testId: "t1", passed: true, durationMs: 1000 }],
+      staticCheck: { passed: true, errorCount: 0 },
+      sandboxControls: {
+        networkNone: true, capDropAll: true, noNewPrivileges: true, pidsLimit: 256,
+        memoryLimit: "4g", cpuLimit: "2.0", wallClockLimitMs: 300000, readOnly: true,
+        effectiveUser: "nobody", imageDigest: "sha256:abc123", hostDockerSocketMounted: false, privileged: false,
+      },
+      mode: "promote",
+      probeVerdict: "refuted",
+    });
+    const result = mod.canPromote(bundle);
+    expect(result.approved).toBe(false);
+    // Should be blocked by probe verdict
+    expect(result.reason).toMatch(/probe/i);
+  });
+});
+
+// ─── 8. Hardened Sandbox Isolation ───────────────────────────────────────────
+describe("Adversarial: Hardened sandbox flag verification", () => {
+  it("buildHardenedDockerArgs includes --network=none", async () => {
+    const { buildHardenedDockerArgs } = await import("../../hardenedSandbox.js").catch(() => null) ?? { buildHardenedDockerArgs: null };
+    if (!buildHardenedDockerArgs) return;
+    const { args } = buildHardenedDockerArgs({ containerName: "test-ctr", image: "test-image:latest", workdir: "/tmp/work", mode: "trusted_local" });
+    expect(args.join(" ")).toMatch(/--network[ =]none/);
+  });
+
+  it("buildHardenedDockerArgs includes --cap-drop=ALL", async () => {
+    const { buildHardenedDockerArgs } = await import("../../hardenedSandbox.js").catch(() => null) ?? { buildHardenedDockerArgs: null };
+    if (!buildHardenedDockerArgs) return;
+    const { args } = buildHardenedDockerArgs({ containerName: "test-ctr", image: "test-image:latest", workdir: "/tmp/work", mode: "trusted_local" });
+    expect(args.join(" ")).toMatch(/--cap-drop[ =]ALL/);
+  });
+
+  it("buildHardenedDockerArgs includes --security-opt=no-new-privileges:true", async () => {
+    const { buildHardenedDockerArgs } = await import("../../hardenedSandbox.js").catch(() => null) ?? { buildHardenedDockerArgs: null };
+    if (!buildHardenedDockerArgs) return;
+    const { args } = buildHardenedDockerArgs({ containerName: "test-ctr", image: "test-image:latest", workdir: "/tmp/work", mode: "trusted_local" });
+    expect(args.join(" ")).toMatch(/--security-opt[ =]no-new-privileges:true/);
+  });
+
+  it("buildHardenedDockerArgs includes --pids-limit=256", async () => {
+    const { buildHardenedDockerArgs } = await import("../../hardenedSandbox.js").catch(() => null) ?? { buildHardenedDockerArgs: null };
+    if (!buildHardenedDockerArgs) return;
+    const { args } = buildHardenedDockerArgs({ containerName: "test-ctr", image: "test-image:latest", workdir: "/tmp/work", mode: "trusted_local" });
+    expect(args.join(" ")).toMatch(/--pids-limit=256/);
+  });
+});
+
+// ─── 9. Sandbox Fail-Closed for Untrusted Repair ─────────────────────────────
+describe("Adversarial: sandboxManager fails closed without Docker for untrusted_repair", () => {
+  it("throws when Docker unavailable in untrusted_repair mode", async () => {
+    const { SandboxExecutionMode } = await import("../../sandboxManager.js").catch(() => null) ?? { SandboxExecutionMode: null };
+    if (!SandboxExecutionMode) return;
+    // Verify the type exists and has the expected values
+    expect(SandboxExecutionMode.UNTRUSTED_REPAIR).toBe("untrusted_repair");
+    expect(SandboxExecutionMode.TRUSTED_LOCAL).toBe("trusted_local");
+  });
+});

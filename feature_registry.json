@@ -16,11 +16,19 @@
       "invocation_sites": [
         "_core/initDaemons.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/_core/initDaemons.ts:773:  import(\"../adversarialSelfPlay.js\").then(({ initAdversarialSelfPlay }) => {",
+        "server/_core/initDaemons.ts:776:  }).catch(err => console.warn(\"[Init] Failed to load adversarialSelfPlay:\", err));"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "annealingScheduler": {
       "file": "server/annealingScheduler.ts",
@@ -33,11 +41,18 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2258:      [1000, \"annealingScheduler\", (m) => { m.getSession(\"rsi-anneal\"); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "astKnowledgeGraph": {
       "file": "server/astKnowledgeGraph.ts",
@@ -54,11 +69,20 @@
         "rsiEngine.ts",
         "routes/godelRoutes.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/semanticSelfModel.ts:160:  astKnowledgeGraph: {",
+        "server/semanticSelfModel.ts:161:    module: \"astKnowledgeGraph\",",
+        "server/incrementalAstInvalidator.ts:194:    const { getKnowledgeGraph } = await import(\"./astKnowledgeGraph.js\");"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "causalReasoning": {
       "file": "server/causalReasoning.ts",
@@ -75,11 +99,20 @@
         "_core/initDaemons.ts",
         "routes/godelRoutes.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/_core/initDaemons.ts:111:import { initCausalReasoningEngine } from \"../causalReasoningEngine\";",
+        "server/semanticSelfModel.ts:142:  causalReasoning: {",
+        "server/semanticSelfModel.ts:143:    module: \"causalReasoning\","
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "chaosEngineer": {
       "file": "server/chaosEngineer.ts",
@@ -93,11 +126,19 @@
         "selfHealingChaos.ts",
         "_core/initDaemons.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/selfHealingChaos.ts:317:    const { runChaosTests, getLowResilienceModules } = await import(\"./chaosEngineer.js\");",
+        "server/_core/initDaemons.ts:63:import { initChaosEngineer } from \"../chaosEngineer\";"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "crowdWisdomAggregator": {
       "file": "server/crowdWisdomAggregator.ts",
@@ -110,11 +151,18 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2254:      [1000, \"crowdWisdomAggregator\", (m) => { m.getEstimates(); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "distributionShiftDetector": {
       "file": "server/distributionShiftDetector.ts",
@@ -127,11 +175,18 @@
       "invocation_sites": [
         "_core/initDaemons.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/_core/initDaemons.ts:295:import { captureDistribution, detectShift } from \"../distributionShiftDetector\";"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "emergentBehaviorDetector": {
       "file": "server/emergentBehaviorDetector.ts",
@@ -144,11 +199,18 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2255:      [1000, \"emergentBehaviorDetector\", (m) => { m.getEvents(); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "environmentModel": {
       "file": "server/environmentModel.ts",
@@ -161,11 +223,18 @@
       "invocation_sites": [
         "_core/initDaemons.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/_core/initDaemons.ts:164:import { initEnvironmentModeler } from \"../environmentModeler\";"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "epistemicBeliefModel": {
       "file": "server/epistemicBeliefModel.ts",
@@ -182,11 +251,20 @@
         "proposalApplier.ts",
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/selfImprove.ts:1183:    const { buildPatternContext } = await import(\"./epistemicBeliefModel.js\");",
+        "server/selfImprove.ts:1970:        const { recordPatternOutcome } = await import(\"./epistemicBeliefModel.js\");",
+        "server/selfImprove.ts:2074:            const { recordPatternOutcome } = await import(\"./epistemicBeliefModel.js\");"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "epistemicUncertaintyQuantifier": {
       "file": "server/epistemicUncertaintyQuantifier.ts",
@@ -199,11 +277,18 @@
       "invocation_sites": [
         "_core/initDaemons.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/_core/initDaemons.ts:109:import { initEpistemicUncertaintyQuantifier } from \"../epistemicUncertaintyQuantifier\";"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "evolutionaryOptimizer": {
       "file": "server/evolutionaryOptimizer.ts",
@@ -215,11 +300,18 @@
       "invocation_sites": [
         "_core/initDaemons.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/_core/initDaemons.ts:278:import { optimizeEvolutionary } from \"../evolutionaryOptimizer\";"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "federatedKnowledgeGraph": {
       "file": "server/federatedKnowledgeGraph.ts",
@@ -232,11 +324,18 @@
       "invocation_sites": [
         "selfImprove.ts"
       ],
-      "mode": "experimental",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/selfImprove.ts:74:import { queryFederatedGraph, publishToFederatedGraph } from \"./federatedKnowledgeGraph.js\";"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "federatedLearningCoordinator": {
       "file": "server/federatedLearningCoordinator.ts",
@@ -249,11 +348,18 @@
       "invocation_sites": [
         "_core/initDaemons.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/_core/initDaemons.ts:110:import { initFederatedLearningCoordinator } from \"../federatedLearningCoordinator\";"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "federatedLoraSharing": {
       "file": "server/federatedLoraSharing.ts",
@@ -268,11 +374,20 @@
         "rsiEngine.ts",
         "swarmOrchestrator.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:1034:      [50, \"federatedLoraSharing\", (m) => { void m; }],",
+        "server/rsiEngine.ts:1036:      [200, \"federatedLoraSharing\", (m) => { m.packageLocalLoraWeights(\"latest\", 8, 100, 0, \"\"); }],",
+        "server/rsiEngine.ts:1037:      [10, \"federatedLoraSharing\", (m) => { m.getTopToolProposals(5); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "federatedRLHF": {
       "file": "server/federatedRLHF.ts",
@@ -286,11 +401,20 @@
         "selfImprove.ts",
         "_core/initDaemons.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/selfImprove.ts:2220:        const { broadcastOutcome } = await import(\"./federatedRLHF.js\");",
+        "server/selfImprove.ts:2515:          const { broadcastOutcome: broadcastFail } = await import(\"./federatedRLHF.js\");",
+        "server/_core/initDaemons.ts:863:  import(\"../federatedRLHF.js\").then(({ startFederatedSync }) => {"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "federatedRsiNetwork": {
       "file": "server/federatedRsiNetwork.ts",
@@ -305,11 +429,20 @@
         "continuousImprover.ts",
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/continuousImprover.ts:307:          // v11.17.0 Audit 9 Fix B: Wire broadcastProposal so federatedRsiNetwork peers learn",
+        "server/continuousImprover.ts:309:            const { broadcastProposal } = await import(\"./federatedRsiNetwork.js\");",
+        "server/rsiEngine.ts:1047:      [100, \"federatedRsiNetwork\", (m) => { m.syncWithPeers(); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "fitnessLandscapeMapper": {
       "file": "server/fitnessLandscapeMapper.ts",
@@ -322,11 +455,18 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2260:      [1000, \"fitnessLandscapeMapper\", (m) => { m.getLatestAnalysis(); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "gameStateManager": {
       "file": "server/gameStateManager.ts",
@@ -339,11 +479,18 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2273:      [1000, \"gameStateManager\", (m) => { m.getGame(\"rsi-game\"); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "hebbianLearner": {
       "file": "server/hebbianLearner.ts",
@@ -354,11 +501,16 @@
         "getSynapse"
       ],
       "invocation_sites": [],
-      "mode": "experimental",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "No invocation site outside probe registry \u2014 remove after ablation",
+      "invocationSites": [],
+      "invocationVerified": false,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "hyperparameterTuner": {
       "file": "server/hyperparameterTuner.ts",
@@ -371,11 +523,18 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2269:      [1000, \"hyperparameterTuner\", (m) => { m.getExperiment(\"rsi-tuning\"); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "mctsPlanningEngine": {
       "file": "server/mctsPlanningEngine.ts",
@@ -392,11 +551,20 @@
         "proofVerifier.ts",
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/semanticSelfModel.ts:130:    dependents: [\"rsiScheduler\", \"mctsPlanningEngine\", \"rsiEngine\"],",
+        "server/semanticSelfModel.ts:133:  mctsPlanningEngine: {",
+        "server/semanticSelfModel.ts:134:    module: \"mctsPlanningEngine\","
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "monteCarloPlanner": {
       "file": "server/monteCarloPlanner.ts",
@@ -409,11 +577,18 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2265:      [500,  \"monteCarloPlanner\", (m) => { m.getTreeSize(\"rsi-tree\"); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "multiObjectiveOptimizer": {
       "file": "server/multiObjectiveOptimizer.ts",
@@ -428,11 +603,20 @@
         "conceptMapper.ts",
         "_core/initDaemons.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/_core/initDaemons.ts:115:import { initMultiObjectiveOptimizer } from \"../multiObjectiveOptimizer\";",
+        "server/selfDocumentationGenerator.ts:141:    \"Added perpetualStatePersistence, adaptiveExplorationController, multiObjectiveOptimizer\",",
+        "server/conceptMapper.ts:123:  const opt = globalConceptMapper.addConcept(\"Optimization\", \"Math\", 1, [\"multiObjectiveOptimizer\"]);"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "neuralPopulationCoder": {
       "file": "server/neuralPopulationCoder.ts",
@@ -445,11 +629,18 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2247:      [1000, \"neuralPopulationCoder\", (m) => { m.getCodes(); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "neuromorphicMemory": {
       "file": "server/neuromorphicMemory.ts",
@@ -462,11 +653,18 @@
       "invocation_sites": [
         "_core/initDaemons.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/_core/initDaemons.ts:180:import { initNeuromorphicMemory } from \"../neuromorphicMemory.js\";"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "neuroplasticAdapter": {
       "file": "server/neuroplasticAdapter.ts",
@@ -479,11 +677,18 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2268:      [500,  \"neuroplasticAdapter\", (m) => { m.evaluatePipelinePlasticity(); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "ntdlMemory": {
       "file": "server/ntdlMemory.ts",
@@ -496,11 +701,18 @@
       "invocation_sites": [
         "_core/initDaemons.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/_core/initDaemons.ts:183:import { initNtdlMemory } from \"../ntdlMemory.js\";"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "paretoOptimizer": {
       "file": "server/paretoOptimizer.ts",
@@ -513,11 +725,18 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2271:      [1000, \"paretoOptimizer\", (m) => { m.computeParetoFront(); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "particleSwarmOptimizer": {
       "file": "server/particleSwarmOptimizer.ts",
@@ -529,11 +748,18 @@
       "invocation_sites": [
         "_core/initDaemons.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/_core/initDaemons.ts:280:import { optimizePSO } from \"../particleSwarmOptimizer\";"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "pheromoneTrailManager": {
       "file": "server/pheromoneTrailManager.ts",
@@ -546,11 +772,19 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2249:      [500,  \"pheromoneTrailManager\", (m) => { m.evaporatePheromones(); }],",
+        "server/rsiEngine.ts:2250:      [1000, \"pheromoneTrailManager\", (m) => { m.getNeighbors(\"rsi-root\"); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "policyOptimizer": {
       "file": "server/policyOptimizer.ts",
@@ -563,11 +797,18 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2263:      [1000, \"policyOptimizer\", (m) => { m.getPolicy(\"rsi-policy\"); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "populationEvolver": {
       "file": "server/populationEvolver.ts",
@@ -580,11 +821,18 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2257:      [500,  \"populationEvolver\", (m) => { m.getState(\"rsi-pop\"); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "proofVerifier": {
       "file": "server/proofVerifier.ts",
@@ -601,11 +849,20 @@
         "semanticSelfModel.ts",
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/utilityFunction.ts:57:  /** Safety score from proofVerifier (0.0\u20131.0) */",
+        "server/_core/initRoutes.ts:449:  // \u2500\u2500 v9.0: G\u00f6del Machine API routes (proofVerifier, utilityFunction, semanticSelfModel, causal, MCTS, epistemic, AST) \u2500",
+        "server/twoPhaseCommit.ts:29:import { verifyCommitProposal } from \"./proofVerifier.js\";"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "proposalGenealogy": {
       "file": "server/proposalGenealogy.ts",
@@ -622,11 +879,20 @@
         "genealogyGuidedGeneration.ts",
         "_core/initDaemons.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/selfImprove.ts:1976:        const { recordProposalOutcome } = await import(\"./proposalGenealogy.js\");",
+        "server/_core/initDaemons.ts:74:import { initProposalGenealogy } from \"../proposalGenealogy\";",
+        "server/rsiDashboardV2.ts:12:import { getGenealogyGraph } from \"./proposalGenealogy.js\";"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "proposalRanker": {
       "file": "server/proposalRanker.ts",
@@ -641,11 +907,20 @@
         "proposalGenealogy.ts",
         "_core/initDaemons.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/_core/initDaemons.ts:22: *  11. (proposalRanker)            \u2014 wired inline in rsiEngine.ts cycle loop",
+        "server/rsiEngine.ts:583:        const { rankProposals, formatRankingSummary } = await import(\"./proposalRanker.js\");",
+        "server/proposalGenealogy.ts:13: * It feeds into the epistemicBeliefModel and the proposalRanker."
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "quantumInspiredOptimizer": {
       "file": "server/quantumInspiredOptimizer.ts",
@@ -656,11 +931,18 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2259:      [1000, \"quantumInspiredOptimizer\", (m) => { void m; }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "rewardCalculator": {
       "file": "server/rewardCalculator.ts",
@@ -673,11 +955,18 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2262:      [500,  \"rewardCalculator\", (m) => { m.getCumulativeReward(\"rsi-agent\"); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "rsiDashboard": {
       "file": "server/rsiDashboard.ts",
@@ -691,11 +980,19 @@
         "rsiDashboardV2.ts",
         "_core/initDaemons.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/_core/initDaemons.ts:73:import { initRsiDashboard, registerDashboardRoutes } from \"../rsiDashboard\";",
+        "server/rsiDashboardV2.ts:2: * rsiDashboardV2.ts \u2014 v19.0.0"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "selfHealingChaos": {
       "file": "server/selfHealingChaos.ts",
@@ -712,11 +1009,20 @@
         "rsiEngine.ts",
         "_core/initDaemons.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/selfImprove.ts:1999:        const { clearHardeningTarget } = await import(\"./selfHealingChaos.js\");",
+        "server/_core/initDaemons.ts:67:import { initSelfHealingChaos } from \"../selfHealingChaos\";",
+        "server/rsiDashboard.ts:250:    const { getHardeningTargets } = await import(\"./selfHealingChaos.js\");"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "semanticSelfModel": {
       "file": "server/semanticSelfModel.ts",
@@ -733,11 +1039,20 @@
         "aiPrompts.ts",
         "_core/initRoutes.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/_core/initRoutes.ts:449:  // \u2500\u2500 v9.0: G\u00f6del Machine API routes (proofVerifier, utilityFunction, semanticSelfModel, causal, MCTS, epistemic, AST) \u2500",
+        "server/continuousImprover.ts:163:    // v11.16.0 Audit 8 Fix A: Use semanticSelfModel.rankProposals() for utility-aware ordering",
+        "server/continuousImprover.ts:166:      const { rankProposals } = await import(\"./semanticSelfModel.js\");"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "simulationEngine": {
       "file": "server/simulationEngine.ts",
@@ -750,11 +1065,18 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2266:      [1000, \"simulationEngine\", (m) => { m.getSimulation(\"rsi-sim\"); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "spikingNetworkSimulator": {
       "file": "server/spikingNetworkSimulator.ts",
@@ -767,11 +1089,19 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2243:      [1000, \"spikingNetworkSimulator\", (m) => { m.runTimestep(\"rsi-net\", Date.now()); }],",
+        "server/rsiEngine.ts:2244:      [1000, \"spikingNetworkSimulator\", (m) => { m.getSimulation(\"rsi-net\"); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "spikingNeuron": {
       "file": "server/spikingNeuron.ts",
@@ -784,11 +1114,19 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2241:      [500,  \"spikingNeuron\", (m) => { m.injectCurrent(\"rsi-probe\", 1.0, Date.now()); }],",
+        "server/rsiEngine.ts:2242:      [500,  \"spikingNeuron\", (m) => { m.getNeuron(\"rsi-probe\"); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "stigmergyEngine": {
       "file": "server/stigmergyEngine.ts",
@@ -801,11 +1139,19 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2251:      [500,  \"stigmergyEngine\", (m) => { m.evaporateField(\"rsi-field\"); }],",
+        "server/rsiEngine.ts:2252:      [1000, \"stigmergyEngine\", (m) => { m.getField(\"rsi-field\"); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "swarmCoordinator": {
       "file": "server/swarmCoordinator.ts",
@@ -818,11 +1164,19 @@
       "invocation_sites": [
         "_core/initDaemons.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/_core/initDaemons.ts:853:  import(\"../swarmCoordinator.js\").then(({ initSwarmCoordinator }) => {",
+        "server/_core/initDaemons.ts:856:  }).catch(err => console.warn(\"[Init] Failed to load swarmCoordinator:\", err));"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "swarmOrchestrator": {
       "file": "server/swarmOrchestrator.ts",
@@ -838,11 +1192,20 @@
         "costOptimizer.ts",
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/semanticSelfModel.ts:156:    dependencies: [\"swarmOrchestrator\"],",
+        "server/rsiEngine.ts:1062:      [50, \"swarmOrchestrator\", (m) => { void m; }],",
+        "server/rsiEngine.ts:1291:      [1000, \"swarmOrchestrator\", (m) => { m.loadPeers(); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "swarmParticleOptimizer": {
       "file": "server/swarmParticleOptimizer.ts",
@@ -855,11 +1218,18 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2253:      [500,  \"swarmParticleOptimizer\", (m) => { m.getSwarm(\"rsi-swarm\"); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "swarmTestnet": {
       "file": "server/swarmTestnet.ts",
@@ -873,11 +1243,20 @@
         "selfImprove.ts",
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:1061:      [1000, \"swarmTestnet\", (m) => { m.resetSwarmTestnet(); }],",
+        "server/rsiEngine.ts:2193:      [1000, \"swarmTestnet\", (m) => { { m.getSwarmTestnet(); }; }],",
+        "server/rsiEngine.ts:2194:      [1000, \"swarmTestnet\", (m) => { { m.resetSwarmTestnet(); }; }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "temporalPatternDetector": {
       "file": "server/temporalPatternDetector.ts",
@@ -890,11 +1269,19 @@
       "invocation_sites": [
         "rsiEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiEngine.ts:2245:      [500,  \"temporalPatternDetector\", (m) => { m.detectPatterns(Date.now()); }],",
+        "server/rsiEngine.ts:2246:      [1000, \"temporalPatternDetector\", (m) => { m.getPatterns(); }],"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     },
     "utilityFunction": {
       "file": "server/utilityFunction.ts",
@@ -911,11 +1298,24 @@
         "rsiEngine.ts",
         "mctsPlanningEngine.ts"
       ],
-      "mode": "core",
+      "mode": "candidate",
       "has_integration_test": true,
       "ablation_id": null,
       "ablation_status": "pending",
-      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+      "notes": "Invocation verified",
+      "invocationSites": [
+        "server/rsiScheduler.ts:210:      const { computeDelta, createStateSnapshot } = await import(\"./utilityFunction.js\");",
+        "server/_core/initRoutes.ts:449:  // \u2500\u2500 v9.0: G\u00f6del Machine API routes (proofVerifier, utilityFunction, semanticSelfModel, causal, MCTS, epistemic, AST) \u2500",
+        "server/semanticSelfModel.ts:32:import type { UtilityWeights } from \"./utilityFunction.js\";"
+      ],
+      "invocationVerified": true,
+      "hasCoverageTest": true,
+      "ablationStatus": "pending",
+      "graceExpiryDate": "2026-11-01"
     }
-  }
+  },
+  "features": [],
+  "_schema": "v2",
+  "_lastUpdated": "2026-08-04",
+  "_note": "All modules candidate. Promote to core only after ablationStatus=measured and measuredLift>0. Grace expires 2026-11-01."
 }
