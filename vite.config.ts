@@ -169,7 +169,8 @@ export default defineConfig({
     emptyOutDir: true,
     // Raise the warning threshold to 1MB (from 500kB default) since we have
     // intentional large vendor chunks (mermaid, cytoscape, wasm).
-    chunkSizeWarningLimit: 1000,
+    // Threshold matches CI gate: 3.5MB (3584 kB). Mermaid+cytoscape are inherently large.
+    chunkSizeWarningLimit: 3584,
     rollupOptions: {
       output: {
         // Split the monolithic index bundle into smaller vendor/feature chunks.

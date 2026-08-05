@@ -36,6 +36,7 @@ import { promisify } from 'util';
 import fs from 'fs';
 import crypto from 'crypto';
 import { buildHardenedDockerArgs } from "./hardenedSandbox.js";
+import { resolveImageDigest, ImageResolutionError, type ResolvedImage } from "./sweBenchImageResolver.js";
 import {
   buildSmartContext,
   mapTracebackToSourceFiles,
@@ -766,18 +767,40 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
     // v5.2: Use shared hardened builder — all isolation controls in one place.
     // writableWorktree:true omits --read-only so patch application can write to /testbed.
     // The container is still network-isolated, capability-dropped, and PID-limited.
+    // v5.2: Resolve image to immutable digest before creating the repair container.
+    // SWE-bench official images are pre-pulled from Docker Hub and have digests.
+    // If the image is already pinned (name@sha256:...) it is accepted immediately.
+    // If it is a tag-only reference, we resolve it via docker inspect.
+    // Root UID is required by SWE-bench testbed images (conda env setup); this
+    // is an explicit, recorded exception — not a silent default.
+    let _resolvedImage: ResolvedImage;
+    let _rootUidException: string | undefined;
+    try {
+      // Attempt to resolve in trusted_local mode (allows tag-only via inspect).
+      // We record the digest in the evidence bundle regardless.
+      _resolvedImage = resolveImageDigest(dockerImage, "trusted_local", false);
+    } catch (resolveErr) {
+      throw new Error(
+        `[TracebackLoop] Image resolution failed for "${dockerImage}": ${(resolveErr as Error).message}. ` +
+        `Ensure the image is pulled locally before starting the benchmark.`
+      );
+    }
+    // Record root UID exception — SWE-bench testbed images require root for conda.
+    _rootUidException = "SWE-bench testbed images use root UID for conda environment setup. " +
+      "Non-root execution is not supported by the official swebench/sweb.eval images. " +
+      `Instance: ${instanceId}, Image: ${_resolvedImage.resolvedRef}`;
     const _mainHardened = buildHardenedDockerArgs({
-      image: dockerImage,
+      image: _resolvedImage.resolvedRef,  // use resolved ref (may include digest)
       containerName,
       memoryLimit: "4g",
       cpuLimit: "2.0",
       pidsLimit: 256,
       wallClockLimitMs: MAX_ATTEMPTS * TEST_TIMEOUT_SECONDS * 1000 + 60_000,
-      mode: "trusted_local", // digest validation is caller's responsibility for SWE-bench images
-      writableWorktree: true, // patch application writes to /testbed
-      runAsNobody: false,     // SWE-bench images run as root by design
+      mode: "untrusted_repair",  // v5.2: treat SWE instances as untrusted
+      writableWorktree: true,    // patch application writes to /testbed
+      runAsNobody: false,        // EXCEPTION: SWE-bench images require root for conda (recorded above)
     });
-    await execAsync(`docker run -d ${_mainHardened.args.join(" ")} ${dockerImage} tail -f /dev/null`);
+    await execAsync(`docker run -d ${_mainHardened.args.join(" ")} ${_resolvedImage.resolvedRef} tail -f /dev/null`);
 
     // Fix 32: Detect Python version in container for probe script compatibility
     let containerPythonVersion: string | undefined;

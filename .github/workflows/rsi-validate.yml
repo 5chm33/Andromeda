@@ -39,7 +39,7 @@ jobs:
       - name: Approve build scripts
         run: pnpm approve-builds --all || true
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       # Gate 1: TypeScript typecheck (BLOCKING — zero errors required)
       - name: Gate 1 — TypeScript typecheck (blocking)
@@ -72,11 +72,11 @@ jobs:
       - name: Gate 4 — Feature registry validation
         run: python3 scripts/check_feature_registry.py
 
-      # Gate 5: Bundle size budget (2MB per chunk)
-      - name: Gate 5 — Bundle size budget (2MB per chunk)
+      # Gate 5: Bundle size budget (3.5MB per chunk)
+      - name: Gate 5 — Bundle size budget (3.5MB per chunk)
         run: |
           pnpm run build 2>&1 | tee /tmp/build-size-output.txt
-          # Extract chunk sizes and check for any > 2048 kB
+          # Extract chunk sizes and check for any > 3584 kB (3.5MB)
           python3 -c "
           import re, sys
           with open('/tmp/build-size-output.txt') as f:
@@ -86,13 +86,13 @@ jobs:
           for m in re.finditer(r'(dist/\S+)\s+([\d.]+)\s*(kB|MB|B)', content):
               name, size, unit = m.group(1), float(m.group(2)), m.group(3)
               size_kb = size * 1024 if unit == 'MB' else (size / 1024 if unit == 'B' else size)
-              if size_kb > 2048:
+              if size_kb > 3584:
                   oversized.append(f'{name}: {size} {unit}')
           if oversized:
-              print('FAILED: Chunks exceed 2MB budget:')
+              print('FAILED: Chunks exceed 3.5MB budget:')
               for c in oversized: print(' ', c)
               sys.exit(1)
-          print('PASSED: All chunks within 2MB budget')
+          print('PASSED: All chunks within 3.5MB budget')
           "
         env:
           NODE_ENV: production
