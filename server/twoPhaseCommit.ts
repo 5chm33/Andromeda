@@ -26,7 +26,7 @@ import { fileURLToPath } from "url";
 import { validateProposal, isForbiddenFile, type SafetyValidationResult } from "./safetySupervisor.js";
 import { checkFailurePattern, recordFailure, type FailureCheck } from "./failurePatternMemory.js";
 import { storeMemory } from "./memory.js";
-import { verifyCommitProposal } from "./experimental/proofVerifier.js";
+import { verifyCommitProposal } from "./proofVerifier.js";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
