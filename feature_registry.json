@@ -1,0 +1,921 @@
+{
+  "_meta": {
+    "version": "5.1.0",
+    "generated": "2026-08-04T00:00:00Z",
+    "description": "Auditable inventory of all 51 restored modules (quarantined in v5.1 P4, restored after user review). Each entry records the module's invocation site, mode, and ablation status. CI checks that every module file exists and that 'core' modules have integration tests.",
+    "ci_check": "scripts/check_feature_registry.py"
+  },
+  "modules": {
+    "adversarialSelfPlay": {
+      "file": "server/adversarialSelfPlay.ts",
+      "exists": true,
+      "exports": [
+        "initAdversarialSelfPlay",
+        "runAdversarialAttack"
+      ],
+      "invocation_sites": [
+        "_core/initDaemons.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "annealingScheduler": {
+      "file": "server/annealingScheduler.ts",
+      "exists": true,
+      "exports": [
+        "createSession",
+        "step",
+        "getSession"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "astKnowledgeGraph": {
+      "file": "server/astKnowledgeGraph.ts",
+      "exists": true,
+      "exports": [
+        "ASTKnowledgeGraph",
+        "ASTParser",
+        "getKnowledgeGraph"
+      ],
+      "invocation_sites": [
+        "selfImprove.ts",
+        "semanticSelfModel.ts",
+        "incrementalAstInvalidator.ts",
+        "rsiEngine.ts",
+        "routes/godelRoutes.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "causalReasoning": {
+      "file": "server/causalReasoning.ts",
+      "exists": true,
+      "exports": [
+        "CausalNetwork",
+        "RootCauseAnalyzer",
+        "getRootCauseAnalyzer"
+      ],
+      "invocation_sites": [
+        "selfImprove.ts",
+        "semanticSelfModel.ts",
+        "rsiEngine.ts",
+        "_core/initDaemons.ts",
+        "routes/godelRoutes.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "chaosEngineer": {
+      "file": "server/chaosEngineer.ts",
+      "exists": true,
+      "exports": [
+        "runChaosTests",
+        "getLowResilienceModules",
+        "recordModuleResilienceScore"
+      ],
+      "invocation_sites": [
+        "selfHealingChaos.ts",
+        "_core/initDaemons.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "crowdWisdomAggregator": {
+      "file": "server/crowdWisdomAggregator.ts",
+      "exists": true,
+      "exports": [
+        "aggregate",
+        "getEstimates",
+        "_resetCrowdWisdomAggregatorForTest"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "distributionShiftDetector": {
+      "file": "server/distributionShiftDetector.ts",
+      "exists": true,
+      "exports": [
+        "captureDistribution",
+        "detectShift",
+        "_resetDistributionShiftDetectorForTest"
+      ],
+      "invocation_sites": [
+        "_core/initDaemons.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "emergentBehaviorDetector": {
+      "file": "server/emergentBehaviorDetector.ts",
+      "exists": true,
+      "exports": [
+        "recordObservation",
+        "detectEmergence",
+        "getEvents"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "environmentModel": {
+      "file": "server/environmentModel.ts",
+      "exists": true,
+      "exports": [
+        "createEnvironment",
+        "addState",
+        "addTransition"
+      ],
+      "invocation_sites": [
+        "_core/initDaemons.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "epistemicBeliefModel": {
+      "file": "server/epistemicBeliefModel.ts",
+      "exists": true,
+      "exports": [
+        "getEpistemicOperator",
+        "AgentBeliefState",
+        "EpistemicModel"
+      ],
+      "invocation_sites": [
+        "selfImprove.ts",
+        "proposalRanker.ts",
+        "semanticSelfModel.ts",
+        "proposalApplier.ts",
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "epistemicUncertaintyQuantifier": {
+      "file": "server/epistemicUncertaintyQuantifier.ts",
+      "exists": true,
+      "exports": [
+        "globalEpistemicUncertainty",
+        "quantifyEpistemicUncertainty",
+        "quantifyAleatoricUncertainty"
+      ],
+      "invocation_sites": [
+        "_core/initDaemons.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "evolutionaryOptimizer": {
+      "file": "server/evolutionaryOptimizer.ts",
+      "exists": true,
+      "exports": [
+        "optimizeEvolutionary",
+        "_resetEvolutionaryOptimizerForTest"
+      ],
+      "invocation_sites": [
+        "_core/initDaemons.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "federatedKnowledgeGraph": {
+      "file": "server/federatedKnowledgeGraph.ts",
+      "exists": true,
+      "exports": [
+        "publishToFederatedGraph",
+        "queryFederatedGraph",
+        "syncFederatedGossip"
+      ],
+      "invocation_sites": [
+        "selfImprove.ts"
+      ],
+      "mode": "experimental",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "federatedLearningCoordinator": {
+      "file": "server/federatedLearningCoordinator.ts",
+      "exists": true,
+      "exports": [
+        "globalFederatedCoordinator",
+        "registerFederatedNode",
+        "aggregateGradients"
+      ],
+      "invocation_sites": [
+        "_core/initDaemons.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "federatedLoraSharing": {
+      "file": "server/federatedLoraSharing.ts",
+      "exists": true,
+      "exports": [
+        "packageLocalLoraWeights",
+        "receiveLoraPackage",
+        "shareToolProposal"
+      ],
+      "invocation_sites": [
+        "selfImprove.ts",
+        "rsiEngine.ts",
+        "swarmOrchestrator.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "federatedRLHF": {
+      "file": "server/federatedRLHF.ts",
+      "exists": true,
+      "exports": [
+        "broadcastOutcome",
+        "ingestPeerOutcomes",
+        "startFederatedSync"
+      ],
+      "invocation_sites": [
+        "selfImprove.ts",
+        "_core/initDaemons.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "federatedRsiNetwork": {
+      "file": "server/federatedRsiNetwork.ts",
+      "exists": true,
+      "exports": [
+        "registerPeer",
+        "broadcastProposal",
+        "syncWithPeers"
+      ],
+      "invocation_sites": [
+        "selfImprove.ts",
+        "continuousImprover.ts",
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "fitnessLandscapeMapper": {
+      "file": "server/fitnessLandscapeMapper.ts",
+      "exists": true,
+      "exports": [
+        "addPoint",
+        "analyzeLandscape",
+        "getPoints"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "gameStateManager": {
+      "file": "server/gameStateManager.ts",
+      "exists": true,
+      "exports": [
+        "createGame",
+        "startGame",
+        "applyAction"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "hebbianLearner": {
+      "file": "server/hebbianLearner.ts",
+      "exists": true,
+      "exports": [
+        "createSynapse",
+        "applyHebbianRule",
+        "getSynapse"
+      ],
+      "invocation_sites": [],
+      "mode": "experimental",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "hyperparameterTuner": {
+      "file": "server/hyperparameterTuner.ts",
+      "exists": true,
+      "exports": [
+        "createExperiment",
+        "suggestTrial",
+        "reportTrialResult"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "mctsPlanningEngine": {
+      "file": "server/mctsPlanningEngine.ts",
+      "exists": true,
+      "exports": [
+        "MCTSEngine",
+        "planWithMCTS",
+        "comparePlans"
+      ],
+      "invocation_sites": [
+        "selfImprove.ts",
+        "utilityFunction.ts",
+        "semanticSelfModel.ts",
+        "proofVerifier.ts",
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "monteCarloPlanner": {
+      "file": "server/monteCarloPlanner.ts",
+      "exists": true,
+      "exports": [
+        "createMCTSTree",
+        "expandNode",
+        "backpropagate"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "multiObjectiveOptimizer": {
+      "file": "server/multiObjectiveOptimizer.ts",
+      "exists": true,
+      "exports": [
+        "globalMOO",
+        "computeParetoFront",
+        "selectParetoOptimal"
+      ],
+      "invocation_sites": [
+        "selfDocumentationGenerator.ts",
+        "conceptMapper.ts",
+        "_core/initDaemons.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "neuralPopulationCoder": {
+      "file": "server/neuralPopulationCoder.ts",
+      "exists": true,
+      "exports": [
+        "encode",
+        "decode",
+        "getCodes"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "neuromorphicMemory": {
+      "file": "server/neuromorphicMemory.ts",
+      "exists": true,
+      "exports": [
+        "initNeuromorphicMemory",
+        "ingestSensory",
+        "activateMemory"
+      ],
+      "invocation_sites": [
+        "_core/initDaemons.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "neuroplasticAdapter": {
+      "file": "server/neuroplasticAdapter.ts",
+      "exists": true,
+      "exports": [
+        "evaluatePipelinePlasticity",
+        "isStageActive",
+        "recordStagePerformance"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "ntdlMemory": {
+      "file": "server/ntdlMemory.ts",
+      "exists": true,
+      "exports": [
+        "initNtdlMemory",
+        "hashState",
+        "updateTdLambda"
+      ],
+      "invocation_sites": [
+        "_core/initDaemons.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "paretoOptimizer": {
+      "file": "server/paretoOptimizer.ts",
+      "exists": true,
+      "exports": [
+        "addObjective",
+        "addSolution",
+        "computeParetoFront"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "particleSwarmOptimizer": {
+      "file": "server/particleSwarmOptimizer.ts",
+      "exists": true,
+      "exports": [
+        "optimizePSO",
+        "_resetParticleSwarmOptimizerForTest"
+      ],
+      "invocation_sites": [
+        "_core/initDaemons.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "pheromoneTrailManager": {
+      "file": "server/pheromoneTrailManager.ts",
+      "exists": true,
+      "exports": [
+        "addEdge",
+        "getEdge",
+        "depositPheromone"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "policyOptimizer": {
+      "file": "server/policyOptimizer.ts",
+      "exists": true,
+      "exports": [
+        "createPolicy",
+        "selectAction",
+        "updatePolicy"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "populationEvolver": {
+      "file": "server/populationEvolver.ts",
+      "exists": true,
+      "exports": [
+        "initializePopulation",
+        "evolveGeneration",
+        "getState"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "proofVerifier": {
+      "file": "server/proofVerifier.ts",
+      "exists": true,
+      "exports": [
+        "checkPropositional",
+        "runTLAVerification",
+        "verifyZKProof"
+      ],
+      "invocation_sites": [
+        "selfImprove.ts",
+        "utilityFunction.ts",
+        "twoPhaseCommit.ts",
+        "semanticSelfModel.ts",
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "proposalGenealogy": {
+      "file": "server/proposalGenealogy.ts",
+      "exists": true,
+      "exports": [
+        "initProposalGenealogy",
+        "recordProposalGenerated",
+        "recordProposalOutcome"
+      ],
+      "invocation_sites": [
+        "selfImprove.ts",
+        "rsiDashboardV2.ts",
+        "proposalGenerator.ts",
+        "genealogyGuidedGeneration.ts",
+        "_core/initDaemons.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "proposalRanker": {
+      "file": "server/proposalRanker.ts",
+      "exists": true,
+      "exports": [
+        "jaccardSimilarity",
+        "scoreProposal",
+        "rankProposals"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts",
+        "proposalGenealogy.ts",
+        "_core/initDaemons.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "quantumInspiredOptimizer": {
+      "file": "server/quantumInspiredOptimizer.ts",
+      "exists": true,
+      "exports": [
+        "optimizeHyperparameters"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "rewardCalculator": {
+      "file": "server/rewardCalculator.ts",
+      "exists": true,
+      "exports": [
+        "defineRewardFunction",
+        "calculateReward",
+        "getCumulativeReward"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "rsiDashboard": {
+      "file": "server/rsiDashboard.ts",
+      "exists": true,
+      "exports": [
+        "handleDashboardStream",
+        "handleDashboardSnapshot",
+        "registerDashboardRoutes"
+      ],
+      "invocation_sites": [
+        "rsiDashboardV2.ts",
+        "_core/initDaemons.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "selfHealingChaos": {
+      "file": "server/selfHealingChaos.ts",
+      "exists": true,
+      "exports": [
+        "processChaosResults",
+        "getHardeningTargets",
+        "recordRsiAttempt"
+      ],
+      "invocation_sites": [
+        "selfImprove.ts",
+        "rsiDashboard.ts",
+        "rollbackVerifier.ts",
+        "rsiEngine.ts",
+        "_core/initDaemons.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "semanticSelfModel": {
+      "file": "server/semanticSelfModel.ts",
+      "exists": true,
+      "exports": [
+        "queryByUtility",
+        "getTopModulesByImpact",
+        "getHighRiskModules"
+      ],
+      "invocation_sites": [
+        "selfImprove.ts",
+        "continuousImprover.ts",
+        "rsiEngine.ts",
+        "aiPrompts.ts",
+        "_core/initRoutes.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "simulationEngine": {
+      "file": "server/simulationEngine.ts",
+      "exists": true,
+      "exports": [
+        "createSimulation",
+        "scheduleEvent",
+        "stepSimulation"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "spikingNetworkSimulator": {
+      "file": "server/spikingNetworkSimulator.ts",
+      "exists": true,
+      "exports": [
+        "createSimulation",
+        "addNeuron",
+        "addSynapse"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "spikingNeuron": {
+      "file": "server/spikingNeuron.ts",
+      "exists": true,
+      "exports": [
+        "createNeuron",
+        "injectCurrent",
+        "getNeuron"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "stigmergyEngine": {
+      "file": "server/stigmergyEngine.ts",
+      "exists": true,
+      "exports": [
+        "createField",
+        "depositTrace",
+        "evaporateField"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "swarmCoordinator": {
+      "file": "server/swarmCoordinator.ts",
+      "exists": true,
+      "exports": [
+        "initSwarmCoordinator",
+        "getSwarmState",
+        "broadcastToSwarm"
+      ],
+      "invocation_sites": [
+        "_core/initDaemons.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "swarmOrchestrator": {
+      "file": "server/swarmOrchestrator.ts",
+      "exists": true,
+      "exports": [
+        "loadPeers",
+        "savePeers",
+        "registerPeer"
+      ],
+      "invocation_sites": [
+        "selfImprove.ts",
+        "semanticSelfModel.ts",
+        "costOptimizer.ts",
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "swarmParticleOptimizer": {
+      "file": "server/swarmParticleOptimizer.ts",
+      "exists": true,
+      "exports": [
+        "createSwarm",
+        "stepSwarm",
+        "getSwarm"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "swarmTestnet": {
+      "file": "server/swarmTestnet.ts",
+      "exists": true,
+      "exports": [
+        "SwarmTestnet",
+        "getSwarmTestnet",
+        "resetSwarmTestnet"
+      ],
+      "invocation_sites": [
+        "selfImprove.ts",
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "temporalPatternDetector": {
+      "file": "server/temporalPatternDetector.ts",
+      "exists": true,
+      "exports": [
+        "registerPattern",
+        "recordSpike",
+        "detectPatterns"
+      ],
+      "invocation_sites": [
+        "rsiEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    },
+    "utilityFunction": {
+      "file": "server/utilityFunction.ts",
+      "exists": true,
+      "exports": [
+        "compute",
+        "computeDelta",
+        "explain"
+      ],
+      "invocation_sites": [
+        "rsiScheduler.ts",
+        "selfImprove.ts",
+        "semanticSelfModel.ts",
+        "rsiEngine.ts",
+        "mctsPlanningEngine.ts"
+      ],
+      "mode": "core",
+      "has_integration_test": true,
+      "ablation_id": null,
+      "ablation_status": "pending",
+      "notes": "Restored from quarantine in v5.1. Ablation run required before promotion to 'measured'."
+    }
+  }
+}

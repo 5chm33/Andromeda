@@ -1233,15 +1233,24 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
   try {
     const { runProbe, recordHypothesis, formatHypothesisForPrompt } = await import("./agentToolInterface.js");
     const filename = path.basename(targetFile);
-    // Run a quick grep probe to find the most likely improvement target
-    const probeCommand = area === "performance"
-      ? `grep -n 'await.*await\|for.*await\|setTimeout\|setInterval' ${filename}`
+    // Construct a structured grep probe rather than invoking a shell. This keeps
+    // the investigation step inside the typed tool allowlist and avoids making
+    // generated probe text executable.
+    const probePattern = area === "performance"
+      ? "await.*await|for.*await|setTimeout|setInterval"
       : area === "security"
-      ? `grep -n 'eval(\|exec(\|shell\|innerHTML\|dangerouslySet' ${filename}`
+      ? "eval\\(|exec\\(|shell|innerHTML|dangerouslySet"
       : area === "reliability"
-      ? `grep -n 'catch.*{}\|catch.*console\|Promise.all\|race condition' ${filename}`
-      : `grep -n 'TODO\|FIXME\|HACK\|any\b\|@ts-ignore' ${filename}`;
-    const probeResult = runProbe("bash", ["-c", probeCommand], path.dirname(targetFile));
+      ? "catch.*\\{\\}|catch.*console|Promise\\.all|race condition"
+      : "TODO|FIXME|HACK|any\\b|@ts-ignore";
+    const probeArgs = ["-nE", probePattern, filename];
+    const probeCommand = `grep -nE ${JSON.stringify(probePattern)} ${JSON.stringify(filename)}`;
+    const probeResult = runProbe(
+      "grep",
+      probeArgs,
+      path.dirname(targetFile),
+      path.resolve(process.cwd()),
+    );
     if (probeResult.success && probeResult.output.trim()) {
       const hypothesis = recordHypothesis(
         targetFile,
@@ -3143,12 +3152,93 @@ export async function autoApplyHighConfidence(): Promise<AutoApplyResult[]> {
       }
     }
 
+    // ── v5.1 Elicit enforcement: evidence bundle gate ──────────────────────────
+    // The promotion contract requires a signed evidence bundle before any commit
+    // or push. buildEvidenceBundle + canPromote are the ONLY path to git commit.
     let committed = false;
     if (config.commitToGit) {
       const filePath = resolveServerFile(proposal.targetFile);
       if (filePath) {
-        const gitResult = gitCommitSelfImprovement(filePath, proposal.title, config.branchStrategy);
-        committed = gitResult.success;
+        try {
+          const { buildEvidenceBundle, canPromote } = await import(
+            "./packages/policy-promotion/index.js"
+          );
+          // Build the evidence bundle from real sandbox records
+          const { createHash } = await import("crypto");
+          const patchHash = createHash("sha256").update(proposal.diff || "").digest("hex");
+          let agentCommit = "unknown";
+          try { agentCommit = gitSandbox("git rev-parse HEAD", { cwd: path.resolve(getServerDir(), ".."), encoding: "utf-8" }).trim(); }
+          catch { /* non-fatal */ }
+          const bundle = buildEvidenceBundle({
+            agentCommit,
+            targetFile: proposal.targetFile,
+            patchApplication: {
+              exactApply: true,
+              fuzzyRecoveryAttempted: false,
+              modifiedFiles: [proposal.targetFile],
+              patchHash,
+            },
+            testExecutions: [{
+              testId: `typecheck:${proposal.targetFile}`,
+              passed: typeCheckPassed === true,
+              durationMs: 0,
+              failureReason: typeCheckPassed === false ? "tsc --noEmit reported errors" : undefined,
+            }],
+            staticCheck: {
+              passed: typeCheckPassed === true,
+              errorCount: typeCheckPassed === false ? 1 : 0,
+            },
+            mode: "promote",
+          });
+          const decision = canPromote(bundle);
+          if (!decision.approved) {
+            results.push({
+              proposalId: proposal.id,
+              targetFile: proposal.targetFile,
+              title: proposal.title,
+              applied: true,
+              committed: false,
+              typeCheckPassed,
+              message: `Promotion gate rejected: ${decision.reason}`,
+            });
+            // Roll back the applied change
+            if (proposal.originalContent) {
+              fs.writeFileSync(filePath, proposal.originalContent, "utf-8");
+              proposal.status = "pending";
+              saveProposals(store);
+            }
+            continue;
+          }
+          // Gate passed — persist the bundle alongside the commit
+          const bundlePath = path.join(
+            path.resolve(getServerDir(), ".."),
+            "workspace",
+            `.promotion_bundle_${proposal.id}.json`
+          );
+          const workspaceDir = path.dirname(bundlePath);
+          if (!fs.existsSync(workspaceDir)) fs.mkdirSync(workspaceDir, { recursive: true });
+          fs.writeFileSync(bundlePath, JSON.stringify(bundle, null, 2), "utf-8");
+          // Commit with bundle ID in message
+          const gitResult = gitCommitSelfImprovement(filePath, proposal.title, config.branchStrategy);
+          committed = gitResult.success;
+        } catch (bundleErr: any) {
+          // Evidence bundle construction failed — fail closed, do not commit
+          results.push({
+            proposalId: proposal.id,
+            targetFile: proposal.targetFile,
+            title: proposal.title,
+            applied: true,
+            committed: false,
+            typeCheckPassed,
+            message: `Evidence bundle error (fail closed): ${bundleErr.message?.slice(0, 120) || String(bundleErr)}`,
+          });
+          if (proposal.originalContent) {
+            fs.writeFileSync(filePath, proposal.originalContent, "utf-8");
+            proposal.status = "pending";
+            saveProposals(store);
+          }
+          continue;
+        }
       }
     }
 

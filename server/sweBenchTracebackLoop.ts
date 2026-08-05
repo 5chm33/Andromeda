@@ -763,7 +763,23 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
   try {
     // Start the container (detached, so we can exec into it repeatedly)
     await execAsync(
-      `docker run -d --name ${containerName} --memory=4g --cpus=2.0 ${dockerImage} tail -f /dev/null`
+      // Security hardening: network isolation, dropped capabilities, no privilege escalation,
+      // PID limit to prevent fork bombs, non-root user where image supports it.
+      // NOTE: --read-only is intentionally omitted here because patch application
+      // needs to write to /testbed. The worktree is disposable (container is removed
+      // after each instance), so the writable FS is acceptable.
+      [
+        "docker", "run", "-d",
+        "--name", containerName,
+        "--memory=4g",
+        "--cpus=2.0",
+        "--network=none",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=256",
+        dockerImage,
+        "tail", "-f", "/dev/null",
+      ].join(" ")
     );
 
     // Fix 32: Detect Python version in container for probe script compatibility

@@ -174,27 +174,22 @@ export default defineConfig({
       output: {
         // Split the monolithic index bundle into smaller vendor/feature chunks.
         // This reduces the critical-path JS for initial page load.
+        // manualChunks: only split libraries that have no cross-chunk imports.
+        // react, katex, and vendor-misc form a circular dependency when split
+        // separately (katex imports react internals; react-dom is shared).
+        // Isolating only mermaid/cytoscape and codemirror eliminates the
+        // "Circular chunk" Rollup warning without sacrificing load-time gains.
         manualChunks(id: string) {
-          // Mermaid diagramming library
+          // Mermaid + cytoscape: large, self-contained, safe to split.
           if (id.includes('mermaid') || id.includes('cytoscape')) {
             return 'vendor-diagrams';
           }
-          // KaTeX math rendering
-          if (id.includes('katex')) {
-            return 'vendor-katex';
-          }
-          // CodeMirror editor
+          // CodeMirror: self-contained, safe to split.
           if (id.includes('codemirror') || id.includes('@codemirror')) {
             return 'vendor-codemirror';
           }
-          // React + React DOM
-          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
-            return 'vendor-react';
-          }
-          // Other large node_modules
-          if (id.includes('node_modules')) {
-            return 'vendor-misc';
-          }
+          // react, katex, and all other node_modules stay in the default chunk
+          // to avoid the circular-chunk warning.
         },
       },
     },
