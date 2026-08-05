@@ -161,6 +161,13 @@ async function runSmoke(): Promise<void> {
     assert(results, "docker-available", true, `Docker ${stdout.trim()} available`);
   } catch (e) {
     console.error("Docker not available:", (e as Error).message);
+    // Write a failed smoke record so every attempted smoke leaves an auditable
+    // result. This does not let a scored run bypass preflight (the launcher
+    // rejects any bundle with passed:false), but it makes the invariant literal.
+    assert(results, "docker-available", false, `Docker unavailable: ${(e as Error).message.slice(0, 200)}`);
+    results.evidence.completedAt = new Date().toISOString();
+    results.evidence.overallPassed = false;
+    writeSmokeResult(results);
     process.exitCode = 2;
     return;
   }
@@ -512,11 +519,19 @@ async function runSmoke(): Promise<void> {
     if (volumeMayExist) {
       // removeWorktreeVolume is idempotent: if seedWorktreeVolume() already
       // rolled back the volume, this is a harmless no-op.
+      // v5.7: returns false if Docker could not remove the volume after one retry.
       try {
-        removeWorktreeVolume(volumeName);
-        assert(results, "volume-cleaned-up", true, `Volume ${volumeName} removed`);
+        const removed = removeWorktreeVolume(volumeName);
+        if (removed) {
+          assert(results, "volume-cleaned-up", true, `Volume ${volumeName} removed`);
+        } else {
+          // Not a hard failure — the scored launcher does not check this assertion.
+          // Log a warning so the operator can clean up manually.
+          console.warn(`[smoke] WARNING: could not remove volume ${volumeName}. Run: docker volume rm ${volumeName}`);
+          assert(results, "volume-cleaned-up", false, `Volume ${volumeName} not removed after retry — manual cleanup needed`);
+        }
       } catch (e) {
-        assert(results, "volume-cleaned-up", false, `Volume cleanup failed: ${(e as Error).message}`);
+        assert(results, "volume-cleaned-up", false, `Volume cleanup threw: ${(e as Error).message}`);
       }
     }
 

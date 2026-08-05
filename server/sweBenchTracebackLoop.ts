@@ -1064,10 +1064,19 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
   } finally {
     await execAsync(`docker rm -f ${containerName}`).catch(() => { /* ignore */ });
     // v5.4: Clean up the seeded worktree volume after the repair container exits.
+    // v5.7: removeWorktreeVolume() returns false if Docker could not remove the
+    // volume after one retry. Log a warning so the operator can clean up manually.
     if (_seededVolumeOuter !== null) {
       try {
         const { removeWorktreeVolume: _rmVol } = await import("./hardenedSandbox.js");
-        _rmVol(_seededVolumeOuter.volumeName);
+        const removed = _rmVol(_seededVolumeOuter.volumeName);
+        if (!removed) {
+          console.warn(
+            `[TracebackLoop] WARNING: could not remove worktree volume ` +
+            `${_seededVolumeOuter.volumeName} for ${instanceId}. ` +
+            `Run: docker volume rm ${_seededVolumeOuter.volumeName}`
+          );
+        }
       } catch { /* ignore cleanup errors */ }
     }
   }

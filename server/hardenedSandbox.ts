@@ -282,9 +282,26 @@ export function seedWorktreeVolume(
 /**
  * Removes a seeded worktree volume.
  * Call this after the repair container has been removed.
+ *
+ * Returns true if the volume was removed (or did not exist), false if Docker
+ * reported an error after one retry. Callers should log a warning on false.
+ * Idempotent: a volume that does not exist is treated as success.
  */
-export function removeWorktreeVolume(volumeName: string): void {
-  spawnSync("docker", ["volume", "rm", volumeName], { encoding: "utf-8", stdio: "pipe" });
+export function removeWorktreeVolume(volumeName: string): boolean {
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    const result = spawnSync("docker", ["volume", "rm", volumeName], { encoding: "utf-8", stdio: "pipe" });
+    if (result.status === 0) return true;
+    // "No such volume" is a success — the volume is already gone.
+    const stderr = (result.stderr || "").toLowerCase();
+    if (stderr.includes("no such volume") || stderr.includes("not found")) return true;
+    // First attempt failed — wait briefly then retry once.
+    if (attempt === 1) {
+      // Synchronous 200 ms back-off via a tight busy-wait (spawnSync context).
+      const deadline = Date.now() + 200;
+      while (Date.now() < deadline) { /* busy-wait */ }
+    }
+  }
+  return false;
 }
 
 // ── Builder ───────────────────────────────────────────────────────────────────
