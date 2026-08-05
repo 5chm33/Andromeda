@@ -71,7 +71,7 @@ import { getDistilledReward, distillFromApi } from "./onlineRewardDistiller.js";
 import { isSemanticDuplicate, recordSemanticEmbedding } from "./semanticDedup.js";
 import { determineSampleCount, selectBestSample } from "./adaptiveSelfConsistency.js";
 import { assignVariant, recordVariantOutcome } from "./abTestingFramework.js";
-import { queryFederatedGraph, publishToFederatedGraph } from "./federatedKnowledgeGraph.js";
+import { queryFederatedGraph, publishToFederatedGraph } from "./experimental/federatedKnowledgeGraph.js";
 import { discoverActiveSpecialization, getSpecializedPrompt, recordSpecializationOutcome } from "./emergentSpecialization.js";
 import { recordTemporalEvent } from "./temporalReasoningEngine.js";
 import { globalStakeholderReporting } from "./stakeholderReporting";
@@ -1180,7 +1180,7 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
   // v14.0.0: Architectural Pattern Memory — inject cross-session pattern context into LLM prompt.
   // Tells the LLM what patterns have succeeded/failed for this specific file in past RSI cycles.
   try {
-    const { buildPatternContext } = await import("./epistemicBeliefModel.js");
+    const { buildPatternContext } = await import("./experimental/epistemicBeliefModel.js");
     const patternCtx = buildPatternContext(targetFile);
     if (patternCtx) {
       const userMsg = llmMessages[llmMessages.length - 1];
@@ -1930,13 +1930,13 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
     if (guardResult.success) {
       // v14.0.0: Record success in architectural pattern memory
       try {
-        const { recordPatternOutcome } = await import("./epistemicBeliefModel.js");
+        const { recordPatternOutcome } = await import("./experimental/epistemicBeliefModel.js");
         recordPatternOutcome(proposal.title || "unknown", "structure", path.basename(proposal.targetFile), "success");
       } catch { /* non-fatal */ }
 
       // v17.0.0: Record outcome in proposal genealogy DAG
       try {
-        const { recordProposalOutcome } = await import("./proposalGenealogy.js");
+        const { recordProposalOutcome } = await import("./experimental/proposalGenealogy.js");
         await recordProposalOutcome(proposalId, "applied");
       } catch (_pgErr) { /* non-fatal */ }
       // v18.0.0: Update reward calibrator with accepted outcome
@@ -1959,7 +1959,7 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
 
       // v14.0.0: Clear self-healing chaos hardening target if this file was flagged
       try {
-        const { clearHardeningTarget } = await import("./selfHealingChaos.js");
+        const { clearHardeningTarget } = await import("./experimental/selfHealingChaos.js");
         const moduleName = path.basename(proposal.targetFile, ".ts");
         clearHardeningTarget(moduleName);
       } catch { /* non-fatal */ }
@@ -2034,7 +2034,7 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
           log.warn(`[ciRegressionGuard] Gate FAILED for ${path.basename(proposal.targetFile)}: ${gateResult.detail}`);
           // Record as failure in pattern memory
           try {
-            const { recordPatternOutcome } = await import("./epistemicBeliefModel.js");
+            const { recordPatternOutcome } = await import("./experimental/epistemicBeliefModel.js");
             recordPatternOutcome(proposal.title || "unknown", "structure", path.basename(proposal.targetFile), "failure");
           } catch { /* non-fatal */ }
           // Roll back via transaction log
@@ -2180,7 +2180,7 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
       // v12.11.0: Federated RLHF — broadcast success outcome to peers so they
       // can update their local model weights from our experience.
       try {
-        const { broadcastOutcome } = await import("./federatedRLHF.js");
+        const { broadcastOutcome } = await import("./experimental/federatedRLHF.js");
         const consensusVotes2 = (proposal as any)._consensusVotes as Array<{ model: string; approved: boolean }> | undefined;
         broadcastOutcome({
           proposalId: proposal.id,
@@ -2475,7 +2475,7 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
 
         // v12.11.0: Federated RLHF — broadcast failure outcome to peers
         try {
-          const { broadcastOutcome: broadcastFail } = await import("./federatedRLHF.js");
+          const { broadcastOutcome: broadcastFail } = await import("./experimental/federatedRLHF.js");
           const failVotes = (proposal as any)._consensusVotes as Array<{ model: string; approved: boolean }> | undefined;
           broadcastFail({
             proposalId: proposal.id,
