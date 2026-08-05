@@ -16,6 +16,17 @@ vi.mock("./selfModifyHelpers.js", () => ({
   getProjectRoot: vi.fn(() => process.cwd()),
 }));
 
+// Mock gitSandbox — selfRunTestsTool now uses gitSandbox for git calls, not raw execSync
+vi.mock("../gitSandbox.js", () => ({
+  gitSandbox: vi.fn((cmd: string) => {
+    if (cmd.includes("git add")) return "";
+    if (cmd.includes("git commit")) return "";
+    if (cmd.includes("git rev-parse")) return "abcdef1";
+    if (cmd.includes("git revert")) return "";
+    return "";
+  })
+}));
+
 // Mock child_process
 vi.mock("child_process", () => ({
   execSync: vi.fn((cmd) => {
@@ -172,8 +183,8 @@ describe("selfRunTestsTool", () => {
     });
 
     it("should handle git failure gracefully", async () => {
-      const { execSync } = await import("child_process");
-      (execSync as any).mockImplementation((cmd: string) => {
+      const gitSandboxMod = await import("../gitSandbox.js");
+      (gitSandboxMod.gitSandbox as any).mockImplementation((cmd: string) => {
         if (cmd.includes("git commit")) throw new Error("Git failed");
         return "";
       });
