@@ -54,11 +54,11 @@ def main():
             print(f"  ✗ {a['name']}: {a['detail']}")
         sys.exit(1)
 
-    # Verify required evidence fields
+    # Verify required evidence fields (v5.3: sandboxControls replaces rootUidException)
     required = [
         "instanceId", "imageDigest", "resolvedRef", "dockerArgs",
         "patchHash", "testCommand", "testOutput", "testExitCode",
-        "rootUidException", "dockerVersion",
+        "dockerVersion", "sandboxControls",
     ]
     missing = [f for f in required if f not in evidence]
     if missing:

@@ -58,6 +58,8 @@ export interface SandboxControlRecord {
   cpuLimit: string;
   wallClockLimitMs: number;
   readOnly: boolean;
+  /** Path of the writable worktree overlay (null when root FS is fully read-only). */
+  writableWorktreePath?: string | null;
   effectiveUser: string;
   imageDigest: string;
   hostDockerSocketMounted: boolean;

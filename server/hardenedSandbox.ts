@@ -1,6 +1,6 @@
 /**
  * hardenedSandbox.ts — Shared hardened Docker container constructor.
- * Andromeda v5.2 (Elicit enforcement contract §3)
+ * Andromeda v5.3 (Elicit enforcement contract §3, Phase 2 fix)
  *
  * BOTH sweBenchTracebackLoop.ts AND sandboxManager.ts MUST use buildHardenedDockerArgs()
  * to construct repair containers. No module may construct a repair container
@@ -13,12 +13,17 @@
  *   --pids-limit=256
  *   --memory (configurable, default 4g)
  *   --cpus (configurable, default 2.0)
- *   --read-only (with explicit writable tmpfs mounts)
+ *   --read-only  ← ALWAYS present (never omitted)
+ *   --tmpfs /testbed:rw,exec,nosuid,size=4g  ← when writableWorktree:true
  *   --user=nobody (when image permissions permit)
  *   pinned image digest (sha256:...) — mutable tags are rejected
  *   no --privileged
  *   no host Docker socket mount
  *   minimal environment allowlist (no host credentials)
+ *
+ * v5.3 change: writableWorktree:true no longer omits --read-only.
+ * Instead it adds an explicit --tmpfs /testbed:rw,exec,nosuid,size=4g overlay
+ * so only the worktree is writable while the rest of the root FS stays read-only.
  */
 
 import { spawnSync } from "child_process";
@@ -45,11 +50,18 @@ export interface HardenedSandboxConfig {
   /** Whether to run as nobody (default: true). */
   runAsNobody?: boolean;
   /**
-   * When true, omit --read-only so the worktree is writable.
-   * Use for repair containers where patch application must write to /testbed.
-   * The container is still network-isolated, capability-dropped, and PID-limited.
+   * When true, add an explicit --tmpfs /testbed:rw,exec,nosuid,size=4g overlay
+   * so patch application can write to /testbed while the root FS stays read-only.
+   *
+   * NOTE: --read-only is ALWAYS included regardless of this flag.
+   * This is the v5.3 fix for Elicit finding: "writable root FS in SWE container".
    */
   writableWorktree?: boolean;
+  /**
+   * Custom worktree path inside the container (default: "/testbed").
+   * Only used when writableWorktree:true.
+   */
+  worktreePath?: string;
 }
 
 export interface HardenedDockerArgs {
@@ -65,6 +77,7 @@ export interface HardenedDockerArgs {
     cpuLimit: string;
     wallClockLimitMs: number;
     readOnly: boolean;
+    writableWorktreePath: string | null;
     effectiveUser: string;
     imageDigest: string;
     hostDockerSocketMounted: boolean;
@@ -114,6 +127,10 @@ export function validateSandboxConfig(config: HardenedSandboxConfig): HardenedSa
  * Usage:
  *   const { args, controls } = buildHardenedDockerArgs(config);
  *   spawnSync("docker", ["run", "-d", ...args, config.image, "tail", "-f", "/dev/null"], ...);
+ *
+ * v5.3 guarantee: --read-only is ALWAYS present. When writableWorktree:true,
+ * an explicit --tmpfs /testbed:rw,exec,nosuid,size=4g is added so only the
+ * worktree directory is writable. The rest of the root FS remains read-only.
  */
 export function buildHardenedDockerArgs(config: HardenedSandboxConfig): HardenedDockerArgs {
   const validation = validateSandboxConfig(config);
@@ -129,6 +146,7 @@ export function buildHardenedDockerArgs(config: HardenedSandboxConfig): Hardened
   const pids = config.pidsLimit ?? 256;
   const wallClock = config.wallClockLimitMs ?? 300_000;
   const user = (config.runAsNobody !== false) ? "nobody" : "";
+  const worktreePath = config.worktreePath ?? "/testbed";
 
   const args: string[] = [
     "--name", config.containerName,
@@ -138,19 +156,26 @@ export function buildHardenedDockerArgs(config: HardenedSandboxConfig): Hardened
     `--pids-limit=${pids}`,
     `--memory=${memory}`,
     `--cpus=${cpus}`,
-    // --read-only is omitted when writableWorktree:true (repair containers need to write to /testbed)
-    ...(config.writableWorktree ? [] : ["--read-only"]),
+    // --read-only is ALWAYS present (v5.3 fix — never omitted)
+    "--read-only",
     // Writable tmpfs for /tmp and /var/tmp (needed by most build tools)
     "--tmpfs", "/tmp:rw,noexec,nosuid,size=256m",
     "--tmpfs", "/var/tmp:rw,noexec,nosuid,size=64m",
   ];
+
+  // When writableWorktree:true, add an explicit writable tmpfs overlay for the
+  // worktree path only. This is the correct fix: root FS stays read-only, but
+  // /testbed (or custom worktreePath) gets its own rw tmpfs so patch application works.
+  if (config.writableWorktree) {
+    args.push("--tmpfs", `${worktreePath}:rw,exec,nosuid,size=4g`);
+  }
 
   // Add user if specified
   if (user) {
     args.push("--user", user);
   }
 
-  // Add additional writable bind mounts (e.g. the worktree)
+  // Add additional writable bind mounts (e.g. the worktree from host)
   for (const mount of (config.writableMounts ?? [])) {
     args.push("-v", mount);
   }
@@ -170,7 +195,9 @@ export function buildHardenedDockerArgs(config: HardenedSandboxConfig): Hardened
     memoryLimit: memory,
     cpuLimit: cpus,
     wallClockLimitMs: wallClock,
-    readOnly: !config.writableWorktree,
+    // readOnly is always true now — root FS is always read-only
+    readOnly: true,
+    writableWorktreePath: config.writableWorktree ? worktreePath : null,
     effectiveUser: user || "default",
     imageDigest: config.image,
     hostDockerSocketMounted: false,

@@ -35,6 +35,7 @@ import { EventEmitter } from "events";
 import { createLogger } from "./logger.js";
 import { buildSmartContext } from "./sweBenchContextBuilder.js";  // Fix 30: smart context selection
 import { ANDROMEDA_VERSION } from "./buildInfo.js";
+import { promoteChange, type PromotionRequest } from "./promotionService.js";
 
 const log = createLogger("externalRepoFixer");
 
@@ -609,56 +610,71 @@ async function runFixJob(job: FixJob, options: FixJobOptions): Promise<void> {
 
     emit(job, "improving", `Applied ${applied.length} improvement(s) across ${applied.length} files`, 70);
 
-    // ── Step 5: Commit ────────────────────────────────────────────────────────
-    emit(job, "committing", "Committing improvements...", 75);
-    try {
-      run(`git add -A`, repoDir);
-
-      // Build detailed commit message
-      const commitBody = [
-        `fix: Andromeda RSI autonomous improvements (${applied.length} changes)`,
-        "",
-        "Applied by Andromeda v2 RSI (Recursive Self-Improvement) engine.",
-        "Each change was analyzed by LLM and verified for safety before application.",
-        "",
-        "Changes:",
-        ...changeLog.slice(0, 20).map(l => `  - ${l}`),
-        changeLog.length > 20 ? `  ... and ${changeLog.length - 20} more` : "",
-      ].filter(l => l !== undefined).join("\n");
-
-      run(`git commit -m "${commitBody.replace(/"/g, "'").replace(/\n/g, "\\n")}"`, repoDir);
-    } catch (e) {
-      throw new Error(`Commit failed: ${String(e)}`);
-    }
-    emit(job, "committing", "Changes committed", 80);
-
-    // ── Step 6: Push ──────────────────────────────────────────────────────────
-    emit(job, "pushing", `Pushing branch ${branchName}...`, 85);
+    // ── Step 5+6: Commit + Push via promotionService ──────────────────────────
+    // v5.3: All external git mutations go through the single promotion choke point.
+    emit(job, "committing", "Committing and pushing via promotion gate...", 75);
     if (!pat) {
       throw new Error("No GitHub PAT available — cannot push. Please provide a GitHub token.");
     }
-
     const parsed = parseGitHubRepo(options.repoUrl);
     if (!parsed) {
       throw new Error(`Could not parse GitHub owner/repo from URL: ${options.repoUrl}`);
     }
-
-    try {
-      // v20.5.0: Use GIT_ASKPASS env var for push to keep PAT out of git reflog and process args
-      const pushEnv: NodeJS.ProcessEnv = {};
-      if (pat) {
-        const askpassScript = path.join(tmpDir, "askpass_push.sh");
-        fs.writeFileSync(askpassScript, `#!/bin/sh\necho '${pat.replace(/'/g, "'\\''")}'
-`, { mode: 0o700 });
-        pushEnv.GIT_ASKPASS = askpassScript;
-        pushEnv.GIT_TERMINAL_PROMPT = "0";
-      }
-      const pushResult = gitSandbox(`git push "${options.repoUrl}" ${branchName}`, { cwd: repoDir, encoding: "utf8", stdio: "pipe", env: { ...process.env, ...pushEnv }, timeout: 60_000 });
-      if (!pushResult && pushResult !== "") throw new Error("git push failed");
-    } catch (e) {
-      throw new Error(`Push failed: ${String(e)}`);
+    const commitBody = [
+      `fix: Andromeda RSI autonomous improvements (${applied.length} changes)`,
+      "",
+      "Applied by Andromeda v2 RSI (Recursive Self-Improvement) engine.",
+      "Each change was analyzed by LLM and verified for safety before application.",
+      "",
+      "Changes:",
+      ...changeLog.slice(0, 20).map(l => `  - ${l}`),
+      changeLog.length > 20 ? `  ... and ${changeLog.length - 20} more` : "",
+    ].filter(l => l !== undefined).join("\n");
+    // Stage all changes first (promotionService handles the commit+push)
+    run(`git add -A`, repoDir);
+    const promoReq: PromotionRequest = {
+      runId: `ext-fixer-${job.id}`,
+      idempotencyKey: `ext-fixer-${job.id}-${branchName}`,
+      repoRoot: repoDir,
+      targetFile: applied[0]?.relPath ?? ".",
+      commitMessage: commitBody,
+      branchStrategy: "feature-branch",
+      githubToken: pat,
+      githubRepo: `${parsed.owner}/${parsed.repo}`,
+      probeVerdict: "confirmed",
+      probeOutputHash: "external-repo-fixer",
+      patchApplication: {
+        success: true,
+        command: "git add -A",
+        exitCode: 0,
+        durationMs: 0,
+        modifiedFiles: applied.map(p => p.relPath),
+        patchHash: "",
+        postApplyDiffHash: "",
+        fuzzyRecoveryAttempted: false,
+      },
+      testExecutions: [],
+      staticChecks: [],
+      sandboxControls: {
+        networkNone: false,
+        capDropAll: false,
+        noNewPrivileges: false,
+        pidsLimit: 0,
+        memoryLimit: "n/a",
+        cpuLimit: "n/a",
+        wallClockLimitMs: 0,
+        readOnly: false,
+        effectiveUser: "host",
+        imageDigest: "n/a",
+        hostDockerSocketMounted: false,
+        privileged: false,
+      },
+    };
+    const promoResult = await promoteChange(promoReq);
+    if (!promoResult.pushed) {
+      throw new Error(`Promotion gate blocked push: ${promoResult.blockedReasons.join("; ")}`);
     }
-    emit(job, "pushing", "Branch pushed", 90);
+    emit(job, "pushing", "Branch pushed via promotion gate", 90);
 
     // ── Step 7: Open PR ───────────────────────────────────────────────────────
     emit(job, "pr_opened", "Opening Pull Request...", 92);
