@@ -116,74 +116,112 @@ interface SWEBenchInstance {
 }
 
 /**
- * Loads SWE-bench instances from the HuggingFace cache using Python.
+  * Loads SWE-bench instances from the HuggingFace datasets library using an
+ * explicit dataset name, revision (git commit), and split. This replaces the
+ * previous cache-glob approach, which loaded the first Arrow file found
+ * anywhere in the cache without verifying which dataset release or split it
+ * came from.
+ *
+ * Required env vars for scored runs:
+ *   SWEBENCH_DATASET_NAME     (default: princeton-nlp/SWE-bench_Verified)
+ *   SWEBENCH_DATASET_REVISION (default: main — MUST be pinned for scored runs)
+ *   SWEBENCH_DATASET_SPLIT    (default: test)
+ *
+ * Returns instances plus dataset provenance metadata for the run manifest.
  */
+export interface DatasetProvenance {
+  datasetName: string;
+  datasetRevision: string;
+  datasetSplit: string;
+  /** SHA-256 of the canonical sorted JSON of instance_id values. */
+  instanceIdHash: string;
+  /** Number of instances loaded. */
+  instanceCount: number;
+  /** Required schema columns that were verified present. */
+  schemaVerified: boolean;
+}
+
 async function loadSWEBenchInstances(
   instanceIds?: string[],
   maxInstances?: number,
-  split = 'test'
-): Promise<SWEBenchInstance[]> {
-  const scriptPath = `/tmp/load_swebench_${crypto.randomBytes(4).toString('hex')}.py`;
+  split?: string
+): Promise<{ instances: SWEBenchInstance[]; provenance: DatasetProvenance }> {
+  const datasetName = process.env.SWEBENCH_DATASET_NAME ?? 'princeton-nlp/SWE-bench_Verified';
+  const datasetRevision = process.env.SWEBENCH_DATASET_REVISION ?? 'main';
+  const datasetSplit = split ?? process.env.SWEBENCH_DATASET_SPLIT ?? 'test';
 
+  const scriptPath = `/tmp/load_swebench_${crypto.randomBytes(4).toString('hex')}.py`;
   const filterClause = instanceIds && instanceIds.length > 0
     ? `instance_ids = ${JSON.stringify(instanceIds)}\ndf = df[df['instance_id'].isin(instance_ids)]`
     : maxInstances
     ? `df = df.head(${maxInstances})`
     : '';
-
   const script = `
-import pyarrow as pa
-import pyarrow.ipc as ipc
 import json
-import glob
-import os
-
-# Find the arrow file in HuggingFace cache
-cache_dirs = glob.glob(os.path.expanduser(
-    '~/.cache/huggingface/datasets/SWE-bench___swe-bench_verified/**/*.arrow'
-), recursive=True)
-
-if not cache_dirs:
-    # Try alternate path
-    cache_dirs = glob.glob(os.path.expanduser(
-        '~/.cache/huggingface/datasets/**/*.arrow'
-    ), recursive=True)
-
-if not cache_dirs:
-    print('ERROR: No arrow files found in HuggingFace cache')
-    exit(1)
-
-# Load the first arrow file
-arrow_file = cache_dirs[0]
+import hashlib
+import sys
 try:
-    with open(arrow_file, 'rb') as f:
-        reader = ipc.open_stream(f)
-        table = reader.read_all()
-except:
-    try:
-        with open(arrow_file, 'rb') as f:
-            reader = ipc.open_file(f)
-            table = reader.read_all()
-    except Exception as e:
-        print(f'ERROR: {e}')
-        exit(1)
+    from datasets import load_dataset
+except ImportError:
+    print(json.dumps({'error': 'datasets library not installed. Run: pip install datasets'}))
+    sys.exit(1)
+
+dataset_name = ${JSON.stringify(datasetName)}
+revision = ${JSON.stringify(datasetRevision)}
+split = ${JSON.stringify(datasetSplit)}
+
+try:
+    ds = load_dataset(dataset_name, split=split, revision=revision, trust_remote_code=False)
+except Exception as e:
+    print(json.dumps({'error': f'Failed to load dataset: {e}'}))
+    sys.exit(1)
+
+# Verify required schema columns are present
+REQUIRED_COLUMNS = ['instance_id', 'problem_statement', 'repo', 'base_commit',
+                    'FAIL_TO_PASS', 'PASS_TO_PASS', 'test_patch']
+missing = [c for c in REQUIRED_COLUMNS if c not in ds.column_names]
+if missing:
+    print(json.dumps({'error': f'Missing required columns: {missing}. Got: {ds.column_names}'}))
+    sys.exit(1)
 
 import pandas as pd
-df = table.to_pandas()
-
+df = ds.to_pandas()
 ${filterClause}
 
-records = df.to_dict('records')
-print(json.dumps(records))
-`;
+# Compute a canonical hash of the sorted instance_id list to prove which records were used
+all_ids = sorted(df['instance_id'].tolist())
+instance_id_hash = hashlib.sha256(json.dumps(all_ids, sort_keys=True).encode()).hexdigest()
 
+records = df.to_dict('records')
+result = {
+    'records': records,
+    'provenance': {
+        'datasetName': dataset_name,
+        'datasetRevision': revision,
+        'datasetSplit': split,
+        'instanceIdHash': instance_id_hash,
+        'instanceCount': len(records),
+        'schemaVerified': True,
+    }
+}
+print(json.dumps(result))
+`;
   fs.writeFileSync(scriptPath, script);
   try {
     const result = await execAsync(`python3 "${scriptPath}" 2>&1`, { maxBuffer: 50 * 1024 * 1024 });
-    if (result.stdout.startsWith('ERROR:')) {
-      throw new Error(result.stdout);
+    let parsed: { error?: string; records?: SWEBenchInstance[]; provenance?: DatasetProvenance };
+    try {
+      parsed = JSON.parse(result.stdout);
+    } catch {
+      throw new Error(`Dataset loader produced non-JSON output: ${result.stdout.slice(0, 500)}`);
     }
-    return JSON.parse(result.stdout);
+    if (parsed.error) {
+      throw new Error(`Dataset loader error: ${parsed.error}`);
+    }
+    if (!parsed.records || !parsed.provenance) {
+      throw new Error(`Dataset loader returned incomplete result: ${result.stdout.slice(0, 500)}`);
+    }
+    return { instances: parsed.records, provenance: parsed.provenance };
   } finally {
     try { fs.unlinkSync(scriptPath); } catch { /* ignore */ }
   }
@@ -202,13 +240,17 @@ function getDockerImageName(instanceId: string): string {
 }
 
 /**
- * Extracts file content directly from the Docker image.
- * This guarantees exact file content matching (no git clone mismatch).
+ * Extracts file content directly from the Docker image using a network-disabled,
+ * read-only inspection container. Uses the resolved digest reference when
+ * available to ensure the exact image is inspected.
  */
 async function extractFileFromDocker(dockerImage: string, filePath: string): Promise<string | null> {
   try {
     const result = await execAsync(
-      `docker run --rm "${dockerImage}" cat "/testbed/${filePath}" 2>/dev/null`,
+      // --network none: no outbound network access during file inspection
+      // --read-only: root filesystem is read-only (inspection only, no writes)
+      // --rm: container is removed immediately after the command exits
+      `docker run --rm --network none --read-only "${dockerImage}" cat "/testbed/${filePath}" 2>/dev/null`,
       { maxBuffer: 10 * 1024 * 1024 }
     );
     return result.stdout;
@@ -216,14 +258,16 @@ async function extractFileFromDocker(dockerImage: string, filePath: string): Pro
     return null;
   }
 }
-
 /**
- * Lists Python files in the Docker image's testbed directory.
+ * Lists Python files in the Docker image's testbed directory using a
+ * network-disabled, read-only inspection container.
  */
 async function listRepoFiles(dockerImage: string): Promise<string[]> {
   try {
     const result = await execAsync(
-      `docker run --rm "${dockerImage}" bash -c "cd /testbed && git ls-files '*.py' 2>/dev/null"`,
+      // --network none: no outbound network access during file listing
+      // --read-only: root filesystem is read-only (inspection only, no writes)
+      `docker run --rm --network none --read-only "${dockerImage}" bash -c "cd /testbed && git ls-files '*.py' 2>/dev/null"`,
       { maxBuffer: 5 * 1024 * 1024 }
     );
     return result.stdout.trim().split('\n').filter(f => f.length > 0);
@@ -786,9 +830,10 @@ async function main() {
 
   // Load dataset
   console.log('[Runner] Loading SWE-bench Verified dataset...');
-  const allInstances = await loadSWEBenchInstances(opts.instanceIds, opts.maxInstances);
+  const { instances: allInstances, provenance: datasetProvenance } = await loadSWEBenchInstances(opts.instanceIds, opts.maxInstances);
   const instances = allInstances.filter(i => !processedIds.has(i.instance_id));
   console.log(`[Runner] Processing ${instances.length} instances (${processedIds.size} already done)`);
+  console.log(`[Runner] Dataset: ${datasetProvenance.datasetName}@${datasetProvenance.datasetRevision} split=${datasetProvenance.datasetSplit} instances=${datasetProvenance.instanceCount} idHash=${datasetProvenance.instanceIdHash.slice(0, 16)}...`);
 
   // ── v5.4: BenchmarkLauncher pre-flight gate (scored runs only) ──────────────
   // SWEBENCH_SCORED=1 activates the full 7-item checklist.
@@ -846,9 +891,16 @@ async function main() {
       canarySliceSize: parseInt(process.env.SWEBENCH_CANARY_SIZE ?? '5', 10),
       canaryAbortThreshold: parseFloat(process.env.SWEBENCH_CANARY_THRESHOLD ?? '0.6'),
       scoredRun: true,
+      externalSearch: false,
       runBundlePath,
-      agentVersion: '5.4.0',
+      // agentVersion: read from git describe so it reflects the actual build
+      agentVersion: (() => { try { const { execSync } = require('child_process'); return execSync('git describe --tags --always --dirty', { encoding: 'utf-8' }).trim(); } catch { return 'unknown'; } })(),
       harnessRevision: process.env.SWEBENCH_HARNESS_REVISION ?? 'unset',
+      // Dataset provenance from the pinned loader
+      datasetName: datasetProvenance.datasetName,
+      datasetRevision: datasetProvenance.datasetRevision,
+      datasetSplit: datasetProvenance.datasetSplit,
+      instanceIdHash: datasetProvenance.instanceIdHash,
     };
 
     _benchLauncher = new BenchmarkLauncher(launcherConfig);
@@ -1019,17 +1071,24 @@ async function main() {
       // ── Phase 1d: Generate initial patch ────────────────────────────────
       console.log('[Runner] Phase 1d: Generating initial patch...');
       // Phase 1d-pre: Search augmentation (Fix 25b)
-      // Fetch Tavily search context for instances with external-library signals.
-      // Gated by SWEBENCH_SEARCH=1 env var inside shouldSearchForContext().
+      // In scored_strict mode, web search is DISABLED. Fetching external
+      // snippets would make the result dependent on changing online information
+      // (including potentially indexed issue/solution material) rather than
+      // solely the issue text and repository state. The preflight check also
+      // rejects SWEBENCH_SEARCH=1 in scored mode.
       let searchContextBlock = '';
-      try {
-        const searchAugmentation = await augmentWithSearch(instance_id, issueDescription);
-        if (searchAugmentation.searched && searchAugmentation.contextBlock) {
-          searchContextBlock = searchAugmentation.contextBlock;
-          console.log(`[Runner] Search augmentation: ${searchAugmentation.snippets.length} snippets from ${searchAugmentation.queries.length} queries`);
+      if (!isScoredRun) {
+        try {
+          const searchAugmentation = await augmentWithSearch(instance_id, issueDescription);
+          if (searchAugmentation.searched && searchAugmentation.contextBlock) {
+            searchContextBlock = searchAugmentation.contextBlock;
+            console.log(`[Runner] Search augmentation: ${searchAugmentation.snippets.length} snippets from ${searchAugmentation.queries.length} queries`);
+          }
+        } catch (searchErr: any) {
+          console.warn(`[Runner] Search augmentation failed (non-fatal): ${searchErr.message}`);
         }
-      } catch (searchErr: any) {
-        console.warn(`[Runner] Search augmentation failed (non-fatal): ${searchErr.message}`);
+      } else {
+        console.log('[Runner] scored_strict: web search disabled (externalSearch: false)');
       }
 
       const initialPatch = await generateInitialPatch(instance_id, issueDescription, fileContents, promptFailToPassList, promptTestPatch, searchContextBlock, sweBenchLLM);

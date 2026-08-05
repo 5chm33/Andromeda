@@ -52,12 +52,23 @@ export interface BenchmarkRunConfig {
   canaryAbortThreshold?: number;
   /** Whether this is a scored run (disables recovery patch application). */
   scoredRun: boolean;
+  /**
+   * Whether external web search was enabled. Must be false for scored runs.
+   * A scored run with SWEBENCH_SEARCH=1 is rejected at preflight.
+   */
+  externalSearch: boolean;
   /** Path to write the run bundle JSON. */
   runBundlePath: string;
   /** Agent build version string. */
   agentVersion: string;
   /** Harness revision (git commit of the SWE-bench harness). */
   harnessRevision: string;
+  /** Dataset provenance (from DatasetProvenance returned by loadSWEBenchInstances). */
+  datasetName: string;
+  datasetRevision: string;
+  datasetSplit: string;
+  /** SHA-256 of the canonical sorted JSON of instance_id values. */
+  instanceIdHash: string;
 }
 
 export interface PreLaunchCheckResult {
@@ -92,7 +103,14 @@ export interface RunMetadata {
   taskListPath: string;
   taskListHash: string;
   taskCount: number;
+  /** Dataset provenance: name, revision, split, and instance-ID hash. */
+  datasetName: string;
+  datasetRevision: string;
+  datasetSplit: string;
+  /** SHA-256 of the canonical sorted JSON of instance_id values loaded. */
+  instanceIdHash: string;
   scoredRun: boolean;
+  externalSearch: false;
   allowRecoveryPatchApplication: false;
   canarySliceSize: number;
   canaryAbortThreshold: number;
@@ -239,6 +257,33 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
         ].filter(Boolean).join("; ");
 
     check("smoke-bundle", "Smoke bundle passed for same image/harness/sandbox config", smokeOk, smokeDetail);
+  }
+
+  // ── Check 1a: Dataset revision pinned for scored runs ─────────────────────────────────
+  if (config.scoredRun) {
+    const revisionPinned = config.datasetRevision !== 'main' && config.datasetRevision.length >= 7;
+    check(
+      'dataset-revision-pinned',
+      'Dataset revision pinned to a specific commit for scored runs',
+      revisionPinned,
+      revisionPinned
+        ? `Dataset: ${config.datasetName}@${config.datasetRevision} split=${config.datasetSplit} idHash=${config.instanceIdHash.slice(0, 16)}...`
+        : `SWEBENCH_DATASET_REVISION must be set to a specific git commit (not 'main'). ` +
+          `Current: '${config.datasetRevision}'. Set SWEBENCH_DATASET_REVISION=<commit-sha> before launching.`,
+    );
+  }
+
+  // ── Check 1b: No external web search in scored runs ──────────────────────────────────────
+  if (config.scoredRun) {
+    const searchEnabled = process.env.SWEBENCH_SEARCH === '1';
+    check(
+      'no-external-search',
+      'External web search disabled for scored runs',
+      !searchEnabled,
+      searchEnabled
+        ? 'SWEBENCH_SEARCH=1 is set. A scored run must not fetch external snippets. Unset SWEBENCH_SEARCH before launching.'
+        : 'SWEBENCH_SEARCH is not set — externalSearch: false confirmed.',
+    );
   }
 
   // ── Check 2: No credentials in repair container ───────────────────────────
@@ -399,7 +444,12 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
       taskListPath: config.taskListPath,
       taskListHash,
       taskCount,
+      datasetName: config.datasetName,
+      datasetRevision: config.datasetRevision,
+      datasetSplit: config.datasetSplit,
+      instanceIdHash: config.instanceIdHash,
       scoredRun: config.scoredRun,
+      externalSearch: false,
       allowRecoveryPatchApplication: false,
       canarySliceSize: canarySize,
       canaryAbortThreshold: canaryThreshold,
