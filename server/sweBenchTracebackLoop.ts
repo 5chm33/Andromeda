@@ -313,6 +313,19 @@ export type PatchApplicationOptions = {
    * evidence until an exact diff can be generated and revalidated.
    */
   allowRecoveryPatchApplication?: boolean;
+  /**
+   * Evaluation mode. In 'scored_strict' mode:
+   *   - test_patch is NOT applied (Step 2 is skipped).
+   *   - The FAIL_TO_PASS test command is NOT run (Step 3 is skipped).
+   *   - After a successful patch apply, returns { passed: false,
+   *     output: 'SCORED_STRICT_BLIND_APPLY: patch applied cleanly' }.
+   *     The model receives no hidden-test feedback. The official evaluator
+   *     runs the hidden tests after the agent loop finishes.
+   *   - If the patch fails to apply, returns the normal PATCH_APPLY_FAILED
+   *     output so the loop can revise the patch format.
+   * In 'test_aware' mode (default), behaviour is unchanged.
+   */
+  evalMode?: 'scored_strict' | 'test_aware';
 };
 
 /** Recovery patch application is unsafe by default and must be explicitly enabled. */
@@ -426,6 +439,18 @@ export async function applyAndTest(
       } // end fuzz else
     } // end git apply error block
 
+        // ── scored_strict: blind-apply path ────────────────────────────────────
+    // In scored_strict mode the agent must not receive any hidden-test feedback.
+    // Steps 2 and 3 are skipped entirely. The patch has already been applied
+    // cleanly above. The official evaluator runs the hidden tests afterward.
+    // The loop can still revise if the patch fails to apply (PATCH_APPLY_FAILED
+    // above), but it cannot iterate on hidden-test tracebacks.
+    if (options?.evalMode === 'scored_strict') {
+      return {
+        passed: false,
+        output: 'SCORED_STRICT_BLIND_APPLY: patch applied cleanly; hidden tests deferred to external evaluator',
+      };
+    }
     // ── Step 2: Apply test_patch (adds new test cases) ─────────────────────
     if (options?.testPatch && options.testPatch.trim().length > 10) {
       fs.writeFileSync(hostTestPatchPath, options.testPatch, 'utf-8');
@@ -441,7 +466,6 @@ export async function applyAndTest(
         };
       }
     }
-
     // ── Step 3: Run tests with repo-specific command ───────────────────────
     const testCmd = getTestCommand(instanceId, failToPassTests);
     const testScript = `#!/bin/bash\nset -e\n${testCmd}\n`;
@@ -451,10 +475,8 @@ export async function applyAndTest(
     const testResult = await execAsync(
       `docker exec ${containerName} bash -c "timeout ${timeoutSeconds} /tmp/run_tests.sh 2>&1 || true"`
     ).catch(e => ({ stdout: e.stdout || '', stderr: e.stderr || '' }));
-
     const output = testResult.stdout + testResult.stderr;
     const passed = isPassed(instanceId, output);
-
     return { passed, output };
 
   } finally {
@@ -888,7 +910,10 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
         currentPatch,
         repoPath,
         TEST_TIMEOUT_SECONDS,
-        { testPatch, failToPassTests, instanceId }
+        // evalMode: 'scored_strict' skips test_patch application and the
+        // FAIL_TO_PASS test command, returning a blind-apply sentinel instead.
+        // The model receives no hidden-test feedback in this mode.
+        { testPatch, failToPassTests, instanceId, evalMode }
       );
 
             const tracebackSummary = passed ? '' : extractTracebackSummary(output);
@@ -975,7 +1000,10 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
 
         // ── Step C: Optional debug probe ───────────────────────────────────
         let probeOutput: string | undefined;
-        if (ENABLE_DEBUG_PROBE && attempt <= 2) {
+        // In scored_strict mode, the debug probe runs the FAIL_TO_PASS test
+        // command and feeds its output into a model prompt — indirect leakage.
+        // Skip the probe entirely in scored_strict.
+        if (ENABLE_DEBUG_PROBE && attempt <= 2 && evalMode !== 'scored_strict') {
           // Only run probes on first 2 attempts to save cost
           try {
             const probePrompt = buildDebugProbePrompt(
@@ -1186,7 +1214,8 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
           oraclePatch,
           repoPath,
           TEST_TIMEOUT_SECONDS,
-          { testPatch, failToPassTests, instanceId }
+          // evalMode: oracle fallback also respects scored_strict.
+          { testPatch, failToPassTests, instanceId, evalMode }
         );
         const oracleExactApply = !oracleOutput.startsWith('PATCH_APPLY_FAILED') &&
           !oracleOutput.startsWith('TEST_PATCH_APPLY_FAILED');
