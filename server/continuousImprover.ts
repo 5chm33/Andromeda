@@ -497,37 +497,10 @@ async function runImprovementCycle(): Promise<CycleResult> {
           console.log("[ContinuousImprover] Hot-reload triggered for modified modules.");
         } catch (err) { log.caught("non-fatal -- server will pick up changes on next import", err); }
 
-        // v9.9.0: Push main directly to GitHub after each successful cycle.
-        // Changes are already committed to main by applyProposal().
-        // Pushing triggers CI (RSI Validate + CI build) automatically.
-        // No branches or PRs needed — Andromeda owns main directly.
-        if (process.env.GITHUB_TOKEN && process.env.GITHUB_REPO) {
-          try {
-            // v11.4.0: git push now goes through gitSandbox() whitelist
-            const cwd = process.cwd();
-            const gitEnv = { ...process.env, GIT_AUTHOR_NAME: "Andromeda AI", GIT_AUTHOR_EMAIL: "andromeda@local", GIT_COMMITTER_NAME: "Andromeda AI", GIT_COMMITTER_EMAIL: "andromeda@local" };
-            const token = process.env.GITHUB_TOKEN;
-            // Sanitize repo name — only allow alphanumeric, /, -, .
-            const repo = (process.env.GITHUB_REPO || "").replace(/[^a-zA-Z0-9/_.-]/g, "");
-            const remoteUrl = `https://${token}@github.com/${repo}.git`;
-            gitSandbox(`git push "${remoteUrl}" main`, { cwd, env: gitEnv, encoding: "utf-8", stdio: "pipe", timeout: 30000 });
-            console.log(`[ContinuousImprover] Pushed ${result.proposalsApplied} improvement(s) to origin/main — CI triggered.`);
-          } catch (pushErr: any) {
-            // Non-fatal — push failure should never block the improvement cycle
-            // Sanitize all potential token patterns from all error output channels
-            const rawMsg = (pushErr.stderr || pushErr.stdout || pushErr.message || pushErr.toString());
-            const safeMsg = rawMsg
-              .replace(/ghp_[A-Za-z0-9]{20,}/g, "ghp_***")
-              .replace(/github_pat_[A-Za-z0-9_]{22,}/g, "github_pat_***")  // fine-grained PATs
-              .replace(/gho_[A-Za-z0-9]{36}/g, "gho_***")
-              .replace(/ghu_[A-Za-z0-9]{36}/g, "ghu_***")
-              .replace(/ghs_[A-Za-z0-9]{36}/g, "ghs_***")
-              .replace(/ghr_[A-Za-z0-9]{36}/g, "ghr_***")
-              .replace(/https:\/\/[^@\s]+@github\.com/g, "https://***@github.com")
-              .replace(/:[^:@\s]+@github\.com/g, ":***@github.com");
-            console.warn(`[ContinuousImprover] Git push failed (non-fatal): ${safeMsg.slice(0, 200)}`);
-          }
-        }
+        // v5.2: Direct push removed. All external pushes must go through
+        // promotionService.promoteChange() with a human approval token.
+        // The commit created by applyProposal() is local-only until promoted.
+        console.log(`[ContinuousImprover] Improvements committed locally — push requires promotionService with human approval`);
       } catch (tsErr: any) {
         // TypeScript check failed -- rollback all proposals applied this cycle
         console.error(`[ContinuousImprover] TypeScript check FAILED after applies. Rolling back...`);
