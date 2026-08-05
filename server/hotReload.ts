@@ -291,8 +291,13 @@ export async function getModule<T = any>(moduleName: string): Promise<T | null> 
   }
 
   // First load — import and cache
+  // Note: dynamic import with a runtime variable — esbuild may warn about glob
+  // patterns but this is intentional: moduleName is validated against RELOADABLE_MODULES
+  // before this function is called, so the set of possible values is bounded.
   try {
-    const mod = await import(`./${moduleName}.js`);
+    // eslint-disable-next-line @typescript-eslint/no-implied-eval
+    const modPath = `./` + moduleName + `.js`;
+    const mod = await import(/* @vite-ignore */ modPath);
     moduleCache.set(moduleName, mod);
 
     const _config = RELOADABLE_MODULES.find(m => m.path === moduleName);
