@@ -163,7 +163,7 @@ async function runImprovementCycle(): Promise<CycleResult> {
     // v11.16.0 Audit 8 Fix A: Use semanticSelfModel.rankProposals() for utility-aware ordering
     let sortedProposals = [...proposals].sort((a: any, b: any) => (b.confidence || 0) - (a.confidence || 0));
     try {
-      const { rankProposals } = await import("./semanticSelfModel.js");
+      const { rankProposals } = await import("./experimental/semanticSelfModel.js");
       const ranked = rankProposals(proposals.map((p: any) => ({
         moduleName: (p.targetFile || "").replace(/^.*\//, "").replace(/\.ts$/, ""),
         changeType: p.category === "performance" ? "optimize" : p.category === "fix" ? "fix_bug" : "refactor",
@@ -306,7 +306,7 @@ async function runImprovementCycle(): Promise<CycleResult> {
           } catch { /* non-fatal */ }
           // v11.17.0 Audit 9 Fix B: Wire broadcastProposal so federatedRsiNetwork peers learn
           try {
-            const { broadcastProposal } = await import("./federatedRsiNetwork.js");
+            const { broadcastProposal } = await import("./experimental/federatedRsiNetwork.js");
             await broadcastProposal({
               id: proposal.id,
               targetFile: proposal.targetFile || "unknown",
