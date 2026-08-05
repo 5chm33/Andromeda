@@ -1120,8 +1120,13 @@ async function main() {
         const patchApplyFailed = !result.resolved &&
           (result.exactApply === false);
         const timedOutInstance = !result.resolved && (result.timedOut === true);
+        // scored_strict: predictionReady means patch applied cleanly but no
+        // hidden tests ran. This is NOT a test failure. The external evaluator
+        // determines whether the patch resolves the issue.
         const instanceOutcome: InstanceResult['outcome'] = result.resolved
           ? 'resolved'
+          : result.predictionReady
+          ? 'prediction_ready'
           : patchApplyFailed
           ? 'exact_apply_failure'
           : timedOutInstance

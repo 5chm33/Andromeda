@@ -103,6 +103,13 @@ export interface PipelineResult {
   timedOut?: boolean;
   /** Immutable digest of the Docker image that ran (sha256:...). */
   resolvedImageDigest?: string;
+  /**
+   * True in scored_strict mode when the patch applied cleanly and the loop
+   * stopped without running hidden tests. The patch is ready for the external
+   * evaluator. Must be recorded as 'prediction_ready' in the run bundle,
+   * not as 'test_failure'.
+   */
+  predictionReady?: boolean;
 }
 
 // ─── Pipeline Orchestrator ────────────────────────────────────────────────────
@@ -156,6 +163,8 @@ export async function runSOTAPipeline(
       {
         testPatch: promptTestPatch,
         failToPassTests: promptFailToPass,
+        // scored_strict: generation-only, no sandbox evaluation
+        evalMode,
       }
     );
 
@@ -234,6 +243,7 @@ export async function runSOTAPipeline(
       exactApply: tracebackResult.exactApply,
       timedOut: tracebackResult.timedOut,
       resolvedImageDigest: tracebackResult.resolvedImageDigest,
+      predictionReady: tracebackResult.predictionReady,
     };
     if (tracebackResult.resolved) {
       return {

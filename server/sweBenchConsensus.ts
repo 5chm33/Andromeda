@@ -223,6 +223,15 @@ export async function runConsensus(
   options?: {
     testPatch?: string;
     failToPassTests?: string[];
+    /**
+     * Evaluation mode. In 'scored_strict' mode, consensus is generation-only:
+     * Phase 2 (sandbox evaluation) is skipped entirely. No Docker containers
+     * are started, no tests are executed, and the winner is selected
+     * deterministically (first valid patch by agent order). This keeps
+     * consensus on the same contract as the traceback loop and avoids any
+     * hidden-test feedback during the agent loop.
+     */
+    evalMode?: 'scored_strict' | 'test_aware';
   }
 ): Promise<ConsensusResult> {
   const startTime = Date.now();
@@ -308,6 +317,32 @@ export async function runConsensus(
       candidates: [],
       totalDurationMs: Date.now() - startTime,
       selectionReason: 'All agents failed to generate valid patches.',
+    };
+  }
+
+  // ── scored_strict: generation-only path ───────────────────────────────────
+  // Skip Phase 2 entirely. No containers, no test execution, no hidden-test
+  // feedback. Select the first valid patch deterministically (agent order).
+  if (options?.evalMode === 'scored_strict') {
+    const first = validPatches[0];
+    const candidates: CandidatePatch[] = validPatches.map(({ agent, patch, durationMs }) => ({
+      agentName: agent.name,
+      patch,
+      testsPassed: false,
+      testsPassedCount: 0,
+      testsFailedCount: 0,
+      testOutput: 'scored_strict: evaluation deferred to external evaluator',
+      generationDurationMs: durationMs,
+      evaluationDurationMs: 0,
+    }));
+    return {
+      instanceId,
+      resolved: false,
+      winningPatch: first.patch,
+      winningAgent: first.agent.name,
+      candidates,
+      totalDurationMs: Date.now() - startTime,
+      selectionReason: 'scored_strict: generation-only; first valid patch selected deterministically.',
     };
   }
 

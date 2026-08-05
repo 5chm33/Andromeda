@@ -198,6 +198,15 @@ export interface AttemptResult {
 export interface TracebackLoopResult {
   instanceId: string;
   resolved: boolean;
+  /**
+   * True in scored_strict mode when the candidate patch applied cleanly and
+   * the loop stopped without running any hidden tests. The patch is ready for
+   * the external evaluator. This is a distinct terminal state from both
+   * 'resolved' (test_aware: hidden tests passed) and 'test_failure' (hidden
+   * tests ran and failed). The run bundle must record it as 'prediction_ready',
+   * not 'test_failure'.
+   */
+  predictionReady: boolean;
   totalAttempts: number;
   finalPatch: string;
   attempts: AttemptResult[];
@@ -821,6 +830,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
   const attempts: AttemptResult[] = [];
     let currentPatch = initialPatch;
   let resolved = false;
+  let predictionReady = false;  // scored_strict: patch applied cleanly, awaiting external evaluator
   // v5.4: declared in outer scope so the finally block can clean up the volume
   let _seededVolumeOuter: { volumeName: string } | null = null;
   // Declared in outer scope so the return statement (outside try) can read the
@@ -905,7 +915,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
     for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
       const attemptStart = Date.now();
 
-      const { passed, output } = await applyAndTest(
+            const { passed, output } = await applyAndTest(
         containerName,
         currentPatch,
         repoPath,
@@ -915,8 +925,12 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
         // The model receives no hidden-test feedback in this mode.
         { testPatch, failToPassTests, instanceId, evalMode }
       );
-
-            const tracebackSummary = passed ? '' : extractTracebackSummary(output);
+      // scored_strict: a clean apply returns the PREDICTION_READY sentinel.
+      // This is a terminal state — the loop must stop immediately and hand
+      // the patch to the external evaluator. Do NOT treat it as a test failure
+      // or spend further attempts (there is no corrective signal to act on).
+      const isPredictionReady = output.startsWith('SCORED_STRICT_BLIND_APPLY');
+      const tracebackSummary = (passed || isPredictionReady) ? '' : extractTracebackSummary(output);
       // Derive structured outcome fields from the output string.
       // PATCH_APPLY_FAILED means git apply failed — exactApply is false.
       // Timeout is signalled by the bash `timeout` command exiting 124 or by
@@ -937,11 +951,15 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
         exactApply: attemptExactApply,
         timedOut: attemptTimedOut,
       };
-
       attempts.push(attemptResult);
-
       if (passed) {
         resolved = true;
+        break;
+      }
+      // scored_strict: patch applied cleanly — stop here, hand to evaluator.
+      // The loop may only retry when the patch fails to apply (PATCH_APPLY_FAILED).
+      if (isPredictionReady) {
+        predictionReady = true;
         break;
       }
 
@@ -1263,6 +1281,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
   return {
     instanceId,
     resolved,
+    predictionReady,
     totalAttempts: attempts.length,
     finalPatch: currentPatch,
     attempts,

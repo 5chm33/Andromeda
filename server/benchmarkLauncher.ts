@@ -111,6 +111,8 @@ export interface BenchmarkReport {
     invalidInstances: number;
     infraFailures: number;
     timedOut: number;
+    /** scored_strict: patches ready for external evaluator (not test failures). */
+    predictionReady: number;
   };
   instances: InstanceResult[];
   completedAt: string;
@@ -124,7 +126,13 @@ export type InstanceOutcome =
   | "exact_apply_failure"
   | "invalid_instance"
   | "infra_failure"
-  | "timed_out";
+  | "timed_out"
+  /**
+   * scored_strict only: patch applied cleanly; hidden tests deferred to the
+   * external evaluator. This is NOT a test failure — no hidden tests ran.
+   * The external evaluator determines whether the patch is 'resolved'.
+   */
+  | "prediction_ready";
 
 export interface InstanceResult {
   instanceId: string;
@@ -532,6 +540,7 @@ export class BenchmarkLauncher {
         invalidInstances: 0,
         infraFailures: 0,
         timedOut: 0,
+        predictionReady: 0,
       },
       instances: [],
       completedAt: "",
@@ -553,6 +562,7 @@ export class BenchmarkLauncher {
       case "invalid_instance":   report.summary.invalidInstances++;   break;
       case "infra_failure":      report.summary.infraFailures++;      break;
       case "timed_out":          report.summary.timedOut++;           break;
+      case "prediction_ready":   report.summary.predictionReady++;    break;
     }
     if (result.costUsd) {
       report.totalCostUsd += result.costUsd;
