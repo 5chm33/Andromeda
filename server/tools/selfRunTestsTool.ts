@@ -9,6 +9,7 @@ import { registerTool } from "./toolRegistry";
 import type { ToolResult, ToolExecutionContext } from "./toolRegistry";
 import { readFileSync, writeFileSync } from "fs";
 import { execSync } from "child_process";
+import { gitSandbox } from "../gitSandbox";
 import * as path from "path";
 import { getProjectRoot } from "./selfModifyHelpers.js";
 
@@ -142,9 +143,9 @@ Use this AFTER self_write_file + self_run_tests (both passing) to activate chang
 
     // Step 1: Git commit snapshot
     try {
-      execSync("git add -A", { cwd: projectRoot, timeout: 15000 });
-      execSync(`git commit -m "${commitMessage.replace(/"/g, "'")}" --allow-empty`, {
-        cwd: projectRoot, timeout: 15000,
+      gitSandbox("git add -A", { cwd: projectRoot, encoding: "utf8", timeout: 15000, stdio: ["pipe", "pipe", "pipe"] });
+      gitSandbox(`git commit -m "${commitMessage.replace(/"/g, "'")}" --allow-empty`, {
+        cwd: projectRoot, encoding: "utf8", timeout: 15000, stdio: ["pipe", "pipe", "pipe"],
       });
       const hash = execSync("git rev-parse --short HEAD", { cwd: projectRoot, timeout: 5000 })
         .toString().trim();
