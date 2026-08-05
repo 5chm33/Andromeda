@@ -171,6 +171,10 @@ export interface AttemptResult {
   testOutput: string;
   tracebackSummary: string;
   durationMs: number;
+  /** True if git apply succeeded without fuzzy recovery. */
+  exactApply: boolean;
+  /** True if the test run was cut short by the timeout. */
+  timedOut: boolean;
 }
 
 export interface TracebackLoopResult {
@@ -180,6 +184,14 @@ export interface TracebackLoopResult {
   finalPatch: string;
   attempts: AttemptResult[];
   totalDurationMs: number;
+  /** SHA-256 of the final patch text (hex, 64 chars). */
+  patchHash: string;
+  /** True if the final patch applied exactly (no fuzzy recovery). */
+  exactApply: boolean;
+  /** True if the last attempt was cut short by the timeout. */
+  timedOut: boolean;
+  /** Immutable digest of the Docker image that ran (sha256:...). */
+  resolvedImageDigest: string;
 }
 
 // ─── Core Logic ───────────────────────────────────────────────────────────────
@@ -763,6 +775,10 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
   let resolved = false;
   // v5.4: declared in outer scope so the finally block can clean up the volume
   let _seededVolumeOuter: { volumeName: string } | null = null;
+  // Declared in outer scope so the return statement (outside try) can read the
+  // resolved digest. If image resolution fails, the function throws before
+  // reaching the return, so this is always populated when the return runs.
+  let _resolvedImage: ResolvedImage | undefined;
   try {
     // Start the container (detached, so we can exec into it repeatedly)
     // v5.4: Use shared hardened builder — all isolation controls in one place.
@@ -775,7 +791,6 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
     // If it is a tag-only reference, we resolve it via docker inspect.
     // Root UID is required by SWE-bench testbed images (conda env setup); this
     // is an explicit, recorded exception — not a silent default.
-    let _resolvedImage: ResolvedImage;
     let _rootUidException: string | undefined;
     try {
       // Attempt to resolve in trusted_local mode (allows tag-only via inspect).
@@ -850,8 +865,17 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
         { testPatch, failToPassTests, instanceId }
       );
 
-      const tracebackSummary = passed ? '' : extractTracebackSummary(output);
-
+            const tracebackSummary = passed ? '' : extractTracebackSummary(output);
+      // Derive structured outcome fields from the output string.
+      // PATCH_APPLY_FAILED means git apply failed — exactApply is false.
+      // Timeout is signalled by the bash `timeout` command exiting 124 or by
+      // the output containing the sentinel string we look for.
+      const attemptExactApply = !output.startsWith('PATCH_APPLY_FAILED') &&
+        !output.startsWith('TEST_PATCH_APPLY_FAILED');
+      const attemptTimedOut = output.includes('Timeout') ||
+        output.includes('timeout') ||
+        output.includes('timed out') ||
+        output.includes('signal: killed');
       const attemptResult: AttemptResult = {
         attemptNumber: attempt,
         patch: currentPatch,
@@ -859,6 +883,8 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
         testOutput: output.slice(0, 4000),
         tracebackSummary,
         durationMs: Date.now() - attemptStart,
+        exactApply: attemptExactApply,
+        timedOut: attemptTimedOut,
       };
 
       attempts.push(attemptResult);
@@ -1133,6 +1159,10 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
           TEST_TIMEOUT_SECONDS,
           { testPatch, failToPassTests, instanceId }
         );
+        const oracleExactApply = !oracleOutput.startsWith('PATCH_APPLY_FAILED') &&
+          !oracleOutput.startsWith('TEST_PATCH_APPLY_FAILED');
+        const oracleTimedOut = oracleOutput.includes('timed out') ||
+          oracleOutput.includes('signal: killed');
         attempts.push({
           attemptNumber: attempts.length + 1,
           patch: oraclePatch,
@@ -1140,6 +1170,8 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
           testOutput: oracleOutput.slice(0, 4000),
           tracebackSummary: oraclePassed ? '' : extractTracebackSummary(oracleOutput),
           durationMs: Date.now() - oracleAttemptStart,
+          exactApply: oracleExactApply,
+          timedOut: oracleTimedOut,
         });
         if (oraclePassed) {
           resolved = true;
@@ -1156,6 +1188,20 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
     }
   }
 
+  // Derive top-level structured outcome fields from the attempts array.
+  const lastAttempt = attempts[attempts.length - 1];
+  const finalExactApply = lastAttempt?.exactApply ?? true;
+  const finalTimedOut = lastAttempt?.timedOut ?? false;
+  const finalPatchHash = crypto
+    .createHash('sha256')
+    .update(currentPatch, 'utf8')
+    .digest('hex');
+  // _resolvedImage is declared in the outer try block; if resolution failed the
+  // function would have thrown before reaching here, so the variable is always
+  // defined at this point. Use a fallback string to satisfy TypeScript.
+  const finalImageDigest = (typeof _resolvedImage !== 'undefined')
+    ? _resolvedImage.resolvedRef
+    : 'sha256:unresolved';
   return {
     instanceId,
     resolved,
@@ -1163,6 +1209,10 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
     finalPatch: currentPatch,
     attempts,
     totalDurationMs: Date.now() - startTime,
+    patchHash: finalPatchHash,
+    exactApply: finalExactApply,
+    timedOut: finalTimedOut,
+    resolvedImageDigest: finalImageDigest,
   };
 }
 

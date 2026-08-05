@@ -67,7 +67,7 @@ import {
   type SearchAugmentation,
 } from '../server/sweBenchSearchFallback.js';
 import { runSOTAPipeline, PipelineConfig } from '../server/sweBenchPipeline.js';
-import { pullImageSafely, ensureDiskSpace } from '../server/sweBenchInfra.js';
+import { pullImageSafely, ensureDiskSpace, DEFAULT_INFRA_CONFIG } from '../server/sweBenchInfra.js';
 import { buildSmartContext } from '../server/sweBenchContextBuilder.js';
 import { BenchmarkLauncher, type BenchmarkRunConfig, type InstanceResult, type BenchmarkReport } from '../server/benchmarkLauncher.js';
 import { resolveImageDigest } from '../server/sweBenchImageResolver.js';
@@ -104,7 +104,10 @@ interface SWEBenchInstance {
   base_commit: string;
   problem_statement: string;
   hints_text: string;
-  patch: string;
+  // NOTE: patch (gold/reference patch) is intentionally absent from this
+  // interface. Scored runs must not carry any reference to the gold patch,
+  // even as a latent data path. Oracle experiments belong in a separate,
+  // explicitly unscored development command.
   test_patch: string;
   FAIL_TO_PASS: string;  // JSON array string
   PASS_TO_PASS: string;  // JSON array string
@@ -791,13 +794,16 @@ async function main() {
   // SWEBENCH_SCORED=1 activates the full 7-item checklist.
   // Without it, the runner operates in development mode (no gate).
   const isScoredRun = process.env.SWEBENCH_SCORED === '1';
-  let _benchLauncher: BenchmarkLauncher | null = null;
+    let _benchLauncher: BenchmarkLauncher | null = null;
   let _benchReport: BenchmarkReport | null = null;
   let _benchRunStartMs = Date.now();
-
+  // Hoisted so the instance loop can use the resolved digest in InstanceResult.
+  // Populated inside the isScoredRun block; falls back to the image tag.
+  let _resolvedImageRef: string = instances.length > 0
+    ? getDockerImageName(instances[0].instance_id)
+    : 'unknown';
   if (isScoredRun) {
     console.log('[Runner] SWEBENCH_SCORED=1 — running pre-flight checklist...');
-
     // Step 1: Resolve the image digest for the first instance (all instances share the same registry).
     // For a scored run, the image must be pinned to a digest.
     const firstDockerImage = instances.length > 0 ? getDockerImageName(instances[0].instance_id) : 'unknown';
@@ -805,6 +811,7 @@ async function main() {
     try {
       const ri = resolveImageDigest(firstDockerImage, 'trusted_local', false);
       resolvedImageRef = ri.resolvedRef;
+      _resolvedImageRef = ri.resolvedRef; // hoist to outer scope for instance loop
       console.log(`[Runner] Resolved image: ${resolvedImageRef}`);
     } catch (e) {
       console.warn(`[Runner] Image resolution failed (proceeding with tag): ${(e as Error).message}`);
@@ -924,7 +931,7 @@ async function main() {
   let total = 0;
 
   for (const instance of instances) {
-    const { instance_id, repo, base_commit, problem_statement, hints_text, patch, test_patch, FAIL_TO_PASS, PASS_TO_PASS } = instance;
+    const { instance_id, repo, base_commit, problem_statement, hints_text, test_patch, FAIL_TO_PASS, PASS_TO_PASS } = instance;
     const dockerImage = getDockerImageName(instance_id);
 
     console.log(`\n[Runner] ── Instance ${total + 1}/${instances.length}: ${instance_id} ──`);
@@ -932,7 +939,7 @@ async function main() {
 
     try {
       // ── Ensure disk space ────────────────────────────────────────────────
-      await ensureDiskSpace(10);
+      await ensureDiskSpace(10, true);
 
       // ── Pull Docker image (skip if already available locally) ────────────
       console.log(`[Runner] Pulling image: ${dockerImage}`);
@@ -942,7 +949,14 @@ async function main() {
           `docker images -q "${dockerImage}" 2>/dev/null`
         );
         if (!imgCheck.trim()) {
-          await pullImageSafely(dockerImage, { minFreeDiskGb: 10, maxRetries: 3, retryDelayMs: 5000, testTimeoutSeconds: 300, datasetName: 'princeton-nlp/SWE-bench_Verified', harnessPath: '/tmp', batchSize: 1 });
+          await pullImageSafely(dockerImage, {
+            ...DEFAULT_INFRA_CONFIG,
+            minFreeDiskGb: 10,
+            testTimeoutSeconds: 300,
+            datasetName: 'princeton-nlp/SWE-bench_Verified',
+            harnessPath: '/tmp',
+            batchSize: 1,
+          });
         } else {
           console.log('[Runner] Image already available locally');
         }
@@ -1036,8 +1050,9 @@ async function main() {
         {
           testPatch: test_patch,
           failToPassTests,
-          // Gold patch hint: structural reference for oracle fallback
-          goldPatchHint: patch || undefined,
+          // goldPatchHint intentionally absent: scored runs must not carry
+          // any reference to the gold patch. Oracle experiments belong in a
+          // separate, explicitly unscored development command.
         }
       );
       // Suppress unhandled rejection from background pipeline after timeout
@@ -1083,13 +1098,34 @@ async function main() {
       const rate = (resolved / total * 100).toFixed(1);
       console.log(`[Runner] Running score: ${resolved}/${total} = ${rate}%`);
 
-      // v5.4: Record per-instance outcome in the benchmark report
+      // v5.8: Record per-instance outcome from structured runtime fields.
+      // outcome classification:
+      //   resolved           — validation passed
+      //   exact_apply_failure — git apply failed (PATCH_APPLY_FAILED in output)
+      //   timed_out          — instance timeout fired
+      //   test_failure       — patch applied, tests ran, tests failed
       if (_benchReport && _benchLauncher) {
+        const lastAttemptOutput = result.phases.tracebackLoop
+          ? (result as any)._lastAttemptOutput as string | undefined
+          : undefined;
+        const patchApplyFailed = !result.resolved &&
+          (result.exactApply === false);
+        const timedOutInstance = !result.resolved && (result.timedOut === true);
+        const instanceOutcome: InstanceResult['outcome'] = result.resolved
+          ? 'resolved'
+          : patchApplyFailed
+          ? 'exact_apply_failure'
+          : timedOutInstance
+          ? 'timed_out'
+          : 'test_failure';
         const instanceResult: InstanceResult = {
           instanceId: instance_id,
-          outcome: result.resolved ? 'resolved' : 'test_failure',
-          imageDigest: getDockerImageName(instance_id),
-          exactApply: true, // pipeline uses exact apply; fuzzy is blocked in scored mode
+          outcome: instanceOutcome,
+          // Use the digest resolved from the traceback loop (immutable sha256:...)
+          // if available; fall back to the pre-flight resolved ref.
+          imageDigest: result.resolvedImageDigest ?? _resolvedImageRef,
+          patchHash: result.patchHash,
+          exactApply: result.exactApply ?? true,
           fuzzyRecoveryAttempted: false,
           durationMs: Date.now() - instanceStart,
         };
@@ -1128,12 +1164,12 @@ async function main() {
       }) + '\n');
       total++;
 
-      // v5.4: Record infra failure in the benchmark report
+      // v5.8: Record infra failure — use the pre-flight resolved digest.
       if (_benchReport && _benchLauncher) {
         const instanceResult: InstanceResult = {
           instanceId: instance_id,
           outcome: 'infra_failure',
-          imageDigest: getDockerImageName(instance_id),
+          imageDigest: _resolvedImageRef,
           exactApply: false,
           fuzzyRecoveryAttempted: false,
           durationMs: Date.now() - instanceStart,

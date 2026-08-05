@@ -76,6 +76,16 @@ export interface PipelineResult {
     tracebackLoop?: { attemptsUsed: number; resolvedOnAttempt: number | null };
   };
   totalDurationMs: number;
+  /** SHA-256 of the final patch text (hex, 64 chars). Populated when the
+   * traceback loop ran; undefined if consensus resolved before the loop. */
+  patchHash?: string;
+  /** True if the final patch applied exactly (no fuzzy recovery). Undefined
+   * when the traceback loop did not run (consensus resolved). */
+  exactApply?: boolean;
+  /** True if the last attempt was cut short by the timeout. */
+  timedOut?: boolean;
+  /** Immutable digest of the Docker image that ran (sha256:...). */
+  resolvedImageDigest?: string;
 }
 
 // ─── Pipeline Orchestrator ────────────────────────────────────────────────────
@@ -188,6 +198,14 @@ export async function runSOTAPipeline(
       bestPatch = tracebackResult.finalPatch;
     }
 
+    // Always propagate structured runtime fields from the traceback result,
+    // regardless of whether the run resolved.
+    const tracebackFields = {
+      patchHash: tracebackResult.patchHash,
+      exactApply: tracebackResult.exactApply,
+      timedOut: tracebackResult.timedOut,
+      resolvedImageDigest: tracebackResult.resolvedImageDigest,
+    };
     if (tracebackResult.resolved) {
       return {
         instanceId,
@@ -195,8 +213,17 @@ export async function runSOTAPipeline(
         finalPatch: bestPatch,
         phases,
         totalDurationMs: Date.now() - startTime,
+        ...tracebackFields,
       };
     }
+    return {
+      instanceId,
+      resolved: false,
+      finalPatch: bestPatch,
+      phases,
+      totalDurationMs: Date.now() - startTime,
+      ...tracebackFields,
+    };
   }
 
   return {
