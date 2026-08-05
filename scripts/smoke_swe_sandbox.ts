@@ -1,27 +1,35 @@
 #!/usr/bin/env npx ts-node --esm
 /**
  * smoke_swe_sandbox.ts — End-to-end smoke test for the SWE-bench repair sandbox.
- * Andromeda v5.3 (Elicit enforcement contract — Phase 3 fix)
+ * Andromeda v5.5 (seeded-volume contract alignment)
  *
  * Validates that a single known SWE-bench instance can be:
  *   1. Docker is available
  *   2. Image resolves to a pinned digest
- *   3. Hardened container args include all required isolation flags
- *      (including --read-only ALWAYS, --tmpfs /testbed:rw when writableWorktree)
- *   4. Container starts successfully
- *   5. Network egress is blocked
- *   6. Real unified diff applies via `git apply` (not just echo/marker write)
- *   7. Write OUTSIDE /testbed fails (read-only root FS) — tested explicitly
- *   8. Test command executes AND non-zero exit code = FAILURE (not silently ignored)
- *   9. Container is cleaned up
- *  10. Evidence bundle is complete
+ *   3. Worktree volume is seeded from the image's /testbed (v5.5)
+ *   4. Hardened container args include all required isolation flags:
+ *      --read-only ALWAYS, named volume mounted at /testbed (NOT tmpfs)
+ *   5. Container starts successfully with the seeded volume
+ *   6. Network egress is blocked
+ *   7. Real unified diff applies via `git apply --check` then `git apply`
+ *      (mandatory — "version mismatch acceptable" branch deleted in v5.5)
+ *      Records pre-apply and post-apply worktree hashes.
+ *   8. Write OUTSIDE /testbed fails (read-only root FS) — tested explicitly
+ *   9. Test command executes AND non-zero exit code = FAILURE
+ *  10. Container AND seeded volume are cleaned up in finally (v5.5)
+ *  11. Evidence bundle is complete (includes harnessRevision, preWorktreeHash,
+ *      postWorktreeHash, worktreeVolumeName)
  *
  * Usage:
  *   npx ts-node --esm scripts/smoke_swe_sandbox.ts [--image <image>] [--dry-run]
  *
+ * Environment variables read:
+ *   SWEBENCH_HARNESS_REVISION  — git commit of the SWE-bench harness (required
+ *                                for scored preflight to match)
+ *
  * The full benchmark harness refuses to start unless this smoke result is
  * present for the same harness/image configuration (checked by
- * scripts/check_smoke_result.py).
+ * BenchmarkLauncher.preflight() and scripts/check_smoke_result.py).
  *
  * Exit codes:
  *   0 — all assertions passed, evidence bundle written
@@ -35,7 +43,12 @@ import * as fs from "fs";
 import * as path from "path";
 import * as crypto from "crypto";
 import { resolveImageDigest, type ResolvedImage } from "../server/sweBenchImageResolver.js";
-import { buildHardenedDockerArgs } from "../server/hardenedSandbox.js";
+import {
+  buildHardenedDockerArgs,
+  seedWorktreeVolume,
+  removeWorktreeVolume,
+  type SeededWorktreeVolume,
+} from "../server/hardenedSandbox.js";
 
 const execAsync = promisify(exec);
 
@@ -44,26 +57,23 @@ const execAsync = promisify(exec);
 const SMOKE_IMAGE_DEFAULT = "swebench/sweb.eval.x86_64.django__django-11099:latest";
 const SMOKE_INSTANCE_ID = "django__django-11099";
 const SMOKE_CONTAINER_NAME = `andromeda-smoke-${Date.now()}`;
+const SMOKE_VOLUME_NAME = `andromeda-smoke-vol-${Date.now()}`;
 const SMOKE_RESULT_DIR = path.join(process.cwd(), ".smoke-results");
 const SMOKE_RESULT_FILE = path.join(SMOKE_RESULT_DIR, "latest.json");
 
 /**
  * A minimal real unified diff that adds a comment to an existing Django file.
- * Applied via `git apply` inside the container to verify the full patch path.
- * If the file doesn't exist or has different content, git apply records a warning
- * but the mechanism (git is available, apply was invoked) is still verified.
+ * Applied via `git apply --check` then `git apply` inside the container.
+ * Both steps are mandatory — a failed git apply is a FAILURE, not a warning.
  */
 const SMOKE_UNIFIED_DIFF = `--- a/django/__init__.py
 +++ b/django/__init__.py
 @@ -1,3 +1,4 @@
-+# Andromeda smoke test marker \u2014 applied via git apply
++# Andromeda smoke test marker — applied via git apply
  from django.utils.version import get_version
  
  VERSION = (3, 2, 0, 'alpha', 0)
 `;
-
-// Legacy constant kept for patchHash computation
-const SMOKE_PATCH = SMOKE_UNIFIED_DIFF;
 
 // ─── Assertion helpers ────────────────────────────────────────────────────────
 
@@ -96,10 +106,15 @@ async function runSmoke(): Promise<void> {
   const imageArg = args.indexOf("--image");
   const imageRef = imageArg >= 0 ? args[imageArg + 1] : SMOKE_IMAGE_DEFAULT;
 
-  console.log("=== Andromeda SWE Sandbox Smoke Test ===");
+  // v5.5: Read harnessRevision from env so the scored launcher can match it.
+  const harnessRevision = process.env.SWEBENCH_HARNESS_REVISION ?? "unset";
+
+  console.log("=== Andromeda SWE Sandbox Smoke Test (v5.5) ===");
   console.log(`Image: ${imageRef}`);
   console.log(`Instance: ${SMOKE_INSTANCE_ID}`);
   console.log(`Container: ${SMOKE_CONTAINER_NAME}`);
+  console.log(`Volume: ${SMOKE_VOLUME_NAME}`);
+  console.log(`Harness revision: ${harnessRevision}`);
   console.log(`Dry run: ${dryRun}`);
   console.log("");
 
@@ -107,9 +122,11 @@ async function runSmoke(): Promise<void> {
     passed: true,
     assertions: [],
     evidence: {
-      smokeVersion: "1.0.0",
+      smokeVersion: "5.5.0",
       instanceId: SMOKE_INSTANCE_ID,
       startedAt: new Date().toISOString(),
+      // v5.5: harnessRevision recorded so BenchmarkLauncher.preflight() can match it
+      harnessRevision,
     },
   };
 
@@ -139,37 +156,63 @@ async function runSmoke(): Promise<void> {
       `Resolved to ${resolved.resolvedRef}`,
     );
   } catch (e) {
-    // Image not pulled locally — this is expected in CI without pre-pulled images.
-    // Record as a warning and use the tag-only reference with trusted_local mode.
-    console.warn(`  ⚠ Image not locally available: ${(e as Error).message}`);
-    console.warn("  Using tag-only reference for smoke test (acceptable in trusted_local mode).");
-    resolved = {
-      inputRef: imageRef,
-      resolvedRef: imageRef,
-      digest: "sha256:unresolved-not-pulled",
-      resolvedAt: new Date().toISOString(),
-      alreadyPinned: false,
+    // Image not pulled locally — cannot proceed. The smoke test requires the
+    // actual image to seed the volume and apply the patch.
+    console.error(`  ✗ Image not locally available: ${(e as Error).message}`);
+    console.error("  Pull the image first:");
+    console.error(`    docker pull ${imageRef}`);
+    const failResult: SmokeResult = {
+      passed: false,
+      assertions: [{ name: "image-resolved", passed: false, detail: (e as Error).message }],
+      evidence: {
+        smokeVersion: "5.5.0",
+        instanceId: SMOKE_INSTANCE_ID,
+        startedAt: results.evidence.startedAt,
+        harnessRevision,
+        imageResolutionError: (e as Error).message,
+        completedAt: new Date().toISOString(),
+      },
     };
-    results.evidence.imageDigest = resolved.digest;
-    results.evidence.imageResolutionWarning = "Image not pulled locally; digest unverified.";
-    assert(results, "image-resolved", false, `Image not available locally: ${(e as Error).message}`);
-    // Cannot proceed without the image.
-    console.error("\nSmoke test cannot proceed: image not available. Pull it first:");
-    console.error(`  docker pull ${imageRef}`);
-    writeSmokeResult(results);
+    writeSmokeResult(failResult);
     process.exit(2);
   }
 
   if (dryRun) {
     console.log("\n[dry-run] Skipping container operations.");
     results.evidence.dryRun = true;
+    results.evidence.completedAt = new Date().toISOString();
     writeSmokeResult(results);
     console.log("\n=== Dry run complete ===");
     process.exit(0);
   }
 
-  // ── 3. Build hardened docker args ──────────────────────────────────────────
-  console.log("3. Building hardened container configuration...");
+  // ── 3. Seed the worktree volume ────────────────────────────────────────────
+  // v5.5: Seed a named volume from the image's /testbed BEFORE starting the
+  // repair container. This is the v5.4 seeded-volume contract. A --tmpfs mount
+  // would mask the repository; the seeded volume preserves all files.
+  console.log("3. Seeding worktree volume from image /testbed...");
+  let seeded: SeededWorktreeVolume | null = null;
+  try {
+    seeded = seedWorktreeVolume(resolved.resolvedRef, SMOKE_VOLUME_NAME, "/testbed");
+    results.evidence.worktreeVolumeName = seeded.volumeName;
+    results.evidence.preWorktreeHash = seeded.preWorktreeHash;
+    results.evidence.worktreeSeededAt = seeded.seededAt;
+    assert(
+      results,
+      "worktree-volume-seeded",
+      true,
+      `Volume ${seeded.volumeName} seeded from ${resolved.resolvedRef} (pre-hash: ${seeded.preWorktreeHash.slice(0, 16)}...)`,
+    );
+  } catch (e) {
+    assert(results, "worktree-volume-seeded", false, `Seeding failed: ${(e as Error).message}`);
+    writeSmokeResult(results);
+    process.exit(1);
+  }
+
+  // ── 4. Build hardened docker args ──────────────────────────────────────────
+  // v5.5: Pass worktreeVolumeName so buildHardenedDockerArgs mounts the seeded
+  // volume at /testbed (NOT a tmpfs — that would mask the repository).
+  console.log("4. Building hardened container configuration...");
   const hardened = buildHardenedDockerArgs({
     image: resolved.resolvedRef,
     containerName: SMOKE_CONTAINER_NAME,
@@ -179,25 +222,47 @@ async function runSmoke(): Promise<void> {
     wallClockLimitMs: 300_000,
     mode: "untrusted_repair",
     writableWorktree: true,
+    worktreeVolumeName: seeded.volumeName,  // v5.5: seeded volume, not tmpfs
     runAsNobody: false, // SWE-bench images require root for conda
   });
   results.evidence.dockerArgs = hardened.args;
   results.evidence.sandboxControls = hardened.controls;
 
-  // v5.3: --read-only must ALWAYS be present (never omitted)
+  // v5.5: --read-only must ALWAYS be present (never omitted)
   assert(
     results,
     "read-only-flag",
     hardened.args.includes("--read-only"),
     "--read-only present in docker args (root FS always read-only)",
   );
-  // v5.3: /testbed tmpfs must be present when writableWorktree:true
+
+  // v5.5: The seeded volume (not a tmpfs) must be mounted at /testbed.
+  // Assert that the args contain a -v mount for the volume name at /testbed.
+  const volumeMountArg = hardened.args.find(
+    (a) => a.includes(seeded!.volumeName) && a.includes("/testbed"),
+  );
   assert(
     results,
-    "testbed-tmpfs-flag",
-    hardened.args.some((a) => a.includes("/testbed") && a.includes("rw")),
-    "--tmpfs /testbed:rw,exec,nosuid,size=4g present for worktree writes",
+    "testbed-volume-mounted",
+    !!volumeMountArg,
+    volumeMountArg
+      ? `Seeded volume mounted at /testbed: ${volumeMountArg}`
+      : `No volume mount for ${seeded.volumeName} at /testbed found in args`,
   );
+
+  // v5.5: Confirm no tmpfs /testbed (would mask the seeded volume contents)
+  const hasTmpfsTestbed = hardened.args.some(
+    (a) => a.includes("tmpfs") && a.includes("/testbed"),
+  );
+  assert(
+    results,
+    "no-tmpfs-testbed",
+    !hasTmpfsTestbed,
+    hasTmpfsTestbed
+      ? "ERROR: --tmpfs /testbed found — this would mask the seeded volume"
+      : "No --tmpfs /testbed (correct: seeded volume is used instead)",
+  );
+
   assert(
     results,
     "network-isolation-flag",
@@ -217,8 +282,8 @@ async function runSmoke(): Promise<void> {
     "--security-opt=no-new-privileges present",
   );
 
-  // ── 4. Start container ─────────────────────────────────────────────────────
-  console.log("4. Starting hardened container...");
+  // ── 5. Start container ─────────────────────────────────────────────────────
+  console.log("5. Starting hardened container with seeded volume...");
   let containerStarted = false;
   try {
     await execAsync(
@@ -228,13 +293,17 @@ async function runSmoke(): Promise<void> {
     assert(results, "container-started", true, `Container ${SMOKE_CONTAINER_NAME} started`);
   } catch (e) {
     assert(results, "container-started", false, `Failed to start: ${(e as Error).message}`);
+    // Fall through to finally for cleanup
     writeSmokeResult(results);
-    process.exit(1);
   }
 
   try {
-    // ── 5. Network isolation verification ─────────────────────────────────────
-    console.log("5. Verifying network isolation...");
+    if (!containerStarted) {
+      process.exit(1);
+    }
+
+    // ── 6. Network isolation verification ─────────────────────────────────────
+    console.log("6. Verifying network isolation...");
     try {
       const { stdout: netOut } = await execAsync(
         `docker exec ${SMOKE_CONTAINER_NAME} sh -c "curl -s --max-time 3 https://example.com 2>&1 || echo BLOCKED"`,
@@ -249,52 +318,120 @@ async function runSmoke(): Promise<void> {
       assert(results, "network-blocked", true, "Container exec failed (network tools unavailable)");
     }
 
-    // ── 6. Real unified diff applied via git apply ────────────────────────────
-    // v5.3 fix: apply a real unified diff using `git apply` instead of echo/write.
-    // This validates the full patch-application path.
-    console.log("6. Applying real unified diff via git apply...");
-    const patchContent = SMOKE_PATCH;
+    // ── 7. Real unified diff applied via git apply (mandatory) ────────────────
+    // v5.5: git apply --check AND git apply are both mandatory.
+    // The "version mismatch acceptable" branch has been deleted.
+    // A failed git apply is a FAILURE — it means the smoke did not prove the
+    // patch path works on this image/version combination.
+    // Records pre-apply and post-apply worktree hashes.
+    console.log("7. Applying real unified diff via git apply (mandatory)...");
+    const patchContent = SMOKE_UNIFIED_DIFF;
     const patchHash = crypto.createHash("sha256").update(patchContent).digest("hex");
     results.evidence.patchHash = `sha256:${patchHash}`;
-    results.evidence.patchContent = patchContent;
 
     const patchB64 = Buffer.from(patchContent).toString("base64");
+
+    // Step 7a: Record pre-apply worktree hash (hash of /testbed contents)
+    let preApplyWorktreeHash = "";
+    try {
+      const { stdout: preHashOut } = await execAsync(
+        `docker exec ${SMOKE_CONTAINER_NAME} bash -c "cd /testbed && git log -1 --format='%H' 2>/dev/null || find . -type f | sort | xargs sha256sum 2>/dev/null | sha256sum"`,
+        { timeout: 15_000 },
+      );
+      preApplyWorktreeHash = `sha256:${crypto.createHash("sha256").update(preHashOut.trim()).digest("hex")}`;
+      results.evidence.preApplyWorktreeHash = preApplyWorktreeHash;
+    } catch {
+      results.evidence.preApplyWorktreeHash = "unavailable";
+    }
+
+    // Step 7b: Write patch to /tmp (writable tmpfs) then apply from /testbed
     let gitApplyPassed = false;
     let gitApplyDetail = "";
     try {
-      // Write patch to /tmp (writable tmpfs) then apply from /testbed
       await execAsync(
         `docker exec ${SMOKE_CONTAINER_NAME} sh -c "echo '${patchB64}' | base64 -d > /tmp/smoke.patch"`,
       );
-      const { stdout: applyOut, stderr: applyErr } = await execAsync(
-        `docker exec ${SMOKE_CONTAINER_NAME} bash -c "cd /testbed && git apply --check /tmp/smoke.patch 2>&1 && git apply /tmp/smoke.patch 2>&1 && echo APPLY_OK"`,
+
+      // git apply --check first (dry run — fails fast if patch won't apply)
+      const { stdout: checkOut, stderr: checkErr } = await execAsync(
+        `docker exec ${SMOKE_CONTAINER_NAME} bash -c "cd /testbed && git apply --check /tmp/smoke.patch 2>&1 && echo CHECK_OK"`,
+        { timeout: 15_000 },
       ).catch(async (e: { stdout?: string; stderr?: string; code?: number }) => {
         return { stdout: e.stdout || "", stderr: e.stderr || "" };
       });
-      const combined = (applyOut + applyErr).trim();
-      results.evidence.gitApplyOutput = combined.slice(0, 500);
-      if (combined.includes("APPLY_OK")) {
-        gitApplyPassed = true;
-        gitApplyDetail = "git apply succeeded \u2014 patch applied cleanly to /testbed";
-        results.evidence.gitApplyExitCode = 0;
-      } else {
-        // Patch didn't apply cleanly (version mismatch) but git was invoked
-        gitApplyPassed = true;
-        gitApplyDetail = `git apply invoked (version mismatch acceptable): ${combined.slice(0, 200)}`;
+      const checkCombined = (checkOut + checkErr).trim();
+      results.evidence.gitApplyCheckOutput = checkCombined.slice(0, 300);
+
+      if (!checkCombined.includes("CHECK_OK")) {
+        // git apply --check failed — patch does not apply to this image version.
+        // This is a FAILURE, not a warning. The smoke must prove exact application.
+        gitApplyPassed = false;
+        gitApplyDetail = `git apply --check FAILED — patch does not apply to this image: ${checkCombined.slice(0, 200)}`;
         results.evidence.gitApplyExitCode = 1;
+      } else {
+        // git apply --check passed — now apply for real
+        const { stdout: applyOut, stderr: applyErr } = await execAsync(
+          `docker exec ${SMOKE_CONTAINER_NAME} bash -c "cd /testbed && git apply /tmp/smoke.patch 2>&1 && echo APPLY_OK"`,
+          { timeout: 15_000 },
+        ).catch(async (e: { stdout?: string; stderr?: string; code?: number }) => {
+          return { stdout: e.stdout || "", stderr: e.stderr || "" };
+        });
+        const applyCombined = (applyOut + applyErr).trim();
+        results.evidence.gitApplyOutput = applyCombined.slice(0, 300);
+
+        if (applyCombined.includes("APPLY_OK")) {
+          gitApplyPassed = true;
+          gitApplyDetail = "git apply --check + git apply both succeeded — patch applied cleanly";
+          results.evidence.gitApplyExitCode = 0;
+
+          // Step 7c: Record post-apply worktree hash
+          try {
+            const { stdout: postHashOut } = await execAsync(
+              `docker exec ${SMOKE_CONTAINER_NAME} bash -c "cd /testbed && git diff HEAD 2>/dev/null | sha256sum || find . -type f | sort | xargs sha256sum 2>/dev/null | sha256sum"`,
+              { timeout: 15_000 },
+            );
+            const postApplyWorktreeHash = `sha256:${crypto.createHash("sha256").update(postHashOut.trim()).digest("hex")}`;
+            results.evidence.postApplyWorktreeHash = postApplyWorktreeHash;
+          } catch {
+            results.evidence.postApplyWorktreeHash = "unavailable";
+          }
+
+          // Step 7d: Verify the expected changed file is present in the diff
+          try {
+            const { stdout: diffOut } = await execAsync(
+              `docker exec ${SMOKE_CONTAINER_NAME} bash -c "cd /testbed && git diff HEAD -- django/__init__.py 2>/dev/null | head -20"`,
+              { timeout: 10_000 },
+            );
+            results.evidence.patchedFileDiff = diffOut.trim().slice(0, 300);
+            assert(
+              results,
+              "patched-file-changed",
+              diffOut.includes("smoke test marker") || diffOut.includes("+# Andromeda"),
+              diffOut.includes("smoke test marker") || diffOut.includes("+# Andromeda")
+                ? "django/__init__.py contains the smoke marker after git apply"
+                : `django/__init__.py diff does not contain expected marker: ${diffOut.slice(0, 100)}`,
+            );
+          } catch (e) {
+            results.evidence.patchedFileDiff = "unavailable";
+            assert(results, "patched-file-changed", false, `Could not verify patched file: ${(e as Error).message.slice(0, 100)}`);
+          }
+        } else {
+          gitApplyPassed = false;
+          gitApplyDetail = `git apply FAILED after --check passed: ${applyCombined.slice(0, 200)}`;
+          results.evidence.gitApplyExitCode = 1;
+        }
       }
     } catch (e) {
       gitApplyDetail = `git apply failed: ${(e as Error).message.slice(0, 200)}`;
       gitApplyPassed = false;
-      results.evidence.gitApplyOutput = (e as Error).message.slice(0, 500);
+      results.evidence.gitApplyOutput = (e as Error).message.slice(0, 300);
     }
-    assert(results, "git-apply-invoked", gitApplyPassed, gitApplyDetail);
+    assert(results, "git-apply-exact", gitApplyPassed, gitApplyDetail);
 
-    // ── 7. Write OUTSIDE /testbed fails (read-only root FS) ───────────────────
-    // v5.3 fix: actually test that writing outside /testbed is blocked.
-    // With --read-only + --tmpfs /testbed:rw, writes to /etc should fail.
+    // ── 8. Write OUTSIDE /testbed fails (read-only root FS) ───────────────────
+    // With --read-only + seeded volume at /testbed, writes to /etc should fail.
     // Root user in SWE-bench images may bypass via overlayfs — record honestly.
-    console.log("7. Verifying write outside /testbed is blocked (read-only root FS)...");
+    console.log("8. Verifying write outside /testbed is blocked (read-only root FS)...");
     let writeOutsideBlocked = false;
     let writeOutsideDetail = "";
     try {
@@ -306,11 +443,11 @@ async function runSmoke(): Promise<void> {
         writeOutsideDetail = "Write to /etc blocked by read-only root FS";
       } else if (writeOut.includes("WRITE_OK")) {
         writeOutsideBlocked = false;
-        writeOutsideDetail = "WARNING: root user bypassed read-only flag via overlayfs \u2014 recorded as exception";
+        writeOutsideDetail = "WARNING: root user bypassed read-only flag via overlayfs — recorded as exception";
         results.evidence.readOnlyBypassWarning =
           "Root user can write to overlayfs layers despite --read-only. " +
           "This is a known Docker behavior with root containers. " +
-          "SWE-bench images require root for conda \u2014 this is a recorded exception.";
+          "SWE-bench images require root for conda — this is a recorded exception.";
         await execAsync(`docker exec ${SMOKE_CONTAINER_NAME} rm -f /etc/andromeda_smoke_test`).catch(() => {});
       }
     } catch (e) {
@@ -319,9 +456,9 @@ async function runSmoke(): Promise<void> {
     }
     assert(results, "read-only-root-enforced", writeOutsideBlocked, writeOutsideDetail);
 
-    // ── 8. Test command execution \u2014 non-zero exit = FAILURE ──────────────────────
-    // v5.3 fix: non-zero test exit code is now a FAILURE, not silently ignored.
-    console.log("8. Verifying test command executes (non-zero exit = failure)...");
+    // ── 9. Test command execution — non-zero exit = FAILURE ───────────────────
+    // Non-zero test exit code is a FAILURE, not silently ignored.
+    console.log("9. Verifying test command executes (non-zero exit = failure)...");
     const testCommand = "python -c \"import sys; import django; print('django version:', django.__version__); sys.exit(0)\"";
     results.evidence.testCommand = testCommand;
     let testPassed = false;
@@ -339,29 +476,42 @@ async function runSmoke(): Promise<void> {
       const err = e as { stdout?: string; stderr?: string; code?: number };
       results.evidence.testOutput = (err.stdout || err.stderr || "").slice(0, 500);
       results.evidence.testExitCode = err.code ?? 1;
-      // v5.3: non-zero exit is a REAL failure \u2014 do not silently pass it
+      // Non-zero exit is a REAL failure — do not silently pass it
       testPassed = false;
       testDetail = `Test FAILED with exit ${err.code}: ${(err.stdout || err.stderr || "").slice(0, 100)}`;
     }
     assert(results, "test-command-passes", testPassed, testDetail);
 
   } finally {
-    // ── 9. Container cleanup ───────────────────────────────────────────────────
-    console.log("9. Cleaning up container...");
+    // ── 10. Container AND volume cleanup ──────────────────────────────────────
+    // v5.5: Both the container AND the seeded volume must be cleaned up,
+    // even when startup or patching fails.
+    console.log("10. Cleaning up container and seeded volume...");
     try {
       await execAsync(`docker rm -f ${SMOKE_CONTAINER_NAME}`);
       assert(results, "container-cleaned-up", true, `Container ${SMOKE_CONTAINER_NAME} removed`);
     } catch (e) {
-      assert(results, "container-cleaned-up", false, `Cleanup failed: ${(e as Error).message}`);
+      assert(results, "container-cleaned-up", false, `Container cleanup failed: ${(e as Error).message}`);
+    }
+    if (seeded !== null) {
+      try {
+        removeWorktreeVolume(seeded.volumeName);
+        assert(results, "volume-cleaned-up", true, `Volume ${seeded.volumeName} removed`);
+      } catch (e) {
+        assert(results, "volume-cleaned-up", false, `Volume cleanup failed: ${(e as Error).message}`);
+      }
     }
   }
 
-  // ── 10. Evidence bundle completeness ──────────────────────────────────────
-  console.log("10. Verifying evidence bundle completeness...");
+  // ── 11. Evidence bundle completeness ──────────────────────────────────────
+  console.log("11. Verifying evidence bundle completeness...");
   const requiredFields = [
     "instanceId", "imageDigest", "resolvedRef", "dockerArgs",
     "patchHash", "testCommand", "testOutput", "testExitCode",
     "dockerVersion", "sandboxControls",
+    // v5.5: new required fields
+    "harnessRevision", "worktreeVolumeName", "preWorktreeHash",
+    "preApplyWorktreeHash",
   ];
   const missingFields = requiredFields.filter((f) => !(f in results.evidence));
   assert(
