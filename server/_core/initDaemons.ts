@@ -60,18 +60,18 @@ import { seedInitialMemoriesIfEmpty } from "../memory";
 import { initWatchdog } from "../watchdog";
 import { initSemanticCodebaseGraph } from "../semanticCodebaseGraph";
 import { initMultiAgentDebate } from "../multiAgentDebate";
-import { initChaosEngineer } from "../chaosEngineer";
+import { initChaosEngineer } from "../experimental/chaosEngineer";
 import { initRsiWorkerPool } from "../rsiWorkerPool";
 import { initCiRegressionGuard } from "../ciRegressionGuard";
-import { initPatternMemory } from "../epistemicBeliefModel";
-import { initSelfHealingChaos } from "../selfHealingChaos";
+import { initPatternMemory } from "../experimental/epistemicBeliefModel";
+import { initSelfHealingChaos } from "../experimental/selfHealingChaos";
 import { initRsiTaskQueue } from "../rsiTaskQueue";
 import { initContinuousFineTuner } from "../continuousFineTuner";
 import { initRsiScheduler } from "../rsiScheduler";
 import { initDistributedConsensus } from "../distributedConsensus";
 import { initBenchmarkRegressionSuite } from "../benchmarkRegressionSuite";
-import { initRsiDashboard, registerDashboardRoutes } from "../rsiDashboard";
-import { initProposalGenealogy } from "../proposalGenealogy";
+import { initRsiDashboard, registerDashboardRoutes } from "../experimental/rsiDashboard";
+import { initProposalGenealogy } from "../experimental/proposalGenealogy";
 import { initRollbackVerifier } from "../rollbackVerifier";
 import { initFineTunerActivation } from "../fineTunerActivation";
 import { initConsolidationV2 } from "../episodicConsolidationV2.js";
@@ -106,13 +106,13 @@ import { initCapabilityExtrapolator } from "../capabilityExtrapolator";
 import { initMetaRewardShaper } from "../metaRewardShaper";
 import { initRecursiveSelfModificationAuditor } from "../recursiveSelfModificationAuditor";
 import { initCapabilitySynthesisEngine } from "../capabilitySynthesisEngine";
-import { initEpistemicUncertaintyQuantifier } from "../epistemicUncertaintyQuantifier";
-import { initFederatedLearningCoordinator } from "../federatedLearningCoordinator";
+import { initEpistemicUncertaintyQuantifier } from "../experimental/epistemicUncertaintyQuantifier";
+import { initFederatedLearningCoordinator } from "../experimental/federatedLearningCoordinator";
 import { initCausalReasoningEngine } from "../causalReasoningEngine";
 import { initOmegaConvergenceMonitor } from "../omegaConvergenceMonitor";
 import { initPerpetualStatePersistence } from "../perpetualStatePersistence";
 import { initAdaptiveExplorationController } from "../adaptiveExplorationController";
-import { initMultiObjectiveOptimizer } from "../multiObjectiveOptimizer";
+import { initMultiObjectiveOptimizer } from "../experimental/multiObjectiveOptimizer";
 import { initKnowledgeGraphBuilder } from "../knowledgeGraphBuilder";
 import { initAnomalyDetectionEngine } from "../anomalyDetectionEngine";
 import { initSelfDocumentationGenerator } from "../selfDocumentationGenerator";
@@ -177,10 +177,10 @@ import { initStreamingDashboard } from "../streamingDashboard";
 import { initGlobalMemory } from "../persistentGlobalMemory.js";
 import { initHypothesisEngine } from "../hypothesisEngine.js";
 import { initPaperWriter } from "../paperWriter.js";
-import { initNeuromorphicMemory } from "../neuromorphicMemory.js";
+import { initNeuromorphicMemory } from "../experimental/neuromorphicMemory.js";
 import { initMetaRsi } from "../metaRsiAgent.js";
 import { initCausalModel } from "../causalWorldModel.js";
-import { initNtdlMemory } from "../ntdlMemory.js";
+import { initNtdlMemory } from "../experimental/ntdlMemory.js";
 import { initBenchmarkSynthesizer } from "../benchmarkSynthesizer.js";
 import { initConstitutionalAI } from "../constitutionalAI.js";
 import { initNasEngine } from "../nasEngine.js";
@@ -275,9 +275,9 @@ import { encodeMultimodal, computeSimilarity } from "../multimodalEncoder";
 import { adaptStyle } from "../communicationStyleAdapter";
 import { optimizeGradientDescent } from "../gradientDescentOptimizer";
 import { optimizeBayesian } from "../bayesianOptimizer";
-import { optimizeEvolutionary } from "../evolutionaryOptimizer";
+import { optimizeEvolutionary } from "../experimental/evolutionaryOptimizer";
 import { optimizeSimulatedAnnealing } from "../simulatedAnnealingEngine";
-import { optimizePSO } from "../particleSwarmOptimizer";
+import { optimizePSO } from "../experimental/particleSwarmOptimizer";
 import { ensembleOptimizers } from "../optimizationEnsembler";
 import { registerSignature, detectThreats } from "../threatDetector";
 import { recordBaseline, evaluateAnomaly } from "../anomalyIsolator";
@@ -292,7 +292,7 @@ import { makeCollectiveDecision } from "../collectiveDecisionMaker";
 import { publishKnowledge, syncKnowledge, getKnowledge } from "../knowledgeSynchronizer";
 import { addRating, getRecommendations as getCollabRecommendations } from "../collaborativeFilteringEngine";
 import { recordSignal, adaptToEnvironment } from "../environmentalAdaptor";
-import { captureDistribution, detectShift } from "../distributionShiftDetector";
+import { captureDistribution, detectShift } from "../experimental/distributionShiftDetector";
 import { initializeModel as initOnlineModel, onlineUpdate, getModelState } from "../onlineLearningController";
 import { recordPredictionError, checkForDrift } from "../conceptDriftHandler";
 import { registerDomain, adaptDomain } from "../domainAdaptationEngine";
@@ -408,9 +408,26 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 /**
+ * Background daemons are intentionally opt-in for tests. Starting timers,
+ * network listeners, worker pools, and file-writing jobs from a unit test makes
+ * test outcomes order-dependent and can leave resources alive after the test.
+ * Production startup remains enabled by default; set ANDROMEDA_START_DAEMONS=true
+ * to force it, or ANDROMEDA_DISABLE_BACKGROUND_DAEMONS=true to suppress it.
+ */
+export function isBackgroundDaemonStartupEnabled(): boolean {
+  if (process.env.ANDROMEDA_START_DAEMONS === "true") return true;
+  return process.env.ANDROMEDA_DISABLE_BACKGROUND_DAEMONS !== "true";
+}
+
+/**
  * Start all background daemons. Called after server.listen() succeeds.
  */
 export function startDaemons(): void {
+  if (!isBackgroundDaemonStartupEnabled()) {
+    console.info("[Init] Background daemons disabled by environment");
+    return;
+  }
+
   // v5.75: Generate ANDROMEDA.md — grounds the model in actual file structure
   try {
     const serverDir = resolve(__dirname, "..");
@@ -753,7 +770,7 @@ export function startDaemons(): void {
   }
 
   // ── v19.0.0: Wire previously orphaned RSI/Core modules ───────────────────────
-  import("../adversarialSelfPlay.js").then(({ initAdversarialSelfPlay }) => {
+  import("../experimental/adversarialSelfPlay.js").then(({ initAdversarialSelfPlay }) => {
     initAdversarialSelfPlay();
     console.log("[Init] v19.0.0: Adversarial Self-Play initialized.");
   }).catch(err => console.warn("[Init] Failed to load adversarialSelfPlay:", err));
@@ -833,7 +850,7 @@ export function startDaemons(): void {
     console.log("[Init] v19.0.0: Self-Healing Infrastructure initialized.");
   }).catch(err => console.warn("[Init] Failed to load selfHealingInfra:", err));
 
-  import("../swarmCoordinator.js").then(({ initSwarmCoordinator }) => {
+  import("../experimental/swarmCoordinator.js").then(({ initSwarmCoordinator }) => {
     initSwarmCoordinator();
     console.log("[Init] v19.0.0: Swarm Coordinator initialized.");
   }).catch(err => console.warn("[Init] Failed to load swarmCoordinator:", err));
@@ -843,7 +860,7 @@ export function startDaemons(): void {
     console.log("[Init] v19.0.0: Temporal Self-Model initialized.");
   }).catch(err => console.warn("[Init] Failed to load temporalSelfModel:", err));
 
-  import("../federatedRLHF.js").then(({ startFederatedSync }) => {
+  import("../experimental/federatedRLHF.js").then(({ startFederatedSync }) => {
     startFederatedSync();
     console.log("[Init] v19.0.0: Federated RLHF Sync initialized.");
   }).catch(err => console.warn("[Init] Failed to load federatedRLHF:", err));

@@ -167,6 +167,37 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    // Raise the warning threshold to 1MB (from 500kB default) since we have
+    // intentional large vendor chunks (mermaid, cytoscape, wasm).
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        // Split the monolithic index bundle into smaller vendor/feature chunks.
+        // This reduces the critical-path JS for initial page load.
+        manualChunks(id: string) {
+          // Mermaid diagramming library
+          if (id.includes('mermaid') || id.includes('cytoscape')) {
+            return 'vendor-diagrams';
+          }
+          // KaTeX math rendering
+          if (id.includes('katex')) {
+            return 'vendor-katex';
+          }
+          // CodeMirror editor
+          if (id.includes('codemirror') || id.includes('@codemirror')) {
+            return 'vendor-codemirror';
+          }
+          // React + React DOM
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+            return 'vendor-react';
+          }
+          // Other large node_modules
+          if (id.includes('node_modules')) {
+            return 'vendor-misc';
+          }
+        },
+      },
+    },
   },
   server: {
     host: true,

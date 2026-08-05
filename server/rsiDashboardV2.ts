@@ -9,7 +9,7 @@
  */
 
 import { getCalibrationStats } from "./rewardCalibrator.js";
-import { getGenealogyGraph } from "./proposalGenealogy.js";
+import { getGenealogyGraph } from "./experimental/proposalGenealogy.js";
 import { getConsensusTopology, getLivePeers } from "./consensusConfig.js";
 import { getRefinementStats } from "./genealogyGuidedGeneration.js";
 

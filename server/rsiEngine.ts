@@ -503,7 +503,7 @@ export async function runRSICycle(): Promise<RSICycleResult> {
         // v14.0.0: Prioritize chaos-identified hardening targets before normal rotation
         let targets: string[] = [];
         try {
-          const { getHardeningTargets, recordRsiAttempt } = await import("./selfHealingChaos.js");
+          const { getHardeningTargets, recordRsiAttempt } = await import("./experimental/selfHealingChaos.js");
           const hardeningTargets = getHardeningTargets(FILES_PER_CYCLE);
           for (const ht of hardeningTargets) {
             // v20.0.0: Only push hardening targets that are in ANALYZABLE_FILES.
@@ -580,7 +580,7 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     // v15.0.0: Proposal Ranker — deduplicate and rank proposals by composite score
     if (proposals.length > 1) {
       try {
-        const { rankProposals, formatRankingSummary } = await import("./proposalRanker.js");
+        const { rankProposals, formatRankingSummary } = await import("./experimental/proposalRanker.js");
         const { loadProposals: lpRank } = await import("./selfImprove.js");
         const fullState = lpRank();
         const rankable = proposals.map(p => {
@@ -2241,14 +2241,16 @@ export async function runRSICycle(): Promise<RSICycleResult> {
     // Run probes that are due this cycle
     for (const [interval, mod, probe] of _probeRegistry) {
       if (cycleCount % interval === 0) {
-        import(`./${mod}.js`).then((m) => { try { probe(m as Record<string, (...args: unknown[]) => unknown>); } catch { /* probe failed silently */ } }).catch(() => {});
+        // moduleName is validated against a bounded registry — @vite-ignore suppresses the glob warning
+        const probePath = `./` + mod + `.js`;
+        import(/* @vite-ignore */ probePath).then((m) => { try { probe(m as Record<string, (...args: unknown[]) => unknown>); } catch { /* probe failed silently */ } }).catch(() => {});
       }
     }
   } catch { /* non-fatal */ }
 
   // v9.0: Update semantic self-model with actual RSI outcome for online learning
   // Also re-warm the system prompt cache so the next chat response reflects the updated model.
-  import("./semanticSelfModel.js").then(m => {
+  import("./experimental/semanticSelfModel.js").then(m => {
     // updateFromRSICycle expects per-module data; use the first applied file as a proxy
     for (const file of (appliedFiles.length > 0 ? appliedFiles : ["unknown"])) {
       m.updateFromRSICycle({
@@ -2264,7 +2266,7 @@ export async function runRSICycle(): Promise<RSICycleResult> {
   }).catch(() => {});
 
   // v9.0: Record RSI outcome in utility function for auto-calibration
-  import("./utilityFunction.js").then(m => {
+  import("./experimental/utilityFunction.js").then(m => {
     m.recordRSIOutcome({
       cycleId,
       proposalId: cycleId,

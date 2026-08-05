@@ -32,7 +32,7 @@ export {
 
 // ─── v17.0.0: Genealogy-aware generation wrappers ─────────────────────────────
 
-import { recordProposalGenerated } from "./proposalGenealogy.js";
+import { recordProposalGenerated } from "./experimental/proposalGenealogy.js";
 import { log } from "./logger.js";
 
 export interface GenerateOptions {

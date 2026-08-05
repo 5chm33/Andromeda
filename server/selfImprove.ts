@@ -71,7 +71,7 @@ import { getDistilledReward, distillFromApi } from "./onlineRewardDistiller.js";
 import { isSemanticDuplicate, recordSemanticEmbedding } from "./semanticDedup.js";
 import { determineSampleCount, selectBestSample } from "./adaptiveSelfConsistency.js";
 import { assignVariant, recordVariantOutcome } from "./abTestingFramework.js";
-import { queryFederatedGraph, publishToFederatedGraph } from "./federatedKnowledgeGraph.js";
+import { queryFederatedGraph, publishToFederatedGraph } from "./experimental/federatedKnowledgeGraph.js";
 import { discoverActiveSpecialization, getSpecializedPrompt, recordSpecializationOutcome } from "./emergentSpecialization.js";
 import { recordTemporalEvent } from "./temporalReasoningEngine.js";
 import { globalStakeholderReporting } from "./stakeholderReporting";
@@ -1180,7 +1180,7 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
   // v14.0.0: Architectural Pattern Memory — inject cross-session pattern context into LLM prompt.
   // Tells the LLM what patterns have succeeded/failed for this specific file in past RSI cycles.
   try {
-    const { buildPatternContext } = await import("./epistemicBeliefModel.js");
+    const { buildPatternContext } = await import("./experimental/epistemicBeliefModel.js");
     const patternCtx = buildPatternContext(targetFile);
     if (patternCtx) {
       const userMsg = llmMessages[llmMessages.length - 1];
@@ -1225,6 +1225,39 @@ CRITICAL SAFETY RULES — violations cause CI failure and automatic rollback:
       }
     }
   } catch { /* non-fatal — genealogy guidance is advisory only */ }
+
+  // v5.0.0 (Elicit #4): Hypothesis-Before-Editing Protocol
+  // Before generating a patch, run a bounded probe on the file to form a structured
+  // hypothesis. This is the largest single quality lever: investigation before editing
+  // reduces patch failures by forcing the agent to confirm its assumption before writing code.
+  try {
+    const { runProbe, recordHypothesis, formatHypothesisForPrompt } = await import("./agentToolInterface.js");
+    const filename = path.basename(targetFile);
+    // Run a quick grep probe to find the most likely improvement target
+    const probeCommand = area === "performance"
+      ? `grep -n 'await.*await\|for.*await\|setTimeout\|setInterval' ${filename}`
+      : area === "security"
+      ? `grep -n 'eval(\|exec(\|shell\|innerHTML\|dangerouslySet' ${filename}`
+      : area === "reliability"
+      ? `grep -n 'catch.*{}\|catch.*console\|Promise.all\|race condition' ${filename}`
+      : `grep -n 'TODO\|FIXME\|HACK\|any\b\|@ts-ignore' ${filename}`;
+    const probeResult = runProbe("bash", ["-c", probeCommand], path.dirname(targetFile));
+    if (probeResult.success && probeResult.output.trim()) {
+      const hypothesis = recordHypothesis(
+        targetFile,
+        `The file ${filename} has a ${area ?? "general"} improvement opportunity`,
+        `The probe found: ${probeResult.output.slice(0, 200)}`,
+        `The probe found nothing matching the expected pattern`,
+        probeCommand
+      );
+      const hypothesisContext = formatHypothesisForPrompt(hypothesis);
+      const userMsg = llmMessages[llmMessages.length - 1];
+      if (userMsg && userMsg.role === "user") {
+        (userMsg as any).content += `\n\n${hypothesisContext}`;
+      }
+      log.info(`[v5.0.0 hypothesis] ${filename}: probe found ${probeResult.output.split("\n").length} lines of evidence`);
+    }
+  } catch { /* non-fatal — hypothesis protocol is advisory only */ }
 
   // v13.0.0: Semantic Safety Score — block or flag high-risk proposals before LLM call.
   // Prevents expensive generation for changes that would cascade-break the codebase.
@@ -1897,13 +1930,13 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
     if (guardResult.success) {
       // v14.0.0: Record success in architectural pattern memory
       try {
-        const { recordPatternOutcome } = await import("./epistemicBeliefModel.js");
+        const { recordPatternOutcome } = await import("./experimental/epistemicBeliefModel.js");
         recordPatternOutcome(proposal.title || "unknown", "structure", path.basename(proposal.targetFile), "success");
       } catch { /* non-fatal */ }
 
       // v17.0.0: Record outcome in proposal genealogy DAG
       try {
-        const { recordProposalOutcome } = await import("./proposalGenealogy.js");
+        const { recordProposalOutcome } = await import("./experimental/proposalGenealogy.js");
         await recordProposalOutcome(proposalId, "applied");
       } catch (_pgErr) { /* non-fatal */ }
       // v18.0.0: Update reward calibrator with accepted outcome
@@ -1926,7 +1959,7 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
 
       // v14.0.0: Clear self-healing chaos hardening target if this file was flagged
       try {
-        const { clearHardeningTarget } = await import("./selfHealingChaos.js");
+        const { clearHardeningTarget } = await import("./experimental/selfHealingChaos.js");
         const moduleName = path.basename(proposal.targetFile, ".ts");
         clearHardeningTarget(moduleName);
       } catch { /* non-fatal */ }
@@ -2001,7 +2034,7 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
           log.warn(`[ciRegressionGuard] Gate FAILED for ${path.basename(proposal.targetFile)}: ${gateResult.detail}`);
           // Record as failure in pattern memory
           try {
-            const { recordPatternOutcome } = await import("./epistemicBeliefModel.js");
+            const { recordPatternOutcome } = await import("./experimental/epistemicBeliefModel.js");
             recordPatternOutcome(proposal.title || "unknown", "structure", path.basename(proposal.targetFile), "failure");
           } catch { /* non-fatal */ }
           // Roll back via transaction log
@@ -2147,7 +2180,7 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
       // v12.11.0: Federated RLHF — broadcast success outcome to peers so they
       // can update their local model weights from our experience.
       try {
-        const { broadcastOutcome } = await import("./federatedRLHF.js");
+        const { broadcastOutcome } = await import("./experimental/federatedRLHF.js");
         const consensusVotes2 = (proposal as any)._consensusVotes as Array<{ model: string; approved: boolean }> | undefined;
         broadcastOutcome({
           proposalId: proposal.id,
@@ -2442,7 +2475,7 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
 
         // v12.11.0: Federated RLHF — broadcast failure outcome to peers
         try {
-          const { broadcastOutcome: broadcastFail } = await import("./federatedRLHF.js");
+          const { broadcastOutcome: broadcastFail } = await import("./experimental/federatedRLHF.js");
           const failVotes = (proposal as any)._consensusVotes as Array<{ model: string; approved: boolean }> | undefined;
           broadcastFail({
             proposalId: proposal.id,
