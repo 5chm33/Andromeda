@@ -219,6 +219,10 @@ export function seedWorktreeVolume(
     );
   }
 
+  // The seed container is now running. Steps 3-4 may throw; if they do, the
+  // volume must be removed before rethrowing so the caller does not inherit a
+  // leaked partial volume. The seed container is always removed in finally.
+  let stepSucceeded = false;
   try {
     // Step 3: Copy image's /testbed into the volume.
     // cp -a preserves permissions, symlinks, and timestamps.
@@ -252,6 +256,7 @@ export function seedWorktreeVolume(
       ? `sha256:${(hashResult.stdout || "").trim()}`
       : "sha256:hash-unavailable";
 
+    stepSucceeded = true;
     return {
       volumeName,
       preWorktreeHash,
@@ -259,9 +264,18 @@ export function seedWorktreeVolume(
       worktreePath,
       seededAt: new Date().toISOString(),
     };
+  } catch (err) {
+    // Copy or hash failed after the volume was created. Roll back the volume
+    // so the caller does not inherit a leaked partial volume.
+    // (The seed container is removed in the finally block below.)
+    spawnSync("docker", ["volume", "rm", volumeName], { encoding: "utf-8", stdio: "pipe" });
+    throw err;
   } finally {
-    // Step 5: Always remove the seed container (volume persists)
+    // Step 5: Always remove the seed container.
+    // On success, the volume persists and is the caller's responsibility.
+    // On error, the volume was already removed in the catch block above.
     spawnSync("docker", ["rm", "-f", seedContainerName], { encoding: "utf-8", stdio: "pipe" });
+    void stepSucceeded; // suppress unused-variable lint
   }
 }
 
