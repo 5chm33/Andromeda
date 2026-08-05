@@ -72,6 +72,22 @@ describe("agentToolInterface — mode capability gates", () => {
   });
 });
 
+describe("agentToolInterface — command and path policy", () => {
+  it("rejects a shell that is not on the command allowlist", () => {
+    const result = runProbe("bash", ["-c", "echo unsafe"], "/tmp");
+    expect(result.success).toBe(false);
+    expect(result.error).toMatch(/not on the allowed command list/);
+    expect(mockSpawnSync).not.toHaveBeenCalled();
+  });
+
+  it("rejects a bounded command whose working directory escapes the explicit repository root", () => {
+    const result = runBounded("echo", ["hello"], "/tmp/outside", "candidate", "/tmp/repository");
+    expect(result.success).toBe(false);
+    expect(result.error).toMatch(/outside the repository root/);
+    expect(mockSpawnSync).not.toHaveBeenCalled();
+  });
+});
+
 describe("agentToolInterface — timeout fail-closed", () => {
   it("returns failure when command times out (SIGTERM)", () => {
     mockSpawnSync.mockReturnValueOnce({
