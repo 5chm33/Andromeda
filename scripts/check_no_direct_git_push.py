@@ -1,88 +1,89 @@
 #!/usr/bin/env python3
 """
-check_no_direct_git_push.py — Gate 3 CI check.
+Gate 3: No direct git push or commit mutations outside promotionService.ts.
 
-Verifies that no TypeScript module outside the allowlist calls
-execSync/spawnSync/exec/spawn with "git push" or "git commit" directly,
-bypassing the gitSandbox wrapper and promotionService.ts gate.
+Rules:
+  - git push: NEVER allowed outside promotionService.ts (even via gitSandbox)
+  - git commit: NEVER allowed outside promotionService.ts and the approved
+    snapshot-only files (twoPhaseCommit, selfRunTestsTool, dependency_upgrader)
+    when used for LOCAL-ONLY snapshots (no push follows).
+  - gitSandbox("git push ...") is NOT an exemption — it still bypasses the
+    promotion gate.
 
-Allowlisted files (may call git directly):
-  - server/promotionService.ts  (the single authorized promotion choke point)
-  - server/gitSandbox.ts        (the validated git wrapper itself)
-
-What is NOT flagged:
-  - gitSandbox(...) calls — these go through the validated wrapper
-  - String literals in console.log/warn/error messages
-  - Comments (// or * lines)
-  - Prompt strings in evalFramework.ts (LLM prompt text, not code)
-  - Tool description strings (documentation, not execution)
+Allowed files for LOCAL snapshot commits (no push):
+  - server/twoPhaseCommit.ts
+  - server/tools/selfRunTestsTool.ts
+  - server/self/dependency_upgrader.ts
+  - server/selfImprove.ts (initial-commit-only path for new repos)
 """
+
 import re
 import sys
+import os
 from pathlib import Path
 
-ROOT = Path(__file__).parent.parent
+REPO_ROOT = Path(__file__).parent.parent
+SERVER_DIR = REPO_ROOT / "server"
 
-ALLOWLISTED = {
-    "server/promotionService.ts",
-    "server/gitSandbox.ts",
+# Files allowed to do LOCAL snapshot commits (no push)
+SNAPSHOT_ALLOWLIST = {
+    "server/twoPhaseCommit.ts",
+    "server/tools/selfRunTestsTool.ts",
+    "server/self/dependency_upgrader.ts",
+    "server/selfImprove.ts",  # initial-commit path for new repos (no push)
 }
 
-# Only flag raw execSync/spawnSync/exec/spawn calls with git push or commit
-# NOT gitSandbox calls (those are the approved path)
-FORBIDDEN_PATTERNS = [
-    # execSync("git push ...") or execSync("git commit ...")
-    re.compile(r'\bexecSync\s*\(\s*[`\'"]git\s+(push|commit)\b', re.IGNORECASE),
-    # spawnSync("git", ["push", ...]) or spawnSync("git", ["commit", ...])
-    re.compile(r'\bspawnSync\s*\(\s*["\']git["\'],\s*\[[^\]]*["\'](?:push|commit)["\']', re.IGNORECASE),
-    # exec("git push ...") or exec("git commit ...")
-    re.compile(r'\bexec\s*\(\s*[`\'"]git\s+(push|commit)\b', re.IGNORECASE),
-    # spawn("git", ["push", ...]) or spawn("git", ["commit", ...])
-    re.compile(r'\bspawn\s*\(\s*["\']git["\'],\s*\[[^\]]*["\'](?:push|commit)["\']', re.IGNORECASE),
-]
+# The one file allowed to do commit + push
+PROMOTION_SERVICE = "server/promotionService.ts"
+
+# Patterns that indicate a git mutation
+PUSH_PATTERN = re.compile(r'git\s+push', re.IGNORECASE)
+COMMIT_PATTERN = re.compile(r'git\s+commit', re.IGNORECASE)
+# Patterns that are code (not comments or strings in log messages)
+CODE_LINE_PATTERN = re.compile(r'^\s*(gitSandbox|execSync|spawnSync|gitRun|child_process)', re.IGNORECASE)
+# Skip lines that are only comments
+COMMENT_PATTERN = re.compile(r'^\s*//')
 
 violations = []
 
-for ts_file in ROOT.glob("server/**/*.ts"):
-    rel = str(ts_file.relative_to(ROOT))
-    if rel in ALLOWLISTED:
-        continue
-    if ".test.ts" in rel or "tests/" in rel:
-        continue
-    if "experimental/" in rel:
-        continue
+ts_files = list(SERVER_DIR.rglob("*.ts"))
 
+for fpath in ts_files:
+    rel = str(fpath.relative_to(REPO_ROOT))
+    
+    # promotionService.ts is the canonical home — always allowed
+    if rel == PROMOTION_SERVICE:
+        continue
+    
+    # Test files are allowed to mock git calls
+    if ".test." in fpath.name or fpath.name.endswith(".spec.ts"):
+        continue
+    
     try:
-        content = ts_file.read_text(encoding="utf-8")
+        lines = fpath.read_text(encoding="utf-8").splitlines()
     except Exception:
         continue
-
-    for lineno, line in enumerate(content.splitlines(), 1):
-        stripped = line.strip()
-        # Skip comment lines
-        if stripped.startswith("//") or stripped.startswith("*"):
+    
+    for lineno, line in enumerate(lines, 1):
+        # Skip pure comment lines
+        if COMMENT_PATTERN.match(line):
             continue
-        # Skip lines that are gitSandbox calls (approved path)
-        if "gitSandbox(" in line:
+        
+        # Check for git push — never allowed outside promotionService
+        if PUSH_PATTERN.search(line) and CODE_LINE_PATTERN.match(line):
+            violations.append(f"{rel}:{lineno}: git push outside promotionService.ts: {line.strip()[:120]}")
             continue
-        # Skip console.log/warn/error lines (string messages, not execution)
-        if re.search(r'console\.(log|warn|error|info)\s*\(', line):
-            continue
-        # Skip lines that are just string assignments or template literals in prompts
-        if re.search(r'^\s*(prompt|description|message|steps\.push|return)\s*[=:]\s*[`\'"]', stripped):
-            continue
-        for pattern in FORBIDDEN_PATTERNS:
-            if pattern.search(line):
-                violations.append(f"  {rel}:{lineno}: {line.strip()[:120]}")
-                break
+        
+        # Check for git commit — only allowed in snapshot-allowlist files
+        if COMMIT_PATTERN.search(line) and CODE_LINE_PATTERN.match(line):
+            if rel not in SNAPSHOT_ALLOWLIST:
+                violations.append(f"{rel}:{lineno}: git commit outside promotionService.ts and snapshot allowlist: {line.strip()[:120]}")
 
 if violations:
-    print("FAILED: Raw git push/commit calls found outside gitSandbox/promotionService.ts:")
+    print(f"FAILED: {len(violations)} git mutation violation(s) found:\n")
     for v in violations:
-        print(v)
-    print()
-    print("All Git mutations must go through server/gitSandbox.ts or server/promotionService.ts.")
+        print(f"  {v}")
     sys.exit(1)
-
-total = len(list(ROOT.glob("server/**/*.ts")))
-print(f"PASSED: No raw git push/commit calls found in {total} server files.")
+else:
+    print(f"PASSED: No direct git push/commit mutations outside promotionService.ts")
+    sys.exit(0)

@@ -190,7 +190,10 @@ async function executeInDocker(req: SandboxRequest): Promise<SandboxResult> {
   fs.writeFileSync(scriptPath, req.code, "utf8");
 
   // Build Docker command
-  const image = lang === "python" ? "python:3.11-slim" : "node:20-slim";
+    // TODO: Replace with real pinned digests before production use.
+  const PYTHON_IMAGE = "python:3.11-slim";
+  const NODE_IMAGE = "node:20-slim";
+  const image = lang === "python" ? PYTHON_IMAGE : NODE_IMAGE;
   const runCmd = lang === "python" ? `python3 /workspace/${scriptName}` :
                  lang === "shell" ? `bash /workspace/${scriptName}` :
                  `node /workspace/${scriptName}`;
@@ -206,7 +209,7 @@ async function executeInDocker(req: SandboxRequest): Promise<SandboxResult> {
       memoryLimit: config.memoryLimit,
       cpuLimit: config.cpuLimit,
       writableMounts: [`${workspaceDir}:/workspace`],
-      runAsNobody: false,
+      runAsNobody: true,
     });
     dockerArgs = ["run", "--rm", ..._hardened.args, image, "sh", "-c", runCmd];
   } else {

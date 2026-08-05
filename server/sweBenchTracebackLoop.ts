@@ -763,25 +763,21 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
 
   try {
     // Start the container (detached, so we can exec into it repeatedly)
-    await execAsync(
-      // Security hardening: network isolation, dropped capabilities, no privilege escalation,
-      // PID limit to prevent fork bombs, non-root user where image supports it.
-      // NOTE: --read-only is intentionally omitted here because patch application
-      // needs to write to /testbed. The worktree is disposable (container is removed
-      // after each instance), so the writable FS is acceptable.
-      [
-        "docker", "run", "-d",
-        "--name", containerName,
-        "--memory=4g",
-        "--cpus=2.0",
-        "--network=none",
-        "--cap-drop=ALL",
-        "--security-opt=no-new-privileges",
-        "--pids-limit=256",
-        dockerImage,
-        "tail", "-f", "/dev/null",
-      ].join(" ")
-    );
+    // v5.2: Use shared hardened builder — all isolation controls in one place.
+    // writableWorktree:true omits --read-only so patch application can write to /testbed.
+    // The container is still network-isolated, capability-dropped, and PID-limited.
+    const _mainHardened = buildHardenedDockerArgs({
+      image: dockerImage,
+      containerName,
+      memoryLimit: "4g",
+      cpuLimit: "2.0",
+      pidsLimit: 256,
+      wallClockLimitMs: MAX_ATTEMPTS * TEST_TIMEOUT_SECONDS * 1000 + 60_000,
+      mode: "trusted_local", // digest validation is caller's responsibility for SWE-bench images
+      writableWorktree: true, // patch application writes to /testbed
+      runAsNobody: false,     // SWE-bench images run as root by design
+    });
+    await execAsync(`docker run -d ${_mainHardened.args.join(" ")} ${dockerImage} tail -f /dev/null`);
 
     // Fix 32: Detect Python version in container for probe script compatibility
     let containerPythonVersion: string | undefined;

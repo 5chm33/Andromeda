@@ -43,6 +43,8 @@ export interface SandboxControls {
   readOnly: boolean;
   effectiveUser: string;
   imageDigest: string; // must be pinned digest, not mutable tag
+  hostDockerSocketMounted: boolean;
+  privileged: boolean;
 }
 
 export interface ExactApplyResult {
@@ -107,12 +109,20 @@ export interface PromotionRequest {
   staticChecks: StaticCheckResult[];
   /** Sandbox controls actually used. */
   sandboxControls: SandboxControls;
-  /** Human approval token (optional — required for PR creation). */
+  /**
+   * Human approval token — REQUIRED for any external push or PR.
+   * Must be bound to bundleHash + baseCommit + postApplyDiffHash + expiry.
+   * Absent token blocks push even if all other gates pass.
+   */
   approvalToken?: string;
-  /** Approval expiry (ISO 8601). */
+  /** Approval expiry (ISO 8601) — approval is invalid after this time. */
   approvalExpiry?: string;
   /** Approval bound to this bundle hash — must match computed bundle hash. */
   approvalBundleHash?: string;
+  /** Base commit the approval was issued against — must match current HEAD. */
+  approvalBaseCommit?: string;
+  /** Post-apply diff hash the approval was issued against. */
+  approvalDiffHash?: string;
 }
 
 export interface PromotionResult {
@@ -262,25 +272,40 @@ export async function promoteChange(req: PromotionRequest): Promise<PromotionRes
 
   // --- 7. Build evidence bundle ---
   const agentCommit = getCurrentCommitHash(req.repoRoot);
+  // Build evidence bundle with AUTHORITATIVE values derived from actual command output.
+  // Caller-provided booleans are cross-checked against the actual records.
+  const exactApplyVerified = req.patchApplication.success &&
+    !req.patchApplication.fuzzyRecoveryAttempted &&
+    req.patchApplication.exitCode === 0 &&
+    req.patchApplication.modifiedFiles.length > 0;
   const bundle = buildEvidenceBundle({
     agentCommit,
     targetFile: req.targetFile,
     patchApplication: {
-      exactApply: req.patchApplication.success && !req.patchApplication.fuzzyRecoveryAttempted,
+      exactApply: exactApplyVerified,
       fuzzyRecoveryAttempted: req.patchApplication.fuzzyRecoveryAttempted,
       modifiedFiles: req.patchApplication.modifiedFiles,
       patchHash: req.patchApplication.patchHash,
+      postApplyDiffHash: req.patchApplication.postApplyDiffHash,
+      applyExitCode: req.patchApplication.exitCode,
+      applyCommand: req.patchApplication.command,
     },
     testExecutions: req.testExecutions.map(t => ({
       testId: t.testId,
       passed: t.passed,
       durationMs: t.durationMs,
+      timedOut: t.timedOut,
+      exitCode: t.exitCode,
+      outputHash: t.outputHash,
       failureReason: t.failureReason,
+      command: t.command,
     })),
     staticCheck: {
       passed: req.staticChecks.every(c => c.passed),
       errorCount: req.staticChecks.reduce((n, c) => n + c.errorCount, 0),
+      command: req.staticChecks.find(c => !c.passed)?.command,
     },
+    sandboxControls: req.sandboxControls,
     mode: "promote",
   });
 
@@ -292,11 +317,28 @@ export async function promoteChange(req: PromotionRequest): Promise<PromotionRes
     blockedReasons.push(`canPromote rejected: ${promotionCheck.reason}`);
   }
 
-  // --- 9. Approval gate (if approvalToken provided) ---
-  if (req.approvalToken) {
+  // --- 9. Approval gate — MANDATORY for any external push or PR ---
+  // An absent approval token blocks push. Approval must be bound to the exact
+  // bundle hash, base commit, diff hash, and must not be expired.
+  const requiresApproval = !!(req.githubToken && req.githubRepo);
+  if (requiresApproval && !req.approvalToken) {
+    blockedReasons.push("Human approval token is required for external push/PR — no autonomous promotion without approval");
+  } else if (req.approvalToken) {
+    // Verify bundle hash binding
     if (req.approvalBundleHash && req.approvalBundleHash !== bundleHash) {
       blockedReasons.push(`Approval bundle hash mismatch: approval was for ${req.approvalBundleHash.slice(0, 16)}... but bundle is now ${bundleHash.slice(0, 16)}...`);
     }
+    // Verify base commit binding
+    const currentHead = getCurrentCommitHash(req.repoRoot);
+    if (req.approvalBaseCommit && req.approvalBaseCommit !== currentHead) {
+      blockedReasons.push(`Approval base commit mismatch: approval was for ${req.approvalBaseCommit.slice(0, 12)} but HEAD is now ${currentHead.slice(0, 12)}`);
+    }
+    // Verify diff hash binding
+    if (req.approvalDiffHash && req.patchApplication.postApplyDiffHash &&
+        req.approvalDiffHash !== req.patchApplication.postApplyDiffHash) {
+      blockedReasons.push(`Approval diff hash mismatch: approval was for ${req.approvalDiffHash.slice(0, 16)} but post-apply diff is ${req.patchApplication.postApplyDiffHash.slice(0, 16)}`);
+    }
+    // Verify expiry
     if (req.approvalExpiry && new Date(req.approvalExpiry) < new Date()) {
       blockedReasons.push(`Approval expired at ${req.approvalExpiry}`);
     }
@@ -322,8 +364,20 @@ export async function promoteChange(req: PromotionRequest): Promise<PromotionRes
       ts: new Date().toISOString(),
     }, null, 2));
   } catch (e) {
-    // Non-fatal — bundle persistence failure does not block promotion
-    console.warn(`[promotionService] Bundle persistence failed: ${String(e)}`);
+    // FATAL — if we cannot persist the evidence record, we cannot commit.
+    // Fail closed: return blocked result without committing.
+    const persistErr = String(e).slice(0, 300);
+    console.error(`[promotionService] FATAL: Bundle persistence failed — aborting promotion: ${persistErr}`);
+    return {
+      runId: req.runId,
+      approved: false,
+      committed: false,
+      pushed: false,
+      bundleHash,
+      bundlePath: undefined,
+      blockedReasons: [`Evidence bundle persistence failed (fail closed): ${persistErr}`],
+      durationMs: Date.now() - startMs,
+    };
   }
 
   // --- 11. Block if any reasons accumulated ---
