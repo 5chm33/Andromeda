@@ -1001,6 +1001,37 @@ async function main() {
   let resolved = 0;
   let total = 0;
 
+  /**
+   * Thrown by Phase 1e when the git apply --check container cannot start in
+   * a scored run. Maps to infra_failure in the run bundle.
+   */
+  class PreflightInfraError extends Error {
+    readonly patchHash: string;
+    readonly diagnostic: string;
+    constructor(msg: string, patchHash: string, diagnostic: string) {
+      super(msg);
+      this.name = 'PreflightInfraError';
+      this.patchHash = patchHash;
+      this.diagnostic = diagnostic;
+    }
+  }
+
+  /**
+   * Thrown by Phase 1e when the initial patch (and its one format-only repair)
+   * both fail git apply --check in a scored run. Maps to exact_apply_failure.
+   * No prediction is submitted to the evaluator.
+   */
+  class PreflightApplyError extends Error {
+    readonly patchHash: string;
+    readonly diagnostic: string;
+    constructor(msg: string, patchHash: string, diagnostic: string) {
+      super(msg);
+      this.name = 'PreflightApplyError';
+      this.patchHash = patchHash;
+      this.diagnostic = diagnostic;
+    }
+  }
+
   for (const instance of instances) {
     const { instance_id, repo, base_commit, problem_statement, hints_text, test_patch, FAIL_TO_PASS, PASS_TO_PASS } = instance;
     const dockerImage = getDockerImageName(instance_id);
@@ -1215,15 +1246,24 @@ Output ONLY a unified diff with REAL line numbers:
       }
       console.log(`[Runner] Initial patch: ${initialPatch.length} chars`);
 
-      // ── Phase 1e: git apply --check preflight ─────────────────────────────────────────────────────────────────────────────────────
+      // ── Phase 1e: git apply --check preflight (fail-closed for scored runs) ─────────────────────────────────────────────────────────────────────────────────────
       // Run git apply --check in a short-lived read-only inspection container.
       // If it fails, make ONE format-only repair call using only the git apply
       // diagnostic output. The repair turn MUST NOT see evaluator test names or
       // test_patch content (scored_strict boundary is maintained).
+      //
+      // Fail-closed contract (scored runs only):
+      //   • Container cannot start → throw PreflightInfraError → infra_failure, no submission
+      //   • Repair fails --check  → throw PreflightApplyError → exact_apply_failure, no submission
+      //   • Both errors record patchHash and diagnostic in the run bundle.
+      // Non-scored runs: advisory only (warn and continue).
       if (initialPatch.length > 0) {
+        const patchHashForPreflight = crypto.createHash('sha256').update(initialPatch).digest('hex');
         const checkContainerName = `andromeda-check-${instance_id.replace(/[^a-z0-9]/gi, '-')}-${Date.now()}`;
+        let checkContainerStarted = false;
         try {
           const { spawnSync } = await import('child_process');
+          const { exec } = await import('child_process');
           // Start a short-lived read-only container for the check
           const startResult = spawnSync('docker', [
             'run', '-d',
@@ -1237,10 +1277,21 @@ Output ONLY a unified diff with REAL line numbers:
             'tail', '-f', '/dev/null',
           ], { encoding: 'utf-8', stdio: 'pipe', timeout: 30_000 });
 
-          if (startResult.status === 0) {
+          if (startResult.status !== 0) {
+            const startDiag = (startResult.stderr || startResult.stdout || 'docker run failed').slice(0, 300);
+            if (isScoredRun) {
+              throw new PreflightInfraError(
+                `Phase 1e: check container failed to start: ${startDiag}`,
+                patchHashForPreflight,
+                startDiag,
+              );
+            } else {
+              console.warn(`[Runner] Phase 1e: Could not start check container — skipping preflight (non-scored run)`);
+            }
+          } else {
+            checkContainerStarted = true;
             try {
               // Inject the patch into /tmp/check.diff via stdin
-              const { exec } = await import('child_process');
               await new Promise<void>((resolve) => {
                 const child = exec(
                   `docker exec -i ${checkContainerName} sh -c 'cat > /tmp/check.diff'`,
@@ -1275,6 +1326,7 @@ Do NOT change the semantic content of the fix.
 Do NOT add, remove, or modify any code logic.
 Output ONLY the corrected unified diff:
 \`\`\`diff`;
+                let repairSucceeded = false;
                 try {
                   const repairResponse = await sweBenchLLM(repairPrompt, 0.0);
                   const repairMatch = repairResponse.match(/\`\`\`diff\n?([\s\S]*?)\`\`\`/);
@@ -1295,30 +1347,70 @@ Output ONLY the corrected unified diff:
                     ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
                     if (recheck.status === 0) {
                       initialPatch = repairedPatch;
+                      repairSucceeded = true;
                       console.log('[Runner] Phase 1e: Format repair succeeded — patch now passes git apply --check');
                     } else {
-                      console.warn('[Runner] Phase 1e: Format repair did not fix the issue — proceeding with original patch');
+                      const recheckDiag = (recheck.stdout || recheck.stderr || '').slice(0, 300);
+                      console.warn(`[Runner] Phase 1e: Format repair did not fix the issue. Recheck: ${recheckDiag.slice(0, 100)}`);
+                      if (isScoredRun) {
+                        throw new PreflightApplyError(
+                          `Phase 1e: patch failed git apply --check after one repair attempt`,
+                          patchHashForPreflight,
+                          `Original: ${diagnostic.slice(0, 200)} | After repair: ${recheckDiag.slice(0, 200)}`,
+                        );
+                      }
+                    }
+                  } else {
+                    console.warn('[Runner] Phase 1e: Repair response contained no diff block');
+                    if (isScoredRun) {
+                      throw new PreflightApplyError(
+                        `Phase 1e: patch failed git apply --check; repair produced no diff`,
+                        patchHashForPreflight,
+                        diagnostic.slice(0, 400),
+                      );
                     }
                   }
                 } catch (repairErr) {
-                  console.warn(`[Runner] Phase 1e: Format repair call failed: ${repairErr instanceof Error ? repairErr.message : String(repairErr)}`);
+                  // Re-throw PreflightApplyError directly; wrap other errors
+                  if (repairErr instanceof PreflightApplyError) throw repairErr;
+                  const repairErrMsg = repairErr instanceof Error ? repairErr.message : String(repairErr);
+                  console.warn(`[Runner] Phase 1e: Format repair call failed: ${repairErrMsg}`);
+                  if (isScoredRun && !repairSucceeded) {
+                    throw new PreflightApplyError(
+                      `Phase 1e: patch failed --check; repair call threw: ${repairErrMsg.slice(0, 100)}`,
+                      patchHashForPreflight,
+                      diagnostic.slice(0, 400),
+                    );
+                  }
                 }
               } else {
                 console.log('[Runner] Phase 1e: git apply --check passed');
               }
             } finally {
-              spawnSync('docker', ['rm', '-f', checkContainerName], { encoding: 'utf-8', stdio: 'pipe' });
+              if (checkContainerStarted) {
+                spawnSync('docker', ['rm', '-f', checkContainerName], { encoding: 'utf-8', stdio: 'pipe' });
+              }
             }
-          } else {
-            console.warn('[Runner] Phase 1e: Could not start check container — skipping preflight');
           }
         } catch (checkErr) {
-          console.warn(`[Runner] Phase 1e: git apply --check preflight error: ${checkErr instanceof Error ? checkErr.message : String(checkErr)}`);
-          // Always clean up the check container
-          try {
-            const { spawnSync } = await import('child_process');
-            spawnSync('docker', ['rm', '-f', checkContainerName], { encoding: 'utf-8', stdio: 'pipe' });
-          } catch { /* ignore cleanup errors */ }
+          // Re-throw typed preflight errors directly to the instance catch block
+          if (checkErr instanceof PreflightInfraError || checkErr instanceof PreflightApplyError) throw checkErr;
+          const checkErrMsg = checkErr instanceof Error ? checkErr.message : String(checkErr);
+          console.warn(`[Runner] Phase 1e: Unexpected preflight error: ${checkErrMsg}`);
+          // Always clean up the check container on unexpected errors
+          if (checkContainerStarted) {
+            try {
+              const { spawnSync } = await import('child_process');
+              spawnSync('docker', ['rm', '-f', checkContainerName], { encoding: 'utf-8', stdio: 'pipe' });
+            } catch { /* ignore cleanup errors */ }
+          }
+          if (isScoredRun) {
+            throw new PreflightInfraError(
+              `Phase 1e: unexpected preflight error: ${checkErrMsg.slice(0, 150)}`,
+              patchHashForPreflight,
+              checkErrMsg.slice(0, 400),
+            );
+          }
         }
       }
 
@@ -1470,16 +1562,22 @@ Output ONLY the corrected unified diff:
       }) + '\n');
       total++;
 
-      // v5.8: Record infra failure — use the pre-flight resolved digest.
+      // v5.8+v5.18: Record outcome — PreflightApplyError → exact_apply_failure;
+      // all other errors → infra_failure. Both record patchHash and diagnostic.
       if (_benchReport && _benchLauncher) {
+        const isApplyFailure = err instanceof PreflightApplyError;
         const instanceResult: InstanceResult = {
           instanceId: instance_id,
-          outcome: 'infra_failure',
+          outcome: isApplyFailure ? 'exact_apply_failure' : 'infra_failure',
           imageDigest: instanceImageRef,
           exactApply: false,
           fuzzyRecoveryAttempted: false,
           durationMs: Date.now() - instanceStart,
           errorMessage: err.message?.slice(0, 200),
+          // Record patchHash and diagnostic for preflight failures
+          ...(err instanceof PreflightApplyError || err instanceof PreflightInfraError
+            ? { patchHash: err.patchHash, preflightDiagnostic: err.diagnostic }
+            : {}),
         };
         BenchmarkLauncher.recordInstance(_benchReport, instanceResult);
 

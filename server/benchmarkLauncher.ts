@@ -167,6 +167,8 @@ export interface InstanceResult {
   durationMs: number;
   costUsd?: number;
   errorMessage?: string;
+  /** Diagnostic output from Phase 1e git apply --check preflight, if applicable */
+  preflightDiagnostic?: string;
 }
 
 // ── Smoke Result ──────────────────────────────────────────────────────────────
