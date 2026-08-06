@@ -259,6 +259,45 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
     check("smoke-bundle", "Smoke bundle passed for same image/harness/sandbox config", smokeOk, smokeDetail);
   }
 
+  // ── Check 0: Metadata completeness (scored runs only) ───────────────────────────────
+  if (config.scoredRun) {
+    // agentVersion must not be 'unknown' or contain '-dirty' (uncommitted changes)
+    const agentVersionOk = config.agentVersion !== 'unknown' &&
+      !config.agentVersion.includes('-dirty') &&
+      config.agentVersion.length > 0;
+    check(
+      'agent-version-known',
+      'Agent version is a clean, known git reference',
+      agentVersionOk,
+      agentVersionOk
+        ? `agentVersion: ${config.agentVersion}`
+        : `agentVersion is '${config.agentVersion}'. ` +
+          `Commit all changes and ensure git describe --tags --always returns a clean ref before scoring.`,
+    );
+
+    // promptTemplateHash must not be 'unset'
+    const promptHashOk = config.promptTemplateHash !== 'unset' && config.promptTemplateHash.length > 0;
+    check(
+      'prompt-hash-set',
+      'Prompt template hash is set',
+      promptHashOk,
+      promptHashOk
+        ? `promptTemplateHash: ${config.promptTemplateHash}`
+        : `promptTemplateHash is 'unset'. Set SWEBENCH_PROMPT_HASH=<sha256-of-prompt-template> before launching.`,
+    );
+
+    // harnessRevision must not be 'unset'
+    const harnessRevOk = config.harnessRevision !== 'unset' && config.harnessRevision.length > 0;
+    check(
+      'harness-revision-set',
+      'Harness revision is set',
+      harnessRevOk,
+      harnessRevOk
+        ? `harnessRevision: ${config.harnessRevision}`
+        : `harnessRevision is 'unset'. Set SWEBENCH_HARNESS_REVISION=$(git rev-parse HEAD) before launching.`,
+    );
+  }
+
   // ── Check 1a: Dataset revision pinned for scored runs ─────────────────────────────────
   if (config.scoredRun) {
     const revisionPinned = config.datasetRevision !== 'main' && config.datasetRevision.length >= 7;

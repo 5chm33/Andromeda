@@ -893,8 +893,9 @@ async function main() {
       scoredRun: true,
       externalSearch: false,
       runBundlePath,
-      // agentVersion: read from git describe so it reflects the actual build
-      agentVersion: (() => { try { const { execSync } = require('child_process'); return execSync('git describe --tags --always --dirty', { encoding: 'utf-8' }).trim(); } catch { return 'unknown'; } })(),
+      // agentVersion: read from git describe so it reflects the actual build.
+      // Uses execAsync (already imported) to avoid ESM require() issues.
+      agentVersion: await (async () => { try { const r = await execAsync('git describe --tags --always --dirty', { cwd: process.cwd() }); return r.stdout.trim(); } catch { return 'unknown'; } })(),
       harnessRevision: process.env.SWEBENCH_HARNESS_REVISION ?? 'unset',
       // Dataset provenance from the pinned loader
       datasetName: datasetProvenance.datasetName,
@@ -992,8 +993,9 @@ async function main() {
     const dockerImage = getDockerImageName(instance_id);
 
     console.log(`\n[Runner] ── Instance ${total + 1}/${instances.length}: ${instance_id} ──`);
-    const instanceStart = Date.now();
-
+        const instanceStart = Date.now();
+    // Hoisted so the catch (infra_failure) block can record the per-instance digest.
+    let instanceImageRef = dockerImage; // updated after pull+resolve inside try
     try {
       // ── Ensure disk space ────────────────────────────────────────────────
       await ensureDiskSpace(10, true);
@@ -1021,9 +1023,21 @@ async function main() {
         console.warn(`[Runner] Image pull failed: ${pullErr.message} — trying anyway`);
       }
 
+      // ── Resolve per-instance image digest ──────────────────────────────
+      // Resolve immediately after pull so every discovery and repair operation
+      // uses the immutable digest reference, not the mutable :latest tag.
+      // instanceImageRef is hoisted above the try block so the catch can use it.
+      try {
+        const resolved = resolveImageDigest(dockerImage, 'trusted_local', false);
+        instanceImageRef = resolved.resolvedRef;
+        console.log(`[Runner] Per-instance digest: ${instanceImageRef}`);
+      } catch (resolveErr: any) {
+        console.warn(`[Runner] Digest resolution failed for ${dockerImage}: ${resolveErr.message} — using tag`);
+      }
+
       // ── Phase 1a: List repo files ────────────────────────────────────────
       console.log('[Runner] Phase 1a: Listing repo files...');
-      const allFiles = await listRepoFiles(dockerImage);
+      const allFiles = await listRepoFiles(instanceImageRef);
       console.log(`[Runner] Found ${allFiles.length} Python files`);
 
       // ── Phase 1b: Localize relevant files ───────────────────────────────
@@ -1041,7 +1055,7 @@ async function main() {
       console.log('[Runner] Phase 1c: Extracting file content from Docker...');
       const fileContents: Record<string, string> = {};
       for (const fp of relevantFiles) {
-        const content = await extractFileFromDocker(dockerImage, fp);
+        const content = await extractFileFromDocker(instanceImageRef, fp);
         if (content) {
           // Store the FULL content — skeleton context is applied at prompt-build time
           // so the diff generation always has the complete original to diff against
@@ -1110,7 +1124,7 @@ async function main() {
       let instanceTimeoutId: ReturnType<typeof setTimeout> | null = null;
       const pipelinePromise = runSOTAPipeline(
         instance_id,
-        dockerImage,
+        instanceImageRef,
         issueDescription,
         fileContents,
         initialPatch,
@@ -1242,7 +1256,7 @@ async function main() {
         const instanceResult: InstanceResult = {
           instanceId: instance_id,
           outcome: 'infra_failure',
-          imageDigest: _resolvedImageRef,
+          imageDigest: instanceImageRef,
           exactApply: false,
           fuzzyRecoveryAttempted: false,
           durationMs: Date.now() - instanceStart,
@@ -1263,10 +1277,30 @@ async function main() {
     }
   }
 
-  console.log(`\n[Runner] ══ COMPLETE ══`);
-  console.log(`[Runner] Resolved: ${resolved}/${total} = ${(resolved / total * 100).toFixed(1)}%`);
+    console.log(`\n[Runner] ══ COMPLETE ══`);
+  if (_benchReport) {
+    const s = _benchReport.summary;
+    console.log(`[Runner] ══ BENCHMARK SUMMARY ══`);
+    console.log(`[Runner]   Total instances:          ${s.total}`);
+    if (s.predictionReady > 0) {
+      console.log(`[Runner]   Prediction ready:         ${s.predictionReady}  ← awaiting external evaluator (NOT the benchmark score)`);
+    }
+    if (s.resolved > 0) {
+      console.log(`[Runner]   Resolved (internal):      ${s.resolved}  ← test_aware mode only; do NOT report as SWE-bench score`);
+    }
+    console.log(`[Runner]   Exact-apply failures:     ${s.exactApplyFailures}`);
+    console.log(`[Runner]   Test failures:            ${s.testFailures}`);
+    console.log(`[Runner]   Infrastructure failures:  ${s.infraFailures}`);
+    console.log(`[Runner]   Timed out:               ${s.timedOut}`);
+    console.log(`[Runner]   Invalid instances:        ${s.invalidInstances}`);
+    console.log(`[Runner]   Total cost:               $${_benchReport.totalCostUsd.toFixed(2)}`);
+    if (s.predictionReady > 0) {
+      console.log(`[Runner] ══ Run the external SWE-bench evaluator on ${opts.outputPath} to obtain the official score. ══`);
+    }
+  } else {
+    console.log(`[Runner] Resolved: ${resolved}/${total} = ${(resolved / total * 100).toFixed(1)}%`);
+  }
   console.log(`[Runner] Predictions: ${opts.outputPath}`);
-
   // v5.4: Write the final benchmark report for scored runs
   if (_benchReport && _benchLauncher) {
     _benchReport.completedAt = new Date().toISOString();
