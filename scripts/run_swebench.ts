@@ -688,12 +688,6 @@ Rules:
 Output ONLY the file blocks. No explanation.`;
 
   const searchSection = searchContext ? `\n${searchContext}` : '';
-  // Detect if the issue description contains a complete implementation (code block with function definitions)
-  // This is common in feature requests where the author provides the full implementation
-  const hasImplementationCode = /```python[\s\S]{200,}def \w+/.test(issueDescription);
-  const implementationHint = hasImplementationCode
-    ? `\n## IMPORTANT: Implementation Code in Issue\nThe issue description above contains Python code with function definitions. This is the PROPOSED IMPLEMENTATION. You should:\n1. Create a new file with this code (adapting imports as needed for the actual codebase)\n2. Register/import it in the appropriate __init__.py\n3. Do NOT just add a single attribute — implement the full feature.\n`
-    : '';
 
   // ── Fix 29: Extract error/exception hint from issue description ───────────────────────
   // Many hard instances mention a specific exception or expected behavior in the
@@ -704,19 +698,10 @@ Output ONLY the file blocks. No explanation.`;
   const errorHint = errorHintMatch
     ? `\n## Key Error Signal (from issue)\n> ${errorHintMatch[0].trim()}\n`
     : '';
-  // Detect if the issue is about improving an error message
-  // In this case, the fix must be CONDITIONAL: only change the message for the
-  // specific case described (e.g., multi-column case), not for all cases.
-  // Changing the message unconditionally will break existing tests.
-  const isErrorMessageFix = /error message|exception message|misleading|confusing.*message|improve.*message/i.test(issueDescription.slice(0, 1000));
-  const errorMessageHint = isErrorMessageFix
-    ? `\n## CRITICAL: Error Message Fix Constraint\nWhen fixing an error message, you MUST be conditional:\n- Only change the message for the SPECIFIC CASE described in the issue (e.g., when there are multiple required items)\n- Keep the ORIGINAL message format for all other cases\n- Changing the message unconditionally will break existing tests that check the old format\n`
-    : '';
-
   const prompt = `You are an expert Python software engineer solving a GitHub issue.
 ## Instance: ${instanceId}
 ## Issue Description
-${issueDescription}${errorHint}${errorMessageHint}${implementationHint}
+${issueDescription}${errorHint}
 ${testContext}${testContextSnippets}${searchSection}
 ## Files to Modify
 ${fileSections}
