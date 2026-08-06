@@ -82,11 +82,12 @@ const SMOKE_RESULT_FILE = path.join(SMOKE_RESULT_DIR, "latest.json");
  */
 const SMOKE_UNIFIED_DIFF = `--- a/django/__init__.py
 +++ b/django/__init__.py
-@@ -1,3 +1,4 @@
+@@ -1,4 +1,5 @@
 +# Andromeda smoke test marker — applied via git apply
  from django.utils.version import get_version
+ 
  VERSION = (3, 0, 0, 'alpha', 0)
- __version__ = get_version(VERSION)
+
 `;
 
 // ─── Sentinel error for controlled early abort ────────────────────────────────
