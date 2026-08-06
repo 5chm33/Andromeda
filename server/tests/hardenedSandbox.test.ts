@@ -34,7 +34,7 @@ function makeTmpDir(): string {
 // ─── Test 1: seedWorktreeVolume copy/hash rollback (structural) ───────────────
 
 describe("seedWorktreeVolume: copy failure rollback invariant (v5.7)", () => {
-  it("source has a catch block that removes the volume when cp -a fails", () => {
+  it("source has a catch block that removes the volume when cp -r fails", () => {
     // Verify by source inspection that the rollback is present by construction.
     // The catch block must appear AFTER the copy step and call docker volume rm.
     const src = fs.readFileSync(
@@ -56,18 +56,18 @@ describe("seedWorktreeVolume: copy failure rollback invariant (v5.7)", () => {
   });
 
   it("source has a catch block that removes the volume when hash step throws", () => {
-    // The same catch block covers both cp -a failure and hash step failure
+    // The same catch block covers both cp -r failure and hash step failure
     // because both are inside the same try block.
     const src = fs.readFileSync(
       path.join(process.cwd(), "server/hardenedSandbox.ts"),
       "utf-8",
     );
 
-    // The try block must contain both the cp -a call and the hash call
+    // The try block must contain both the cp -r call and the hash call
     const tryIdx = src.indexOf("// The seed container is now running. Steps 3-4 may throw");
     expect(tryIdx).toBeGreaterThan(0);
 
-    const cpCallIdx = src.indexOf("cp -a ${worktreePath}", tryIdx);
+    const cpCallIdx = src.indexOf("cp -r --no-preserve=ownership ${worktreePath}", tryIdx);
     expect(cpCallIdx).toBeGreaterThan(tryIdx);
 
     const hashCallIdx = src.indexOf("find /worktree-seed -type f", tryIdx);
