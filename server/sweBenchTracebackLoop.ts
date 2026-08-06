@@ -257,30 +257,37 @@ export function extractTracebackSummary(testOutput: string): string {
  * Fixes wrong @@ -a,b +c,d @@ line counts in a unified diff.
  *
  * LLMs frequently generate patches with incorrect hunk line counts, causing
- * git apply to reject them as "corrupt patch". This function recounts the
- * actual lines in each hunk and rewrites the @@ header accordingly.
+ * git apply to reject them as "corrupt patch". This function:
+ *   1. Recounts actual lines in each hunk and rewrites the @@ header
+ *   2. Handles @@ -x,N +x,N @@ (literal 'x' placeholder from LLMs)
+ *   3. Handles @@ @@ (bare header with no line numbers)
+ *   4. Strips trailing whitespace from context lines (patch command rejects them)
+ *   5. Ensures a trailing newline
  */
 export function fixHunkCounts(patch: string): string {
   const lines = patch.split('\n');
   const result: string[] = [];
   let i = 0;
+  // Track the current file content for line-number recovery when start=0 or placeholder
+  // (we don't have the file here, so we use a heuristic: scan context lines to
+  // estimate the actual start line from previously-seen lines in the result)
   while (i < lines.length) {
     const line = lines[i];
-    // Match full @@ -a,b +c,d @@ header
+    // Match full @@ -a,b +c,d @@ header — digits only
     const m = line.match(/^(@@ -(\d+)(?:,\d+)? \+(\d+)(?:,\d+)? @@)(.*)/);
-    // Also match bare @@ @@ (no line numbers — model omitted them)
-    const mBare = !m && line.match(/^@@\s*@@(.*)/);
-    if (m || mBare) {
-      // For bare @@ @@, use placeholder line 1 — patch --fuzz=15 will find the real location
+    // Match @@ -x,N +x,N @@ or @@ -x +x @@ (literal 'x' or other non-numeric placeholder)
+    const mPlaceholder = !m && line.match(/^@@ -([^\d\s,][^\s,]*),?(\d*) \+([^\d\s,][^\s,]*),?(\d*) @@(.*)/);
+    // Also match bare @@ @@ (no line numbers — model omitted them entirely)
+    const mBare = !m && !mPlaceholder && line.match(/^@@\s*@@(.*)/);
+    if (m || mPlaceholder || mBare) {
+      // Determine start lines:
+      // - For real headers: use the parsed digits
+      // - For placeholder/bare: use 1 (git apply --fuzz=15 or --unidiff-zero will find the real location)
       const oldStart = m ? parseInt(m[2], 10) : 1;
       const newStart = m ? parseInt(m[3], 10) : 1;
-      const contextSuffix = m ? m[4] : (mBare ? mBare[1] : '');
-      // Count actual lines in this hunk
+      const contextSuffix = m ? m[4] : (mPlaceholder ? mPlaceholder[5] : (mBare ? mBare[1] : ''));
+      // Collect hunk lines
       let j = i + 1;
-      let oldCount = 0;
-      let newCount = 0;
-      // Collect hunk lines first, then trim trailing empty context lines
-      // (split('\n') produces a trailing empty string that would be miscounted)
       const hunkLines: string[] = [];
       while (j < lines.length) {
         const l = lines[j];
@@ -290,17 +297,34 @@ export function fixHunkCounts(patch: string): string {
         j++;
       }
       // Trim trailing empty context lines (artifact of split('\n') on patch text)
-      while (hunkLines.length > 0 && hunkLines[hunkLines.length - 1] === '') {
+      while (hunkLines.length > 0 && hunkLines[hunkLines.length - 1].trimEnd() === '') {
         hunkLines.pop();
       }
+      // Count lines and strip trailing whitespace from context lines
+      // (the `patch` command used by the SWE-bench evaluator rejects trailing spaces)
+      let oldCount = 0;
+      let newCount = 0;
+      const cleanedHunkLines: string[] = [];
       for (const l of hunkLines) {
-        if (l.startsWith('-')) { oldCount++; }
-        else if (l.startsWith('+')) { newCount++; }
-        else if (l.startsWith('\\')) { /* no newline marker — skip */ }
-        else { oldCount++; newCount++; }  // context line
+        if (l.startsWith('-')) {
+          oldCount++;
+          cleanedHunkLines.push(l);
+        } else if (l.startsWith('+')) {
+          newCount++;
+          cleanedHunkLines.push(l);
+        } else if (l.startsWith('\\')) {
+          // No newline at end of file marker — keep as-is
+          cleanedHunkLines.push(l);
+        } else {
+          // Context line — strip trailing whitespace
+          oldCount++;
+          newCount++;
+          cleanedHunkLines.push(l.trimEnd());
+        }
       }
       result.push(`@@ -${oldStart},${oldCount} +${newStart},${newCount} @@${contextSuffix}`);
-      i++;
+      result.push(...cleanedHunkLines);
+      i = j; // skip past the hunk lines we already consumed
     } else {
       result.push(line);
       i++;
@@ -680,22 +704,24 @@ ${tracebackSummary}
 ${fileContext ? `## Current File State (after your patch was applied — call-chain expanded)\n${fileContext}\n\n` : ''}## Instructions
 1. Analyze the test failure carefully. Understand WHY your previous patch failed.
 2. Output a TARGETED unified diff patch (git diff format) fixing ONLY the lines that need changing.
-3. Use the standard diff format:
+3. CRITICAL: Use REAL line numbers in the @@ header. Count from the file content shown above.
+   NEVER use 'x', 'N', or placeholder values. Example: @@ -42,7 +42,8 @@ (not @@ -x,7 +x,8 @@)
+4. Use the standard diff format:
 \`\`\`diff
 --- a/path/to/file.py
 +++ b/path/to/file.py
-@@ -line,count +line,count @@
+@@ -42,7 +42,8 @@
+ context line
 -old line
 +new line
+ context line
 \`\`\`
-4. Fix the root cause, not just the symptom.
-5. Make MINIMAL changes — only change what is necessary to fix the failing tests.
-6. If the bug is in a callee function (called by the function you patched), fix the callee.
-7. NEVER output the complete file — only output the changed lines in diff format.
-
+5. Fix the root cause, not just the symptom.
+6. Make MINIMAL changes — only change what is necessary to fix the failing tests.
+7. If the bug is in a callee function (called by the function you patched), fix the callee.
+8. NEVER output the complete file — only output the changed lines in diff format.
 Output ONLY the diff block. No explanation.
 `;
-
   // ── Fix 22: Hard cap on total prompt length ───────────────────────────────
   // If the assembled prompt exceeds MAX_REVISION_PROMPT_CHARS, truncate the
   // file context section (not the traceback — traceback is the key signal).
@@ -720,22 +746,25 @@ Output ONLY the diff block. No explanation.
       const contextBody = instrIdx !== -1 ? contextSection.slice(0, instrIdx) : contextSection;
       const truncatedBody = contextBody.slice(0, allowedFileContextLen);
       const truncNote = `\n\n> [File context truncated — original prompt was ${prompt.length.toLocaleString()} chars, capped at ${MAX_REVISION_PROMPT_CHARS.toLocaleString()}. Focus on the traceback above to identify the fix.]\n\n`;
-      const instructions = `## Instructions
+            const instructions = `## Instructions
 1. Analyze the test failure carefully. Understand WHY your previous patch failed.
 2. Output a TARGETED unified diff patch (git diff format) fixing ONLY the lines that need changing.
-3. Use the standard diff format:
+3. CRITICAL: Use REAL line numbers in the @@ header. NEVER use 'x', 'N', or placeholder values.
+   Example: @@ -42,7 +42,8 @@ (not @@ -x,7 +x,8 @@)
+4. Use the standard diff format:
 \`\`\`diff
 --- a/path/to/file.py
 +++ b/path/to/file.py
-@@ -line,count +line,count @@
+@@ -42,7 +42,8 @@
+ context line
 -old line
 +new line
+ context line
 \`\`\`
-4. Fix the root cause, not just the symptom.
-5. Make MINIMAL changes — only change what is necessary to fix the failing tests.
-6. If the bug is in a callee function (called by the function you patched), fix the callee.
-7. NEVER output the complete file — only output the changed lines in diff format.
-
+5. Fix the root cause, not just the symptom.
+6. Make MINIMAL changes — only change what is necessary to fix the failing tests.
+7. If the bug is in a callee function (called by the function you patched), fix the callee.
+8. NEVER output the complete file — only output the changed lines in diff format.
 Output ONLY the diff block. No explanation.
 `;
       return beforeContext + truncatedBody + truncNote + instructions;

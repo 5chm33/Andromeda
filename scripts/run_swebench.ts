@@ -654,17 +654,26 @@ async function generateInitialPatch(
   const testContext = (testNames || testCode) ? `\n${testNames}${testCode}` : '';
 
   const outputInstructions = useDiffFormat
-    ? `Output a unified diff patch (git diff format) with ONLY the changed lines:
+    ? `Output a unified diff patch (git diff format) with ONLY the changed lines.
+
+CRITICAL: Use REAL line numbers in the @@ header. Count from the file content shown above.
+NEVER use 'x', 'N', or placeholder values. Example: @@ -42,7 +42,8 @@ (not @@ -x,7 +x,8 @@)
 
 \`\`\`diff
 --- a/path/to/file.py
 +++ b/path/to/file.py
-@@ -line,count +line,count @@
--old line
-+new line
+@@ -42,7 +42,8 @@
+ context line
+ context line
+-old line to remove
++new line to add
+ context line
 \`\`\`
 
-Output ONLY the diff block. No explanation. Make MINIMAL changes.`
+Rules:
+- @@ -START,COUNT +START,COUNT @@ where START is the actual line number in the file
+- Include 3 context lines before and after the change
+- Output ONLY the diff block. No explanation. Make MINIMAL changes.`
     : `Output the COMPLETE corrected content for each file you need to change:
 
 <file path="path/to/file.py">
@@ -1113,7 +1122,41 @@ async function main() {
         console.log('[Runner] scored_strict: web search disabled (externalSearch: false)');
       }
 
-      const initialPatch = await generateInitialPatch(instance_id, issueDescription, fileContents, promptFailToPassList, promptTestPatch, searchContextBlock, sweBenchLLM);
+      let initialPatch = await generateInitialPatch(instance_id, issueDescription, fileContents, promptFailToPassList, promptTestPatch, searchContextBlock, sweBenchLLM);
+      // Post-generation validation: detect x-placeholder hunk headers and retry
+      // @@ -x,N +x,N @@ means the LLM used a placeholder instead of a real line number
+      const hasPlaceholderHunks = /^@@ -[^\d\s,][^\s,]*[,\s]/m.test(initialPatch);
+      if (hasPlaceholderHunks && initialPatch.length > 0) {
+        console.warn('[Runner] Phase 1d: Patch has placeholder line numbers (@@ -x,...) — retrying with forceful prompt');
+        const retryPrompt = `You are a Python engineer. Fix this issue with a CORRECT unified diff.
+
+IMPORTANT: Your previous response used placeholder line numbers like @@ -x,7 +x,7 @@.
+You MUST use REAL line numbers. Count the lines in the file content below.
+
+Issue: ${issueDescription.slice(0, 500)}
+
+Files:
+${Object.entries(fileContents).map(([fp, c]) => `### ${fp}\n\`\`\`python\n${c.slice(0, 3000)}\n\`\`\``).join('\n\n')}
+
+Output ONLY a unified diff with REAL line numbers:
+\`\`\`diff
+--- a/file.py
++++ b/file.py
+@@ -42,7 +42,8 @@
+ context
+-old
++new
+ context
+\`\`\``;
+        const retryResponse = await sweBenchLLM(retryPrompt, 0.0);
+        const retryDiff = retryResponse.match(/\`\`\`diff\n([\s\S]*?)\`\`\`/);
+        if (retryDiff && !/^@@ -[^\d\s,]/m.test(retryDiff[1])) {
+          initialPatch = retryDiff[1].trim();
+          console.log('[Runner] Phase 1d: Retry produced valid patch');
+        } else {
+          console.warn('[Runner] Phase 1d: Retry still has placeholder hunks — proceeding with fixHunkCounts fallback');
+        }
+      }
       console.log(`[Runner] Initial patch: ${initialPatch.length} chars`);
 
       // ── Parse FAIL_TO_PASS tests ─────────────────────────────────────────
