@@ -32,6 +32,12 @@ jobs:
     - name: Build
       run: pnpm run build
 
+    # v5.12: Type-check scripts/ directory (run_swebench.ts etc.) separately
+    # because tsconfig.json excludes scripts/**. This catches type errors in
+    # the scored runner that would otherwise only surface at runtime.
+    - name: Type-check scripts
+      run: npx tsc --project tsconfig.scripts.json --noEmit
+
     # v11.2.0: Use --pool=forks to avoid Vitest 3.x worker IPC timeout
     # ("Error: [vitest-worker]: Timeout calling onTaskUpdate").
     # This is a known Vitest 3.x issue with worker threads on GitHub Actions runners.

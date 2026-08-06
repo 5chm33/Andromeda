@@ -44,6 +44,21 @@ function makeBundle(overrides: Partial<{
     staticCheck,
     testExecutions: tests,
     mode: overrides.mode ?? "promote",
+    probeVerdict: "confirmed",
+    sandboxControls: {
+      networkNone: true,
+      capDropAll: true,
+      noNewPrivileges: true,
+      pidsLimit: 256,
+      memoryLimit: "4g",
+      cpuLimit: "2.0",
+      wallClockLimitMs: 300000,
+      readOnly: true,
+      effectiveUser: "nobody",
+      imageDigest: "sha256:abc123deadbeef",
+      hostDockerSocketMounted: false,
+      privileged: false,
+    },
   });
 }
 

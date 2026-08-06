@@ -276,3 +276,66 @@ describe("BenchmarkLauncher: report recording", () => {
     expect(report.summary.timedOut).toBe(1);
   });
 });
+
+describe("BenchmarkLauncher: single infra_failure per thrown instance", () => {
+  it("records exactly one infra_failure row when an instance throws", () => {
+    // Regression test: the catch branch must call recordInstance exactly once.
+    // A duplicate call would double-count infra failures and distort the canary
+    // abort rate.
+    const config = makeConfig();
+    const metadata = {
+      runId: "test-run-infra",
+      agentVersion: "5.3.0",
+      agentCommit: "abc123",
+      imageRef: "test@sha256:abc",
+      imageDigest: "sha256:abc",
+      harnessRevision: "abc123",
+      modelId: "gpt-4o",
+      promptTemplateHash: "sha256:deadbeef",
+      temperature: 0.0,
+      topP: 1.0,
+      maxRetries: 3,
+      instanceTimeoutMs: 300_000,
+      concurrency: 1,
+      spendCapUsd: 100,
+      taskListPath: config.taskListPath,
+      taskListHash: "sha256:taskhash",
+      taskCount: 1,
+      datasetName: "princeton-nlp/SWE-bench_Verified",
+      datasetRevision: "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2",
+      datasetSplit: "test",
+      instanceIdHash: "sha256:cafebabe",
+      scoredRun: true,
+      externalSearch: false as const,
+      allowRecoveryPatchApplication: false as const,
+      canarySliceSize: 5,
+      canaryAbortThreshold: 0.6,
+      createdAt: new Date().toISOString(),
+      runBundlePath: config.runBundlePath,
+    };
+    const report = BenchmarkLauncher.buildEmptyReport(metadata);
+
+    // Simulate a single infra_failure (what the catch branch records)
+    BenchmarkLauncher.recordInstance(report, {
+      instanceId: "django__django-11099",
+      outcome: "infra_failure",
+      imageDigest: "sha256:abc123",
+      exactApply: false,
+      fuzzyRecoveryAttempted: false,
+      durationMs: 500,
+      errorMessage: "docker: image not found",
+    });
+
+    // Exactly one row, exactly one infra_failure count
+    expect(report.summary.total).toBe(1);
+    expect(report.summary.infraFailures).toBe(1);
+    expect(report.instances).toHaveLength(1);
+    expect(report.instances[0].outcome).toBe("infra_failure");
+    // All other counters must be zero
+    expect(report.summary.resolved).toBe(0);
+    expect(report.summary.testFailures).toBe(0);
+    expect(report.summary.exactApplyFailures).toBe(0);
+    expect(report.summary.predictionReady).toBe(0);
+    expect(report.summary.timedOut).toBe(0);
+  });
+});

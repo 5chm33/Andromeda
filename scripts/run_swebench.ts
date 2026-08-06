@@ -1032,7 +1032,15 @@ async function main() {
         instanceImageRef = resolved.resolvedRef;
         console.log(`[Runner] Per-instance digest: ${instanceImageRef}`);
       } catch (resolveErr: any) {
-        console.warn(`[Runner] Digest resolution failed for ${dockerImage}: ${resolveErr.message} — using tag`);
+        if (isScoredRun) {
+          // In scored mode, digest resolution failure is an infrastructure
+          // failure — do not proceed with a mutable tag reference.
+          throw new Error(
+            `Scored run: digest resolution failed for ${dockerImage}: ${(resolveErr as Error).message}. ` +
+            `Ensure the image is pulled and docker inspect is available.`
+          );
+        }
+        console.warn(`[Runner] Digest resolution failed for ${dockerImage}: ${(resolveErr as Error).message} — using tag (dev mode only)`);
       }
 
       // ── Phase 1a: List repo files ────────────────────────────────────────
@@ -1077,7 +1085,7 @@ async function main() {
 
       // ── Phase 1c-ext: Cross-file symbol resolution ──────────────────────
       const expandedFileContents = await expandWithSymbolResolution(
-        relevantFiles, fileContents, allFiles, dockerImage
+        relevantFiles, fileContents, allFiles, instanceImageRef
       );
       // Use expanded set for all downstream phases
       Object.assign(fileContents, expandedFileContents);
@@ -1210,7 +1218,10 @@ async function main() {
           outcome: instanceOutcome,
           // Use the digest resolved from the traceback loop (immutable sha256:...)
           // if available; fall back to the pre-flight resolved ref.
-          imageDigest: result.resolvedImageDigest ?? _resolvedImageRef,
+          // Use the per-instance resolved digest (immutable sha256:...) from
+          // the traceback loop if available; fall back to instanceImageRef
+          // (resolved immediately after pull for this instance).
+          imageDigest: result.resolvedImageDigest ?? instanceImageRef,
           patchHash: result.patchHash,
           exactApply: result.exactApply ?? true,
           fuzzyRecoveryAttempted: false,
