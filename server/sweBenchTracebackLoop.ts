@@ -343,6 +343,28 @@ export function allowRecoveryPatchApplication(options?: PatchApplicationOptions)
 }
 
 /**
+ * Injects file content into a running container via stdin (docker exec -i).
+ * This works with --read-only containers because it writes to the container's
+ * /tmp tmpfs from inside the container, bypassing the overlay filesystem.
+ * docker cp writes to the overlay layer and fails with --read-only.
+ */
+async function dockerInject(
+  containerName: string,
+  destPath: string,
+  content: string,
+): Promise<void> {
+  const { exec } = await import('child_process');
+  await new Promise<void>((resolve, reject) => {
+    const child = exec(
+      `docker exec -i ${containerName} sh -c 'cat > ${destPath}'`,
+      (err) => { if (err) reject(err); else resolve(); },
+    );
+    child.stdin!.write(content);
+    child.stdin!.end();
+  });
+}
+
+/**
  * Applies a patch to a running Docker container and runs the test suite.
  * Candidate and test patches must apply exactly by default. Legacy fuzzy
  * recovery is available only for exploratory debugging through an explicit
@@ -373,7 +395,7 @@ export async function applyAndTest(
     // patches with incorrect counts, causing "corrupt patch" errors in git apply)
     const fixedPatch = fixHunkCounts(patch);
     fs.writeFileSync(hostPatchPath, fixedPatch, 'utf-8');
-    await execAsync(`docker cp ${hostPatchPath} ${containerName}:/tmp/candidate.diff`);
+    await dockerInject(containerName, '/tmp/candidate.diff', fixedPatch);
 
     const applyResult = await execAsync(
       `docker exec ${containerName} bash -c "cd ${repoPath} && git apply --ignore-whitespace /tmp/candidate.diff 2>&1"`
@@ -427,8 +449,9 @@ export async function applyAndTest(
             const specPath = `/tmp/andromeda_ast_spec_${patchId}.json`;
             const applierSrc = require('path').join(__dirname, '../scripts/ast_patch_applier.py');
             fs.writeFileSync(specPath, specJson, 'utf-8');
-            await execAsync(`docker cp ${specPath} ${containerName}:/tmp/ast_spec.json`);
-            await execAsync(`docker cp ${applierSrc} ${containerName}:/tmp/ast_patch_applier.py`);
+            await dockerInject(containerName, '/tmp/ast_spec.json', specJson);
+            const applierContent = fs.readFileSync(applierSrc, 'utf-8');
+            await dockerInject(containerName, '/tmp/ast_patch_applier.py', applierContent);
             const astResult = await execAsync(
               `docker exec ${containerName} bash -c "cd ${repoPath} && python3 /tmp/ast_patch_applier.py --patch-file /tmp/ast_spec.json --repo-root ${repoPath} 2>&1"`
             ).catch(e => ({ stdout: e.stdout || '', stderr: e.stderr || e.message }));
@@ -463,7 +486,7 @@ export async function applyAndTest(
     // ── Step 2: Apply test_patch (adds new test cases) ─────────────────────
     if (options?.testPatch && options.testPatch.trim().length > 10) {
       fs.writeFileSync(hostTestPatchPath, options.testPatch, 'utf-8');
-      await execAsync(`docker cp ${hostTestPatchPath} ${containerName}:/tmp/test_patch.diff`);
+      await dockerInject(containerName, '/tmp/test_patch.diff', options.testPatch);
       const testPatchResult = await execAsync(
         `docker exec ${containerName} bash -c "cd ${repoPath} && git apply --ignore-whitespace /tmp/test_patch.diff 2>&1"`
       ).catch(e => ({ stdout: '', stderr: e.stderr || e.message }));
@@ -479,7 +502,7 @@ export async function applyAndTest(
     const testCmd = getTestCommand(instanceId, failToPassTests);
     const testScript = `#!/bin/bash\nset -e\n${testCmd}\n`;
     fs.writeFileSync(hostScriptPath, testScript, 'utf-8');
-    await execAsync(`docker cp ${hostScriptPath} ${containerName}:/tmp/run_tests.sh`);
+    await dockerInject(containerName, '/tmp/run_tests.sh', testScript);
     await execAsync(`docker exec ${containerName} chmod +x /tmp/run_tests.sh`);
     const testResult = await execAsync(
       `docker exec ${containerName} bash -c "timeout ${timeoutSeconds} /tmp/run_tests.sh 2>&1 || true"`
