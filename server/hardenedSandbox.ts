@@ -225,18 +225,21 @@ export function seedWorktreeVolume(
   let stepSucceeded = false;
   try {
     // Step 3: Copy image's /testbed into the volume.
-    // cp -a preserves permissions, symlinks, and timestamps.
+    // Use cp -r --no-preserve=ownership to copy all files without trying to
+    // preserve ownership. Some images have root-owned build artifacts that
+    // cannot be chown'd by a non-root user inside the seed container.
+    // File permissions (mode bits) are preserved; only ownership is dropped.
     const copyResult = spawnSync(
       "docker",
       [
         "exec", seedContainerName,
-        "sh", "-c", `cp -a ${worktreePath}/. /worktree-seed/`,
+        "sh", "-c", `cp -r --no-preserve=ownership ${worktreePath}/. /worktree-seed/`,
       ],
       { encoding: "utf-8", stdio: "pipe", timeout: 120_000 }
     );
     if (copyResult.status !== 0) {
       throw new Error(
-        `seedWorktreeVolume: cp -a failed (exit ${copyResult.status}): ` +
+        `seedWorktreeVolume: cp -r failed (exit ${copyResult.status}): ` +
         `${(copyResult.stderr || "").slice(0, 300)}`
       );
     }
