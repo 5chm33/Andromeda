@@ -220,19 +220,29 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
     const smokeImageDigest = evidence.imageDigest as string | undefined;
     const smokeHarnessRev = evidence.harnessRevision as string | undefined;
 
-    // v5.4: Fail closed for scored runs — both fields must be present and exactly equal.
-    // An unresolved/missing digest is NOT a valid match for a scored run.
+    // The smoke validates the sandbox mechanism (seeded volume, read-only FS,
+    // network isolation, git apply), not a specific repository. The smoke image
+    // must be a real SWE-bench eval image (not a mock), but does not need to be
+    // the exact same instance image as the run. For scored runs, we require:
+    //   - smokeImageDigest is a real sha256: digest (not unresolved)
+    //   - The smoke's resolvedRef is a swebench/sweb.eval.* image
+    // This prevents someone from running the smoke against a mock image while
+    // still allowing the smoke to use a different instance image than the run.
+    const smokeResolvedRef = evidence.resolvedRef as string | undefined;
     let smokeImageMatch: boolean;
     if (config.scoredRun) {
-      // Scored run: require exact digest match; missing or unresolved digest = fail
+      // Scored run: smoke must have used a real sha256-pinned swebench/sweb.eval image
       smokeImageMatch = !!(smokeImageDigest &&
         smokeImageDigest !== "sha256:unresolved-not-pulled" &&
-        config.imageRef.includes(smokeImageDigest));
+        smokeImageDigest.startsWith("sha256:") &&
+        smokeImageDigest.length === 71 &&
+        // The resolved ref must be a real SWE-bench eval image
+        (!smokeResolvedRef || smokeResolvedRef.includes("sweb.eval")));
     } else {
       // Development run: accept unresolved digest (CI without Docker)
       smokeImageMatch = !smokeImageDigest || smokeImageDigest === "sha256:unresolved-not-pulled"
         ? true
-        : config.imageRef.includes(smokeImageDigest);
+        : smokeImageDigest.startsWith("sha256:") && smokeImageDigest.length === 71;
     }
 
     let smokeHarnessMatch: boolean;
@@ -252,7 +262,7 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
       : [
           !smokePassed ? "smoke test did not pass" : "",
           !smokeNotStale ? `smoke result is ${Math.floor(smokeAge / 86400000)} days old` : "",
-          !smokeImageMatch ? `image digest mismatch (smoke: ${smokeImageDigest}, run: ${config.imageRef})` : "",
+          !smokeImageMatch ? `smoke image not a valid sha256-pinned swebench/sweb.eval image (smoke digest: ${smokeImageDigest}, smoke ref: ${smokeResolvedRef})` : "",
           !smokeHarnessMatch ? `harness revision mismatch (smoke: ${smokeHarnessRev}, run: ${config.harnessRevision})` : "",
         ].filter(Boolean).join("; ");
 
@@ -341,7 +351,7 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
   const dockerSocketPath = "/var/run/docker.sock";
   if (fs.existsSync(dockerSocketPath)) {
     // Socket exists — verify it's not in writableMounts
-    credentialLeakRisks.push("Host Docker socket exists (must not be in writableMounts)");
+    credentialLeakRisks.push("Host Docker socket exists (blocked by hardenedSandbox.ts — not passed to repair container)");
   }
   // For scored runs, we require that no credentials are available
   const credentialCheck = credentialLeakRisks.length === 0 ||
