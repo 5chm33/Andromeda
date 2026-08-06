@@ -1062,7 +1062,13 @@ async function main() {
       console.log(`[Runner] Found ${allFiles.length} Python files`);
 
       // ── Phase 1b: Localize relevant files ───────────────────────────────
-      const issueDescription = `${problem_statement}\n\n${hints_text || ''}`.trim();
+      // scored_strict: use only problem_statement.
+      // hints_text consists of post-issue comments collected before the solution
+      // PR; SWE-bench leaderboard rules prohibit its use for scored evaluation.
+      // test_aware: retain hints_text for development/debugging.
+      const issueDescription = isScoredRun
+        ? problem_statement.trim()
+        : `${problem_statement}\n\n${hints_text || ''}`.trim();
       const failToPassList: string[] = JSON.parse(FAIL_TO_PASS || '[]');
       // Central fail-closed boundary: strict scored runs do not use
       // evaluator-provided test names or patches for retrieval, prompts, or
