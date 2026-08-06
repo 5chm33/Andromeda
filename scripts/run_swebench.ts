@@ -533,14 +533,17 @@ async function localizeFiles(
   const testHint = failToPassTests.length > 0
     ? `\n## Failing Tests (hint: the source files being tested are likely what needs fixing)\n${failToPassTests.slice(0, 8).join('\n')}\n`
     : '';
-  const prompt = `You are an expert software engineer. Given this GitHub issue and list of files, identify ALL files (up to 6) that likely need modification to fix the bug. Many bugs require changes to multiple files.
-
+  // Detect if this is a feature request (new file creation) vs bug fix
+  const isFeatureRequest = /feature request|new.*transform|add.*support|implement|create.*new|introduce/i.test(issueDescription.slice(0, 500));
+  const featureHint = isFeatureRequest
+    ? `\nNOTE: This may be a feature request requiring a NEW file to be created. If so, include the __init__.py or similar registry file that would need to import the new module.\n`
+    : '';
+  const prompt = `You are an expert software engineer. Given this GitHub issue and list of files, identify ALL files (up to 6) that likely need modification to fix the bug or implement the feature. Many issues require changes to multiple files.
 ## Issue: ${instanceId}
 ${issueDescription.slice(0, 2000)}
-${testHint}
+${testHint}${featureHint}
 ## Candidate Files
 ${candidates.slice(0, 30).join('\n')}
-
 Output ONLY a JSON array of file paths (most relevant first, up to 6). Example: ["path/to/file.py", "path/to/other.py"]
 `;
 
@@ -617,7 +620,8 @@ async function generateInitialPatch(
   failToPassTests: string[] = [],
   testPatch: string = '',
   searchContext: string = '',
-  llmProvider?: (prompt: string, temperature?: number) => Promise<string>
+  llmProvider?: (prompt: string, temperature?: number) => Promise<string>,
+  testContextSnippets: string = ''
 ): Promise<string> {
   const callLLM = llmProvider ?? andromedaLLM;
   // Only use diff format for truly large files where complete output would overflow
@@ -696,18 +700,17 @@ Output ONLY the file blocks. No explanation.`;
     : '';
 
   const prompt = `You are an expert Python software engineer solving a GitHub issue.
-
 ## Instance: ${instanceId}
-
 ## Issue Description
 ${issueDescription}${errorHint}
-${testContext}${searchSection}
+${testContext}${testContextSnippets}${searchSection}
 ## Files to Modify
 ${fileSections}
-
 ## Task
-Fix the bug described in the issue. Make MINIMAL changes. Your fix must make the failing tests pass.
-
+Fix the bug or implement the feature described in the issue.
+- For bug fixes: make MINIMAL changes to existing files.
+- For feature requests: you may need to CREATE a new file (use <file path="new/path.py"> with complete content) AND update an existing __init__.py or registry file to import it.
+- Your fix must make the failing tests pass.
 ${outputInstructions}
 `;
 
@@ -1100,6 +1103,50 @@ async function main() {
       // Use expanded set for all downstream phases
       Object.assign(fileContents, expandedFileContents);
 
+      // ── Phase 1c-test: Extract relevant test function snippets ───────────
+      // Including the test function that exercises the bug gives the model
+      // the exact expected behavior without leaking hidden test code.
+      // We extract from the FAIL_TO_PASS test paths (which are public — they
+      // appear in the issue/dataset metadata, not in the hidden test_patch).
+      // In scored_strict mode, failToPassList is still available for context
+      // extraction (it's the test *names*, not the hidden test *code*).
+      let testContextSnippets = '';
+      if (failToPassList.length > 0) {
+        const testFilePaths = [...new Set(failToPassList.map(t => t.split('::')[0]))];
+        const testSnippets: string[] = [];
+        for (const testFilePath of testFilePaths.slice(0, 2)) {
+          const testContent = await extractFileFromDocker(instanceImageRef, testFilePath);
+          if (testContent) {
+            // Extract only the relevant test functions (not the whole file)
+            const testFuncNames = failToPassList
+              .filter(t => t.startsWith(testFilePath))
+              .map(t => t.split('::').pop() || '');
+            const lines = testContent.split('\n');
+            const snippets: string[] = [];
+            for (const funcName of testFuncNames.slice(0, 3)) {
+              // Find the function definition
+              const startIdx = lines.findIndex(l => l.match(new RegExp(`^def ${funcName}\\b|^    def ${funcName}\\b`)));
+              if (startIdx >= 0) {
+                // Extract until next def or end of file (max 50 lines)
+                let endIdx = startIdx + 1;
+                while (endIdx < lines.length && endIdx < startIdx + 50) {
+                  if (endIdx > startIdx + 2 && lines[endIdx].match(/^def |^class /)) break;
+                  endIdx++;
+                }
+                snippets.push(`# ${testFilePath}::${funcName}\n` + lines.slice(startIdx, endIdx).join('\n'));
+              }
+            }
+            if (snippets.length > 0) {
+              testSnippets.push(`### Test: ${testFilePath}\n\`\`\`python\n${snippets.join('\n\n')}\n\`\`\``);
+            }
+          }
+        }
+        if (testSnippets.length > 0) {
+          testContextSnippets = `\n## Existing Test Functions (shows expected behavior — read these to understand what your fix must do)\n${testSnippets.join('\n\n')}\n`;
+          console.log(`[Runner] Phase 1c-test: Extracted ${testSnippets.length} test snippet(s)`);
+        }
+      }
+
       // ── Phase 1d: Generate initial patch ────────────────────────────────
       console.log('[Runner] Phase 1d: Generating initial patch...');
       // Phase 1d-pre: Search augmentation (Fix 25b)
@@ -1123,7 +1170,7 @@ async function main() {
         console.log('[Runner] scored_strict: web search disabled (externalSearch: false)');
       }
 
-      let initialPatch = await generateInitialPatch(instance_id, issueDescription, fileContents, promptFailToPassList, promptTestPatch, searchContextBlock, sweBenchLLM);
+      let initialPatch = await generateInitialPatch(instance_id, issueDescription, fileContents, promptFailToPassList, promptTestPatch, searchContextBlock, sweBenchLLM, testContextSnippets);
       // Post-generation validation: detect x-placeholder hunk headers and retry
       // @@ -x,N +x,N @@ means the LLM used a placeholder instead of a real line number
       const hasPlaceholderHunks = /^@@ -[^\d\s,][^\s,]*[,\s]/m.test(initialPatch);

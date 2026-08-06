@@ -322,9 +322,8 @@ export async function runConsensus(
 
   // ── scored_strict: generation-only path ───────────────────────────────────
   // Skip Phase 2 entirely. No containers, no test execution, no hidden-test
-  // feedback. Select the first valid patch deterministically (agent order).
+  // feedback. Use an LLM judge to select the best patch from all candidates.
   if (options?.evalMode === 'scored_strict') {
-    const first = validPatches[0];
     const candidates: CandidatePatch[] = validPatches.map(({ agent, patch, durationMs }) => ({
       agentName: agent.name,
       patch,
@@ -335,14 +334,44 @@ export async function runConsensus(
       generationDurationMs: durationMs,
       evaluationDurationMs: 0,
     }));
+
+    // Use LLM judge to pick the best patch when multiple candidates exist
+    let winningIdx = 0;
+    let selectionReason = validPatches.length === 1
+      ? 'scored_strict: generation-only; only 1 valid candidate.'
+      : 'scored_strict: generation-only; first valid patch selected (judge unavailable).';
+    if (validPatches.length > 1) {
+      try {
+        const judgeLLM = agents[0]?.llmProvider;
+        if (judgeLLM) {
+          const patchSummaries = validPatches.map(({ agent, patch }, i) =>
+            `## Candidate ${i + 1} (${agent.name} agent)\n\`\`\`diff\n${patch.slice(0, 1200)}\n\`\`\``
+          ).join('\n\n');
+          const judgePrompt = `You are a senior code reviewer. Given this GitHub issue and ${validPatches.length} candidate patches, select the BEST patch.\n\n## Issue: ${instanceId}\n${issueDescription.slice(0, 800)}\n\n${patchSummaries}\n\nConsider: Does the patch address the root cause? Is it minimal? Does it handle edge cases?\n\nOutput ONLY: {"best": <1-based index>, "reason": "<one sentence>"}`;
+          const judgeResponse = await judgeLLM(judgePrompt);
+          const judgeMatch = judgeResponse.match(/\{[\s\S]*?\}/);
+          if (judgeMatch) {
+            const sel = JSON.parse(judgeMatch[0]) as { best: number; reason: string };
+            if (Number.isInteger(sel.best) && sel.best >= 1 && sel.best <= validPatches.length) {
+              winningIdx = sel.best - 1;
+              selectionReason = `scored_strict: judge selected candidate ${sel.best} (${validPatches[winningIdx].agent.name}): ${sel.reason}`;
+              console.log(`[Consensus] Judge selected candidate ${sel.best}: ${sel.reason}`);
+            }
+          }
+        }
+      } catch (judgeErr) {
+        console.warn('[Consensus] Judge selection failed, using first patch:', judgeErr);
+      }
+    }
+
     return {
       instanceId,
       resolved: false,
-      winningPatch: first.patch,
-      winningAgent: first.agent.name,
+      winningPatch: validPatches[winningIdx].patch,
+      winningAgent: validPatches[winningIdx].agent.name,
       candidates,
       totalDurationMs: Date.now() - startTime,
-      selectionReason: 'scored_strict: generation-only; first valid patch selected deterministically.',
+      selectionReason,
     };
   }
 
