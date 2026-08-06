@@ -67,8 +67,7 @@ describe('hints_text boundary in run_swebench.ts', () => {
       !l.includes('hints_text ||') &&       // the gated ternary branch
       !l.includes('hints_text,') &&          // destructuring
       !l.includes('hints_text:') &&          // type declaration
-      !l.includes('hints_text }') &&         // destructuring
-    false);
+      !l.includes('hints_text }'));          // destructuring
     expect(forbiddenLines).toHaveLength(0);
   });
 

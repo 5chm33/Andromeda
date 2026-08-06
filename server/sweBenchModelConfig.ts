@@ -239,22 +239,74 @@ interface AnthropicResponse {
 // ─── LLM Call ─────────────────────────────────────────────────────────────────
 
 /**
- * Makes a single LLM call using the given config.
- * Handles two API formats:
- *   - 'openrouter': OpenRouter chat completions format (existing behavior)
- *   - 'anthropic': Anthropic Messages API format with optional prompt caching
+ * Maximum number of retry attempts for transient API failures (timeouts,
+ * connection resets). Does not retry on 4xx errors (bad request, auth).
+ * Each attempt uses the identical prompt, model, and decoding settings.
+ */
+const LLM_MAX_RETRIES = 2;
+
+/**
+ * Returns true for errors that are safe to retry (transient network/timeout).
+ * Never retries on authentication errors, rate limits, or bad requests.
+ */
+function isRetryableError(err: unknown): boolean {
+  if (!(err instanceof Error)) return false;
+  const msg = err.message.toLowerCase();
+  // Undici/fetch timeout and connection reset errors
+  if (msg.includes('headers timeout') || msg.includes('und_err_headers_timeout')) return true;
+  if (msg.includes('body timeout') || msg.includes('und_err_body_timeout')) return true;
+  if (msg.includes('connect timeout') || msg.includes('und_err_connect_timeout')) return true;
+  if (msg.includes('socket hang up') || msg.includes('econnreset')) return true;
+  if (msg.includes('network error') || msg.includes('fetch failed')) return true;
+  // AbortError from our own timeout controller is retryable
+  if (err.name === 'AbortError') return true;
+  return false;
+}
+
+/**
+ * Makes a single LLM call using the given config, with bounded retry for
+ * transient failures (timeouts, connection resets).
  *
- * Returns the text content of the response.
+ * Retry policy:
+ *   - Up to LLM_MAX_RETRIES retries (default: 2) for transient errors
+ *   - Back-off: 5s after attempt 1, 10s after attempt 2
+ *   - Each retry uses the IDENTICAL prompt, model, and decoding settings
+ *   - Non-retryable errors (4xx, auth) are thrown immediately
+ *   - Every attempt is logged with attempt number and error message
+ *
+ * Handles two API formats:
+ *   - 'openrouter': OpenRouter chat completions format
+ *   - 'anthropic': Anthropic Messages API format with optional prompt caching
  */
 export async function callSWEBenchLLM(
   config: SWEBenchModelConfig,
   prompt: string,
   temperature?: number
 ): Promise<string> {
-  if (config.apiFormat === 'anthropic') {
-    return callAnthropicNative(config, prompt, temperature);
+  let lastErr: unknown;
+  for (let attempt = 1; attempt <= LLM_MAX_RETRIES + 1; attempt++) {
+    try {
+      if (config.apiFormat === 'anthropic') {
+        return await callAnthropicNative(config, prompt, temperature);
+      }
+      return await callOpenRouter(config, prompt, temperature);
+    } catch (err) {
+      lastErr = err;
+      if (attempt <= LLM_MAX_RETRIES && isRetryableError(err)) {
+        const delayMs = attempt * 5_000; // 5s, 10s back-off
+        console.warn(
+          `[LLM] Transient error on attempt ${attempt}/${LLM_MAX_RETRIES + 1}: ` +
+          `${err instanceof Error ? err.message.slice(0, 120) : String(err)}. ` +
+          `Retrying in ${delayMs}ms (identical prompt/model/settings).`
+        );
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+        continue;
+      }
+      // Non-retryable or exhausted retries — throw immediately
+      throw err;
+    }
   }
-  return callOpenRouter(config, prompt, temperature);
+  throw lastErr;
 }
 
 /**

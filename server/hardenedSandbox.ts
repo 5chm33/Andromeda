@@ -235,7 +235,9 @@ export function seedWorktreeVolume(
         "exec", seedContainerName,
         "sh", "-c", `cp -r --no-preserve=ownership ${worktreePath}/. /worktree-seed/`,
       ],
-      { encoding: "utf-8", stdio: "pipe", timeout: 120_000 }
+      // 10-minute timeout: some images (e.g. matplotlib) have large build
+      // artifacts that take >120s to copy. Measured via probe-seed-image.sh.
+      { encoding: "utf-8", stdio: "pipe", timeout: 600_000 }
     );
     if (copyResult.status !== 0) {
       throw new Error(

@@ -1215,7 +1215,114 @@ Output ONLY a unified diff with REAL line numbers:
       }
       console.log(`[Runner] Initial patch: ${initialPatch.length} chars`);
 
-      // ── Parse FAIL_TO_PASS tests ─────────────────────────────────────────
+      // ── Phase 1e: git apply --check preflight ─────────────────────────────────────────────────────────────────────────────────────
+      // Run git apply --check in a short-lived read-only inspection container.
+      // If it fails, make ONE format-only repair call using only the git apply
+      // diagnostic output. The repair turn MUST NOT see evaluator test names or
+      // test_patch content (scored_strict boundary is maintained).
+      if (initialPatch.length > 0) {
+        const checkContainerName = `andromeda-check-${instance_id.replace(/[^a-z0-9]/gi, '-')}-${Date.now()}`;
+        try {
+          const { spawnSync } = await import('child_process');
+          // Start a short-lived read-only container for the check
+          const startResult = spawnSync('docker', [
+            'run', '-d',
+            '--name', checkContainerName,
+            '--network', 'none',
+            '--cap-drop', 'ALL',
+            '--security-opt', 'no-new-privileges:true',
+            '--read-only',
+            '--tmpfs', '/tmp:rw,noexec,nosuid,size=64m',
+            instanceImageRef,
+            'tail', '-f', '/dev/null',
+          ], { encoding: 'utf-8', stdio: 'pipe', timeout: 30_000 });
+
+          if (startResult.status === 0) {
+            try {
+              // Inject the patch into /tmp/check.diff via stdin
+              const { exec } = await import('child_process');
+              await new Promise<void>((resolve) => {
+                const child = exec(
+                  `docker exec -i ${checkContainerName} sh -c 'cat > /tmp/check.diff'`,
+                  (err) => { resolve(); void err; },
+                );
+                child.stdin!.write(initialPatch);
+                child.stdin!.end();
+              });
+              // Run git apply --check
+              const checkResult = spawnSync('docker', [
+                'exec', checkContainerName,
+                'sh', '-c', 'cd /testbed && git apply --check /tmp/check.diff 2>&1',
+              ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
+
+              if (checkResult.status !== 0) {
+                const diagnostic = (checkResult.stdout || checkResult.stderr || '').slice(0, 600);
+                console.warn(`[Runner] Phase 1e: git apply --check failed — making one format-only repair turn`);
+                console.warn(`[Runner] Phase 1e: Diagnostic: ${diagnostic.slice(0, 200)}`);
+                // ONE format-only repair turn: only the diagnostic, no evaluator artifacts
+                const repairPrompt = `You are a Python engineer fixing a unified diff patch format error.
+
+The following patch failed git apply --check with this error:
+${diagnostic}
+
+Original patch:
+\`\`\`diff
+${initialPatch.slice(0, 4000)}
+\`\`\`
+
+Fix ONLY the patch format (hunk headers, context lines, line counts).
+Do NOT change the semantic content of the fix.
+Do NOT add, remove, or modify any code logic.
+Output ONLY the corrected unified diff:
+\`\`\`diff`;
+                try {
+                  const repairResponse = await sweBenchLLM(repairPrompt, 0.0);
+                  const repairMatch = repairResponse.match(/\`\`\`diff\n?([\s\S]*?)\`\`\`/);
+                  if (repairMatch) {
+                    const repairedPatch = fixHunkCounts(repairMatch[1].trim());
+                    // Verify the repaired patch also passes --check
+                    await new Promise<void>((resolve) => {
+                      const child2 = exec(
+                        `docker exec -i ${checkContainerName} sh -c 'cat > /tmp/check2.diff'`,
+                        (err) => { resolve(); void err; },
+                      );
+                      child2.stdin!.write(repairedPatch);
+                      child2.stdin!.end();
+                    });
+                    const recheck = spawnSync('docker', [
+                      'exec', checkContainerName,
+                      'sh', '-c', 'cd /testbed && git apply --check /tmp/check2.diff 2>&1',
+                    ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
+                    if (recheck.status === 0) {
+                      initialPatch = repairedPatch;
+                      console.log('[Runner] Phase 1e: Format repair succeeded — patch now passes git apply --check');
+                    } else {
+                      console.warn('[Runner] Phase 1e: Format repair did not fix the issue — proceeding with original patch');
+                    }
+                  }
+                } catch (repairErr) {
+                  console.warn(`[Runner] Phase 1e: Format repair call failed: ${repairErr instanceof Error ? repairErr.message : String(repairErr)}`);
+                }
+              } else {
+                console.log('[Runner] Phase 1e: git apply --check passed');
+              }
+            } finally {
+              spawnSync('docker', ['rm', '-f', checkContainerName], { encoding: 'utf-8', stdio: 'pipe' });
+            }
+          } else {
+            console.warn('[Runner] Phase 1e: Could not start check container — skipping preflight');
+          }
+        } catch (checkErr) {
+          console.warn(`[Runner] Phase 1e: git apply --check preflight error: ${checkErr instanceof Error ? checkErr.message : String(checkErr)}`);
+          // Always clean up the check container
+          try {
+            const { spawnSync } = await import('child_process');
+            spawnSync('docker', ['rm', '-f', checkContainerName], { encoding: 'utf-8', stdio: 'pipe' });
+          } catch { /* ignore cleanup errors */ }
+        }
+      }
+
+      // ── Parse FAIL_TO_PASS tests ─────────────────────────────────────────────────────────────────────────────────────
       let failToPassTests: string[] = [];
       try {
         failToPassTests = JSON.parse(FAIL_TO_PASS);
