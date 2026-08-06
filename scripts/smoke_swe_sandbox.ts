@@ -68,7 +68,7 @@ const execAsync = promisify(exec);
 
 // ─── Configuration ────────────────────────────────────────────────────────────
 
-const SMOKE_IMAGE_DEFAULT = "swebench/sweb.eval.x86_64.django__django-11099:latest";
+const SMOKE_IMAGE_DEFAULT = "swebench/sweb.eval.x86_64.django_1776_django-11099:latest";
 const SMOKE_INSTANCE_ID = "django__django-11099";
 const SMOKE_CONTAINER_NAME = `andromeda-smoke-${Date.now()}`;
 const SMOKE_VOLUME_NAME = `andromeda-smoke-vol-${Date.now()}`;
