@@ -71,6 +71,7 @@ import { pullImageSafely, ensureDiskSpace, DEFAULT_INFRA_CONFIG } from '../serve
 import { buildSmartContext } from '../server/sweBenchContextBuilder.js';
 import { BenchmarkLauncher, type BenchmarkRunConfig, type InstanceResult, type BenchmarkReport } from '../server/benchmarkLauncher.js';
 import { resolveImageDigest } from '../server/sweBenchImageResolver.js';
+import { fixHunkCounts } from '../server/sweBenchTracebackLoop.js';
 
 /**
  * Andromeda's LLM provider for SWE-bench.
@@ -1218,10 +1219,12 @@ Output ONLY a unified diff with REAL line numbers:
         console.log(`[Runner]   Traceback: ${result.phases.tracebackLoop.attemptsUsed} attempts, resolvedOn=${result.phases.tracebackLoop.resolvedOnAttempt}`);
       }
 
-      // Write prediction
+      // Write prediction — apply fixHunkCounts before storing so the evaluator
+      // receives clean patches with correct hunk line counts
+      const cleanPatch = result.finalPatch ? fixHunkCounts(result.finalPatch) : '';
       fs.appendFileSync(opts.outputPath, JSON.stringify({
         instance_id,
-        model_patch: result.finalPatch,
+        model_patch: cleanPatch,
         model_name_or_path: sweBenchModelConfig.modelName,
       }) + '\n');
 
