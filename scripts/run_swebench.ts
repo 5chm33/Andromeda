@@ -72,6 +72,7 @@ import { buildSmartContext } from '../server/sweBenchContextBuilder.js';
 import { BenchmarkLauncher, type BenchmarkRunConfig, type InstanceResult, type BenchmarkReport } from '../server/benchmarkLauncher.js';
 import { resolveImageDigest } from '../server/sweBenchImageResolver.js';
 import { fixHunkCounts } from '../server/sweBenchTracebackLoop.js';
+import { modelVisibleEvaluationArtifacts } from '../server/sweBenchEvalMode.js';
 
 /**
  * Andromeda's LLM provider for SWE-bench.
@@ -1063,10 +1064,16 @@ async function main() {
       // ── Phase 1b: Localize relevant files ───────────────────────────────
       const issueDescription = `${problem_statement}\n\n${hints_text || ''}`.trim();
       const failToPassList: string[] = JSON.parse(FAIL_TO_PASS || '[]');
-      // In scored_strict mode, test names and test code must not enter any
-      // model-visible prompt. Use empty arrays/strings for all prompt builders.
-      const promptFailToPassList = isScoredRun ? [] : failToPassList;
-      const promptTestPatch = isScoredRun ? '' : (test_patch || '');
+      // Central fail-closed boundary: strict scored runs do not use
+      // evaluator-provided test names or patches for retrieval, prompts, or
+      // pipeline calls. Test-aware development runs retain that behavior.
+      const evaluatorArtifacts = modelVisibleEvaluationArtifacts(
+        isScoredRun ? 'scored_strict' : 'test_aware',
+        test_patch,
+        failToPassList,
+      );
+      const promptFailToPassList = evaluatorArtifacts.promptFailToPassTests;
+      const promptTestPatch = evaluatorArtifacts.promptTestPatch;
       console.log('[Runner] Phase 1b: Localizing relevant files...');
       const relevantFiles = await localizeFiles(instance_id, issueDescription, allFiles, promptFailToPassList);
       console.log(`[Runner] Relevant files: ${relevantFiles.join(', ')}`);
@@ -1103,14 +1110,10 @@ async function main() {
       Object.assign(fileContents, expandedFileContents);
 
       // ── Phase 1c-test: Extract relevant test function snippets ───────────
-      // Including the test function that exercises the bug gives the model
-      // the exact expected behavior without leaking hidden test code.
-      // We extract from the FAIL_TO_PASS test paths (which are public — they
-      // appear in the issue/dataset metadata, not in the hidden test_patch).
-      // In scored_strict mode, failToPassList is still available for context
-      // extraction (it's the test *names*, not the hidden test *code*).
+      // This is a test-aware-development aid only. In scored_strict mode,
+      // evaluator-provided test identifiers must not drive repository retrieval.
       let testContextSnippets = '';
-      if (failToPassList.length > 0) {
+      if (evaluatorArtifacts.allowTargetedTestContext) {
         const testFilePaths = [...new Set(failToPassList.map(t => t.split('::')[0]))];
         const testSnippets: string[] = [];
         for (const testFilePath of testFilePaths.slice(0, 2)) {
@@ -1228,8 +1231,8 @@ Output ONLY a unified diff with REAL line numbers:
         initialPatch,
         pipelineConfig,
         {
-          testPatch: test_patch,
-          failToPassTests,
+          testPatch: evaluatorArtifacts.pipelineTestPatch,
+          failToPassTests: evaluatorArtifacts.pipelineFailToPassTests,
           // goldPatchHint intentionally absent: scored runs must not carry
           // any reference to the gold patch. Oracle experiments belong in a
           // separate, explicitly unscored development command.

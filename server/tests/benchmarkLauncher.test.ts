@@ -21,7 +21,7 @@ function makeConfig(overrides: Partial<BenchmarkRunConfig> = {}): BenchmarkRunCo
   const taskListPath = path.join(tmpDir, "tasks.json");
   fs.writeFileSync(taskListPath, JSON.stringify(["instance-1", "instance-2", "instance-3", "instance-4", "instance-5"]));
   return {
-    imageRef: "swebench/sweb.eval.x86_64.django__django-11099@sha256:abc123def456abc123def456abc123def456abc123def456abc123def456abc12345",
+    imageRef: "swebench/sweb.eval.x86_64.django__django-11099@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     taskListPath,
     modelId: "gpt-4o",
     promptTemplateHash: "sha256:deadbeef",
@@ -182,13 +182,13 @@ describe("BenchmarkLauncher: smoke-gate fail-closed for scored runs (v5.4)", () 
       passed: true,
       evidence: {
         completedAt: new Date().toISOString(),
-        imageDigest: "sha256:abc123def456abc123def456abc123def456abc123def456abc123def456abc12345",
+        imageDigest: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         // harnessRevision intentionally omitted
       },
     }));
     const config = makeConfig({
       scoredRun: true,
-      imageRef: "swebench/sweb.eval@sha256:abc123def456abc123def456abc123def456abc123def456abc123def456abc12345",
+      imageRef: "swebench/sweb.eval@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       harnessRevision: "abc123",
     });
     const result = runPreLaunchChecklist(config);
@@ -199,7 +199,7 @@ describe("BenchmarkLauncher: smoke-gate fail-closed for scored runs (v5.4)", () 
   });
 
   it("accepts a scored run when smoke result has exact digest and harness match", () => {
-    const digest = "abc123def456abc123def456abc123def456abc123def456abc123def456abc12345";
+    const digest = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
     fs.writeFileSync(smokeResultPath, JSON.stringify({
       passed: true,
       evidence: {
