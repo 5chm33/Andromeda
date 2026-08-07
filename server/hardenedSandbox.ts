@@ -1,6 +1,6 @@
 /**
  * hardenedSandbox.ts — Shared hardened Docker container constructor.
- * Andromeda v5.4 (Elicit enforcement contract §3, Phase 1 fix)
+ * Andromeda v5.19 (spawnSync → async spawn fix for seedWorktreeVolume)
  *
  * BOTH sweBenchTracebackLoop.ts AND sandboxManager.ts MUST use buildHardenedDockerArgs()
  * to construct repair containers. No module may construct a repair container
@@ -31,9 +31,14 @@
  *   3. Caller cleans up the volume after the repair container exits.
  *
  * This preserves the repository contents while keeping the root FS read-only.
+ *
+ * v5.19 change: seedWorktreeVolume() is now async. The cp -r and hash steps use
+ * spawn() with a manual AbortController timeout instead of spawnSync() with the
+ * unreliable timeout option. This ensures the Node.js event loop remains
+ * responsive (instance timeouts can fire) even when Docker is slow.
  */
 
-import { spawnSync } from "child_process";
+import { spawnSync, spawn } from "child_process";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -155,34 +160,99 @@ export function validateSandboxConfig(config: HardenedSandboxConfig): HardenedSa
   return { valid: errors.length === 0, errors };
 }
 
+// ── Async spawn helper ────────────────────────────────────────────────────────
+
+/**
+ * Runs a command asynchronously with a hard timeout enforced via AbortController.
+ * Unlike spawnSync(timeout:...), this approach does not block the Node.js event
+ * loop, so outer Promise.race() timeouts (instance timeouts) can still fire.
+ *
+ * @param cmd     Command name
+ * @param args    Command arguments
+ * @param timeoutMs  Hard timeout in milliseconds (kills the process on expiry)
+ * @returns stdout string on success
+ * @throws Error on non-zero exit, timeout, or spawn error
+ */
+async function spawnAsync(
+  cmd: string,
+  args: string[],
+  timeoutMs: number,
+): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
+    const ac = new AbortController();
+    const timer = setTimeout(() => {
+      ac.abort();
+      reject(new Error(`spawnAsync: command timed out after ${timeoutMs}ms: ${cmd} ${args.slice(0, 4).join(" ")}`));
+    }, timeoutMs);
+
+    const chunks: Buffer[] = [];
+    const errChunks: Buffer[] = [];
+
+    let child: ReturnType<typeof spawn>;
+    try {
+      child = spawn(cmd, args, { signal: ac.signal, stdio: ["ignore", "pipe", "pipe"] });
+    } catch (spawnErr) {
+      clearTimeout(timer);
+      reject(spawnErr);
+      return;
+    }
+
+    child.stdout?.on("data", (chunk: Buffer) => chunks.push(chunk));
+    child.stderr?.on("data", (chunk: Buffer) => errChunks.push(chunk));
+
+    child.on("error", (err: NodeJS.ErrnoException) => {
+      clearTimeout(timer);
+      // AbortController fires 'error' with code ABORT_ERR — already rejected above
+      if (err.code !== "ABORT_ERR") {
+        reject(new Error(`spawnAsync: spawn error: ${err.message}`));
+      }
+    });
+
+    child.on("close", (code: number | null) => {
+      clearTimeout(timer);
+      if (code === 0) {
+        resolve(Buffer.concat(chunks).toString("utf-8"));
+      } else {
+        const stderr = Buffer.concat(errChunks).toString("utf-8").slice(0, 300);
+        reject(new Error(`spawnAsync: exit code ${code}: ${stderr}`));
+      }
+    });
+  });
+}
+
 // ── Worktree Volume Seeding ───────────────────────────────────────────────────
 
 /**
  * Seeds a named Docker volume with the image's /testbed contents.
+ * ASYNC — does not block the Node.js event loop.
  *
  * Design:
  *   1. Create a named volume (docker volume create).
- *   2. Start a disposable seed container with the volume mounted at /testbed-seed.
- *   3. Copy the image's /testbed into the volume via cp -a.
+ *   2. Start a disposable seed container with the volume mounted at /worktree-seed.
+ *   3. Copy the image's /testbed into the volume via cp -r --no-preserve=ownership.
  *   4. Hash the seeded contents for the evidence bundle.
  *   5. Remove the seed container (volume persists).
  *
  * The caller is responsible for removing the volume after the repair container
  * exits (docker volume rm <volumeName>).
  *
+ * v5.19: Uses spawn() + AbortController for the cp -r and hash steps so that
+ * the Node.js event loop remains responsive. The spawnSync timeout option is
+ * unreliable for I/O-blocked child processes in some Node.js versions.
+ *
  * @param imageRef  The image to seed from (should be a pinned digest).
  * @param volumeName  Name for the Docker volume (must be unique per instance).
  * @param worktreePath  Path inside the image to copy (default: "/testbed").
  * @returns SeededWorktreeVolume with the volume name and pre-apply hash.
  */
-export function seedWorktreeVolume(
+export async function seedWorktreeVolume(
   imageRef: string,
   volumeName: string,
   worktreePath = "/testbed",
-): SeededWorktreeVolume {
+): Promise<SeededWorktreeVolume> {
   const seedContainerName = `${volumeName}-seed`;
 
-  // Step 1: Create the named volume
+  // Step 1: Create the named volume (fast, use spawnSync — no I/O blocking risk)
   const createResult = spawnSync("docker", ["volume", "create", volumeName], {
     encoding: "utf-8",
     stdio: "pipe",
@@ -222,46 +292,47 @@ export function seedWorktreeVolume(
   // The seed container is now running. Steps 3-4 may throw; if they do, the
   // volume must be removed before rethrowing so the caller does not inherit a
   // leaked partial volume. The seed container is always removed in finally.
-  let stepSucceeded = false;
   try {
     // Step 3: Copy image's /testbed into the volume.
     // Use cp -r --no-preserve=ownership to copy all files without trying to
     // preserve ownership. Some images have root-owned build artifacts that
     // cannot be chown'd by a non-root user inside the seed container.
     // File permissions (mode bits) are preserved; only ownership is dropped.
-    const copyResult = spawnSync(
+    //
+    // v5.19: Use spawnAsync() (non-blocking) instead of spawnSync(timeout:...).
+    // The spawnSync timeout option is unreliable for I/O-blocked child processes
+    // in some Node.js versions. spawnAsync uses AbortController for hard timeout.
+    // 10-minute timeout: some images (e.g. matplotlib) have large build
+    // artifacts that take >120s to copy. Measured via probe-seed-image.sh.
+    await spawnAsync(
       "docker",
       [
         "exec", seedContainerName,
         "sh", "-c", `cp -r --no-preserve=ownership ${worktreePath}/. /worktree-seed/`,
       ],
-      // 10-minute timeout: some images (e.g. matplotlib) have large build
-      // artifacts that take >120s to copy. Measured via probe-seed-image.sh.
-      { encoding: "utf-8", stdio: "pipe", timeout: 600_000 }
+      600_000, // 10 minutes
     );
-    if (copyResult.status !== 0) {
-      throw new Error(
-        `seedWorktreeVolume: cp -r failed (exit ${copyResult.status}): ` +
-        `${(copyResult.stderr || "").slice(0, 300)}`
-      );
-    }
 
     // Step 4: Hash the seeded contents for the evidence bundle.
     // Use find + sha256sum to get a deterministic hash of all files.
-    const hashResult = spawnSync(
-      "docker",
-      [
-        "exec", seedContainerName,
-        "sh", "-c",
-        "find /worktree-seed -type f | sort | xargs sha256sum 2>/dev/null | sha256sum | awk '{print $1}'",
-      ],
-      { encoding: "utf-8", stdio: "pipe", timeout: 60_000 }
-    );
-    const preWorktreeHash = hashResult.status === 0
-      ? `sha256:${(hashResult.stdout || "").trim()}`
-      : "sha256:hash-unavailable";
+    // v5.19: Also async to avoid blocking the event loop during hashing.
+    let preWorktreeHash = "sha256:hash-unavailable";
+    try {
+      const hashOutput = await spawnAsync(
+        "docker",
+        [
+          "exec", seedContainerName,
+          "sh", "-c",
+          "find /worktree-seed -type f | sort | xargs sha256sum 2>/dev/null | sha256sum | awk '{print $1}'",
+        ],
+        60_000, // 1 minute
+      );
+      preWorktreeHash = `sha256:${hashOutput.trim()}`;
+    } catch {
+      // Hash failure is non-fatal — we still have the seeded volume
+      preWorktreeHash = "sha256:hash-unavailable";
+    }
 
-    stepSucceeded = true;
     return {
       volumeName,
       preWorktreeHash,
@@ -280,7 +351,6 @@ export function seedWorktreeVolume(
     // On success, the volume persists and is the caller's responsibility.
     // On error, the volume was already removed in the catch block above.
     spawnSync("docker", ["rm", "-f", seedContainerName], { encoding: "utf-8", stdio: "pipe" });
-    void stepSucceeded; // suppress unused-variable lint
   }
 }
 
@@ -316,7 +386,7 @@ export function removeWorktreeVolume(volumeName: string): boolean {
  * Throws if the config is invalid for the requested mode.
  *
  * Usage (writableWorktree:true):
- *   const seeded = seedWorktreeVolume(image, volumeName);
+ *   const seeded = await seedWorktreeVolume(image, volumeName);
  *   const { args, controls } = buildHardenedDockerArgs({
  *     ...config,
  *     worktreeVolumeName: seeded.volumeName,

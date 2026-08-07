@@ -925,7 +925,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
     const _worktreeVolumeName = `andromeda-worktree-${containerName}`;
     let _seededVolume: Awaited<ReturnType<typeof seedWorktreeVolume>> | null = null;
     try {
-      _seededVolume = seedWorktreeVolume(_resolvedImage.resolvedRef, _worktreeVolumeName, repoPath);
+      _seededVolume = await seedWorktreeVolume(_resolvedImage.resolvedRef, _worktreeVolumeName, repoPath);
       _seededVolumeOuter = _seededVolume; // expose to outer finally scope
     } catch (seedErr) {
       throw new Error(

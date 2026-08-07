@@ -231,7 +231,7 @@ async function runSmoke(): Promise<void> {
     let seededVolumeName: string;
     let preWorktreeHash: string;
     try {
-      const seeded = seedWorktreeVolume(resolved.resolvedRef, volumeName, "/testbed");
+      const seeded = await seedWorktreeVolume(resolved.resolvedRef, volumeName, "/testbed");
       seededVolumeName = seeded.volumeName;
       preWorktreeHash = seeded.preWorktreeHash;
       results.evidence.worktreeVolumeName = seeded.volumeName;
