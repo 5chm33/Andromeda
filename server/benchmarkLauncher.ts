@@ -69,6 +69,21 @@ export interface BenchmarkRunConfig {
   datasetSplit: string;
   /** SHA-256 of the canonical sorted JSON of instance_id values. */
   instanceIdHash: string;
+  /**
+   * Path to the exclusion registry JSONL file.
+   * If set, any selected instance_id that appears in the registry causes an
+   * immediate launch abort (fail-closed). Required for scored runs.
+   */
+  exclusionRegistryPath?: string;
+  /**
+   * SHA-256 of the exclusion registry file at the time the config was built.
+   * Written into the run bundle for auditability.
+   */
+  exclusionRegistryHash?: string;
+  /** SHA-256 of the sorted selected instance_id list. */
+  selectedIdsHash?: string;
+  /** Sorted list of selected instance IDs (used for exclusion check). */
+  selectedInstanceIds?: string[];
 }
 
 export interface PreLaunchCheckResult {
@@ -116,6 +131,12 @@ export interface RunMetadata {
   canaryAbortThreshold: number;
   createdAt: string;
   runBundlePath: string;
+  /** Path to the exclusion registry used for this run. */
+  exclusionRegistryPath?: string;
+  /** SHA-256 of the exclusion registry file at launch time. */
+  exclusionRegistryHash?: string;
+  /** SHA-256 of the sorted selected instance ID list. */
+  selectedIdsHash?: string;
 }
 
 export interface BenchmarkReport {
@@ -131,11 +152,28 @@ export interface BenchmarkReport {
     timedOut: number;
     /** scored_strict: patches ready for external evaluator (not test failures). */
     predictionReady: number;
+    /** P0.4: per-instance or per-run spend cap exhausted. */
+    budgetExhausted: number;
   };
   instances: InstanceResult[];
   completedAt: string;
   wallClockMs: number;
   totalCostUsd: number;
+  /**
+   * P0.4: Artifact reconciliation result.
+   * At run completion, selectedIds = jsonlIds = reportIds must hold.
+   * If not, the reconciliation field records the discrepancy.
+   */
+  reconciliation?: {
+    selectedCount: number;
+    jsonlCount: number;
+    reportCount: number;
+    consistent: boolean;
+    missingFromJsonl?: string[];
+    missingFromReport?: string[];
+    duplicatesInJsonl?: string[];
+    duplicatesInReport?: string[];
+  };
 }
 
 export type InstanceOutcome =
@@ -150,7 +188,28 @@ export type InstanceOutcome =
    * external evaluator. This is NOT a test failure — no hidden tests ran.
    * The external evaluator determines whether the patch is 'resolved'.
    */
-  | "prediction_ready";
+  | "prediction_ready"
+  /**
+   * Budget exhausted (per-instance or per-run spend cap reached).
+   * Elicit P0.4: must be its own outcome, not relabeled as semantic failure.
+   */
+  | "budget_exhausted";
+
+/**
+ * Granular infrastructure failure subtypes (P0.4).
+ * Recorded in InstanceResult.infraFailureSubtype when outcome = 'infra_failure'.
+ */
+export type InfraFailureSubtype =
+  | "image_pull_failure"         // Docker image pull or digest resolution failed
+  | "worktree_seed_failure"       // Volume seeding (cp -r) failed or timed out
+  | "check_container_failure"     // git apply --check container could not start
+  | "api_failure_after_retries"   // LLM API exhausted all retry attempts
+  | "runner_timeout"              // Per-instance wall-clock timeout fired
+  | "evaluator_setup_failure"     // External evaluator container setup failed
+  | "evaluator_apply_failure"     // External evaluator's git apply failed
+  | "evaluator_test_failure"      // External evaluator's test runner failed
+  | "reconciliation_mismatch"     // JSONL / report / evaluator artifact counts disagree
+  | "unknown";                    // Unclassified infrastructure error
 
 export interface InstanceResult {
   instanceId: string;
@@ -169,6 +228,15 @@ export interface InstanceResult {
   errorMessage?: string;
   /** Diagnostic output from Phase 1e git apply --check preflight, if applicable */
   preflightDiagnostic?: string;
+  /**
+   * Granular infrastructure failure subtype (P0.4).
+   * Only set when outcome = 'infra_failure'.
+   */
+  infraFailureSubtype?: InfraFailureSubtype;
+  /** Copy duration in ms for worktree seeding (P0.4 evidence). */
+  seedDurationMs?: number;
+  /** Number of LLM retry attempts made for this instance. */
+  llmRetryCount?: number;
 }
 
 // ── Smoke Result ──────────────────────────────────────────────────────────────
@@ -467,6 +535,64 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
         : `Invalid canary config: size=${canarySize}, threshold=${canaryThreshold}, taskCount=${taskCount}`,
   );
 
+  // ── Check 8: Exclusion registry — no selected ID may appear in the registry ─
+  // This is the P0.1 gate from the Elicit backlog. For scored runs, the
+  // exclusion registry is required. For development runs it is optional but
+  // still enforced if present.
+  if (config.exclusionRegistryPath) {
+    try {
+      const regContent = fs.readFileSync(config.exclusionRegistryPath, 'utf-8');
+      const regHash = createHash('sha256').update(regContent).digest('hex');
+      const excludedIds = new Set<string>();
+      for (const line of regContent.split('\n')) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+        try {
+          const row = JSON.parse(trimmed) as { instance_id?: string };
+          if (row.instance_id) excludedIds.add(row.instance_id);
+        } catch { /* skip malformed lines */ }
+      }
+      const selected = config.selectedInstanceIds ?? [];
+      const violations = selected.filter(id => excludedIds.has(id));
+      if (violations.length > 0) {
+        check(
+          'no-excluded-tasks',
+          'No selected task appears in the exclusion registry',
+          false,
+          `EXCLUSION VIOLATION: ${violations.length} selected instance(s) are in the exclusion registry ` +
+          `and must not be used as evaluation data: ${violations.slice(0, 5).join(', ')}` +
+          (violations.length > 5 ? ` ... and ${violations.length - 5} more` : '') +
+          `. Registry: ${config.exclusionRegistryPath} (sha256:${regHash.slice(0, 16)}...)`,
+        );
+      } else {
+        check(
+          'no-excluded-tasks',
+          'No selected task appears in the exclusion registry',
+          true,
+          `Exclusion check passed: ${selected.length} selected IDs, ` +
+          `${excludedIds.size} excluded IDs, 0 violations. ` +
+          `Registry sha256:${regHash.slice(0, 16)}...`,
+        );
+      }
+    } catch (e) {
+      check(
+        'no-excluded-tasks',
+        'No selected task appears in the exclusion registry',
+        false,
+        `Failed to read exclusion registry at ${config.exclusionRegistryPath}: ${(e as Error).message}`,
+      );
+    }
+  } else if (config.scoredRun) {
+    // Scored run without an exclusion registry path is a blocking failure
+    check(
+      'no-excluded-tasks',
+      'No selected task appears in the exclusion registry',
+      false,
+      'Scored run requires an exclusion registry. ' +
+      'Set SWEBENCH_EXCLUSION_REGISTRY=data/swebench/exclusions.jsonl before launching.',
+    );
+  }
+
   // ── Build run metadata ────────────────────────────────────────────────────
   const allPassed = checks.filter(c => c.blocksLaunch).every(c => c.passed);
   let runMetadata: RunMetadata | undefined;
@@ -506,6 +632,11 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
       canaryAbortThreshold: canaryThreshold,
       createdAt: new Date().toISOString(),
       runBundlePath: config.runBundlePath,
+      ...(config.exclusionRegistryPath ? {
+        exclusionRegistryPath: config.exclusionRegistryPath,
+        exclusionRegistryHash: config.exclusionRegistryHash,
+        selectedIdsHash: config.selectedIdsHash,
+      } : {}),
     };
   }
 
@@ -642,6 +773,7 @@ export class BenchmarkLauncher {
         infraFailures: 0,
         timedOut: 0,
         predictionReady: 0,
+        budgetExhausted: 0,
       },
       instances: [],
       completedAt: "",
@@ -664,10 +796,87 @@ export class BenchmarkLauncher {
       case "infra_failure":      report.summary.infraFailures++;      break;
       case "timed_out":          report.summary.timedOut++;           break;
       case "prediction_ready":   report.summary.predictionReady++;    break;
+      case "budget_exhausted":   report.summary.budgetExhausted++;    break;
     }
     if (result.costUsd) {
       report.totalCostUsd += result.costUsd;
     }
+  }
+
+  /**
+   * P0.4: Reconciles the four artifact sets at run completion.
+   * selectedIds = JSONL IDs = internal-report IDs, with no duplicates.
+   * Returns a reconciliation record and logs any discrepancies.
+   */
+  static reconcileArtifacts(
+    selectedIds: string[],
+    jsonlPath: string,
+    report: BenchmarkReport,
+  ): BenchmarkReport['reconciliation'] {
+    // Read JSONL IDs
+    const jsonlIds: string[] = [];
+    try {
+      const content = fs.readFileSync(jsonlPath, 'utf-8');
+      for (const line of content.split('\n')) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+        try {
+          const row = JSON.parse(trimmed) as { instance_id?: string };
+          if (row.instance_id) jsonlIds.push(row.instance_id);
+        } catch { /* skip malformed lines */ }
+      }
+    } catch (e) {
+      console.error(`[Reconciliation] Failed to read JSONL at ${jsonlPath}: ${(e as Error).message}`);
+    }
+
+    // Report IDs
+    const reportIds = report.instances.map(i => i.instanceId);
+
+    // Check for duplicates
+    const jsonlDupes = jsonlIds.filter((id, idx) => jsonlIds.indexOf(id) !== idx);
+    const reportDupes = reportIds.filter((id, idx) => reportIds.indexOf(id) !== idx);
+
+    // Check for missing
+    const selectedSet = new Set(selectedIds);
+    const jsonlSet = new Set(jsonlIds);
+    const reportSet = new Set(reportIds);
+
+    const missingFromJsonl = selectedIds.filter(id => !jsonlSet.has(id));
+    const missingFromReport = selectedIds.filter(id => !reportSet.has(id));
+
+    const consistent = missingFromJsonl.length === 0 &&
+      missingFromReport.length === 0 &&
+      jsonlDupes.length === 0 &&
+      reportDupes.length === 0 &&
+      jsonlIds.length === selectedIds.length &&
+      reportIds.length === selectedIds.length;
+
+    const reconciliation: BenchmarkReport['reconciliation'] = {
+      selectedCount: selectedIds.length,
+      jsonlCount: jsonlIds.length,
+      reportCount: reportIds.length,
+      consistent,
+      ...(missingFromJsonl.length > 0 ? { missingFromJsonl } : {}),
+      ...(missingFromReport.length > 0 ? { missingFromReport } : {}),
+      ...(jsonlDupes.length > 0 ? { duplicatesInJsonl: jsonlDupes } : {}),
+      ...(reportDupes.length > 0 ? { duplicatesInReport: reportDupes } : {}),
+    };
+
+    if (!consistent) {
+      console.error('[Reconciliation] ARTIFACT MISMATCH DETECTED:');
+      if (missingFromJsonl.length > 0)
+        console.error(`  Missing from JSONL: ${missingFromJsonl.join(', ')}`);
+      if (missingFromReport.length > 0)
+        console.error(`  Missing from report: ${missingFromReport.join(', ')}`);
+      if (jsonlDupes.length > 0)
+        console.error(`  Duplicates in JSONL: ${jsonlDupes.join(', ')}`);
+      if (reportDupes.length > 0)
+        console.error(`  Duplicates in report: ${reportDupes.join(', ')}`);
+    } else {
+      console.log(`[Reconciliation] Artifacts consistent: ${selectedIds.length} selected = ${jsonlIds.length} JSONL = ${reportIds.length} report rows.`);
+    }
+
+    return reconciliation;
   }
 }
 

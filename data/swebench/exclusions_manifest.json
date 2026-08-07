@@ -1,0 +1,10 @@
+{
+  "generated_at": "2026-08-07T09:55:54.957371Z",
+  "total_excluded": 2294,
+  "registry_sha256": "15e7bb3016e9ac80770353fcc127098ef1b9f8d2cb0810014707d83ff96b78c1",
+  "instance_ids_sha256": "32e0c1d637aa073d4fea0ce85167f45f26932cbd29dbf582da434b3b4fe46262",
+  "sources": [
+    "andromeda_verified_20260628_0735",
+    "andromeda_full_20260628_0922"
+  ]
+}

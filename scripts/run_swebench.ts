@@ -915,6 +915,27 @@ async function main() {
       datasetRevision: datasetProvenance.datasetRevision,
       datasetSplit: datasetProvenance.datasetSplit,
       instanceIdHash: datasetProvenance.instanceIdHash,
+      // P0.1: Exclusion registry — required for scored runs
+      // Set SWEBENCH_EXCLUSION_REGISTRY to the path of the exclusions.jsonl file.
+      // If set, any selected instance_id that appears in the registry causes an
+      // immediate launch abort before any image pull or model invocation.
+      ...(process.env.SWEBENCH_EXCLUSION_REGISTRY ? (() => {
+        const regPath = process.env.SWEBENCH_EXCLUSION_REGISTRY!;
+        let regHash = 'unknown';
+        try {
+          const regContent = fs.readFileSync(regPath, 'utf-8');
+          regHash = crypto.createHash('sha256').update(regContent, 'utf8').digest('hex');
+        } catch { /* will be caught in preflight */ }
+        const selectedIds = instances.map(i => i.instance_id).sort();
+        const selectedIdsHash = crypto.createHash('sha256')
+          .update(JSON.stringify(selectedIds), 'utf8').digest('hex');
+        return {
+          exclusionRegistryPath: regPath,
+          exclusionRegistryHash: regHash,
+          selectedIdsHash,
+          selectedInstanceIds: selectedIds,
+        };
+      })() : {}),
     };
 
     _benchLauncher = new BenchmarkLauncher(launcherConfig);
