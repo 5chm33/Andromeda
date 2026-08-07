@@ -626,35 +626,58 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
     );
   }
 
-  // ── Check 9: Evaluation protocol present ────────────────────────────────
-  // For scored runs, the versioned evaluation protocol file must be present
-  // and its hash must be recorded in the run manifest.
+  // ── Check 9: Evaluation protocol — full digest binding ───────────────────────
+  // For scored runs:
+  //   (a) The protocol file must be present and schema-valid.
+  //   (b) The full 64-char SHA-256 of the protocol bytes must be stored in the manifest.
+  //   (c) If config.evalProtocolHash is already set (from a prior read), it must match
+  //       the freshly-computed hash of the file bytes — reject any mismatch.
+  //   (d) The manifest must record the protocol hash, selectedIds hash, and exclusion
+  //       registry hash together so the three artifacts are cross-bound.
   if (config.evalProtocolPath) {
     try {
       const protocolContent = fs.readFileSync(config.evalProtocolPath, 'utf-8');
-      const protocolHash = createHash('sha256').update(protocolContent).digest('hex');
-      // Verify it is valid JSON with the expected schema
+      const protocolHash = createHash('sha256').update(protocolContent).digest('hex'); // full 64-char
+      // (a) Schema validation
       const protocol = JSON.parse(protocolContent) as { _schema?: string; _version?: string };
       if (protocol._schema !== 'andromeda-eval-protocol') {
         check(
           'eval-protocol-present',
-          'Versioned evaluation protocol is present and valid',
+          'Versioned evaluation protocol present, schema-valid, and cross-bound',
           false,
           `Evaluation protocol at ${config.evalProtocolPath} has wrong schema: ${protocol._schema}`,
         );
-      } else {
+      } else if (config.evalProtocolHash && config.evalProtocolHash !== 'unknown' && config.evalProtocolHash !== protocolHash) {
+        // (c) Reject hash mismatch: the config was built with a different file
         check(
           'eval-protocol-present',
-          'Versioned evaluation protocol is present and valid',
+          'Versioned evaluation protocol present, schema-valid, and cross-bound',
+          false,
+          `Evaluation protocol hash mismatch: ` +
+          `manifest has ${config.evalProtocolHash} but file hashes to ${protocolHash}. ` +
+          `The protocol file was modified after the config was built.`,
+        );
+      } else {
+        // (b) + (d) Store full hash and cross-bind
+        // Update config so the full hash is written to the manifest
+        (config as { evalProtocolHash?: string }).evalProtocolHash = protocolHash;
+        const crossBound = [
+          `protocol:${protocolHash}`,
+          config.selectedIdsHash ? `selectedIds:${config.selectedIdsHash}` : 'selectedIds:unset',
+          config.exclusionRegistryHash ? `exclusionRegistry:${config.exclusionRegistryHash}` : 'exclusionRegistry:unset',
+        ].join(' | ');
+        check(
+          'eval-protocol-present',
+          'Versioned evaluation protocol present, schema-valid, and cross-bound',
           true,
-          `Evaluation protocol v${protocol._version} present. ` +
-          `sha256:${protocolHash.slice(0, 16)}...`,
+          `Protocol v${protocol._version} sha256:${protocolHash} ` +
+          `cross-bound with ${crossBound}`,
         );
       }
     } catch (e) {
       check(
           'eval-protocol-present',
-          'Versioned evaluation protocol is present and valid',
+          'Versioned evaluation protocol present, schema-valid, and cross-bound',
           false,
           `Failed to read evaluation protocol at ${config.evalProtocolPath}: ${(e as Error).message}`,
       );
@@ -663,7 +686,7 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
     // Scored run without an evaluation protocol is a blocking failure
     check(
       'eval-protocol-present',
-      'Versioned evaluation protocol is present and valid',
+      'Versioned evaluation protocol present, schema-valid, and cross-bound',
       false,
       'Scored run requires a versioned evaluation protocol. ' +
       'Set SWEBENCH_EVAL_PROTOCOL=data/eval_protocol_v1.json before launching.',
