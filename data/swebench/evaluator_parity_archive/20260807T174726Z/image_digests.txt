@@ -1,0 +1,7 @@
+# Image digests for evaluator parity run 20260807T174726Z
+# These are the images used by the official SWE-bench evaluator
+astropy__astropy-12907: swebench/sweb.eval.x86_64.astropy_1776_astropy-12907:latest (sha256:f3f63bb87d581c0e7b47f900dd82165b71040e1758d3c29e915e2b18da9baf63)
+astropy__astropy-13453: swebench/sweb.eval.x86_64.astropy_1776_astropy-13453:latest (sha256:6b3593a3d1fa032b8b81f9a1e33738aae14c1cdc8fd887e0a089592c7f9abf9b)
+astropy__astropy-13579: swebench/sweb.eval.x86_64.astropy_1776_astropy-13579:latest (sha256:c645e9435a1499dab327b76fae926057a2f407a291b5d173bf1971b7a6fe911b)
+astropy__astropy-14182: swebench/sweb.eval.x86_64.astropy_1776_astropy-14182:latest (sha256:374a7f3206d23fd41aaf6ac3361a34dad941bdbe92ec81ff1b4c3e0163e38453)
+astropy__astropy-13033: swebench/sweb.eval.x86_64.astropy_1776_astropy-13033:latest (sha256:42797a2c686ed35b43e28dd2f58149381c3bf79abea2346fb7062c009e9fa528)

@@ -106,9 +106,11 @@ const KNOWN_GOOD_FIXTURES: Array<{
  * This fixture is kept as a regression test for the stale-base divergence.
  */
 const STALE_BASE_NEGATIVE_CONTROL = {
-  instanceId: 'astropy__astropy-13033',
-  baseCommit: '298ccb478e6b',
-  imageDigest: 'local:swebench/sweb.eval.x86_64.astropy__astropy-13033:latest',
+  // Uses astropy__astropy-14182 (distinct from NC2's astropy__astropy-13033) so that
+  // NC1 and NC2 run in SEPARATE evaluator invocations and each gets its own report row.
+  instanceId: 'astropy__astropy-14182',
+  baseCommit: 'a5917978be39',
+  imageDigest: 'local:swebench/sweb.eval.x86_64.astropy_1776_astropy-14182:latest',
   rawPatch: `--- a/astropy/modeling/separable.py
 +++ b/astropy/modeling/separable.py
 @@ -999,6 +999,7 @@ def _cstack(left, right):
@@ -122,7 +124,14 @@ const STALE_BASE_NEGATIVE_CONTROL = {
   // Evaluator outcome: unresolved (applied but tests fail)
   expectedPreflightResult: 'accepted' as const,
   expectedEvaluatorOutcome: 'not_resolved' as const,
-  note: 'Stale-base offset. git apply --check rejects; patch --fuzz=5 accepts. With v5.26 two-stage preflight, runner now matches evaluator. Evaluator outcome: unresolved.',
+  // Live exit output (astropy_1776_astropy-14182 image, Aug 7 2026):
+  //   CMD1 git apply --verbose:         EXIT:128 ("corrupt patch at line 8")
+  //   CMD2 git apply --verbose --reject: EXIT:128 (same)
+  //   CMD3 patch --batch --fuzz=5 -p1:  EXIT:0   ("Hunk #1 succeeded at 323 with fuzz 4 (offset -676 lines)")
+  //   CMD3 dry-run:                      EXIT:0   (same)
+  // Conclusion: CMD1 and CMD2 fail; CMD3 succeeds. Two-stage preflight correctly
+  // accepts via stage 2 (patch --dry-run --fuzz=5), matching the evaluator.
+  note: 'Stale-base offset. CMD1+CMD2 (git apply) reject; CMD3 (patch --fuzz=5) accepts. With v5.26 two-stage preflight, runner now matches evaluator. Evaluator outcome: unresolved.',
 };
 
 /**
@@ -208,19 +217,24 @@ function runApplyCheck(normalizedPatch: string, instanceId: string): {
 
   // Check for pre-computed results from the shell script (passed as env vars)
   // This is needed because Docker cannot be called via execSync from tsx (socket permissions).
-  if (instanceId === 'astropy__astropy-13033') {
-    // Negative controls: use pre-computed results from shell
+  // NC1 uses astropy__astropy-14182; NC2 uses astropy__astropy-13033 (distinct IDs for separate evaluator runs).
+  if (instanceId === 'astropy__astropy-14182' && normalizedPatch.includes('stale-base negative control')) {
+    // NC1: stale-base offset patch on astropy-14182
     const nc1Exit = process.env['ANDROMEDA_NC1_APPLY_EXIT'];
-    const nc2Exit = process.env['ANDROMEDA_NC2_APPLY_EXIT'];
     const nc1Output = process.env['ANDROMEDA_NC1_APPLY_OUTPUT'] || 'pre-computed by shell';
+    if (nc1Exit !== undefined) {
+      console.log(`  [apply_check] NC1 (stale-base): using pre-computed result from shell (exit=${nc1Exit}): ${nc1Output.slice(0, 100)}`);
+      return { exitCode: parseInt(nc1Exit, 10), output: nc1Output, command: 'pre-computed by shell (Docker socket not accessible from tsx)' };
+    }
+  }
+
+  if (instanceId === 'astropy__astropy-13033' && normalizedPatch.includes('nonexistent_module_xyz123')) {
+    // NC2: wrong file path patch on astropy-13033
+    const nc2Exit = process.env['ANDROMEDA_NC2_APPLY_EXIT'];
     const nc2Output = process.env['ANDROMEDA_NC2_APPLY_OUTPUT'] || 'pre-computed by shell';
-    if (nc1Exit !== undefined && nc2Exit !== undefined) {
-      // Determine which negative control this is by checking the patch content
-      const isNC2 = normalizedPatch.includes('nonexistent_module_xyz123');
-      const exitCode = isNC2 ? parseInt(nc2Exit, 10) : parseInt(nc1Exit, 10);
-      const output = isNC2 ? nc2Output : nc1Output;
-      console.log(`  [apply_check] Using pre-computed result from shell (exit=${exitCode}): ${output.slice(0, 100)}`);
-      return { exitCode, output, command: 'pre-computed by shell (Docker socket not accessible from tsx)' };
+    if (nc2Exit !== undefined) {
+      console.log(`  [apply_check] NC2 (wrong-file): using pre-computed result from shell (exit=${nc2Exit}): ${nc2Output.slice(0, 100)}`);
+      return { exitCode: parseInt(nc2Exit, 10), output: nc2Output, command: 'pre-computed by shell (Docker socket not accessible from tsx)' };
     }
   }
 

@@ -1,0 +1,10 @@
+NC1 (stale-base on astropy-14182):
+  CMD1 (git apply --verbose): EXIT:128
+  CMD2 (git apply --reject):  EXIT:128
+  CMD3 (patch --fuzz=5):      EXIT:0
+  Runner decision: accepted=0
+
+NC2 (wrong-file on astropy-13033):
+  CMD1 (git apply --verbose): EXIT:1
+  CMD3 (patch --fuzz=5):      EXIT:1
+  Runner decision: accepted=1

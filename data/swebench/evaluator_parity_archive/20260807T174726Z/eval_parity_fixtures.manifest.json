@@ -1,0 +1,60 @@
+{
+  "created_at": "2026-08-07T17:47:45.271Z",
+  "production_path": "buildCanonicalPatch → verifyCanonicalPatch → serializeCanonicalPatch",
+  "source_file": "/home/ubuntu/andromeda/data/swebench/canary_v6_predictions.jsonl",
+  "source_file_sha256": "422ee20ed73e62d2b4e20f9c021bdcf132ee44186a2d4fbdee55fab66bcff3e0",
+  "known_good_instances": [
+    {
+      "instance_id": "astropy__astropy-12907",
+      "base_commit": "d16bfe05a744",
+      "raw_patch_bytes": 392,
+      "canonical_sha256": "dca8093d928c0466778c43b32858b18b933de98cc2814f6b3a6693d1c30a4287",
+      "apply_exit_code": 0,
+      "expected_outcome": "resolved"
+    },
+    {
+      "instance_id": "astropy__astropy-13453",
+      "base_commit": "19cc80471739",
+      "raw_patch_bytes": 361,
+      "canonical_sha256": "eeec2674bfee53631e52dc070271412f50f4e26c70678ac314f1830e93e70e66",
+      "apply_exit_code": 0,
+      "expected_outcome": "resolved"
+    },
+    {
+      "instance_id": "astropy__astropy-13579",
+      "base_commit": "0df94ff70979",
+      "raw_patch_bytes": 1002,
+      "canonical_sha256": "22413fc6cae31aa594af67a796332094e52cce14eb48c114a1be1beda1c04abc",
+      "apply_exit_code": 0,
+      "expected_outcome": "resolved"
+    }
+  ],
+  "negative_control": null,
+  "negative_controls": [
+    {
+      "label": "NC1_stale_base",
+      "instance_id": "astropy__astropy-14182",
+      "preflight_result": "accepted",
+      "expected_preflight": "accepted",
+      "raw_patch_bytes": 396,
+      "raw_patch_sha256": "97bf5b2922f01177f64e8948a6796573ee35dc43fd87988f60de9404ce3ab180",
+      "expected_evaluator_outcome": "not_resolved",
+      "note": "Stale-base offset. CMD1+CMD2 (git apply) reject; CMD3 (patch --fuzz=5) accepts. With v5.26 two-stage preflight, runner now matches evaluator. Evaluator outcome: unresolved."
+    },
+    {
+      "label": "NC2_wrong_file",
+      "instance_id": "astropy__astropy-13033",
+      "preflight_result": "rejected",
+      "expected_preflight": "rejected",
+      "raw_patch_bytes": 141,
+      "raw_patch_sha256": "5b467785c09e6c4e7df1f9e64f344056446ea8200aaf1e6932256255a745e7d9",
+      "expected_evaluator_outcome": "error",
+      "note": "Wrong file path (file does not exist in repo). Both git apply --check and patch --fuzz=5 reject. Evaluator records as error (all 3 commands fail)."
+    }
+  ],
+  "output_file": "/home/ubuntu/andromeda/data/swebench/evaluator_parity_archive/20260807T174726Z/eval_parity_fixtures.jsonl",
+  "output_file_sha256": "7723d49d907d5f68125db688e8ad6be9e0285b160e99e1005ea0bd094da02e4b",
+  "output_rows": 3,
+  "negative_control_file": "/home/ubuntu/andromeda/data/swebench/evaluator_parity_archive/20260807T174726Z/eval_parity_fixtures.negative_control.jsonl",
+  "negative_control_file_sha256": "dd45c2f03239b98db19eab465e6ef6e359d733d28fc18d80778f842293e113b6"
+}

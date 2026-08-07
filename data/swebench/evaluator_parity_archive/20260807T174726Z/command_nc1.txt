@@ -1,0 +1,1 @@
+python3 -m swebench.harness.run_evaluation -p /home/ubuntu/andromeda/data/swebench/evaluator_parity_archive/20260807T174726Z/eval_parity_fixtures.nc1_stale_base.jsonl -d princeton-nlp/SWE-bench -s test -id andromeda-eval-parity-nc1-20260807T174726Z --report_dir /home/ubuntu/andromeda/data/swebench/evaluator_parity_archive/20260807T174726Z/evaluator_report_nc1 --max_workers 1

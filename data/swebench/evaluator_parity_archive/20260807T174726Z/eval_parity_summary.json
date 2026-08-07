@@ -1,0 +1,27 @@
+{
+  "run_timestamp": "20260807T174726Z",
+  "production_path": "buildCanonicalPatch \u2192 verifyCanonicalPatch \u2192 serializeCanonicalPatch",
+  "fixture_jsonl_sha256": "7723d49d907d5f68125db688e8ad6be9e0285b160e99e1005ea0bd094da02e4b",
+  "negative_control_jsonl_sha256": "dd45c2f03239b98db19eab465e6ef6e359d733d28fc18d80778f842293e113b6",
+  "good_report": "/home/ubuntu/andromeda/andromeda-eval-parity-v5.25.andromeda-eval-parity-v5.27-good.json",
+  "good_report_sha256": "eb2f14fadbb5a607463f2e6cf79561e2886299b6b4bc1555e7c864f28d6ed8cc",
+  "nc1_report": "/home/ubuntu/andromeda/andromeda-eval-parity-v5.26-nc1-stale-base.andromeda-eval-parity-nc1-20260807T174726Z.json",
+  "nc2_report": "/home/ubuntu/andromeda/andromeda-eval-parity-v5.26-nc2-wrong-file.andromeda-eval-parity-nc2-20260807T174726Z.json",
+  "instances_submitted_good": 3,
+  "instances_resolved": 3,
+  "instances_errors_good": 0,
+  "nc1_preflight": "accepted",
+  "nc1_evaluator_outcome": "unresolved",
+  "nc2_preflight": "rejected",
+  "nc2_evaluator_outcome": "error",
+  "four_cell_matrix": {
+    "accepted_resolved": "3/3",
+    "accepted_unresolved": "1/1",
+    "rejected_error": "1/1",
+    "accepted_error": "0/0_expected",
+    "rejected_applied": "0/0_expected"
+  },
+  "all_hash_chains_valid": true,
+  "all_outcomes_match_expected": true,
+  "conclusion": "PASS"
+}

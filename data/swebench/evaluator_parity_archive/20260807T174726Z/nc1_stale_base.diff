@@ -1,0 +1,7 @@
+--- a/astropy/modeling/separable.py
++++ b/astropy/modeling/separable.py
+@@ -999,6 +999,7 @@ def _cstack(left, right):
+     # This line does not exist at offset 999 in the actual file
+     # This patch is intentionally malformed (stale-base offset)
++    pass  # stale-base negative control
+     return _operators['&'](left, right)
