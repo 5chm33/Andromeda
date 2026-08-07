@@ -1492,6 +1492,7 @@ Output ONLY the corrected unified diff:
           console.error(`[Runner] PATCH IDENTITY VIOLATION for ${instance_id}: ` +
             `serialized hash ${serializedHash} !== recorded patchHash ${result.patchHash}. ` +
             `Blocking submission.`);
+          // Write empty JSONL row
           fs.appendFileSync(opts.outputPath, JSON.stringify({
             instance_id,
             model_patch: '',
@@ -1500,6 +1501,23 @@ Output ONLY the corrected unified diff:
           total++;
           const rate = (resolved / total * 100).toFixed(1);
           console.log(`[Runner] Running score: ${resolved}/${total} = ${rate}%`);
+          // v5.21: Also record exact_apply_failure in the benchmark report so
+          // the JSONL and internal report stay consistent. Without this, a hash
+          // violation would produce an empty JSONL row with no corresponding
+          // report entry, making the two artifacts disagree.
+          if (_benchReport && _benchLauncher) {
+            const violationResult: InstanceResult = {
+              instanceId: instance_id,
+              outcome: 'exact_apply_failure',
+              imageDigest: result.resolvedImageDigest ?? instanceImageRef,
+              patchHash: result.patchHash,
+              exactApply: false,
+              fuzzyRecoveryAttempted: false,
+              durationMs: Date.now() - instanceStart,
+              errorMessage: `Hash identity violation: serialized=${serializedHash} recorded=${result.patchHash}`,
+            };
+            BenchmarkLauncher.recordInstance(_benchReport, violationResult);
+          }
           continue;
         }
       }
