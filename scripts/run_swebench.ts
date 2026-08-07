@@ -1258,6 +1258,11 @@ Output ONLY a unified diff with REAL line numbers:
       //   • Both errors record patchHash and diagnostic in the run bundle.
       // Non-scored runs: advisory only (warn and continue).
       if (initialPatch.length > 0) {
+        // v5.20: Normalize before preflight so the bytes validated by git apply
+        // --check are the same bytes that will eventually be submitted. The
+        // traceback loop also normalizes via fixHunkCounts, so this ensures the
+        // preflight and the final submission operate on the same canonical form.
+        initialPatch = fixHunkCounts(initialPatch);
         const patchHashForPreflight = crypto.createHash('sha256').update(initialPatch).digest('hex');
         const checkContainerName = `andromeda-check-${instance_id.replace(/[^a-z0-9]/gi, '-')}-${Date.now()}`;
         let checkContainerStarted = false;
@@ -1473,9 +1478,31 @@ Output ONLY the corrected unified diff:
         console.log(`[Runner]   Traceback: ${result.phases.tracebackLoop.attemptsUsed} attempts, resolvedOn=${result.phases.tracebackLoop.resolvedOnAttempt}`);
       }
 
-      // Write prediction — apply fixHunkCounts before storing so the evaluator
-      // receives clean patches with correct hunk line counts
-      const cleanPatch = result.finalPatch ? fixHunkCounts(result.finalPatch) : '';
+      // v5.20: finalPatch is already canonical (fixHunkCounts applied once in
+      // sweBenchTracebackLoop.ts before the hash is computed). Do NOT apply
+      // fixHunkCounts again — that would produce a different byte string than
+      // what patchHash covers, breaking the identity invariant.
+      const cleanPatch = result.finalPatch ?? '';
+      // Hash identity assertion: the bytes we are about to serialize must match
+      // the hash recorded in the run bundle. If they diverge, something in the
+      // pipeline mutated the patch after the hash was computed — block submission.
+      if (cleanPatch.length > 0 && result.patchHash) {
+        const serializedHash = crypto.createHash('sha256').update(cleanPatch, 'utf8').digest('hex');
+        if (serializedHash !== result.patchHash) {
+          console.error(`[Runner] PATCH IDENTITY VIOLATION for ${instance_id}: ` +
+            `serialized hash ${serializedHash} !== recorded patchHash ${result.patchHash}. ` +
+            `Blocking submission.`);
+          fs.appendFileSync(opts.outputPath, JSON.stringify({
+            instance_id,
+            model_patch: '',
+            model_name_or_path: sweBenchModelConfig.modelName,
+          }) + '\n');
+          total++;
+          const rate = (resolved / total * 100).toFixed(1);
+          console.log(`[Runner] Running score: ${resolved}/${total} = ${rate}%`);
+          continue;
+        }
+      }
       fs.appendFileSync(opts.outputPath, JSON.stringify({
         instance_id,
         model_patch: cleanPatch,

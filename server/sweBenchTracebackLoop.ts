@@ -421,8 +421,12 @@ export async function applyAndTest(
     fs.writeFileSync(hostPatchPath, fixedPatch, 'utf-8');
     await dockerInject(containerName, '/tmp/candidate.diff', fixedPatch);
 
+    // v5.20: Use plain 'git apply' without --ignore-whitespace so the runner's
+    // validation semantics match the official SWE-bench evaluator exactly.
+    // Previously --ignore-whitespace allowed patches to pass here that the
+    // evaluator would reject, causing evaluator-side apply errors.
     const applyResult = await execAsync(
-      `docker exec ${containerName} bash -c "cd ${repoPath} && git apply --ignore-whitespace /tmp/candidate.diff 2>&1"`
+      `docker exec ${containerName} bash -c "cd ${repoPath} && git apply /tmp/candidate.diff 2>&1"`
     ).catch(e => ({ stdout: '', stderr: e.stderr || e.message }));
 
     const applyOutput = (applyResult.stdout || '') + (applyResult.stderr || '');
@@ -1320,9 +1324,15 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
   const lastAttempt = attempts[attempts.length - 1];
   const finalExactApply = lastAttempt?.exactApply ?? true;
   const finalTimedOut = lastAttempt?.timedOut ?? false;
+  // v5.20: Canonicalize the patch ONCE here so that the hash, the returned
+  // finalPatch, and the bytes the evaluator receives are all identical.
+  // Previously fixHunkCounts was applied inside applyAndTest (line ~420) AND
+  // again in run_swebench.ts before JSONL serialization, producing a hash over
+  // the un-normalized string while submitting the normalized one.
+  const canonicalFinalPatch = fixHunkCounts(currentPatch);
   const finalPatchHash = crypto
     .createHash('sha256')
-    .update(currentPatch, 'utf8')
+    .update(canonicalFinalPatch, 'utf8')
     .digest('hex');
   // _resolvedImage is declared in the outer try block; if resolution failed the
   // function would have thrown before reaching here, so the variable is always
@@ -1335,7 +1345,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
     resolved,
     predictionReady,
     totalAttempts: attempts.length,
-    finalPatch: currentPatch,
+    finalPatch: canonicalFinalPatch,
     attempts,
     totalDurationMs: Date.now() - startTime,
     patchHash: finalPatchHash,
