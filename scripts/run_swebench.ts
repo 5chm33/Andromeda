@@ -936,6 +936,20 @@ async function main() {
           selectedInstanceIds: selectedIds,
         };
       })() : {}),
+      // P5: Evaluation protocol — required for scored runs
+      // Set SWEBENCH_EVAL_PROTOCOL to the path of the eval_protocol_v1.json file.
+      ...(process.env.SWEBENCH_EVAL_PROTOCOL ? (() => {
+        const protocolPath = process.env.SWEBENCH_EVAL_PROTOCOL!;
+        let protocolHash = 'unknown';
+        try {
+          const protocolContent = fs.readFileSync(protocolPath, 'utf-8');
+          protocolHash = crypto.createHash('sha256').update(protocolContent, 'utf8').digest('hex');
+        } catch { /* will be caught in preflight */ }
+        return {
+          evalProtocolPath: protocolPath,
+          evalProtocolHash: protocolHash,
+        };
+      })() : {}),
     };
 
     _benchLauncher = new BenchmarkLauncher(launcherConfig);

@@ -84,6 +84,17 @@ export interface BenchmarkRunConfig {
   selectedIdsHash?: string;
   /** Sorted list of selected instance IDs (used for exclusion check). */
   selectedInstanceIds?: string[];
+  /**
+   * Path to the versioned evaluation protocol JSON file (eval_protocol_v1.json).
+   * Required for scored runs. If absent, the 'eval-protocol-present' preflight
+   * check fails and the run is blocked.
+   */
+  evalProtocolPath?: string;
+  /**
+   * SHA-256 of the evaluation protocol file at the time the config was built.
+   * Written into the run bundle for auditability.
+   */
+  evalProtocolHash?: string;
 }
 
 export interface PreLaunchCheckResult {
@@ -137,6 +148,10 @@ export interface RunMetadata {
   exclusionRegistryHash?: string;
   /** SHA-256 of the sorted selected instance ID list. */
   selectedIdsHash?: string;
+  /** Path to the versioned evaluation protocol JSON file. */
+  evalProtocolPath?: string;
+  /** SHA-256 of the evaluation protocol file at launch time. */
+  evalProtocolHash?: string;
 }
 
 export interface BenchmarkReport {
@@ -173,6 +188,24 @@ export interface BenchmarkReport {
     missingFromReport?: string[];
     duplicatesInJsonl?: string[];
     duplicatesInReport?: string[];
+    /**
+     * Per-instance status for every selected ID.
+     * Exactly one entry per selected instance — no gaps, no duplicates.
+     */
+    perInstance?: Array<{
+      instanceId: string;
+      inJsonl: boolean;
+      inReport: boolean;
+      reportOutcome?: InstanceOutcome;
+      /** SHA-256 of the model_patch bytes in the JSONL row (if present). */
+      jsonlPatchHash?: string;
+      /** SHA-256 stored in the _patch_sha256 field of the JSONL row (if present). */
+      storedPatchHash?: string;
+      /** True if jsonlPatchHash === storedPatchHash (or both absent). */
+      hashConsistent: boolean;
+    }>;
+    /** IDs where jsonlPatchHash !== storedPatchHash. */
+    hashMismatches?: string[];
   };
 }
 
@@ -593,6 +626,50 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
     );
   }
 
+  // ── Check 9: Evaluation protocol present ────────────────────────────────
+  // For scored runs, the versioned evaluation protocol file must be present
+  // and its hash must be recorded in the run manifest.
+  if (config.evalProtocolPath) {
+    try {
+      const protocolContent = fs.readFileSync(config.evalProtocolPath, 'utf-8');
+      const protocolHash = createHash('sha256').update(protocolContent).digest('hex');
+      // Verify it is valid JSON with the expected schema
+      const protocol = JSON.parse(protocolContent) as { _schema?: string; _version?: string };
+      if (protocol._schema !== 'andromeda-eval-protocol') {
+        check(
+          'eval-protocol-present',
+          'Versioned evaluation protocol is present and valid',
+          false,
+          `Evaluation protocol at ${config.evalProtocolPath} has wrong schema: ${protocol._schema}`,
+        );
+      } else {
+        check(
+          'eval-protocol-present',
+          'Versioned evaluation protocol is present and valid',
+          true,
+          `Evaluation protocol v${protocol._version} present. ` +
+          `sha256:${protocolHash.slice(0, 16)}...`,
+        );
+      }
+    } catch (e) {
+      check(
+          'eval-protocol-present',
+          'Versioned evaluation protocol is present and valid',
+          false,
+          `Failed to read evaluation protocol at ${config.evalProtocolPath}: ${(e as Error).message}`,
+      );
+    }
+  } else if (config.scoredRun) {
+    // Scored run without an evaluation protocol is a blocking failure
+    check(
+      'eval-protocol-present',
+      'Versioned evaluation protocol is present and valid',
+      false,
+      'Scored run requires a versioned evaluation protocol. ' +
+      'Set SWEBENCH_EVAL_PROTOCOL=data/eval_protocol_v1.json before launching.',
+    );
+  }
+
   // ── Build run metadata ────────────────────────────────────────────────────
   const allPassed = checks.filter(c => c.blocksLaunch).every(c => c.passed);
   let runMetadata: RunMetadata | undefined;
@@ -636,6 +713,10 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
         exclusionRegistryPath: config.exclusionRegistryPath,
         exclusionRegistryHash: config.exclusionRegistryHash,
         selectedIdsHash: config.selectedIdsHash,
+      } : {}),
+      ...(config.evalProtocolPath ? {
+        evalProtocolPath: config.evalProtocolPath,
+        evalProtocolHash: config.evalProtocolHash,
       } : {}),
     };
   }
@@ -813,7 +894,8 @@ export class BenchmarkLauncher {
     jsonlPath: string,
     report: BenchmarkReport,
   ): BenchmarkReport['reconciliation'] {
-    // Read JSONL IDs
+    // Read JSONL rows with full content for hash verification
+    const jsonlRows = new Map<string, { patchHash?: string; storedHash?: string }>();
     const jsonlIds: string[] = [];
     try {
       const content = fs.readFileSync(jsonlPath, 'utf-8');
@@ -821,35 +903,75 @@ export class BenchmarkLauncher {
         const trimmed = line.trim();
         if (!trimmed) continue;
         try {
-          const row = JSON.parse(trimmed) as { instance_id?: string };
-          if (row.instance_id) jsonlIds.push(row.instance_id);
+          const row = JSON.parse(trimmed) as {
+            instance_id?: string;
+            model_patch?: string;
+            _patch_sha256?: string;
+          };
+          if (row.instance_id) {
+            jsonlIds.push(row.instance_id);
+            const patchHash = row.model_patch !== undefined
+              ? createHash('sha256').update(row.model_patch, 'utf8').digest('hex')
+              : undefined;
+            jsonlRows.set(row.instance_id, {
+              patchHash,
+              storedHash: row._patch_sha256,
+            });
+          }
         } catch { /* skip malformed lines */ }
       }
     } catch (e) {
       console.error(`[Reconciliation] Failed to read JSONL at ${jsonlPath}: ${(e as Error).message}`);
     }
 
-    // Report IDs
+    // Report IDs and outcomes
     const reportIds = report.instances.map(i => i.instanceId);
+    const reportMap = new Map(report.instances.map(i => [i.instanceId, i]));
 
     // Check for duplicates
     const jsonlDupes = jsonlIds.filter((id, idx) => jsonlIds.indexOf(id) !== idx);
     const reportDupes = reportIds.filter((id, idx) => reportIds.indexOf(id) !== idx);
 
     // Check for missing
-    const selectedSet = new Set(selectedIds);
     const jsonlSet = new Set(jsonlIds);
     const reportSet = new Set(reportIds);
 
     const missingFromJsonl = selectedIds.filter(id => !jsonlSet.has(id));
     const missingFromReport = selectedIds.filter(id => !reportSet.has(id));
 
+    // Build per-instance status (one entry per selected ID, no gaps)
+    const hashMismatches: string[] = [];
+    const perInstance = selectedIds.map(id => {
+      const jsonlRow = jsonlRows.get(id);
+      const reportRow = reportMap.get(id);
+      const jsonlPatchHash = jsonlRow?.patchHash;
+      const storedPatchHash = jsonlRow?.storedHash;
+      // Hash is consistent if:
+      //   - both absent (empty patch or not in JSONL): OK
+      //   - both present and equal: OK
+      //   - present but not equal: VIOLATION
+      const hashConsistent = !jsonlPatchHash || !storedPatchHash
+        ? true  // one or both absent — no hash to compare
+        : jsonlPatchHash === storedPatchHash;
+      if (!hashConsistent) hashMismatches.push(id);
+      return {
+        instanceId: id,
+        inJsonl: jsonlSet.has(id),
+        inReport: reportSet.has(id),
+        reportOutcome: reportRow?.outcome,
+        ...(jsonlPatchHash ? { jsonlPatchHash } : {}),
+        ...(storedPatchHash ? { storedPatchHash } : {}),
+        hashConsistent,
+      };
+    });
+
     const consistent = missingFromJsonl.length === 0 &&
       missingFromReport.length === 0 &&
       jsonlDupes.length === 0 &&
       reportDupes.length === 0 &&
       jsonlIds.length === selectedIds.length &&
-      reportIds.length === selectedIds.length;
+      reportIds.length === selectedIds.length &&
+      hashMismatches.length === 0;
 
     const reconciliation: BenchmarkReport['reconciliation'] = {
       selectedCount: selectedIds.length,
@@ -860,6 +982,8 @@ export class BenchmarkLauncher {
       ...(missingFromReport.length > 0 ? { missingFromReport } : {}),
       ...(jsonlDupes.length > 0 ? { duplicatesInJsonl: jsonlDupes } : {}),
       ...(reportDupes.length > 0 ? { duplicatesInReport: reportDupes } : {}),
+      perInstance,
+      ...(hashMismatches.length > 0 ? { hashMismatches } : {}),
     };
 
     if (!consistent) {
@@ -872,8 +996,14 @@ export class BenchmarkLauncher {
         console.error(`  Duplicates in JSONL: ${jsonlDupes.join(', ')}`);
       if (reportDupes.length > 0)
         console.error(`  Duplicates in report: ${reportDupes.join(', ')}`);
+      if (hashMismatches.length > 0)
+        console.error(`  Hash mismatches: ${hashMismatches.join(', ')}`);
     } else {
-      console.log(`[Reconciliation] Artifacts consistent: ${selectedIds.length} selected = ${jsonlIds.length} JSONL = ${reportIds.length} report rows.`);
+      console.log(
+        `[Reconciliation] Artifacts consistent: ${selectedIds.length} selected = ` +
+        `${jsonlIds.length} JSONL = ${reportIds.length} report rows, ` +
+        `${perInstance.filter(p => p.hashConsistent).length}/${perInstance.length} hash checks pass.`
+      );
     }
 
     return reconciliation;

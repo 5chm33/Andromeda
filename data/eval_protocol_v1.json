@@ -1,0 +1,118 @@
+{
+  "_schema": "andromeda-eval-protocol",
+  "_version": "1.0.0",
+  "_created": "2026-08-07T00:00:00Z",
+  "_description": "Versioned evaluation protocol for Andromeda SWE-bench runs. This file must be present and its SHA-256 must be recorded in the run manifest before any model request is dispatched. A run without a matching protocol hash is not a valid capability evaluation.",
+
+  "exposure_registry": {
+    "semantics": "Any instance that has appeared in a prediction file, run bundle, debug session, or manual inspection is permanently excluded from capability evaluation. Once excluded, an instance can never become held-out evidence.",
+    "registry_file": "data/swebench/exclusions.jsonl",
+    "registry_format": "JSONL, one row per excluded instance. Required fields: instance_id, first_seen_run_id, reason, first_seen_commit, first_seen_at.",
+    "enforcement": "The 'no-excluded-tasks' preflight check in BenchmarkLauncher must pass before any image pull or model call. Scored runs without an exclusion registry path are blocked at launch.",
+    "update_policy": "After every run, all selected instance_ids must be appended to the registry before the run bundle is finalized."
+  },
+
+  "label_access": {
+    "who_has_labels": "The official SWE-bench evaluator (run post-hoc). No person or process with access to the agent or prompt may inspect labels before the run completes.",
+    "label_source": "princeton-nlp/SWE-bench (or successor benchmark). Labels are determined by the official evaluator container, not by any internal test runner.",
+    "oracle_prohibition": "Scored runs must use evalMode='scored_strict'. The preflight check rejects SWEBENCH_SEARCH=1 and any other oracle-mode flag."
+  },
+
+  "selection_procedure": {
+    "sampling": "Instances are drawn uniformly at random from the benchmark dataset, filtered against the exclusion registry. The random seed must be recorded in the run manifest.",
+    "minimum_sample_size": 20,
+    "stratification": "No stratification by repository, difficulty, or any other attribute that could bias the sample toward known-solvable instances.",
+    "freeze_before_generation": "The complete selected instance ID list must be written to the task list file and its SHA-256 recorded in the run manifest before the first model request."
+  },
+
+  "frozen_configuration_fields": {
+    "required_in_manifest": [
+      "agentVersion",
+      "agentCommit",
+      "imageRef",
+      "imageDigest",
+      "harnessRevision",
+      "modelId",
+      "promptTemplateHash",
+      "temperature",
+      "topP",
+      "maxRetries",
+      "instanceTimeoutMs",
+      "concurrency",
+      "spendCapUsd",
+      "taskListPath",
+      "taskListHash",
+      "instanceIdHash",
+      "exclusionRegistryPath",
+      "exclusionRegistryHash",
+      "selectedIdsHash",
+      "scoredRun",
+      "externalSearch",
+      "datasetName",
+      "datasetRevision",
+      "datasetSplit",
+      "evalProtocolPath",
+      "evalProtocolHash"
+    ],
+    "freeze_semantics": "All fields must be set before the first model request. Any change to these fields after the run starts invalidates the run as a capability evaluation."
+  },
+
+  "stop_and_spend_rules": {
+    "per_instance_timeout_ms": 1500000,
+    "per_run_spend_cap_usd": 100,
+    "canary_abort_threshold": 0.6,
+    "canary_slice_size": 5,
+    "abort_on_exclusion_violation": true,
+    "abort_on_preflight_failure": true
+  },
+
+  "official_scoring_command": {
+    "command": "python3 -m swebench.harness.run_evaluation --predictions_path <jsonl_path> --swe_bench_tasks princeton-nlp/SWE-bench --split test --log_dir logs/run_evaluation/<run_id>",
+    "evaluator_version": "swebench>=2.1.0",
+    "note": "The evaluator must be run on the same JSONL file that was produced by the runner. The JSONL must not be modified after the run completes."
+  },
+
+  "primary_metric": {
+    "name": "end_to_end_resolution_rate",
+    "formula": "resolved_instances / selected_instances",
+    "denominator": "All selected instances, including exact-apply failures, infra failures, and timeouts.",
+    "secondary_metrics": [
+      "submitted_patch_resolution_rate = resolved / submitted",
+      "exact_apply_failure_rate = exact_apply_failures / selected",
+      "infrastructure_failure_rate = infra_failures / selected",
+      "evaluator_apply_error_rate = evaluator_apply_errors / submitted",
+      "cost_per_selected_instance_usd = total_cost / selected"
+    ]
+  },
+
+  "publication_bundle": {
+    "required_artifacts": [
+      "run_bundle_<timestamp>.json (frozen manifest)",
+      "run_bundle_<timestamp>-report.json (internal benchmark report with reconciliation)",
+      "predictions_<run_id>.jsonl (prediction file with _patch_sha256 fields)",
+      "evaluator_report_<run_id>.json (official evaluator output)",
+      "data/swebench/exclusions.jsonl (exclusion registry at run time)",
+      "eval_protocol_v1.json (this file)",
+      "evaluation_card.md (human-readable summary with all required fields)"
+    ],
+    "evaluation_card_required_fields": [
+      "benchmark name and version",
+      "evaluation date",
+      "agent version and commit",
+      "model name and version",
+      "selected instance count",
+      "exclusion registry size and hash",
+      "primary metric (resolved / selected)",
+      "all secondary metrics",
+      "known limitations",
+      "artifacts SHA-256 hashes"
+    ]
+  },
+
+  "launch_gate": {
+    "description": "The run launcher must verify this protocol file exists and record its SHA-256 in the run manifest before dispatching any workers. If the protocol file is absent or its hash does not match the manifest, the run is blocked.",
+    "env_var": "SWEBENCH_EVAL_PROTOCOL",
+    "preflight_check_id": "eval-protocol-present",
+    "blocks_launch": true
+  }
+}
