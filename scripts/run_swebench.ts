@@ -1340,15 +1340,39 @@ Output ONLY a unified diff with REAL line numbers:
                 child.stdin!.write(initialPatch);
                 child.stdin!.end();
               });
-              // Run git apply --check
+              // Run two-stage preflight matching the official evaluator's application sequence:
+              //   Stage 1: git apply --check (strict, no fuzzy matching)
+              //   Stage 2: patch --dry-run --batch --fuzz=5 -p1 (evaluator-equivalent fallback)
+              // A patch is accepted if either stage succeeds, matching the evaluator's
+              // three-command sequence (git apply --verbose, git apply --reject, patch --fuzz=5).
+              // This eliminates false rejections where the runner rejects a patch that the
+              // evaluator would apply via patch --fuzz=5.
               const checkResult = spawnSync('docker', [
                 'exec', checkContainerName,
                 'sh', '-c', 'cd /testbed && git apply --check /tmp/check.diff 2>&1',
               ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
 
-              if (checkResult.status !== 0) {
-                const diagnostic = (checkResult.stdout || checkResult.stderr || '').slice(0, 600);
-                console.warn(`[Runner] Phase 1e: git apply --check failed — making one format-only repair turn`);
+              let preflightPassed = checkResult.status === 0;
+              let preflightDiagnostic = (checkResult.stdout || checkResult.stderr || '').slice(0, 600);
+
+              if (!preflightPassed) {
+                // Stage 2: try patch --dry-run --batch --fuzz=5 (evaluator-equivalent)
+                const fuzzResult = spawnSync('docker', [
+                  'exec', checkContainerName,
+                  'sh', '-c', 'cd /testbed && patch --dry-run --batch --fuzz=5 -p1 -i /tmp/check.diff 2>&1',
+                ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
+                if (fuzzResult.status === 0) {
+                  preflightPassed = true;
+                  console.log('[Runner] Phase 1e: git apply --check failed but patch --dry-run --fuzz=5 succeeded — patch accepted (evaluator-equivalent)');
+                } else {
+                  const fuzzDiag = (fuzzResult.stdout || fuzzResult.stderr || '').slice(0, 300);
+                  preflightDiagnostic = `git apply --check: ${preflightDiagnostic.slice(0, 300)} | patch --fuzz=5 dry-run: ${fuzzDiag.slice(0, 200)}`;
+                }
+              }
+
+              if (!preflightPassed) {
+                const diagnostic = preflightDiagnostic;
+                console.warn(`[Runner] Phase 1e: Both preflight stages failed — making one format-only repair turn`);
                 console.warn(`[Runner] Phase 1e: Diagnostic: ${diagnostic.slice(0, 200)}`);
                 // ONE format-only repair turn: only the diagnostic, no evaluator artifacts
                 const repairPrompt = `You are a Python engineer fixing a unified diff patch format error.
@@ -1381,20 +1405,34 @@ Output ONLY the corrected unified diff:
                       child2.stdin!.write(repairedPatch);
                       child2.stdin!.end();
                     });
+                    // Two-stage recheck: same policy as initial preflight
                     const recheck = spawnSync('docker', [
                       'exec', checkContainerName,
                       'sh', '-c', 'cd /testbed && git apply --check /tmp/check2.diff 2>&1',
                     ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
-                    if (recheck.status === 0) {
+                    let recheckPassed = recheck.status === 0;
+                    let recheckDiag = (recheck.stdout || recheck.stderr || '').slice(0, 300);
+                    if (!recheckPassed) {
+                      const fuzzRecheck = spawnSync('docker', [
+                        'exec', checkContainerName,
+                        'sh', '-c', 'cd /testbed && patch --dry-run --batch --fuzz=5 -p1 -i /tmp/check2.diff 2>&1',
+                      ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
+                      if (fuzzRecheck.status === 0) {
+                        recheckPassed = true;
+                        console.log('[Runner] Phase 1e: Repaired patch accepted via patch --dry-run --fuzz=5 (evaluator-equivalent)');
+                      } else {
+                        recheckDiag = `git apply --check: ${recheckDiag} | patch --fuzz=5: ${(fuzzRecheck.stdout || fuzzRecheck.stderr || '').slice(0, 200)}`;
+                      }
+                    }
+                    if (recheckPassed) {
                       initialPatch = repairedPatch;
                       repairSucceeded = true;
-                      console.log('[Runner] Phase 1e: Format repair succeeded — patch now passes git apply --check');
+                      console.log('[Runner] Phase 1e: Format repair succeeded — patch now passes preflight');
                     } else {
-                      const recheckDiag = (recheck.stdout || recheck.stderr || '').slice(0, 300);
                       console.warn(`[Runner] Phase 1e: Format repair did not fix the issue. Recheck: ${recheckDiag.slice(0, 100)}`);
                       if (isScoredRun) {
                         throw new PreflightApplyError(
-                          `Phase 1e: patch failed git apply --check after one repair attempt`,
+                          `Phase 1e: patch failed both preflight stages after one repair attempt`,
                           patchHashForPreflight,
                           `Original: ${diagnostic.slice(0, 200)} | After repair: ${recheckDiag.slice(0, 200)}`,
                         );

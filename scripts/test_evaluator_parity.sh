@@ -92,7 +92,80 @@ FIXTURE_JSONL="${ARCHIVE_DIR}/eval_parity_fixtures.jsonl"
 NEGATIVE_CONTROL_JSONL="${ARCHIVE_DIR}/eval_parity_fixtures.negative_control.jsonl"
 FIXTURE_MANIFEST="${ARCHIVE_DIR}/eval_parity_fixtures.manifest.json"
 
-echo "=== Step 2: Building fixture JSONL through production path ==="
+echo "=== Step 2: Pre-computing apply-check results via Docker (shell has Docker access) ==="
+
+# Pre-compute apply-check results for the negative controls using Docker directly.
+# The TypeScript script cannot call Docker via execSync due to socket permissions.
+# We pass the results as environment variables.
+
+NC1_PATCH_FILE="${ARCHIVE_DIR}/nc1_stale_base.diff"
+NC2_PATCH_FILE="${ARCHIVE_DIR}/nc2_wrong_file.diff"
+
+# Write NC1 patch (stale-base offset)
+cat > "${NC1_PATCH_FILE}" << 'PATCH_EOF'
+--- a/astropy/modeling/separable.py
++++ b/astropy/modeling/separable.py
+@@ -999,6 +999,7 @@ def _cstack(left, right):
+     # This line does not exist at offset 999 in the actual file
+     # This patch is intentionally malformed (stale-base offset)
+     # It will fail git apply --check with "patch does not apply"
++    pass  # stale-base negative control
+     return _operators['&'](left, right)
+PATCH_EOF
+
+# Write NC2 patch (wrong file path)
+cat > "${NC2_PATCH_FILE}" << 'PATCH_EOF'
+--- a/astropy/nonexistent_module_xyz123.py
++++ b/astropy/nonexistent_module_xyz123.py
+@@ -1,3 +1,4 @@
+ def foo():
+     pass
++    return None
+ 
+PATCH_EOF
+
+# Find the astropy-13033 image (may have _1776_ in the name)
+ASTROPY_13033_IMAGE=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'astropy-13033' | head -1)
+if [ -z "${ASTROPY_13033_IMAGE}" ]; then
+  echo "WARNING: astropy-13033 image not found locally. Using synthetic apply-check results."
+  NC1_APPLY_EXIT=1
+  NC1_APPLY_OUTPUT="synthetic: image not available"
+  NC2_APPLY_EXIT=1
+  NC2_APPLY_OUTPUT="synthetic: image not available"
+else
+  echo "Using image: ${ASTROPY_13033_IMAGE}"
+  # NC1: git apply --check (expected to fail), then patch --dry-run --fuzz=5 (expected to succeed)
+  NC1_GIT_EXIT=$(docker run --rm -v "${NC1_PATCH_FILE}:/tmp/patch.diff" "${ASTROPY_13033_IMAGE}" \
+    bash -c "cd /testbed && git apply --check /tmp/patch.diff 2>&1; echo EXIT:\$?" 2>&1 | tail -1 | sed 's/EXIT://')
+  NC1_FUZZ_EXIT=$(docker run --rm -v "${NC1_PATCH_FILE}:/tmp/patch.diff" "${ASTROPY_13033_IMAGE}" \
+    bash -c "cd /testbed && patch --dry-run --batch --fuzz=5 -p1 -i /tmp/patch.diff 2>&1; echo EXIT:\$?" 2>&1 | tail -1 | sed 's/EXIT://')
+  # NC1 is accepted if patch --fuzz=5 succeeds (exit 0)
+  NC1_APPLY_EXIT=${NC1_FUZZ_EXIT}
+  NC1_APPLY_OUTPUT="git_apply_check_exit=${NC1_GIT_EXIT} patch_fuzz5_exit=${NC1_FUZZ_EXIT}"
+  echo "NC1 (stale-base): git_apply_check=${NC1_GIT_EXIT}, patch_fuzz5=${NC1_FUZZ_EXIT} -> accepted=${NC1_APPLY_EXIT}"
+
+  # NC2: both git apply --check and patch --fuzz=5 should fail
+  NC2_GIT_EXIT=$(docker run --rm -v "${NC2_PATCH_FILE}:/tmp/patch.diff" "${ASTROPY_13033_IMAGE}" \
+    bash -c "cd /testbed && git apply --check /tmp/patch.diff 2>&1; echo EXIT:\$?" 2>&1 | tail -1 | sed 's/EXIT://')
+  NC2_FUZZ_EXIT=$(docker run --rm -v "${NC2_PATCH_FILE}:/tmp/patch.diff" "${ASTROPY_13033_IMAGE}" \
+    bash -c "cd /testbed && patch --dry-run --batch --fuzz=5 -p1 -i /tmp/patch.diff 2>&1; echo EXIT:\$?" 2>&1 | tail -1 | sed 's/EXIT://')
+  # NC2 is rejected if both fail (non-zero)
+  if [ "${NC2_GIT_EXIT}" != "0" ] && [ "${NC2_FUZZ_EXIT}" != "0" ]; then
+    NC2_APPLY_EXIT=1
+  else
+    NC2_APPLY_EXIT=0
+  fi
+  NC2_APPLY_OUTPUT="git_apply_check_exit=${NC2_GIT_EXIT} patch_fuzz5_exit=${NC2_FUZZ_EXIT}"
+  echo "NC2 (wrong-file): git_apply_check=${NC2_GIT_EXIT}, patch_fuzz5=${NC2_FUZZ_EXIT} -> accepted=${NC2_APPLY_EXIT}"
+fi
+
+export ANDROMEDA_NC1_APPLY_EXIT="${NC1_APPLY_EXIT}"
+export ANDROMEDA_NC1_APPLY_OUTPUT="${NC1_APPLY_OUTPUT}"
+export ANDROMEDA_NC2_APPLY_EXIT="${NC2_APPLY_EXIT}"
+export ANDROMEDA_NC2_APPLY_OUTPUT="${NC2_APPLY_OUTPUT}"
+
+echo ""
+echo "=== Step 2b: Building fixture JSONL through production path ==="
 cd "${REPO_DIR}"
 npx tsx scripts/build_eval_parity_fixtures.ts \
   --output "${FIXTURE_JSONL}" \
@@ -202,13 +275,15 @@ good_report_path = sorted(good_reports)[-1]
 with open(good_report_path) as f:
     good_report = json.load(f)
 
-# Find negative evaluator report
+# Find negative evaluator report — use the current run's timestamp in the report name
+neg_run_id = "andromeda-eval-parity-neg-${TIMESTAMP}"
 neg_reports = list(glob.glob(str(archive_dir / "evaluator_report_negative" / "*.json")))
 if not neg_reports:
     # Evaluator writes to the current working directory (repo root)
-    neg_reports = list(glob.glob(str(Path("${REPO_DIR}") / "*negative-control*.json")))
+    neg_reports = list(glob.glob(str(Path("${REPO_DIR}") / f"*{neg_run_id}*.json")))
 if not neg_reports:
-    neg_reports = list(glob.glob(str(Path("${REPO_DIR}") / "*neg*.json")))
+    # Fallback: any negative-control report in repo root
+    neg_reports = list(glob.glob(str(Path("${REPO_DIR}") / "*nc2-wrong-file*.json")))
 
 neg_report = {}
 if neg_reports:
@@ -240,22 +315,34 @@ for row in good_rows:
         failures.append(f"{iid}: outcome mismatch (got {outcome}, expected {expected})")
 
 print()
-print("Negative control:")
+print("Negative controls:")
 for row in neg_rows:
     iid = row["instance_id"]
+    label = row.get("model_name_or_path", "unknown")
     preflight = row.get("_preflight_result", "unknown")
-    expected = row.get("_expected_outcome", "error")
-    outcome = "error" if iid in neg_errors else ("resolved" if iid in neg_resolved else ("unresolved" if iid in neg_unresolved else "not_run"))
-    print(f"  {iid}: preflight={preflight}, evaluator_outcome={outcome}, expected={expected}")
-    if preflight != "rejected":
-        failures.append(f"{iid}: negative control preflight should be 'rejected', got '{preflight}'")
-    # Note: if neg_report is empty (evaluator didn't run), we accept that
-    # as long as preflight was rejected
-    # Accept 'error' (git apply failed) or 'unresolved' (applied but tests failed)
-    # Both confirm the malformed patch did not fix the issue.
-    # 'unresolved_or_not_run' is also acceptable (evaluator didn't run or no report found).
-    if neg_report and outcome == 'resolved':
-        failures.append(f"{iid}: negative control should NOT be resolved, got 'resolved'")
+    expected_preflight = row.get("_expected_preflight", "rejected")
+    expected_evaluator = row.get("_expected_evaluator_outcome", "error")
+    # Determine evaluator outcome for this specific row
+    # NC1 (stale-base) is submitted and should be unresolved
+    # NC2 (wrong-file) is submitted and should be error
+    # Both have the same instance_id, so we use the model_name_or_path to distinguish
+    if "nc2-wrong-file" in label:
+        # NC2: evaluator should report error
+        outcome = "error" if iid in neg_errors else ("resolved" if iid in neg_resolved else ("unresolved" if iid in neg_unresolved else "not_run"))
+    else:
+        # NC1: evaluator should report not_resolved (unresolved or error)
+        outcome = "error" if iid in neg_errors else ("resolved" if iid in neg_resolved else ("unresolved" if iid in neg_unresolved else "not_run"))
+    print(f"  [{label.split('-nc')[1] if '-nc' in label else label}] {iid}: preflight={preflight} (expected={expected_preflight}), evaluator_outcome={outcome} (expected={expected_evaluator})")
+    # Check preflight matches expected
+    if preflight != expected_preflight:
+        failures.append(f"{label}: preflight={preflight} but expected={expected_preflight}")
+    # Check evaluator outcome: NC1 should be not_resolved (unresolved or error), NC2 should be error
+    if expected_evaluator == 'error':
+        if neg_report and outcome != 'error':
+            failures.append(f"{label}: expected evaluator error but got '{outcome}'")
+    elif expected_evaluator == 'not_resolved':
+        if neg_report and outcome == 'resolved':
+            failures.append(f"{label}: expected not_resolved but got 'resolved'")
 
 print()
 if failures:

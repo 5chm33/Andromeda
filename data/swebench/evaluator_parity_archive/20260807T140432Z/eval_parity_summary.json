@@ -1,0 +1,16 @@
+{
+  "run_timestamp": "20260807T140432Z",
+  "production_path": "buildCanonicalPatch \u2192 verifyCanonicalPatch \u2192 serializeCanonicalPatch",
+  "fixture_jsonl_sha256": "ce077ff881bd560bfd62a0b950a25302299ba9252587d43c58234fc745fdf0a4",
+  "negative_control_jsonl_sha256": "78fb049c7c41b372b186b563ea1b766530d80f6b55d84da4d993dd2588d1210a",
+  "good_report": "/home/ubuntu/andromeda/andromeda-eval-parity-v5.25.andromeda-eval-parity-20260807T140432Z.json",
+  "good_report_sha256": "eb2f14fadbb5a607463f2e6cf79561e2886299b6b4bc1555e7c864f28d6ed8cc",
+  "instances_submitted_good": 3,
+  "instances_resolved": 3,
+  "instances_errors_good": 0,
+  "negative_control_preflight": "rejected",
+  "negative_control_evaluator_outcome": "error",
+  "all_hash_chains_valid": true,
+  "all_outcomes_match_expected": true,
+  "conclusion": "PASS"
+}
