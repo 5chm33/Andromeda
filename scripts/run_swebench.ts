@@ -1342,15 +1342,14 @@ Output ONLY a unified diff with REAL line numbers:
                 child.stdin!.write(initialPatch);
                 child.stdin!.end();
               });
-              // v5.28: Evaluator-exact three-command sequence on a writable disposable checkout.
+              // v5.29: Evaluator-exact stop-at-first-success control flow.
               // Mirrors the official SWE-bench evaluator (swebench/harness/run_evaluation.py):
-              //   CMD1: git apply --verbose
-              //   CMD2: git apply --verbose --reject  (stateful: applies hunk 1, writes .rej for hunk 2)
-              //   CMD3: patch --batch --fuzz=5 -p1    (stateful: runs on worktree modified by CMD2)
-              // After all three commands, inspect git diff --stat to verify actual changes.
-              // Accept if and only if: git diff shows non-empty changes.
-              // This correctly handles the partial multi-hunk case where CMD2 partially applies
-              // and CMD3 reverses the partial application (net result: empty worktree → reject).
+              //   CMD1: git apply --verbose  → if exit 0, ACCEPT and stop
+              //   CMD2: git apply --verbose --reject  → if exit 0, ACCEPT and stop
+              //   CMD3: patch --batch --fuzz=5 -p1  → if exit 0, ACCEPT and stop
+              //   otherwise: REJECT
+              // The evaluator does NOT require a non-empty git diff after the accepted command.
+              // Preserve command outputs and the first-successful-command label as diagnostics.
               const cmd1Result = spawnSync('docker', [
                 'exec', checkContainerName,
                 'sh', '-c', 'cd /testbed && git apply --verbose /tmp/check.diff 2>&1',
@@ -1360,6 +1359,10 @@ Output ONLY a unified diff with REAL line numbers:
 
               let cmd2Output = '';
               let cmd2Exit = -1;
+              let cmd3Output = '';
+              let cmd3Exit = -1;
+              let firstSuccessCmd = cmd1Exit === 0 ? 'CMD1' : '';
+
               if (cmd1Exit !== 0) {
                 // CMD1 failed — try CMD2 (git apply --reject)
                 const cmd2Result = spawnSync('docker', [
@@ -1368,37 +1371,35 @@ Output ONLY a unified diff with REAL line numbers:
                 ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
                 cmd2Output = (cmd2Result.stdout || cmd2Result.stderr || '').slice(0, 400);
                 cmd2Exit = cmd2Result.status ?? -1;
+                if (cmd2Exit === 0) {
+                  firstSuccessCmd = 'CMD2';
+                } else {
+                  // CMD2 failed — try CMD3 (patch --fuzz=5)
+                  const cmd3Result = spawnSync('docker', [
+                    'exec', checkContainerName,
+                    'sh', '-c', 'cd /testbed && patch --batch --fuzz=5 -p1 -i /tmp/check.diff 2>&1',
+                  ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
+                  cmd3Output = (cmd3Result.stdout || cmd3Result.stderr || '').slice(0, 400);
+                  cmd3Exit = cmd3Result.status ?? -1;
+                  if (cmd3Exit === 0) {
+                    firstSuccessCmd = 'CMD3';
+                  }
+                }
               }
 
-              // CMD3: always run patch --fuzz=5 on the current worktree state
-              // (may be pristine if CMD1/CMD2 applied nothing, or partially modified by CMD2)
-              const cmd3Result = spawnSync('docker', [
-                'exec', checkContainerName,
-                'sh', '-c', 'cd /testbed && patch --batch --fuzz=5 -p1 -i /tmp/check.diff 2>&1',
-              ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
-              const cmd3Output = (cmd3Result.stdout || cmd3Result.stderr || '').slice(0, 400);
-              const cmd3Exit = cmd3Result.status ?? -1;
-
-              // Inspect the final worktree state — the definitive acceptance criterion
-              const diffStatResult = spawnSync('docker', [
-                'exec', checkContainerName,
-                'sh', '-c', 'cd /testbed && git diff --stat',
-              ], { encoding: 'utf-8', stdio: 'pipe', timeout: 10_000 });
-              const diffStatOutput = (diffStatResult.stdout || '').trim();
-              const worktreeHasChanges = diffStatOutput.length > 0;
-
-              let preflightPassed = worktreeHasChanges;
+              // Acceptance criterion: any command returned exit 0 (evaluator-exact)
+              let preflightPassed = firstSuccessCmd !== '';
               let preflightDiagnostic = [
                 `CMD1(git apply): exit=${cmd1Exit} ${cmd1Output.slice(0, 80)}`,
                 cmd1Exit !== 0 ? `CMD2(git apply --reject): exit=${cmd2Exit} ${cmd2Output.slice(0, 80)}` : '',
-                `CMD3(patch --fuzz=5): exit=${cmd3Exit} ${cmd3Output.slice(0, 80)}`,
-                `worktree_changes=${worktreeHasChanges ? diffStatOutput.slice(0, 100) : 'NONE'}`,
+                (cmd1Exit !== 0 && cmd2Exit !== 0) ? `CMD3(patch --fuzz=5): exit=${cmd3Exit} ${cmd3Output.slice(0, 80)}` : '',
+                preflightPassed ? `first_success=${firstSuccessCmd}` : 'all_commands_failed',
               ].filter(Boolean).join(' | ');
 
               if (preflightPassed) {
-                console.log(`[Runner] Phase 1e: Evaluator-sequence preflight passed — worktree has changes: ${diffStatOutput.slice(0, 80)}`);
+                console.log(`[Runner] Phase 1e: Evaluator-sequence preflight passed — first success: ${firstSuccessCmd}`);
               } else {
-                console.warn(`[Runner] Phase 1e: Evaluator-sequence preflight failed — worktree empty after all three commands`);
+                console.warn(`[Runner] Phase 1e: Evaluator-sequence preflight failed — all three commands returned non-zero`);
                 console.warn(`[Runner] Phase 1e: Diagnostic: ${preflightDiagnostic.slice(0, 300)}`);
               }
 
@@ -1437,7 +1438,7 @@ Output ONLY the corrected unified diff:
                       child2.stdin!.write(repairedPatch);
                       child2.stdin!.end();
                     });
-                    // Recheck: run the full evaluator sequence on the repaired patch
+                    // Recheck: stop-at-first-exit-0 on the repaired patch (evaluator-exact)
                     // First reset the worktree (CMD2 may have partially applied the original patch)
                     spawnSync('docker', [
                       'exec', checkContainerName,
@@ -1447,25 +1448,28 @@ Output ONLY the corrected unified diff:
                       'exec', checkContainerName,
                       'sh', '-c', 'cd /testbed && git apply --verbose /tmp/check2.diff 2>&1',
                     ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
-                    if (recheck1.status !== 0) {
-                      spawnSync('docker', [
+                    let recheckFirstSuccess = recheck1.status === 0 ? 'CMD1' : '';
+                    if (recheckFirstSuccess === '') {
+                      const recheck2 = spawnSync('docker', [
                         'exec', checkContainerName,
                         'sh', '-c', 'cd /testbed && git apply --verbose --reject /tmp/check2.diff 2>&1',
                       ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
+                      if (recheck2.status === 0) {
+                        recheckFirstSuccess = 'CMD2';
+                      } else {
+                        const recheck3 = spawnSync('docker', [
+                          'exec', checkContainerName,
+                          'sh', '-c', 'cd /testbed && patch --batch --fuzz=5 -p1 -i /tmp/check2.diff 2>&1',
+                        ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
+                        if (recheck3.status === 0) {
+                          recheckFirstSuccess = 'CMD3';
+                        }
+                      }
                     }
-                    spawnSync('docker', [
-                      'exec', checkContainerName,
-                      'sh', '-c', 'cd /testbed && patch --batch --fuzz=5 -p1 -i /tmp/check2.diff 2>&1',
-                    ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
-                    const recheckDiffStat = spawnSync('docker', [
-                      'exec', checkContainerName,
-                      'sh', '-c', 'cd /testbed && git diff --stat',
-                    ], { encoding: 'utf-8', stdio: 'pipe', timeout: 10_000 });
-                    const recheckHasChanges = (recheckDiffStat.stdout || '').trim().length > 0;
-                    let recheckPassed = recheckHasChanges;
-                    let recheckDiag = recheckHasChanges
-                      ? `worktree_changes=${(recheckDiffStat.stdout || '').trim().slice(0, 100)}`
-                      : 'worktree empty after evaluator sequence on repaired patch';
+                    const recheckPassed = recheckFirstSuccess !== '';
+                    const recheckDiag = recheckPassed
+                      ? `first_success=${recheckFirstSuccess}`
+                      : 'all_commands_failed on repaired patch';
                     if (recheckPassed) {
                       initialPatch = repairedPatch;
                       repairSucceeded = true;

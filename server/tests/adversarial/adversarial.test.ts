@@ -313,11 +313,15 @@ describe("Adversarial: Poisoned evaluation artifacts", () => {
 
 // ─── 7. Promotion Gate Bypass Attempts ───────────────────────────────────────
 describe("Adversarial: Promotion gate bypass attempts", () => {
+  // Cache the import to avoid repeated slow dynamic imports
+  let promotionMod: Awaited<ReturnType<typeof import("../../packages/policy-promotion/index.js")>> | null = null;
   async function getPromotion() {
-    return await import("../../packages/policy-promotion/index.js").catch(() => null);
+    if (promotionMod !== undefined) return promotionMod;
+    promotionMod = await import("../../packages/policy-promotion/index.js").catch(() => null) as typeof promotionMod;
+    return promotionMod;
   }
 
-  it("rejects a bundle with failed patch application", async () => {
+  it("rejects a bundle with failed patch application", { timeout: 60000 }, async () => {
     const mod = await getPromotion();
     if (!mod?.buildEvidenceBundle || !mod?.canPromote) return;
     const bundle = mod.buildEvidenceBundle({

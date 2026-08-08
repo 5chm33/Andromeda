@@ -163,30 +163,29 @@ const WRONG_FILE_NEGATIVE_CONTROL = {
 };
 
 /**
- * Negative control 3: Partial multi-hunk patch (CMD2 stateful behavior).
+ * Negative control 3: Partial multi-hunk patch.
  *
- * Differential matrix cell: runner-rejected (v5.28) / evaluator-unresolved.
- * - CMD1 (git apply --verbose):          EXIT:0, worktree EMPTY (git apply bug: exits 0 on error)
- * - CMD2 (git apply --verbose --reject): EXIT:0, worktree EMPTY (same)
- * - CMD3 (patch --batch --fuzz=5 -p1):   EXIT:0, "Hunk #1 succeeded at 353" but worktree EMPTY
- *   (patch applies hunk 1 but rolls back on malformed hunk 2 header)
- * - Final worktree: EMPTY (no changes)
- * - v5.28 preflight: REJECTED (worktree empty after all three commands)
- * - v5.26 preflight: would have ACCEPTED (CMD3 exit 0)
- * - Evaluator outcome: unresolved (evaluator runs same sequence, tests fail on unmodified code)
+ * Differential matrix cell: runner-rejected (v5.29) / evaluator-error.
+ * Live exit output on astropy_1776_astropy-13453 image (Aug 8 2026):
+ * - CMD1 (git apply --verbose):          EXIT:128 — "error: corrupt patch at line 20"
+ * - CMD2 (git apply --verbose --reject): EXIT:128 — same
+ * - CMD3 (patch --batch --fuzz=5 -p1):   EXIT:2   — "Hunk #1 succeeded at 353 (offset 1 line).
+ *                                                   patch: **** malformed patch at line 19"
+ * - v5.29 stop-at-first-exit-0: REJECTED (all three commands return non-zero)
+ * - Evaluator outcome: error (all three evaluator commands fail)
  *
- * This fixture proves the v5.28 improvement: the worktree-inspection criterion
- * correctly rejects a patch that all three commands accept (exit 0) but that
- * produces no actual changes. The old dry-run approach would have accepted it.
+ * Note: CMD3 applies hunk 1 before failing on hunk 2, but exits 2 (non-zero),
+ * so v5.29 correctly rejects it. The evaluator also records it as an error.
+ * This is the same matrix cell as NC2 (rejected → evaluator-error).
  */
 const PARTIAL_MULTIHUNK_NEGATIVE_CONTROL = {
   instanceId: 'astropy__astropy-13453',
-  baseCommit: 'unknown',  // not in canary v6 predictions
+  baseCommit: '19cc80471739',  // from canary v6 predictions
   imageDigest: 'local:swebench/sweb.eval.x86_64.astropy_1776_astropy-13453:latest',
-  rawPatch: '--- a/astropy/io/ascii/html.py\n+++ b/astropy/io/ascii/html.py\n@@ -352,6 +352,9 @@ class HTML(core.BaseReader):\n         if isinstance(self.data.fill_values, tuple):\n             self.data.fill_values = [self.data.fill_values]\n\n+        self.data.cols = cols\n+        self.data._set_col_formats()\n+\n         self.data._set_fill_values(cols)\n\n         lines = []\n@@ -999,4 +1002,5 @@ class HTML(core.BaseReader):\n     # This context line does not exist at line 999\n     # NC3 hunk2: wrong context to force partial apply\n-    pass  # WRONG_CONTEXT_NC3\n+    pass  # WRONG_CONTEXT_NC3_modified\n     return None\n',
-  expectedPreflightResult: 'rejected' as const,  // v5.28: worktree empty after all three commands
-  expectedEvaluatorOutcome: 'not_resolved' as const,  // evaluator runs same sequence, tests fail
-  note: 'Partial multi-hunk: hunk 1 is the real resolved patch for astropy-13453; hunk 2 has wrong context (line 999 does not exist). All three evaluator commands exit 0 but the worktree is empty after CMD3 (patch rolls back hunk 1 on malformed hunk 2). v5.28 preflight correctly rejects (worktree empty). v5.26 two-stage dry-run would have accepted (CMD3 exit 0).',
+  rawPatch: '--- a/astropy/io/ascii/html.py\n+++ b/astropy/io/ascii/html.py\n@@ -352,6 +352,9 @@ class HTML(core.BaseReader):\n         if isinstance(self.data.fill_values, tuple):\n             self.data.fill_values = [self.data.fill_values]\n \n+        self.data.cols = cols\n+        self.data._set_col_formats()\n+\n         self.data._set_fill_values(cols)\n \n         lines = []\n@@ -999,4 +1002,5 @@ class HTML(core.BaseReader):\n     # This context line does not exist at line 999\n     # NC3 hunk2: wrong context to force partial apply\n-    pass  # WRONG_CONTEXT_NC3\n+    pass  # WRONG_CONTEXT_NC3_modified\n     return None\n',
+  expectedPreflightResult: 'rejected' as const,  // v5.29: all three commands return non-zero
+  expectedEvaluatorOutcome: 'error' as const,     // evaluator: all three commands fail
+  note: 'Partial multi-hunk: hunk 1 is the real resolved patch for astropy-13453; hunk 2 has wrong context (line 999 does not exist). CMD1/CMD2 exit 128; CMD3 exits 2 (malformed patch). v5.29 stop-at-first-exit-0 correctly rejects (no command returned 0). Evaluator records as error.',
 };
 
 // Keep backward-compat alias for the single negative control

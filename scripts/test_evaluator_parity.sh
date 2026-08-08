@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# test_evaluator_parity.sh — Live evaluator-parity test for Andromeda v5.28+
+# test_evaluator_parity.sh — Live evaluator-parity test for Andromeda v5.29+
 #
 # PURPOSE: Prove that the production CanonicalPatch → serializer path emits bytes
 # that the official SWE-bench evaluator applies and scores correctly.
@@ -8,25 +8,26 @@
 #   - Known-good fixtures: 3 resolved patches from canary v6 (astropy-12907,
 #     astropy-13453, astropy-13579). Expected: evaluator resolves all 3.
 #   - NC1 (stale-base, astropy-14182): stale-base offset patch. CMD1+CMD2 fail;
-#     CMD3 (patch --fuzz=5) succeeds. Runner ACCEPTS (v5.28 worktree-inspection).
+#     CMD3 (patch --fuzz=5) exits 0. v5.29 stop-at-first-exit-0: ACCEPTED.
 #     Expected evaluator outcome: unresolved (applied but tests fail).
 #   - NC2 (wrong-file, astropy-13033): nonexistent file path. All commands fail.
-#     Runner REJECTS. Expected evaluator outcome: error.
+#     v5.29 stop-at-first-exit-0: REJECTED. Expected evaluator outcome: error.
 #   - NC3 (partial-multihunk, astropy-13453): hunk 1 is the real resolved patch;
-#     hunk 2 has wrong context. All three evaluator commands exit 0 but the
-#     worktree is EMPTY after CMD3 (patch rolls back hunk 1 on malformed hunk 2).
-#     Runner REJECTS (v5.28 worktree-inspection: empty worktree = rejected).
-#     v5.26 two-stage dry-run would have ACCEPTED (CMD3 exit 0).
-#     Expected evaluator outcome: unresolved (evaluator runs same sequence, tests fail).
+#     hunk 2 has wrong context. CMD1=128, CMD2=128, CMD3=2 (all non-zero).
+#     v5.29 stop-at-first-exit-0: REJECTED. Expected evaluator outcome: error.
 #
 # NC1, NC2, NC3 use DISTINCT instance IDs so each gets its own evaluator invocation.
 #
-# FIVE-CELL DIFFERENTIAL MATRIX (v5.28):
+# FIVE-CELL DIFFERENTIAL MATRIX (v5.29):
 #   accepted → evaluator-resolved:   3/3 known-good (positive path)
-#   accepted → evaluator-unresolved: 1/1 NC1 (stale-base accepted by patch --fuzz=5)
-#   rejected → evaluator-error:      1/1 NC2 (wrong file, all commands fail)
-#   rejected → evaluator-unresolved: 1/1 NC3 (partial multi-hunk, worktree empty)
+#   accepted → evaluator-unresolved: 1/1 NC1 (stale-base; CMD3 exit 0)
+#   rejected → evaluator-error:      2/2 NC2+NC3 (all commands fail)
 #   accepted → evaluator-error:      0 (expected zero; canary v6 confirmed)
+#   rejected → evaluator-applied:    0 (expected zero; stop-at-first-exit-0)
+#
+# v5.29 CHANGE FROM v5.28: Replaced worktree-inspection criterion with the
+# evaluator's exact stop-at-first-exit-0 control flow. NC3 CMD3 exits 2 (not 0),
+# so v5.29 correctly rejects it (same decision as v5.28, different criterion).
 #
 # USAGE: bash scripts/test_evaluator_parity.sh
 # PREREQUISITES: Docker, python3 -m swebench.harness.run_evaluation, npx tsx
@@ -39,7 +40,7 @@ TIMESTAMP=$(date -u +%Y%m%dT%H%M%SZ)
 ARCHIVE_DIR="${REPO_DIR}/data/swebench/evaluator_parity_archive/${TIMESTAMP}"
 mkdir -p "${ARCHIVE_DIR}"
 
-echo "=== Andromeda Evaluator Parity Test ==="
+echo "=== Andromeda Evaluator Parity Test (v5.29) ==="
 echo "Timestamp: ${TIMESTAMP}"
 echo "Archive:   ${ARCHIVE_DIR}"
 echo ""
@@ -68,13 +69,14 @@ echo ""
 
 # ── Step 2: Pre-compute apply-check results via Docker ────────────────────────
 # The TypeScript script cannot call Docker via execSync (socket permissions).
-# We run all three evaluator commands here in the shell and pass results as env vars.
+# We run the evaluator's stop-at-first-exit-0 sequence here in the shell and
+# pass results as env vars.
 #
-# Evaluator commands (from swebench/harness/run_evaluation.py):
-#   CMD1: git apply --verbose
-#   CMD2: git apply --verbose --reject
-#   CMD3: patch --batch --fuzz=5 -p1 -i
-# v5.28 acceptance criterion: git diff --stat shows non-empty changes after all three commands.
+# v5.29 control flow (mirrors swebench/harness/run_evaluation.py exactly):
+#   CMD1: git apply --verbose          → if exit 0, ACCEPT and stop
+#   CMD2: git apply --verbose --reject → if exit 0, ACCEPT and stop
+#   CMD3: patch --batch --fuzz=5 -p1   → if exit 0, ACCEPT and stop
+#   otherwise: REJECT
 
 echo "=== Step 2: Pre-computing apply-check results via Docker ==="
 
@@ -105,7 +107,7 @@ cat > "${NC2_PATCH_FILE}" << 'PATCH_EOF'
 PATCH_EOF
 
 # Write NC3 patch (partial multi-hunk: hunk 1 is real resolved patch, hunk 2 has wrong context)
-# All three evaluator commands exit 0 but the worktree is EMPTY after CMD3.
+# CMD1=128, CMD2=128, CMD3=2 — all non-zero → v5.29 REJECTS
 python3 -c "
 import json
 with open('${REPO_DIR}/data/swebench/canary_v6_predictions.jsonl') as f:
@@ -131,125 +133,120 @@ if [ -z "${ASTROPY_14182_IMAGE}" ] || [ -z "${ASTROPY_13033_IMAGE}" ] || [ -z "$
   echo "  astropy-14182: ${ASTROPY_14182_IMAGE:-NOT FOUND}"
   echo "  astropy-13033: ${ASTROPY_13033_IMAGE:-NOT FOUND}"
   echo "  astropy-13453: ${ASTROPY_13453_IMAGE:-NOT FOUND}"
-  NC1_APPLY_EXIT=0  # stale-base: accepted via patch --fuzz=5
+  # NC1: CMD1=128, CMD2=128, CMD3=0 → accepted (CMD3 succeeds)
+  NC1_APPLY_EXIT=0
   NC1_APPLY_OUTPUT="synthetic: image not available (expected: CMD1=128, CMD2=128, CMD3=0)"
-  NC2_APPLY_EXIT=1  # wrong-file: rejected by both stages
-  NC2_APPLY_OUTPUT="synthetic: image not available (expected: CMD1=1, CMD3=1)"
-  NC3_APPLY_EXIT=1  # partial multi-hunk: worktree empty after all commands -> rejected
-  NC3_APPLY_OUTPUT="synthetic: image not available (expected: CMD1=0, CMD2=0, CMD3=0, worktree=EMPTY)"
-  NC1_CMD1_EXIT="synthetic"; NC1_CMD2_EXIT="synthetic"; NC1_CMD3_EXIT="synthetic"
-  NC2_CMD1_EXIT="synthetic"; NC2_CMD3_EXIT="synthetic"
-  NC3_CMD1_EXIT="synthetic"; NC3_CMD2_EXIT="synthetic"; NC3_CMD3_EXIT="synthetic"; NC3_WORKTREE="EMPTY(synthetic)"
+  NC1_CMD1_EXIT="synthetic(128)"; NC1_CMD2_EXIT="synthetic(128)"; NC1_CMD3_EXIT="synthetic(0)"
+  NC1_FIRST_SUCCESS="CMD3(synthetic)"
+  # NC2: CMD1=1, CMD2=1, CMD3=1 → rejected
+  NC2_APPLY_EXIT=1
+  NC2_APPLY_OUTPUT="synthetic: image not available (expected: CMD1=1, CMD2=1, CMD3=1)"
+  NC2_CMD1_EXIT="synthetic(1)"; NC2_CMD2_EXIT="synthetic(1)"; NC2_CMD3_EXIT="synthetic(1)"
+  # NC3: CMD1=128, CMD2=128, CMD3=2 → rejected (all non-zero)
+  NC3_APPLY_EXIT=1
+  NC3_APPLY_OUTPUT="synthetic: image not available (expected: CMD1=128, CMD2=128, CMD3=2)"
+  NC3_CMD1_EXIT="synthetic(128)"; NC3_CMD2_EXIT="synthetic(128)"; NC3_CMD3_EXIT="synthetic(2)"
 else
   echo "NC1 image: ${ASTROPY_14182_IMAGE}"
   echo "NC2 image: ${ASTROPY_13033_IMAGE}"
   echo "NC3 image: ${ASTROPY_13453_IMAGE}"
 
-  # NC1 (stale-base on astropy-14182): run all three evaluator commands
-  echo "--- NC1 CMD1: git apply --verbose ---"
-  NC1_CMD1_OUTPUT=$(docker run --rm -v "${NC1_PATCH_FILE}:/tmp/patch.diff" "${ASTROPY_14182_IMAGE}" \
-    bash -c "cd /testbed && git apply --verbose /tmp/patch.diff 2>&1; echo EXIT:\$?" 2>&1)
-  NC1_CMD1_EXIT=$(echo "${NC1_CMD1_OUTPUT}" | tail -1 | sed 's/EXIT://')
-  echo "  EXIT:${NC1_CMD1_EXIT} | $(echo "${NC1_CMD1_OUTPUT}" | grep -v '^EXIT' | tail -2 | tr '\n' ' ')"
+  # Helper: run stop-at-first-exit-0 sequence on a patch
+  # Returns: APPLY_EXIT (0=accepted, 1=rejected), FIRST_SUCCESS (CMD1/CMD2/CMD3/none)
+  run_stop_at_first() {
+    local IMAGE="$1"
+    local PATCH_FILE="$2"
+    local PREFIX="$3"
 
-  echo "--- NC1 CMD2: git apply --verbose --reject ---"
-  NC1_CMD2_OUTPUT=$(docker run --rm -v "${NC1_PATCH_FILE}:/tmp/patch.diff" "${ASTROPY_14182_IMAGE}" \
-    bash -c "cd /testbed && git apply --verbose --reject /tmp/patch.diff 2>&1; echo EXIT:\$?" 2>&1)
-  NC1_CMD2_EXIT=$(echo "${NC1_CMD2_OUTPUT}" | tail -1 | sed 's/EXIT://')
-  echo "  EXIT:${NC1_CMD2_EXIT} | $(echo "${NC1_CMD2_OUTPUT}" | grep -v '^EXIT' | tail -2 | tr '\n' ' ')"
+    local CNAME="${PREFIX}-$(date +%s)"
+    docker run -d --name "${CNAME}" --network none --cap-drop ALL "${IMAGE}" tail -f /dev/null > /dev/null 2>&1
+    docker cp "${PATCH_FILE}" "${CNAME}:/tmp/check.diff" > /dev/null 2>&1
 
-  echo "--- NC1 CMD3: patch --batch --fuzz=5 -p1 (dry-run) ---"
-  NC1_CMD3_OUTPUT=$(docker run --rm -v "${NC1_PATCH_FILE}:/tmp/patch.diff" "${ASTROPY_14182_IMAGE}" \
-    bash -c "cd /testbed && patch --dry-run --batch --fuzz=5 -p1 -i /tmp/patch.diff 2>&1; echo EXIT:\$?" 2>&1)
-  NC1_CMD3_EXIT=$(echo "${NC1_CMD3_OUTPUT}" | tail -1 | sed 's/EXIT://')
-  echo "  EXIT:${NC1_CMD3_EXIT} | $(echo "${NC1_CMD3_OUTPUT}" | grep -v '^EXIT' | tail -2 | tr '\n' ' ')"
+    # CMD1: git apply --verbose
+    local CMD1_OUT
+    CMD1_OUT=$(docker exec "${CNAME}" sh -c 'cd /testbed && git apply --verbose /tmp/check.diff 2>&1' 2>&1 || true)
+    local CMD1_EXIT=$?
+    eval "${PREFIX}_CMD1_EXIT=${CMD1_EXIT}"
+    eval "${PREFIX}_CMD1_OUTPUT=\"${CMD1_OUT:0:200}\""
+    echo "  CMD1 (git apply --verbose): EXIT:${CMD1_EXIT} | ${CMD1_OUT:0:80}"
 
-  # NC1 is accepted if CMD3 (patch --fuzz=5) succeeds (exit 0)
-  NC1_APPLY_EXIT=${NC1_CMD3_EXIT}
-  NC1_APPLY_OUTPUT="CMD1_git_apply=${NC1_CMD1_EXIT} CMD2_git_apply_reject=${NC1_CMD2_EXIT} CMD3_patch_fuzz5=${NC1_CMD3_EXIT}"
-  echo "NC1 result: CMD1=${NC1_CMD1_EXIT}, CMD2=${NC1_CMD2_EXIT}, CMD3=${NC1_CMD3_EXIT} -> runner_accepted=${NC1_APPLY_EXIT}"
+    if [ "${CMD1_EXIT}" -eq 0 ]; then
+      eval "${PREFIX}_APPLY_EXIT=0"
+      eval "${PREFIX}_FIRST_SUCCESS=CMD1"
+      docker rm -f "${CNAME}" > /dev/null 2>&1
+      return
+    fi
 
-  # NC2 (wrong-file on astropy-13033): run CMD1 and CMD3 (CMD2 would also fail)
-  echo "--- NC2 CMD1: git apply --verbose ---"
-  NC2_CMD1_OUTPUT=$(docker run --rm -v "${NC2_PATCH_FILE}:/tmp/patch.diff" "${ASTROPY_13033_IMAGE}" \
-    bash -c "cd /testbed && git apply --verbose /tmp/patch.diff 2>&1; echo EXIT:\$?" 2>&1)
-  NC2_CMD1_EXIT=$(echo "${NC2_CMD1_OUTPUT}" | tail -1 | sed 's/EXIT://')
-  echo "  EXIT:${NC2_CMD1_EXIT} | $(echo "${NC2_CMD1_OUTPUT}" | grep -v '^EXIT' | tail -2 | tr '\n' ' ')"
+    # CMD2: git apply --verbose --reject
+    local CMD2_OUT
+    CMD2_OUT=$(docker exec "${CNAME}" sh -c 'cd /testbed && git apply --verbose --reject /tmp/check.diff 2>&1' 2>&1 || true)
+    local CMD2_EXIT=$?
+    eval "${PREFIX}_CMD2_EXIT=${CMD2_EXIT}"
+    echo "  CMD2 (git apply --verbose --reject): EXIT:${CMD2_EXIT} | ${CMD2_OUT:0:80}"
 
-  echo "--- NC2 CMD3: patch --batch --fuzz=5 -p1 (dry-run) ---"
-  NC2_CMD3_OUTPUT=$(docker run --rm -v "${NC2_PATCH_FILE}:/tmp/patch.diff" "${ASTROPY_13033_IMAGE}" \
-    bash -c "cd /testbed && patch --dry-run --batch --fuzz=5 -p1 -i /tmp/patch.diff 2>&1; echo EXIT:\$?" 2>&1)
-  NC2_CMD3_EXIT=$(echo "${NC2_CMD3_OUTPUT}" | tail -1 | sed 's/EXIT://')
-  echo "  EXIT:${NC2_CMD3_EXIT} | $(echo "${NC2_CMD3_OUTPUT}" | grep -v '^EXIT' | tail -2 | tr '\n' ' ')"
+    if [ "${CMD2_EXIT}" -eq 0 ]; then
+      eval "${PREFIX}_APPLY_EXIT=0"
+      eval "${PREFIX}_FIRST_SUCCESS=CMD2"
+      docker rm -f "${CNAME}" > /dev/null 2>&1
+      return
+    fi
 
-  # NC2 is rejected if both CMD1 and CMD3 fail (non-zero)
-  if [ "${NC2_CMD1_EXIT}" != "0" ] && [ "${NC2_CMD3_EXIT}" != "0" ]; then
-    NC2_APPLY_EXIT=1
-  else
-    NC2_APPLY_EXIT=0
-  fi
-  NC2_APPLY_OUTPUT="CMD1_git_apply=${NC2_CMD1_EXIT} CMD3_patch_fuzz5=${NC2_CMD3_EXIT}"
-  echo "NC2 result: CMD1=${NC2_CMD1_EXIT}, CMD3=${NC2_CMD3_EXIT} -> runner_accepted=${NC2_APPLY_EXIT}"
+    # CMD3: patch --batch --fuzz=5 -p1
+    # Reset worktree first (CMD2 may have partially applied)
+    docker exec "${CNAME}" sh -c 'cd /testbed && git checkout -- . && git clean -fd 2>/dev/null' > /dev/null 2>&1 || true
+    local CMD3_OUT
+    CMD3_OUT=$(docker exec "${CNAME}" sh -c 'cd /testbed && patch --batch --fuzz=5 -p1 -i /tmp/check.diff 2>&1' 2>&1 || true)
+    local CMD3_EXIT=$?
+    eval "${PREFIX}_CMD3_EXIT=${CMD3_EXIT}"
+    echo "  CMD3 (patch --batch --fuzz=5): EXIT:${CMD3_EXIT} | ${CMD3_OUT:0:80}"
 
-  # NC3 (partial multi-hunk on astropy-13453): run all three evaluator commands + worktree check
-  # v5.28 preflight: run all three commands on a writable disposable checkout, then check git diff --stat
-  echo "--- NC3: v5.28 worktree-inspection sequence on astropy-13453 ---"
-  NC3_WORKTREE_OUTPUT=$(docker run --rm -v "${NC3_PATCH_FILE}:/tmp/patch.diff" "${ASTROPY_13453_IMAGE}" \
-    bash -c "
-      cd /testbed
-      git apply --verbose /tmp/patch.diff 2>&1; echo CMD1_EXIT:\$?
-      git apply --verbose --reject /tmp/patch.diff 2>&1; echo CMD2_EXIT:\$?
-      patch --batch --fuzz=5 -p1 -i /tmp/patch.diff 2>&1; echo CMD3_EXIT:\$?
-      DIFF_STAT=\$(git diff --stat 2>&1)
-      if [ -z \"\${DIFF_STAT}\" ]; then
-        echo WORKTREE_EMPTY
-      else
-        echo WORKTREE_CHANGES:\${DIFF_STAT}
-      fi
-    " 2>&1)
-  NC3_CMD1_EXIT=$(echo "${NC3_WORKTREE_OUTPUT}" | grep 'CMD1_EXIT:' | sed 's/CMD1_EXIT://')
-  NC3_CMD2_EXIT=$(echo "${NC3_WORKTREE_OUTPUT}" | grep 'CMD2_EXIT:' | sed 's/CMD2_EXIT://')
-  NC3_CMD3_EXIT=$(echo "${NC3_WORKTREE_OUTPUT}" | grep 'CMD3_EXIT:' | sed 's/CMD3_EXIT://')
-  NC3_WORKTREE=$(echo "${NC3_WORKTREE_OUTPUT}" | grep 'WORKTREE_' | head -1)
-  echo "  CMD1_EXIT:${NC3_CMD1_EXIT} CMD2_EXIT:${NC3_CMD2_EXIT} CMD3_EXIT:${NC3_CMD3_EXIT}"
-  echo "  Worktree: ${NC3_WORKTREE}"
+    if [ "${CMD3_EXIT}" -eq 0 ]; then
+      eval "${PREFIX}_APPLY_EXIT=0"
+      eval "${PREFIX}_FIRST_SUCCESS=CMD3"
+    else
+      eval "${PREFIX}_APPLY_EXIT=1"
+      eval "${PREFIX}_FIRST_SUCCESS=none"
+    fi
 
-  # NC3 is rejected if worktree is empty after all three commands (v5.28 criterion)
-  if echo "${NC3_WORKTREE}" | grep -q 'WORKTREE_EMPTY'; then
-    NC3_APPLY_EXIT=1  # rejected: worktree empty
-    echo "NC3 result: worktree EMPTY after all three commands -> v5.28 REJECTS (correct)"
-  else
-    NC3_APPLY_EXIT=0  # accepted: worktree has changes
-    echo "NC3 result: worktree has changes -> v5.28 ACCEPTS"
-  fi
-  NC3_APPLY_OUTPUT="CMD1=${NC3_CMD1_EXIT} CMD2=${NC3_CMD2_EXIT} CMD3=${NC3_CMD3_EXIT} worktree=${NC3_WORKTREE}"
+    docker rm -f "${CNAME}" > /dev/null 2>&1
+  }
+
+  echo "--- NC1 (stale-base on astropy-14182): stop-at-first-exit-0 ---"
+  run_stop_at_first "${ASTROPY_14182_IMAGE}" "${NC1_PATCH_FILE}" "NC1"
+  echo "NC1 result: CMD1=${NC1_CMD1_EXIT}, CMD2=${NC1_CMD2_EXIT:-skipped}, CMD3=${NC1_CMD3_EXIT:-skipped} -> first_success=${NC1_FIRST_SUCCESS} -> accepted=${NC1_APPLY_EXIT}"
+  NC1_APPLY_OUTPUT="CMD1=${NC1_CMD1_EXIT} CMD2=${NC1_CMD2_EXIT:-skipped} CMD3=${NC1_CMD3_EXIT:-skipped} first_success=${NC1_FIRST_SUCCESS}"
+
+  echo "--- NC2 (wrong-file on astropy-13033): stop-at-first-exit-0 ---"
+  run_stop_at_first "${ASTROPY_13033_IMAGE}" "${NC2_PATCH_FILE}" "NC2"
+  echo "NC2 result: CMD1=${NC2_CMD1_EXIT}, CMD2=${NC2_CMD2_EXIT:-skipped}, CMD3=${NC2_CMD3_EXIT:-skipped} -> first_success=${NC2_FIRST_SUCCESS} -> accepted=${NC2_APPLY_EXIT}"
+  NC2_APPLY_OUTPUT="CMD1=${NC2_CMD1_EXIT} CMD2=${NC2_CMD2_EXIT:-skipped} CMD3=${NC2_CMD3_EXIT:-skipped} first_success=${NC2_FIRST_SUCCESS}"
+
+  echo "--- NC3 (partial-multihunk on astropy-13453): stop-at-first-exit-0 ---"
+  run_stop_at_first "${ASTROPY_13453_IMAGE}" "${NC3_PATCH_FILE}" "NC3"
+  echo "NC3 result: CMD1=${NC3_CMD1_EXIT}, CMD2=${NC3_CMD2_EXIT:-skipped}, CMD3=${NC3_CMD3_EXIT:-skipped} -> first_success=${NC3_FIRST_SUCCESS} -> accepted=${NC3_APPLY_EXIT}"
+  NC3_APPLY_OUTPUT="CMD1=${NC3_CMD1_EXIT} CMD2=${NC3_CMD2_EXIT:-skipped} CMD3=${NC3_CMD3_EXIT:-skipped} first_success=${NC3_FIRST_SUCCESS}"
 fi
 
 # Save command outputs to archive
 {
+  echo "v5.29 acceptance criterion: stop-at-first-exit-0 (mirrors evaluator control flow)"
+  echo "Evaluator commands (from swebench/harness/run_evaluation.py):"
+  echo "  CMD1: git apply --verbose          → if exit 0, ACCEPT and stop"
+  echo "  CMD2: git apply --verbose --reject → if exit 0, ACCEPT and stop"
+  echo "  CMD3: patch --batch --fuzz=5 -p1   → if exit 0, ACCEPT and stop"
+  echo "  otherwise: REJECT"
+  echo ""
   echo "NC1 (stale-base on astropy-14182):"
-  echo "  CMD1 (git apply --verbose): EXIT:${NC1_CMD1_EXIT:-synthetic}"
-  echo "  CMD2 (git apply --reject):  EXIT:${NC1_CMD2_EXIT:-synthetic}"
-  echo "  CMD3 (patch --fuzz=5):      EXIT:${NC1_CMD3_EXIT:-synthetic}"
-  echo "  Runner decision: accepted=${NC1_APPLY_EXIT}"
+  echo "  ${NC1_APPLY_OUTPUT}"
+  echo "  Runner decision: accepted=${NC1_APPLY_EXIT} (0=accepted, 1=rejected)"
   echo ""
   echo "NC2 (wrong-file on astropy-13033):"
-  echo "  CMD1 (git apply --verbose): EXIT:${NC2_CMD1_EXIT:-synthetic}"
-  echo "  CMD3 (patch --fuzz=5):      EXIT:${NC2_CMD3_EXIT:-synthetic}"
-  echo "  Runner decision: accepted=${NC2_APPLY_EXIT}"
+  echo "  ${NC2_APPLY_OUTPUT}"
+  echo "  Runner decision: accepted=${NC2_APPLY_EXIT} (0=accepted, 1=rejected)"
   echo ""
-  echo "NC3 (partial-multihunk on astropy-13453) [v5.28 worktree-inspection]:"
-  echo "  CMD1 (git apply --verbose): EXIT:${NC3_CMD1_EXIT:-synthetic}"
-  echo "  CMD2 (git apply --reject):  EXIT:${NC3_CMD2_EXIT:-synthetic}"
-  echo "  CMD3 (patch --fuzz=5):      EXIT:${NC3_CMD3_EXIT:-synthetic}"
-  echo "  Worktree after all three:   ${NC3_WORKTREE:-synthetic}"
+  echo "NC3 (partial-multihunk on astropy-13453):"
+  echo "  ${NC3_APPLY_OUTPUT}"
   echo "  Runner decision: accepted=${NC3_APPLY_EXIT} (0=accepted, 1=rejected)"
-  echo ""
-  echo "Evaluator commands (from swebench/harness/run_evaluation.py):"
-  echo "  CMD1: git apply --verbose"
-  echo "  CMD2: git apply --verbose --reject"
-  echo "  CMD3: patch --batch --fuzz=5 -p1 -i"
-  echo "v5.28 acceptance criterion: git diff --stat shows non-empty changes after all three commands."
 } | tee "${ARCHIVE_DIR}/apply_check_outputs.txt"
 
 export ANDROMEDA_NC1_APPLY_EXIT="${NC1_APPLY_EXIT}"
@@ -305,7 +302,7 @@ echo "=== Step 3: Recording image digests ==="
 
 echo ""
 echo "=== Step 4: Running official evaluator on known-good fixtures ==="
-RUN_ID="andromeda-eval-parity-v5.28-good"
+RUN_ID="andromeda-eval-parity-v5.29-good"
 GOOD_REPORT_DIR="${ARCHIVE_DIR}/evaluator_report_good"
 mkdir -p "${GOOD_REPORT_DIR}"
 
@@ -327,9 +324,7 @@ python3 -m swebench.harness.run_evaluation \
 echo ""
 echo "=== Step 5a: Running official evaluator on NC1 (stale-base, astropy-14182) ==="
 NC1_JSONL="${ARCHIVE_DIR}/eval_parity_fixtures.nc1.jsonl"
-# The builder writes nc1.jsonl directly
-if [ ! -f "${NC1_JSONL}" ]; then
-  python3 -c "
+python3 -c "
 import json, sys
 rows = [json.loads(l) for l in open('${NEGATIVE_CONTROL_JSONL}') if l.strip()]
 nc1 = [r for r in rows if r['instance_id'] == 'astropy__astropy-14182']
@@ -337,7 +332,6 @@ if not nc1: sys.exit(1)
 with open('${NC1_JSONL}', 'w') as f: f.write(json.dumps(nc1[0]) + '\n')
 print(f'NC1 JSONL written: {nc1[0][\"instance_id\"]}')
 "
-fi
 NC1_RUN_ID="andromeda-eval-parity-nc1-${TIMESTAMP}"
 NC1_REPORT_DIR="${ARCHIVE_DIR}/evaluator_report_nc1"
 mkdir -p "${NC1_REPORT_DIR}"
@@ -358,8 +352,7 @@ python3 -m swebench.harness.run_evaluation \
 echo ""
 echo "=== Step 5b: Running official evaluator on NC2 (wrong-file, astropy-13033) ==="
 NC2_JSONL="${ARCHIVE_DIR}/eval_parity_fixtures.nc2.jsonl"
-if [ ! -f "${NC2_JSONL}" ]; then
-  python3 -c "
+python3 -c "
 import json, sys
 rows = [json.loads(l) for l in open('${NEGATIVE_CONTROL_JSONL}') if l.strip()]
 nc2 = [r for r in rows if r['instance_id'] == 'astropy__astropy-13033']
@@ -367,7 +360,6 @@ if not nc2: sys.exit(1)
 with open('${NC2_JSONL}', 'w') as f: f.write(json.dumps(nc2[0]) + '\n')
 print(f'NC2 JSONL written: {nc2[0][\"instance_id\"]}')
 "
-fi
 NC2_RUN_ID="andromeda-eval-parity-nc2-${TIMESTAMP}"
 NC2_REPORT_DIR="${ARCHIVE_DIR}/evaluator_report_nc2"
 mkdir -p "${NC2_REPORT_DIR}"
@@ -388,8 +380,7 @@ python3 -m swebench.harness.run_evaluation \
 echo ""
 echo "=== Step 5c: Running official evaluator on NC3 (partial-multihunk, astropy-13453) ==="
 NC3_JSONL="${ARCHIVE_DIR}/eval_parity_fixtures.nc3.jsonl"
-if [ ! -f "${NC3_JSONL}" ]; then
-  python3 -c "
+python3 -c "
 import json, sys
 rows = [json.loads(l) for l in open('${NEGATIVE_CONTROL_JSONL}') if l.strip()]
 nc3 = [r for r in rows if r['instance_id'] == 'astropy__astropy-13453']
@@ -397,7 +388,6 @@ if not nc3: sys.exit(1)
 with open('${NC3_JSONL}', 'w') as f: f.write(json.dumps(nc3[0]) + '\n')
 print(f'NC3 JSONL written: {nc3[0][\"instance_id\"]}')
 "
-fi
 NC3_RUN_ID="andromeda-eval-parity-nc3-${TIMESTAMP}"
 NC3_REPORT_DIR="${ARCHIVE_DIR}/evaluator_report_nc3"
 mkdir -p "${NC3_REPORT_DIR}"
@@ -512,6 +502,7 @@ for row in good_rows:
 # ── NC1: accepted → evaluator-unresolved ─────────────────────────────────────
 print()
 print("NC1 (stale-base, astropy-14182) — matrix cell: accepted → evaluator-unresolved:")
+print("  v5.29: CMD1=128, CMD2=128, CMD3=0 → first_success=CMD3 → ACCEPTED")
 for row in nc1_rows:
     iid = row["instance_id"]
     stored_hash = row.get("_patch_sha256", "MISSING")
@@ -532,6 +523,7 @@ for row in nc1_rows:
 # ── NC2: rejected → evaluator-error ──────────────────────────────────────────
 print()
 print("NC2 (wrong-file, astropy-13033) — matrix cell: rejected → evaluator-error:")
+print("  v5.29: CMD1=1, CMD2=1, CMD3=1 → all fail → REJECTED")
 for row in nc2_rows:
     iid = row["instance_id"]
     stored_hash = row.get("_patch_sha256", "MISSING")
@@ -549,10 +541,11 @@ for row in nc2_rows:
     if nc2_report and outcome != "error":
         failures.append(f"NC2 {iid}: expected evaluator error but got '{outcome}'")
 
-# ── NC3: rejected (v5.28) → evaluator-unresolved ─────────────────────────────
+# ── NC3: rejected → evaluator-error ──────────────────────────────────────────
 print()
-print("NC3 (partial-multihunk, astropy-13453) — matrix cell: rejected (v5.28) → evaluator-unresolved:")
-print("  (v5.26 two-stage dry-run would have ACCEPTED this patch; v5.28 worktree-inspection REJECTS it)")
+print("NC3 (partial-multihunk, astropy-13453) — matrix cell: rejected → evaluator-error:")
+print("  v5.29: CMD1=128, CMD2=128, CMD3=2 → all non-zero → REJECTED")
+print("  (v5.28 worktree-inspection also rejected this; v5.29 rejects via exit codes)")
 for row in nc3_rows:
     iid = row["instance_id"]
     stored_hash = row.get("_patch_sha256", "MISSING")
@@ -560,30 +553,29 @@ for row in nc3_rows:
     hash_match = stored_hash == computed_hash
     preflight = row.get("_preflight_result", "unknown")
     expected_preflight = row.get("_expected_preflight", "rejected")
-    expected_evaluator = row.get("_expected_evaluator_outcome", "not_resolved")
+    expected_evaluator = row.get("_expected_evaluator_outcome", "error")
     outcome = get_outcome(nc3_report, iid) if nc3_report else "not_run (no report)"
     print(f"  {iid}: hash_match={hash_match}, preflight={preflight} (expected={expected_preflight}), evaluator_outcome={outcome} (expected={expected_evaluator})")
     if not hash_match:
         failures.append(f"NC3 {iid}: hash mismatch")
     if preflight != expected_preflight:
         failures.append(f"NC3 {iid}: preflight={preflight} but expected={expected_preflight}")
-    if nc3_report and outcome == "resolved":
-        failures.append(f"NC3 {iid}: expected not_resolved but got 'resolved'")
+    if nc3_report and outcome != "error":
+        failures.append(f"NC3 {iid}: expected evaluator error but got '{outcome}'")
 
 # ── Five-cell matrix summary ──────────────────────────────────────────────────
 nc1_unresolved = nc1_report.get("unresolved_ids", nc1_report.get("unresolved", [])) if nc1_report else []
 nc1_errors = nc1_report.get("error_ids", []) if nc1_report else []
 nc2_errors = nc2_report.get("error_ids", []) if nc2_report else []
-nc3_unresolved = nc3_report.get("unresolved_ids", nc3_report.get("unresolved", [])) if nc3_report else []
 nc3_errors = nc3_report.get("error_ids", []) if nc3_report else []
 
 print()
-print("Five-cell differential matrix (v5.28):")
+print("Five-cell differential matrix (v5.29):")
 print(f"  accepted → evaluator-resolved:   {len(good_resolved)}/{len(good_rows)} (expected {len(good_rows)}/{len(good_rows)})")
-print(f"  accepted → evaluator-unresolved: {len(nc1_unresolved)}/1 NC1 (stale-base; error={len(nc1_errors)})")
-print(f"  rejected → evaluator-error:      {len(nc2_errors)}/1 NC2 (wrong-file)")
-print(f"  rejected → evaluator-unresolved: {len(nc3_unresolved)+len(nc3_errors)}/1 NC3 (partial-multihunk; unresolved={len(nc3_unresolved)}, error={len(nc3_errors)})")
+print(f"  accepted → evaluator-unresolved: {len(nc1_unresolved)}/1 NC1 (stale-base; CMD3 exit 0; error={len(nc1_errors)})")
+print(f"  rejected → evaluator-error:      {len(nc2_errors)}/1 NC2 (wrong-file) + {len(nc3_errors)}/1 NC3 (partial-multihunk)")
 print(f"  accepted → evaluator-error:      {len(good_errors)}/0 expected (canary v6 confirmed zero)")
+print(f"  rejected → evaluator-applied:    0 (expected zero; stop-at-first-exit-0 eliminates this cell)")
 
 print()
 if failures:
@@ -596,12 +588,12 @@ else:
     print(f"  - {len(good_rows)} known-good fixtures resolved by official evaluator")
     print(f"  - 0 evaluator apply errors on known-good fixtures")
     print(f"  - All hash chains valid (stored _patch_sha256 == sha256(model_patch))")
-    print(f"  - NC1 (stale-base): preflight=accepted (CMD3 patch --fuzz=5 succeeds)")
+    print(f"  - NC1 (stale-base): preflight=accepted (CMD3 patch --fuzz=5 exit 0)")
     print(f"  - NC2 (wrong-file): preflight=rejected (all commands fail), evaluator=error")
-    print(f"  - NC3 (partial-multihunk): preflight=rejected (v5.28 worktree empty), evaluator=not_resolved")
+    print(f"  - NC3 (partial-multihunk): preflight=rejected (CMD3 exit 2), evaluator=error")
     print(f"  - NC1, NC2, NC3 ran in SEPARATE evaluator invocations with distinct instance IDs")
     print(f"  - Production path: buildCanonicalPatch → verifyCanonicalPatch → serializeCanonicalPatch")
-    print(f"  - v5.28 improvement: NC3 would have been accepted by v5.26 two-stage dry-run")
+    print(f"  - v5.29 improvement: stop-at-first-exit-0 matches evaluator control flow exactly")
 
 # Write summary
 nc1_report_sha = hashlib.sha256(Path(nc1_report_path).read_bytes()).hexdigest() if nc1_report_path else None
@@ -609,6 +601,8 @@ nc2_report_sha = hashlib.sha256(Path(nc2_report_path).read_bytes()).hexdigest() 
 nc3_report_sha = hashlib.sha256(Path(nc3_report_path).read_bytes()).hexdigest() if nc3_report_path else None
 summary = {
     "run_timestamp": "${TIMESTAMP}",
+    "version": "v5.29",
+    "acceptance_criterion": "stop-at-first-exit-0 (evaluator-exact control flow)",
     "production_path": "buildCanonicalPatch → verifyCanonicalPatch → serializeCanonicalPatch",
     "fixture_jsonl_sha256": "${FIXTURE_SHA256}",
     "negative_control_jsonl_sha256": "${NEGATIVE_SHA256}",
@@ -628,27 +622,26 @@ summary = {
     "nc2_preflight": nc2_rows[0].get("_preflight_result", "unknown") if nc2_rows else "unknown",
     "nc2_evaluator_outcome": "error" if nc2_errors else "not_run",
     "nc3_preflight": nc3_rows[0].get("_preflight_result", "unknown") if nc3_rows else "unknown",
-    "nc3_evaluator_outcome": "unresolved" if nc3_unresolved else ("error" if nc3_errors else "not_run"),
+    "nc3_evaluator_outcome": "error" if nc3_errors else "not_run",
     "five_cell_matrix": {
         "accepted_resolved": f"{len(good_resolved)}/{len(good_rows)}",
         "accepted_unresolved": f"{len(nc1_unresolved)}/1",
-        "rejected_error": f"{len(nc2_errors)}/1",
-        "rejected_unresolved_nc3": f"{len(nc3_unresolved)+len(nc3_errors)}/1",
+        "rejected_error_nc2": f"{len(nc2_errors)}/1",
+        "rejected_error_nc3": f"{len(nc3_errors)}/1",
         "accepted_error": f"{len(good_errors)}/0_expected",
+        "rejected_applied": "0/0_expected",
     },
     "all_hash_chains_valid": all(
         hashlib.sha256(r["model_patch"].encode()).hexdigest() == r.get("_patch_sha256", "")
         for r in good_rows + nc1_rows + nc2_rows + nc3_rows
     ),
-    "all_outcomes_match_expected": len(failures) == 0,
-    "v528_improvement": "NC3 (partial-multihunk) rejected by v5.28 worktree-inspection; v5.26 two-stage dry-run would have accepted it",
-    "conclusion": "PASS" if not failures else f"FAIL: {failures}",
+    "all_checks_passed": len(failures) == 0,
 }
-with open(archive_dir / "eval_parity_summary.json", "w") as f:
+with open("${ARCHIVE_DIR}/parity_summary.json", "w") as f:
     json.dump(summary, f, indent=2)
-print(f"\nSummary written to: {archive_dir}/eval_parity_summary.json")
+print(f"\nSummary written to: ${ARCHIVE_DIR}/parity_summary.json")
 PYEOF
 
 echo ""
-echo "=== Evaluator parity test: COMPLETE ==="
+echo "=== Evaluator Parity Test Complete ==="
 echo "Archive: ${ARCHIVE_DIR}"
