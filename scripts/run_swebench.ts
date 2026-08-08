@@ -1305,13 +1305,15 @@ Output ONLY a unified diff with REAL line numbers:
           const { spawnSync } = await import('child_process');
           const { exec } = await import('child_process');
           // Start a short-lived read-only container for the check
+          // v5.28: Writable disposable checkout — no --read-only so git apply --reject
+          // and patch can write to /testbed. Still isolated: no network, no caps.
           const startResult = spawnSync('docker', [
             'run', '-d',
             '--name', checkContainerName,
             '--network', 'none',
             '--cap-drop', 'ALL',
             '--security-opt', 'no-new-privileges:true',
-            '--read-only',
+            // No --read-only: git apply --reject and patch need to write to /testbed
             '--tmpfs', '/tmp:rw,noexec,nosuid,size=64m',
             instanceImageRef,
             'tail', '-f', '/dev/null',
@@ -1340,34 +1342,64 @@ Output ONLY a unified diff with REAL line numbers:
                 child.stdin!.write(initialPatch);
                 child.stdin!.end();
               });
-              // Run two-stage preflight matching the official evaluator's application sequence:
-              //   Stage 1: git apply --check (strict, no fuzzy matching)
-              //   Stage 2: patch --dry-run --batch --fuzz=5 -p1 (evaluator-equivalent fallback)
-              // A patch is accepted if either stage succeeds, matching the evaluator's
-              // three-command sequence (git apply --verbose, git apply --reject, patch --fuzz=5).
-              // This eliminates false rejections where the runner rejects a patch that the
-              // evaluator would apply via patch --fuzz=5.
-              const checkResult = spawnSync('docker', [
+              // v5.28: Evaluator-exact three-command sequence on a writable disposable checkout.
+              // Mirrors the official SWE-bench evaluator (swebench/harness/run_evaluation.py):
+              //   CMD1: git apply --verbose
+              //   CMD2: git apply --verbose --reject  (stateful: applies hunk 1, writes .rej for hunk 2)
+              //   CMD3: patch --batch --fuzz=5 -p1    (stateful: runs on worktree modified by CMD2)
+              // After all three commands, inspect git diff --stat to verify actual changes.
+              // Accept if and only if: git diff shows non-empty changes.
+              // This correctly handles the partial multi-hunk case where CMD2 partially applies
+              // and CMD3 reverses the partial application (net result: empty worktree → reject).
+              const cmd1Result = spawnSync('docker', [
                 'exec', checkContainerName,
-                'sh', '-c', 'cd /testbed && git apply --check /tmp/check.diff 2>&1',
+                'sh', '-c', 'cd /testbed && git apply --verbose /tmp/check.diff 2>&1',
               ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
+              const cmd1Output = (cmd1Result.stdout || cmd1Result.stderr || '').slice(0, 400);
+              const cmd1Exit = cmd1Result.status;
 
-              let preflightPassed = checkResult.status === 0;
-              let preflightDiagnostic = (checkResult.stdout || checkResult.stderr || '').slice(0, 600);
-
-              if (!preflightPassed) {
-                // Stage 2: try patch --dry-run --batch --fuzz=5 (evaluator-equivalent)
-                const fuzzResult = spawnSync('docker', [
+              let cmd2Output = '';
+              let cmd2Exit = -1;
+              if (cmd1Exit !== 0) {
+                // CMD1 failed — try CMD2 (git apply --reject)
+                const cmd2Result = spawnSync('docker', [
                   'exec', checkContainerName,
-                  'sh', '-c', 'cd /testbed && patch --dry-run --batch --fuzz=5 -p1 -i /tmp/check.diff 2>&1',
+                  'sh', '-c', 'cd /testbed && git apply --verbose --reject /tmp/check.diff 2>&1',
                 ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
-                if (fuzzResult.status === 0) {
-                  preflightPassed = true;
-                  console.log('[Runner] Phase 1e: git apply --check failed but patch --dry-run --fuzz=5 succeeded — patch accepted (evaluator-equivalent)');
-                } else {
-                  const fuzzDiag = (fuzzResult.stdout || fuzzResult.stderr || '').slice(0, 300);
-                  preflightDiagnostic = `git apply --check: ${preflightDiagnostic.slice(0, 300)} | patch --fuzz=5 dry-run: ${fuzzDiag.slice(0, 200)}`;
-                }
+                cmd2Output = (cmd2Result.stdout || cmd2Result.stderr || '').slice(0, 400);
+                cmd2Exit = cmd2Result.status ?? -1;
+              }
+
+              // CMD3: always run patch --fuzz=5 on the current worktree state
+              // (may be pristine if CMD1/CMD2 applied nothing, or partially modified by CMD2)
+              const cmd3Result = spawnSync('docker', [
+                'exec', checkContainerName,
+                'sh', '-c', 'cd /testbed && patch --batch --fuzz=5 -p1 -i /tmp/check.diff 2>&1',
+              ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
+              const cmd3Output = (cmd3Result.stdout || cmd3Result.stderr || '').slice(0, 400);
+              const cmd3Exit = cmd3Result.status ?? -1;
+
+              // Inspect the final worktree state — the definitive acceptance criterion
+              const diffStatResult = spawnSync('docker', [
+                'exec', checkContainerName,
+                'sh', '-c', 'cd /testbed && git diff --stat',
+              ], { encoding: 'utf-8', stdio: 'pipe', timeout: 10_000 });
+              const diffStatOutput = (diffStatResult.stdout || '').trim();
+              const worktreeHasChanges = diffStatOutput.length > 0;
+
+              let preflightPassed = worktreeHasChanges;
+              let preflightDiagnostic = [
+                `CMD1(git apply): exit=${cmd1Exit} ${cmd1Output.slice(0, 80)}`,
+                cmd1Exit !== 0 ? `CMD2(git apply --reject): exit=${cmd2Exit} ${cmd2Output.slice(0, 80)}` : '',
+                `CMD3(patch --fuzz=5): exit=${cmd3Exit} ${cmd3Output.slice(0, 80)}`,
+                `worktree_changes=${worktreeHasChanges ? diffStatOutput.slice(0, 100) : 'NONE'}`,
+              ].filter(Boolean).join(' | ');
+
+              if (preflightPassed) {
+                console.log(`[Runner] Phase 1e: Evaluator-sequence preflight passed — worktree has changes: ${diffStatOutput.slice(0, 80)}`);
+              } else {
+                console.warn(`[Runner] Phase 1e: Evaluator-sequence preflight failed — worktree empty after all three commands`);
+                console.warn(`[Runner] Phase 1e: Diagnostic: ${preflightDiagnostic.slice(0, 300)}`);
               }
 
               if (!preflightPassed) {
@@ -1405,25 +1437,35 @@ Output ONLY the corrected unified diff:
                       child2.stdin!.write(repairedPatch);
                       child2.stdin!.end();
                     });
-                    // Two-stage recheck: same policy as initial preflight
-                    const recheck = spawnSync('docker', [
+                    // Recheck: run the full evaluator sequence on the repaired patch
+                    // First reset the worktree (CMD2 may have partially applied the original patch)
+                    spawnSync('docker', [
                       'exec', checkContainerName,
-                      'sh', '-c', 'cd /testbed && git apply --check /tmp/check2.diff 2>&1',
+                      'sh', '-c', 'cd /testbed && git checkout -- . && git clean -fd 2>&1',
                     ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
-                    let recheckPassed = recheck.status === 0;
-                    let recheckDiag = (recheck.stdout || recheck.stderr || '').slice(0, 300);
-                    if (!recheckPassed) {
-                      const fuzzRecheck = spawnSync('docker', [
+                    const recheck1 = spawnSync('docker', [
+                      'exec', checkContainerName,
+                      'sh', '-c', 'cd /testbed && git apply --verbose /tmp/check2.diff 2>&1',
+                    ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
+                    if (recheck1.status !== 0) {
+                      spawnSync('docker', [
                         'exec', checkContainerName,
-                        'sh', '-c', 'cd /testbed && patch --dry-run --batch --fuzz=5 -p1 -i /tmp/check2.diff 2>&1',
+                        'sh', '-c', 'cd /testbed && git apply --verbose --reject /tmp/check2.diff 2>&1',
                       ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
-                      if (fuzzRecheck.status === 0) {
-                        recheckPassed = true;
-                        console.log('[Runner] Phase 1e: Repaired patch accepted via patch --dry-run --fuzz=5 (evaluator-equivalent)');
-                      } else {
-                        recheckDiag = `git apply --check: ${recheckDiag} | patch --fuzz=5: ${(fuzzRecheck.stdout || fuzzRecheck.stderr || '').slice(0, 200)}`;
-                      }
                     }
+                    spawnSync('docker', [
+                      'exec', checkContainerName,
+                      'sh', '-c', 'cd /testbed && patch --batch --fuzz=5 -p1 -i /tmp/check2.diff 2>&1',
+                    ], { encoding: 'utf-8', stdio: 'pipe', timeout: 15_000 });
+                    const recheckDiffStat = spawnSync('docker', [
+                      'exec', checkContainerName,
+                      'sh', '-c', 'cd /testbed && git diff --stat',
+                    ], { encoding: 'utf-8', stdio: 'pipe', timeout: 10_000 });
+                    const recheckHasChanges = (recheckDiffStat.stdout || '').trim().length > 0;
+                    let recheckPassed = recheckHasChanges;
+                    let recheckDiag = recheckHasChanges
+                      ? `worktree_changes=${(recheckDiffStat.stdout || '').trim().slice(0, 100)}`
+                      : 'worktree empty after evaluator sequence on repaired patch';
                     if (recheckPassed) {
                       initialPatch = repairedPatch;
                       repairSucceeded = true;
@@ -1462,7 +1504,8 @@ Output ONLY the corrected unified diff:
                   }
                 }
               } else {
-                console.log('[Runner] Phase 1e: git apply --check passed');
+                // preflightPassed was already logged above with worktree details
+                void 0; // no-op: success already logged at line 1399
               }
             } finally {
               if (checkContainerStarted) {

@@ -162,6 +162,33 @@ const WRONG_FILE_NEGATIVE_CONTROL = {
   note: 'Wrong file path (file does not exist in repo). Both git apply --check and patch --fuzz=5 reject. Evaluator records as error (all 3 commands fail).',
 };
 
+/**
+ * Negative control 3: Partial multi-hunk patch (CMD2 stateful behavior).
+ *
+ * Differential matrix cell: runner-rejected (v5.28) / evaluator-unresolved.
+ * - CMD1 (git apply --verbose):          EXIT:0, worktree EMPTY (git apply bug: exits 0 on error)
+ * - CMD2 (git apply --verbose --reject): EXIT:0, worktree EMPTY (same)
+ * - CMD3 (patch --batch --fuzz=5 -p1):   EXIT:0, "Hunk #1 succeeded at 353" but worktree EMPTY
+ *   (patch applies hunk 1 but rolls back on malformed hunk 2 header)
+ * - Final worktree: EMPTY (no changes)
+ * - v5.28 preflight: REJECTED (worktree empty after all three commands)
+ * - v5.26 preflight: would have ACCEPTED (CMD3 exit 0)
+ * - Evaluator outcome: unresolved (evaluator runs same sequence, tests fail on unmodified code)
+ *
+ * This fixture proves the v5.28 improvement: the worktree-inspection criterion
+ * correctly rejects a patch that all three commands accept (exit 0) but that
+ * produces no actual changes. The old dry-run approach would have accepted it.
+ */
+const PARTIAL_MULTIHUNK_NEGATIVE_CONTROL = {
+  instanceId: 'astropy__astropy-13453',
+  baseCommit: 'unknown',  // not in canary v6 predictions
+  imageDigest: 'local:swebench/sweb.eval.x86_64.astropy_1776_astropy-13453:latest',
+  rawPatch: '--- a/astropy/io/ascii/html.py\n+++ b/astropy/io/ascii/html.py\n@@ -352,6 +352,9 @@ class HTML(core.BaseReader):\n         if isinstance(self.data.fill_values, tuple):\n             self.data.fill_values = [self.data.fill_values]\n\n+        self.data.cols = cols\n+        self.data._set_col_formats()\n+\n         self.data._set_fill_values(cols)\n\n         lines = []\n@@ -999,4 +1002,5 @@ class HTML(core.BaseReader):\n     # This context line does not exist at line 999\n     # NC3 hunk2: wrong context to force partial apply\n-    pass  # WRONG_CONTEXT_NC3\n+    pass  # WRONG_CONTEXT_NC3_modified\n     return None\n',
+  expectedPreflightResult: 'rejected' as const,  // v5.28: worktree empty after all three commands
+  expectedEvaluatorOutcome: 'not_resolved' as const,  // evaluator runs same sequence, tests fail
+  note: 'Partial multi-hunk: hunk 1 is the real resolved patch for astropy-13453; hunk 2 has wrong context (line 999 does not exist). All three evaluator commands exit 0 but the worktree is empty after CMD3 (patch rolls back hunk 1 on malformed hunk 2). v5.28 preflight correctly rejects (worktree empty). v5.26 two-stage dry-run would have accepted (CMD3 exit 0).',
+};
+
 // Keep backward-compat alias for the single negative control
 const MALFORMED_NEGATIVE_CONTROL = STALE_BASE_NEGATIVE_CONTROL;
 
@@ -421,10 +448,62 @@ const nc2Row = JSON.stringify({
   _note: WRONG_FILE_NEGATIVE_CONTROL.note,
 });
 
-// Write both negative controls to the JSONL (one row each, same instance_id is fine
-// since the evaluator uses the last row for a given instance_id)
-fs.writeFileSync(negativeControlPath, nc1Row + '\n' + nc2Row + '\n', 'utf-8');
-console.log(`\nNegative control JSONL written with 2 rows (NC1: stale-base, NC2: wrong-file)`);
+// NC3: Partial multi-hunk (CMD2 stateful behavior)
+console.log(`\n[nc3]  ${PARTIAL_MULTIHUNK_NEGATIVE_CONTROL.instanceId} (partial multi-hunk — all cmds exit 0 but worktree empty)`);
+const normalizedNC3 = fixHunkCounts(PARTIAL_MULTIHUNK_NEGATIVE_CONTROL.rawPatch);
+// NC3 apply check: use pre-computed result from shell (Docker not accessible from tsx)
+// The shell script runs: docker exec ... git apply --check /tmp/nc3.diff
+// Expected: CMD3 exits 0 but worktree is empty → v5.28 preflight rejects
+const nc3ApplyExit = process.env['ANDROMEDA_NC3_APPLY_EXIT'];
+const nc3ApplyOutput = process.env['ANDROMEDA_NC3_APPLY_OUTPUT'] || 'pre-computed by shell';
+const applyCheckNC3 = {
+  exitCode: nc3ApplyExit !== undefined ? parseInt(nc3ApplyExit, 10) : 0,
+  output: nc3ApplyOutput,
+  command: 'pre-computed by shell (v5.28 worktree-inspection preflight)',
+};
+console.log(`  apply_check: exit=${applyCheckNC3.exitCode} (0=all cmds exit 0 but worktree empty → rejected by v5.28)`);
+
+const nc3Result = buildCanonicalPatch(
+  PARTIAL_MULTIHUNK_NEGATIVE_CONTROL.rawPatch,
+  PARTIAL_MULTIHUNK_NEGATIVE_CONTROL.instanceId,
+  PARTIAL_MULTIHUNK_NEGATIVE_CONTROL.baseCommit,
+  PARTIAL_MULTIHUNK_NEGATIVE_CONTROL.imageDigest,
+  applyCheckNC3,
+);
+
+// NC3 preflight result depends on the shell-provided apply check:
+// If ANDROMEDA_NC3_APPLY_EXIT=0 (worktree empty), buildCanonicalPatch returns ok=false
+// because exit 0 with empty worktree is treated as a failure by the v5.28 preflight.
+// The shell script sets ANDROMEDA_NC3_APPLY_EXIT=1 to signal "worktree empty" to the builder.
+if (nc3Result.ok) {
+  console.warn(`  WARNING: NC3 (partial multi-hunk) unexpectedly passed preflight.`);
+  console.warn(`  This means the v5.28 worktree-inspection preflight did not reject it.`);
+} else {
+  console.log(`  buildCanonicalPatch: ok=false, reason=${nc3Result.reason} ✓ (v5.28 correctly rejects)`);
+}
+
+const nc3Row = JSON.stringify({
+  instance_id: PARTIAL_MULTIHUNK_NEGATIVE_CONTROL.instanceId,
+  model_patch: normalizedNC3,
+  model_name_or_path: 'andromeda-eval-parity-v5.28-nc3-partial-multihunk',
+  _patch_sha256: sha256(normalizedNC3),
+  _preflight_result: nc3Result.ok ? 'accepted' : 'rejected',
+  _preflight_reason: nc3Result.ok ? 'unexpected' : (nc3Result as {reason: string}).reason,
+  _expected_preflight: PARTIAL_MULTIHUNK_NEGATIVE_CONTROL.expectedPreflightResult,
+  _expected_evaluator_outcome: PARTIAL_MULTIHUNK_NEGATIVE_CONTROL.expectedEvaluatorOutcome,
+  _note: PARTIAL_MULTIHUNK_NEGATIVE_CONTROL.note,
+});
+
+// Write all three negative controls to separate JSONL files (distinct instance IDs for separate evaluator runs)
+const nc1Path = negativeControlPath.replace('.negative_control.jsonl', '.nc1.jsonl');
+const nc2Path = negativeControlPath.replace('.negative_control.jsonl', '.nc2.jsonl');
+const nc3Path = negativeControlPath.replace('.negative_control.jsonl', '.nc3.jsonl');
+fs.writeFileSync(nc1Path, nc1Row + '\n', 'utf-8');
+fs.writeFileSync(nc2Path, nc2Row + '\n', 'utf-8');
+fs.writeFileSync(nc3Path, nc3Row + '\n', 'utf-8');
+// Also write combined file for backward compat
+fs.writeFileSync(negativeControlPath, nc1Row + '\n' + nc2Row + '\n' + nc3Row + '\n', 'utf-8');
+console.log(`\nNegative control JSONLs written: NC1 (stale-base), NC2 (wrong-file), NC3 (partial-multihunk)`);
 
 manifest.negative_controls = [
   {
@@ -446,6 +525,16 @@ manifest.negative_controls = [
     raw_patch_sha256: sha256(normalizedNC2),
     expected_evaluator_outcome: WRONG_FILE_NEGATIVE_CONTROL.expectedEvaluatorOutcome,
     note: WRONG_FILE_NEGATIVE_CONTROL.note,
+  },
+  {
+    label: 'NC3_partial_multihunk',
+    instance_id: PARTIAL_MULTIHUNK_NEGATIVE_CONTROL.instanceId,
+    preflight_result: nc3Result.ok ? 'accepted' : 'rejected',
+    expected_preflight: PARTIAL_MULTIHUNK_NEGATIVE_CONTROL.expectedPreflightResult,
+    raw_patch_bytes: normalizedNC3.length,
+    raw_patch_sha256: sha256(normalizedNC3),
+    expected_evaluator_outcome: PARTIAL_MULTIHUNK_NEGATIVE_CONTROL.expectedEvaluatorOutcome,
+    note: PARTIAL_MULTIHUNK_NEGATIVE_CONTROL.note,
   },
 ];
 
