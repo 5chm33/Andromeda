@@ -1,0 +1,90 @@
+{
+  "preregistration_version": 1,
+  "evaluation_name": "Andromeda v5.30 — SWE-bench Multilingual cross-language readout (Option A)",
+  "evaluation_type": "one_shot_frozen",
+  "preregistration_note": "This record is written before any generation begins. The agent configuration, task list, and all hashes below are frozen. No changes to the agent, model, prompts, or configuration may be made after this record is committed. Results must be reported by language and overall, with apply/timeout/infrastructure outcomes separated from semantic failures.",
+
+  "agent": {
+    "commit": "fa6c21ebf07bc88220c54e05b2c20afdddbeab26",
+    "version": "v5.30",
+    "harness_revision_env": "SWEBENCH_HARNESS_REVISION (must be set before launch)",
+    "eval_protocol_sha256": "3c845d8e0567f2c91c5e432545724c1f3b72d7bcc4ae61806d2a4a594e9d4e83",
+    "eval_protocol_path": "data/eval_protocol_v1.json"
+  },
+
+  "model": {
+    "default_provider": "claude-sonnet-5",
+    "model_id": "claude-sonnet-5",
+    "model_name": "andromeda-v6-claude-sonnet-5",
+    "api_format": "anthropic",
+    "max_tokens": 32000,
+    "temperature": 1,
+    "extended_thinking": false,
+    "prompt_caching": true,
+    "instance_timeout_ms": 1500000,
+    "llm_timeout_ms": 600000,
+    "max_retries": 2,
+    "escalation": "disabled for scored run (SWEBENCH_ESCALATION must not be set)",
+    "note": "Escalation must be disabled. Any change to model, temperature, or decoding settings invalidates this preregistration."
+  },
+
+  "dataset": {
+    "name": "SWE-bench/SWE-bench_Multilingual",
+    "split": "test",
+    "revision": "9b805a99fed4facc17b2707c64216b227922a427",
+    "instance_count": 300,
+    "id_list_sha256": "1d9057d971eb106769f1833deefddecf448eb956482584a34c7756cc02695174",
+    "repo_base_commit_sha256": "a0c08a0f369d3903b80c8ef43c5d8557e457093a56d1b135b6f0300d6ad61cb7",
+    "language_breakdown": {
+      "Ruby": 44,
+      "Java": 43,
+      "Rust": 43,
+      "PHP": 43,
+      "Go": 42,
+      "JavaScript": 33,
+      "C": 25,
+      "C++": 12,
+      "JavaScript/TypeScript": 5,
+      "C/Python": 5,
+      "TypeScript": 5
+    },
+    "python_note": "0 Python-only tasks; 5 C/Python tasks (micropython/micropython)"
+  },
+
+  "disjointness": {
+    "exclusion_registry_count": 2294,
+    "exclusion_registry_id_sha256": "32e0c1d637aa073d4fea0ce85167f45f26932cbd29dbf582da434b3b4fe46262",
+    "overlap_by_instance_id": 0,
+    "overlap_by_repo_base_commit": 0,
+    "disjoint": true,
+    "audit_note": "Exclusion registry stores only instance_id (not repo/base_commit), so the repo@base_commit check is vacuously zero. The instance_id check is authoritative and shows zero overlap."
+  },
+
+  "run_parameters": {
+    "mode": "scored_strict",
+    "concurrency": 1,
+    "spend_cap_usd": 500,
+    "external_search": false,
+    "web_search_env": "SWEBENCH_SEARCH must not be set to 1",
+    "escalation_env": "SWEBENCH_ESCALATION must not be set to 1",
+    "prompt_hash_env": "SWEBENCH_PROMPT_HASH must be set before launch",
+    "dataset_revision_env": "SWEBENCH_DATASET_REVISION=9b805a99fed4facc17b2707c64216b227922a427"
+  },
+
+  "primary_metric": "resolved / selected (evaluator resolved_ids count / 300)",
+
+  "reporting_requirements": [
+    "Report resolved, prediction_ready, exact_apply_failure, timed_out, infra_failure, test_failure separately",
+    "Report results by language group (Ruby, Java, Rust, PHP, Go, JavaScript, C, C++, TypeScript, C/Python)",
+    "Report overall resolved / 300 and resolved / submitted separately",
+    "Do not collapse apply/timeout/infra outcomes into the resolution percentage",
+    "Do not modify the agent after reading any batch result — later batches cease to be held out"
+  ],
+
+  "operational_constraints": [
+    "Execute in operational batches if needed, but freeze configuration before first batch",
+    "Add all 300 Multilingual IDs to exclusion registry before any generation begins",
+    "Score with official SWE-bench evaluator only — internal prediction_ready count is not the score",
+    "Publish run bundle: agent commit, dataset revision, model config, prompt hash, per-instance outcomes"
+  ]
+}

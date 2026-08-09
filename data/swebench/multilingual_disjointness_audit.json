@@ -1,15 +1,20 @@
 {
   "audit_type": "disjointness",
+  "audit_version": 2,
   "exclusion_registry": {
     "path": "/home/ubuntu/andromeda/data/swebench/exclusions.jsonl",
     "count": 2294,
-    "id_list_sha256": "32e0c1d637aa073d4fea0ce85167f45f26932cbd29dbf582da434b3b4fe46262"
+    "id_list_sha256": "32e0c1d637aa073d4fea0ce85167f45f26932cbd29dbf582da434b3b4fe46262",
+    "repo_base_commit_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "repo_base_commit_count": 0
   },
   "multilingual": {
     "dataset": "SWE-bench/SWE-bench_Multilingual",
     "split": "test",
     "count": 300,
+    "repos": 41,
     "id_list_sha256": "1d9057d971eb106769f1833deefddecf448eb956482584a34c7756cc02695174",
+    "repo_base_commit_sha256": "a0c08a0f369d3903b80c8ef43c5d8557e457093a56d1b135b6f0300d6ad61cb7",
     "language_breakdown": {
       "Ruby": 44,
       "Java": 43,
@@ -23,14 +28,20 @@
       "C/Python": 5,
       "TypeScript": 5
     },
-    "repo_count": 41,
-    "language_note": "Language inferred from repo identity (no language column in dataset)",
-    "repos": 41
+    "language_note": "Language inferred from repo identity (no language column in dataset). 0 Python-only tasks; 5 C/Python tasks (micropython/micropython)."
   },
   "overlap": {
-    "count": 0,
-    "ids": []
+    "by_instance_id": {
+      "count": 0,
+      "ids": []
+    },
+    "by_repo_base_commit": {
+      "count": 0,
+      "keys": []
+    }
   },
+  "disjoint_by_id": true,
+  "disjoint_by_repo_base_commit": true,
   "disjoint": true,
-  "note": "Audit accessed only instance_id, repo, base_commit. No issue text, patches, or tests were read. Language inferred from repo identity. Zero overlap with 2,294-ID exclusion registry confirmed."
+  "note": "Audit accessed only instance_id, repo, base_commit. No issue text, patches, or tests were read. Disjointness verified on two independent keys: instance_id and repo@base_commit."
 }
