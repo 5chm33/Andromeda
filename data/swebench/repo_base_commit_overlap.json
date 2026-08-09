@@ -1,0 +1,10 @@
+{
+  "historical_repo_base_commit_count": 2174,
+  "historical_repo_base_commit_sha256": "49dd82c81a60f9cddff0dcd69a54db38f0ab5ce19fee117ef8ada7b1b4a43df1",
+  "multilingual_repo_base_commit_count": 300,
+  "multilingual_repo_base_commit_sha256": "a0c08a0f369d3903b80c8ef43c5d8557e457093a56d1b135b6f0300d6ad61cb7",
+  "overlap_count": 0,
+  "overlap_keys": [],
+  "disjoint": true,
+  "note": "Historical repo@base_commit reconstructed from princeton-nlp/SWE-bench rev e48e2bd1 (the pinned dataset revision used in the prior full run), filtered to the 2,294 IDs in the exclusion registry."
+}

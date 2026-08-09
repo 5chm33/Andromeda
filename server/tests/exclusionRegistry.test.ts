@@ -117,7 +117,7 @@ describe('P0.1 Exclusion Registry Gate', () => {
     const exclusionCheck = result.checks.find(c => c.id === 'no-excluded-tasks');
     expect(exclusionCheck).toBeDefined();
     expect(exclusionCheck!.passed).toBe(true);
-    expect(exclusionCheck!.detail).toContain('0 violations');
+    expect(exclusionCheck!.detail).toContain('0 hard violations');
   });
 
   it('FAILS when a selected ID appears in the exclusion registry', () => {
@@ -135,9 +135,9 @@ describe('P0.1 Exclusion Registry Gate', () => {
     const exclusionCheck = result.checks.find(c => c.id === 'no-excluded-tasks');
     expect(exclusionCheck).toBeDefined();
     expect(exclusionCheck!.passed).toBe(false);
-    expect(exclusionCheck!.detail).toContain('EXCLUSION VIOLATION');
+    expect(exclusionCheck!.detail).toContain('HARD EXCLUSION');
     expect(exclusionCheck!.detail).toContain(knownEarlierTask);
-    expect(exclusionCheck!.detail).toContain('1 selected instance(s)');
+    expect(exclusionCheck!.detail).toContain('1 ID(s)');
     // The check blocks launch
     expect(exclusionCheck!.blocksLaunch).toBe(true);
   });
@@ -154,7 +154,7 @@ describe('P0.1 Exclusion Registry Gate', () => {
     const result = runPreLaunchChecklist(config);
     const exclusionCheck = result.checks.find(c => c.id === 'no-excluded-tasks');
     expect(exclusionCheck!.passed).toBe(false);
-    expect(exclusionCheck!.detail).toContain('3 selected instance(s)');
+    expect(exclusionCheck!.detail).toContain('3 ID(s)');
   });
 
   it('FAILS when scored run has no exclusion registry configured', () => {
@@ -196,6 +196,28 @@ describe('P0.1 Exclusion Registry Gate', () => {
     // Just verify the exclusion check passes
     const exclusionCheck = result.checks.find(c => c.id === 'no-excluded-tasks');
     expect(exclusionCheck!.passed).toBe(true);
+  });
+
+  it('FAILS when a reserved ID is used without a matching preregistration', () => {
+    // Reserved IDs are NOT in the immutable registry but require exact preregistration match
+    const reservedId = 'multi__multi-001';
+    const regPath = writeExclusionRegistry(tmpDir, ['old__old-001']); // reserved ID not in registry
+    const reservedPath = path.join(tmpDir, 'multilingual_reserved_run.jsonl');
+    fs.writeFileSync(reservedPath, JSON.stringify({ instance_id: reservedId, source: 'swebench_multilingual_preregistered' }) + '\n');
+    const taskPath = writeTaskList(tmpDir, [reservedId]);
+    const config = baseConfig(tmpDir, {
+      taskListPath: taskPath,
+      exclusionRegistryPath: regPath,
+      reservedRunManifestPath: reservedPath,
+      // No preregistrationHash or campaignId — should fail
+      selectedInstanceIds: [reservedId],
+    });
+    const result = runPreLaunchChecklist(config);
+    const exclusionCheck = result.checks.find(c => c.id === 'no-excluded-tasks');
+    expect(exclusionCheck).toBeDefined();
+    expect(exclusionCheck!.passed).toBe(false);
+    expect(exclusionCheck!.detail).toContain('RESERVATION VIOLATION');
+    expect(exclusionCheck!.blocksLaunch).toBe(true);
   });
 
   it('handles malformed JSONL lines in the registry gracefully', () => {

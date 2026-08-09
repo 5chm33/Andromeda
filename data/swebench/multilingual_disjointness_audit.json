@@ -1,12 +1,13 @@
 {
   "audit_type": "disjointness",
-  "audit_version": 2,
+  "audit_version": 3,
   "exclusion_registry": {
     "path": "/home/ubuntu/andromeda/data/swebench/exclusions.jsonl",
     "count": 2294,
     "id_list_sha256": "32e0c1d637aa073d4fea0ce85167f45f26932cbd29dbf582da434b3b4fe46262",
-    "repo_base_commit_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-    "repo_base_commit_count": 0
+    "repo_base_commit_sha256": "49dd82c81a60f9cddff0dcd69a54db38f0ab5ce19fee117ef8ada7b1b4a43df1",
+    "repo_base_commit_count": 2174,
+    "repo_base_commit_source": "Reconstructed from princeton-nlp/SWE-bench rev e48e2bd1 (the pinned dataset revision used in the prior full run), filtered to the 2,294 IDs in the exclusion registry."
   },
   "multilingual": {
     "dataset": "SWE-bench/SWE-bench_Multilingual",
@@ -28,7 +29,8 @@
       "C/Python": 5,
       "TypeScript": 5
     },
-    "language_note": "Language inferred from repo identity (no language column in dataset). 0 Python-only tasks; 5 C/Python tasks (micropython/micropython)."
+    "language_note": "Language inferred from repo identity (no language column in dataset). 0 Python-only tasks; 5 C/Python tasks (micropython/micropython).",
+    "repo_base_commit_count": 300
   },
   "overlap": {
     "by_instance_id": {
@@ -37,11 +39,12 @@
     },
     "by_repo_base_commit": {
       "count": 0,
-      "keys": []
+      "keys": [],
+      "source_note": "Historical repo@base_commit reconstructed from princeton-nlp/SWE-bench rev e48e2bd1 (the pinned dataset revision used in the prior full run), filtered to the 2,294 IDs in the exclusion registry."
     }
   },
   "disjoint_by_id": true,
   "disjoint_by_repo_base_commit": true,
   "disjoint": true,
-  "note": "Audit accessed only instance_id, repo, base_commit. No issue text, patches, or tests were read. Disjointness verified on two independent keys: instance_id and repo@base_commit."
+  "note": "Audit accessed only instance_id, repo, base_commit. No issue text, patches, or tests were read. Disjointness verified on two independent keys: (1) instance_id \u2014 direct comparison against exclusion registry; (2) repo@base_commit \u2014 historical set reconstructed from princeton-nlp/SWE-bench rev e48e2bd1, filtered to the 2,294 exclusion-registry IDs. Both checks show zero overlap."
 }

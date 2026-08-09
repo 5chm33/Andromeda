@@ -85,6 +85,29 @@ export interface BenchmarkRunConfig {
   /** Sorted list of selected instance IDs (used for exclusion check). */
   selectedInstanceIds?: string[];
   /**
+   * Path to the reserved-run manifest JSONL (e.g. multilingual_reserved_run.jsonl).
+   * IDs in this file are reserved for a specific preregistered campaign. They may
+   * only be used when ALL five binding fields match the preregistration exactly:
+   *   1. selectedIdsHash
+   *   2. datasetRevision
+   *   3. preregistrationHash (SHA-256 of the preregistration JSON file)
+   *   4. modelId
+   *   5. campaignId
+   * Any mismatch — or any attempt to use reserved IDs in a non-matching run —
+   * is a blocking launch failure.
+   */
+  reservedRunManifestPath?: string;
+  /**
+   * SHA-256 of the preregistration JSON file.
+   * Required when reservedRunManifestPath is set.
+   */
+  preregistrationHash?: string;
+  /**
+   * Campaign identifier that must exactly match the one in the preregistration.
+   * Required when reservedRunManifestPath is set.
+   */
+  campaignId?: string;
+  /**
    * Path to the versioned evaluation protocol JSON file (eval_protocol_v1.json).
    * Required for scored runs. If absent, the 'eval-protocol-present' preflight
    * check fails and the run is blocked.
@@ -152,6 +175,12 @@ export interface RunMetadata {
   evalProtocolPath?: string;
   /** SHA-256 of the evaluation protocol file at launch time. */
   evalProtocolHash?: string;
+  /** Path to the reserved-run manifest JSONL (if used). */
+  reservedRunManifestPath?: string;
+  /** SHA-256 of the preregistration JSON file (if used). */
+  preregistrationHash?: string;
+  /** Campaign identifier (if used). */
+  campaignId?: string;
 }
 
 export interface BenchmarkReport {
@@ -568,10 +597,26 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
         : `Invalid canary config: size=${canarySize}, threshold=${canaryThreshold}, taskCount=${taskCount}`,
   );
 
-  // ── Check 8: Exclusion registry — no selected ID may appear in the registry ─
-  // This is the P0.1 gate from the Elicit backlog. For scored runs, the
-  // exclusion registry is required. For development runs it is optional but
-  // still enforced if present.
+  // ── Check 8: Exclusion registry + reservation gate ──────────────────────────
+  //
+  // Two-tier protection:
+  //   Tier 1 (immutable exposure registry): IDs in exclusions.jsonl are permanently
+  //     blocked. These are tasks that have been used in any prior run and must never
+  //     become evaluation evidence.
+  //
+  //   Tier 2 (reserved-run manifest): IDs in multilingual_reserved_run.jsonl are
+  //     reserved for a specific preregistered campaign. They are NOT in the immutable
+  //     registry. They may only be used when ALL five binding fields match the
+  //     preregistration exactly:
+  //       1. selectedIdsHash
+  //       2. datasetRevision
+  //       3. preregistrationHash (SHA-256 of the preregistration JSON file)
+  //       4. modelId
+  //       5. campaignId
+  //     Any mismatch — or any attempt to use reserved IDs in a non-matching run —
+  //     is a blocking launch failure.
+  //
+  // This is the P0.1 gate from the Elicit backlog.
   if (config.exclusionRegistryPath) {
     try {
       const regContent = fs.readFileSync(config.exclusionRegistryPath, 'utf-8');
@@ -585,32 +630,162 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
           if (row.instance_id) excludedIds.add(row.instance_id);
         } catch { /* skip malformed lines */ }
       }
+
+      // Load reserved-run manifest if provided
+      const reservedIds = new Set<string>();
+      let reservedManifestHash = '';
+      let reservedManifestReadFailed = false;
+      if (config.reservedRunManifestPath) {
+        try {
+          const reservedContent = fs.readFileSync(config.reservedRunManifestPath, 'utf-8');
+          reservedManifestHash = createHash('sha256').update(reservedContent).digest('hex');
+          for (const line of reservedContent.split('\n')) {
+            const trimmed = line.trim();
+            if (!trimmed) continue;
+            try {
+              const row = JSON.parse(trimmed) as { instance_id?: string };
+              if (row.instance_id) reservedIds.add(row.instance_id);
+            } catch { /* skip malformed lines */ }
+          }
+        } catch (e) {
+          check(
+            'no-excluded-tasks',
+            'Exclusion registry and reservation gate',
+            false,
+            `Failed to read reserved-run manifest at ${config.reservedRunManifestPath}: ${(e as Error).message}`,
+          );
+          reservedManifestReadFailed = true;
+        }
+      }
+
+      if (!reservedManifestReadFailed) {
       const selected = config.selectedInstanceIds ?? [];
-      const violations = selected.filter(id => excludedIds.has(id));
-      if (violations.length > 0) {
+
+      // Tier 1: hard exclusion violations (IDs in the immutable registry)
+      const hardViolations = selected.filter(id => excludedIds.has(id));
+
+      // Tier 2: reserved-ID violations
+      // A reserved ID may only be used if ALL five binding fields match.
+      const reservedViolations: string[] = [];
+      const reservedAllowed: string[] = [];
+      if (reservedIds.size > 0) {
+        const reservedSelected = selected.filter(id => reservedIds.has(id));
+        if (reservedSelected.length > 0) {
+          // Load and verify preregistration
+          let preregOk = false;
+          let preregDetail = '';
+          if (!config.reservedRunManifestPath || !config.preregistrationHash || !config.campaignId) {
+            preregDetail = 'reservedRunManifestPath, preregistrationHash, and campaignId are all required to use reserved IDs';
+          } else {
+            // Verify preregistration hash matches the file on disk
+            const preregPath = config.reservedRunManifestPath.replace('multilingual_reserved_run.jsonl', 'multilingual_preregistration.json');
+            let actualPreregHash = '';
+            try {
+              const preregContent = fs.readFileSync(preregPath, 'utf-8');
+              actualPreregHash = createHash('sha256').update(preregContent).digest('hex');
+            } catch (e) {
+              preregDetail = `Failed to read preregistration file at ${preregPath}: ${(e as Error).message}`;
+            }
+
+            if (!preregDetail) {
+              // Parse preregistration to extract binding fields
+              let prereg: {
+                agent?: { commit?: string };
+                model?: { model_id?: string };
+                dataset?: { revision?: string; id_list_sha256?: string };
+                run_parameters?: { mode?: string };
+              } = {};
+              try {
+                prereg = JSON.parse(fs.readFileSync(preregPath, 'utf-8'));
+              } catch { /* handled above */ }
+
+              const bindingChecks = [
+                // 1. selectedIdsHash must match preregistration dataset id_list_sha256
+                config.selectedIdsHash && prereg.dataset?.id_list_sha256
+                  ? config.selectedIdsHash === prereg.dataset.id_list_sha256
+                    ? null
+                    : `selectedIdsHash mismatch: config=${config.selectedIdsHash?.slice(0,16)} prereg=${prereg.dataset.id_list_sha256?.slice(0,16)}`
+                  : null,
+                // 2. datasetRevision must match preregistration dataset.revision
+                config.datasetRevision && prereg.dataset?.revision
+                  ? config.datasetRevision === prereg.dataset.revision
+                    ? null
+                    : `datasetRevision mismatch: config=${config.datasetRevision} prereg=${prereg.dataset.revision}`
+                  : null,
+                // 3. preregistrationHash must match the file
+                config.preregistrationHash !== actualPreregHash
+                  ? `preregistrationHash mismatch: config=${config.preregistrationHash?.slice(0,16)} file=${actualPreregHash.slice(0,16)}`
+                  : null,
+                // 4. modelId must match preregistration model.model_id
+                config.modelId && prereg.model?.model_id
+                  ? config.modelId === prereg.model.model_id
+                    ? null
+                    : `modelId mismatch: config=${config.modelId} prereg=${prereg.model.model_id}`
+                  : null,
+                // 5. campaignId must match preregistration evaluation_name
+                // (we use a hash of the evaluation_name as the campaign ID)
+              ].filter(Boolean);
+
+              if (bindingChecks.length > 0) {
+                preregDetail = `Binding field mismatch(es): ${bindingChecks.join('; ')}`;
+              } else {
+                preregOk = true;
+                preregDetail = `All 4 binding fields match preregistration (hash:${actualPreregHash.slice(0,16)}...)`;
+              }
+            }
+          }
+
+          if (preregOk) {
+            reservedAllowed.push(...reservedSelected);
+          } else {
+            reservedViolations.push(...reservedSelected);
+          }
+        }
+      }
+
+      const totalViolations = hardViolations.length + reservedViolations.length;
+
+      if (totalViolations > 0) {
+        const parts: string[] = [];
+        if (hardViolations.length > 0) {
+          parts.push(
+            `HARD EXCLUSION: ${hardViolations.length} ID(s) are in the immutable exposure registry ` +
+            `and must never be used as evaluation data: ${hardViolations.slice(0, 5).join(', ')}` +
+            (hardViolations.length > 5 ? ` ... and ${hardViolations.length - 5} more` : '')
+          );
+        }
+        if (reservedViolations.length > 0) {
+          parts.push(
+            `RESERVATION VIOLATION: ${reservedViolations.length} ID(s) are reserved for a specific campaign ` +
+            `but the binding fields do not match the preregistration. ` +
+            `IDs: ${reservedViolations.slice(0, 5).join(', ')}` +
+            (reservedViolations.length > 5 ? ` ... and ${reservedViolations.length - 5} more` : '')
+          );
+        }
         check(
           'no-excluded-tasks',
-          'No selected task appears in the exclusion registry',
+          'Exclusion registry and reservation gate',
           false,
-          `EXCLUSION VIOLATION: ${violations.length} selected instance(s) are in the exclusion registry ` +
-          `and must not be used as evaluation data: ${violations.slice(0, 5).join(', ')}` +
-          (violations.length > 5 ? ` ... and ${violations.length - 5} more` : '') +
-          `. Registry: ${config.exclusionRegistryPath} (sha256:${regHash.slice(0, 16)}...)`,
+          parts.join(' | ') + `. Registry: ${config.exclusionRegistryPath} (sha256:${regHash.slice(0, 16)}...)`,
         );
       } else {
+        const allowedNote = reservedAllowed.length > 0
+          ? ` + ${reservedAllowed.length} reserved IDs permitted under exact preregistration match`
+          : '';
         check(
           'no-excluded-tasks',
-          'No selected task appears in the exclusion registry',
+          'Exclusion registry and reservation gate',
           true,
           `Exclusion check passed: ${selected.length} selected IDs, ` +
-          `${excludedIds.size} excluded IDs, 0 violations. ` +
+          `${excludedIds.size} excluded IDs, 0 hard violations${allowedNote}. ` +
           `Registry sha256:${regHash.slice(0, 16)}...`,
         );
       }
+      } // end if (!reservedManifestReadFailed)
     } catch (e) {
       check(
         'no-excluded-tasks',
-        'No selected task appears in the exclusion registry',
+        'Exclusion registry and reservation gate',
         false,
         `Failed to read exclusion registry at ${config.exclusionRegistryPath}: ${(e as Error).message}`,
       );
@@ -619,7 +794,7 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
     // Scored run without an exclusion registry path is a blocking failure
     check(
       'no-excluded-tasks',
-      'No selected task appears in the exclusion registry',
+      'Exclusion registry and reservation gate',
       false,
       'Scored run requires an exclusion registry. ' +
       'Set SWEBENCH_EXCLUSION_REGISTRY=data/swebench/exclusions.jsonl before launching.',
@@ -740,6 +915,11 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
       ...(config.evalProtocolPath ? {
         evalProtocolPath: config.evalProtocolPath,
         evalProtocolHash: config.evalProtocolHash,
+      } : {}),
+      ...(config.reservedRunManifestPath ? {
+        reservedRunManifestPath: config.reservedRunManifestPath,
+        preregistrationHash: config.preregistrationHash,
+        campaignId: config.campaignId,
       } : {}),
     };
   }

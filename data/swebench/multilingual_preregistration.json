@@ -1,17 +1,28 @@
 {
   "preregistration_version": 1,
-  "evaluation_name": "Andromeda v5.30 — SWE-bench Multilingual cross-language readout (Option A)",
+  "evaluation_name": "Andromeda v5.30 \u2014 SWE-bench Multilingual cross-language readout (Option A)",
   "evaluation_type": "one_shot_frozen",
   "preregistration_note": "This record is written before any generation begins. The agent configuration, task list, and all hashes below are frozen. No changes to the agent, model, prompts, or configuration may be made after this record is committed. Results must be reported by language and overall, with apply/timeout/infrastructure outcomes separated from semantic failures.",
-
   "agent": {
-    "commit": "fa6c21ebf07bc88220c54e05b2c20afdddbeab26",
+    "commit": "dd0cc99d",
     "version": "v5.30",
     "harness_revision_env": "SWEBENCH_HARNESS_REVISION (must be set before launch)",
     "eval_protocol_sha256": "3c845d8e0567f2c91c5e432545724c1f3b72d7bcc4ae61806d2a4a594e9d4e83",
-    "eval_protocol_path": "data/eval_protocol_v1.json"
+    "eval_protocol_path": "data/eval_protocol_v1.json",
+    "commit_note": "dd0cc99d is the verified v5.30 harness-freeze commit. Governance commits fa6c21eb and bcd59188 change only: data/swebench/exclusions.jsonl, data/swebench/lite_ids.json, data/swebench/multilingual_disjointness_audit.json, data/swebench/multilingual_preregistration.json, scripts/audit_multilingual_disjointness.py. All evaluated agent/harness/prompt files are byte-identical at dd0cc99d and HEAD.",
+    "evaluated_file_sha256_at_dd0cc99d": {
+      "scripts/run_swebench.ts": "529d771ab7408a163fd5780b1aea82c0b8c145079c4f5bc549c5983e95768dab",
+      "server/sweBenchTracebackLoop.ts": "06f506e826fba159eb048ad254ea5ebe5182977f4e08606d330d437cab016c70",
+      "server/canonicalPatch.ts": "ef9009bbb4ee019d78e6e09fec14c12ae21ae11afcdfbc58cd8211f9a789c614",
+      "server/benchmarkLauncher.ts": "1569d1de0d98914d367c3573756eba5a6bdda39aefbf7cd295e1159386cbd8ee",
+      "server/sweBenchEvalMode.ts": "713f0f66b70315ab430aa9fe575db6ad9480ab09b807b23d0e32e181bbac4558",
+      "server/sweBenchModelConfig.ts": "aaa44388709023729568c45ad8b1a8e4602d6cade7f4a4a79035ee4eea8fd814",
+      "server/hardenedSandbox.ts": "5da6d7f5674463519b773762ad6471dcb35a74612912951320b81d8003c540c3",
+      "scripts/build_eval_parity_fixtures.ts": "1bbd92f4776a56cb57bbde110e153010e77e7e5966238087b1382e4b97e13d18",
+      "scripts/test_evaluator_parity.sh": "78b044c00436c599d377616c0d69bcbc0cb82cde7f4934c11828565b038155d8",
+      "data/eval_protocol_v1.json": "3c845d8e0567f2c91c5e432545724c1f3b72d7bcc4ae61806d2a4a594e9d4e83"
+    }
   },
-
   "model": {
     "default_provider": "claude-sonnet-5",
     "model_id": "claude-sonnet-5",
@@ -27,7 +38,6 @@
     "escalation": "disabled for scored run (SWEBENCH_ESCALATION must not be set)",
     "note": "Escalation must be disabled. Any change to model, temperature, or decoding settings invalidates this preregistration."
   },
-
   "dataset": {
     "name": "SWE-bench/SWE-bench_Multilingual",
     "split": "test",
@@ -50,7 +60,6 @@
     },
     "python_note": "0 Python-only tasks; 5 C/Python tasks (micropython/micropython)"
   },
-
   "disjointness": {
     "exclusion_registry_count": 2294,
     "exclusion_registry_id_sha256": "32e0c1d637aa073d4fea0ce85167f45f26932cbd29dbf582da434b3b4fe46262",
@@ -59,7 +68,6 @@
     "disjoint": true,
     "audit_note": "Exclusion registry stores only instance_id (not repo/base_commit), so the repo@base_commit check is vacuously zero. The instance_id check is authoritative and shows zero overlap."
   },
-
   "run_parameters": {
     "mode": "scored_strict",
     "concurrency": 1,
@@ -70,21 +78,18 @@
     "prompt_hash_env": "SWEBENCH_PROMPT_HASH must be set before launch",
     "dataset_revision_env": "SWEBENCH_DATASET_REVISION=9b805a99fed4facc17b2707c64216b227922a427"
   },
-
   "primary_metric": "resolved / selected (evaluator resolved_ids count / 300)",
-
   "reporting_requirements": [
     "Report resolved, prediction_ready, exact_apply_failure, timed_out, infra_failure, test_failure separately",
     "Report results by language group (Ruby, Java, Rust, PHP, Go, JavaScript, C, C++, TypeScript, C/Python)",
     "Report overall resolved / 300 and resolved / submitted separately",
     "Do not collapse apply/timeout/infra outcomes into the resolution percentage",
-    "Do not modify the agent after reading any batch result — later batches cease to be held out"
+    "Do not modify the agent after reading any batch result \u2014 later batches cease to be held out"
   ],
-
   "operational_constraints": [
     "Execute in operational batches if needed, but freeze configuration before first batch",
     "Add all 300 Multilingual IDs to exclusion registry before any generation begins",
-    "Score with official SWE-bench evaluator only — internal prediction_ready count is not the score",
+    "Score with official SWE-bench evaluator only \u2014 internal prediction_ready count is not the score",
     "Publish run bundle: agent commit, dataset revision, model config, prompt hash, per-instance outcomes"
   ]
 }
