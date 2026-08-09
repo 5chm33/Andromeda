@@ -4,17 +4,17 @@
   "evaluation_type": "one_shot_frozen",
   "preregistration_note": "This record is written before any generation begins. The agent configuration, task list, and all hashes below are frozen. No changes to the agent, model, prompts, or configuration may be made after this record is committed. Results must be reported by language and overall, with apply/timeout/infrastructure outcomes separated from semantic failures.",
   "agent": {
-    "commit": "dd0cc99d",
+    "commit": "ecb716c878b9537f2b9cb771143a0d7fb81b87fa",
     "version": "v5.30",
     "harness_revision_env": "SWEBENCH_HARNESS_REVISION (must be set before launch)",
     "eval_protocol_sha256": "3c845d8e0567f2c91c5e432545724c1f3b72d7bcc4ae61806d2a4a594e9d4e83",
     "eval_protocol_path": "data/eval_protocol_v1.json",
-    "commit_note": "dd0cc99d is the verified v5.30 harness-freeze commit. Governance commits fa6c21eb and bcd59188 change only: data/swebench/exclusions.jsonl, data/swebench/lite_ids.json, data/swebench/multilingual_disjointness_audit.json, data/swebench/multilingual_preregistration.json, scripts/audit_multilingual_disjointness.py. All evaluated agent/harness/prompt files are byte-identical at dd0cc99d and HEAD.",
-    "evaluated_file_sha256_at_dd0cc99d": {
+    "commit_note": "ecb716c878b9537f2b9cb771143a0d7fb81b87fa is the exact executable revision that includes the reservation gate (server/benchmarkLauncher.ts Check 8 two-tier protection). This is the commit that must be checked out to run the Option A campaign. The v5.30 harness-freeze commit dd0cc99d is the ancestor that established the parity fixture; ecb716c8 adds the governance layer on top of it.",
+    "evaluated_file_sha256_at_ecb716c8": {
       "scripts/run_swebench.ts": "529d771ab7408a163fd5780b1aea82c0b8c145079c4f5bc549c5983e95768dab",
       "server/sweBenchTracebackLoop.ts": "06f506e826fba159eb048ad254ea5ebe5182977f4e08606d330d437cab016c70",
       "server/canonicalPatch.ts": "ef9009bbb4ee019d78e6e09fec14c12ae21ae11afcdfbc58cd8211f9a789c614",
-      "server/benchmarkLauncher.ts": "1569d1de0d98914d367c3573756eba5a6bdda39aefbf7cd295e1159386cbd8ee",
+      "server/benchmarkLauncher.ts": "a9093c1d62a25aee90d9b792cb303120a8069ab2bc3ad839696503b658942119",
       "server/sweBenchEvalMode.ts": "713f0f66b70315ab430aa9fe575db6ad9480ab09b807b23d0e32e181bbac4558",
       "server/sweBenchModelConfig.ts": "aaa44388709023729568c45ad8b1a8e4602d6cade7f4a4a79035ee4eea8fd814",
       "server/hardenedSandbox.ts": "5da6d7f5674463519b773762ad6471dcb35a74612912951320b81d8003c540c3",
@@ -66,7 +66,10 @@
     "overlap_by_instance_id": 0,
     "overlap_by_repo_base_commit": 0,
     "disjoint": true,
-    "audit_note": "Exclusion registry stores only instance_id (not repo/base_commit), so the repo@base_commit check is vacuously zero. The instance_id check is authoritative and shows zero overlap."
+    "audit_note": "Disjointness verified on two independent keys. (1) instance_id: direct comparison against exclusion registry \u2014 0 overlap. (2) repo@base_commit: historical set reconstructed from princeton-nlp/SWE-bench rev e48e2bd1, filtered to the 2,294 exclusion-registry IDs \u2014 0 overlap. Both checks are substantive. See multilingual_disjointness_audit.json v3.",
+    "historical_repo_base_commit_sha256": "49dd82c81a60f9cddff0dcd69a54db38f0ab5ce19fee117ef8ada7b1b4a43df1",
+    "historical_repo_base_commit_count": 2174,
+    "multilingual_repo_base_commit_sha256": "a0c08a0f369d3903b80c8ef43c5d8557e457093a56d1b135b6f0300d6ad61cb7"
   },
   "run_parameters": {
     "mode": "scored_strict",
@@ -87,9 +90,20 @@
     "Do not modify the agent after reading any batch result \u2014 later batches cease to be held out"
   ],
   "operational_constraints": [
-    "Execute in operational batches if needed, but freeze configuration before first batch",
-    "Add all 300 Multilingual IDs to exclusion registry before any generation begins",
-    "Score with official SWE-bench evaluator only \u2014 internal prediction_ready count is not the score",
-    "Publish run bundle: agent commit, dataset revision, model config, prompt hash, per-instance outcomes"
-  ]
+    "The 300 Multilingual IDs are in multilingual_reserved_run.jsonl (NOT in exclusions.jsonl).",
+    "The reservation gate in BenchmarkLauncher Check 8 permits these IDs only when all binding fields match this preregistration exactly.",
+    "After the frozen run finishes, promote all 300 reserved IDs to exclusions.jsonl (permanent exposure registry).",
+    "Execute in operational batches if needed, but freeze configuration before first batch.",
+    "Score with official SWE-bench evaluator only \u2014 internal prediction_ready count is not the score.",
+    "Publish run bundle: agent commit, dataset revision, model config, prompt hash, per-instance outcomes.",
+    "Do not modify the agent after reading any batch result \u2014 later batches cease to be held out."
+  ],
+  "binding_hashes": {
+    "reserved_manifest_sha256": "4bd69a06b7b5df7dec2cf51a552c0c677314abf7762acfc28cad88f6c9ed769c",
+    "selected_ids_sha256": "1d9057d971eb106769f1833deefddecf448eb956482584a34c7756cc02695174",
+    "selected_ids_count": 300,
+    "note": "These hashes are the binding fields for the reservation gate. The launcher will verify selected_ids_sha256 against the preregistration dataset.id_list_sha256 before permitting any reserved ID."
+  },
+  "preregistration_hash": "da68d042f73d2074ee346453d355b282b601629269649a53b6369c944710a9c1",
+  "preregistration_hash_note": "SHA-256 of the JSON content with this field absent (canonical: sorted keys, 2-space indent). The launcher verifies config.preregistrationHash against this value by reading the file, removing this field, serializing canonically, and hashing."
 }
