@@ -7,8 +7,8 @@
     "harness_revision_env": "SWEBENCH_HARNESS_REVISION (must be set before launch)",
     "eval_protocol_sha256": "3c845d8e0567f2c91c5e432545724c1f3b72d7bcc4ae61806d2a4a594e9d4e83",
     "eval_protocol_path": "data/eval_protocol_v1.json",
-    "commit": "899064832fbcb4042588a481e368604c8d62cd1b",
-    "commit_note": "89906483 is the single exact executable revision for Option A. All ten evaluated-file hashes are recorded at this commit. Check 0b verifies these hashes at launch.",
+    "commit": "7d813c9746e86fd382d525fa6a0f6e0d9ca1e6b0",
+    "commit_note": "7d813c97 is the single exact executable revision for Option A. All ten evaluated-file hashes are recorded at this commit. Check 0b verifies these hashes at launch.",
     "evaluated_file_sha256": {
       "scripts/run_swebench.ts": "529d771ab7408a163fd5780b1aea82c0b8c145079c4f5bc549c5983e95768dab",
       "server/sweBenchTracebackLoop.ts": "06f506e826fba159eb048ad254ea5ebe5182977f4e08606d330d437cab016c70",
@@ -103,6 +103,6 @@
     "selected_ids_count": 300,
     "note": "These hashes are the binding fields for the reservation gate. The launcher will verify selected_ids_sha256 against the preregistration dataset.id_list_sha256 before permitting any reserved ID."
   },
-  "preregistration_hash": "7613ff00674b41ebed96de1fca7aef7985953f40da82ceec0cd66f400ce6f205",
+  "preregistration_hash": "ab206b91a3c2d959462a00d37e7cae023ac071b2d99b06e1d2ba5c11f46953f7",
   "preregistration_hash_note": "SHA-256 of the JSON content with this field and preregistration_hash_note absent, serialized with json.dumps(indent=2, ensure_ascii=False). Equivalent to Node.js JSON.stringify(obj, null, 2) for this content."
 }
