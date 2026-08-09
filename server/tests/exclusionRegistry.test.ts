@@ -220,6 +220,79 @@ describe('P0.1 Exclusion Registry Gate', () => {
     expect(exclusionCheck!.blocksLaunch).toBe(true);
   });
 
+  it('PASSES when a reserved ID is used with the exact preregistered binding', () => {
+    // The reservation gate must allow reserved IDs when all binding fields match exactly.
+    const reservedId = 'multi__multi-002';
+    const regPath = writeExclusionRegistry(tmpDir, ['old__old-001']); // reserved ID not in registry
+    const reservedPath = path.join(tmpDir, 'multilingual_reserved_run.jsonl');
+    fs.writeFileSync(reservedPath, JSON.stringify({ instance_id: reservedId, source: 'swebench_multilingual_preregistered' }) + '\n');
+    const taskPath = writeTaskList(tmpDir, [reservedId]);
+    // Write a minimal preregistration file that the launcher will read
+    const preregPath = path.join(tmpDir, 'multilingual_preregistration.json');
+    const selectedIds = [reservedId].sort();
+    const selectedIdsHash = require('crypto').createHash('sha256')
+      .update(JSON.stringify(selectedIds)).digest('hex');
+    const preregContent = JSON.stringify({
+      agent: { commit: 'abc123' },
+      model: { model_id: 'test-model' },
+      dataset: { revision: 'abc123def456', id_list_sha256: selectedIdsHash },
+      run_parameters: { mode: 'scored_strict' },
+    });
+    fs.writeFileSync(preregPath, preregContent);
+    const rawPreregHash = require('crypto').createHash('sha256').update(preregContent).digest('hex');
+    const config = baseConfig(tmpDir, {
+      taskListPath: taskPath,
+      exclusionRegistryPath: regPath,
+      reservedRunManifestPath: reservedPath,
+      preregistrationHash: rawPreregHash,
+      campaignId: 'test-campaign',
+      selectedInstanceIds: selectedIds,
+      selectedIdsHash: selectedIdsHash,
+      datasetRevision: 'abc123def456',
+      modelId: 'test-model',
+    });
+    const result = runPreLaunchChecklist(config);
+    const exclusionCheck = result.checks.find(c => c.id === 'no-excluded-tasks');
+    expect(exclusionCheck).toBeDefined();
+    expect(exclusionCheck!.passed).toBe(true);
+    expect(exclusionCheck!.detail).toContain('reserved IDs permitted under exact preregistration match');
+  });
+
+  it('FAILS when a reserved ID is used with a mismatched preregistration hash', () => {
+    // The reservation gate must reject reserved IDs when the preregistration hash is wrong.
+    const reservedId = 'multi__multi-003';
+    const regPath = writeExclusionRegistry(tmpDir, ['old__old-001']);
+    const reservedPath = path.join(tmpDir, 'multilingual_reserved_run.jsonl');
+    fs.writeFileSync(reservedPath, JSON.stringify({ instance_id: reservedId, source: 'swebench_multilingual_preregistered' }) + '\n');
+    const taskPath = writeTaskList(tmpDir, [reservedId]);
+    const preregPath = path.join(tmpDir, 'multilingual_preregistration.json');
+    const selectedIds = [reservedId].sort();
+    const selectedIdsHash = require('crypto').createHash('sha256')
+      .update(JSON.stringify(selectedIds)).digest('hex');
+    fs.writeFileSync(preregPath, JSON.stringify({
+      agent: { commit: 'abc123' },
+      model: { model_id: 'test-model' },
+      dataset: { revision: 'abc123def456', id_list_sha256: selectedIdsHash },
+    }));
+    const config = baseConfig(tmpDir, {
+      taskListPath: taskPath,
+      exclusionRegistryPath: regPath,
+      reservedRunManifestPath: reservedPath,
+      preregistrationHash: 'wrong-hash-does-not-match-file',
+      campaignId: 'test-campaign',
+      selectedInstanceIds: selectedIds,
+      selectedIdsHash: selectedIdsHash,
+      datasetRevision: 'abc123def456',
+      modelId: 'test-model',
+    });
+    const result = runPreLaunchChecklist(config);
+    const exclusionCheck = result.checks.find(c => c.id === 'no-excluded-tasks');
+    expect(exclusionCheck).toBeDefined();
+    expect(exclusionCheck!.passed).toBe(false);
+    expect(exclusionCheck!.detail).toContain('RESERVATION VIOLATION');
+    expect(exclusionCheck!.blocksLaunch).toBe(true);
+  });
+
   it('handles malformed JSONL lines in the registry gracefully', () => {
     const regPath = path.join(tmpDir, 'exclusions.jsonl');
     fs.writeFileSync(regPath, [

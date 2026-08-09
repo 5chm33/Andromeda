@@ -950,6 +950,15 @@ async function main() {
           evalProtocolHash: protocolHash,
         };
       })() : {}),
+      // Reservation gate — required for reserved-run campaigns (e.g. Multilingual Option A).
+      // Set SWEBENCH_RESERVED_RUN_MANIFEST, SWEBENCH_PREREGISTRATION_HASH, and
+      // SWEBENCH_CAMPAIGN_ID together. If SWEBENCH_RESERVED_RUN_MANIFEST is set,
+      // all three are forwarded; the launcher's Check 8 will enforce the binding.
+      ...(process.env.SWEBENCH_RESERVED_RUN_MANIFEST ? {
+        reservedRunManifestPath: process.env.SWEBENCH_RESERVED_RUN_MANIFEST,
+        preregistrationHash: process.env.SWEBENCH_PREREGISTRATION_HASH ?? '',
+        campaignId: process.env.SWEBENCH_CAMPAIGN_ID ?? '',
+      } : {}),
     };
 
     _benchLauncher = new BenchmarkLauncher(launcherConfig);

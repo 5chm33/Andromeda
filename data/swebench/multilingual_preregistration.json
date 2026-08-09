@@ -10,7 +10,7 @@
     "commit": "7d813c9746e86fd382d525fa6a0f6e0d9ca1e6b0",
     "commit_note": "7d813c97 is the single exact executable revision for Option A. All ten evaluated-file hashes are recorded at this commit. Check 0b verifies these hashes at launch.",
     "evaluated_file_sha256": {
-      "scripts/run_swebench.ts": "529d771ab7408a163fd5780b1aea82c0b8c145079c4f5bc549c5983e95768dab",
+      "scripts/run_swebench.ts": "ec97413d6e9f50be6478303aae1c9a8c9d4a4c0e34f4d7542607f2e7ac4c7f79",
       "server/sweBenchTracebackLoop.ts": "06f506e826fba159eb048ad254ea5ebe5182977f4e08606d330d437cab016c70",
       "server/canonicalPatch.ts": "ef9009bbb4ee019d78e6e09fec14c12ae21ae11afcdfbc58cd8211f9a789c614",
       "server/benchmarkLauncher.ts": "594ba64048dabfc4f91efa07c786646707ec06b6edb0e3f53b5c1cebc1018e85",
@@ -103,6 +103,6 @@
     "selected_ids_count": 300,
     "note": "These hashes are the binding fields for the reservation gate. The launcher will verify selected_ids_sha256 against the preregistration dataset.id_list_sha256 before permitting any reserved ID."
   },
-  "preregistration_hash": "ab206b91a3c2d959462a00d37e7cae023ac071b2d99b06e1d2ba5c11f46953f7",
+  "preregistration_hash": "03ea225534003bed6812f17f6ff231f928769c6faf8662df4d1be05654b90544",
   "preregistration_hash_note": "SHA-256 of the JSON content with this field and preregistration_hash_note absent, serialized with json.dumps(indent=2, ensure_ascii=False). Equivalent to Node.js JSON.stringify(obj, null, 2) for this content."
 }
