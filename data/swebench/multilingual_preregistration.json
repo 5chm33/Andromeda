@@ -1,29 +1,26 @@
 {
   "preregistration_version": 1,
-  "evaluation_name": "Andromeda v5.30 \u2014 SWE-bench Multilingual cross-language readout (Option A)",
+  "evaluation_name": "Andromeda v5.30 — SWE-bench Multilingual cross-language readout (Option A)",
   "evaluation_type": "one_shot_frozen",
   "preregistration_note": "This record is written before any generation begins. The agent configuration, task list, and all hashes below are frozen. No changes to the agent, model, prompts, or configuration may be made after this record is committed. Results must be reported by language and overall, with apply/timeout/infrastructure outcomes separated from semantic failures.",
   "agent": {
-    "version": "v5.30",
     "harness_revision_env": "SWEBENCH_HARNESS_REVISION (must be set before launch)",
     "eval_protocol_sha256": "3c845d8e0567f2c91c5e432545724c1f3b72d7bcc4ae61806d2a4a594e9d4e83",
     "eval_protocol_path": "data/eval_protocol_v1.json",
-    "evaluated_file_sha256_at_ecb716c8": {
+    "commit": "899064832fbcb4042588a481e368604c8d62cd1b",
+    "commit_note": "89906483 is the single exact executable revision for Option A. All ten evaluated-file hashes are recorded at this commit. Check 0b verifies these hashes at launch.",
+    "evaluated_file_sha256": {
       "scripts/run_swebench.ts": "529d771ab7408a163fd5780b1aea82c0b8c145079c4f5bc549c5983e95768dab",
       "server/sweBenchTracebackLoop.ts": "06f506e826fba159eb048ad254ea5ebe5182977f4e08606d330d437cab016c70",
       "server/canonicalPatch.ts": "ef9009bbb4ee019d78e6e09fec14c12ae21ae11afcdfbc58cd8211f9a789c614",
-      "server/benchmarkLauncher.ts": "a9093c1d62a25aee90d9b792cb303120a8069ab2bc3ad839696503b658942119",
+      "server/benchmarkLauncher.ts": "594ba64048dabfc4f91efa07c786646707ec06b6edb0e3f53b5c1cebc1018e85",
       "server/sweBenchEvalMode.ts": "713f0f66b70315ab430aa9fe575db6ad9480ab09b807b23d0e32e181bbac4558",
       "server/sweBenchModelConfig.ts": "aaa44388709023729568c45ad8b1a8e4602d6cade7f4a4a79035ee4eea8fd814",
       "server/hardenedSandbox.ts": "5da6d7f5674463519b773762ad6471dcb35a74612912951320b81d8003c540c3",
       "scripts/build_eval_parity_fixtures.ts": "1bbd92f4776a56cb57bbde110e153010e77e7e5966238087b1382e4b97e13d18",
       "scripts/test_evaluator_parity.sh": "78b044c00436c599d377616c0d69bcbc0cb82cde7f4934c11828565b038155d8",
       "data/eval_protocol_v1.json": "3c845d8e0567f2c91c5e432545724c1f3b72d7bcc4ae61806d2a4a594e9d4e83"
-    },
-    "execution_repository_commit": "391a30b5eab792c54313fe7f71a17bdee4621d3e",
-    "agent_harness_code_commit": "ecb716c878b9537f2b9cb771143a0d7fb81b87fa",
-    "commit_identity_note": "execution_repository_commit (391a30b5) is the exact checkout that contains the reconciled preregistration and the reserved-run manifest. agent_harness_code_commit (ecb716c8) is the evaluated-code baseline. Launch preflight verifies that the ten evaluated-file SHA-256 hashes at the current checkout equal the preregistered ecb716c8 hashes.",
-    "evaluated_file_hashes_match_at_391a30b5": true
+    }
   },
   "model": {
     "default_provider": "claude-sonnet-5",
@@ -68,7 +65,7 @@
     "overlap_by_instance_id": 0,
     "overlap_by_repo_base_commit": 0,
     "disjoint": true,
-    "audit_note": "Disjointness verified on two independent keys. (1) instance_id: direct comparison against exclusion registry \u2014 0 overlap. (2) repo@base_commit: historical set reconstructed from princeton-nlp/SWE-bench rev e48e2bd1, filtered to the 2,294 exclusion-registry IDs \u2014 0 overlap. Both checks are substantive. See multilingual_disjointness_audit.json v3.",
+    "audit_note": "Disjointness verified on two independent keys. (1) instance_id: direct comparison against exclusion registry — 0 overlap. (2) repo@base_commit: historical set reconstructed from princeton-nlp/SWE-bench rev e48e2bd1, filtered to the 2,294 exclusion-registry IDs — 0 overlap. Both checks are substantive. See multilingual_disjointness_audit.json v3.",
     "historical_repo_base_commit_sha256": "49dd82c81a60f9cddff0dcd69a54db38f0ab5ce19fee117ef8ada7b1b4a43df1",
     "historical_repo_base_commit_count": 2174,
     "multilingual_repo_base_commit_sha256": "a0c08a0f369d3903b80c8ef43c5d8557e457093a56d1b135b6f0300d6ad61cb7"
@@ -89,16 +86,16 @@
     "Report results by language group (Ruby, Java, Rust, PHP, Go, JavaScript, C, C++, TypeScript, C/Python)",
     "Report overall resolved / 300 and resolved / submitted separately",
     "Do not collapse apply/timeout/infra outcomes into the resolution percentage",
-    "Do not modify the agent after reading any batch result \u2014 later batches cease to be held out"
+    "Do not modify the agent after reading any batch result — later batches cease to be held out"
   ],
   "operational_constraints": [
     "The 300 Multilingual IDs are in multilingual_reserved_run.jsonl (NOT in exclusions.jsonl).",
     "The reservation gate in BenchmarkLauncher Check 8 permits these IDs only when all binding fields match this preregistration exactly.",
     "After the frozen run finishes, promote all 300 reserved IDs to exclusions.jsonl (permanent exposure registry).",
     "Execute in operational batches if needed, but freeze configuration before first batch.",
-    "Score with official SWE-bench evaluator only \u2014 internal prediction_ready count is not the score.",
+    "Score with official SWE-bench evaluator only — internal prediction_ready count is not the score.",
     "Publish run bundle: agent commit, dataset revision, model config, prompt hash, per-instance outcomes.",
-    "Do not modify the agent after reading any batch result \u2014 later batches cease to be held out."
+    "Do not modify the agent after reading any batch result — later batches cease to be held out."
   ],
   "binding_hashes": {
     "reserved_manifest_sha256": "4bd69a06b7b5df7dec2cf51a552c0c677314abf7762acfc28cad88f6c9ed769c",
@@ -106,6 +103,6 @@
     "selected_ids_count": 300,
     "note": "These hashes are the binding fields for the reservation gate. The launcher will verify selected_ids_sha256 against the preregistration dataset.id_list_sha256 before permitting any reserved ID."
   },
-  "preregistration_hash": "066ca3a582021f8757aee7b4a98008ff552b8a220b8d5f5f10e885b459796a00",
-  "preregistration_hash_note": "SHA-256 of the JSON content with this field and preregistration_hash_note absent (canonical: sorted keys, 2-space indent). Stable and verifiable."
+  "preregistration_hash": "7613ff00674b41ebed96de1fca7aef7985953f40da82ceec0cd66f400ce6f205",
+  "preregistration_hash_note": "SHA-256 of the JSON content with this field and preregistration_hash_note absent, serialized with json.dumps(indent=2, ensure_ascii=False). Equivalent to Node.js JSON.stringify(obj, null, 2) for this content."
 }

@@ -454,10 +454,14 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
         const preregContent = fs.readFileSync(preregPath, 'utf-8');
         const prereg = JSON.parse(preregContent) as {
           agent?: {
+            evaluated_file_sha256?: Record<string, string>;
             evaluated_file_sha256_at_ecb716c8?: Record<string, string>;
           };
         };
-        const expectedHashes = prereg.agent?.evaluated_file_sha256_at_ecb716c8;
+        // Support both the single-commit field name (evaluated_file_sha256) and
+        // the legacy two-commit field name (evaluated_file_sha256_at_ecb716c8)
+        const expectedHashes = prereg.agent?.evaluated_file_sha256 ??
+          prereg.agent?.evaluated_file_sha256_at_ecb716c8;
         if (!expectedHashes || Object.keys(expectedHashes).length === 0) {
           check(
             'evaluated-file-hashes',
