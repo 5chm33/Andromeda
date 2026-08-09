@@ -4,12 +4,10 @@
   "evaluation_type": "one_shot_frozen",
   "preregistration_note": "This record is written before any generation begins. The agent configuration, task list, and all hashes below are frozen. No changes to the agent, model, prompts, or configuration may be made after this record is committed. Results must be reported by language and overall, with apply/timeout/infrastructure outcomes separated from semantic failures.",
   "agent": {
-    "commit": "ecb716c878b9537f2b9cb771143a0d7fb81b87fa",
     "version": "v5.30",
     "harness_revision_env": "SWEBENCH_HARNESS_REVISION (must be set before launch)",
     "eval_protocol_sha256": "3c845d8e0567f2c91c5e432545724c1f3b72d7bcc4ae61806d2a4a594e9d4e83",
     "eval_protocol_path": "data/eval_protocol_v1.json",
-    "commit_note": "ecb716c878b9537f2b9cb771143a0d7fb81b87fa is the exact executable revision that includes the reservation gate (server/benchmarkLauncher.ts Check 8 two-tier protection). This is the commit that must be checked out to run the Option A campaign. The v5.30 harness-freeze commit dd0cc99d is the ancestor that established the parity fixture; ecb716c8 adds the governance layer on top of it.",
     "evaluated_file_sha256_at_ecb716c8": {
       "scripts/run_swebench.ts": "529d771ab7408a163fd5780b1aea82c0b8c145079c4f5bc549c5983e95768dab",
       "server/sweBenchTracebackLoop.ts": "06f506e826fba159eb048ad254ea5ebe5182977f4e08606d330d437cab016c70",
@@ -21,7 +19,11 @@
       "scripts/build_eval_parity_fixtures.ts": "1bbd92f4776a56cb57bbde110e153010e77e7e5966238087b1382e4b97e13d18",
       "scripts/test_evaluator_parity.sh": "78b044c00436c599d377616c0d69bcbc0cb82cde7f4934c11828565b038155d8",
       "data/eval_protocol_v1.json": "3c845d8e0567f2c91c5e432545724c1f3b72d7bcc4ae61806d2a4a594e9d4e83"
-    }
+    },
+    "execution_repository_commit": "391a30b5eab792c54313fe7f71a17bdee4621d3e",
+    "agent_harness_code_commit": "ecb716c878b9537f2b9cb771143a0d7fb81b87fa",
+    "commit_identity_note": "execution_repository_commit (391a30b5) is the exact checkout that contains the reconciled preregistration and the reserved-run manifest. agent_harness_code_commit (ecb716c8) is the evaluated-code baseline. Launch preflight verifies that the ten evaluated-file SHA-256 hashes at the current checkout equal the preregistered ecb716c8 hashes.",
+    "evaluated_file_hashes_match_at_391a30b5": true
   },
   "model": {
     "default_provider": "claude-sonnet-5",
@@ -104,6 +106,6 @@
     "selected_ids_count": 300,
     "note": "These hashes are the binding fields for the reservation gate. The launcher will verify selected_ids_sha256 against the preregistration dataset.id_list_sha256 before permitting any reserved ID."
   },
-  "preregistration_hash": "da68d042f73d2074ee346453d355b282b601629269649a53b6369c944710a9c1",
-  "preregistration_hash_note": "SHA-256 of the JSON content with this field absent (canonical: sorted keys, 2-space indent). The launcher verifies config.preregistrationHash against this value by reading the file, removing this field, serializing canonically, and hashing."
+  "preregistration_hash": "066ca3a582021f8757aee7b4a98008ff552b8a220b8d5f5f10e885b459796a00",
+  "preregistration_hash_note": "SHA-256 of the JSON content with this field and preregistration_hash_note absent (canonical: sorted keys, 2-space indent). Stable and verifiable."
 }

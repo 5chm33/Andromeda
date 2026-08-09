@@ -438,6 +438,69 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
         ? `harnessRevision: ${config.harnessRevision}`
         : `harnessRevision is 'unset'. Set SWEBENCH_HARNESS_REVISION=$(git rev-parse HEAD) before launching.`,
     );
+
+    // ── Check 0b: Evaluated-file hash verification (reserved-run campaigns only) ──
+    // When a reserved-run manifest is configured, verify that the ten evaluated
+    // agent/harness/prompt files at the current checkout are byte-identical to the
+    // hashes recorded in the preregistration at agent_harness_code_commit.
+    // This resolves the checkout ambiguity: execution_repository_commit (the commit
+    // containing the reconciled preregistration) is checked out, but the evaluated
+    // code must match agent_harness_code_commit.
+    if (config.reservedRunManifestPath && config.preregistrationHash) {
+      try {
+        const preregPath = config.reservedRunManifestPath.replace(
+          'multilingual_reserved_run.jsonl', 'multilingual_preregistration.json'
+        );
+        const preregContent = fs.readFileSync(preregPath, 'utf-8');
+        const prereg = JSON.parse(preregContent) as {
+          agent?: {
+            evaluated_file_sha256_at_ecb716c8?: Record<string, string>;
+          };
+        };
+        const expectedHashes = prereg.agent?.evaluated_file_sha256_at_ecb716c8;
+        if (!expectedHashes || Object.keys(expectedHashes).length === 0) {
+          check(
+            'evaluated-file-hashes',
+            'Evaluated-file hashes match preregistered agent_harness_code_commit',
+            false,
+            'Preregistration does not contain evaluated_file_sha256_at_ecb716c8. ' +
+            'Cannot verify code identity.',
+          );
+        } else {
+          const mismatches: string[] = [];
+          for (const [filePath, expectedHash] of Object.entries(expectedHashes)) {
+            try {
+              const content = fs.readFileSync(filePath, 'utf-8');
+              const actualHash = createHash('sha256').update(content).digest('hex');
+              if (actualHash !== expectedHash) {
+                mismatches.push(
+                  `${filePath}: actual=${actualHash.slice(0, 16)} expected=${expectedHash.slice(0, 16)}`
+                );
+              }
+            } catch (e) {
+              mismatches.push(`${filePath}: cannot read — ${(e as Error).message}`);
+            }
+          }
+          const fileCount = Object.keys(expectedHashes).length;
+          check(
+            'evaluated-file-hashes',
+            'Evaluated-file hashes match preregistered agent_harness_code_commit',
+            mismatches.length === 0,
+            mismatches.length === 0
+              ? `All ${fileCount} evaluated-file hashes match preregistered ecb716c8 hashes ✓`
+              : `CODE IDENTITY MISMATCH: ${mismatches.length}/${fileCount} file(s) differ from ` +
+                `preregistered hashes: ${mismatches.join('; ')}`,
+          );
+        }
+      } catch (e) {
+        check(
+          'evaluated-file-hashes',
+          'Evaluated-file hashes match preregistered agent_harness_code_commit',
+          false,
+          `Failed to verify evaluated-file hashes: ${(e as Error).message}`,
+        );
+      }
+    }
   }
 
   // ── Check 1a: Dataset revision pinned for scored runs ─────────────────────────────────
