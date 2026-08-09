@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# test_evaluator_parity.sh — Live evaluator-parity test for Andromeda v5.29+
+# test_evaluator_parity.sh — Live evaluator-parity test for Andromeda v5.30+
 #
 # PURPOSE: Prove that the production CanonicalPatch → serializer path emits bytes
 # that the official SWE-bench evaluator applies and scores correctly.
@@ -18,16 +18,22 @@
 #
 # NC1, NC2, NC3 use DISTINCT instance IDs so each gets its own evaluator invocation.
 #
-# FIVE-CELL DIFFERENTIAL MATRIX (v5.29):
+# FIVE-CELL DIFFERENTIAL MATRIX (v5.29/v5.30):
 #   accepted → evaluator-resolved:   3/3 known-good (positive path)
 #   accepted → evaluator-unresolved: 1/1 NC1 (stale-base; CMD3 exit 0)
 #   rejected → evaluator-error:      2/2 NC2+NC3 (all commands fail)
 #   accepted → evaluator-error:      0 (expected zero; canary v6 confirmed)
 #   rejected → evaluator-applied:    0 (expected zero; stop-at-first-exit-0)
 #
-# v5.29 CHANGE FROM v5.28: Replaced worktree-inspection criterion with the
-# evaluator's exact stop-at-first-exit-0 control flow. NC3 CMD3 exits 2 (not 0),
-# so v5.29 correctly rejects it (same decision as v5.28, different criterion).
+# v5.30 FIX: Status-preserving capture (no || true), no pre-CMD3 reset,
+# explicit exit-code assertions for NC1/NC2/NC3.
+#
+# EVALUATOR CONTROL FLOW (from swebench/harness/run_evaluation.py):
+#   for cmd in GIT_APPLY_CMDS:
+#       val = container.exec_run(f"{cmd} {patch_file}", ...)
+#       if val.exit_code == 0:
+#           applied_patch = True; break
+#   # NO reset between attempts — CMD3 sees any partial state CMD2 left behind
 #
 # USAGE: bash scripts/test_evaluator_parity.sh
 # PREREQUISITES: Docker, python3 -m swebench.harness.run_evaluation, npx tsx
@@ -40,7 +46,7 @@ TIMESTAMP=$(date -u +%Y%m%dT%H%M%SZ)
 ARCHIVE_DIR="${REPO_DIR}/data/swebench/evaluator_parity_archive/${TIMESTAMP}"
 mkdir -p "${ARCHIVE_DIR}"
 
-echo "=== Andromeda Evaluator Parity Test (v5.29) ==="
+echo "=== Andromeda Evaluator Parity Test (v5.30) ==="
 echo "Timestamp: ${TIMESTAMP}"
 echo "Archive:   ${ARCHIVE_DIR}"
 echo ""
@@ -72,11 +78,18 @@ echo ""
 # We run the evaluator's stop-at-first-exit-0 sequence here in the shell and
 # pass results as env vars.
 #
-# v5.29 control flow (mirrors swebench/harness/run_evaluation.py exactly):
+# v5.29/v5.30 control flow (mirrors swebench/harness/run_evaluation.py exactly):
 #   CMD1: git apply --verbose          → if exit 0, ACCEPT and stop
 #   CMD2: git apply --verbose --reject → if exit 0, ACCEPT and stop
 #   CMD3: patch --batch --fuzz=5 -p1   → if exit 0, ACCEPT and stop
 #   otherwise: REJECT
+#
+# IMPORTANT: The evaluator does NOT reset the worktree between commands.
+# CMD3 sees any partial state CMD2 left behind (e.g., .rej files, partial hunks).
+# This script mirrors that exactly — no git checkout/clean between CMD2 and CMD3.
+#
+# STATUS CAPTURE: Use `if out=$(cmd 2>&1); then status=0; else status=$?; fi`
+# NOT `out=$(cmd 2>&1 || true); status=$?` — the || true forces status=0 always.
 
 echo "=== Step 2: Pre-computing apply-check results via Docker ==="
 
@@ -142,70 +155,124 @@ if [ -z "${ASTROPY_14182_IMAGE}" ] || [ -z "${ASTROPY_13033_IMAGE}" ] || [ -z "$
   NC2_APPLY_EXIT=1
   NC2_APPLY_OUTPUT="synthetic: image not available (expected: CMD1=1, CMD2=1, CMD3=1)"
   NC2_CMD1_EXIT="synthetic(1)"; NC2_CMD2_EXIT="synthetic(1)"; NC2_CMD3_EXIT="synthetic(1)"
+  NC2_FIRST_SUCCESS="none(synthetic)"
   # NC3: CMD1=128, CMD2=128, CMD3=2 → rejected (all non-zero)
   NC3_APPLY_EXIT=1
   NC3_APPLY_OUTPUT="synthetic: image not available (expected: CMD1=128, CMD2=128, CMD3=2)"
   NC3_CMD1_EXIT="synthetic(128)"; NC3_CMD2_EXIT="synthetic(128)"; NC3_CMD3_EXIT="synthetic(2)"
+  NC3_FIRST_SUCCESS="none(synthetic)"
 else
   echo "NC1 image: ${ASTROPY_14182_IMAGE}"
   echo "NC2 image: ${ASTROPY_13033_IMAGE}"
   echo "NC3 image: ${ASTROPY_13453_IMAGE}"
 
-  # Helper: run stop-at-first-exit-0 sequence on a patch
-  # Returns: APPLY_EXIT (0=accepted, 1=rejected), FIRST_SUCCESS (CMD1/CMD2/CMD3/none)
+  # ── run_stop_at_first: mirrors evaluator's exact control flow ────────────────
+  # Evaluator source (swebench/harness/run_evaluation.py):
+  #   for git_apply_cmd in GIT_APPLY_CMDS:
+  #       val = container.exec_run(f"{git_apply_cmd} {DOCKER_PATCH}", ...)
+  #       if val.exit_code == 0:
+  #           applied_patch = True; break
+  # NO reset between attempts. CMD3 sees CMD2's partial state.
+  #
+  # STATUS CAPTURE: `if out=$(cmd 2>&1); then status=0; else status=$?; fi`
+  # This preserves the real exit code. `$(cmd || true); status=$?` always gives 0.
   run_stop_at_first() {
     local IMAGE="$1"
     local PATCH_FILE="$2"
     local PREFIX="$3"
+    local CMD_LOG="${ARCHIVE_DIR}/${PREFIX}_commands.txt"
 
     local CNAME="${PREFIX}-$(date +%s)"
     docker run -d --name "${CNAME}" --network none --cap-drop ALL "${IMAGE}" tail -f /dev/null > /dev/null 2>&1
     docker cp "${PATCH_FILE}" "${CNAME}:/tmp/check.diff" > /dev/null 2>&1
 
-    # CMD1: git apply --verbose
-    local CMD1_OUT
-    CMD1_OUT=$(docker exec "${CNAME}" sh -c 'cd /testbed && git apply --verbose /tmp/check.diff 2>&1' 2>&1 || true)
-    local CMD1_EXIT=$?
+    {
+      echo "=== ${PREFIX} stop-at-first-exit-0 sequence ==="
+      echo "Image: ${IMAGE}"
+      echo "Patch: ${PATCH_FILE}"
+      echo ""
+    } > "${CMD_LOG}"
+
+    # ── CMD1: git apply --verbose ─────────────────────────────────────────────
+    # Status-preserving capture: if out=$(cmd); then status=0; else status=$?; fi
+    local CMD1_OUT CMD1_EXIT
+    if CMD1_OUT=$(docker exec "${CNAME}" sh -c 'cd /testbed && git apply --verbose /tmp/check.diff 2>&1' 2>&1); then
+      CMD1_EXIT=0
+    else
+      CMD1_EXIT=$?
+    fi
     eval "${PREFIX}_CMD1_EXIT=${CMD1_EXIT}"
-    eval "${PREFIX}_CMD1_OUTPUT=\"${CMD1_OUT:0:200}\""
-    echo "  CMD1 (git apply --verbose): EXIT:${CMD1_EXIT} | ${CMD1_OUT:0:80}"
+    eval "${PREFIX}_CMD1_OUTPUT=\"${CMD1_OUT:0:300}\""
+    {
+      echo "CMD1: git apply --verbose"
+      echo "  exit_code: ${CMD1_EXIT}"
+      echo "  output: ${CMD1_OUT:0:300}"
+      echo ""
+    } >> "${CMD_LOG}"
+    echo "  CMD1 (git apply --verbose): exit=${CMD1_EXIT} | ${CMD1_OUT:0:80}"
 
     if [ "${CMD1_EXIT}" -eq 0 ]; then
       eval "${PREFIX}_APPLY_EXIT=0"
       eval "${PREFIX}_FIRST_SUCCESS=CMD1"
       docker rm -f "${CNAME}" > /dev/null 2>&1
+      echo "  → ACCEPTED at CMD1 (exit 0)" >> "${CMD_LOG}"
       return
     fi
 
-    # CMD2: git apply --verbose --reject
-    local CMD2_OUT
-    CMD2_OUT=$(docker exec "${CNAME}" sh -c 'cd /testbed && git apply --verbose --reject /tmp/check.diff 2>&1' 2>&1 || true)
-    local CMD2_EXIT=$?
+    # ── CMD2: git apply --verbose --reject ────────────────────────────────────
+    # NO reset before CMD2 (evaluator does not reset between attempts)
+    local CMD2_OUT CMD2_EXIT
+    if CMD2_OUT=$(docker exec "${CNAME}" sh -c 'cd /testbed && git apply --verbose --reject /tmp/check.diff 2>&1' 2>&1); then
+      CMD2_EXIT=0
+    else
+      CMD2_EXIT=$?
+    fi
     eval "${PREFIX}_CMD2_EXIT=${CMD2_EXIT}"
-    echo "  CMD2 (git apply --verbose --reject): EXIT:${CMD2_EXIT} | ${CMD2_OUT:0:80}"
+    eval "${PREFIX}_CMD2_OUTPUT=\"${CMD2_OUT:0:300}\""
+    {
+      echo "CMD2: git apply --verbose --reject"
+      echo "  exit_code: ${CMD2_EXIT}"
+      echo "  output: ${CMD2_OUT:0:300}"
+      echo ""
+    } >> "${CMD_LOG}"
+    echo "  CMD2 (git apply --verbose --reject): exit=${CMD2_EXIT} | ${CMD2_OUT:0:80}"
 
     if [ "${CMD2_EXIT}" -eq 0 ]; then
       eval "${PREFIX}_APPLY_EXIT=0"
       eval "${PREFIX}_FIRST_SUCCESS=CMD2"
       docker rm -f "${CNAME}" > /dev/null 2>&1
+      echo "  → ACCEPTED at CMD2 (exit 0)" >> "${CMD_LOG}"
       return
     fi
 
-    # CMD3: patch --batch --fuzz=5 -p1
-    # Reset worktree first (CMD2 may have partially applied)
-    docker exec "${CNAME}" sh -c 'cd /testbed && git checkout -- . && git clean -fd 2>/dev/null' > /dev/null 2>&1 || true
-    local CMD3_OUT
-    CMD3_OUT=$(docker exec "${CNAME}" sh -c 'cd /testbed && patch --batch --fuzz=5 -p1 -i /tmp/check.diff 2>&1' 2>&1 || true)
-    local CMD3_EXIT=$?
+    # ── CMD3: patch --batch --fuzz=5 -p1 ─────────────────────────────────────
+    # NO reset before CMD3 — evaluator does not reset after CMD2.
+    # CMD3 sees any partial state CMD2 left behind (.rej files, partial hunks).
+    # This is the evaluator's exact stateful behavior.
+    local CMD3_OUT CMD3_EXIT
+    if CMD3_OUT=$(docker exec "${CNAME}" sh -c 'cd /testbed && patch --batch --fuzz=5 -p1 -i /tmp/check.diff 2>&1' 2>&1); then
+      CMD3_EXIT=0
+    else
+      CMD3_EXIT=$?
+    fi
     eval "${PREFIX}_CMD3_EXIT=${CMD3_EXIT}"
-    echo "  CMD3 (patch --batch --fuzz=5): EXIT:${CMD3_EXIT} | ${CMD3_OUT:0:80}"
+    eval "${PREFIX}_CMD3_OUTPUT=\"${CMD3_OUT:0:300}\""
+    {
+      echo "CMD3: patch --batch --fuzz=5 -p1"
+      echo "  exit_code: ${CMD3_EXIT}"
+      echo "  output: ${CMD3_OUT:0:300}"
+      echo ""
+    } >> "${CMD_LOG}"
+    echo "  CMD3 (patch --batch --fuzz=5): exit=${CMD3_EXIT} | ${CMD3_OUT:0:80}"
 
     if [ "${CMD3_EXIT}" -eq 0 ]; then
       eval "${PREFIX}_APPLY_EXIT=0"
       eval "${PREFIX}_FIRST_SUCCESS=CMD3"
+      echo "  → ACCEPTED at CMD3 (exit 0)" >> "${CMD_LOG}"
     else
       eval "${PREFIX}_APPLY_EXIT=1"
       eval "${PREFIX}_FIRST_SUCCESS=none"
+      echo "  → REJECTED (all commands non-zero)" >> "${CMD_LOG}"
     fi
 
     docker rm -f "${CNAME}" > /dev/null 2>&1
@@ -225,16 +292,123 @@ else
   run_stop_at_first "${ASTROPY_13453_IMAGE}" "${NC3_PATCH_FILE}" "NC3"
   echo "NC3 result: CMD1=${NC3_CMD1_EXIT}, CMD2=${NC3_CMD2_EXIT:-skipped}, CMD3=${NC3_CMD3_EXIT:-skipped} -> first_success=${NC3_FIRST_SUCCESS} -> accepted=${NC3_APPLY_EXIT}"
   NC3_APPLY_OUTPUT="CMD1=${NC3_CMD1_EXIT} CMD2=${NC3_CMD2_EXIT:-skipped} CMD3=${NC3_CMD3_EXIT:-skipped} first_success=${NC3_FIRST_SUCCESS}"
+
+  # ── Exit-code assertions ─────────────────────────────────────────────────────
+  # These assertions prove the live command outputs match the expected matrix cells.
+  # Fail immediately if any assertion is violated.
+  echo ""
+  echo "=== Step 2b: Exit-code assertions ==="
+
+  ASSERTION_FAILURES=0
+
+  # NC1 assertions: CMD1 must fail, CMD2 must fail, CMD3 must succeed (exit 0)
+  # This proves NC1 genuinely reaches CMD3 and is accepted there.
+  if [ "${NC1_CMD1_EXIT}" -eq 0 ]; then
+    echo "ASSERTION FAILED: NC1 CMD1 should fail (non-zero) but got exit=0" >&2
+    ASSERTION_FAILURES=$((ASSERTION_FAILURES + 1))
+  else
+    echo "  NC1 CMD1 assertion: exit=${NC1_CMD1_EXIT} (non-zero) ✓"
+  fi
+  if [ "${NC1_CMD2_EXIT:-0}" -eq 0 ] && [ "${NC1_FIRST_SUCCESS}" != "CMD1" ]; then
+    echo "ASSERTION FAILED: NC1 CMD2 should fail (non-zero) but got exit=0" >&2
+    ASSERTION_FAILURES=$((ASSERTION_FAILURES + 1))
+  else
+    echo "  NC1 CMD2 assertion: exit=${NC1_CMD2_EXIT:-skipped} (non-zero) ✓"
+  fi
+  if [ "${NC1_CMD3_EXIT:-1}" -ne 0 ]; then
+    echo "ASSERTION FAILED: NC1 CMD3 should succeed (exit 0) but got exit=${NC1_CMD3_EXIT:-not_run}" >&2
+    ASSERTION_FAILURES=$((ASSERTION_FAILURES + 1))
+  else
+    echo "  NC1 CMD3 assertion: exit=${NC1_CMD3_EXIT:-0} (zero) ✓"
+  fi
+  if [ "${NC1_FIRST_SUCCESS}" != "CMD3" ]; then
+    echo "ASSERTION FAILED: NC1 first_success should be CMD3 but got ${NC1_FIRST_SUCCESS}" >&2
+    ASSERTION_FAILURES=$((ASSERTION_FAILURES + 1))
+  else
+    echo "  NC1 first_success assertion: ${NC1_FIRST_SUCCESS} ✓"
+  fi
+  if [ "${NC1_APPLY_EXIT}" -ne 0 ]; then
+    echo "ASSERTION FAILED: NC1 should be ACCEPTED (apply_exit=0) but got ${NC1_APPLY_EXIT}" >&2
+    ASSERTION_FAILURES=$((ASSERTION_FAILURES + 1))
+  else
+    echo "  NC1 accepted assertion: apply_exit=${NC1_APPLY_EXIT} ✓"
+  fi
+
+  # NC2 assertions: all three commands must fail (all non-zero)
+  # This proves NC2 genuinely reaches all three commands and is rejected.
+  if [ "${NC2_CMD1_EXIT}" -eq 0 ]; then
+    echo "ASSERTION FAILED: NC2 CMD1 should fail (non-zero) but got exit=0" >&2
+    ASSERTION_FAILURES=$((ASSERTION_FAILURES + 1))
+  else
+    echo "  NC2 CMD1 assertion: exit=${NC2_CMD1_EXIT} (non-zero) ✓"
+  fi
+  if [ "${NC2_CMD2_EXIT:-0}" -eq 0 ] && [ "${NC2_FIRST_SUCCESS}" != "CMD1" ]; then
+    echo "ASSERTION FAILED: NC2 CMD2 should fail (non-zero) but got exit=0" >&2
+    ASSERTION_FAILURES=$((ASSERTION_FAILURES + 1))
+  else
+    echo "  NC2 CMD2 assertion: exit=${NC2_CMD2_EXIT:-skipped} (non-zero) ✓"
+  fi
+  if [ "${NC2_CMD3_EXIT:-0}" -eq 0 ] && [ "${NC2_FIRST_SUCCESS}" != "CMD1" ] && [ "${NC2_FIRST_SUCCESS}" != "CMD2" ]; then
+    echo "ASSERTION FAILED: NC2 CMD3 should fail (non-zero) but got exit=0" >&2
+    ASSERTION_FAILURES=$((ASSERTION_FAILURES + 1))
+  else
+    echo "  NC2 CMD3 assertion: exit=${NC2_CMD3_EXIT:-skipped} (non-zero) ✓"
+  fi
+  if [ "${NC2_APPLY_EXIT}" -ne 1 ]; then
+    echo "ASSERTION FAILED: NC2 should be REJECTED (apply_exit=1) but got ${NC2_APPLY_EXIT}" >&2
+    ASSERTION_FAILURES=$((ASSERTION_FAILURES + 1))
+  else
+    echo "  NC2 rejected assertion: apply_exit=${NC2_APPLY_EXIT} ✓"
+  fi
+
+  # NC3 assertions: CMD1 must fail, CMD2 must fail, CMD3 must fail with non-zero (exit 2)
+  # This proves NC3 genuinely reaches all three commands and is rejected.
+  if [ "${NC3_CMD1_EXIT}" -eq 0 ]; then
+    echo "ASSERTION FAILED: NC3 CMD1 should fail (non-zero) but got exit=0" >&2
+    ASSERTION_FAILURES=$((ASSERTION_FAILURES + 1))
+  else
+    echo "  NC3 CMD1 assertion: exit=${NC3_CMD1_EXIT} (non-zero) ✓"
+  fi
+  if [ "${NC3_CMD2_EXIT:-0}" -eq 0 ] && [ "${NC3_FIRST_SUCCESS}" != "CMD1" ]; then
+    echo "ASSERTION FAILED: NC3 CMD2 should fail (non-zero) but got exit=0" >&2
+    ASSERTION_FAILURES=$((ASSERTION_FAILURES + 1))
+  else
+    echo "  NC3 CMD2 assertion: exit=${NC3_CMD2_EXIT:-skipped} (non-zero) ✓"
+  fi
+  if [ "${NC3_CMD3_EXIT:-0}" -eq 0 ] && [ "${NC3_FIRST_SUCCESS}" != "CMD1" ] && [ "${NC3_FIRST_SUCCESS}" != "CMD2" ]; then
+    echo "ASSERTION FAILED: NC3 CMD3 should fail (non-zero, expected exit 2) but got exit=0" >&2
+    ASSERTION_FAILURES=$((ASSERTION_FAILURES + 1))
+  else
+    echo "  NC3 CMD3 assertion: exit=${NC3_CMD3_EXIT:-skipped} (non-zero, expected 2) ✓"
+  fi
+  if [ "${NC3_APPLY_EXIT}" -ne 1 ]; then
+    echo "ASSERTION FAILED: NC3 should be REJECTED (apply_exit=1) but got ${NC3_APPLY_EXIT}" >&2
+    ASSERTION_FAILURES=$((ASSERTION_FAILURES + 1))
+  else
+    echo "  NC3 rejected assertion: apply_exit=${NC3_APPLY_EXIT} ✓"
+  fi
+
+  if [ "${ASSERTION_FAILURES}" -gt 0 ]; then
+    echo ""
+    echo "ERROR: ${ASSERTION_FAILURES} exit-code assertion(s) failed." >&2
+    echo "The live command outputs do not match the expected matrix cells." >&2
+    echo "Do not proceed to evaluator invocations until assertions pass." >&2
+    exit 1
+  fi
+  echo ""
+  echo "All exit-code assertions passed."
 fi
 
 # Save command outputs to archive
 {
-  echo "v5.29 acceptance criterion: stop-at-first-exit-0 (mirrors evaluator control flow)"
+  echo "v5.30 acceptance criterion: stop-at-first-exit-0 (mirrors evaluator control flow)"
+  echo "v5.30 fix: status-preserving capture (no || true), no pre-CMD3 reset"
   echo "Evaluator commands (from swebench/harness/run_evaluation.py):"
   echo "  CMD1: git apply --verbose          → if exit 0, ACCEPT and stop"
   echo "  CMD2: git apply --verbose --reject → if exit 0, ACCEPT and stop"
   echo "  CMD3: patch --batch --fuzz=5 -p1   → if exit 0, ACCEPT and stop"
   echo "  otherwise: REJECT"
+  echo "  NOTE: No reset between commands — CMD3 sees CMD2's partial state."
   echo ""
   echo "NC1 (stale-base on astropy-14182):"
   echo "  ${NC1_APPLY_OUTPUT}"
@@ -258,9 +432,9 @@ export ANDROMEDA_NC3_APPLY_OUTPUT="${NC3_APPLY_OUTPUT}"
 
 echo ""
 
-# ── Step 2b: Build fixture JSONL through production path ──────────────────────
+# ── Step 3: Build fixture JSONL through production path ──────────────────────
 
-echo "=== Step 2b: Building fixture JSONL through production path ==="
+echo "=== Step 3: Building fixture JSONL through production path ==="
 FIXTURE_JSONL="${ARCHIVE_DIR}/eval_parity_fixtures.jsonl"
 NEGATIVE_CONTROL_JSONL="${ARCHIVE_DIR}/eval_parity_fixtures.negative_control.jsonl"
 FIXTURE_MANIFEST="${ARCHIVE_DIR}/eval_parity_fixtures.manifest.json"
@@ -280,10 +454,10 @@ NEGATIVE_SHA256=$(sha256sum "${NEGATIVE_CONTROL_JSONL}" | cut -d' ' -f1)
 echo "Fixture JSONL SHA-256: ${FIXTURE_SHA256}"
 echo "Negative control JSONL SHA-256: ${NEGATIVE_SHA256}"
 
-# ── Step 3: Record image digests ──────────────────────────────────────────────
+# ── Step 4: Record image digests ──────────────────────────────────────────────
 
 echo ""
-echo "=== Step 3: Recording image digests ==="
+echo "=== Step 4: Recording image digests ==="
 {
   echo "# Image digests for evaluator parity run ${TIMESTAMP}"
   echo "# These are the images used by the official SWE-bench evaluator"
@@ -298,11 +472,11 @@ echo "=== Step 3: Recording image digests ==="
   done
 } | tee "${ARCHIVE_DIR}/image_digests.txt"
 
-# ── Step 4: Run official evaluator on known-good fixtures ─────────────────────
+# ── Step 5: Run official evaluator on known-good fixtures ─────────────────────
 
 echo ""
-echo "=== Step 4: Running official evaluator on known-good fixtures ==="
-RUN_ID="andromeda-eval-parity-v5.29-good"
+echo "=== Step 5: Running official evaluator on known-good fixtures ==="
+RUN_ID="andromeda-eval-parity-v5.30-good"
 GOOD_REPORT_DIR="${ARCHIVE_DIR}/evaluator_report_good"
 mkdir -p "${GOOD_REPORT_DIR}"
 
@@ -319,10 +493,10 @@ python3 -m swebench.harness.run_evaluation \
   --max_workers 2 \
   2>&1 | tee "${ARCHIVE_DIR}/evaluator_stdout_good.log"
 
-# ── Step 5a: Run official evaluator on NC1 (stale-base, astropy-14182) ────────
+# ── Step 6a: Run official evaluator on NC1 (stale-base, astropy-14182) ────────
 
 echo ""
-echo "=== Step 5a: Running official evaluator on NC1 (stale-base, astropy-14182) ==="
+echo "=== Step 6a: Running official evaluator on NC1 (stale-base, astropy-14182) ==="
 NC1_JSONL="${ARCHIVE_DIR}/eval_parity_fixtures.nc1.jsonl"
 python3 -c "
 import json, sys
@@ -347,10 +521,10 @@ python3 -m swebench.harness.run_evaluation \
   --max_workers 1 \
   2>&1 | tee "${ARCHIVE_DIR}/evaluator_stdout_nc1.log" || true
 
-# ── Step 5b: Run official evaluator on NC2 (wrong-file, astropy-13033) ────────
+# ── Step 6b: Run official evaluator on NC2 (wrong-file, astropy-13033) ────────
 
 echo ""
-echo "=== Step 5b: Running official evaluator on NC2 (wrong-file, astropy-13033) ==="
+echo "=== Step 6b: Running official evaluator on NC2 (wrong-file, astropy-13033) ==="
 NC2_JSONL="${ARCHIVE_DIR}/eval_parity_fixtures.nc2.jsonl"
 python3 -c "
 import json, sys
@@ -375,10 +549,10 @@ python3 -m swebench.harness.run_evaluation \
   --max_workers 1 \
   2>&1 | tee "${ARCHIVE_DIR}/evaluator_stdout_nc2.log" || true
 
-# ── Step 5c: Run official evaluator on NC3 (partial-multihunk, astropy-13453) ─
+# ── Step 6c: Run official evaluator on NC3 (partial-multihunk, astropy-13453) ─
 
 echo ""
-echo "=== Step 5c: Running official evaluator on NC3 (partial-multihunk, astropy-13453) ==="
+echo "=== Step 6c: Running official evaluator on NC3 (partial-multihunk, astropy-13453) ==="
 NC3_JSONL="${ARCHIVE_DIR}/eval_parity_fixtures.nc3.jsonl"
 python3 -c "
 import json, sys
@@ -403,10 +577,10 @@ python3 -m swebench.harness.run_evaluation \
   --max_workers 1 \
   2>&1 | tee "${ARCHIVE_DIR}/evaluator_stdout_nc3.log" || true
 
-# ── Step 6: Parse and verify results — five-cell differential matrix ──────────
+# ── Step 7: Parse and verify results — five-cell differential matrix ──────────
 
 echo ""
-echo "=== Step 6: Verifying results (five-cell differential matrix) ==="
+echo "=== Step 7: Verifying results (five-cell differential matrix) ==="
 
 python3 << PYEOF
 import json, hashlib, glob, sys
@@ -436,37 +610,51 @@ with open(nc2_jsonl) as f:
 with open(nc3_jsonl) as f:
     nc3_rows = [json.loads(l) for l in f if l.strip()]
 
-# Find good evaluator report
-good_reports = list(glob.glob(str(archive_dir / "evaluator_report_good" / "*.json")))
-if not good_reports:
-    good_reports = list(glob.glob(str(Path("${REPO_DIR}") / "*.json")))
-    good_reports = [r for r in good_reports if "eval-parity" in r and "neg" not in r and "nc" not in r]
-
-if not good_reports:
-    print("ERROR: No good evaluator report found", file=sys.stderr)
-    sys.exit(1)
-
-good_report_path = sorted(good_reports)[-1]
-with open(good_report_path) as f:
-    good_report = json.load(f)
-
-def load_report(report_dir, fallback_pattern):
-    reports = list(glob.glob(str(archive_dir / report_dir / "*.json")))
-    if not reports:
-        reports = list(glob.glob(str(Path("${REPO_DIR}") / fallback_pattern)))
+# Find evaluator reports
+def load_report(report_dir_name):
+    """Load the first JSON report from the named subdirectory of the archive."""
+    report_dir = archive_dir / report_dir_name
+    reports = list(report_dir.glob("*.json")) if report_dir.exists() else []
     if reports:
-        path = sorted(reports)[-1]
+        path = sorted(reports)[0]
         with open(path) as f:
-            return json.load(f), path
+            return json.load(f), str(path)
     return {}, None
 
-nc1_report, nc1_report_path = load_report("evaluator_report_nc1", f"*nc1*${TIMESTAMP}*.json")
-nc2_report, nc2_report_path = load_report("evaluator_report_nc2", f"*nc2*${TIMESTAMP}*.json")
-nc3_report, nc3_report_path = load_report("evaluator_report_nc3", f"*nc3*${TIMESTAMP}*.json")
+good_report, good_report_path = load_report("evaluator_report_good")
+nc1_report, nc1_report_path = load_report("evaluator_report_nc1")
+nc2_report, nc2_report_path = load_report("evaluator_report_nc2")
+nc3_report, nc3_report_path = load_report("evaluator_report_nc3")
 
-if nc1_report_path: print(f"  NC1 report: {nc1_report_path}")
-if nc2_report_path: print(f"  NC2 report: {nc2_report_path}")
-if nc3_report_path: print(f"  NC3 report: {nc3_report_path}")
+# Fall back to home-dir reports if --report_dir wasn't supported
+if not good_report:
+    fallback = sorted(glob.glob(str(Path("${REPO_DIR}") / "andromeda-eval-parity-v5.30-good*.json")))
+    if fallback:
+        with open(fallback[-1]) as f: good_report = json.load(f)
+        good_report_path = fallback[-1]
+
+if not nc1_report:
+    fallback = sorted(glob.glob(str(Path("${REPO_DIR}") / f"*nc1*${TIMESTAMP}*.json")))
+    if fallback:
+        with open(fallback[-1]) as f: nc1_report = json.load(f)
+        nc1_report_path = fallback[-1]
+
+if not nc2_report:
+    fallback = sorted(glob.glob(str(Path("${REPO_DIR}") / f"*nc2*${TIMESTAMP}*.json")))
+    if fallback:
+        with open(fallback[-1]) as f: nc2_report = json.load(f)
+        nc2_report_path = fallback[-1]
+
+if not nc3_report:
+    fallback = sorted(glob.glob(str(Path("${REPO_DIR}") / f"*nc3*${TIMESTAMP}*.json")))
+    if fallback:
+        with open(fallback[-1]) as f: nc3_report = json.load(f)
+        nc3_report_path = fallback[-1]
+
+print(f"  Good report: {good_report_path}")
+print(f"  NC1 report:  {nc1_report_path}")
+print(f"  NC2 report:  {nc2_report_path}")
+print(f"  NC3 report:  {nc3_report_path}")
 
 def get_outcome(report, iid):
     resolved = report.get("resolved_ids", report.get("resolved", []))
@@ -502,7 +690,8 @@ for row in good_rows:
 # ── NC1: accepted → evaluator-unresolved ─────────────────────────────────────
 print()
 print("NC1 (stale-base, astropy-14182) — matrix cell: accepted → evaluator-unresolved:")
-print("  v5.29: CMD1=128, CMD2=128, CMD3=0 → first_success=CMD3 → ACCEPTED")
+print("  v5.29/v5.30: CMD1=non-zero, CMD2=non-zero, CMD3=0 → first_success=CMD3 → ACCEPTED")
+print("  v5.30 proof: live CMD1/CMD2/CMD3 exit codes asserted above (no || true)")
 for row in nc1_rows:
     iid = row["instance_id"]
     stored_hash = row.get("_patch_sha256", "MISSING")
@@ -519,11 +708,14 @@ for row in nc1_rows:
         failures.append(f"NC1 {iid}: preflight={preflight} but expected={expected_preflight}")
     if nc1_report and outcome == "resolved":
         failures.append(f"NC1 {iid}: expected not_resolved but got 'resolved'")
+    if nc1_report and outcome == "not_run":
+        failures.append(f"NC1 {iid}: evaluator report found but instance not in any outcome list")
 
 # ── NC2: rejected → evaluator-error ──────────────────────────────────────────
 print()
 print("NC2 (wrong-file, astropy-13033) — matrix cell: rejected → evaluator-error:")
-print("  v5.29: CMD1=1, CMD2=1, CMD3=1 → all fail → REJECTED")
+print("  v5.29/v5.30: CMD1=non-zero, CMD2=non-zero, CMD3=non-zero → all fail → REJECTED")
+print("  v5.30 proof: live CMD1/CMD2/CMD3 exit codes asserted above (no || true)")
 for row in nc2_rows:
     iid = row["instance_id"]
     stored_hash = row.get("_patch_sha256", "MISSING")
@@ -544,8 +736,9 @@ for row in nc2_rows:
 # ── NC3: rejected → evaluator-error ──────────────────────────────────────────
 print()
 print("NC3 (partial-multihunk, astropy-13453) — matrix cell: rejected → evaluator-error:")
-print("  v5.29: CMD1=128, CMD2=128, CMD3=2 → all non-zero → REJECTED")
-print("  (v5.28 worktree-inspection also rejected this; v5.29 rejects via exit codes)")
+print("  v5.29/v5.30: CMD1=non-zero, CMD2=non-zero, CMD3=2 (non-zero) → all fail → REJECTED")
+print("  v5.30 proof: live CMD1/CMD2/CMD3 exit codes asserted above (no || true)")
+print("  v5.30 fix: CMD3 sees CMD2 partial state (no pre-CMD3 reset)")
 for row in nc3_rows:
     iid = row["instance_id"]
     stored_hash = row.get("_patch_sha256", "MISSING")
@@ -570,7 +763,7 @@ nc2_errors = nc2_report.get("error_ids", []) if nc2_report else []
 nc3_errors = nc3_report.get("error_ids", []) if nc3_report else []
 
 print()
-print("Five-cell differential matrix (v5.29):")
+print("Five-cell differential matrix (v5.30):")
 print(f"  accepted → evaluator-resolved:   {len(good_resolved)}/{len(good_rows)} (expected {len(good_rows)}/{len(good_rows)})")
 print(f"  accepted → evaluator-unresolved: {len(nc1_unresolved)}/1 NC1 (stale-base; CMD3 exit 0; error={len(nc1_errors)})")
 print(f"  rejected → evaluator-error:      {len(nc2_errors)}/1 NC2 (wrong-file) + {len(nc3_errors)}/1 NC3 (partial-multihunk)")
@@ -588,32 +781,38 @@ else:
     print(f"  - {len(good_rows)} known-good fixtures resolved by official evaluator")
     print(f"  - 0 evaluator apply errors on known-good fixtures")
     print(f"  - All hash chains valid (stored _patch_sha256 == sha256(model_patch))")
-    print(f"  - NC1 (stale-base): preflight=accepted (CMD3 patch --fuzz=5 exit 0)")
-    print(f"  - NC2 (wrong-file): preflight=rejected (all commands fail), evaluator=error")
-    print(f"  - NC3 (partial-multihunk): preflight=rejected (CMD3 exit 2), evaluator=error")
+    print(f"  - NC1 (stale-base): preflight=accepted (CMD3 exit 0, asserted live)")
+    print(f"  - NC2 (wrong-file): preflight=rejected (all commands fail, asserted live), evaluator=error")
+    print(f"  - NC3 (partial-multihunk): preflight=rejected (CMD3 exit 2, asserted live), evaluator=error")
     print(f"  - NC1, NC2, NC3 ran in SEPARATE evaluator invocations with distinct instance IDs")
+    print(f"  - v5.30 fix: status-preserving capture (no || true), no pre-CMD3 reset")
     print(f"  - Production path: buildCanonicalPatch → verifyCanonicalPatch → serializeCanonicalPatch")
-    print(f"  - v5.29 improvement: stop-at-first-exit-0 matches evaluator control flow exactly")
 
 # Write summary
-nc1_report_sha = hashlib.sha256(Path(nc1_report_path).read_bytes()).hexdigest() if nc1_report_path else None
-nc2_report_sha = hashlib.sha256(Path(nc2_report_path).read_bytes()).hexdigest() if nc2_report_path else None
-nc3_report_sha = hashlib.sha256(Path(nc3_report_path).read_bytes()).hexdigest() if nc3_report_path else None
+def sha256_path(p):
+    return hashlib.sha256(Path(p).read_bytes()).hexdigest() if p and Path(p).exists() else None
+
 summary = {
     "run_timestamp": "${TIMESTAMP}",
-    "version": "v5.29",
+    "version": "v5.30",
     "acceptance_criterion": "stop-at-first-exit-0 (evaluator-exact control flow)",
+    "v530_fixes": [
+        "Status-preserving capture: if out=$(cmd 2>&1); then status=0; else status=$?; fi",
+        "No pre-CMD3 reset: CMD3 sees CMD2 partial state (matches evaluator behavior)",
+        "Explicit exit-code assertions for NC1 (CMD3=0), NC2 (all non-zero), NC3 (CMD3=2)",
+        "Script fails if any assertion or matrix cell does not match expected outcome",
+    ],
     "production_path": "buildCanonicalPatch → verifyCanonicalPatch → serializeCanonicalPatch",
     "fixture_jsonl_sha256": "${FIXTURE_SHA256}",
     "negative_control_jsonl_sha256": "${NEGATIVE_SHA256}",
     "good_report": str(good_report_path),
-    "good_report_sha256": hashlib.sha256(Path(good_report_path).read_bytes()).hexdigest(),
+    "good_report_sha256": sha256_path(good_report_path),
     "nc1_report": str(nc1_report_path) if nc1_report_path else None,
-    "nc1_report_sha256": nc1_report_sha,
+    "nc1_report_sha256": sha256_path(nc1_report_path),
     "nc2_report": str(nc2_report_path) if nc2_report_path else None,
-    "nc2_report_sha256": nc2_report_sha,
+    "nc2_report_sha256": sha256_path(nc2_report_path),
     "nc3_report": str(nc3_report_path) if nc3_report_path else None,
-    "nc3_report_sha256": nc3_report_sha,
+    "nc3_report_sha256": sha256_path(nc3_report_path),
     "instances_submitted_good": len(good_rows),
     "instances_resolved": len(good_resolved),
     "instances_errors_good": len(good_errors),
