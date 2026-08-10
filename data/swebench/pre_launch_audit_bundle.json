@@ -1,7 +1,7 @@
 {
   "audit_created_at": "2026-08-10T22:11:57.585578+00:00",
   "evaluated_code_commit": "15cf499134f180d82ede2de0104a8722ae2cacdb",
-  "launch_checkout_commit": "c86a96e358707680b8c3653374113016b30fbfd2",
+  "launch_checkout_commit": "eb90fa2b21af228f1b8cbf19144ff15f21ca8fe2",
   "diff_between_commits": {
     "command": "git diff --name-only 15cf499134f180d82ede2de0104a8722ae2cacdb 34b52fdb4692cd12fc260172e489af5b97bafe9e",
     "files_changed": [
@@ -52,14 +52,14 @@
       "data/eval_protocol_v1.json": "3c845d8e0567f2c91c5e432545724c1f3b72d7bcc4ae61806d2a4a594e9d4e83",
       "data/swebench/multilingual_reserved_run.jsonl": "7617e8b9a999cd7e4ce82d4d63c6adf1067a6a38204a6b514853f967d99b8297",
       "data/swebench/exclusions.jsonl": "d6287eaaf7554d1e8e8b54d1c75c470dc888f96e3e064253a89f08dd6931ffb7",
-      "scripts/preflight_attestation.py": "caa407f9f9e4f03f6e1999db3b4641d9ea9fb646b64645df98a3c3213ad6c49a",
+      "scripts/preflight_attestation.py": "6cc1b9dacec295b2927dffd31f86ae2e6872bc72ec7512e8b12e46dea6b1c2b7",
       "data/swebench/multilingual_preregistration.json": "25837bcef0bd829e37292b87b17e5f4dae67b19ca8211b2ec85c818cff5bbe91",
       "data/swebench/expected_image_digests.json": "ea9178b361ef58ac1aca9705be5d536efbdfadb9771e8c0988829d1c85868225",
       "server/agentSystemPrompt.ts": "7879de0d583f4017673d784e4a4f843039af9c13f7b15f94c7549246289f123b",
       "server/aiPrompts.ts": "6a60d6a0cff64dd5332e8b848822b83900ec35791fe4edd18f03687633bfeb01",
       "server/promptEngineer.ts": "d4dc72f299a11f0ef14e70a7a64687d468bcb3ec799e40bdbec9cd6f0bc70bda",
       "package.json": "280dafaa2adab029904273c6d4180c5735cdcfe0696efd2b0f37fef4ba312e8e",
-      "data/swebench/pre_launch_audit_bundle.json": "e6caf4f4a544e225b134dc57ef41be4675b8773009a877e7cb33a4baf5bad7e4"
+      "data/swebench/pre_launch_audit_bundle.json": "9c7851cb0d25cfa37969f8454b44ccb0758734849f7db3ce21f8e5426ec956d7"
     }
   },
   "node_runtime_version": "v22.22.3",
