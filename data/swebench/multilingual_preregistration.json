@@ -1,9 +1,9 @@
 {
   "agent": {
-    "commit": "7c363ac0711b3355e9833fdef2eed58078046870",
+    "commit": "15cf499134f180d82ede2de0104a8722ae2cacdb",
     "escalation": "disabled",
     "evaluated_file_sha256": {
-      "server/benchmarkLauncher.ts": "348059dad151b1f8ae530eb2fd6c45952a975166d07c9ed16b1a02cac95dffcb",
+      "server/benchmarkLauncher.ts": "e83b7a785832645c1c33bdd98d3f9bfafea1228dc65ade79ccf339785cf2a548",
       "server/canonicalPatch.ts": "ef9009bbb4ee019d78e6e09fec14c12ae21ae11afcdfbc58cd8211f9a789c614",
       "server/hardenedSandbox.ts": "5da6d7f5674463519b773762ad6471dcb35a74612912951320b81d8003c540c3",
       "server/sweBenchContextBuilder.ts": "61ba38e80f0cc29f55e87f262a9e63b0984938b4dec8bd680ca4b93c6befc3e8",
@@ -117,6 +117,6 @@
     "repo_overlap": 0,
     "strategy": "repository_disjoint"
   },
-  "preregistration_hash": "46c0de2aaaa1484c9323fdb86f499f173b603895d774bea5ed610265ab70eaea",
+  "preregistration_hash": "2c3c2ef9a539eba57e282c5e2e0a4068c9410d3714f9cdaab4103ad04f58c26c",
   "preregistration_hash_note": "SHA-256 of JSON content excluding preregistration_hash and preregistration_hash_note fields, sorted keys, 2-space indent, ensure_ascii=False"
 }
