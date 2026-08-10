@@ -186,3 +186,10 @@
 {"instance_id":"apache__druid-13704","model_patch":"","model_name_or_path":"andromeda-v6-claude-sonnet-5"}
 {"instance_id":"apache__druid-14092","model_patch":"","model_name_or_path":"andromeda-v6-claude-sonnet-5"}
 {"instance_id":"apache__druid-14136","model_patch":"","model_name_or_path":"andromeda-v6-claude-sonnet-5"}
+{"instance_id":"apache__druid-15402","model_patch":"","model_name_or_path":"andromeda-v6-claude-sonnet-5"}
+{"instance_id":"apache__druid-16875","model_patch":"","model_name_or_path":"andromeda-v6-claude-sonnet-5"}
+{"instance_id":"astral-sh__ruff-15309","model_patch":"","model_name_or_path":"andromeda-v6-claude-sonnet-5"}
+{"instance_id":"babel__babel-13928","model_patch":"","model_name_or_path":"andromeda-v6-claude-sonnet-5"}
+{"instance_id":"caddyserver__caddy-4774","model_patch":"","model_name_or_path":"andromeda-v6-claude-sonnet-5"}
+{"instance_id":"faker-ruby__faker-2705","model_patch":"","model_name_or_path":"andromeda-v6-claude-sonnet-5"}
+{"instance_id":"google__gson-1014","model_patch":"","model_name_or_path":"andromeda-v6-claude-sonnet-5"}

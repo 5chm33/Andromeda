@@ -191,3 +191,7 @@ andromeda-eval-parity-*.json
 andromeda-eval-parity-v*.json
 andromeda-v6-*.json
 data/swebench/canary_v*_predictions.jsonl
+data/swebench/eval_parity_fixtures*.jsonl
+data/swebench/eval_parity_fixtures*.json
+data/swebench/evaluator_parity_archive/
+data/swebench/run_bundle_*.json
