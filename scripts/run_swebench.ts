@@ -651,7 +651,10 @@ Output ONLY a JSON array of file paths (most relevant first, up to 6). Example: 
     const match = response.match(/\[[\s\S]*?\]/);
     if (match) {
       const files = JSON.parse(match[0]) as string[];
-      const validFiles = files.filter(f => allFiles.includes(f)).slice(0, 8);
+      // Validate against non-test files only — prevents the LLM from selecting
+      // test/fixture files that were intentionally excluded from candidates.
+      const nonTestFiles = new Set(allFiles.filter(f => !isTestOrFixtureFile(f)));
+      const validFiles = files.filter(f => nonTestFiles.has(f)).slice(0, 8);
       if (validFiles.length > 0) return validFiles;
       // LLM returned invalid paths — fall through to keyword candidates
     }
