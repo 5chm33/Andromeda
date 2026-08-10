@@ -3,16 +3,16 @@
 Deterministic pre-launch attestation script for the Andromeda multilingual holdout run.
 
 Performs the following checks and produces a signed/retained attestation JSON:
-  1. HEAD == expected launch checkout
+  1. HEAD == expected launch checkout (exact match)
   2. Working tree is clean (no uncommitted changes)
   3. Diff between evaluated-code commit and launch checkout contains no evaluated files
   4. All 15 audited file hashes match the pre-launch audit bundle
   5. Reserved manifest: 113 unique IDs, no overlap with exclusion registry
   6. Dataset revision matches preregistration
   7. Campaign ID matches preregistration
-  8. Preregistration raw-file hash matches SWEBENCH_PREREGISTRATION_HASH env var
+  8. Preregistration raw-file hash matches audit bundle
   9. Node.js runtime version recorded
- 10. Docker responsive and can resolve a sample image digest
+ 10. Docker responsive + sample image digest pre-resolution (3 representative images)
  11. Inference identity frozen (model, temperature, max_tokens)
 
 Usage:
@@ -48,9 +48,6 @@ EXPECTED_MODEL_ID = 'claude-sonnet-5'
 EXPECTED_TEMPERATURE = 1
 EXPECTED_MAX_TOKENS = 32000
 
-# Sample image for Docker smoke test (one of the holdout repos)
-SAMPLE_IMAGE = 'swebench/sweb.eval.x86_64.google__gson.0d0d0d0d:latest'
-
 checks = []
 all_passed = True
 
@@ -85,27 +82,21 @@ except Exception as e:
 # Read LAUNCH_CHECKOUT_COMMIT from audit bundle (avoids self-reference loop)
 LAUNCH_CHECKOUT_COMMIT = audit.get('launch_checkout_commit', '')
 
-# ── Check 1: HEAD is at or after launch checkout, no evaluated files changed ───────
-# The audit bundle records the launch_checkout_commit (the governance-frozen commit).
-# HEAD may be equal to it or a later commit (e.g. after adding the attestation output).
-# What matters is that no evaluated files changed between EVALUATED_CODE_COMMIT and HEAD.
-# The diff check (Check 3) enforces this; Check 1 just records the actual HEAD.
+# ── Check 1: HEAD == launch checkout exactly ──────────────────────────────────
+# The audit bundle records the exact launch checkout commit. HEAD must match
+# exactly. Any change after the audit bundle is committed requires a new
+# attestation run with an updated audit bundle.
 try:
     head = run(['git', 'rev-parse', 'HEAD'])
     if not LAUNCH_CHECKOUT_COMMIT:
-        check('head-at-or-after-launch-checkout', False, 'audit bundle missing launch_checkout_commit')
+        check('head-exact-launch-checkout', False, 'audit bundle missing launch_checkout_commit')
     else:
-        # Verify HEAD is a descendant of (or equal to) launch_checkout_commit
-        is_ancestor = subprocess.run(
-            ['git', 'merge-base', '--is-ancestor', LAUNCH_CHECKOUT_COMMIT, head],
-            capture_output=True
-        ).returncode == 0
-        check('head-at-or-after-launch-checkout',
-              is_ancestor,
-              f'HEAD={head[:16]}... is at or after launch_checkout={LAUNCH_CHECKOUT_COMMIT[:16]}...' if is_ancestor
-              else f'HEAD={head[:16]}... is NOT a descendant of launch_checkout={LAUNCH_CHECKOUT_COMMIT[:16]}...')
+        check('head-exact-launch-checkout',
+              head == LAUNCH_CHECKOUT_COMMIT,
+              f'HEAD={head[:16]}... matches audit bundle launch_checkout' if head == LAUNCH_CHECKOUT_COMMIT
+              else f'MISMATCH: HEAD={head[:16]}... expected={LAUNCH_CHECKOUT_COMMIT[:16]}...')
 except Exception as e:
-    check('head-at-or-after-launch-checkout', False, f'git check failed: {e}')
+    check('head-exact-launch-checkout', False, f'git rev-parse HEAD failed: {e}')
 
 # ── Check 2: Clean working tree ───────────────────────────────────────────────
 try:
@@ -119,7 +110,7 @@ except Exception as e:
 # ── Check 3: Diff contains no evaluated files ────────────────────────────────
 # Governance/tooling files (data/, scripts/preflight_*.py) may change between
 # the evaluated-code commit and the launch checkout. What must NOT change is
-# any of the 15 audited files (11 execution-path source files + 4 artifacts).
+# any of the audited files (11 execution-path source files + 4 artifacts).
 try:
     diff_files = run(['git', 'diff', '--name-only', EVALUATED_CODE_COMMIT, LAUNCH_CHECKOUT_COMMIT]).splitlines()
     evaluated_files = list(audit.get('audited_files', {}).get('sha256', {}).keys())
@@ -132,7 +123,7 @@ try:
 except Exception as e:
     check('diff-no-evaluated-files-changed', False, f'git diff failed: {e}')
 
-# ── Check 4: All 15 audited file hashes match ─────────────────────────────────
+# ── Check 4: All audited file hashes match ────────────────────────────────────
 try:
     expected_hashes = audit['audited_files']['sha256']
     mismatches = []
@@ -210,20 +201,69 @@ try:
 except Exception as e:
     check('node-runtime', False, f'node --version failed: {e}', blocks=False)
 
-# ── Check 10: Docker responsive + sample image digest ────────────────────────
+# ── Check 10: Docker responsive + sample image digest pre-resolution ──────────
+# Pre-resolve digests for 3 representative holdout images (one per language group).
+# Full pre-resolution of all 113 images is impractical (~340GB total); per-instance
+# digest enforcement is fail-closed in scored mode for all remaining instances.
+# These 3 samples prove Docker Hub is accessible and images are resolvable.
+sample_digests = {}
+
 try:
-    # Just verify Docker daemon is responsive
     docker_info = run(['docker', 'info', '--format', '{{.ServerVersion}}'], timeout=15)
     check('docker-responsive',
           len(docker_info) > 0,
           f'Docker daemon v{docker_info} is responsive')
-    # Note: per-instance digest resolution is enforced at task execution time (fail-closed)
-    check('per-instance-digest-policy',
-          True,
-          'Per-instance digest resolved before first model call; scored mode fails closed on resolution failure',
-          blocks=False)
 except Exception as e:
     check('docker-responsive', False, f'Docker unresponsive: {e}')
+
+# Pick 3 sample holdout instances from different language groups
+try:
+    reserved_rows = [json.loads(l) for l in Path(RESERVED_MANIFEST_PATH).read_text().splitlines() if l.strip()]
+
+    def get_image(instance_id: str) -> str:
+        return f"swebench/sweb.eval.x86_64.{instance_id.replace('__', '_1776_').lower()}:latest"
+
+    # Pick one instance from Java, Rust, and Go/Ruby repos
+    java_inst = next((r for r in reserved_rows
+                      if any(x in r['instance_id'] for x in ['druid', 'lucene', 'rxjava'])), None)
+    rust_inst = next((r for r in reserved_rows
+                      if any(x in r['instance_id'] for x in ['bat', 'axum', 'coreutils'])), None)
+    go_inst = next((r for r in reserved_rows
+                    if any(x in r['instance_id'] for x in ['gin', 'hugo', 'logrus'])), None)
+    sample_instances = [i for i in [java_inst, rust_inst, go_inst] if i is not None]
+
+    for inst in sample_instances:
+        img = get_image(inst['instance_id'])
+        lang_tag = inst['instance_id'].split('__')[0].split('_')[0][:20]
+        try:
+            pull_result = subprocess.run(
+                ['docker', 'pull', img],
+                capture_output=True, text=True, timeout=300
+            )
+            if pull_result.returncode != 0:
+                check(f'sample-image-pull:{lang_tag}',
+                      False,
+                      f'Pull failed for {img}: {pull_result.stderr[:200]}')
+                continue
+            digest_out = run(['docker', 'inspect', '--format', '{{index .RepoDigests 0}}', img], timeout=10)
+            digest = digest_out.split('@')[-1] if '@' in digest_out else digest_out
+            sample_digests[img] = digest
+            check(f'sample-image-digest:{lang_tag}',
+                  digest.startswith('sha256:'),
+                  f'{img} -> {digest[:32]}...')
+        except Exception as e:
+            check(f'sample-image-digest:{lang_tag}',
+                  False,
+                  f'Digest resolution failed for {img}: {e}')
+
+except Exception as e:
+    check('sample-image-resolution', False, f'Sample image resolution setup failed: {e}')
+
+check('per-instance-digest-enforcement',
+      True,
+      'Per-instance digest resolved before first model call; scored mode fails closed on '
+      'resolution failure; all resolved digests recorded in run manifest for post-run verification',
+      blocks=False)
 
 # ── Check 11: Inference identity ──────────────────────────────────────────────
 try:
@@ -246,6 +286,7 @@ attestation = {
     'evaluated_code_commit': EVALUATED_CODE_COMMIT,
     'preregistration_raw_file_hash': sha256_file(PREREGISTRATION_PATH),
     'node_runtime': run(['node', '--version']),
+    'sample_image_digests': sample_digests,
     'checks': checks,
 }
 Path(ATTESTATION_PATH).write_text(json.dumps(attestation, indent=2) + '\n')
