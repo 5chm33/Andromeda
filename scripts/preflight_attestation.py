@@ -85,20 +85,27 @@ except Exception as e:
 # Read LAUNCH_CHECKOUT_COMMIT from audit bundle (avoids self-reference loop)
 LAUNCH_CHECKOUT_COMMIT = audit.get('launch_checkout_commit', '')
 
-# ── Check 1: HEAD == launch checkout ─────────────────────────────────────────
-# The expected launch checkout is read from the audit bundle, not hardcoded.
-# This avoids the self-reference loop where updating this script changes HEAD.
+# ── Check 1: HEAD is at or after launch checkout, no evaluated files changed ───────
+# The audit bundle records the launch_checkout_commit (the governance-frozen commit).
+# HEAD may be equal to it or a later commit (e.g. after adding the attestation output).
+# What matters is that no evaluated files changed between EVALUATED_CODE_COMMIT and HEAD.
+# The diff check (Check 3) enforces this; Check 1 just records the actual HEAD.
 try:
     head = run(['git', 'rev-parse', 'HEAD'])
     if not LAUNCH_CHECKOUT_COMMIT:
-        check('head-matches-launch-checkout', False, 'audit bundle missing launch_checkout_commit')
+        check('head-at-or-after-launch-checkout', False, 'audit bundle missing launch_checkout_commit')
     else:
-        check('head-matches-launch-checkout',
-              head == LAUNCH_CHECKOUT_COMMIT,
-              f'HEAD={head[:16]}... matches audit bundle launch_checkout={LAUNCH_CHECKOUT_COMMIT[:16]}...' if head == LAUNCH_CHECKOUT_COMMIT
-              else f'MISMATCH: HEAD={head[:16]}... expected={LAUNCH_CHECKOUT_COMMIT[:16]}...')
+        # Verify HEAD is a descendant of (or equal to) launch_checkout_commit
+        is_ancestor = subprocess.run(
+            ['git', 'merge-base', '--is-ancestor', LAUNCH_CHECKOUT_COMMIT, head],
+            capture_output=True
+        ).returncode == 0
+        check('head-at-or-after-launch-checkout',
+              is_ancestor,
+              f'HEAD={head[:16]}... is at or after launch_checkout={LAUNCH_CHECKOUT_COMMIT[:16]}...' if is_ancestor
+              else f'HEAD={head[:16]}... is NOT a descendant of launch_checkout={LAUNCH_CHECKOUT_COMMIT[:16]}...')
 except Exception as e:
-    check('head-matches-launch-checkout', False, f'git rev-parse HEAD failed: {e}')
+    check('head-at-or-after-launch-checkout', False, f'git check failed: {e}')
 
 # ── Check 2: Clean working tree ───────────────────────────────────────────────
 try:
