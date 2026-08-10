@@ -1,18 +1,18 @@
 {
   "agent": {
-    "commit": "af05ac5072bf0f621e18361933fd63bdcf5b3de2",
+    "commit": "e9c67540939bc23cd7aacb9772fe9bb2795ef0f1",
     "escalation": "disabled",
     "evaluated_file_sha256": {
-      "scripts/run_swebench.ts": "983f840f248e226fea89840140c24f1a377a2b6958f962082db5048a0b9d7389",
-      "server/benchmarkLauncher.ts": "7f49087766ee960a90a976376ed35d3fcd02c5292662bcee01217ed812a7f4a8",
+      "server/benchmarkLauncher.ts": "348059dad151b1f8ae530eb2fd6c45952a975166d07c9ed16b1a02cac95dffcb",
       "server/canonicalPatch.ts": "ef9009bbb4ee019d78e6e09fec14c12ae21ae11afcdfbc58cd8211f9a789c614",
       "server/hardenedSandbox.ts": "5da6d7f5674463519b773762ad6471dcb35a74612912951320b81d8003c540c3",
       "server/sweBenchContextBuilder.ts": "61ba38e80f0cc29f55e87f262a9e63b0984938b4dec8bd680ca4b93c6befc3e8",
       "server/sweBenchEvalMode.ts": "713f0f66b70315ab430aa9fe575db6ad9480ab09b807b23d0e32e181bbac4558",
       "server/sweBenchModelConfig.ts": "aaa44388709023729568c45ad8b1a8e4602d6cade7f4a4a79035ee4eea8fd814",
       "server/sweBenchMultilingualSupport.ts": "da92ffbe642ec7f4369f1e6dd41773c359b87399a0894fcfef4d3128e3089292",
-      "server/sweBenchPipeline.ts": "f24a8fceccdc2dabff6e8064e4904cee4b34d70d6005ed79b4cd40288505e75a",
-      "server/sweBenchTracebackLoop.ts": "7d4572ec07ac910a78187bfe2437464b5f2254fc24ffea3f6037dd6fd9ec2021"
+      "server/sweBenchPipeline.ts": "9f6e08d0cbee84c5f7cc488c6964124bbba02746659e7d8c50d0e538d26bc5de",
+      "server/sweBenchTracebackLoop.ts": "132a758b8bd0bf82b522298c568d3773ef4be04aeb81166524914714a711116c",
+      "scripts/run_swebench.ts": "bbb533c95c0b00f06c68d6af8852752d550faa40df1ccf2cda6cb78c1510bb05"
     },
     "max_tokens": 32000,
     "mode": "scored_strict",
@@ -107,6 +107,6 @@
     "repo_overlap": 0,
     "strategy": "repository_disjoint"
   },
-  "preregistration_hash": "642ba1da283055d97bcbe3802733f9c81e165af0100759897c0a6b8f57a7aeb3",
-  "preregistration_hash_note": "SHA-256 of JSON content without this field and preregistration_hash_note, sorted keys, 2-space indent, UTF-8"
+  "preregistration_hash": "e6acecb91a0079078f9cd4837935ebbc737dd86fda6415b634f9041fc6149e6a",
+  "preregistration_hash_note": "SHA-256 of JSON content excluding preregistration_hash and preregistration_hash_note fields, sorted keys, 2-space indent, ensure_ascii=False"
 }
