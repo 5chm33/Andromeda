@@ -583,15 +583,25 @@ async function localizeFiles(
   // Java: also exclude src/test/ directory
   const isTestOrFixtureFile = (f: string): boolean => {
     const fl = f.toLowerCase();
-    // Universal patterns
-    if (fl.includes('test_') || fl.includes('/tests/')) return true;
-    // JavaScript/TypeScript fixture directories (the Babel failure case)
-    if (fl.includes('/test/fixtures/') || fl.includes('/test/fixture/')) return true;
+    // Universal: test_ prefix
+    if (fl.includes('test_')) return true;
+    // Check if any path segment is exactly 'test', 'tests', 'spec', or 'specs'
+    // This catches: packages/foo/test/bar.js, src/tests/baz.js, spec/util.rb etc.
+    // Split on '/' and check each segment (case-insensitive)
+    const segments = f.split('/');
+    if (segments.some(s => {
+      const sl = s.toLowerCase();
+      return sl === 'test' || sl === 'tests' || sl === 'spec' || sl === 'specs';
+    })) return true;
+    // JavaScript/TypeScript: __tests__, __mocks__, fixture directories
     if (fl.includes('/__tests__/') || fl.includes('/__mocks__/')) return true;
+    if (fl.includes('/fixtures/') || fl.includes('/fixture/')) return true;
+    // File suffixes: .spec.js, .test.js etc.
     if (fl.endsWith('.spec.js') || fl.endsWith('.spec.ts')) return true;
     if (fl.endsWith('.test.js') || fl.endsWith('.test.ts')) return true;
-    // Ruby spec directories
-    if (fl.includes('/spec/')) return true;
+    if (fl.endsWith('.spec.rb') || fl.endsWith('_spec.rb')) return true;
+    // Benchmark directories (not source code)
+    if (fl.startsWith('benchmark/') || fl.includes('/benchmark/') || fl.includes('/benchmarks/')) return true;
     // Java test source directories
     if (fl.includes('/src/test/')) return true;
     return false;
