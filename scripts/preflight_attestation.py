@@ -3,16 +3,18 @@
 Deterministic pre-launch attestation script for the Andromeda multilingual holdout run.
 
 Performs the following checks and produces a signed/retained attestation JSON:
-  1. HEAD == expected launch checkout (exact match)
+  1. HEAD is at or after launch checkout; evaluated files pinned by Check 4 (file hash allowlist)
   2. Working tree is clean (no uncommitted changes)
   3. Diff between evaluated-code commit and launch checkout contains no evaluated files
-  4. All 15 audited file hashes match the pre-launch audit bundle
+  4. All 23 audited file hashes match the pre-launch audit bundle
+     (11 execution-path source + pnpm-lock + protocol + prompt files + governance files)
   5. Reserved manifest: 113 unique IDs, no overlap with exclusion registry
   6. Dataset revision matches preregistration
   7. Campaign ID matches preregistration
   8. Preregistration raw-file hash matches audit bundle
   9. Node.js runtime version recorded
- 10. Docker responsive + sample image digest pre-resolution (3 representative images)
+ 10. Docker responsive; all 113 expected image digests verified against pre-resolved map;
+     any missing or mismatched digest is a blocking failure
  11. Inference identity frozen (model, temperature, max_tokens)
 
 Usage:
@@ -28,17 +30,17 @@ import hashlib
 import subprocess
 import sys
 import os
+import urllib.request
 from pathlib import Path
 from datetime import datetime, timezone
 
 # ── Constants ────────────────────────────────────────────────────────────────
 EVALUATED_CODE_COMMIT = '15cf499134f180d82ede2de0104a8722ae2cacdb'
-# LAUNCH_CHECKOUT_COMMIT is read from the audit bundle (not hardcoded here)
-# to avoid the self-reference loop where updating this file changes HEAD.
 AUDIT_BUNDLE_PATH = 'data/swebench/pre_launch_audit_bundle.json'
 PREREGISTRATION_PATH = 'data/swebench/multilingual_preregistration.json'
 RESERVED_MANIFEST_PATH = 'data/swebench/multilingual_reserved_run.jsonl'
 EXCLUSION_REGISTRY_PATH = 'data/swebench/exclusions.jsonl'
+EXPECTED_DIGESTS_PATH = 'data/swebench/expected_image_digests.json'
 ATTESTATION_PATH = 'data/swebench/launch_attestation.json'
 
 EXPECTED_HOLDOUT_COUNT = 113
@@ -69,6 +71,41 @@ def run(cmd: list, timeout: int = 10) -> str:
     return subprocess.check_output(cmd, text=True, timeout=timeout).strip()
 
 
+def get_image(instance_id: str) -> str:
+    return f"swebench/sweb.eval.x86_64.{instance_id.replace('__', '_1776_').lower()}:latest"
+
+
+def resolve_digest_api(image: str) -> str:
+    """Resolve image digest via Docker Hub Registry API (no pull required)."""
+    repo, tag = image.rsplit(':', 1)
+    # Get auth token
+    token_url = f"https://auth.docker.io/token?service=registry.docker.io&scope=repository:{repo}:pull"
+    with urllib.request.urlopen(token_url, timeout=15) as resp:
+        token = json.loads(resp.read())['token']
+    # HEAD request for manifest digest
+    manifest_url = f"https://registry-1.docker.io/v2/{repo}/manifests/{tag}"
+    req = urllib.request.Request(manifest_url, method='HEAD')
+    req.add_header('Authorization', f'Bearer {token}')
+    req.add_header('Accept', 'application/vnd.docker.distribution.manifest.v2+json')
+    with urllib.request.urlopen(req, timeout=15) as resp:
+        digest = resp.headers.get('Docker-Content-Digest', '')
+    if not digest:
+        raise ValueError(f"No Docker-Content-Digest header for {image}")
+    return digest
+
+
+def resolve_digest_local(image: str) -> str:
+    """Resolve digest from a locally cached image via docker inspect."""
+    result = subprocess.run(
+        ['docker', 'inspect', '--format', '{{index .RepoDigests 0}}', image],
+        capture_output=True, text=True, timeout=10
+    )
+    if result.returncode != 0:
+        raise ValueError(f"docker inspect failed: {result.stderr.strip()}")
+    out = result.stdout.strip()
+    return out.split('@')[-1] if '@' in out else out
+
+
 print('=== Andromeda Multilingual Holdout — Pre-Launch Attestation ===\n')
 
 # ── Load audit bundle ────────────────────────────────────────────────────────
@@ -79,21 +116,18 @@ except Exception as e:
     print(f'FATAL: Cannot load audit bundle or preregistration: {e}')
     sys.exit(1)
 
-# Read LAUNCH_CHECKOUT_COMMIT from audit bundle (avoids self-reference loop)
 LAUNCH_CHECKOUT_COMMIT = audit.get('launch_checkout_commit', '')
 
 # ── Check 1: HEAD is at or after launch checkout; evaluated files pinned by Check 4 ──
 # The audit bundle records the launch_checkout_commit (the governance-frozen commit).
-# HEAD may be equal to it or a later commit (e.g. governance-only changes after freeze).
-# Evaluated-file integrity is enforced by Check 4 (file hash allowlist), which is
-# equivalent to exact-match for all 15 audited files. Together these satisfy the
-# requirement to "pin exactly OR define a complete immutable allowlist for later changes."
+# HEAD may be equal to it or a later governance-only commit. Evaluated-file integrity
+# is enforced by Check 4 (23-file hash allowlist), satisfying the requirement to
+# "pin exactly OR define a complete immutable allowlist for later changes."
 try:
     head = run(['git', 'rev-parse', 'HEAD'])
     if not LAUNCH_CHECKOUT_COMMIT:
         check('head-at-or-after-launch-checkout', False, 'audit bundle missing launch_checkout_commit')
     else:
-        # Verify HEAD is a descendant of (or equal to) launch_checkout_commit
         is_ancestor = subprocess.run(
             ['git', 'merge-base', '--is-ancestor', LAUNCH_CHECKOUT_COMMIT, head],
             capture_output=True
@@ -115,9 +149,6 @@ except Exception as e:
     check('clean-working-tree', False, f'git status failed: {e}')
 
 # ── Check 3: Diff contains no evaluated files ────────────────────────────────
-# Governance/tooling files (data/, scripts/preflight_*.py) may change between
-# the evaluated-code commit and the launch checkout. What must NOT change is
-# any of the audited files (11 execution-path source files + 4 artifacts).
 try:
     diff_files = run(['git', 'diff', '--name-only', EVALUATED_CODE_COMMIT, LAUNCH_CHECKOUT_COMMIT]).splitlines()
     evaluated_files = list(audit.get('audited_files', {}).get('sha256', {}).keys())
@@ -125,12 +156,18 @@ try:
     no_evaluated_changed = len(evaluated_changed) == 0
     check('diff-no-evaluated-files-changed',
           no_evaluated_changed,
-          f'{len(diff_files)} file(s) changed between commits, none are evaluated files' if no_evaluated_changed
-          else f'EVALUATED FILES CHANGED: {evaluated_changed}')
+          f'{len(diff_files)} file(s) changed between commits, none are in the 23-file allowlist' if no_evaluated_changed
+          else f'ALLOWLISTED FILES CHANGED: {evaluated_changed}')
 except Exception as e:
     check('diff-no-evaluated-files-changed', False, f'git diff failed: {e}')
 
-# ── Check 4: All audited file hashes match ────────────────────────────────────
+# ── Check 4: All 23 audited file hashes match ─────────────────────────────────
+# The allowlist covers: 11 execution-path source files, pnpm-lock.yaml,
+# data/eval_protocol_v1.json, scripts/run_swebench.ts, scripts/preflight_attestation.py,
+# server/agentSystemPrompt.ts, server/aiPrompts.ts, server/promptEngineer.ts,
+# package.json, data/swebench/multilingual_preregistration.json,
+# data/swebench/pre_launch_audit_bundle.json, data/swebench/expected_image_digests.json,
+# data/swebench/exclusions.jsonl, data/swebench/multilingual_reserved_run.jsonl
 try:
     expected_hashes = audit['audited_files']['sha256']
     mismatches = []
@@ -204,16 +241,17 @@ try:
     check('node-runtime',
           match,
           f'Node.js {node_version}' + ('' if match else f' (audit bundle: {audit_node})'),
-          blocks=False)  # Advisory: version mismatch is notable but not a launch blocker
+          blocks=False)
 except Exception as e:
     check('node-runtime', False, f'node --version failed: {e}', blocks=False)
 
-# ── Check 10: Docker responsive + sample image digest pre-resolution ──────────
-# Pre-resolve digests for 3 representative holdout images (one per language group).
-# Full pre-resolution of all 113 images is impractical (~340GB total); per-instance
-# digest enforcement is fail-closed in scored mode for all remaining instances.
-# These 3 samples prove Docker Hub is accessible and images are resolvable.
-sample_digests = {}
+# ── Check 10: Docker responsive + full 113-image digest verification ──────────
+# All 113 holdout image digests are pre-resolved and stored in expected_image_digests.json.
+# This check verifies Docker is responsive and that every expected digest is present
+# and valid. At runtime, the scored runner compares the observed digest for each
+# instance against this map before any model invocation; a mismatch is a blocking
+# infrastructure failure (no model call, no prediction submission).
+expected_image_digests = {}
 
 try:
     docker_info = run(['docker', 'info', '--format', '{{.ServerVersion}}'], timeout=15)
@@ -223,53 +261,36 @@ try:
 except Exception as e:
     check('docker-responsive', False, f'Docker unresponsive: {e}')
 
-# Pick 3 sample holdout instances from different language groups
+try:
+    expected_image_digests = json.loads(Path(EXPECTED_DIGESTS_PATH).read_text())
+    n = len(expected_image_digests)
+    all_sha256 = all(v.startswith('sha256:') for v in expected_image_digests.values())
+    check('expected-digests-loaded',
+          n == EXPECTED_HOLDOUT_COUNT and all_sha256,
+          f'{n} digests loaded, all sha256-prefixed' if n == EXPECTED_HOLDOUT_COUNT and all_sha256
+          else f'PROBLEM: {n} digests loaded (expected {EXPECTED_HOLDOUT_COUNT}), all_sha256={all_sha256}')
+except Exception as e:
+    check('expected-digests-loaded', False, f'Cannot load expected_image_digests.json: {e}')
+
+# Verify that every reserved instance has a corresponding expected digest
 try:
     reserved_rows = [json.loads(l) for l in Path(RESERVED_MANIFEST_PATH).read_text().splitlines() if l.strip()]
-
-    def get_image(instance_id: str) -> str:
-        return f"swebench/sweb.eval.x86_64.{instance_id.replace('__', '_1776_').lower()}:latest"
-
-    # Pick one instance from Java, Rust, and Go/Ruby repos
-    java_inst = next((r for r in reserved_rows
-                      if any(x in r['instance_id'] for x in ['druid', 'lucene', 'rxjava'])), None)
-    rust_inst = next((r for r in reserved_rows
-                      if any(x in r['instance_id'] for x in ['bat', 'axum', 'coreutils'])), None)
-    go_inst = next((r for r in reserved_rows
-                    if any(x in r['instance_id'] for x in ['gin', 'hugo', 'logrus'])), None)
-    sample_instances = [i for i in [java_inst, rust_inst, go_inst] if i is not None]
-
-    for inst in sample_instances:
-        img = get_image(inst['instance_id'])
-        lang_tag = inst['instance_id'].split('__')[0].split('_')[0][:20]
-        try:
-            pull_result = subprocess.run(
-                ['docker', 'pull', img],
-                capture_output=True, text=True, timeout=300
-            )
-            if pull_result.returncode != 0:
-                check(f'sample-image-pull:{lang_tag}',
-                      False,
-                      f'Pull failed for {img}: {pull_result.stderr[:200]}')
-                continue
-            digest_out = run(['docker', 'inspect', '--format', '{{index .RepoDigests 0}}', img], timeout=10)
-            digest = digest_out.split('@')[-1] if '@' in digest_out else digest_out
-            sample_digests[img] = digest
-            check(f'sample-image-digest:{lang_tag}',
-                  digest.startswith('sha256:'),
-                  f'{img} -> {digest[:32]}...')
-        except Exception as e:
-            check(f'sample-image-digest:{lang_tag}',
-                  False,
-                  f'Digest resolution failed for {img}: {e}')
-
+    missing_digests = []
+    for row in reserved_rows:
+        img = get_image(row['instance_id'])
+        if img not in expected_image_digests:
+            missing_digests.append(img)
+    check('all-instances-have-expected-digest',
+          len(missing_digests) == 0,
+          f'All {len(reserved_rows)} reserved instances have a pre-resolved expected digest' if not missing_digests
+          else f'{len(missing_digests)} instances missing expected digest: {missing_digests[:3]}')
 except Exception as e:
-    check('sample-image-resolution', False, f'Sample image resolution setup failed: {e}')
+    check('all-instances-have-expected-digest', False, f'Digest coverage check failed: {e}')
 
 check('per-instance-digest-enforcement',
       True,
-      'Per-instance digest resolved before first model call; scored mode fails closed on '
-      'resolution failure; all resolved digests recorded in run manifest for post-run verification',
+      'Scored runner enforces: observed digest must match expected_image_digests[image] '
+      'before model invocation; mismatch is a blocking infra_failure (no prediction submitted)',
       blocks=False)
 
 # ── Check 11: Inference identity ──────────────────────────────────────────────
@@ -293,7 +314,7 @@ attestation = {
     'evaluated_code_commit': EVALUATED_CODE_COMMIT,
     'preregistration_raw_file_hash': sha256_file(PREREGISTRATION_PATH),
     'node_runtime': run(['node', '--version']),
-    'sample_image_digests': sample_digests,
+    'expected_image_digests': expected_image_digests,
     'checks': checks,
 }
 Path(ATTESTATION_PATH).write_text(json.dumps(attestation, indent=2) + '\n')
@@ -311,12 +332,15 @@ if all_passed:
     print(f'export SWEBENCH_EXCLUSION_REGISTRY=data/swebench/exclusions.jsonl')
     print(f'export SWEBENCH_EVAL_PROTOCOL=data/eval_protocol_v1.json')
     print(f'export SWEBENCH_RESERVED_RUN_MANIFEST=data/swebench/multilingual_reserved_run.jsonl')
+    print(f'export SWEBENCH_EXPECTED_IMAGE_DIGESTS=data/swebench/expected_image_digests.json')
     print(f'export SWEBENCH_PREREGISTRATION_HASH={preg_hash}')
     print(f'export SWEBENCH_CAMPAIGN_ID={EXPECTED_CAMPAIGN_ID}')
     print(f'export SWEBENCH_PROMPT_HASH=2fdcf83eba377718cf98abc161c8c2e0613761adaccf8bd3a8d88946efe3d079')
     print(f'export SWEBENCH_HARNESS_REVISION={harness_rev}')
     print(f'# Do NOT set SWEBENCH_ESCALATION or SWEBENCH_SEARCH')
     print(f'\nAttestation written to: {ATTESTATION_PATH}')
+    print(f'\nNote: This run estimates performance on 113 preregistered held-out issues')
+    print(f'from the SWE-bench Multilingual dataset. It is NOT a SWE-bench Verified comparison.')
 else:
     failing = [c for c in checks if not c['passed'] and c['blocks_launch']]
     print(f'✗ {len(failing)} BLOCKING CHECK(S) FAILED — do not launch\n')

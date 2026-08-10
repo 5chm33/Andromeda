@@ -1063,6 +1063,20 @@ async function main() {
         preregistrationHash: process.env.SWEBENCH_PREREGISTRATION_HASH ?? '',
         campaignId: process.env.SWEBENCH_CAMPAIGN_ID ?? '',
       } : {}),
+      // Expected image digests — pre-resolved during attestation for all 113 holdout images.
+      // In scored mode, the runner compares each instance's observed digest against this
+      // map before any model invocation; a mismatch is a blocking infra_failure.
+      // Set SWEBENCH_EXPECTED_IMAGE_DIGESTS to the path of expected_image_digests.json.
+      ...(process.env.SWEBENCH_EXPECTED_IMAGE_DIGESTS ? (() => {
+        const digestPath = process.env.SWEBENCH_EXPECTED_IMAGE_DIGESTS!;
+        let expectedImageDigests: Record<string, string> = {};
+        try {
+          expectedImageDigests = JSON.parse(fs.readFileSync(digestPath, 'utf-8'));
+        } catch (e) {
+          throw new Error(`SWEBENCH_EXPECTED_IMAGE_DIGESTS set but cannot load ${digestPath}: ${e}`);
+        }
+        return { expectedImageDigests };
+      })() : {}),
       // Development canary mode: allows excluded dev IDs and downgrades smoke/prompt
       // checks to advisory. MUST NOT be set for holdout or evaluation runs.
       // Set SWEBENCH_DEV_CANARY=1 to enable.
@@ -1237,6 +1251,33 @@ async function main() {
           );
         }
         console.warn(`[Runner] Digest resolution failed for ${dockerImage}: ${(resolveErr as Error).message} — using tag (dev mode only)`);
+      }
+
+      // ── Expected digest enforcement ──────────────────────────────────────
+      // In scored mode with SWEBENCH_EXPECTED_IMAGE_DIGESTS set, compare the
+      // observed digest against the pre-resolved expected digest map.
+      // A mismatch means the image changed since attestation — blocking infra_failure.
+      if (isScoredRun && launcherConfig.expectedImageDigests) {
+        const expectedDigests = launcherConfig.expectedImageDigests as Record<string, string>;
+        const expectedDigest = expectedDigests[dockerImage];
+        if (!expectedDigest) {
+          throw new Error(
+            `Scored run: no expected digest for ${dockerImage} in expected_image_digests map. ` +
+            `Re-run preflight attestation to regenerate the digest map.`
+          );
+        }
+        // Extract just the sha256 digest from the resolved ref (repo@sha256:xxx)
+        const observedDigest = instanceImageRef.includes('@')
+          ? instanceImageRef.split('@')[1]
+          : instanceImageRef;
+        if (observedDigest !== expectedDigest) {
+          throw new Error(
+            `Scored run: image digest mismatch for ${dockerImage}. ` +
+            `Expected=${expectedDigest.slice(0, 32)}... Observed=${observedDigest.slice(0, 32)}... ` +
+            `The image may have been updated since attestation. Re-run preflight attestation.`
+          );
+        }
+        console.log(`[Runner] Digest verified: ${dockerImage} matches expected ${expectedDigest.slice(0, 16)}...`);
       }
 
       // ── Phase 1a: List repo files ────────────────────────────────────────

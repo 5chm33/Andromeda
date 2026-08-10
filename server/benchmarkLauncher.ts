@@ -126,6 +126,15 @@ export interface BenchmarkRunConfig {
    * Written into the run bundle for auditability.
    */
   evalProtocolHash?: string;
+  /**
+   * Pre-resolved image digest map for all holdout instances.
+   * Keys are mutable image tags (e.g. swebench/sweb.eval.x86_64.foo:latest).
+   * Values are sha256 digests (e.g. sha256:abc123...).
+   * In scored mode, the runner compares each instance's observed digest against
+   * this map before any model invocation; a mismatch is a blocking infra_failure.
+   * Set via SWEBENCH_EXPECTED_IMAGE_DIGESTS env var pointing to expected_image_digests.json.
+   */
+  expectedImageDigests?: Record<string, string>;
 }
 
 export interface PreLaunchCheckResult {
