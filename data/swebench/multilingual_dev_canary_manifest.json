@@ -1,0 +1,52 @@
+{
+  "canary_type": "development_canary",
+  "purpose": "Validate multilingual pipeline end-to-end: issue -> multilingual context -> patch generation -> exact apply -> durable recording. Does NOT validate patch correctness or task-specific test execution (scored_strict blind-apply).",
+  "commit": "db59f74cd8da05eb78a67aeca56d35f9e84ca4fc",
+  "canary_ids": [
+    "astral-sh__ruff-15309",
+    "babel__babel-13928",
+    "caddyserver__caddy-4774",
+    "faker-ruby__faker-2705",
+    "google__gson-1014"
+  ],
+  "canary_id_list_hash": "4755d457641031a10edf38e4064c551c968e4ac78af4796f23c82abc8ddc9e59",
+  "languages": [
+    "rust",
+    "javascript",
+    "go",
+    "ruby",
+    "java"
+  ],
+  "repos": [
+    "astral-sh/ruff",
+    "babel/babel",
+    "caddyserver/caddy",
+    "faker-ruby/faker",
+    "google/gson"
+  ],
+  "all_ids_in_exclusion_registry": true,
+  "all_ids_absent_from_holdout": true,
+  "all_ids_in_dev_manifest": true,
+  "spend_cap_usd": 20,
+  "per_task_cap_usd": 5,
+  "escalation": false,
+  "mode": "scored_strict",
+  "model": "claude-sonnet-5",
+  "dataset": "SWE-bench/SWE-bench_Multilingual",
+  "evaluated_file_sha256": {
+    "server/benchmarkLauncher.ts": "7f49087766ee960a90a976376ed35d3fcd02c5292662bcee01217ed812a7f4a8",
+    "server/sweBenchTracebackLoop.ts": "ccbe4733afb0c2c499905da74b895af9f59c48a96e4644bdbcb0c21a13a14402",
+    "server/sweBenchPipeline.ts": "9f6e08d0cbee84c5f7cc488c6964124bbba02746659e7d8c50d0e538d26bc5de",
+    "server/sweBenchContextBuilder.ts": "61ba38e80f0cc29f55e87f262a9e63b0984938b4dec8bd680ca4b93c6befc3e8",
+    "server/sweBenchConsensus.ts": "bc4bf9ca095ae279fb62968109ab4b3d09b4332c872dd6386ce34c3abf506860",
+    "server/sweBenchEvalMode.ts": "713f0f66b70315ab430aa9fe575db6ad9480ab09b807b23d0e32e181bbac4558",
+    "server/sweBenchModelConfig.ts": "aaa44388709023729568c45ad8b1a8e4602d6cade7f4a4a79035ee4eea8fd814",
+    "server/canonicalPatch.ts": "ef9009bbb4ee019d78e6e09fec14c12ae21ae11afcdfbc58cd8211f9a789c614",
+    "server/hardenedSandbox.ts": "5da6d7f5674463519b773762ad6471dcb35a74612912951320b81d8003c540c3",
+    "scripts/run_swebench.ts": "e6d0e7332b82330dbded3b07fbb2e421bebdfcd699be3341d7b344278ecc7922"
+  },
+  "frozen_at": "2026-08-10T14:00:43.868651+00:00",
+  "note": "Option B preregistration still binds 426cf4d3; this canary is development evidence only. Preregistration will be repinned after dev work is complete.",
+  "canary_manifest_hash": "8ad5cdbaf34df2c7accc34bdb7403d93667811da04fb05f7191fb0f2a55ff950",
+  "canary_manifest_hash_note": "SHA-256 of JSON content without this field and canary_manifest_hash_note, sorted keys, 2-space indent, UTF-8"
+}

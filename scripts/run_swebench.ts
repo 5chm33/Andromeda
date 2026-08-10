@@ -202,6 +202,20 @@ all_ids = sorted(df['instance_id'].tolist())
 instance_id_hash = hashlib.sha256(json.dumps(all_ids, sort_keys=True).encode()).hexdigest()
 
 records = df.to_dict('records')
+# Convert numpy arrays/scalars to Python native types
+# (Multilingual dataset returns Arrow-backed arrays via pandas)
+try:
+    import numpy as np
+    def _to_native(obj):
+        if isinstance(obj, np.ndarray): return obj.tolist()
+        if isinstance(obj, np.integer): return int(obj)
+        if isinstance(obj, np.floating): return float(obj)
+        if isinstance(obj, dict): return {k: _to_native(v) for k, v in obj.items()}
+        if isinstance(obj, list): return [_to_native(i) for i in obj]
+        return obj
+    records = [_to_native(r) for r in records]
+except ImportError:
+    pass  # numpy not available; records should already be native Python types
 result = {
     'records': records,
     'provenance': {
