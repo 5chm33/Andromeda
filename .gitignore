@@ -187,3 +187,5 @@ test-results/
 data/andromeda.db
 data/andromeda.db-wal
 data/andromeda.db-shm
+andromeda-eval-parity-*.json
+andromeda-eval-parity-v*.json
