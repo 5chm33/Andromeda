@@ -1,11 +1,12 @@
 {
   "agent": {
-    "commit": "15cf499134f180d82ede2de0104a8722ae2cacdb",
+    "commit": "6449c64af16c32bf0de1dcdc5765703f6dd27c95",
     "escalation": "disabled",
     "evaluated_file_sha256": {
       "server/benchmarkLauncher.ts": "e83b7a785832645c1c33bdd98d3f9bfafea1228dc65ade79ccf339785cf2a548",
       "server/canonicalPatch.ts": "ef9009bbb4ee019d78e6e09fec14c12ae21ae11afcdfbc58cd8211f9a789c614",
       "server/hardenedSandbox.ts": "5da6d7f5674463519b773762ad6471dcb35a74612912951320b81d8003c540c3",
+      "server/sweBenchConsensus.ts": "bc4bf9ca095ae279fb62968109ab4b3d09b4332c872dd6386ce34c3abf506860",
       "server/sweBenchContextBuilder.ts": "61ba38e80f0cc29f55e87f262a9e63b0984938b4dec8bd680ca4b93c6befc3e8",
       "server/sweBenchEvalMode.ts": "713f0f66b70315ab430aa9fe575db6ad9480ab09b807b23d0e32e181bbac4558",
       "server/sweBenchModelConfig.ts": "aaa44388709023729568c45ad8b1a8e4602d6cade7f4a4a79035ee4eea8fd814",
@@ -41,7 +42,11 @@
       "server/sweBenchEvalMode.ts",
       "server/sweBenchModelConfig.ts"
     ],
-    "prompt_hash_note": "SHA-256 of concatenated per-file SHA-256 hashes for the 6 prompt-bearing files, in listed order"
+    "prompt_hash_note": "SHA-256 of concatenated per-file SHA-256 hashes for the 6 prompt-bearing files, in listed order",
+    "evaluated_file_count": 11,
+    "dependency_lockfile_sha256": "200eaf7213d267788b8bfdd3f3d1722d6fd48d6ea6fc85c4baf6363c21ab9fb9",
+    "eval_protocol_sha256": "3c845d8e0567f2c91c5e432545724c1f3b72d7bcc4ae61806d2a4a594e9d4e83",
+    "identity_note": "The 11-file evaluated_file_sha256 set covers all TypeScript source files in the scored execution path. dependency_lockfile_sha256 pins the Node.js dependency graph. eval_protocol_sha256 pins the evaluation protocol. The launch checkout (6449c64a) differs from the evaluated-code commit (15cf4991) only in data/swebench/multilingual_preregistration.json — a data-only change that does not alter any executable file, dependency, container image, or protocol."
   },
   "campaign": {
     "created_at": "2026-08-10T05:22:26.218842+00:00",
@@ -117,6 +122,6 @@
     "repo_overlap": 0,
     "strategy": "repository_disjoint"
   },
-  "preregistration_hash": "2c3c2ef9a539eba57e282c5e2e0a4068c9410d3714f9cdaab4103ad04f58c26c",
+  "preregistration_hash": "6843216a185ac5a2ea211894959e9d7a2a334d811acf6e9da653f15b7c986cd2",
   "preregistration_hash_note": "SHA-256 of JSON content excluding preregistration_hash and preregistration_hash_note fields, sorted keys, 2-space indent, ensure_ascii=False"
 }
