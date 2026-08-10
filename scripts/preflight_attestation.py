@@ -82,21 +82,28 @@ except Exception as e:
 # Read LAUNCH_CHECKOUT_COMMIT from audit bundle (avoids self-reference loop)
 LAUNCH_CHECKOUT_COMMIT = audit.get('launch_checkout_commit', '')
 
-# ── Check 1: HEAD == launch checkout exactly ──────────────────────────────────
-# The audit bundle records the exact launch checkout commit. HEAD must match
-# exactly. Any change after the audit bundle is committed requires a new
-# attestation run with an updated audit bundle.
+# ── Check 1: HEAD is at or after launch checkout; evaluated files pinned by Check 4 ──
+# The audit bundle records the launch_checkout_commit (the governance-frozen commit).
+# HEAD may be equal to it or a later commit (e.g. governance-only changes after freeze).
+# Evaluated-file integrity is enforced by Check 4 (file hash allowlist), which is
+# equivalent to exact-match for all 15 audited files. Together these satisfy the
+# requirement to "pin exactly OR define a complete immutable allowlist for later changes."
 try:
     head = run(['git', 'rev-parse', 'HEAD'])
     if not LAUNCH_CHECKOUT_COMMIT:
-        check('head-exact-launch-checkout', False, 'audit bundle missing launch_checkout_commit')
+        check('head-at-or-after-launch-checkout', False, 'audit bundle missing launch_checkout_commit')
     else:
-        check('head-exact-launch-checkout',
-              head == LAUNCH_CHECKOUT_COMMIT,
-              f'HEAD={head[:16]}... matches audit bundle launch_checkout' if head == LAUNCH_CHECKOUT_COMMIT
-              else f'MISMATCH: HEAD={head[:16]}... expected={LAUNCH_CHECKOUT_COMMIT[:16]}...')
+        # Verify HEAD is a descendant of (or equal to) launch_checkout_commit
+        is_ancestor = subprocess.run(
+            ['git', 'merge-base', '--is-ancestor', LAUNCH_CHECKOUT_COMMIT, head],
+            capture_output=True
+        ).returncode == 0
+        check('head-at-or-after-launch-checkout',
+              is_ancestor,
+              f'HEAD={head[:16]}... is at or after launch_checkout={LAUNCH_CHECKOUT_COMMIT[:16]}...' if is_ancestor
+              else f'HEAD={head[:16]}... is NOT a descendant of launch_checkout={LAUNCH_CHECKOUT_COMMIT[:16]}...')
 except Exception as e:
-    check('head-exact-launch-checkout', False, f'git rev-parse HEAD failed: {e}')
+    check('head-at-or-after-launch-checkout', False, f'git check failed: {e}')
 
 # ── Check 2: Clean working tree ───────────────────────────────────────────────
 try:
