@@ -1,0 +1,25 @@
+{
+  "run": "canary_v9",
+  "commit": "0e15ef36",
+  "instances": [
+    "astral-sh__ruff-15309",
+    "babel__babel-14532",
+    "caddyserver__caddy-4774",
+    "faker-ruby__faker-2705",
+    "google__gson-1014"
+  ],
+  "total": 5,
+  "prediction_ready": 5,
+  "infra_failures": 0,
+  "exact_apply_failures": 0,
+  "preflight": "PASSED (all 12 blocking checks)",
+  "localization": {
+    "astral-sh__ruff-15309": "CORRECT: crates/ruff_linter/src/rules/*.rs",
+    "babel__babel-14532": "CORRECT: eslint/babel-eslint-parser/src/*.cjs",
+    "caddyserver__caddy-4774": "CORRECT: modules/caddyhttp/app.go",
+    "faker-ruby__faker-2705": "MOSTLY CORRECT: 3/4 source files (1 test file slipped through)",
+    "google__gson-1014": "CORRECT: gson/src/main/java/com/google/gson/*.java"
+  },
+  "debug_probe_python_fallback": false,
+  "note": "5/5 prediction_ready, 0 infra failures, 0 exact-apply failures. All 12 preflight checks passed. Debug probe fix confirmed (no Python fallback for JS/Rust/Go tasks)."
+}
