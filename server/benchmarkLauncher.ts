@@ -358,6 +358,7 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
       "Smoke bundle passed for same image/harness/sandbox config",
       false,
       `No smoke result found at ${SMOKE_RESULT_FILE}. Run: npx ts-node --esm scripts/smoke_swe_sandbox.ts`,
+      !config.devCanary,  // Non-blocking for devCanary runs (advisory only)
     );
   } else {
     const evidence = smokeResult.evidence as Record<string, unknown>;
