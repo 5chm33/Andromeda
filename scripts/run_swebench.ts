@@ -1167,21 +1167,47 @@ async function main() {
       const datasetNameForLog = process.env.SWEBENCH_DATASET_NAME ?? 'princeton-nlp/SWE-bench_Verified';
       const langLabel = isMultilingualDataset(datasetNameForLog) ? detectLanguage(repo) : 'python';
       if (allFiles.length === 0 && isMultilingualDataset(datasetNameForLog)) {
-        // Structured early-failure: empty discovery on multilingual is unsupported_language
+        // Structured early-failure: empty discovery on multilingual is unsupported_language.
+        // Every selected ID must receive exactly one durable, joinable record:
+        //   1. An empty-patch JSONL row (so the evaluator and reconciler can join on instance_id)
+        //   2. An infra_failure report entry with infraFailureSubtype='unsupported_language'
+        //   3. total++ so canary accounting is consistent
+        //   4. Canary abort check (same as the catch block)
         const unsupportedOutcome = makeUnsupportedLanguageOutcome(instance_id, repo, detectLanguage(repo));
         console.warn(`[Runner] Phase 1a: Empty source discovery for ${instance_id} (${repo}, lang=${langLabel}). Recording unsupported_language outcome.`);
-        const infraResult: InstanceResult = {
-          instanceId: instance_id,
-          outcome: 'infra_failure',
-          infraFailureSubtype: 'unsupported_language',
-          errorMessage: unsupportedOutcome.note,
-          patchHash: undefined,
-          exactApply: false,
-          fuzzyRecoveryAttempted: false,
-          imageDigest: instanceImageRef,
-          durationMs: 0,
-        };
-        if (_benchReport) BenchmarkLauncher.recordInstance(_benchReport, infraResult);
+        // 1. Write empty JSONL row — links this instance_id to the prediction file
+        fs.appendFileSync(opts.outputPath, JSON.stringify({
+          instance_id,
+          model_patch: '',
+          model_name_or_path: sweBenchModelConfig.modelName,
+          _infra_failure_subtype: 'unsupported_language',
+          _note: unsupportedOutcome.note,
+        }) + '\n');
+        // 2. Increment denominator
+        total++;
+        // 3. Record structured outcome in benchmark report
+        if (_benchReport && _benchLauncher) {
+          const infraResult: InstanceResult = {
+            instanceId: instance_id,
+            outcome: 'infra_failure',
+            infraFailureSubtype: 'unsupported_language',
+            errorMessage: unsupportedOutcome.note,
+            exactApply: false,
+            fuzzyRecoveryAttempted: false,
+            imageDigest: instanceImageRef,
+            durationMs: Date.now() - instanceStart,
+          };
+          BenchmarkLauncher.recordInstance(_benchReport, infraResult);
+          // 4. Canary abort check — consistent with catch block
+          const canarySize = parseInt(process.env.SWEBENCH_CANARY_SIZE ?? '5', 10);
+          if (total === canarySize && _benchLauncher.shouldAbortAfterCanary(_benchReport.instances)) {
+            console.error(`[Runner] Canary abort triggered after ${canarySize} instances. Stopping run.`);
+            _benchReport.completedAt = new Date().toISOString();
+            _benchReport.wallClockMs = Date.now() - _benchRunStartMs;
+            _benchLauncher.writeReport(_benchReport);
+            process.exit(1);
+          }
+        }
         continue;
       }
       console.log(`[Runner] Found ${allFiles.length} source files (lang=${langLabel})`);
