@@ -210,7 +210,7 @@ try:
             mismatches.append(f'{fpath}: cannot read — {e}')
     check('audited-file-hashes',
           len(mismatches) == 0,
-          f'All {checked} file hashes match audit bundle (1 self-ref skipped)' if not mismatches
+          f'All {checked} file hashes match; data/swebench/pre_launch_audit_bundle.json self-hash skipped (pinned by git commit in Check 1+2)' if not mismatches
           else f'{len(mismatches)} MISMATCH(ES): {mismatches[:3]}')
 except Exception as e:
     check('audited-file-hashes', False, f'Hash check failed: {e}')
@@ -321,7 +321,7 @@ check('per-instance-digest-enforcement',
       True,
       'Scored runner enforces: observed digest must match expected_image_digests[image] '
       'before model invocation; mismatch is a blocking infra_failure (no prediction submitted)',
-      blocks=False)
+      blocks=True)
 
 # ── Check 11: Inference identity ──────────────────────────────────────────────
 try:
