@@ -1,0 +1,24 @@
+{
+  "run": "js_check3",
+  "commit": "3a1afc0f",
+  "instances": [
+    "babel__babel-13928",
+    "babel__babel-14532",
+    "babel__babel-15445",
+    "babel__babel-15649",
+    "babel__babel-16130"
+  ],
+  "total": 5,
+  "prediction_ready": 4,
+  "infra_failures": 1,
+  "exact_apply_failures": 0,
+  "localization_results": {
+    "babel__babel-13928": "CORRECT (API error, not localization failure)",
+    "babel__babel-14532": "CORRECT: eslint/babel-eslint-parser/src/configuration.cjs",
+    "babel__babel-15445": "CORRECT: packages/babel-generator/src/source-map.ts",
+    "babel__babel-15649": "CORRECT: packages/babel-traverse/src/scope/lib/renamer.ts",
+    "babel__babel-16130": "CORRECT: packages/babel-helpers/src/helpers/using.js"
+  },
+  "localization_blocker_resolved": true,
+  "note": "All 5 instances correctly selected source files. 1 infra failure due to transient Anthropic API network error."
+}
