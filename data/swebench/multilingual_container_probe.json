@@ -1,0 +1,187 @@
+{
+  "probed_at": "2026-08-10T03:38:12.480942+00:00",
+  "total_groups": 9,
+  "passed_groups": 9,
+  "results": [
+    {
+      "instance_id": "astral-sh__ruff-15309",
+      "repo": "astral-sh/ruff",
+      "language": "rust",
+      "image": "swebench/sweb.eval.x86_64.astral-sh_1776_ruff-15309:latest",
+      "probed_at": "2026-08-10T03:37:53.081077+00:00",
+      "checks": {
+        "image_available": true,
+        "digest_resolved": true,
+        "testbed_exists": true,
+        "testbed_ls": "BREAKING_CHANGES.md\nCHANGELOG.md\nCODE_OF_CONDUCT.md\nCONTRIBUTING.md\nCargo.lock",
+        "source_files_found": true,
+        "source_file_count": 1496,
+        "first_source_file": "crates/red_knot/src/logging.rs",
+        "toolchain_available": true,
+        "toolchain_version": "cargo 1.83.0 (5ffbef321 2024-10-29)"
+      },
+      "image_digest": "swebench/sweb.eval.x86_64.astral-sh_1776_ruff-15309@sha256:574282055a63acafb83386234100fcef53fdac0a139da554c3b78cc7bce58ecb",
+      "passed": true
+    },
+    {
+      "instance_id": "babel__babel-13928",
+      "repo": "babel/babel",
+      "language": "javascript",
+      "image": "swebench/sweb.eval.x86_64.babel_1776_babel-13928:latest",
+      "probed_at": "2026-08-10T03:37:55.318621+00:00",
+      "checks": {
+        "image_available": true,
+        "digest_resolved": true,
+        "testbed_exists": true,
+        "testbed_ls": "CHANGELOG.md\nCODE_OF_CONDUCT.md\nCONTRIBUTING.md\nGulpfile.mjs\nLICENSE",
+        "source_files_found": true,
+        "source_file_count": 14232,
+        "first_source_file": "Gulpfile.mjs",
+        "toolchain_available": true,
+        "toolchain_version": "v20.19.1"
+      },
+      "image_digest": "swebench/sweb.eval.x86_64.babel_1776_babel-13928@sha256:cf4c990ee84bafc81c09c4ad331085252923e7f06e3f56634a2ca4e94a511fcf",
+      "passed": true
+    },
+    {
+      "instance_id": "caddyserver__caddy-4774",
+      "repo": "caddyserver/caddy",
+      "language": "go",
+      "image": "swebench/sweb.eval.x86_64.caddyserver_1776_caddy-4774:latest",
+      "probed_at": "2026-08-10T03:37:57.342186+00:00",
+      "checks": {
+        "image_available": true,
+        "digest_resolved": true,
+        "testbed_exists": true,
+        "testbed_ls": "AUTHORS\nLICENSE\nREADME.md\nadmin.go\nadmin_test.go",
+        "source_files_found": true,
+        "source_file_count": 210,
+        "first_source_file": "admin.go",
+        "toolchain_available": true,
+        "toolchain_version": "go version go1.18.10 linux/amd64"
+      },
+      "image_digest": "swebench/sweb.eval.x86_64.caddyserver_1776_caddy-4774@sha256:44123b687de64c0cd181e35b262e2faa8ceca72e9df466872d141f805dd02bb5",
+      "passed": true
+    },
+    {
+      "instance_id": "faker-ruby__faker-2705",
+      "repo": "faker-ruby/faker",
+      "language": "ruby",
+      "image": "swebench/sweb.eval.x86_64.faker-ruby_1776_faker-2705:latest",
+      "probed_at": "2026-08-10T03:37:59.250049+00:00",
+      "checks": {
+        "image_available": true,
+        "digest_resolved": true,
+        "testbed_exists": true,
+        "testbed_ls": "CHANGELOG.md\nCONTRIBUTING.md\nGemfile\nGemfile.lock\nHistory.md",
+        "source_files_found": true,
+        "source_file_count": 533,
+        "first_source_file": "lib/faker.rb",
+        "toolchain_available": true,
+        "toolchain_version": "ruby 3.3.8 (2025-04-09 revision b200bad6cd) [x86_64-linux]"
+      },
+      "image_digest": "swebench/sweb.eval.x86_64.faker-ruby_1776_faker-2705@sha256:7d5169e9cf49188942e593c3aa6f709778f0367c428fe83195fa0a349f45f6a8",
+      "passed": true
+    },
+    {
+      "instance_id": "fmtlib__fmt-1683",
+      "repo": "fmtlib/fmt",
+      "language": "cpp",
+      "image": "swebench/sweb.eval.x86_64.fmtlib_1776_fmt-1683:latest",
+      "probed_at": "2026-08-10T03:38:01.212580+00:00",
+      "checks": {
+        "image_available": true,
+        "digest_resolved": true,
+        "testbed_exists": true,
+        "testbed_ls": "CMakeLists.txt\nCONTRIBUTING.md\nChangeLog.rst\nLICENSE.rst\nREADME.rst",
+        "source_files_found": true,
+        "source_file_count": 58,
+        "first_source_file": "include/fmt/chrono.h",
+        "toolchain_available": true,
+        "toolchain_version": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0\nCopyright (C) 2021 Free Software Foundation, Inc.\nThis is "
+      },
+      "image_digest": "swebench/sweb.eval.x86_64.fmtlib_1776_fmt-1683@sha256:074a721dbe1f34ba9f1ca38ce602fd6a961c68e08068a1d5387810fa65cbf08b",
+      "passed": true
+    },
+    {
+      "instance_id": "google__gson-1014",
+      "repo": "google/gson",
+      "language": "java",
+      "image": "swebench/sweb.eval.x86_64.google_1776_gson-1014:latest",
+      "probed_at": "2026-08-10T03:38:03.504062+00:00",
+      "checks": {
+        "image_available": true,
+        "digest_resolved": true,
+        "testbed_exists": true,
+        "testbed_ls": "CHANGELOG.md\ncodegen\nexamples\nextras\ngson",
+        "source_files_found": true,
+        "source_file_count": 193,
+        "first_source_file": "codegen/src/main/java/com/google/gson/codegen/CodeGen.java",
+        "toolchain_available": true,
+        "toolchain_version": "openjdk version \"11.0.26\" 2025-01-21\nOpenJDK Runtime Environment Temurin-11.0.26+4 (build 11.0.26+4)"
+      },
+      "image_digest": "swebench/sweb.eval.x86_64.google_1776_gson-1014@sha256:d62c50526a5e80871e894d3a149b22bfd5a48955401c0d33bf4af461efa204c9",
+      "passed": true
+    },
+    {
+      "instance_id": "laravel__framework-46234",
+      "repo": "laravel/framework",
+      "language": "php",
+      "image": "swebench/sweb.eval.x86_64.laravel_1776_framework-46234:latest",
+      "probed_at": "2026-08-10T03:38:06.860611+00:00",
+      "checks": {
+        "image_available": true,
+        "digest_resolved": true,
+        "testbed_exists": true,
+        "testbed_ls": "CHANGELOG.md\nLICENSE.md\nREADME.md\nbin\ncomposer.json",
+        "source_files_found": true,
+        "source_file_count": 2014,
+        "first_source_file": "bin/facades.php",
+        "toolchain_available": true,
+        "toolchain_version": "PHP 8.3.16 (cli) (built: Feb  4 2025 04:35:58) (NTS)\nCopyright (c) The PHP Group\nZend Engine v4.3.16"
+      },
+      "image_digest": "swebench/sweb.eval.x86_64.laravel_1776_framework-46234@sha256:1699b083dc4ed52240773f20b2c137bb58c0d3d315a2800317ad8b6ec5311649",
+      "passed": true
+    },
+    {
+      "instance_id": "micropython__micropython-10095",
+      "repo": "micropython/micropython",
+      "language": "c_python",
+      "image": "swebench/sweb.eval.x86_64.micropython_1776_micropython-10095:latest",
+      "probed_at": "2026-08-10T03:38:09.025908+00:00",
+      "checks": {
+        "image_available": true,
+        "digest_resolved": true,
+        "testbed_exists": true,
+        "testbed_ls": "ACKNOWLEDGEMENTS\nCODECONVENTIONS.md\nCODEOFCONDUCT.md\nCONTRIBUTING.md\nLICENSE",
+        "source_files_found": true,
+        "source_file_count": 3425,
+        "first_source_file": "docs/conf.py",
+        "toolchain_available": true,
+        "toolchain_version": "Python 3.10.12"
+      },
+      "image_digest": "swebench/sweb.eval.x86_64.micropython_1776_micropython-10095@sha256:87c5dcc82d5c72a8febf74fa47fcc6ba4bca8f15ec38109ef174e02fea203706",
+      "passed": true
+    },
+    {
+      "instance_id": "redis__redis-10068",
+      "repo": "redis/redis",
+      "language": "c",
+      "image": "swebench/sweb.eval.x86_64.redis_1776_redis-10068:latest",
+      "probed_at": "2026-08-10T03:38:10.799071+00:00",
+      "checks": {
+        "image_available": true,
+        "digest_resolved": true,
+        "testbed_exists": true,
+        "testbed_ls": "00-RELEASENOTES\nBUGS\nCONDUCT\nCONTRIBUTING\nCOPYING",
+        "source_files_found": true,
+        "source_file_count": 552,
+        "first_source_file": "deps/hdr_histogram/hdr_alloc.c",
+        "toolchain_available": true,
+        "toolchain_version": "gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0\nCopyright (C) 2021 Free Software Foundation, Inc.\nThis is "
+      },
+      "image_digest": "swebench/sweb.eval.x86_64.redis_1776_redis-10068@sha256:97e817b6da49bbf436fbf3d184f365a8131d69264eb477e39965248d3e2b7373",
+      "passed": true
+    }
+  ]
+}
