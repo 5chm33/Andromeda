@@ -33,7 +33,7 @@ from datetime import datetime, timezone
 
 # ── Constants ────────────────────────────────────────────────────────────────
 EVALUATED_CODE_COMMIT = '15cf499134f180d82ede2de0104a8722ae2cacdb'
-LAUNCH_CHECKOUT_COMMIT = '351019d79111f2b696e6ba5b320069c13117201f'
+LAUNCH_CHECKOUT_COMMIT = '7657f5c91850eaa5c8fd3044eb1d32fd5b3782d8'
 AUDIT_BUNDLE_PATH = 'data/swebench/pre_launch_audit_bundle.json'
 PREREGISTRATION_PATH = 'data/swebench/multilingual_preregistration.json'
 RESERVED_MANIFEST_PATH = 'data/swebench/multilingual_reserved_run.jsonl'
