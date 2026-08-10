@@ -1,6 +1,6 @@
 {
   "agent": {
-    "commit": "e9c67540939bc23cd7aacb9772fe9bb2795ef0f1",
+    "commit": "7c363ac0711b3355e9833fdef2eed58078046870",
     "escalation": "disabled",
     "evaluated_file_sha256": {
       "server/benchmarkLauncher.ts": "348059dad151b1f8ae530eb2fd6c45952a975166d07c9ed16b1a02cac95dffcb",
@@ -12,7 +12,7 @@
       "server/sweBenchMultilingualSupport.ts": "da92ffbe642ec7f4369f1e6dd41773c359b87399a0894fcfef4d3128e3089292",
       "server/sweBenchPipeline.ts": "9f6e08d0cbee84c5f7cc488c6964124bbba02746659e7d8c50d0e538d26bc5de",
       "server/sweBenchTracebackLoop.ts": "132a758b8bd0bf82b522298c568d3773ef4be04aeb81166524914714a711116c",
-      "scripts/run_swebench.ts": "bbb533c95c0b00f06c68d6af8852752d550faa40df1ccf2cda6cb78c1510bb05"
+      "scripts/run_swebench.ts": "68be5333bdb72336240cd762d1c67d24f78a808bba19bb5a56c5e124061b3245"
     },
     "max_tokens": 32000,
     "mode": "scored_strict",
@@ -31,7 +31,17 @@
       "server/canonicalPatch.ts": "ef9009bbb4ee019d78e6e09fec14c12ae21ae11afcdfbc58cd8211f9a789c614",
       "server/sweBenchEvalMode.ts": "713f0f66b70315ab430aa9fe575db6ad9480ab09b807b23d0e32e181bbac4558"
     },
-    "note": "Commit af05ac5072bf0f621e18361933fd63bdcf5b3de2 is the Option B preregistration commit. All 10 evaluated files are hashed at this commit."
+    "note": "Commit af05ac5072bf0f621e18361933fd63bdcf5b3de2 is the Option B preregistration commit. All 10 evaluated files are hashed at this commit.",
+    "prompt_hash": "2fdcf83eba377718cf98abc161c8c2e0613761adaccf8bd3a8d88946efe3d079",
+    "prompt_hash_files": [
+      "scripts/run_swebench.ts",
+      "server/sweBenchConsensus.ts",
+      "server/sweBenchTracebackLoop.ts",
+      "server/sweBenchContextBuilder.ts",
+      "server/sweBenchEvalMode.ts",
+      "server/sweBenchModelConfig.ts"
+    ],
+    "prompt_hash_note": "SHA-256 of concatenated per-file SHA-256 hashes for the 6 prompt-bearing files, in listed order"
   },
   "campaign": {
     "created_at": "2026-08-10T05:22:26.218842+00:00",
@@ -107,6 +117,6 @@
     "repo_overlap": 0,
     "strategy": "repository_disjoint"
   },
-  "preregistration_hash": "e6acecb91a0079078f9cd4837935ebbc737dd86fda6415b634f9041fc6149e6a",
+  "preregistration_hash": "46c0de2aaaa1484c9323fdb86f499f173b603895d774bea5ed610265ab70eaea",
   "preregistration_hash_note": "SHA-256 of JSON content excluding preregistration_hash and preregistration_hash_note fields, sorted keys, 2-space indent, ensure_ascii=False"
 }
