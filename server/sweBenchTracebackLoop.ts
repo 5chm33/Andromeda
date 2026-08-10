@@ -1193,7 +1193,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
                 containerName,
                 Object.keys(currentFileContents)[0] ?? '',
                 probeCode,
-                getTestCommand(instanceId, failToPassTests),
+                getTestCommand(instanceId, failToPassTests, repo),
                 60
               );
               probeOutput = probeResult.output;
