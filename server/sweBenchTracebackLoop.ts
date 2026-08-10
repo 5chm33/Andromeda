@@ -710,10 +710,12 @@ export function buildRevisionPrompt(
     failToPassTests?: string[];
     testPatch?: string;
     probeOutput?: string;  // NEW: output from debug probe
+    detectedLanguage?: string;  // Language for context builder and code-fence labels
   }
 ): string {
+  const detLang = options?.detectedLanguage ?? 'python';
+  const codeFence = detLang === 'python' || detLang === 'c_python' ? 'python' : detLang;
   const currentFiles = options?.fileContents ?? options?.originalFileContents;
-
   const fileContext = currentFiles
     ? Object.entries(currentFiles).map(([fp, content]) => {
         // Use call-chain expanded context (replaces extractFunctionLevelContext)
@@ -722,8 +724,9 @@ export function buildRevisionPrompt(
           traceback: tracebackSummary,
           failToPassTests: options?.failToPassTests,
           maxChars: 80000,  // Larger budget for revision prompts -- must see the buggy block
+          language: detLang,
         });
-        return `### ${fp}\n\`\`\`python\n${contextView}\n\`\`\``;
+        return `### ${fp}\n\`\`\`${codeFence}\n${contextView}\n\`\`\``;
       }).join('\n\n')
     : '';
 
@@ -1209,6 +1212,8 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
             failToPassTests: _promptFailToPass,
             testPatch: _promptTestPatch,
             probeOutput,
+            // Thread detected language for language-neutral context and code-fence labels
+            detectedLanguage: input.repo ? detectLanguage(input.repo) : 'python',
           }
         );
 
@@ -1337,6 +1342,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
           // scored_strict: _promptFailToPass and _promptTestPatch are undefined
           failToPassTests: _promptFailToPass,
           testPatch: _promptTestPatch,
+          detectedLanguage: input.repo ? detectLanguage(input.repo) : 'python',
         }
       );
       const oracleLlmResponse = await llmProvider(oraclePrompt);
@@ -1458,12 +1464,14 @@ function buildOracleFallbackPrompt(
     fileContents?: Record<string, string>;
     failToPassTests?: string[];
     testPatch?: string;
+    detectedLanguage?: string;
   }
 ): string {
+  const detLang = options.detectedLanguage ?? 'python';
+  const codeFence = detLang === 'python' || detLang === 'c_python' ? 'python' : detLang;
   const hintLines = goldPatchHint.split('\n')
     .filter(l => l.startsWith('---') || l.startsWith('+++') || l.startsWith('@@'))
     .join('\n');
-
   const fileSection = options.fileContents
     ? Object.entries(options.fileContents)
         .map(([fp, content]) => {
@@ -1471,8 +1479,9 @@ function buildOracleFallbackPrompt(
             issueDescription: options.issueDescription,
             traceback: lastTraceback,
             failToPassTests: options.failToPassTests,
+            language: detLang,
           });
-          return `### ${fp}\n\`\`\`python\n${ctx}\n\`\`\``;
+          return `### ${fp}\n\`\`\`${codeFence}\n${ctx}\n\`\`\``;
         })
         .join('\n\n')
     : '';

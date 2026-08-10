@@ -666,7 +666,8 @@ async function generateInitialPatch(
   testPatch: string = '',
   searchContext: string = '',
   llmProvider?: (prompt: string, temperature?: number) => Promise<string>,
-  testContextSnippets: string = ''
+  testContextSnippets: string = '',
+  detectedLanguage: string = 'python'
 ): Promise<string> {
   const callLLM = llmProvider ?? andromedaLLM;
   // Only use diff format for truly large files where complete output would overflow
@@ -680,6 +681,7 @@ async function generateInitialPatch(
     ...failToPassTests.flatMap(t => t.split('::').map(p => p.toLowerCase())),
   ].filter((v, i, a) => a.indexOf(v) === i).slice(0, 40);
 
+  const codeFence = detectedLanguage === 'python' || detectedLanguage === 'c_python' ? 'python' : detectedLanguage;
   const fileSections = Object.entries(fileContents).map(([fp, content]) => {
     // Use buildSmartContext (with line numbers) instead of buildSkeletonContext
     // so the model generates correct @@ -line,count headers in unified diffs
@@ -687,8 +689,9 @@ async function generateInitialPatch(
       issueDescription,
       failToPassTests,
       keywords: contextKeywords,
+      language: detectedLanguage,
     });
-    return `### ${fp}\n\`\`\`python\n${contextView}\n\`\`\``;
+    return `### ${fp}\n\`\`\`${codeFence}\n${contextView}\n\`\`\``;
   }).join('\n\n');
 
   // Include failing test names AND test code so LLM knows exactly what to make pass
@@ -1359,7 +1362,7 @@ async function main() {
         console.log('[Runner] scored_strict: web search disabled (externalSearch: false)');
       }
 
-      let initialPatch = await generateInitialPatch(instance_id, issueDescription, fileContents, promptFailToPassList, promptTestPatch, searchContextBlock, sweBenchLLM, testContextSnippets);
+      let initialPatch = await generateInitialPatch(instance_id, issueDescription, fileContents, promptFailToPassList, promptTestPatch, searchContextBlock, sweBenchLLM, testContextSnippets, langLabel);
       // Post-generation validation: detect x-placeholder hunk headers and retry
       // @@ -x,N +x,N @@ means the LLM used a placeholder instead of a real line number
       const hasPlaceholderHunks = /^@@ -[^\d\s,][^\s,]*[,\s]/m.test(initialPatch);
@@ -1682,6 +1685,9 @@ Output ONLY the corrected unified diff:
           // Passes the repository slug so the traceback loop selects the
           // correct language-aware test command (Java→mvn, Rust→cargo, etc.).
           repo,
+          // detectedLanguage: threads language through consensus + context builder
+          // so non-Python files use raw-file context and correct code-fence labels.
+          detectedLanguage: langLabel,
           // goldPatchHint intentionally absent: scored runs must not carry
           // any reference to the gold patch. Oracle experiments belong in a
           // separate, explicitly unscored development command.

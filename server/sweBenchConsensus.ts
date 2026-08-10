@@ -94,7 +94,8 @@ export function buildAgentPrompt(
   fileContents: Record<string, string>,
   agentConfig: AgentConfig,
   failToPassTests: string[] = [],
-  testPatch: string = ''
+  testPatch: string = '',
+  detectedLanguage: string = 'python'
 ): string {
   const styleHints: Record<string, string> = {
     conservative: 'Make the MINIMAL possible change. Fix the bug with the fewest lines changed.',
@@ -106,12 +107,14 @@ export function buildAgentPrompt(
   const styleHint = styleHints[agentConfig.name] || styleHints.conservative;
 
   // Build file sections using call-chain expanded context
+  const codeFence = detectedLanguage === 'python' || detectedLanguage === 'c_python' ? 'python' : detectedLanguage;
   const fileSections = Object.entries(fileContents).map(([fp, content]) => {
     const contextView = buildSmartContext(fp, content, {
       issueDescription,
       failToPassTests,
+      language: detectedLanguage,
     });
-    return `### ${fp}\n\`\`\`python\n${contextView}\n\`\`\``;
+    return `### ${fp}\n\`\`\`${codeFence}\n${contextView}\n\`\`\``;
   }).join('\n\n');
 
   // Include failing test names AND test code so LLM knows exactly what to make pass
@@ -232,6 +235,8 @@ export async function runConsensus(
      * hidden-test feedback during the agent loop.
      */
     evalMode?: 'scored_strict' | 'test_aware';
+    /** Detected language for language-neutral context and code-fence labels. */
+    detectedLanguage?: string;
   }
 ): Promise<ConsensusResult> {
   const startTime = Date.now();
@@ -239,7 +244,7 @@ export async function runConsensus(
   // ── Phase 1: Parallel Patch Generation ──────────────────────────────────────
   const patchGenerationPromises = agents.map(async (agent): Promise<{ agent: AgentConfig; patch: string; durationMs: number }> => {
     const genStart = Date.now();
-    const prompt = buildAgentPrompt(instanceId, issueDescription, fileContents, agent, options?.failToPassTests ?? [], options?.testPatch ?? '');
+    const prompt = buildAgentPrompt(instanceId, issueDescription, fileContents, agent, options?.failToPassTests ?? [], options?.testPatch ?? '', options?.detectedLanguage ?? 'python');
 
     try {
       const response = await agent.llmProvider(prompt);

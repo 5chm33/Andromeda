@@ -132,6 +132,8 @@ export async function runSOTAPipeline(
     failToPassTests?: string[];
     /** Repository slug (e.g. 'caddyserver/caddy'). Required for multilingual test-command selection. */
     repo?: string;
+    /** Detected language (e.g. 'rust', 'java'). Derived from repo if not supplied. */
+    detectedLanguage?: string;
   }
 ): Promise<PipelineResult> {
   const startTime = Date.now();
@@ -167,6 +169,7 @@ export async function runSOTAPipeline(
         failToPassTests: promptFailToPass,
         // scored_strict: generation-only, no sandbox evaluation
         evalMode,
+        detectedLanguage: options?.detectedLanguage ?? 'python',
       }
     );
 
