@@ -271,6 +271,7 @@ export type InfraFailureSubtype =
   | "evaluator_apply_failure"     // External evaluator's git apply failed
   | "evaluator_test_failure"      // External evaluator's test runner failed
   | "reconciliation_mismatch"     // JSONL / report / evaluator artifact counts disagree
+  | "unsupported_language"         // Source discovery returned no files (non-Python language not yet supported)
   | "unknown";                    // Unclassified infrastructure error
 
 export interface InstanceResult {

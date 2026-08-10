@@ -1159,8 +1159,32 @@ async function main() {
 
       // ── Phase 1a: List repo files ────────────────────────────────────────
       console.log('[Runner] Phase 1a: Listing repo files...');
-      const allFiles = await listRepoFiles(instanceImageRef);
-      console.log(`[Runner] Found ${allFiles.length} Python files`);
+      // Pass repo and FAIL_TO_PASS so listRepoFiles can select the correct
+      // language-aware extension policy for Multilingual datasets.
+      // NOTE: FAIL_TO_PASS is NOT used as a heuristic fallback in scored_strict
+      // mode — the repo map is sufficient for all 41 known Multilingual repos.
+      const allFiles = await listRepoFiles(instanceImageRef, repo, isScoredRun ? undefined : FAIL_TO_PASS);
+      const datasetNameForLog = process.env.SWEBENCH_DATASET_NAME ?? 'princeton-nlp/SWE-bench_Verified';
+      const langLabel = isMultilingualDataset(datasetNameForLog) ? detectLanguage(repo) : 'python';
+      if (allFiles.length === 0 && isMultilingualDataset(datasetNameForLog)) {
+        // Structured early-failure: empty discovery on multilingual is unsupported_language
+        const unsupportedOutcome = makeUnsupportedLanguageOutcome(instance_id, repo, detectLanguage(repo));
+        console.warn(`[Runner] Phase 1a: Empty source discovery for ${instance_id} (${repo}, lang=${langLabel}). Recording unsupported_language outcome.`);
+        const infraResult: InstanceResult = {
+          instanceId: instance_id,
+          outcome: 'infra_failure',
+          infraFailureSubtype: 'unsupported_language',
+          errorMessage: unsupportedOutcome.note,
+          patchHash: undefined,
+          exactApply: false,
+          fuzzyRecoveryAttempted: false,
+          imageDigest: instanceImageRef,
+          durationMs: 0,
+        };
+        if (_benchReport) BenchmarkLauncher.recordInstance(_benchReport, infraResult);
+        continue;
+      }
+      console.log(`[Runner] Found ${allFiles.length} source files (lang=${langLabel})`);
 
       // ── Phase 1b: Localize relevant files ───────────────────────────────
       // scored_strict: use only problem_statement.
