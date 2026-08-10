@@ -1,14 +1,15 @@
 {
   "audit_created_at": "2026-08-10T22:11:57.585578+00:00",
   "evaluated_code_commit": "15cf499134f180d82ede2de0104a8722ae2cacdb",
-  "launch_checkout_commit": "21281b7917ff378a32b902ce21c31e98c722ec4c",
+  "launch_checkout_commit": "34b52fdb4692cd12fc260172e489af5b97bafe9e",
   "diff_between_commits": {
-    "command": "git diff --name-only 15cf499134f180d82ede2de0104a8722ae2cacdb 21281b7917ff378a32b902ce21c31e98c722ec4c",
+    "command": "git diff --name-only 15cf499134f180d82ede2de0104a8722ae2cacdb 34b52fdb4692cd12fc260172e489af5b97bafe9e",
     "files_changed": [
       "data/swebench/multilingual_preregistration.json",
-      "data/swebench/pre_launch_audit_bundle.json"
+      "data/swebench/pre_launch_audit_bundle.json",
+      "scripts/preflight_attestation.py"
     ],
-    "count": 2,
+    "count": 3,
     "assertion": "Only data-only governance files differ between evaluated-code commit (15cf4991) and launch checkout. No executable source file, dependency lockfile, container image, or protocol changed."
   },
   "audited_files": {

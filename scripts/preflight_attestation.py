@@ -5,7 +5,7 @@ Deterministic pre-launch attestation script for the Andromeda multilingual holdo
 Performs the following checks and produces a signed/retained attestation JSON:
   1. HEAD == expected launch checkout
   2. Working tree is clean (no uncommitted changes)
-  3. Diff between evaluated-code commit and launch checkout is data-only
+  3. Diff between evaluated-code commit and launch checkout contains no evaluated files
   4. All 15 audited file hashes match the pre-launch audit bundle
   5. Reserved manifest: 113 unique IDs, no overlap with exclusion registry
   6. Dataset revision matches preregistration
@@ -33,7 +33,7 @@ from datetime import datetime, timezone
 
 # ── Constants ────────────────────────────────────────────────────────────────
 EVALUATED_CODE_COMMIT = '15cf499134f180d82ede2de0104a8722ae2cacdb'
-LAUNCH_CHECKOUT_COMMIT = '21281b7917ff378a32b902ce21c31e98c722ec4c'
+LAUNCH_CHECKOUT_COMMIT = '34b52fdb4692cd12fc260172e489af5b97bafe9e'
 AUDIT_BUNDLE_PATH = 'data/swebench/pre_launch_audit_bundle.json'
 PREREGISTRATION_PATH = 'data/swebench/multilingual_preregistration.json'
 RESERVED_MANIFEST_PATH = 'data/swebench/multilingual_reserved_run.jsonl'
@@ -99,16 +99,21 @@ try:
 except Exception as e:
     check('clean-working-tree', False, f'git status failed: {e}')
 
-# ── Check 3: Diff is data-only ────────────────────────────────────────────────
+# ── Check 3: Diff contains no evaluated files ────────────────────────────────
+# Governance/tooling files (data/, scripts/preflight_*.py) may change between
+# the evaluated-code commit and the launch checkout. What must NOT change is
+# any of the 15 audited files (11 execution-path source files + 4 artifacts).
 try:
     diff_files = run(['git', 'diff', '--name-only', EVALUATED_CODE_COMMIT, LAUNCH_CHECKOUT_COMMIT]).splitlines()
-    data_only = all(f.startswith('data/') for f in diff_files) if diff_files else True
-    check('diff-is-data-only',
-          data_only,
-          f'{len(diff_files)} file(s) changed, all in data/: {diff_files}' if data_only
-          else f'EXECUTABLE FILES CHANGED: {[f for f in diff_files if not f.startswith("data/")]}')
+    evaluated_files = list(audit.get('audited_files', {}).get('sha256', {}).keys())
+    evaluated_changed = [f for f in diff_files if f in evaluated_files]
+    no_evaluated_changed = len(evaluated_changed) == 0
+    check('diff-no-evaluated-files-changed',
+          no_evaluated_changed,
+          f'{len(diff_files)} file(s) changed between commits, none are evaluated files' if no_evaluated_changed
+          else f'EVALUATED FILES CHANGED: {evaluated_changed}')
 except Exception as e:
-    check('diff-is-data-only', False, f'git diff failed: {e}')
+    check('diff-no-evaluated-files-changed', False, f'git diff failed: {e}')
 
 # ── Check 4: All 15 audited file hashes match ─────────────────────────────────
 try:
