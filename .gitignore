@@ -196,3 +196,4 @@ data/swebench/eval_parity_fixtures*.json
 data/swebench/evaluator_parity_archive/
 data/swebench/run_bundle_*.json
 data/swebench/scored_task_list.json
+data/swebench/launch_attestation.json
