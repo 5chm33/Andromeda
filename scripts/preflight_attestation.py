@@ -33,7 +33,8 @@ from datetime import datetime, timezone
 
 # ── Constants ────────────────────────────────────────────────────────────────
 EVALUATED_CODE_COMMIT = '15cf499134f180d82ede2de0104a8722ae2cacdb'
-LAUNCH_CHECKOUT_COMMIT = '7657f5c91850eaa5c8fd3044eb1d32fd5b3782d8'
+# LAUNCH_CHECKOUT_COMMIT is read from the audit bundle (not hardcoded here)
+# to avoid the self-reference loop where updating this file changes HEAD.
 AUDIT_BUNDLE_PATH = 'data/swebench/pre_launch_audit_bundle.json'
 PREREGISTRATION_PATH = 'data/swebench/multilingual_preregistration.json'
 RESERVED_MANIFEST_PATH = 'data/swebench/multilingual_reserved_run.jsonl'
@@ -81,12 +82,21 @@ except Exception as e:
     print(f'FATAL: Cannot load audit bundle or preregistration: {e}')
     sys.exit(1)
 
+# Read LAUNCH_CHECKOUT_COMMIT from audit bundle (avoids self-reference loop)
+LAUNCH_CHECKOUT_COMMIT = audit.get('launch_checkout_commit', '')
+
 # ── Check 1: HEAD == launch checkout ─────────────────────────────────────────
+# The expected launch checkout is read from the audit bundle, not hardcoded.
+# This avoids the self-reference loop where updating this script changes HEAD.
 try:
     head = run(['git', 'rev-parse', 'HEAD'])
-    check('head-matches-launch-checkout',
-          head == LAUNCH_CHECKOUT_COMMIT,
-          f'HEAD={head[:16]}... expected={LAUNCH_CHECKOUT_COMMIT[:16]}...')
+    if not LAUNCH_CHECKOUT_COMMIT:
+        check('head-matches-launch-checkout', False, 'audit bundle missing launch_checkout_commit')
+    else:
+        check('head-matches-launch-checkout',
+              head == LAUNCH_CHECKOUT_COMMIT,
+              f'HEAD={head[:16]}... matches audit bundle launch_checkout={LAUNCH_CHECKOUT_COMMIT[:16]}...' if head == LAUNCH_CHECKOUT_COMMIT
+              else f'MISMATCH: HEAD={head[:16]}... expected={LAUNCH_CHECKOUT_COMMIT[:16]}...')
 except Exception as e:
     check('head-matches-launch-checkout', False, f'git rev-parse HEAD failed: {e}')
 
