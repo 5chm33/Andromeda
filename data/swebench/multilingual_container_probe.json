@@ -1,187 +1,315 @@
 {
-  "probed_at": "2026-08-10T03:38:12.480942+00:00",
+  "probed_at": "2026-08-10T04:28:01.296937+00:00",
   "total_groups": 9,
   "passed_groups": 9,
+  "mandatory_checks": [
+    "digest_resolved",
+    "testbed_exists",
+    "source_files_found",
+    "source_file_extracted",
+    "toolchain_available"
+  ],
+  "evidence_checks": [
+    "command_discovery_ok",
+    "smoke_ok"
+  ],
   "results": [
     {
       "instance_id": "astral-sh__ruff-15309",
       "repo": "astral-sh/ruff",
       "language": "rust",
       "image": "swebench/sweb.eval.x86_64.astral-sh_1776_ruff-15309:latest",
-      "probed_at": "2026-08-10T03:37:53.081077+00:00",
+      "probed_at": "2026-08-10T04:27:34.301611+00:00",
       "checks": {
-        "image_available": true,
         "digest_resolved": true,
         "testbed_exists": true,
-        "testbed_ls": "BREAKING_CHANGES.md\nCHANGELOG.md\nCODE_OF_CONDUCT.md\nCONTRIBUTING.md\nCargo.lock",
+        "testbed_root_entry_count": 25,
         "source_files_found": true,
         "source_file_count": 1496,
         "first_source_file": "crates/red_knot/src/logging.rs",
+        "source_file_extracted": true,
+        "source_file_excerpt": "//! Sets up logging for Red Knot\n\nuse anyhow::Context;\nuse colored::Colorize;\nuse std::fmt;\nuse std::fs::File;\nuse std::io::BufWriter;\nuse tracing::{Event, Subscriber};\nuse tracing_subscriber::filter:",
         "toolchain_available": true,
-        "toolchain_version": "cargo 1.83.0 (5ffbef321 2024-10-29)"
+        "toolchain_version": "cargo 1.83.0 (5ffbef321 2024-10-29)",
+        "test_cmd_template": "cargo test {tests} 2>&1 | tail -30",
+        "command_discovery_ok": true,
+        "smoke_ok": true,
+        "smoke_output": "cargo 1.83.0 (5ffbef321 2024-10-29)\nsmoke-ok"
       },
+      "mandatory_checks": [
+        "digest_resolved",
+        "testbed_exists",
+        "source_files_found",
+        "source_file_extracted",
+        "toolchain_available"
+      ],
       "image_digest": "swebench/sweb.eval.x86_64.astral-sh_1776_ruff-15309@sha256:574282055a63acafb83386234100fcef53fdac0a139da554c3b78cc7bce58ecb",
-      "passed": true
+      "passed": true,
+      "failed_mandatory": []
     },
     {
       "instance_id": "babel__babel-13928",
       "repo": "babel/babel",
       "language": "javascript",
       "image": "swebench/sweb.eval.x86_64.babel_1776_babel-13928:latest",
-      "probed_at": "2026-08-10T03:37:55.318621+00:00",
+      "probed_at": "2026-08-10T04:27:39.717525+00:00",
       "checks": {
-        "image_available": true,
         "digest_resolved": true,
         "testbed_exists": true,
-        "testbed_ls": "CHANGELOG.md\nCODE_OF_CONDUCT.md\nCONTRIBUTING.md\nGulpfile.mjs\nLICENSE",
+        "testbed_root_entry_count": 29,
         "source_files_found": true,
         "source_file_count": 14232,
         "first_source_file": "Gulpfile.mjs",
+        "source_file_extracted": true,
+        "source_file_excerpt": "import path from \"path\";\nimport fs from \"fs\";\nimport { createRequire } from \"module\";\nimport { fileURLToPath } from \"url\";\nimport plumber from \"gulp-plumber\";\nimport through from \"through2\";\nimport ch",
         "toolchain_available": true,
-        "toolchain_version": "v20.19.1"
+        "toolchain_version": "v20.19.1",
+        "test_cmd_template": "npm test -- --testPathPattern='{tests}' 2>&1 | tail -30",
+        "command_discovery_ok": true,
+        "smoke_ok": true,
+        "smoke_output": "v20.19.1\nsmoke-ok"
       },
+      "mandatory_checks": [
+        "digest_resolved",
+        "testbed_exists",
+        "source_files_found",
+        "source_file_extracted",
+        "toolchain_available"
+      ],
       "image_digest": "swebench/sweb.eval.x86_64.babel_1776_babel-13928@sha256:cf4c990ee84bafc81c09c4ad331085252923e7f06e3f56634a2ca4e94a511fcf",
-      "passed": true
+      "passed": true,
+      "failed_mandatory": []
     },
     {
       "instance_id": "caddyserver__caddy-4774",
       "repo": "caddyserver/caddy",
       "language": "go",
       "image": "swebench/sweb.eval.x86_64.caddyserver_1776_caddy-4774:latest",
-      "probed_at": "2026-08-10T03:37:57.342186+00:00",
+      "probed_at": "2026-08-10T04:27:42.566737+00:00",
       "checks": {
-        "image_available": true,
         "digest_resolved": true,
         "testbed_exists": true,
-        "testbed_ls": "AUTHORS\nLICENSE\nREADME.md\nadmin.go\nadmin_test.go",
+        "testbed_root_entry_count": 34,
         "source_files_found": true,
         "source_file_count": 210,
         "first_source_file": "admin.go",
+        "source_file_extracted": true,
+        "source_file_excerpt": "// Copyright 2015 Matthew Holt and The Caddy Authors\n//\n// Licensed under the Apache License, Version 2.0 (the \"License\");\n// you may not use this file except in compliance with the License.\n// You ma",
         "toolchain_available": true,
-        "toolchain_version": "go version go1.18.10 linux/amd64"
+        "toolchain_version": "go version go1.18.10 linux/amd64",
+        "test_cmd_template": "go test ./... -run {tests} -v 2>&1 | tail -30",
+        "command_discovery_ok": true,
+        "smoke_ok": true,
+        "smoke_output": "go version go1.18.10 linux/amd64\nsmoke-ok"
       },
+      "mandatory_checks": [
+        "digest_resolved",
+        "testbed_exists",
+        "source_files_found",
+        "source_file_extracted",
+        "toolchain_available"
+      ],
       "image_digest": "swebench/sweb.eval.x86_64.caddyserver_1776_caddy-4774@sha256:44123b687de64c0cd181e35b262e2faa8ceca72e9df466872d141f805dd02bb5",
-      "passed": true
+      "passed": true,
+      "failed_mandatory": []
     },
     {
       "instance_id": "faker-ruby__faker-2705",
       "repo": "faker-ruby/faker",
       "language": "ruby",
       "image": "swebench/sweb.eval.x86_64.faker-ruby_1776_faker-2705:latest",
-      "probed_at": "2026-08-10T03:37:59.250049+00:00",
+      "probed_at": "2026-08-10T04:27:45.169698+00:00",
       "checks": {
-        "image_available": true,
         "digest_resolved": true,
         "testbed_exists": true,
-        "testbed_ls": "CHANGELOG.md\nCONTRIBUTING.md\nGemfile\nGemfile.lock\nHistory.md",
+        "testbed_root_entry_count": 17,
         "source_files_found": true,
         "source_file_count": 533,
         "first_source_file": "lib/faker.rb",
+        "source_file_extracted": true,
+        "source_file_excerpt": "# frozen_string_literal: true\n\nmydir = __dir__\n\nrequire 'psych'\nrequire 'i18n'\n\nDir.glob(File.join(mydir, 'helpers', '*.rb')).sort.each { |file| require file }\n\nI18n.load_path += Dir[File.join(mydir, ",
         "toolchain_available": true,
-        "toolchain_version": "ruby 3.3.8 (2025-04-09 revision b200bad6cd) [x86_64-linux]"
+        "toolchain_version": "ruby 3.3.8 (2025-04-09 revision b200bad6cd) [x86_64-linux]",
+        "test_cmd_template": "bundle exec ruby -Itest {tests} 2>&1 | tail -30",
+        "command_discovery_ok": true,
+        "smoke_ok": true,
+        "smoke_output": "ruby 3.3.8 (2025-04-09 revision b200bad6cd) [x86_64-linux]\nsmoke-ok"
       },
+      "mandatory_checks": [
+        "digest_resolved",
+        "testbed_exists",
+        "source_files_found",
+        "source_file_extracted",
+        "toolchain_available"
+      ],
       "image_digest": "swebench/sweb.eval.x86_64.faker-ruby_1776_faker-2705@sha256:7d5169e9cf49188942e593c3aa6f709778f0367c428fe83195fa0a349f45f6a8",
-      "passed": true
+      "passed": true,
+      "failed_mandatory": []
     },
     {
       "instance_id": "fmtlib__fmt-1683",
       "repo": "fmtlib/fmt",
       "language": "cpp",
       "image": "swebench/sweb.eval.x86_64.fmtlib_1776_fmt-1683:latest",
-      "probed_at": "2026-08-10T03:38:01.212580+00:00",
+      "probed_at": "2026-08-10T04:27:47.797188+00:00",
       "checks": {
-        "image_available": true,
         "digest_resolved": true,
         "testbed_exists": true,
-        "testbed_ls": "CMakeLists.txt\nCONTRIBUTING.md\nChangeLog.rst\nLICENSE.rst\nREADME.rst",
+        "testbed_root_entry_count": 11,
         "source_files_found": true,
         "source_file_count": 58,
         "first_source_file": "include/fmt/chrono.h",
+        "source_file_extracted": true,
+        "source_file_excerpt": "// Formatting library for C++ - chrono support\n//\n// Copyright (c) 2012 - present, Victor Zverovich\n// All rights reserved.\n//\n// For the license information refer to format.h.\n\n#ifndef FMT_CHRONO_H_\n",
         "toolchain_available": true,
-        "toolchain_version": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0\nCopyright (C) 2021 Free Software Foundation, Inc.\nThis is "
+        "toolchain_version": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0\nCopyright (C) 2021 Free Software Foundation, Inc.\nThis is free software; see t",
+        "test_cmd_template": "cmake --build . --target test 2>&1 | tail -30",
+        "command_discovery_ok": true,
+        "smoke_ok": true,
+        "smoke_output": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0\nCopyright (C) 2021 Free Software Foundation, Inc.\nThis is "
       },
+      "mandatory_checks": [
+        "digest_resolved",
+        "testbed_exists",
+        "source_files_found",
+        "source_file_extracted",
+        "toolchain_available"
+      ],
       "image_digest": "swebench/sweb.eval.x86_64.fmtlib_1776_fmt-1683@sha256:074a721dbe1f34ba9f1ca38ce602fd6a961c68e08068a1d5387810fa65cbf08b",
-      "passed": true
+      "passed": true,
+      "failed_mandatory": []
     },
     {
       "instance_id": "google__gson-1014",
       "repo": "google/gson",
       "language": "java",
       "image": "swebench/sweb.eval.x86_64.google_1776_gson-1014:latest",
-      "probed_at": "2026-08-10T03:38:03.504062+00:00",
+      "probed_at": "2026-08-10T04:27:50.255112+00:00",
       "checks": {
-        "image_available": true,
         "digest_resolved": true,
         "testbed_exists": true,
-        "testbed_ls": "CHANGELOG.md\ncodegen\nexamples\nextras\ngson",
+        "testbed_root_entry_count": 14,
         "source_files_found": true,
         "source_file_count": 193,
         "first_source_file": "codegen/src/main/java/com/google/gson/codegen/CodeGen.java",
+        "source_file_extracted": true,
+        "source_file_excerpt": "/*\n * Copyright (C) 2012 Square, Inc.\n *\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy",
         "toolchain_available": true,
-        "toolchain_version": "openjdk version \"11.0.26\" 2025-01-21\nOpenJDK Runtime Environment Temurin-11.0.26+4 (build 11.0.26+4)"
+        "toolchain_version": "openjdk version \"11.0.26\" 2025-01-21\nOpenJDK Runtime Environment Temurin-11.0.26+4 (build 11.0.26+4)\nOpenJDK 64-Bit Serv",
+        "test_cmd_template": "mvn test -pl . -Dtest={tests} -q 2>&1 | tail -20",
+        "command_discovery_ok": true,
+        "smoke_ok": true,
+        "smoke_output": "smoke-ok\nopenjdk version \"11.0.26\" 2025-01-21\nOpenJDK Runtime Environment Temurin-11.0.26+4 (build 1"
       },
+      "mandatory_checks": [
+        "digest_resolved",
+        "testbed_exists",
+        "source_files_found",
+        "source_file_extracted",
+        "toolchain_available"
+      ],
       "image_digest": "swebench/sweb.eval.x86_64.google_1776_gson-1014@sha256:d62c50526a5e80871e894d3a149b22bfd5a48955401c0d33bf4af461efa204c9",
-      "passed": true
+      "passed": true,
+      "failed_mandatory": []
     },
     {
       "instance_id": "laravel__framework-46234",
       "repo": "laravel/framework",
       "language": "php",
       "image": "swebench/sweb.eval.x86_64.laravel_1776_framework-46234:latest",
-      "probed_at": "2026-08-10T03:38:06.860611+00:00",
+      "probed_at": "2026-08-10T04:27:53.415756+00:00",
       "checks": {
-        "image_available": true,
         "digest_resolved": true,
         "testbed_exists": true,
-        "testbed_ls": "CHANGELOG.md\nLICENSE.md\nREADME.md\nbin\ncomposer.json",
+        "testbed_root_entry_count": 14,
         "source_files_found": true,
         "source_file_count": 2014,
         "first_source_file": "bin/facades.php",
+        "source_file_extracted": true,
+        "source_file_excerpt": "<?php\n\nrequire __DIR__.'/../vendor/autoload.php';\n\nuse Illuminate\\Cache\\Repository;\nuse Illuminate\\Http\\Request;\nuse Illuminate\\Support\\Facades\\Date;\nuse Illuminate\\Support\\Str;\nuse Illuminate\\Support",
         "toolchain_available": true,
-        "toolchain_version": "PHP 8.3.16 (cli) (built: Feb  4 2025 04:35:58) (NTS)\nCopyright (c) The PHP Group\nZend Engine v4.3.16"
+        "toolchain_version": "PHP 8.3.16 (cli) (built: Feb  4 2025 04:35:58) (NTS)\nCopyright (c) The PHP Group\nZend Engine v4.3.16, Copyright (c) Zend",
+        "test_cmd_template": "vendor/bin/phpunit {tests} 2>&1 | tail -30",
+        "command_discovery_ok": true,
+        "smoke_ok": true,
+        "smoke_output": "PHP 8.3.16 (cli) (built: Feb  4 2025 04:35:58) (NTS)\nCopyright (c) The PHP Group\nZend Engine v4.3.16"
       },
+      "mandatory_checks": [
+        "digest_resolved",
+        "testbed_exists",
+        "source_files_found",
+        "source_file_extracted",
+        "toolchain_available"
+      ],
       "image_digest": "swebench/sweb.eval.x86_64.laravel_1776_framework-46234@sha256:1699b083dc4ed52240773f20b2c137bb58c0d3d315a2800317ad8b6ec5311649",
-      "passed": true
+      "passed": true,
+      "failed_mandatory": []
     },
     {
       "instance_id": "micropython__micropython-10095",
       "repo": "micropython/micropython",
       "language": "c_python",
       "image": "swebench/sweb.eval.x86_64.micropython_1776_micropython-10095:latest",
-      "probed_at": "2026-08-10T03:38:09.025908+00:00",
+      "probed_at": "2026-08-10T04:27:56.363921+00:00",
       "checks": {
-        "image_available": true,
         "digest_resolved": true,
         "testbed_exists": true,
-        "testbed_ls": "ACKNOWLEDGEMENTS\nCODECONVENTIONS.md\nCODEOFCONDUCT.md\nCONTRIBUTING.md\nLICENSE",
+        "testbed_root_entry_count": 18,
         "source_files_found": true,
         "source_file_count": 3425,
         "first_source_file": "docs/conf.py",
+        "source_file_extracted": true,
+        "source_file_excerpt": "#!/usr/bin/env python3\n# -*- coding: utf-8 -*-\n#\n# MicroPython documentation build configuration file, created by\n# sphinx-quickstart on Sun Sep 21 11:42:03 2014.\n#\n# This file is execfile()d with the",
         "toolchain_available": true,
-        "toolchain_version": "Python 3.10.12"
+        "toolchain_version": "Python 3.10.12",
+        "test_cmd_template": "python -m pytest {tests} -x --no-header -rN -q",
+        "command_discovery_ok": true,
+        "smoke_ok": true,
+        "smoke_output": "Python 3.10.12\nsmoke-ok"
       },
+      "mandatory_checks": [
+        "digest_resolved",
+        "testbed_exists",
+        "source_files_found",
+        "source_file_extracted",
+        "toolchain_available"
+      ],
       "image_digest": "swebench/sweb.eval.x86_64.micropython_1776_micropython-10095@sha256:87c5dcc82d5c72a8febf74fa47fcc6ba4bca8f15ec38109ef174e02fea203706",
-      "passed": true
+      "passed": true,
+      "failed_mandatory": []
     },
     {
       "instance_id": "redis__redis-10068",
       "repo": "redis/redis",
       "language": "c",
       "image": "swebench/sweb.eval.x86_64.redis_1776_redis-10068:latest",
-      "probed_at": "2026-08-10T03:38:10.799071+00:00",
+      "probed_at": "2026-08-10T04:27:58.890636+00:00",
       "checks": {
-        "image_available": true,
         "digest_resolved": true,
         "testbed_exists": true,
-        "testbed_ls": "00-RELEASENOTES\nBUGS\nCONDUCT\nCONTRIBUTING\nCOPYING",
+        "testbed_root_entry_count": 21,
         "source_files_found": true,
         "source_file_count": 552,
         "first_source_file": "deps/hdr_histogram/hdr_alloc.c",
+        "source_file_extracted": true,
+        "source_file_excerpt": "/**\n * hdr_alloc.c\n * Written by Filipe Oliveira and released to the public domain,\n * as explained at http://creativecommons.org/publicdomain/zero/1.0/\n */\n\n#include \"hdr_alloc.h\"\n#include <stdlib.h>",
         "toolchain_available": true,
-        "toolchain_version": "gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0\nCopyright (C) 2021 Free Software Foundation, Inc.\nThis is "
+        "toolchain_version": "gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0\nCopyright (C) 2021 Free Software Foundation, Inc.\nThis is free software; see t",
+        "test_cmd_template": "make test 2>&1 | tail -30",
+        "command_discovery_ok": true,
+        "smoke_ok": true,
+        "smoke_output": "gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0\nCopyright (C) 2021 Free Software Foundation, Inc.\nThis is "
       },
+      "mandatory_checks": [
+        "digest_resolved",
+        "testbed_exists",
+        "source_files_found",
+        "source_file_extracted",
+        "toolchain_available"
+      ],
       "image_digest": "swebench/sweb.eval.x86_64.redis_1776_redis-10068@sha256:97e817b6da49bbf436fbf3d184f365a8131d69264eb477e39965248d3e2b7373",
-      "passed": true
+      "passed": true,
+      "failed_mandatory": []
     }
   ]
 }

@@ -1175,13 +1175,25 @@ async function main() {
         //   4. Canary abort check (same as the catch block)
         const unsupportedOutcome = makeUnsupportedLanguageOutcome(instance_id, repo, detectLanguage(repo));
         console.warn(`[Runner] Phase 1a: Empty source discovery for ${instance_id} (${repo}, lang=${langLabel}). Recording unsupported_language outcome.`);
-        // 1. Write empty JSONL row — links this instance_id to the prediction file
+        // 1. Write schema-minimal JSONL row — instance_id + empty patch only.
+        //    Private classification fields go to the separate canonical ledger
+        //    (outputPath.replace('.jsonl', '.ledger.jsonl')) so evaluator parsers
+        //    are never exposed to non-standard fields.
         fs.appendFileSync(opts.outputPath, JSON.stringify({
           instance_id,
           model_patch: '',
           model_name_or_path: sweBenchModelConfig.modelName,
-          _infra_failure_subtype: 'unsupported_language',
-          _note: unsupportedOutcome.note,
+        }) + '\n');
+        // Write structured classification to the canonical ledger
+        const ledgerPath = opts.outputPath.replace(/\.jsonl$/, '.ledger.jsonl');
+        fs.appendFileSync(ledgerPath, JSON.stringify({
+          instance_id,
+          outcome: 'infra_failure',
+          infra_failure_subtype: 'unsupported_language',
+          note: unsupportedOutcome.note,
+          repo,
+          detected_language: unsupportedOutcome.detected_language,
+          recorded_at: new Date().toISOString(),
         }) + '\n');
         // 2. Increment denominator
         total++;
