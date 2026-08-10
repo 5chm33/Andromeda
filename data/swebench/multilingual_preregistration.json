@@ -1,6 +1,6 @@
 {
   "agent": {
-    "commit": "426cf4d3e0a7a0f8beb63b0ba43fde8e787bc260",
+    "commit": "af05ac5072bf0f621e18361933fd63bdcf5b3de2",
     "escalation": "disabled",
     "evaluated_file_sha256": {
       "scripts/run_swebench.ts": "983f840f248e226fea89840140c24f1a377a2b6958f962082db5048a0b9d7389",
@@ -18,7 +18,20 @@
     "mode": "scored_strict",
     "model": "claude-sonnet-5",
     "temperature": 1,
-    "web_search": "disabled"
+    "web_search": "disabled",
+    "evaluated_file_sha256_at_current_commit": {
+      "scripts/run_swebench.ts": "44f77c5fffb067af162bd20a3ad30ee0adc40cfade1e55c3950ea5f00625a014",
+      "server/benchmarkLauncher.ts": "348059dad151b1f8ae530eb2fd6c45952a975166d07c9ed16b1a02cac95dffcb",
+      "server/sweBenchTracebackLoop.ts": "32e144c149d13c48d2dab09bb7536387df3028e952224dd9b2188ed808db8637",
+      "server/sweBenchPipeline.ts": "9f6e08d0cbee84c5f7cc488c6964124bbba02746659e7d8c50d0e538d26bc5de",
+      "server/sweBenchConsensus.ts": "bc4bf9ca095ae279fb62968109ab4b3d09b4332c872dd6386ce34c3abf506860",
+      "server/sweBenchContextBuilder.ts": "61ba38e80f0cc29f55e87f262a9e63b0984938b4dec8bd680ca4b93c6befc3e8",
+      "server/sweBenchMultilingualSupport.ts": "da92ffbe642ec7f4369f1e6dd41773c359b87399a0894fcfef4d3128e3089292",
+      "server/hardenedSandbox.ts": "5da6d7f5674463519b773762ad6471dcb35a74612912951320b81d8003c540c3",
+      "server/canonicalPatch.ts": "ef9009bbb4ee019d78e6e09fec14c12ae21ae11afcdfbc58cd8211f9a789c614",
+      "server/sweBenchEvalMode.ts": "713f0f66b70315ab430aa9fe575db6ad9480ab09b807b23d0e32e181bbac4558"
+    },
+    "note": "Commit af05ac5072bf0f621e18361933fd63bdcf5b3de2 is the Option B preregistration commit. All 10 evaluated files are hashed at this commit."
   },
   "campaign": {
     "created_at": "2026-08-10T05:22:26.218842+00:00",
@@ -57,8 +70,6 @@
     "reserved_manifest_path": "data/swebench/multilingual_reserved_run.jsonl",
     "task_count": 113
   },
-  "preregistration_hash": "c4726bab87c77ebe8d7bc8fad23131ec9c63a416509c67cdb2bf9d0c7a8a5ee8",
-  "preregistration_hash_note": "SHA-256 of JSON content without self-hash fields, sorted keys, 2-space indent, UTF-8.",
   "run_constraints": {
     "canary_abort_threshold_infra_failure_rate": 0.6,
     "canary_size": 5,
@@ -95,5 +106,7 @@
     "holdout_tasks": 113,
     "repo_overlap": 0,
     "strategy": "repository_disjoint"
-  }
+  },
+  "preregistration_hash": "642ba1da283055d97bcbe3802733f9c81e165af0100759897c0a6b8f57a7aeb3",
+  "preregistration_hash_note": "SHA-256 of JSON content without this field and preregistration_hash_note, sorted keys, 2-space indent, UTF-8"
 }
