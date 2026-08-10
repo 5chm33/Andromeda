@@ -1020,6 +1020,10 @@ async function main() {
         preregistrationHash: process.env.SWEBENCH_PREREGISTRATION_HASH ?? '',
         campaignId: process.env.SWEBENCH_CAMPAIGN_ID ?? '',
       } : {}),
+      // Development canary mode: allows excluded dev IDs and downgrades smoke/prompt
+      // checks to advisory. MUST NOT be set for holdout or evaluation runs.
+      // Set SWEBENCH_DEV_CANARY=1 to enable.
+      ...(process.env.SWEBENCH_DEV_CANARY === '1' ? { devCanary: true } : {}),
     };
 
     _benchLauncher = new BenchmarkLauncher(launcherConfig);

@@ -108,6 +108,14 @@ export interface BenchmarkRunConfig {
    */
   campaignId?: string;
   /**
+   * Development canary mode. When true:
+   *   - IDs in the exclusion registry are ALLOWED (they are dev data by design)
+   *   - smoke-bundle and prompt-hash checks are advisory (non-blocking)
+   *   - The run manifest records devCanary:true and is labeled development evidence only
+   *   - This flag MUST NOT be set for holdout or evaluation runs
+   */
+  devCanary?: boolean;
+  /**
    * Path to the versioned evaluation protocol JSON file (eval_protocol_v1.json).
    * Required for scored runs. If absent, the 'eval-protocol-present' preflight
    * check fails and the run is blocked.
@@ -181,6 +189,11 @@ export interface RunMetadata {
   preregistrationHash?: string;
   /** Campaign identifier (if used). */
   campaignId?: string;
+  /**
+   * Development canary mode. When true, this run uses excluded dev IDs and is
+   * development evidence only — not evaluation evidence.
+   */
+  devCanary?: boolean;
 }
 
 export interface BenchmarkReport {
@@ -399,7 +412,13 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
           !smokeHarnessMatch ? `harness revision mismatch (smoke: ${smokeHarnessRev}, run: ${config.harnessRevision})` : "",
         ].filter(Boolean).join("; ");
 
-    check("smoke-bundle", "Smoke bundle passed for same image/harness/sandbox config", smokeOk, smokeDetail);
+    check(
+      "smoke-bundle",
+      "Smoke bundle passed for same image/harness/sandbox config",
+      smokeOk,
+      smokeDetail,
+      !config.devCanary,  // Non-blocking for devCanary runs (advisory only)
+    );
   }
 
   // ── Check 0: Metadata completeness (scored runs only) ───────────────────────────────
@@ -427,6 +446,7 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
       promptHashOk
         ? `promptTemplateHash: ${config.promptTemplateHash}`
         : `promptTemplateHash is 'unset'. Set SWEBENCH_PROMPT_HASH=<sha256-of-prompt-template> before launching.`,
+      !config.devCanary,  // Non-blocking for devCanary runs (advisory only)
     );
 
     // harnessRevision must not be 'unset'
@@ -730,7 +750,12 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
       const selected = config.selectedInstanceIds ?? [];
 
       // Tier 1: hard exclusion violations (IDs in the immutable registry)
-      const hardViolations = selected.filter(id => excludedIds.has(id));
+      // devCanary bypass: dev canary runs explicitly use excluded dev IDs.
+      // These IDs are in the exclusion registry because they ARE dev data.
+      // The devCanary flag allows them while recording the run as development evidence only.
+      const hardViolations = config.devCanary
+        ? []  // Dev canary: excluded dev IDs are expected and allowed
+        : selected.filter(id => excludedIds.has(id));
 
       // Tier 2: reserved-ID violations
       // A reserved ID may only be used if ALL five binding fields match.
@@ -988,6 +1013,9 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
         reservedRunManifestPath: config.reservedRunManifestPath,
         preregistrationHash: config.preregistrationHash,
         campaignId: config.campaignId,
+      } : {}),
+      ...(config.devCanary ? {
+        devCanary: true,
       } : {}),
     };
   }
