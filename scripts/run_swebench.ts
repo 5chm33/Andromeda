@@ -73,6 +73,13 @@ import { BenchmarkLauncher, type BenchmarkRunConfig, type InstanceResult, type B
 import { resolveImageDigest } from '../server/sweBenchImageResolver.js';
 import { fixHunkCounts } from '../server/sweBenchTracebackLoop.js';
 import { modelVisibleEvaluationArtifacts } from '../server/sweBenchEvalMode.js';
+import {
+  isMultilingualDataset,
+  buildSourceDiscoveryCommand,
+  getLanguageProfile,
+  makeUnsupportedLanguageOutcome,
+  detectLanguage,
+} from '../server/sweBenchMultilingualSupport.js';
 
 /**
  * Andromeda's LLM provider for SWE-bench.
@@ -261,15 +268,34 @@ async function extractFileFromDocker(dockerImage: string, filePath: string): Pro
   }
 }
 /**
- * Lists Python files in the Docker image's testbed directory using a
+ * Lists source files in the Docker image's testbed directory using a
  * network-disabled, read-only inspection container.
+ *
+ * For Python datasets: lists only *.py files (legacy behavior).
+ * For Multilingual datasets: uses language-aware extension policy based on
+ * the repo name and FAIL_TO_PASS test format.
+ *
+ * Returns an empty array (never throws) so callers can detect empty discovery
+ * and emit a structured unsupported_language outcome.
  */
-async function listRepoFiles(dockerImage: string): Promise<string[]> {
+async function listRepoFiles(
+  dockerImage: string,
+  repo?: string,
+  failToPass?: string
+): Promise<string[]> {
   try {
+    const datasetName = process.env.SWEBENCH_DATASET_NAME ?? 'princeton-nlp/SWE-bench_Verified';
+    let lsCmd: string;
+    if (isMultilingualDataset(datasetName) && repo) {
+      lsCmd = buildSourceDiscoveryCommand(repo, failToPass);
+    } else {
+      // Legacy Python-only discovery
+      lsCmd = "cd /testbed && git ls-files '*.py' 2>/dev/null";
+    }
     const result = await execAsync(
       // --network none: no outbound network access during file listing
       // --read-only: root filesystem is read-only (inspection only, no writes)
-      `docker run --rm --network none --read-only "${dockerImage}" bash -c "cd /testbed && git ls-files '*.py' 2>/dev/null"`,
+      `docker run --rm --network none --read-only "${dockerImage}" bash -c "${lsCmd}"`,
       { maxBuffer: 5 * 1024 * 1024 }
     );
     return result.stdout.trim().split('\n').filter(f => f.length > 0);

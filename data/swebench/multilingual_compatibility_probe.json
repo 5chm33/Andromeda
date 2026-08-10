@@ -1,0 +1,125 @@
+{
+  "probe_type": "zero_model_language_compatibility",
+  "dev_set_size": 180,
+  "language_groups": 9,
+  "supported_groups": 9,
+  "results": [
+    {
+      "language": "c",
+      "instance_id": "jqlang__jq-2235",
+      "repo": "jqlang/jq",
+      "language_detected": "c",
+      "extensions": [
+        "*.c",
+        "*.h"
+      ],
+      "ls_cmd": "cd /testbed && git ls-files '*.c' '*.h' 2>/dev/null",
+      "fail_to_pass_sample": "(empty)",
+      "has_discovery_cmd": true
+    },
+    {
+      "language": "c_python",
+      "instance_id": "micropython__micropython-10095",
+      "repo": "micropython/micropython",
+      "language_detected": "c_python",
+      "extensions": [
+        "*.c",
+        "*.h",
+        "*.py"
+      ],
+      "ls_cmd": "cd /testbed && git ls-files '*.c' '*.h' '*.py' 2>/dev/null",
+      "fail_to_pass_sample": "(empty)",
+      "has_discovery_cmd": true
+    },
+    {
+      "language": "cpp",
+      "instance_id": "fmtlib__fmt-1683",
+      "repo": "fmtlib/fmt",
+      "language_detected": "cpp",
+      "extensions": [
+        "*.cpp",
+        "*.cc",
+        "*.cxx",
+        "*.h",
+        "*.hpp"
+      ],
+      "ls_cmd": "cd /testbed && git ls-files '*.cpp' '*.cc' '*.cxx' '*.h' '*.hpp' 2>/dev/null",
+      "fail_to_pass_sample": "(empty)",
+      "has_discovery_cmd": true
+    },
+    {
+      "language": "go",
+      "instance_id": "caddyserver__caddy-4774",
+      "repo": "caddyserver/caddy",
+      "language_detected": "go",
+      "extensions": [
+        "*.go"
+      ],
+      "ls_cmd": "cd /testbed && git ls-files '*.go' 2>/dev/null",
+      "fail_to_pass_sample": "(empty)",
+      "has_discovery_cmd": true
+    },
+    {
+      "language": "java",
+      "instance_id": "apache__druid-13704",
+      "repo": "apache/druid",
+      "language_detected": "java",
+      "extensions": [
+        "*.java"
+      ],
+      "ls_cmd": "cd /testbed && git ls-files '*.java' 2>/dev/null",
+      "fail_to_pass_sample": "(empty)",
+      "has_discovery_cmd": true
+    },
+    {
+      "language": "javascript",
+      "instance_id": "axios__axios-4731",
+      "repo": "axios/axios",
+      "language_detected": "javascript",
+      "extensions": [
+        "*.js",
+        "*.mjs",
+        "*.cjs"
+      ],
+      "ls_cmd": "cd /testbed && git ls-files '*.js' '*.mjs' '*.cjs' 2>/dev/null",
+      "fail_to_pass_sample": "(empty)",
+      "has_discovery_cmd": true
+    },
+    {
+      "language": "php",
+      "instance_id": "briannesbitt__carbon-2665",
+      "repo": "briannesbitt/carbon",
+      "language_detected": "php",
+      "extensions": [
+        "*.php"
+      ],
+      "ls_cmd": "cd /testbed && git ls-files '*.php' 2>/dev/null",
+      "fail_to_pass_sample": "(empty)",
+      "has_discovery_cmd": true
+    },
+    {
+      "language": "ruby",
+      "instance_id": "faker-ruby__faker-2705",
+      "repo": "faker-ruby/faker",
+      "language_detected": "ruby",
+      "extensions": [
+        "*.rb"
+      ],
+      "ls_cmd": "cd /testbed && git ls-files '*.rb' 2>/dev/null",
+      "fail_to_pass_sample": "(empty)",
+      "has_discovery_cmd": true
+    },
+    {
+      "language": "rust",
+      "instance_id": "astral-sh__ruff-15309",
+      "repo": "astral-sh/ruff",
+      "language_detected": "rust",
+      "extensions": [
+        "*.rs"
+      ],
+      "ls_cmd": "cd /testbed && git ls-files '*.rs' 2>/dev/null",
+      "fail_to_pass_sample": "(empty)",
+      "has_discovery_cmd": true
+    }
+  ]
+}
