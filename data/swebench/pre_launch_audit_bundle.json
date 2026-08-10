@@ -1,30 +1,57 @@
 {
-  "audit_created_at": "2026-08-10T21:40:57.478876+00:00",
+  "audit_created_at": "2026-08-10T22:11:57.585578+00:00",
   "evaluated_code_commit": "15cf499134f180d82ede2de0104a8722ae2cacdb",
-  "launch_checkout_commit": "bd0cde6e37659a7449d5e16175a5ba364ca9380b",
+  "launch_checkout_commit": "21281b7917ff378a32b902ce21c31e98c722ec4c",
   "diff_between_commits": {
+    "command": "git diff --name-only 15cf499134f180d82ede2de0104a8722ae2cacdb 21281b7917ff378a32b902ce21c31e98c722ec4c",
     "files_changed": [
-      "data/swebench/multilingual_preregistration.json"
+      "data/swebench/multilingual_preregistration.json",
+      "data/swebench/pre_launch_audit_bundle.json"
     ],
-    "count": 1,
-    "assertion": "Only data/swebench/multilingual_preregistration.json differs — data-only, no executable change"
+    "count": 2,
+    "assertion": "Only data-only governance files differ between evaluated-code commit (15cf4991) and launch checkout. No executable source file, dependency lockfile, container image, or protocol changed."
   },
-  "file_hashes": {
-    "server/benchmarkLauncher.ts": "e83b7a785832645c1c33bdd98d3f9bfafea1228dc65ade79ccf339785cf2a548",
-    "server/canonicalPatch.ts": "ef9009bbb4ee019d78e6e09fec14c12ae21ae11afcdfbc58cd8211f9a789c614",
-    "server/hardenedSandbox.ts": "5da6d7f5674463519b773762ad6471dcb35a74612912951320b81d8003c540c3",
-    "server/sweBenchConsensus.ts": "bc4bf9ca095ae279fb62968109ab4b3d09b4332c872dd6386ce34c3abf506860",
-    "server/sweBenchContextBuilder.ts": "61ba38e80f0cc29f55e87f262a9e63b0984938b4dec8bd680ca4b93c6befc3e8",
-    "server/sweBenchEvalMode.ts": "713f0f66b70315ab430aa9fe575db6ad9480ab09b807b23d0e32e181bbac4558",
-    "server/sweBenchModelConfig.ts": "aaa44388709023729568c45ad8b1a8e4602d6cade7f4a4a79035ee4eea8fd814",
-    "server/sweBenchMultilingualSupport.ts": "da92ffbe642ec7f4369f1e6dd41773c359b87399a0894fcfef4d3128e3089292",
-    "server/sweBenchPipeline.ts": "9f6e08d0cbee84c5f7cc488c6964124bbba02746659e7d8c50d0e538d26bc5de",
-    "server/sweBenchTracebackLoop.ts": "132a758b8bd0bf82b522298c568d3773ef4be04aeb81166524914714a711116c",
-    "scripts/run_swebench.ts": "68be5333bdb72336240cd762d1c67d24f78a808bba19bb5a56c5e124061b3245",
-    "pnpm-lock.yaml": "200eaf7213d267788b8bfdd3f3d1722d6fd48d6ea6fc85c4baf6363c21ab9fb9",
-    "data/eval_protocol_v1.json": "3c845d8e0567f2c91c5e432545724c1f3b72d7bcc4ae61806d2a4a594e9d4e83",
-    "data/swebench/multilingual_reserved_run.jsonl": "7617e8b9a999cd7e4ce82d4d63c6adf1067a6a38204a6b514853f967d99b8297",
-    "data/swebench/exclusions.jsonl": "d6287eaaf7554d1e8e8b54d1c75c470dc888f96e3e064253a89f08dd6931ffb7"
+  "audited_files": {
+    "total_unique": 15,
+    "breakdown": {
+      "execution_path_source_files": 11,
+      "non_source_artifacts": 4,
+      "prompt_bearing_note": "The 6 prompt-bearing files are a subset of the 11 execution-path source files: scripts/run_swebench.ts, server/sweBenchConsensus.ts, server/sweBenchTracebackLoop.ts, server/sweBenchContextBuilder.ts, server/sweBenchEvalMode.ts, server/sweBenchModelConfig.ts. No additional files are needed."
+    },
+    "paths": [
+      "server/benchmarkLauncher.ts",
+      "server/canonicalPatch.ts",
+      "server/hardenedSandbox.ts",
+      "server/sweBenchConsensus.ts",
+      "server/sweBenchContextBuilder.ts",
+      "server/sweBenchEvalMode.ts",
+      "server/sweBenchModelConfig.ts",
+      "server/sweBenchMultilingualSupport.ts",
+      "server/sweBenchPipeline.ts",
+      "server/sweBenchTracebackLoop.ts",
+      "scripts/run_swebench.ts",
+      "pnpm-lock.yaml",
+      "data/eval_protocol_v1.json",
+      "data/swebench/multilingual_reserved_run.jsonl",
+      "data/swebench/exclusions.jsonl"
+    ],
+    "sha256": {
+      "server/benchmarkLauncher.ts": "e83b7a785832645c1c33bdd98d3f9bfafea1228dc65ade79ccf339785cf2a548",
+      "server/canonicalPatch.ts": "ef9009bbb4ee019d78e6e09fec14c12ae21ae11afcdfbc58cd8211f9a789c614",
+      "server/hardenedSandbox.ts": "5da6d7f5674463519b773762ad6471dcb35a74612912951320b81d8003c540c3",
+      "server/sweBenchConsensus.ts": "bc4bf9ca095ae279fb62968109ab4b3d09b4332c872dd6386ce34c3abf506860",
+      "server/sweBenchContextBuilder.ts": "61ba38e80f0cc29f55e87f262a9e63b0984938b4dec8bd680ca4b93c6befc3e8",
+      "server/sweBenchEvalMode.ts": "713f0f66b70315ab430aa9fe575db6ad9480ab09b807b23d0e32e181bbac4558",
+      "server/sweBenchModelConfig.ts": "aaa44388709023729568c45ad8b1a8e4602d6cade7f4a4a79035ee4eea8fd814",
+      "server/sweBenchMultilingualSupport.ts": "da92ffbe642ec7f4369f1e6dd41773c359b87399a0894fcfef4d3128e3089292",
+      "server/sweBenchPipeline.ts": "9f6e08d0cbee84c5f7cc488c6964124bbba02746659e7d8c50d0e538d26bc5de",
+      "server/sweBenchTracebackLoop.ts": "132a758b8bd0bf82b522298c568d3773ef4be04aeb81166524914714a711116c",
+      "scripts/run_swebench.ts": "68be5333bdb72336240cd762d1c67d24f78a808bba19bb5a56c5e124061b3245",
+      "pnpm-lock.yaml": "200eaf7213d267788b8bfdd3f3d1722d6fd48d6ea6fc85c4baf6363c21ab9fb9",
+      "data/eval_protocol_v1.json": "3c845d8e0567f2c91c5e432545724c1f3b72d7bcc4ae61806d2a4a594e9d4e83",
+      "data/swebench/multilingual_reserved_run.jsonl": "7617e8b9a999cd7e4ce82d4d63c6adf1067a6a38204a6b514853f967d99b8297",
+      "data/swebench/exclusions.jsonl": "d6287eaaf7554d1e8e8b54d1c75c470dc888f96e3e064253a89f08dd6931ffb7"
+    }
   },
   "node_runtime_version": "v22.22.3",
   "inference_identity": {
@@ -34,7 +61,7 @@
     "max_tokens": 32000,
     "top_p": null,
     "seed": null,
-    "seed_note": "Anthropic API does not expose a seed parameter; temperature=1 with no seed means non-deterministic sampling",
+    "seed_note": "Anthropic API does not expose a seed parameter. temperature=1 means non-deterministic sampling.",
     "retry_policy": {
       "max_retries": 2,
       "retry_on": [
@@ -56,6 +83,6 @@
       "failed_attempt_retained": true
     }
   },
-  "container_image_note": "Per-instance image digest is resolved at launch time by the runner and recorded in the run manifest per-instance record. The digest is not fixed here because it depends on the task instance.",
+  "container_image_policy": "Image digest is pre-resolved once during preflight for each distinct task image. Every instance is required to use the pre-resolved digest. If the runtime digest differs from the pre-resolved digest, the instance is classified as infra_failure. The resolved digest is recorded in the run manifest per-instance record.",
   "preregistration_raw_file_hash": "25837bcef0bd829e37292b87b17e5f4dae67b19ca8211b2ec85c818cff5bbe91"
 }
