@@ -26,6 +26,7 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import fs from 'fs';
 import crypto from 'crypto';
+import { isMultilingualDataset } from './sweBenchMultilingualSupport.js';
 
 const execAsync = promisify(exec);
 
@@ -393,6 +394,87 @@ function buildSkeletonFallback(fileCtx: FileContext): string {
  *   4. Expand seed functions + their callees (call-chain expansion)
  *   5. If no seeds found: fall back to skeleton view
  */
+/**
+ * Returns a language-neutral raw-file context view for non-Python files.
+ *
+ * Strategy: return the full file if small enough; otherwise return a
+ * line-windowed view centred on keyword-matching lines. This avoids feeding
+ * Java/Rust/Go/Ruby/PHP/C/C++ files through the Python AST parser.
+ *
+ * The window size is generous (200 lines around each match) so the LLM
+ * sees enough surrounding code to understand the change context.
+ */
+export function buildRawFileContext(
+  content: string,
+  options: {
+    issueDescription?: string;
+    traceback?: string;
+    keywords?: string[];
+    maxChars?: number;
+  } = {}
+): string {
+  const maxChars = options.maxChars ?? MAX_CONTEXT_CHARS;
+  // Small files: return as-is
+  if (content.length <= maxChars) return content;
+
+  const lines = content.split('\n');
+  const totalLines = lines.length;
+
+  // Collect keywords to find relevant line windows
+  const keywords = [
+    ...(options.keywords ?? []),
+    ...(options.issueDescription ?? '').match(/[A-Za-z_][A-Za-z0-9_]{3,}/g) ?? [],
+    ...(options.traceback ?? '').match(/[A-Za-z_][A-Za-z0-9_]{3,}/g) ?? [],
+  ].filter((v, i, a) => a.indexOf(v) === i).slice(0, 60);
+
+  // Find lines that match any keyword
+  const matchedLines = new Set<number>();
+  for (let i = 0; i < lines.length; i++) {
+    const lineLower = lines[i].toLowerCase();
+    if (keywords.some(kw => lineLower.includes(kw.toLowerCase()))) {
+      // Add a window of 100 lines around each match
+      for (let j = Math.max(0, i - 100); j < Math.min(totalLines, i + 100); j++) {
+        matchedLines.add(j);
+      }
+    }
+  }
+
+  if (matchedLines.size === 0) {
+    // No keyword matches: return the first maxChars chars with a truncation note
+    const truncated = content.slice(0, maxChars);
+    return truncated + `\n// ... [file truncated at ${maxChars} chars — no keyword matches found] ...`;
+  }
+
+  // Build the windowed view
+  const sortedLines = [...matchedLines].sort((a, b) => a - b);
+  const chunks: string[] = [];
+  let charsUsed = 0;
+  let prevEnd = -1;
+
+  for (const lineIdx of sortedLines) {
+    if (lineIdx <= prevEnd) continue; // already included
+    // Find the contiguous range starting at lineIdx
+    let rangeEnd = lineIdx;
+    while (rangeEnd + 1 < totalLines && matchedLines.has(rangeEnd + 1)) rangeEnd++;
+
+    if (prevEnd >= 0 && lineIdx > prevEnd + 1) {
+      chunks.push(`// ... [lines ${prevEnd + 2}--${lineIdx} omitted] ...`);
+    }
+
+    const rangeLines = lines.slice(lineIdx, rangeEnd + 1).join('\n');
+    if (charsUsed + rangeLines.length > maxChars) break;
+    chunks.push(rangeLines);
+    charsUsed += rangeLines.length;
+    prevEnd = rangeEnd;
+  }
+
+  if (prevEnd < totalLines - 1) {
+    chunks.push(`// ... [lines ${prevEnd + 2}--${totalLines} omitted] ...`);
+  }
+
+  return chunks.join('\n');
+}
+
 export function buildSmartContext(
   filePath: string,
   content: string,
@@ -402,8 +484,27 @@ export function buildSmartContext(
     failToPassTests?: string[];
     keywords?: string[];
     maxChars?: number;  // Override default MAX_CONTEXT_CHARS (e.g. larger budget for revision prompts)
+    /** Language of the file. If non-Python, use language-neutral raw-file context. */
+    language?: string;
   } = {}
 ): string {
+  // Language-neutral path for Multilingual datasets:
+  // Non-Python files bypass the Python AST parser and use a raw-file line window.
+  // Python files (including c_python) still use the full AST-based path.
+  const datasetName = process.env.SWEBENCH_DATASET_NAME ?? 'princeton-nlp/SWE-bench_Verified';
+  const lang = options.language ?? 'python';
+  const isNonPython = isMultilingualDataset(datasetName) &&
+    lang !== 'python' && lang !== 'c_python' && lang !== 'unknown';
+
+  if (isNonPython) {
+    return buildRawFileContext(content, {
+      issueDescription: options.issueDescription,
+      traceback: options.traceback,
+      keywords: options.keywords,
+      maxChars: options.maxChars,
+    });
+  }
+
   // Small files: return as-is
   if (content.length <= 10000) return content;
 

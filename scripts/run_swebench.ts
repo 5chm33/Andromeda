@@ -268,6 +268,30 @@ async function extractFileFromDocker(dockerImage: string, filePath: string): Pro
   }
 }
 /**
+ * Selects the source-discovery shell command for a given dataset, repo, and
+ * optional FAIL_TO_PASS hint. This is the testable production decision unit:
+ * the actual Docker execution is separate (in listRepoFiles).
+ *
+ * Exported so tests can verify the call-site contract without Docker.
+ *
+ * @param datasetName - e.g. 'SWE-bench/SWE-bench_Multilingual'
+ * @param repo - repository slug, e.g. 'caddyserver/caddy'
+ * @param failToPass - FAIL_TO_PASS field value (undefined in scored_strict)
+ * @returns shell command string to run inside the container
+ */
+export function selectDiscoveryCommand(
+  datasetName: string,
+  repo?: string,
+  failToPass?: string,
+): string {
+  if (isMultilingualDataset(datasetName) && repo) {
+    return buildSourceDiscoveryCommand(repo, failToPass);
+  }
+  // Legacy Python-only discovery
+  return "cd /testbed && git ls-files '*.py' 2>/dev/null";
+}
+
+/**
  * Lists source files in the Docker image's testbed directory using a
  * network-disabled, read-only inspection container.
  *
@@ -285,13 +309,7 @@ async function listRepoFiles(
 ): Promise<string[]> {
   try {
     const datasetName = process.env.SWEBENCH_DATASET_NAME ?? 'princeton-nlp/SWE-bench_Verified';
-    let lsCmd: string;
-    if (isMultilingualDataset(datasetName) && repo) {
-      lsCmd = buildSourceDiscoveryCommand(repo, failToPass);
-    } else {
-      // Legacy Python-only discovery
-      lsCmd = "cd /testbed && git ls-files '*.py' 2>/dev/null";
-    }
+    const lsCmd = selectDiscoveryCommand(datasetName, repo, failToPass);
     const result = await execAsync(
       // --network none: no outbound network access during file listing
       // --read-only: root filesystem is read-only (inspection only, no writes)
@@ -1660,6 +1678,10 @@ Output ONLY the corrected unified diff:
         {
           testPatch: evaluatorArtifacts.pipelineTestPatch,
           failToPassTests: evaluatorArtifacts.pipelineFailToPassTests,
+          // repo: required for multilingual test-command selection.
+          // Passes the repository slug so the traceback loop selects the
+          // correct language-aware test command (Java→mvn, Rust→cargo, etc.).
+          repo,
           // goldPatchHint intentionally absent: scored runs must not carry
           // any reference to the gold patch. Oracle experiments belong in a
           // separate, explicitly unscored development command.

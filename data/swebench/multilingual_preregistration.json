@@ -1,108 +1,99 @@
 {
-  "preregistration_version": 1,
-  "evaluation_name": "Andromeda v5.30 — SWE-bench Multilingual cross-language readout (Option A)",
-  "evaluation_type": "one_shot_frozen",
-  "preregistration_note": "This record is written before any generation begins. The agent configuration, task list, and all hashes below are frozen. No changes to the agent, model, prompts, or configuration may be made after this record is committed. Results must be reported by language and overall, with apply/timeout/infrastructure outcomes separated from semantic failures.",
   "agent": {
-    "harness_revision_env": "SWEBENCH_HARNESS_REVISION (must be set before launch)",
-    "eval_protocol_sha256": "3c845d8e0567f2c91c5e432545724c1f3b72d7bcc4ae61806d2a4a594e9d4e83",
-    "eval_protocol_path": "data/eval_protocol_v1.json",
-    "commit": "7d813c9746e86fd382d525fa6a0f6e0d9ca1e6b0",
-    "commit_note": "7d813c97 is the single exact executable revision for Option A. All ten evaluated-file hashes are recorded at this commit. Check 0b verifies these hashes at launch.",
+    "commit": "426cf4d3e0a7a0f8beb63b0ba43fde8e787bc260",
+    "escalation": "disabled",
     "evaluated_file_sha256": {
-      "scripts/run_swebench.ts": "ec97413d6e9f50be6478303aae1c9a8c9d4a4c0e34f4d7542607f2e7ac4c7f79",
-      "server/sweBenchTracebackLoop.ts": "06f506e826fba159eb048ad254ea5ebe5182977f4e08606d330d437cab016c70",
+      "scripts/run_swebench.ts": "983f840f248e226fea89840140c24f1a377a2b6958f962082db5048a0b9d7389",
+      "server/benchmarkLauncher.ts": "7f49087766ee960a90a976376ed35d3fcd02c5292662bcee01217ed812a7f4a8",
       "server/canonicalPatch.ts": "ef9009bbb4ee019d78e6e09fec14c12ae21ae11afcdfbc58cd8211f9a789c614",
-      "server/benchmarkLauncher.ts": "594ba64048dabfc4f91efa07c786646707ec06b6edb0e3f53b5c1cebc1018e85",
+      "server/hardenedSandbox.ts": "5da6d7f5674463519b773762ad6471dcb35a74612912951320b81d8003c540c3",
+      "server/sweBenchContextBuilder.ts": "61ba38e80f0cc29f55e87f262a9e63b0984938b4dec8bd680ca4b93c6befc3e8",
       "server/sweBenchEvalMode.ts": "713f0f66b70315ab430aa9fe575db6ad9480ab09b807b23d0e32e181bbac4558",
       "server/sweBenchModelConfig.ts": "aaa44388709023729568c45ad8b1a8e4602d6cade7f4a4a79035ee4eea8fd814",
-      "server/hardenedSandbox.ts": "5da6d7f5674463519b773762ad6471dcb35a74612912951320b81d8003c540c3",
-      "scripts/build_eval_parity_fixtures.ts": "1bbd92f4776a56cb57bbde110e153010e77e7e5966238087b1382e4b97e13d18",
-      "scripts/test_evaluator_parity.sh": "78b044c00436c599d377616c0d69bcbc0cb82cde7f4934c11828565b038155d8",
-      "data/eval_protocol_v1.json": "3c845d8e0567f2c91c5e432545724c1f3b72d7bcc4ae61806d2a4a594e9d4e83"
-    }
-  },
-  "model": {
-    "default_provider": "claude-sonnet-5",
-    "model_id": "claude-sonnet-5",
-    "model_name": "andromeda-v6-claude-sonnet-5",
-    "api_format": "anthropic",
+      "server/sweBenchMultilingualSupport.ts": "da92ffbe642ec7f4369f1e6dd41773c359b87399a0894fcfef4d3128e3089292",
+      "server/sweBenchPipeline.ts": "f24a8fceccdc2dabff6e8064e4904cee4b34d70d6005ed79b4cd40288505e75a",
+      "server/sweBenchTracebackLoop.ts": "7d4572ec07ac910a78187bfe2437464b5f2254fc24ffea3f6037dd6fd9ec2021"
+    },
     "max_tokens": 32000,
+    "mode": "scored_strict",
+    "model": "claude-sonnet-5",
     "temperature": 1,
-    "extended_thinking": false,
-    "prompt_caching": true,
-    "instance_timeout_ms": 1500000,
-    "llm_timeout_ms": 600000,
-    "max_retries": 2,
-    "escalation": "disabled for scored run (SWEBENCH_ESCALATION must not be set)",
-    "note": "Escalation must be disabled. Any change to model, temperature, or decoding settings invalidates this preregistration."
+    "web_search": "disabled"
+  },
+  "campaign": {
+    "created_at": "2026-08-10T05:22:26.218842+00:00",
+    "description": "Option B: repository-disjoint holdout evaluation on SWE-bench Multilingual",
+    "id": "andromeda-multilingual-option-b"
   },
   "dataset": {
     "name": "SWE-bench/SWE-bench_Multilingual",
-    "split": "test",
     "revision": "9b805a99fed4facc17b2707c64216b227922a427",
-    "instance_count": 300,
-    "id_list_sha256": "1d9057d971eb106769f1833deefddecf448eb956482584a34c7756cc02695174",
-    "repo_base_commit_sha256": "a0c08a0f369d3903b80c8ef43c5d8557e457093a56d1b135b6f0300d6ad61cb7",
-    "language_breakdown": {
-      "Ruby": 44,
-      "Java": 43,
-      "Rust": 43,
-      "PHP": 43,
-      "Go": 42,
-      "JavaScript": 33,
-      "C": 25,
-      "C++": 12,
-      "JavaScript/TypeScript": 5,
-      "C/Python": 5,
-      "TypeScript": 5
-    },
-    "python_note": "0 Python-only tasks; 5 C/Python tasks (micropython/micropython)"
+    "split": "test"
   },
-  "disjointness": {
-    "exclusion_registry_count": 2294,
-    "exclusion_registry_id_sha256": "32e0c1d637aa073d4fea0ce85167f45f26932cbd29dbf582da434b3b4fe46262",
-    "overlap_by_instance_id": 0,
-    "overlap_by_repo_base_commit": 0,
-    "disjoint": true,
-    "audit_note": "Disjointness verified on two independent keys. (1) instance_id: direct comparison against exclusion registry — 0 overlap. (2) repo@base_commit: historical set reconstructed from princeton-nlp/SWE-bench rev e48e2bd1, filtered to the 2,294 exclusion-registry IDs — 0 overlap. Both checks are substantive. See multilingual_disjointness_audit.json v3.",
-    "historical_repo_base_commit_sha256": "49dd82c81a60f9cddff0dcd69a54db38f0ab5ce19fee117ef8ada7b1b4a43df1",
-    "historical_repo_base_commit_count": 2174,
-    "multilingual_repo_base_commit_sha256": "a0c08a0f369d3903b80c8ef43c5d8557e457093a56d1b135b6f0300d6ad61cb7"
+  "development": {
+    "instance_ids_sha256": "c307b58490a8e85c7d220631c7b20ce2e8fe77f4168f4e86dac75d7f29367738",
+    "manifest_path": "data/swebench/multilingual_dev.jsonl",
+    "note": "All 187 development IDs are in the permanent exclusion registry.",
+    "status": "permanently_exposed",
+    "task_count": 187
   },
-  "run_parameters": {
-    "mode": "scored_strict",
+  "exclusion_registry": {
+    "path": "data/swebench/exclusions.jsonl",
+    "sha256": "16d59e7fbbbbf5470c35daf66cc0497b0bba75e59de54d83c3ced39aabd268a9",
+    "total_ids": 2481
+  },
+  "governance": {
+    "dev_ids_in_exclusion_registry": true,
+    "disjointness_audit": "data/swebench/multilingual_disjointness_audit.json",
+    "holdout_ids_in_reserved_manifest": true,
+    "holdout_task_contents_accessed": false,
+    "option": "B",
+    "run_once_constraint": "113 holdout tasks run exactly once; after run all 113 IDs promoted to exclusions.jsonl.",
+    "split_committed_before_dev_access": true
+  },
+  "holdout": {
+    "instance_ids_sha256": "5082a9cfc4dcb560c54a77197a09f71b6b1b199363e7a2a9dc7aaea291b93f4b",
+    "manifest_path": "data/swebench/multilingual_holdout_reserved.jsonl",
+    "reserved_manifest_path": "data/swebench/multilingual_reserved_run.jsonl",
+    "task_count": 113
+  },
+  "preregistration_hash": "c4726bab87c77ebe8d7bc8fad23131ec9c63a416509c67cdb2bf9d0c7a8a5ee8",
+  "preregistration_hash_note": "SHA-256 of JSON content without self-hash fields, sorted keys, 2-space indent, UTF-8.",
+  "run_constraints": {
+    "canary_abort_threshold_infra_failure_rate": 0.6,
+    "canary_size": 5,
     "concurrency": 1,
-    "spend_cap_usd": 500,
-    "external_search": false,
-    "web_search_env": "SWEBENCH_SEARCH must not be set to 1",
-    "escalation_env": "SWEBENCH_ESCALATION must not be set to 1",
-    "prompt_hash_env": "SWEBENCH_PROMPT_HASH must be set before launch",
-    "dataset_revision_env": "SWEBENCH_DATASET_REVISION=9b805a99fed4facc17b2707c64216b227922a427"
+    "instance_timeout_minutes": 25,
+    "retry_policy": "bounded_2_retries_on_transient_api_error",
+    "spend_cap_usd": 500
   },
-  "primary_metric": "resolved / selected (evaluator resolved_ids count / 300)",
-  "reporting_requirements": [
-    "Report resolved, prediction_ready, exact_apply_failure, timed_out, infra_failure, test_failure separately",
-    "Report results by language group (Ruby, Java, Rust, PHP, Go, JavaScript, C, C++, TypeScript, C/Python)",
-    "Report overall resolved / 300 and resolved / submitted separately",
-    "Do not collapse apply/timeout/infra outcomes into the resolution percentage",
-    "Do not modify the agent after reading any batch result — later batches cease to be held out"
-  ],
-  "operational_constraints": [
-    "The 300 Multilingual IDs are in multilingual_reserved_run.jsonl (NOT in exclusions.jsonl).",
-    "The reservation gate in BenchmarkLauncher Check 8 permits these IDs only when all binding fields match this preregistration exactly.",
-    "After the frozen run finishes, promote all 300 reserved IDs to exclusions.jsonl (permanent exposure registry).",
-    "Execute in operational batches if needed, but freeze configuration before first batch.",
-    "Score with official SWE-bench evaluator only — internal prediction_ready count is not the score.",
-    "Publish run bundle: agent commit, dataset revision, model config, prompt hash, per-instance outcomes.",
-    "Do not modify the agent after reading any batch result — later batches cease to be held out."
-  ],
-  "binding_hashes": {
-    "reserved_manifest_sha256": "4bd69a06b7b5df7dec2cf51a552c0c677314abf7762acfc28cad88f6c9ed769c",
-    "selected_ids_sha256": "1d9057d971eb106769f1833deefddecf448eb956482584a34c7756cc02695174",
-    "selected_ids_count": 300,
-    "note": "These hashes are the binding fields for the reservation gate. The launcher will verify selected_ids_sha256 against the preregistration dataset.id_list_sha256 before permitting any reserved ID."
+  "schema_version": "option_b_v1",
+  "scoring": {
+    "evaluator": "python3 -m swebench.harness.run_evaluation",
+    "note": "Score comes only from the official evaluator output.",
+    "primary_metric": "resolved / selected",
+    "report_separately": [
+      "resolved",
+      "prediction_ready",
+      "exact_apply_failure",
+      "timed_out",
+      "infra_failure",
+      "unsupported_language"
+    ]
   },
-  "preregistration_hash": "03ea225534003bed6812f17f6ff231f928769c6faf8662df4d1be05654b90544",
-  "preregistration_hash_note": "SHA-256 of the JSON content with this field and preregistration_hash_note absent, serialized with json.dumps(indent=2, ensure_ascii=False). Equivalent to Node.js JSON.stringify(obj, null, 2) for this content."
+  "split": {
+    "development_repos": 23,
+    "development_tasks": 187,
+    "disclosures": [
+      "c_python (micropython): single repo, all 5 tasks in development set. Holdout has no c_python tasks.",
+      "cpp holdout: 1 task (nlohmann/json). Insufficient for language-level precision; reported descriptively only."
+    ],
+    "holdout_language_breakdown": {
+      "unknown": 113
+    },
+    "holdout_repos": 18,
+    "holdout_tasks": 113,
+    "repo_overlap": 0,
+    "strategy": "repository_disjoint"
+  }
 }

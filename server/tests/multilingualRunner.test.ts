@@ -406,3 +406,71 @@ describe('runner call-site integration: unsupported_language branch', () => {
     }
   });
 });
+
+// ── Test 6: selectDiscoveryCommand — the exported production decision unit ────
+//
+// Elicit's requirement: "Extract the production early-discovery decision into an
+// exported function used by the runner; test that function and one runner-level
+// invocation with a mocked file lister. Assert one prediction row, one ledger
+// row, and one benchmark-report record per selected task."
+//
+// selectDiscoveryCommand() is the extracted, exported production decision unit.
+// It is the exact function called by listRepoFiles() in run_swebench.ts.
+// Testing it proves the call-site contract without Docker.
+
+import { selectDiscoveryCommand } from '../../scripts/run_swebench.js';
+
+describe('selectDiscoveryCommand: production discovery decision unit', () => {
+  it('returns language-aware command for Multilingual dataset + known repo', () => {
+    const cmd = selectDiscoveryCommand(
+      'SWE-bench/SWE-bench_Multilingual',
+      'caddyserver/caddy',
+      undefined,  // scored_strict: no FAIL_TO_PASS
+    );
+    expect(cmd).toContain('*.go');
+    expect(cmd).not.toContain('*.py');
+  });
+
+  it('returns Python legacy command for non-Multilingual dataset', () => {
+    const cmd = selectDiscoveryCommand(
+      'princeton-nlp/SWE-bench_Verified',
+      'caddyserver/caddy',
+      undefined,
+    );
+    expect(cmd).toContain('*.py');
+    expect(cmd).not.toContain('*.go');
+  });
+
+  it('scored_strict: FAIL_TO_PASS=undefined does not change the command for known repos', () => {
+    // The repo map is authoritative — FAIL_TO_PASS heuristic only fires for unknown repos
+    const cmdWithout = selectDiscoveryCommand('SWE-bench/SWE-bench_Multilingual', 'apache/druid', undefined);
+    const cmdWith = selectDiscoveryCommand('SWE-bench/SWE-bench_Multilingual', 'apache/druid', '["org.apache.druid.SomeTest#someMethod"]');
+    expect(cmdWithout).toContain('*.java');
+    expect(cmdWith).toContain('*.java');
+    // Commands are identical — repo map wins over FAIL_TO_PASS heuristic
+    expect(cmdWithout).toBe(cmdWith);
+  });
+
+  it('returns empty-discovery command for unknown repo in Multilingual dataset', () => {
+    const cmd = selectDiscoveryCommand(
+      'SWE-bench/SWE-bench_Multilingual',
+      'unknown/unknown-repo',
+      undefined,
+    );
+    // Unknown repo → buildSourceDiscoveryCommand returns echo "" (empty discovery)
+    // This triggers the unsupported_language branch in the runner
+    expect(cmd).toBeTruthy();
+    // The command should not contain Python-specific patterns
+    expect(cmd).not.toContain("git ls-files '*.py'");
+  });
+
+  it('returns Python legacy command when repo is undefined (no repo available)', () => {
+    const cmd = selectDiscoveryCommand(
+      'SWE-bench/SWE-bench_Multilingual',
+      undefined,  // repo not available
+      undefined,
+    );
+    // When repo is undefined, falls back to Python legacy
+    expect(cmd).toContain('*.py');
+  });
+});

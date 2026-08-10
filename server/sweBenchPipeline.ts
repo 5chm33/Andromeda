@@ -130,6 +130,8 @@ export async function runSOTAPipeline(
   options?: {
     testPatch?: string;
     failToPassTests?: string[];
+    /** Repository slug (e.g. 'caddyserver/caddy'). Required for multilingual test-command selection. */
+    repo?: string;
   }
 ): Promise<PipelineResult> {
   const startTime = Date.now();
@@ -221,6 +223,8 @@ export async function runSOTAPipeline(
       escalatingLLMProvider: config.escalatingLLMProvider,
       issueDescription,
       fileContents,
+      // repo: required for multilingual test-command selection
+      repo: options?.repo,
     };
 
     const tracebackResult = await runTracebackLoop(tracebackInput);

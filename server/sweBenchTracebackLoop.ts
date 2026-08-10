@@ -1,5 +1,5 @@
 /**
- * sweBenchTracebackLoop.ts — Execution-Based Traceback Loop (v3.0.0)
+ * sweBenchTracebackLoop.ts -- Execution-Based Traceback Loop (v3.0.0)
  *
  * v3.0.0 upgrades (path to 70%+):
  *   - Call-chain context expansion via sweBenchContextBuilder.ts
@@ -12,7 +12,7 @@
  *   - Traceback source mapping: maps test tracebacks to source functions,
  *     not just test functions
  *
- * v2.0.0 upgrades (fixes for 26% → 40%+ resolution rate):
+ * v2.0.0 upgrades (fixes for 26% -> 40%+ resolution rate):
  *   - Conda environment activation before running tests
  *   - test_patch applied BEFORE running tests
  *   - Repo-specific test commands (Django uses runtests.py, not pytest)
@@ -47,10 +47,15 @@ import {
   buildProbeEnrichedRevisionPrompt,
   buildCrossReferencePrompt,
 } from './sweBenchContextBuilder.js';
+import {
+  buildTestCommand as buildMultilingualTestCommand,
+  isMultilingualDataset,
+  detectLanguage,
+} from './sweBenchMultilingualSupport.js';
 
 const execAsync = promisify(exec);
 
-// ─── Configuration ────────────────────────────────────────────────────────────
+// --- Configuration ------------------------------------------------------------
 
 /** Maximum number of fix attempts per instance before giving up. */
 export const MAX_ATTEMPTS = 5;
@@ -67,20 +72,45 @@ const ENABLE_DEBUG_PROBE = process.env.SWEBENCH_DEBUG_PROBE !== '0';
 /** Whether to enable cross-reference verification (adds 1 LLM call per patch). */
 const ENABLE_CROSS_REF = process.env.SWEBENCH_CROSS_REF !== '0';
 
-// ─── Repo-Specific Test Commands ─────────────────────────────────────────────
+// --- Repo-Specific Test Commands ---------------------------------------------
 
 /**
- * Returns the correct test command for a given repo.
- * Django uses its own test runner; most others use pytest.
+ * Returns the correct test command for a given repo and dataset.
+ *
+ * For Multilingual datasets: delegates to buildMultilingualTestCommand which
+ * uses the language-aware profile (Java->mvn, Rust->cargo, Go->go test, etc.).
+ * Falls back to the Python/Django legacy path only for Python datasets.
+ *
+ * @param instanceId - SWE-bench instance ID (used for Django detection in Python mode)
+ * @param failToPassTests - Test IDs from FAIL_TO_PASS field
+ * @param repo - Repository slug (e.g. 'caddyserver/caddy'). Required for multilingual.
  */
-function getTestCommand(instanceId: string, failToPassTests: string[]): string {
-  const repo = instanceId.split('__')[0].toLowerCase();
+function getTestCommand(
+  instanceId: string,
+  failToPassTests: string[],
+  repo?: string,
+): string {
+  const datasetName = process.env.SWEBENCH_DATASET_NAME ?? 'princeton-nlp/SWE-bench_Verified';
 
-  if (repo === 'django') {
+  // -- Multilingual path -----------------------------------------------------
+  if (isMultilingualDataset(datasetName) && repo) {
+    const multilingualCmd = buildMultilingualTestCommand(repo, failToPassTests);
+    if (multilingualCmd) {
+      // Wrap in cd /testbed so relative paths work correctly
+      return multilingualCmd.startsWith('cd ') ? multilingualCmd : `cd /testbed && ${multilingualCmd}`;
+    }
+    // Language not supported -- return a no-op command that always fails cleanly
+    return `echo 'UNSUPPORTED_LANGUAGE: no test command available for repo ${repo}' && exit 1`;
+  }
+
+  // -- Legacy Python/Django path ---------------------------------------------
+  const repoSlug = instanceId.split('__')[0].toLowerCase();
+
+  if (repoSlug === 'django') {
     // Django FAIL_TO_PASS entries can be:
-    //   1. "test_name (module.ClassName)" — standard format, extract module
-    //   2. "Description text" — docstring-based, no module, skip these
-    //   3. "tests/path/file.py::Class::test" — pytest style, convert path
+    //   1. "test_name (module.ClassName)" -- standard format, extract module
+    //   2. "Description text" -- docstring-based, no module, skip these
+    //   3. "tests/path/file.py::Class::test" -- pytest style, convert path
     const MODULE_RE = /^[a-zA-Z_][a-zA-Z0-9_.]*$/; // valid Python module path
     const testModules = [...new Set(failToPassTests.flatMap(t => {
       // Format 1: "test_name (module.ClassName)"
@@ -103,7 +133,7 @@ function getTestCommand(instanceId: string, failToPassTests: string[]): string {
           .replace(/\//g, '.');
         return MODULE_RE.test(mod) ? [mod] : [];
       }
-      // Format 2: plain description text — skip (can't extract a module)
+      // Format 2: plain description text -- skip (can't extract a module)
       return [];
     }))];
     const moduleArgs = testModules.length > 0 ? testModules.join(' ') : '';
@@ -117,11 +147,60 @@ function getTestCommand(instanceId: string, failToPassTests: string[]): string {
 }
 
 /**
- * Returns the "passed" detection function for a given repo.
+ * Returns true if the test output indicates all tests passed.
+ *
+ * For Multilingual datasets: uses language-aware pass detection.
+ * For Python/Django: uses the legacy heuristics.
+ *
+ * @param instanceId - SWE-bench instance ID (used for Django detection)
+ * @param output - Combined stdout+stderr from the test run
+ * @param repo - Repository slug for multilingual language detection
  */
-function isPassed(instanceId: string, output: string): boolean {
-  const repo = instanceId.split('__')[0].toLowerCase();
-  if (repo === 'django') {
+function isPassed(instanceId: string, output: string, repo?: string): boolean {
+  const datasetName = process.env.SWEBENCH_DATASET_NAME ?? 'princeton-nlp/SWE-bench_Verified';
+
+  // -- Multilingual pass detection -------------------------------------------
+  if (isMultilingualDataset(datasetName) && repo) {
+    const lang = detectLanguage(repo);
+    switch (lang) {
+      case 'java':
+        // Maven: BUILD SUCCESS, no FAILURE or ERROR
+        return output.includes('BUILD SUCCESS') && !output.includes('BUILD FAILURE');
+      case 'rust':
+        // Cargo: 'test result: ok' or 'test result: FAILED'
+        return output.includes('test result: ok') && !output.includes('test result: FAILED');
+      case 'go':
+        // Go test: 'ok' lines, no FAIL lines
+        return output.includes('\nok ') && !output.includes('\nFAIL ');
+      case 'ruby':
+        // Ruby minitest/rspec: '0 failures' or 'examples, 0 failures'
+        return (
+          (output.includes('0 failures') || output.includes('0 errors')) &&
+          !output.includes('FAILED')
+        );
+      case 'php':
+        // PHPUnit: 'OK (' or 'Tests: N, Assertions: N.'
+        return output.includes('OK (') && !output.includes('FAILURES!');
+      case 'javascript':
+      case 'typescript':
+        // Jest/npm test: 'Tests: N passed' or 'passed'
+        return output.includes(' passed') && !output.includes(' failed') && !output.includes(' failed,');
+      case 'c':
+      case 'cpp':
+        // Make/cmake: no error lines, return code 0 (inferred from output)
+        return !output.includes('Error') && !output.includes('FAILED') && !output.includes('error:');
+      case 'c_python':
+        // micropython uses pytest
+        return output.includes(' passed') && !output.includes(' failed') && !output.includes('ERROR');
+      default:
+        // Unknown language: conservative -- require explicit pass signal
+        return output.includes(' passed') && !output.includes(' failed');
+    }
+  }
+
+  // -- Legacy Python/Django pass detection -----------------------------------
+  const repoSlug = instanceId.split('__')[0].toLowerCase();
+  if (repoSlug === 'django') {
     return output.includes('OK') && !output.includes('FAILED') && !output.includes('ERROR');
   }
   return (
@@ -133,7 +212,7 @@ function isPassed(instanceId: string, output: string): boolean {
   );
 }
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// --- Types --------------------------------------------------------------------
 
 export interface TracebackLoopInput {
   /** The SWE-bench instance ID, e.g. "django__django-12308" */
@@ -144,11 +223,11 @@ export interface TracebackLoopInput {
   initialPatch: string;
   /** The test_patch from the SWE-bench dataset (adds new test cases).
    * Always passed for evaluation (the evaluator applies it before running tests).
-   * NEVER used in model-visible prompts — use promptTestPatch for that. */
+   * NEVER used in model-visible prompts -- use promptTestPatch for that. */
   testPatch?: string;
   /** The failing tests that need to pass (FAIL_TO_PASS field).
    * Always passed for evaluation (used to build the test command).
-   * NEVER used in model-visible prompts — use promptFailToPassTests for that. */
+   * NEVER used in model-visible prompts -- use promptFailToPassTests for that. */
   failToPassTests?: string[];
   /**
    * Prompt-visible variant of testPatch.
@@ -221,7 +300,7 @@ export interface TracebackLoopResult {
   resolvedImageDigest: string;
 }
 
-// ─── Core Logic ───────────────────────────────────────────────────────────────
+// --- Core Logic ---------------------------------------------------------------
 
 /**
  * Extracts the most relevant portion of a pytest/Django traceback for LLM feedback.
@@ -273,11 +352,11 @@ export function fixHunkCounts(patch: string): string {
   // estimate the actual start line from previously-seen lines in the result)
   while (i < lines.length) {
     const line = lines[i];
-    // Match full @@ -a,b +c,d @@ header — digits only
+    // Match full @@ -a,b +c,d @@ header -- digits only
     const m = line.match(/^(@@ -(\d+)(?:,\d+)? \+(\d+)(?:,\d+)? @@)(.*)/);
     // Match @@ -x,N +x,N @@ or @@ -x +x @@ (literal 'x' or other non-numeric placeholder)
     const mPlaceholder = !m && line.match(/^@@ -([^\d\s,][^\s,]*),?(\d*) \+([^\d\s,][^\s,]*),?(\d*) @@(.*)/);
-    // Also match bare @@ @@ (no line numbers — model omitted them entirely)
+    // Also match bare @@ @@ (no line numbers -- model omitted them entirely)
     const mBare = !m && !mPlaceholder && line.match(/^@@\s*@@(.*)/);
     if (m || mPlaceholder || mBare) {
       // Determine start lines:
@@ -313,10 +392,10 @@ export function fixHunkCounts(patch: string): string {
           newCount++;
           cleanedHunkLines.push(l);
         } else if (l.startsWith('\\')) {
-          // No newline at end of file marker — keep as-is
+          // No newline at end of file marker -- keep as-is
           cleanedHunkLines.push(l);
         } else {
-          // Context line — strip trailing whitespace
+          // Context line -- strip trailing whitespace
           oldCount++;
           newCount++;
           cleanedHunkLines.push(l.trimEnd());
@@ -339,6 +418,12 @@ export type PatchApplicationOptions = {
   testPatch?: string;
   failToPassTests?: string[];
   instanceId?: string;
+  /**
+   * Repository slug (e.g. 'caddyserver/caddy'). Required for multilingual
+   * datasets to select the correct test-command template. When absent, the
+   * Python/Django legacy path is used.
+   */
+  repo?: string;
   /**
    * Enables legacy recovery strategies that can apply a patch despite a
    * context mismatch. This is intentionally opt-in: such patches may be
@@ -409,12 +494,12 @@ export async function applyAndTest(
   const failToPassTests = options?.failToPassTests ?? [];
 
   try {
-    // ── Step 0: Reset the container's repo state from any previous attempt ──
+    // -- Step 0: Reset the container's repo state from any previous attempt --
     await execAsync(
       `docker exec ${containerName} bash -c "cd ${repoPath} && git checkout -- . 2>/dev/null || true"`
     ).catch(() => { /* ignore */ });
 
-    // ── Step 1: Apply the model patch ──────────────────────────────────────
+    // -- Step 1: Apply the model patch --------------------------------------
     // Pre-process: fix wrong @@ hunk line counts (LLMs frequently generate
     // patches with incorrect counts, causing "corrupt patch" errors in git apply)
     const fixedPatch = fixHunkCounts(patch);
@@ -438,7 +523,7 @@ export async function applyAndTest(
         };
       }
 
-      // ── Explicit exploratory recovery only: patch -p1 --fuzz=15 ─────────
+      // -- Explicit exploratory recovery only: patch -p1 --fuzz=15 ---------
       // These paths must not be treated as automatic-promotion evidence.
       const fuzzResult = await execAsync(
         `docker exec ${containerName} bash -c "cd ${repoPath} && patch -p1 --fuzz=15 --ignore-whitespace < /tmp/candidate.diff 2>&1 || true"`
@@ -453,7 +538,7 @@ export async function applyAndTest(
           `docker exec ${containerName} bash -c "cd ${repoPath} && git checkout -- . 2>/dev/null || true"`
         ).catch(() => { /* ignore */ });
 
-        // ── Fallback 2: git apply --unidiff-zero (strip context lines) ──────
+        // -- Fallback 2: git apply --unidiff-zero (strip context lines) ------
         // Some LLM-generated patches have correct +/- lines but wrong context
         // lines. --unidiff-zero ignores context entirely and applies by line number.
         const unidiffResult = await execAsync(
@@ -469,7 +554,7 @@ export async function applyAndTest(
             `docker exec ${containerName} bash -c "cd ${repoPath} && git checkout -- . 2>/dev/null || true"`
           ).catch(() => { /* ignore */ });
 
-        // ── Fallback 3: AST-aware patch ──
+        // -- Fallback 3: AST-aware patch --
         const astSpecMatch = patch.match(/<!--AST_PATCH_SPEC:(\{[\s\S]*?\})-->/);
         if (astSpecMatch) {
           try {
@@ -499,7 +584,7 @@ export async function applyAndTest(
       } // end fuzz else
     } // end git apply error block
 
-        // ── scored_strict: blind-apply path ────────────────────────────────────
+        // -- scored_strict: blind-apply path ------------------------------------
     // In scored_strict mode the agent must not receive any hidden-test feedback.
     // Steps 2 and 3 are skipped entirely. The patch has already been applied
     // cleanly above. The official evaluator runs the hidden tests afterward.
@@ -511,7 +596,7 @@ export async function applyAndTest(
         output: 'SCORED_STRICT_BLIND_APPLY: patch applied cleanly; hidden tests deferred to external evaluator',
       };
     }
-    // ── Step 2: Apply test_patch (adds new test cases) ─────────────────────
+    // -- Step 2: Apply test_patch (adds new test cases) ---------------------
     if (options?.testPatch && options.testPatch.trim().length > 10) {
       fs.writeFileSync(hostTestPatchPath, options.testPatch, 'utf-8');
       await dockerInject(containerName, '/tmp/test_patch.diff', options.testPatch);
@@ -526,8 +611,8 @@ export async function applyAndTest(
         };
       }
     }
-    // ── Step 3: Run tests with repo-specific command ───────────────────────
-    const testCmd = getTestCommand(instanceId, failToPassTests);
+    // -- Step 3: Run tests with repo-specific command -----------------------
+    const testCmd = getTestCommand(instanceId, failToPassTests, options?.repo);
     const testScript = `#!/bin/bash\nset -e\n${testCmd}\n`;
     fs.writeFileSync(hostScriptPath, testScript, 'utf-8');
     await dockerInject(containerName, '/tmp/run_tests.sh', testScript);
@@ -536,7 +621,7 @@ export async function applyAndTest(
       `docker exec ${containerName} bash -c "timeout ${timeoutSeconds} /tmp/run_tests.sh 2>&1 || true"`
     ).catch(e => ({ stdout: e.stdout || '', stderr: e.stderr || '' }));
     const output = testResult.stdout + testResult.stderr;
-    const passed = isPassed(instanceId, output);
+    const passed = isPassed(instanceId, output, options?.repo);
     return { passed, output };
 
   } finally {
@@ -575,9 +660,9 @@ const MAX_PATCH_IN_REVISION = 8000;
 /**
  * Hard cap on total revision prompt length (characters).
  * Prompts exceeding this caused timeouts on Fable 5 for large Django instances
- * (run 8 instances 23-26 had 216k-254k char prompts — all timed out and failed).
+ * (run 8 instances 23-26 had 216k-254k char prompts -- all timed out and failed).
  * When the assembled prompt would exceed this, we truncate the file context
- * section only — the traceback is the most important signal and is never cut.
+ * section only -- the traceback is the most important signal and is never cut.
  */
 const MAX_REVISION_PROMPT_CHARS = 120_000;
 
@@ -636,7 +721,7 @@ export function buildRevisionPrompt(
           issueDescription: options?.issueDescription,
           traceback: tracebackSummary,
           failToPassTests: options?.failToPassTests,
-          maxChars: 80000,  // Larger budget for revision prompts — must see the buggy block
+          maxChars: 80000,  // Larger budget for revision prompts -- must see the buggy block
         });
         return `### ${fp}\n\`\`\`python\n${contextView}\n\`\`\``;
       }).join('\n\n')
@@ -662,16 +747,16 @@ export function buildRevisionPrompt(
 
   const patchSummary = summarizePatch(originalPatch);
   const patchNote = originalPatch.length > MAX_PATCH_IN_REVISION
-    ? ` (summarized — original was ${originalPatch.length.toLocaleString()} chars; only changed lines shown)`
+    ? ` (summarized -- original was ${originalPatch.length.toLocaleString()} chars; only changed lines shown)`
     : '';
 
-  // ── Fix 28 & 33: Hard-instance escalation hints ──────────────────────────
+  // -- Fix 28 & 33: Hard-instance escalation hints --------------------------
   // After 2 failed attempts, add a targeted hint to push the LLM to think
   // more broadly about the root cause (callee, different file, multi-file fix).
   // At attempt 4-5, explicitly add MINIMAL CHANGE instruction to prevent over-engineering.
   let hardInstanceHint = '';
   if (attemptNumber >= 4) {
-    hardInstanceHint = `\n## ⚠️ Hard Instance — Final Attempts (${attemptNumber}/${MAX_ATTEMPTS})
+    hardInstanceHint = `\n## ⚠️ Hard Instance -- Final Attempts (${attemptNumber}/${MAX_ATTEMPTS})
 Your previous ${attemptNumber - 1} attempts failed. This is a hard instance. Before generating a new patch:
 1. Read the test failure output VERY carefully. What exact assertion failed?
 2. **CRITICAL: You may be over-engineering the fix.** Many hard bugs are TRIVIAL one-line fixes (e.g., adding a missing space, changing a default value from None to 0, or tweaking a regex).
@@ -679,9 +764,9 @@ Your previous ${attemptNumber - 1} attempts failed. This is a hard instance. Bef
 4. Make the **MINIMAL POSSIBLE CHANGE**. Do not rewrite entire functions unless absolutely necessary.
 Think step by step before writing the patch.\n`;
   } else if (attemptNumber === 3) {
-    hardInstanceHint = `\n## ⚠️ Hard Instance — Previous Attempts Failed (${attemptNumber - 1}/${MAX_ATTEMPTS})
+    hardInstanceHint = `\n## ⚠️ Hard Instance -- Previous Attempts Failed (${attemptNumber - 1}/${MAX_ATTEMPTS})
 Your previous ${attemptNumber - 1} attempt(s) all failed. This is a hard instance. Before generating a new patch:
-1. Read the test failure output VERY carefully — what exact assertion failed? What value was expected vs. actual?
+1. Read the test failure output VERY carefully -- what exact assertion failed? What value was expected vs. actual?
 2. Consider: is the bug in a DIFFERENT function or file than the one you patched?
 3. Consider: does the fix require changing MORE THAN ONE function or file?
 4. Consider: is there a callee function that is returning the wrong type or value?
@@ -705,7 +790,7 @@ ${patchSummary}
 ${tracebackSummary}
 \`\`\`
 
-${fileContext ? `## Current File State (after your patch was applied — call-chain expanded)\n${fileContext}\n\n` : ''}## Instructions
+${fileContext ? `## Current File State (after your patch was applied -- call-chain expanded)\n${fileContext}\n\n` : ''}## Instructions
 1. Analyze the test failure carefully. Understand WHY your previous patch failed.
 2. Output a TARGETED unified diff patch (git diff format) fixing ONLY the lines that need changing.
 3. CRITICAL: Use REAL line numbers in the @@ header. Count from the file content shown above.
@@ -721,19 +806,19 @@ ${fileContext ? `## Current File State (after your patch was applied — call-ch
  context line
 \`\`\`
 5. Fix the root cause, not just the symptom.
-6. Make MINIMAL changes — only change what is necessary to fix the failing tests.
+6. Make MINIMAL changes -- only change what is necessary to fix the failing tests.
 7. If the bug is in a callee function (called by the function you patched), fix the callee.
-8. NEVER output the complete file — only output the changed lines in diff format.
+8. NEVER output the complete file -- only output the changed lines in diff format.
 Output ONLY the diff block. No explanation.
 `;
-  // ── Fix 22: Hard cap on total prompt length ───────────────────────────────
+  // -- Fix 22: Hard cap on total prompt length -------------------------------
   // If the assembled prompt exceeds MAX_REVISION_PROMPT_CHARS, truncate the
-  // file context section (not the traceback — traceback is the key signal).
+  // file context section (not the traceback -- traceback is the key signal).
   // This prevents timeouts on Fable 5 for large-file instances.
   if (prompt.length > MAX_REVISION_PROMPT_CHARS) {
     const overBy = prompt.length - MAX_REVISION_PROMPT_CHARS;
     console.warn(
-      `[buildRevisionPrompt] Prompt is ${prompt.length.toLocaleString()} chars — ` +
+      `[buildRevisionPrompt] Prompt is ${prompt.length.toLocaleString()} chars -- ` +
       `truncating file context by ${overBy.toLocaleString()} chars to stay under ` +
       `${MAX_REVISION_PROMPT_CHARS.toLocaleString()} cap`
     );
@@ -749,7 +834,7 @@ Output ONLY the diff block. No explanation.
       const instrIdx = contextSection.indexOf('## Instructions');
       const contextBody = instrIdx !== -1 ? contextSection.slice(0, instrIdx) : contextSection;
       const truncatedBody = contextBody.slice(0, allowedFileContextLen);
-      const truncNote = `\n\n> [File context truncated — original prompt was ${prompt.length.toLocaleString()} chars, capped at ${MAX_REVISION_PROMPT_CHARS.toLocaleString()}. Focus on the traceback above to identify the fix.]\n\n`;
+      const truncNote = `\n\n> [File context truncated -- original prompt was ${prompt.length.toLocaleString()} chars, capped at ${MAX_REVISION_PROMPT_CHARS.toLocaleString()}. Focus on the traceback above to identify the fix.]\n\n`;
             const instructions = `## Instructions
 1. Analyze the test failure carefully. Understand WHY your previous patch failed.
 2. Output a TARGETED unified diff patch (git diff format) fixing ONLY the lines that need changing.
@@ -766,9 +851,9 @@ Output ONLY the diff block. No explanation.
  context line
 \`\`\`
 5. Fix the root cause, not just the symptom.
-6. Make MINIMAL changes — only change what is necessary to fix the failing tests.
+6. Make MINIMAL changes -- only change what is necessary to fix the failing tests.
 7. If the bug is in a callee function (called by the function you patched), fix the callee.
-8. NEVER output the complete file — only output the changed lines in diff format.
+8. NEVER output the complete file -- only output the changed lines in diff format.
 Output ONLY the diff block. No explanation.
 `;
       return beforeContext + truncatedBody + truncNote + instructions;
@@ -783,7 +868,7 @@ Output ONLY the diff block. No explanation.
  * Supports both raw diff format and complete-file format.
  */
 export function extractPatchFromLLMResponse(response: string): string {
-  // Extract the LAST ```diff block — LLMs often generate an initial (incorrect)
+  // Extract the LAST ```diff block -- LLMs often generate an initial (incorrect)
   // patch and then self-correct with a better one at the end of the response.
   const allDiffMatches = [...response.matchAll(/```diff\n([\s\S]*?)```/g)];
   if (allDiffMatches.length > 0) return allDiffMatches[allDiffMatches.length - 1][1].trim();
@@ -846,7 +931,7 @@ export async function generateDiffFromContent(
   }
 }
 
-// ─── Main Entry Point ─────────────────────────────────────────────────────────
+// --- Main Entry Point ---------------------------------------------------------
 
 /**
  * Runs the full Traceback Loop for a single SWE-bench instance.
@@ -895,7 +980,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
   let _resolvedImage: ResolvedImage | undefined;
   try {
     // Start the container (detached, so we can exec into it repeatedly)
-    // v5.4: Use shared hardened builder — all isolation controls in one place.
+    // v5.4: Use shared hardened builder -- all isolation controls in one place.
     // v5.4: writableWorktree:true mounts a pre-seeded named volume at /testbed.
     // --read-only is ALWAYS present; only /testbed (via volume) and /tmp (via tmpfs) are writable.
     // The container is network-isolated, capability-dropped, and PID-limited.
@@ -904,7 +989,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
     // If the image is already pinned (name@sha256:...) it is accepted immediately.
     // If it is a tag-only reference, we resolve it via docker inspect.
     // Root UID is required by SWE-bench testbed images (conda env setup); this
-    // is an explicit, recorded exception — not a silent default.
+    // is an explicit, recorded exception -- not a silent default.
     let _rootUidException: string | undefined;
     try {
       // Attempt to resolve in trusted_local mode (allows tag-only via inspect).
@@ -916,7 +1001,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
         `Ensure the image is pulled locally before starting the benchmark.`
       );
     }
-    // Record root UID exception — SWE-bench testbed images require root for conda.
+    // Record root UID exception -- SWE-bench testbed images require root for conda.
     _rootUidException = "SWE-bench testbed images use root UID for conda environment setup. " +
       "Non-root execution is not supported by the official swebench/sweb.eval images. " +
       `Instance: ${instanceId}, Image: ${_resolvedImage.resolvedRef}`;
@@ -965,7 +1050,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
       }
     } catch { /* non-fatal */ }
 
-    // Track current file state — updated after each attempt so LLM sees what it changed
+    // Track current file state -- updated after each attempt so LLM sees what it changed
     let currentFileContents: Record<string, string> = { ...(fileContents ?? {}) };
 
     for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
@@ -979,16 +1064,17 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
         // evalMode: 'scored_strict' skips test_patch application and the
         // FAIL_TO_PASS test command, returning a blind-apply sentinel instead.
         // The model receives no hidden-test feedback in this mode.
-        { testPatch, failToPassTests, instanceId, evalMode }
+        // repo: required for multilingual test-command selection.
+        { testPatch, failToPassTests, instanceId, evalMode, repo }
       );
       // scored_strict: a clean apply returns the PREDICTION_READY sentinel.
-      // This is a terminal state — the loop must stop immediately and hand
+      // This is a terminal state -- the loop must stop immediately and hand
       // the patch to the external evaluator. Do NOT treat it as a test failure
       // or spend further attempts (there is no corrective signal to act on).
       const isPredictionReady = output.startsWith('SCORED_STRICT_BLIND_APPLY');
       const tracebackSummary = (passed || isPredictionReady) ? '' : extractTracebackSummary(output);
       // Derive structured outcome fields from the output string.
-      // PATCH_APPLY_FAILED means git apply failed — exactApply is false.
+      // PATCH_APPLY_FAILED means git apply failed -- exactApply is false.
       // Timeout is signalled by the bash `timeout` command exiting 124 or by
       // the output containing the sentinel string we look for.
       const attemptExactApply = !output.startsWith('PATCH_APPLY_FAILED') &&
@@ -1012,7 +1098,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
         resolved = true;
         break;
       }
-      // scored_strict: patch applied cleanly — stop here, hand to evaluator.
+      // scored_strict: patch applied cleanly -- stop here, hand to evaluator.
       // The loop may only retry when the patch fails to apply (PATCH_APPLY_FAILED).
       if (isPredictionReady) {
         predictionReady = true;
@@ -1021,7 +1107,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
 
       // If we have more attempts, ask the LLM for a revision
       if (attempt < MAX_ATTEMPTS) {
-        // ── Step A: Read current file state from container ─────────────────
+        // -- Step A: Read current file state from container -----------------
         if (fileContents) {
           // Parse which files the current patch modifies
           const patchedFiles = new Set<string>();
@@ -1051,14 +1137,14 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
           }
         }
 
-        // ── Step B: Traceback source mapping — find source files on stack ──
+        // -- Step B: Traceback source mapping -- find source files on stack --
         // Map the traceback to source files (not just test files) and fetch
         // any source files that are on the call stack but not yet in context
         if (fileContents && tracebackSummary) {
           const sourceMap = mapTracebackToSourceFiles(tracebackSummary);
           for (const [relPath] of sourceMap) {
             if (!(relPath in currentFileContents) && !(relPath in fileContents)) {
-              // Fetch this file from the container — it's on the call stack
+              // Fetch this file from the container -- it's on the call stack
               try {
                 const result = await execAsync(
                   `docker exec ${containerName} cat /testbed/${relPath} 2>/dev/null || true`
@@ -1072,10 +1158,10 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
           }
         }
 
-        // ── Step C: Optional debug probe ───────────────────────────────────
+        // -- Step C: Optional debug probe -----------------------------------
         let probeOutput: string | undefined;
         // In scored_strict mode, the debug probe runs the FAIL_TO_PASS test
-        // command and feeds its output into a model prompt — indirect leakage.
+        // command and feeds its output into a model prompt -- indirect leakage.
         // Skip the probe entirely in scored_strict.
         if (ENABLE_DEBUG_PROBE && attempt <= 2 && evalMode !== 'scored_strict') {
           // Only run probes on first 2 attempts to save cost
@@ -1109,7 +1195,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
           }
         }
 
-        // ── Step D: Build revision prompt with call-chain context ──────────
+        // -- Step D: Build revision prompt with call-chain context ----------
         const revisionPrompt = buildRevisionPrompt(
           instanceId,
           currentPatch,
@@ -1160,7 +1246,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
           }
 
           if (newPatch) {
-            // ── Step E: Cross-reference verification ──────────────────────
+            // -- Step E: Cross-reference verification ----------------------
             if (ENABLE_CROSS_REF && fileContents) {
               try {
                 const changedFunctions = extractChangedFunctions(newPatch);
@@ -1237,7 +1323,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
     }
   }
 
-  // ── Oracle Fallback ──────────────────────────────────────────────────────────
+  // -- Oracle Fallback ----------------------------------------------------------
   if (!resolved && input.goldPatchHint) {
     console.log(`[TracebackLoop] All ${MAX_ATTEMPTS} attempts failed. Trying oracle fallback for ${instanceId}...`);
     try {
@@ -1289,7 +1375,8 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
           repoPath,
           TEST_TIMEOUT_SECONDS,
           // evalMode: oracle fallback also respects scored_strict.
-          { testPatch, failToPassTests, instanceId, evalMode }
+          // repo: required for multilingual test-command selection.
+          { testPatch, failToPassTests, instanceId, evalMode, repo }
         );
         const oracleExactApply = !oracleOutput.startsWith('PATCH_APPLY_FAILED') &&
           !oracleOutput.startsWith('TEST_PATCH_APPLY_FAILED');
@@ -1355,7 +1442,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
   };
 }
 
-// ─── Oracle Fallback Prompt Builder ──────────────────────────────────────────
+// --- Oracle Fallback Prompt Builder ------------------------------------------
 
 /**
  * Builds a prompt for the oracle fallback attempt.
@@ -1398,7 +1485,7 @@ ${options.issueDescription ?? instanceId}
 ## Last Failure Traceback
 ${lastTraceback.slice(0, 2000)}
 
-## Structural Hint (file paths and function locations from the reference fix — NOT the actual fix)
+## Structural Hint (file paths and function locations from the reference fix -- NOT the actual fix)
 The correct fix touches these locations:
 ${hintLines}
 

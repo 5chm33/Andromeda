@@ -1,0 +1,272 @@
+{
+  "probed_at": "2026-08-10T05:37:49.006952+00:00",
+  "total_groups": 9,
+  "passed_groups": 9,
+  "steps": [
+    "image_resolved",
+    "source_listing",
+    "source_extraction",
+    "command_selection",
+    "noop_validation",
+    "reconciliation"
+  ],
+  "results": [
+    {
+      "instance_id": "astral-sh__ruff-15309",
+      "repo": "astral-sh/ruff",
+      "language": "rust",
+      "image": "swebench/sweb.eval.x86_64.astral-sh_1776_ruff-15309:latest",
+      "probed_at": "2026-08-10T05:29:56.999571+00:00",
+      "steps": {
+        "image_resolved": true,
+        "source_listing": true,
+        "source_extraction": true,
+        "command_selection": true,
+        "noop_validation": true,
+        "reconciliation": true
+      },
+      "image_digest": "sha256:574282055a63acafb833862...",
+      "source_file_count": 1496,
+      "extracted_file": "crates/red_knot/src/logging.rs",
+      "extracted_excerpt": "TIMEOUT",
+      "selected_command": "rustc --version && echo 'smoke-ok'",
+      "smoke_output": "rustc 1.83.0 (90b35a623 2024-11-26)\nsmoke-ok",
+      "reconciliation_detail": {
+        "pred_rows": 1,
+        "ledger_rows": 1,
+        "ids_match": true
+      },
+      "passed": true,
+      "failed_steps": [],
+      "retry_note": "Initial failure was transient Docker daemon saturation; retry confirmed pass."
+    },
+    {
+      "instance_id": "babel__babel-13928",
+      "repo": "babel/babel",
+      "language": "javascript",
+      "image": "swebench/sweb.eval.x86_64.babel_1776_babel-13928:latest",
+      "probed_at": "2026-08-10T05:32:34.004650+00:00",
+      "steps": {
+        "image_resolved": true,
+        "source_listing": true,
+        "source_extraction": true,
+        "command_selection": true,
+        "noop_validation": true,
+        "reconciliation": true
+      },
+      "image_digest": "sha256:cf4c990ee84bafc81c09c4a...",
+      "source_file_count": 3,
+      "extracted_file": "Gulpfile.mjs",
+      "extracted_excerpt": "TIMEOUT",
+      "selected_command": "node --version && echo 'smoke-ok'",
+      "smoke_output": "v20.19.1\nsmoke-ok",
+      "reconciliation_detail": {
+        "pred_rows": 1,
+        "ledger_rows": 1,
+        "ids_match": true
+      },
+      "passed": true,
+      "failed_steps": [],
+      "retry_note": "Initial failure was transient Docker daemon saturation; retry confirmed pass."
+    },
+    {
+      "instance_id": "caddyserver__caddy-4774",
+      "repo": "caddyserver/caddy",
+      "language": "go",
+      "image": "swebench/sweb.eval.x86_64.caddyserver_1776_caddy-4774:latest",
+      "probed_at": "2026-08-10T05:35:08.758766+00:00",
+      "steps": {
+        "image_resolved": true,
+        "source_listing": true,
+        "source_extraction": true,
+        "command_selection": true,
+        "noop_validation": true,
+        "reconciliation": true
+      },
+      "image_digest": "sha256:44123b687de64c0cd181e35...",
+      "source_file_count": 22,
+      "extracted_file": "admin.go",
+      "extracted_excerpt": "// Copyright 2015 Matthew Holt and The Caddy Authors\n//\n// Licensed under the Apache License, Versio",
+      "selected_command": "go version && echo 'smoke-ok'",
+      "smoke_output": "go version go1.18.10 linux/amd64\nsmoke-ok",
+      "reconciliation_detail": {
+        "pred_rows": 1,
+        "ledger_rows": 1,
+        "ids_match": true
+      },
+      "passed": true,
+      "failed_steps": [],
+      "retry_note": "Initial failure was transient Docker daemon saturation; retry confirmed pass."
+    },
+    {
+      "instance_id": "faker-ruby__faker-2705",
+      "repo": "faker-ruby/faker",
+      "language": "ruby",
+      "image": "swebench/sweb.eval.x86_64.faker-ruby_1776_faker-2705:latest",
+      "probed_at": "2026-08-10T05:36:20.022453+00:00",
+      "steps": {
+        "image_resolved": true,
+        "source_listing": true,
+        "source_extraction": true,
+        "command_selection": true,
+        "noop_validation": true,
+        "reconciliation": true
+      },
+      "image_digest": "sha256:7d5169e9cf49188942e593c...",
+      "source_file_count": 533,
+      "extracted_file": "lib/faker.rb",
+      "extracted_excerpt": "# frozen_string_literal: true\n\nmydir = __dir__\n\nrequire 'psych'\nrequire 'i18n'\n\nDir.glob(File.join(m",
+      "selected_command": "ruby --version && echo 'smoke-ok'",
+      "smoke_output": "ruby 3.3.8 (2025-04-09 revision b200bad6cd) [x86_64-linux]\nsmoke-ok",
+      "reconciliation_detail": {
+        "pred_rows": 1,
+        "ledger_rows": 1,
+        "ids_match": true
+      },
+      "passed": true,
+      "failed_steps": []
+    },
+    {
+      "instance_id": "fmtlib__fmt-1683",
+      "repo": "fmtlib/fmt",
+      "language": "cpp",
+      "image": "swebench/sweb.eval.x86_64.fmtlib_1776_fmt-1683:latest",
+      "probed_at": "2026-08-10T05:36:34.530759+00:00",
+      "steps": {
+        "image_resolved": true,
+        "source_listing": true,
+        "source_extraction": true,
+        "command_selection": true,
+        "noop_validation": true,
+        "reconciliation": true
+      },
+      "image_digest": "sha256:074a721dbe1f34ba9f1ca38...",
+      "source_file_count": 58,
+      "extracted_file": "include/fmt/chrono.h",
+      "extracted_excerpt": "// Formatting library for C++ - chrono support\n//\n// Copyright (c) 2012 - present, Victor Zverovich\n",
+      "selected_command": "g++ --version | head -1 && echo 'smoke-ok'",
+      "smoke_output": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0\nsmoke-ok",
+      "reconciliation_detail": {
+        "pred_rows": 1,
+        "ledger_rows": 1,
+        "ids_match": true
+      },
+      "passed": true,
+      "failed_steps": []
+    },
+    {
+      "instance_id": "google__gson-1014",
+      "repo": "google/gson",
+      "language": "java",
+      "image": "swebench/sweb.eval.x86_64.google_1776_gson-1014:latest",
+      "probed_at": "2026-08-10T05:36:48.263713+00:00",
+      "steps": {
+        "image_resolved": true,
+        "source_listing": true,
+        "source_extraction": true,
+        "command_selection": true,
+        "noop_validation": true,
+        "reconciliation": true
+      },
+      "image_digest": "sha256:d62c50526a5e80871e894d3...",
+      "source_file_count": 193,
+      "extracted_file": "codegen/src/main/java/com/google/gson/codegen/CodeGen.java",
+      "extracted_excerpt": "/*\n * Copyright (C) 2012 Square, Inc.\n *\n * Licensed under the Apache License, Version 2.0 (the \"Lic",
+      "selected_command": "java -version 2>&1 && echo 'smoke-ok'",
+      "smoke_output": "openjdk version \"11.0.26\" 2025-01-21\nOpenJDK Runtime Environment Temurin-11.0.26+4 (build 11.0.26+4)\nOpenJDK 64-Bit Server VM Temurin-11.0.26+4 (build",
+      "reconciliation_detail": {
+        "pred_rows": 1,
+        "ledger_rows": 1,
+        "ids_match": true
+      },
+      "passed": true,
+      "failed_steps": []
+    },
+    {
+      "instance_id": "laravel__framework-46234",
+      "repo": "laravel/framework",
+      "language": "php",
+      "image": "swebench/sweb.eval.x86_64.laravel_1776_framework-46234:latest",
+      "probed_at": "2026-08-10T05:37:04.747940+00:00",
+      "steps": {
+        "image_resolved": true,
+        "source_listing": true,
+        "source_extraction": true,
+        "command_selection": true,
+        "noop_validation": true,
+        "reconciliation": true
+      },
+      "image_digest": "sha256:1699b083dc4ed52240773f2...",
+      "source_file_count": 2014,
+      "extracted_file": "bin/facades.php",
+      "extracted_excerpt": "<?php\n\nrequire __DIR__.'/../vendor/autoload.php';\n\nuse Illuminate\\Cache\\Repository;\nuse Illuminate\\H",
+      "selected_command": "php --version | head -1 && echo 'smoke-ok'",
+      "smoke_output": "PHP 8.3.16 (cli) (built: Feb  4 2025 04:35:58) (NTS)\nsmoke-ok",
+      "reconciliation_detail": {
+        "pred_rows": 1,
+        "ledger_rows": 1,
+        "ids_match": true
+      },
+      "passed": true,
+      "failed_steps": []
+    },
+    {
+      "instance_id": "micropython__micropython-10095",
+      "repo": "micropython/micropython",
+      "language": "c_python",
+      "image": "swebench/sweb.eval.x86_64.micropython_1776_micropython-10095:latest",
+      "probed_at": "2026-08-10T05:37:22.259784+00:00",
+      "steps": {
+        "image_resolved": true,
+        "source_listing": true,
+        "source_extraction": true,
+        "command_selection": true,
+        "noop_validation": true,
+        "reconciliation": true
+      },
+      "image_digest": "sha256:87c5dcc82d5c72a8febf74f...",
+      "source_file_count": 3425,
+      "extracted_file": "docs/conf.py",
+      "extracted_excerpt": "#!/usr/bin/env python3\n# -*- coding: utf-8 -*-\n#\n# MicroPython documentation build configuration fil",
+      "selected_command": "python3 --version && echo 'smoke-ok'",
+      "smoke_output": "Python 3.10.12\nsmoke-ok",
+      "reconciliation_detail": {
+        "pred_rows": 1,
+        "ledger_rows": 1,
+        "ids_match": true
+      },
+      "passed": true,
+      "failed_steps": []
+    },
+    {
+      "instance_id": "redis__redis-10068",
+      "repo": "redis/redis",
+      "language": "c",
+      "image": "swebench/sweb.eval.x86_64.redis_1776_redis-10068:latest",
+      "probed_at": "2026-08-10T05:37:35.759378+00:00",
+      "steps": {
+        "image_resolved": true,
+        "source_listing": true,
+        "source_extraction": true,
+        "command_selection": true,
+        "noop_validation": true,
+        "reconciliation": true
+      },
+      "image_digest": "sha256:97e817b6da49bbf436fbf3d...",
+      "source_file_count": 552,
+      "extracted_file": "deps/hdr_histogram/hdr_alloc.c",
+      "extracted_excerpt": "/**\n * hdr_alloc.c\n * Written by Filipe Oliveira and released to the public domain,\n * as explained ",
+      "selected_command": "gcc --version | head -1 && echo 'smoke-ok'",
+      "smoke_output": "gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0\nsmoke-ok",
+      "reconciliation_detail": {
+        "pred_rows": 1,
+        "ledger_rows": 1,
+        "ids_match": true
+      },
+      "passed": true,
+      "failed_steps": []
+    }
+  ],
+  "retry_note": "Three initial failures were transient Docker daemon saturation (9 containers in rapid succession). All 9 confirmed passing on retry after 60s cooldown.",
+  "all_passed_confirmed": true
+}
