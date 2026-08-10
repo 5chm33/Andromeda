@@ -259,6 +259,11 @@ export interface TracebackLoopInput {
   /** Optional structural hint from the gold patch (file paths + @@ headers only).
    *  Used by the oracle fallback when all MAX_ATTEMPTS are exhausted. */
   goldPatchHint?: string;
+  /**
+   * Repository slug (e.g. 'caddyserver/caddy'). Required for multilingual
+   * test-command selection and language-aware context building.
+   */
+  repo?: string;
 }
 
 export interface AttemptResult {
@@ -957,6 +962,7 @@ export async function runTracebackLoop(input: TracebackLoopInput): Promise<Trace
     escalatingLLMProvider,
     issueDescription,
     fileContents,
+    repo,  // required for multilingual test-command selection
   } = input;
   // In scored_strict mode, these are the prompt-safe variants (undefined).
   // In test_aware mode they equal testPatch / failToPassTests.
