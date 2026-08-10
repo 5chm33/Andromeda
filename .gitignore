@@ -189,3 +189,5 @@ data/andromeda.db-wal
 data/andromeda.db-shm
 andromeda-eval-parity-*.json
 andromeda-eval-parity-v*.json
+andromeda-v6-*.json
+data/swebench/canary_v*_predictions.jsonl
