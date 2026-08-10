@@ -194,6 +194,17 @@ export interface RunMetadata {
    * development evidence only — not evaluation evidence.
    */
   devCanary?: boolean;
+  /**
+   * Snapshot of key environment variables at launch time.
+   * Used for audit: confirms SWEBENCH_ESCALATION and SWEBENCH_SEARCH were unset.
+   */
+  resolvedEnv?: {
+    SWEBENCH_ESCALATION: string | null;
+    SWEBENCH_SEARCH: string | null;
+    SWEBENCH_SCORED: string | null;
+    SWEBENCH_HARNESS_REVISION: string | null;
+    SWEBENCH_PROMPT_HASH: string | null;
+  };
 }
 
 export interface BenchmarkReport {
@@ -553,6 +564,19 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
       searchEnabled
         ? 'SWEBENCH_SEARCH=1 is set. A scored run must not fetch external snippets. Unset SWEBENCH_SEARCH before launching.'
         : 'SWEBENCH_SEARCH is not set — externalSearch: false confirmed.',
+    );
+  }
+
+  // ── Check 1c: No model escalation in scored runs ──────────────────────────────────────
+  if (config.scoredRun) {
+    const escalationEnabled = process.env.SWEBENCH_ESCALATION === '1';
+    check(
+      'no-escalation',
+      'Model escalation disabled for scored runs',
+      !escalationEnabled,
+      escalationEnabled
+        ? 'SWEBENCH_ESCALATION=1 is set. A scored run must not use model escalation. Unset SWEBENCH_ESCALATION before launching.'
+        : 'SWEBENCH_ESCALATION is not set — model escalation disabled confirmed.',
     );
   }
 
@@ -1018,6 +1042,14 @@ export function runPreLaunchChecklist(config: BenchmarkRunConfig): PreLaunchChec
       ...(config.devCanary ? {
         devCanary: true,
       } : {}),
+      // Snapshot of key env vars at launch time (for audit)
+      resolvedEnv: {
+        SWEBENCH_ESCALATION: process.env.SWEBENCH_ESCALATION ?? null,
+        SWEBENCH_SEARCH: process.env.SWEBENCH_SEARCH ?? null,
+        SWEBENCH_SCORED: process.env.SWEBENCH_SCORED ?? null,
+        SWEBENCH_HARNESS_REVISION: process.env.SWEBENCH_HARNESS_REVISION ?? null,
+        SWEBENCH_PROMPT_HASH: process.env.SWEBENCH_PROMPT_HASH ?? null,
+      },
     };
   }
 
