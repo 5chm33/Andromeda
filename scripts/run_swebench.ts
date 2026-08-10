@@ -1271,7 +1271,17 @@ async function main() {
       const issueDescription = isScoredRun
         ? problem_statement.trim()
         : `${problem_statement}\n\n${hints_text || ''}`.trim();
-      const failToPassList: string[] = JSON.parse(FAIL_TO_PASS || '[]');
+      // Parse FAIL_TO_PASS: SWE-bench Verified uses JSON array strings ("[\"test_a\", ...]"),
+      // while SWE-bench Multilingual uses plain strings ("org.apache.druid...") or
+      // may already be an array (when the numpy conversion ran). Handle all cases.
+      let failToPassList: string[];
+      try {
+        const parsed = JSON.parse(FAIL_TO_PASS || '[]');
+        failToPassList = Array.isArray(parsed) ? parsed : [String(parsed)];
+      } catch {
+        // Not JSON — treat as a single plain test name (Multilingual format)
+        failToPassList = FAIL_TO_PASS ? [FAIL_TO_PASS] : [];
+      }
       // Central fail-closed boundary: strict scored runs do not use
       // evaluator-provided test names or patches for retrieval, prompts, or
       // pipeline calls. Test-aware development runs retain that behavior.
