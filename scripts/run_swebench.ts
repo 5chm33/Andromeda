@@ -576,16 +576,46 @@ async function localizeFiles(
     return { file: f, score };
   });
 
-  // Take top 30 candidates by keyword score, excluding test files
+  // Language-aware test/fixture directory exclusion patterns.
+  // Python: test_ prefix and /tests/ directory.
+  // JavaScript/TypeScript: also exclude test/fixtures/, __tests__/, spec/, *.spec.js, *.test.js
+  // Ruby: also exclude spec/ directory
+  // Java: also exclude src/test/ directory
+  const isTestOrFixtureFile = (f: string): boolean => {
+    const fl = f.toLowerCase();
+    // Universal patterns
+    if (fl.includes('test_') || fl.includes('/tests/')) return true;
+    // JavaScript/TypeScript fixture directories (the Babel failure case)
+    if (fl.includes('/test/fixtures/') || fl.includes('/test/fixture/')) return true;
+    if (fl.includes('/__tests__/') || fl.includes('/__mocks__/')) return true;
+    if (fl.endsWith('.spec.js') || fl.endsWith('.spec.ts')) return true;
+    if (fl.endsWith('.test.js') || fl.endsWith('.test.ts')) return true;
+    // Ruby spec directories
+    if (fl.includes('/spec/')) return true;
+    // Java test source directories
+    if (fl.includes('/src/test/')) return true;
+    return false;
+  };
+
+  // Source file preference: files in src/ get a small boost over non-src files
+  const srcBoost = (f: string): number => {
+    const fl = f.toLowerCase();
+    if (fl.includes('/src/') || fl.startsWith('src/')) return 2;
+    if (fl.includes('/lib/') || fl.startsWith('lib/')) return 1;
+    return 0;
+  };
+
+  // Take top 30 candidates by keyword score, excluding test/fixture files
   const candidates = scored
-    .filter(s => !s.file.includes('test_') && !s.file.includes('/tests/'))
+    .filter(s => !isTestOrFixtureFile(s.file))
+    .map(s => ({ ...s, score: s.score + srcBoost(s.file) }))
     .sort((a, b) => b.score - a.score)
     .slice(0, 30)
     .map(s => s.file);
 
   if (candidates.length === 0) {
-    // Fall back to all non-test Python files, top 20
-    return allFiles.filter(f => !f.includes('test_') && !f.includes('/tests/')).slice(0, 20);
+    // Fall back to all non-test/fixture files, top 20
+    return allFiles.filter(f => !isTestOrFixtureFile(f)).slice(0, 20);
   }
 
   // Ask LLM to pick the top 6 most relevant files (increased from 3 — multi-file bugs need more)

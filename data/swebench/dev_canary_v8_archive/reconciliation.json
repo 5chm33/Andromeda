@@ -1,0 +1,37 @@
+{
+  "canary_version": "v8",
+  "commit": "af05ac5072bf0f621e18361933fd63bdcf5b3de2",
+  "mode": "scored_strict",
+  "dev_canary": true,
+  "total_instances": 5,
+  "prediction_ready": 4,
+  "infra_failures": 1,
+  "exact_apply_failures": 0,
+  "instances": {
+    "astral-sh__ruff-15309": {
+      "outcome": "prediction_ready",
+      "patch_len": 1626,
+      "patch_sha256": "ff9a7d36df2425756e5508d6af13db9c3a3aa308dbe0d7d40bfe6b421fd2a102"
+    },
+    "babel__babel-13928": {
+      "outcome": "infra_failure",
+      "patch_len": 0,
+      "patch_sha256": null
+    },
+    "caddyserver__caddy-4774": {
+      "outcome": "prediction_ready",
+      "patch_len": 834,
+      "patch_sha256": "7a53971146d61ccb7d7717187b54489e038faeb42198ad103f4aceb8c63ca23d"
+    },
+    "faker-ruby__faker-2705": {
+      "outcome": "prediction_ready",
+      "patch_len": 542,
+      "patch_sha256": "4b8246af995e12b83f56b6ff5e2a80315fe60d521b89171787c8181b2a0d570d"
+    },
+    "google__gson-1014": {
+      "outcome": "prediction_ready",
+      "patch_len": 527,
+      "patch_sha256": "235aa5f152bb6aa23f5d7348a9e56ff76ad544e9ee3100043db325c35ac024ea"
+    }
+  }
+}

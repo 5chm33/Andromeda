@@ -1,0 +1,100 @@
+{
+  "runId": "andromeda-run-1786375290337-75ad66a5",
+  "runMetadata": {
+    "runId": "andromeda-run-1786375290337-75ad66a5",
+    "agentVersion": "rsi-snap/Add-null-guard-before-property-access-in-1783393190195-324-gaf05ac50",
+    "agentCommit": "af05ac5072bf0f621e18361933fd63bdcf5b3de2",
+    "imageRef": "swebench/sweb.eval.x86_64.astral-sh_1776_ruff-15309@sha256:574282055a63acafb83386234100fcef53fdac0a139da554c3b78cc7bce58ecb",
+    "imageDigest": "sha256:574282055a63acafb83386234100fcef53fdac0a139da554c3b78cc7bce58ecb",
+    "harnessRevision": "af05ac5072bf0f621e18361933fd63bdcf5b3de2",
+    "modelId": "claude-sonnet-5",
+    "promptTemplateHash": "unset",
+    "temperature": 1,
+    "topP": 1,
+    "maxRetries": 5,
+    "instanceTimeoutMs": 1500000,
+    "concurrency": 1,
+    "spendCapUsd": 500,
+    "taskListPath": "/home/ubuntu/andromeda/data/swebench/scored_task_list.json",
+    "taskListHash": "a7fa1b03949512703fab23f7b3e0d1ff63b82dd7bb0820a2814b07adcb57fa12",
+    "taskCount": 5,
+    "datasetName": "SWE-bench/SWE-bench_Multilingual",
+    "datasetRevision": "9b805a99fed4facc17b2707c64216b227922a427",
+    "datasetSplit": "test",
+    "instanceIdHash": "b3602532fef8c76ad1ccca911557169110438223a300e8aabe2c9f17fa75f487",
+    "scoredRun": true,
+    "externalSearch": false,
+    "allowRecoveryPatchApplication": false,
+    "canarySliceSize": 5,
+    "canaryAbortThreshold": 0.6,
+    "createdAt": "2026-08-10T15:21:30.337Z",
+    "runBundlePath": "/home/ubuntu/andromeda/data/swebench/run_bundle_1786375290276.json",
+    "exclusionRegistryPath": "data/swebench/exclusions.jsonl",
+    "exclusionRegistryHash": "d6287eaaf7554d1e8e8b54d1c75c470dc888f96e3e064253a89f08dd6931ffb7",
+    "selectedIdsHash": "4755d457641031a10edf38e4064c551c968e4ac78af4796f23c82abc8ddc9e59",
+    "evalProtocolPath": "data/eval_protocol_v1.json",
+    "evalProtocolHash": "3c845d8e0567f2c91c5e432545724c1f3b72d7bcc4ae61806d2a4a594e9d4e83",
+    "devCanary": true
+  },
+  "summary": {
+    "total": 5,
+    "resolved": 0,
+    "testFailures": 0,
+    "exactApplyFailures": 0,
+    "invalidInstances": 0,
+    "infraFailures": 1,
+    "timedOut": 0,
+    "predictionReady": 4,
+    "budgetExhausted": 0
+  },
+  "instances": [
+    {
+      "instanceId": "astral-sh__ruff-15309",
+      "outcome": "prediction_ready",
+      "imageDigest": "swebench/sweb.eval.x86_64.astral-sh_1776_ruff-15309@sha256:574282055a63acafb83386234100fcef53fdac0a139da554c3b78cc7bce58ecb",
+      "patchHash": "ff9a7d36df2425756e5508d6af13db9c3a3aa308dbe0d7d40bfe6b421fd2a102",
+      "exactApply": true,
+      "fuzzyRecoveryAttempted": false,
+      "durationMs": 480570
+    },
+    {
+      "instanceId": "babel__babel-13928",
+      "outcome": "infra_failure",
+      "imageDigest": "swebench/sweb.eval.x86_64.babel_1776_babel-13928@sha256:cf4c990ee84bafc81c09c4ad331085252923e7f06e3f56634a2ca4e94a511fcf",
+      "exactApply": false,
+      "fuzzyRecoveryAttempted": false,
+      "durationMs": 934760,
+      "errorMessage": "fetch failed"
+    },
+    {
+      "instanceId": "caddyserver__caddy-4774",
+      "outcome": "prediction_ready",
+      "imageDigest": "swebench/sweb.eval.x86_64.caddyserver_1776_caddy-4774@sha256:44123b687de64c0cd181e35b262e2faa8ceca72e9df466872d141f805dd02bb5",
+      "patchHash": "7a53971146d61ccb7d7717187b54489e038faeb42198ad103f4aceb8c63ca23d",
+      "exactApply": true,
+      "fuzzyRecoveryAttempted": false,
+      "durationMs": 76796
+    },
+    {
+      "instanceId": "faker-ruby__faker-2705",
+      "outcome": "prediction_ready",
+      "imageDigest": "swebench/sweb.eval.x86_64.faker-ruby_1776_faker-2705@sha256:7d5169e9cf49188942e593c3aa6f709778f0367c428fe83195fa0a349f45f6a8",
+      "patchHash": "4b8246af995e12b83f56b6ff5e2a80315fe60d521b89171787c8181b2a0d570d",
+      "exactApply": true,
+      "fuzzyRecoveryAttempted": false,
+      "durationMs": 1734905
+    },
+    {
+      "instanceId": "google__gson-1014",
+      "outcome": "prediction_ready",
+      "imageDigest": "swebench/sweb.eval.x86_64.google_1776_gson-1014@sha256:d62c50526a5e80871e894d3a149b22bfd5a48955401c0d33bf4af461efa204c9",
+      "patchHash": "235aa5f152bb6aa23f5d7348a9e56ff76ad544e9ee3100043db325c35ac024ea",
+      "exactApply": true,
+      "fuzzyRecoveryAttempted": false,
+      "durationMs": 61821
+    }
+  ],
+  "completedAt": "2026-08-10T16:16:19.191Z",
+  "wallClockMs": 3288853,
+  "totalCostUsd": 0
+}
