@@ -1,0 +1,160 @@
+{
+  "passed": true,
+  "assertions": [
+    {
+      "name": "docker-available",
+      "passed": true,
+      "detail": "Docker 29.1.3 available"
+    },
+    {
+      "name": "image-resolved",
+      "passed": true,
+      "detail": "Resolved to swebench/sweb.eval.x86_64.django_1776_django-11099@sha256:57060beb309612ff3d6e47195c78120926df30935121be24c37ba5c717584a78"
+    },
+    {
+      "name": "worktree-volume-seeded",
+      "passed": true,
+      "detail": "Volume andromeda-smoke-vol-1786408041607 seeded (pre-hash: sha256:4a665bd7e...)"
+    },
+    {
+      "name": "read-only-flag",
+      "passed": true,
+      "detail": "--read-only present in docker args (root FS always read-only)"
+    },
+    {
+      "name": "testbed-volume-mounted",
+      "passed": true,
+      "detail": "Seeded volume mounted at /testbed: andromeda-smoke-vol-1786408041607:/testbed"
+    },
+    {
+      "name": "no-tmpfs-testbed",
+      "passed": true,
+      "detail": "No --tmpfs /testbed (correct: seeded volume is used instead)"
+    },
+    {
+      "name": "network-isolation-flag",
+      "passed": true,
+      "detail": "--network none present in docker args"
+    },
+    {
+      "name": "cap-drop-flag",
+      "passed": true,
+      "detail": "--cap-drop ALL present in docker args"
+    },
+    {
+      "name": "no-new-privileges-flag",
+      "passed": true,
+      "detail": "--security-opt=no-new-privileges present"
+    },
+    {
+      "name": "container-started",
+      "passed": true,
+      "detail": "Container andromeda-smoke-1786408041607 started"
+    },
+    {
+      "name": "network-blocked",
+      "passed": true,
+      "detail": "Network egress blocked: BLOCKED"
+    },
+    {
+      "name": "patched-file-changed",
+      "passed": true,
+      "detail": "django/__init__.py contains the smoke marker after git apply"
+    },
+    {
+      "name": "git-apply-exact",
+      "passed": true,
+      "detail": "git apply --check + git apply both succeeded — patch applied cleanly"
+    },
+    {
+      "name": "read-only-root-enforced",
+      "passed": true,
+      "detail": "Write to /etc blocked by read-only root FS"
+    },
+    {
+      "name": "test-command-passes",
+      "passed": true,
+      "detail": "Test passed with exit 0: 3.0.dev20250910095043"
+    },
+    {
+      "name": "container-cleaned-up",
+      "passed": true,
+      "detail": "Container andromeda-smoke-1786408041607 removed"
+    },
+    {
+      "name": "volume-cleaned-up",
+      "passed": true,
+      "detail": "Volume andromeda-smoke-vol-1786408041607 removed"
+    },
+    {
+      "name": "evidence-bundle-complete",
+      "passed": true,
+      "detail": "All required evidence fields present"
+    }
+  ],
+  "evidence": {
+    "smokeVersion": "5.7.0",
+    "instanceId": "django__django-11099",
+    "startedAt": "2026-08-11T00:27:21.610Z",
+    "harnessRevision": "bb50a39740320d5a133702057c8bd5e053e2b457",
+    "dockerVersion": "29.1.3",
+    "imageDigest": "sha256:57060beb309612ff3d6e47195c78120926df30935121be24c37ba5c717584a78",
+    "resolvedRef": "swebench/sweb.eval.x86_64.django_1776_django-11099@sha256:57060beb309612ff3d6e47195c78120926df30935121be24c37ba5c717584a78",
+    "imageAlreadyPinned": false,
+    "worktreeVolumeName": "andromeda-smoke-vol-1786408041607",
+    "preWorktreeHash": "sha256:4a665bd7e318c555ccc2b19325293a1b2b5a85e799ff8d97a3065ff99fbe2edd",
+    "worktreeSeededAt": "2026-08-11T00:27:33.617Z",
+    "dockerArgs": [
+      "--name",
+      "andromeda-smoke-1786408041607",
+      "--network",
+      "none",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges:true",
+      "--pids-limit=128",
+      "--memory=2g",
+      "--cpus=1.0",
+      "--read-only",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=256m",
+      "--tmpfs",
+      "/var/tmp:rw,noexec,nosuid,size=64m",
+      "-v",
+      "andromeda-smoke-vol-1786408041607:/testbed",
+      "--env",
+      "HOME=/tmp",
+      "--env",
+      "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    ],
+    "sandboxControls": {
+      "networkNone": true,
+      "capDropAll": true,
+      "noNewPrivileges": true,
+      "pidsLimit": 128,
+      "memoryLimit": "2g",
+      "cpuLimit": "1.0",
+      "wallClockLimitMs": 300000,
+      "readOnly": true,
+      "writableWorktreePath": "/testbed",
+      "worktreeVolumeSeeded": true,
+      "effectiveUser": "default",
+      "imageDigest": "swebench/sweb.eval.x86_64.django_1776_django-11099@sha256:57060beb309612ff3d6e47195c78120926df30935121be24c37ba5c717584a78",
+      "hostDockerSocketMounted": false,
+      "privileged": false
+    },
+    "patchHash": "sha256:7a14a0cddb4f4e6c82a2d09413c15703a3913a2def259c2fbe79b9e51caf4880",
+    "preApplyWorktreeHash": "sha256:f82fe95c50370f137a0320266b3d2868fe79e380ec4b952ab651df31872739d9",
+    "gitApplyCheckOutput": "CHECK_OK",
+    "gitApplyOutput": "APPLY_OK",
+    "gitApplyExitCode": 0,
+    "postApplyWorktreeHash": "sha256:b1bc9fdcc0709774269ea343f675d8603d89c78fecdfb05d9179ab4cdf9d9862",
+    "patchedFileDiff": "diff --git a/django/__init__.py b/django/__init__.py\nindex a9dad2e279..a8efb45da5 100644\n--- a/django/__init__.py\n+++ b/django/__init__.py\n@@ -1,3 +1,4 @@\n+# Andromeda smoke test marker — applied via git apply\n from django.utils.version import get_version\n \n VERSION = (3, 0, 0, 'alpha', 0)",
+    "testCommand": "python -c 'import sys; import django; print(django.__version__); sys.exit(0)'",
+    "testOutput": "3.0.dev20250910095043",
+    "testExitCode": 0,
+    "completedAt": "2026-08-11T00:27:41.157Z",
+    "overallPassed": true
+  }
+}
