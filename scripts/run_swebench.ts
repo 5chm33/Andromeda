@@ -992,6 +992,16 @@ async function main() {
   let _resolvedImageRef: string = instances.length > 0
     ? getDockerImageName(instances[0].instance_id)
     : 'unknown';
+  // Hoisted expected image digests map — loaded from SWEBENCH_EXPECTED_IMAGE_DIGESTS
+  // if set. Used in per-instance digest enforcement before model invocation.
+  let _expectedImageDigests: Record<string, string> | null = null;
+  if (process.env.SWEBENCH_EXPECTED_IMAGE_DIGESTS) {
+    try {
+      _expectedImageDigests = JSON.parse(fs.readFileSync(process.env.SWEBENCH_EXPECTED_IMAGE_DIGESTS, 'utf-8'));
+    } catch (e) {
+      throw new Error(`Cannot load expected image digests from ${process.env.SWEBENCH_EXPECTED_IMAGE_DIGESTS}: ${e}`);
+    }
+  }
   if (isScoredRun) {
     console.log('[Runner] SWEBENCH_SCORED=1 — running pre-flight checklist...');
     // Step 1: Resolve the image digest for the first instance (all instances share the same registry).
@@ -1285,8 +1295,8 @@ async function main() {
       // In scored mode with SWEBENCH_EXPECTED_IMAGE_DIGESTS set, compare the
       // observed digest against the pre-resolved expected digest map.
       // A mismatch means the image changed since attestation — blocking infra_failure.
-      if (isScoredRun && launcherConfig.expectedImageDigests) {
-        const expectedDigests = launcherConfig.expectedImageDigests as Record<string, string>;
+      if (isScoredRun && _expectedImageDigests) {
+        const expectedDigests = _expectedImageDigests;
         const expectedDigest = expectedDigests[dockerImage];
         if (!expectedDigest) {
           throw new Error(
