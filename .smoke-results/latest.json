@@ -14,7 +14,7 @@
     {
       "name": "worktree-volume-seeded",
       "passed": true,
-      "detail": "Volume andromeda-smoke-vol-1786408041607 seeded (pre-hash: sha256:4a665bd7e...)"
+      "detail": "Volume andromeda-smoke-vol-1786408197777 seeded (pre-hash: sha256:4a665bd7e...)"
     },
     {
       "name": "read-only-flag",
@@ -24,7 +24,7 @@
     {
       "name": "testbed-volume-mounted",
       "passed": true,
-      "detail": "Seeded volume mounted at /testbed: andromeda-smoke-vol-1786408041607:/testbed"
+      "detail": "Seeded volume mounted at /testbed: andromeda-smoke-vol-1786408197777:/testbed"
     },
     {
       "name": "no-tmpfs-testbed",
@@ -49,7 +49,7 @@
     {
       "name": "container-started",
       "passed": true,
-      "detail": "Container andromeda-smoke-1786408041607 started"
+      "detail": "Container andromeda-smoke-1786408197777 started"
     },
     {
       "name": "network-blocked",
@@ -79,12 +79,12 @@
     {
       "name": "container-cleaned-up",
       "passed": true,
-      "detail": "Container andromeda-smoke-1786408041607 removed"
+      "detail": "Container andromeda-smoke-1786408197777 removed"
     },
     {
       "name": "volume-cleaned-up",
       "passed": true,
-      "detail": "Volume andromeda-smoke-vol-1786408041607 removed"
+      "detail": "Volume andromeda-smoke-vol-1786408197777 removed"
     },
     {
       "name": "evidence-bundle-complete",
@@ -95,18 +95,18 @@
   "evidence": {
     "smokeVersion": "5.7.0",
     "instanceId": "django__django-11099",
-    "startedAt": "2026-08-11T00:27:21.610Z",
-    "harnessRevision": "bb50a39740320d5a133702057c8bd5e053e2b457",
+    "startedAt": "2026-08-11T00:29:57.780Z",
+    "harnessRevision": "32639706e71e83511d9646895fc4efd2b6953cee",
     "dockerVersion": "29.1.3",
     "imageDigest": "sha256:57060beb309612ff3d6e47195c78120926df30935121be24c37ba5c717584a78",
     "resolvedRef": "swebench/sweb.eval.x86_64.django_1776_django-11099@sha256:57060beb309612ff3d6e47195c78120926df30935121be24c37ba5c717584a78",
     "imageAlreadyPinned": false,
-    "worktreeVolumeName": "andromeda-smoke-vol-1786408041607",
+    "worktreeVolumeName": "andromeda-smoke-vol-1786408197777",
     "preWorktreeHash": "sha256:4a665bd7e318c555ccc2b19325293a1b2b5a85e799ff8d97a3065ff99fbe2edd",
-    "worktreeSeededAt": "2026-08-11T00:27:33.617Z",
+    "worktreeSeededAt": "2026-08-11T00:30:08.498Z",
     "dockerArgs": [
       "--name",
-      "andromeda-smoke-1786408041607",
+      "andromeda-smoke-1786408197777",
       "--network",
       "none",
       "--cap-drop",
@@ -122,7 +122,7 @@
       "--tmpfs",
       "/var/tmp:rw,noexec,nosuid,size=64m",
       "-v",
-      "andromeda-smoke-vol-1786408041607:/testbed",
+      "andromeda-smoke-vol-1786408197777:/testbed",
       "--env",
       "HOME=/tmp",
       "--env",
@@ -154,7 +154,7 @@
     "testCommand": "python -c 'import sys; import django; print(django.__version__); sys.exit(0)'",
     "testOutput": "3.0.dev20250910095043",
     "testExitCode": 0,
-    "completedAt": "2026-08-11T00:27:41.157Z",
+    "completedAt": "2026-08-11T00:30:20.399Z",
     "overallPassed": true
   }
 }
