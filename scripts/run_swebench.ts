@@ -2066,7 +2066,15 @@ Output ONLY the corrected unified diff:
   }
 }
 
-main().catch(err => {
-  console.error('[Runner] Fatal error:', err);
-  process.exit(1);
-});
+// Only run main() when this script is executed directly (not when imported by tests).
+// This prevents process.exit(1) from being called when test files import
+// exported functions like selectDiscoveryCommand.
+const isMainModule = import.meta.url === `file://${process.argv[1]}` ||
+  process.argv[1]?.endsWith('run_swebench.ts') ||
+  process.argv[1]?.endsWith('run_swebench.js');
+if (isMainModule) {
+  main().catch(err => {
+    console.error('[Runner] Fatal error:', err);
+    process.exit(1);
+  });
+}
