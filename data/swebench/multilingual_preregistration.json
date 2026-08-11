@@ -1,6 +1,6 @@
 {
   "agent": {
-    "commit": "9631b6dbc7663365c38e462f05f4999830e9f0cd",
+    "commit": "ec56ec01c810ad8da679745e56880cd8dfb79829",
     "escalation": "disabled",
     "evaluated_file_sha256": {
       "server/benchmarkLauncher.ts": "6d65b8fe61ad1c8e66c81c2b6faf23cbe3c0c3bae7ec5bc371982cec728f9d94",
@@ -13,7 +13,7 @@
       "server/sweBenchMultilingualSupport.ts": "da92ffbe642ec7f4369f1e6dd41773c359b87399a0894fcfef4d3128e3089292",
       "server/sweBenchPipeline.ts": "9f6e08d0cbee84c5f7cc488c6964124bbba02746659e7d8c50d0e538d26bc5de",
       "server/sweBenchTracebackLoop.ts": "132a758b8bd0bf82b522298c568d3773ef4be04aeb81166524914714a711116c",
-      "scripts/run_swebench.ts": "8a4ccf42f412934917c91981d1ead9b2b588ff92e2a3b7452e6654cd13d040c0"
+      "scripts/run_swebench.ts": "456b23df125c396bd78c054fd206da0e5e92d490e3b63599111bf4669b56f1d3"
     },
     "max_tokens": 32000,
     "mode": "scored_strict",
@@ -31,9 +31,9 @@
       "server/sweBenchMultilingualSupport.ts": "da92ffbe642ec7f4369f1e6dd41773c359b87399a0894fcfef4d3128e3089292",
       "server/sweBenchPipeline.ts": "9f6e08d0cbee84c5f7cc488c6964124bbba02746659e7d8c50d0e538d26bc5de",
       "server/sweBenchTracebackLoop.ts": "132a758b8bd0bf82b522298c568d3773ef4be04aeb81166524914714a711116c",
-      "scripts/run_swebench.ts": "8a4ccf42f412934917c91981d1ead9b2b588ff92e2a3b7452e6654cd13d040c0"
+      "scripts/run_swebench.ts": "456b23df125c396bd78c054fd206da0e5e92d490e3b63599111bf4669b56f1d3"
     },
-    "note": "Evaluated-file hashes updated to reflect digest enforcement additions (expectedImageDigests field in benchmarkLauncher.ts and run_swebench.ts). All 9 core repair-logic files are byte-identical to the original freeze. Commit: 9631b6dbc7663365c38e462f05f4999830e9f0cd",
+    "note": "Evaluated-file hashes updated to reflect all governance additions. Core repair-logic files (9 server/*.ts) are byte-identical to original freeze. run_swebench.ts and benchmarkLauncher.ts updated for digest enforcement + scope fix. Commit: ec56ec01c810ad8da679745e56880cd8dfb79829",
     "prompt_hash": "2fdcf83eba377718cf98abc161c8c2e0613761adaccf8bd3a8d88946efe3d079",
     "prompt_hash_files": [
       "scripts/run_swebench.ts",

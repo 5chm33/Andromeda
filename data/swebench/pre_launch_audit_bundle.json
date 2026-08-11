@@ -1,7 +1,7 @@
 {
   "audit_created_at": "2026-08-10T22:11:57.585578+00:00",
   "evaluated_code_commit": "15cf499134f180d82ede2de0104a8722ae2cacdb",
-  "launch_checkout_commit": "7abadf81c9b8a6a9080b3074414fee02d1175a0a",
+  "launch_checkout_commit": "ec56ec01c810ad8da679745e56880cd8dfb79829",
   "diff_between_commits": {
     "command": "git diff --name-only 15cf499134f180d82ede2de0104a8722ae2cacdb 34b52fdb4692cd12fc260172e489af5b97bafe9e",
     "files_changed": [
@@ -53,13 +53,13 @@
       "data/swebench/multilingual_reserved_run.jsonl": "7617e8b9a999cd7e4ce82d4d63c6adf1067a6a38204a6b514853f967d99b8297",
       "data/swebench/exclusions.jsonl": "d6287eaaf7554d1e8e8b54d1c75c470dc888f96e3e064253a89f08dd6931ffb7",
       "scripts/preflight_attestation.py": "db1638ae12ffccb25b788d95efd5993d26246c1eda47069a86910d7be652420e",
-      "data/swebench/multilingual_preregistration.json": "dcaedd17e2f9280c8259c5ad682f125c310196f9a0c12379d2476510acb22da0",
+      "data/swebench/multilingual_preregistration.json": "8ceb00716ea75b0ad66fcbdfee3a05cb76524c5d8d806e8b544b0d4b7fee1d46",
       "data/swebench/expected_image_digests.json": "ea9178b361ef58ac1aca9705be5d536efbdfadb9771e8c0988829d1c85868225",
       "server/agentSystemPrompt.ts": "7879de0d583f4017673d784e4a4f843039af9c13f7b15f94c7549246289f123b",
       "server/aiPrompts.ts": "6a60d6a0cff64dd5332e8b848822b83900ec35791fe4edd18f03687633bfeb01",
       "server/promptEngineer.ts": "d4dc72f299a11f0ef14e70a7a64687d468bcb3ec799e40bdbec9cd6f0bc70bda",
       "package.json": "280dafaa2adab029904273c6d4180c5735cdcfe0696efd2b0f37fef4ba312e8e",
-      "data/swebench/pre_launch_audit_bundle.json": "075ff454e57f60df42b1da9def8631b15ed96c110a3d8634c531ee66003dabdf"
+      "data/swebench/pre_launch_audit_bundle.json": "1f362a2bb9257686b033d14df4d2a4e213efa857384cf6fa052176198b68316d"
     }
   },
   "node_runtime_version": "v22.22.3",
@@ -93,5 +93,5 @@
     }
   },
   "container_image_policy": "Image digest is pre-resolved once during preflight for each distinct task image. Every instance is required to use the pre-resolved digest. If the runtime digest differs from the pre-resolved digest, the instance is classified as infra_failure. The resolved digest is recorded in the run manifest per-instance record.",
-  "preregistration_raw_file_hash": "dcaedd17e2f9280c8259c5ad682f125c310196f9a0c12379d2476510acb22da0"
+  "preregistration_raw_file_hash": "8ceb00716ea75b0ad66fcbdfee3a05cb76524c5d8d806e8b544b0d4b7fee1d46"
 }
