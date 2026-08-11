@@ -8,6 +8,15 @@
       "attestation_sha256": "eff1d8b0216283c910e1a767dd5824043dedca9f48367a509d44fcc1511528dc",
       "git_head": "9631b6dbc7663365c38e462f05f4999830e9f0cd",
       "all_blocking_checks_passed": true
+    },
+    {
+      "event": "attestation_archived_final",
+      "timestamp": "2026-08-11T00:28:34.469566+00:00",
+      "attestation_file": "data/swebench/runs/andromeda-multilingual-option-b/launch_attestation_20260811T002834Z.json",
+      "attestation_sha256": "6eac46c699c7bb40a6ab850ebc94653becbf9531bfdffc2d200f3b9588ec4f16",
+      "git_head": "32639706e71e83511d9646895fc4efd2b6953cee",
+      "all_blocking_checks_passed": true,
+      "note": "Final pre-launch attestation. Smoke 18/18, all 15 checks passed. Ready to launch."
     }
   ]
 }
