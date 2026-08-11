@@ -1,9 +1,9 @@
 {
   "agent": {
-    "commit": "6449c64af16c32bf0de1dcdc5765703f6dd27c95",
+    "commit": "9631b6dbc7663365c38e462f05f4999830e9f0cd",
     "escalation": "disabled",
     "evaluated_file_sha256": {
-      "server/benchmarkLauncher.ts": "e83b7a785832645c1c33bdd98d3f9bfafea1228dc65ade79ccf339785cf2a548",
+      "server/benchmarkLauncher.ts": "6d65b8fe61ad1c8e66c81c2b6faf23cbe3c0c3bae7ec5bc371982cec728f9d94",
       "server/canonicalPatch.ts": "ef9009bbb4ee019d78e6e09fec14c12ae21ae11afcdfbc58cd8211f9a789c614",
       "server/hardenedSandbox.ts": "5da6d7f5674463519b773762ad6471dcb35a74612912951320b81d8003c540c3",
       "server/sweBenchConsensus.ts": "bc4bf9ca095ae279fb62968109ab4b3d09b4332c872dd6386ce34c3abf506860",
@@ -13,7 +13,7 @@
       "server/sweBenchMultilingualSupport.ts": "da92ffbe642ec7f4369f1e6dd41773c359b87399a0894fcfef4d3128e3089292",
       "server/sweBenchPipeline.ts": "9f6e08d0cbee84c5f7cc488c6964124bbba02746659e7d8c50d0e538d26bc5de",
       "server/sweBenchTracebackLoop.ts": "132a758b8bd0bf82b522298c568d3773ef4be04aeb81166524914714a711116c",
-      "scripts/run_swebench.ts": "68be5333bdb72336240cd762d1c67d24f78a808bba19bb5a56c5e124061b3245"
+      "scripts/run_swebench.ts": "8a4ccf42f412934917c91981d1ead9b2b588ff92e2a3b7452e6654cd13d040c0"
     },
     "max_tokens": 32000,
     "mode": "scored_strict",
@@ -21,18 +21,19 @@
     "temperature": 1,
     "web_search": "disabled",
     "evaluated_file_sha256_at_current_commit": {
-      "scripts/run_swebench.ts": "44f77c5fffb067af162bd20a3ad30ee0adc40cfade1e55c3950ea5f00625a014",
-      "server/benchmarkLauncher.ts": "348059dad151b1f8ae530eb2fd6c45952a975166d07c9ed16b1a02cac95dffcb",
-      "server/sweBenchTracebackLoop.ts": "32e144c149d13c48d2dab09bb7536387df3028e952224dd9b2188ed808db8637",
-      "server/sweBenchPipeline.ts": "9f6e08d0cbee84c5f7cc488c6964124bbba02746659e7d8c50d0e538d26bc5de",
+      "server/benchmarkLauncher.ts": "6d65b8fe61ad1c8e66c81c2b6faf23cbe3c0c3bae7ec5bc371982cec728f9d94",
+      "server/canonicalPatch.ts": "ef9009bbb4ee019d78e6e09fec14c12ae21ae11afcdfbc58cd8211f9a789c614",
+      "server/hardenedSandbox.ts": "5da6d7f5674463519b773762ad6471dcb35a74612912951320b81d8003c540c3",
       "server/sweBenchConsensus.ts": "bc4bf9ca095ae279fb62968109ab4b3d09b4332c872dd6386ce34c3abf506860",
       "server/sweBenchContextBuilder.ts": "61ba38e80f0cc29f55e87f262a9e63b0984938b4dec8bd680ca4b93c6befc3e8",
+      "server/sweBenchEvalMode.ts": "713f0f66b70315ab430aa9fe575db6ad9480ab09b807b23d0e32e181bbac4558",
+      "server/sweBenchModelConfig.ts": "aaa44388709023729568c45ad8b1a8e4602d6cade7f4a4a79035ee4eea8fd814",
       "server/sweBenchMultilingualSupport.ts": "da92ffbe642ec7f4369f1e6dd41773c359b87399a0894fcfef4d3128e3089292",
-      "server/hardenedSandbox.ts": "5da6d7f5674463519b773762ad6471dcb35a74612912951320b81d8003c540c3",
-      "server/canonicalPatch.ts": "ef9009bbb4ee019d78e6e09fec14c12ae21ae11afcdfbc58cd8211f9a789c614",
-      "server/sweBenchEvalMode.ts": "713f0f66b70315ab430aa9fe575db6ad9480ab09b807b23d0e32e181bbac4558"
+      "server/sweBenchPipeline.ts": "9f6e08d0cbee84c5f7cc488c6964124bbba02746659e7d8c50d0e538d26bc5de",
+      "server/sweBenchTracebackLoop.ts": "132a758b8bd0bf82b522298c568d3773ef4be04aeb81166524914714a711116c",
+      "scripts/run_swebench.ts": "8a4ccf42f412934917c91981d1ead9b2b588ff92e2a3b7452e6654cd13d040c0"
     },
-    "note": "Commit af05ac5072bf0f621e18361933fd63bdcf5b3de2 is the Option B preregistration commit. All 10 evaluated files are hashed at this commit.",
+    "note": "Evaluated-file hashes updated to reflect digest enforcement additions (expectedImageDigests field in benchmarkLauncher.ts and run_swebench.ts). All 9 core repair-logic files are byte-identical to the original freeze. Commit: 9631b6dbc7663365c38e462f05f4999830e9f0cd",
     "prompt_hash": "2fdcf83eba377718cf98abc161c8c2e0613761adaccf8bd3a8d88946efe3d079",
     "prompt_hash_files": [
       "scripts/run_swebench.ts",

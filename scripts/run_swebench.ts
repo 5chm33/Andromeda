@@ -948,7 +948,35 @@ async function main() {
   // Load dataset
   console.log('[Runner] Loading SWE-bench Verified dataset...');
   const { instances: allInstances, provenance: datasetProvenance } = await loadSWEBenchInstances(opts.instanceIds, opts.maxInstances);
-  const instances = allInstances.filter(i => !processedIds.has(i.instance_id));
+  // When a reserved-run manifest is set, filter instances to only those in the
+  // reserved manifest. This ensures the run processes only the 113 holdout IDs
+  // and does not attempt to process the 187 dev IDs (which are in the exclusion
+  // registry and would cause a hard-exclusion failure in the launcher).
+  let instancesAfterResume = allInstances.filter(i => !processedIds.has(i.instance_id));
+  if (process.env.SWEBENCH_RESERVED_RUN_MANIFEST) {
+    const reservedManifestPath = process.env.SWEBENCH_RESERVED_RUN_MANIFEST;
+    const reservedIds = new Set<string>();
+    try {
+      const reservedContent = fs.readFileSync(reservedManifestPath, 'utf-8');
+      for (const line of reservedContent.split('\n')) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+        try {
+          const row = JSON.parse(trimmed) as { instance_id?: string };
+          if (row.instance_id) reservedIds.add(row.instance_id);
+        } catch { /* skip malformed lines */ }
+      }
+    } catch (e) {
+      throw new Error(`Cannot read reserved-run manifest at ${reservedManifestPath}: ${e}`);
+    }
+    const beforeFilter = instancesAfterResume.length;
+    instancesAfterResume = instancesAfterResume.filter(i => reservedIds.has(i.instance_id));
+    console.log(`[Runner] Reserved-run manifest filter: ${beforeFilter} -> ${instancesAfterResume.length} instances (${reservedIds.size} IDs in manifest)`);
+    if (instancesAfterResume.length === 0) {
+      throw new Error(`Reserved-run manifest filter produced 0 instances. Check that the dataset and manifest IDs match.`);
+    }
+  }
+  const instances = instancesAfterResume;
   console.log(`[Runner] Processing ${instances.length} instances (${processedIds.size} already done)`);
   console.log(`[Runner] Dataset: ${datasetProvenance.datasetName}@${datasetProvenance.datasetRevision} split=${datasetProvenance.datasetSplit} instances=${datasetProvenance.instanceCount} idHash=${datasetProvenance.instanceIdHash.slice(0, 16)}...`);
 
