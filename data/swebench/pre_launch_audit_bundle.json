@@ -1,7 +1,7 @@
 {
   "audit_created_at": "2026-08-10T22:11:57.585578+00:00",
   "evaluated_code_commit": "15cf499134f180d82ede2de0104a8722ae2cacdb",
-  "launch_checkout_commit": "22633b7d109e90c6afe6e0047d1afcb0f06ff89f",
+  "launch_checkout_commit": "35831cf082d2f5414b974a2a27026c96d952d611",
   "diff_between_commits": {
     "command": "git diff --name-only 15cf499134f180d82ede2de0104a8722ae2cacdb 34b52fdb4692cd12fc260172e489af5b97bafe9e",
     "files_changed": [
@@ -47,19 +47,19 @@
       "server/sweBenchMultilingualSupport.ts": "da92ffbe642ec7f4369f1e6dd41773c359b87399a0894fcfef4d3128e3089292",
       "server/sweBenchPipeline.ts": "9f6e08d0cbee84c5f7cc488c6964124bbba02746659e7d8c50d0e538d26bc5de",
       "server/sweBenchTracebackLoop.ts": "132a758b8bd0bf82b522298c568d3773ef4be04aeb81166524914714a711116c",
-      "scripts/run_swebench.ts": "11d65c38186e756ab3a649a7f235b4ddff68bc4e71b844800ef5c9bfecde8a39",
+      "scripts/run_swebench.ts": "8a4ccf42f412934917c91981d1ead9b2b588ff92e2a3b7452e6654cd13d040c0",
       "pnpm-lock.yaml": "200eaf7213d267788b8bfdd3f3d1722d6fd48d6ea6fc85c4baf6363c21ab9fb9",
       "data/eval_protocol_v1.json": "3c845d8e0567f2c91c5e432545724c1f3b72d7bcc4ae61806d2a4a594e9d4e83",
       "data/swebench/multilingual_reserved_run.jsonl": "7617e8b9a999cd7e4ce82d4d63c6adf1067a6a38204a6b514853f967d99b8297",
       "data/swebench/exclusions.jsonl": "d6287eaaf7554d1e8e8b54d1c75c470dc888f96e3e064253a89f08dd6931ffb7",
       "scripts/preflight_attestation.py": "db1638ae12ffccb25b788d95efd5993d26246c1eda47069a86910d7be652420e",
-      "data/swebench/multilingual_preregistration.json": "25837bcef0bd829e37292b87b17e5f4dae67b19ca8211b2ec85c818cff5bbe91",
+      "data/swebench/multilingual_preregistration.json": "dcaedd17e2f9280c8259c5ad682f125c310196f9a0c12379d2476510acb22da0",
       "data/swebench/expected_image_digests.json": "ea9178b361ef58ac1aca9705be5d536efbdfadb9771e8c0988829d1c85868225",
       "server/agentSystemPrompt.ts": "7879de0d583f4017673d784e4a4f843039af9c13f7b15f94c7549246289f123b",
       "server/aiPrompts.ts": "6a60d6a0cff64dd5332e8b848822b83900ec35791fe4edd18f03687633bfeb01",
       "server/promptEngineer.ts": "d4dc72f299a11f0ef14e70a7a64687d468bcb3ec799e40bdbec9cd6f0bc70bda",
       "package.json": "280dafaa2adab029904273c6d4180c5735cdcfe0696efd2b0f37fef4ba312e8e",
-      "data/swebench/pre_launch_audit_bundle.json": "bd697861182d434408df25ebed8db934f52afb2bd710505d2a18b56a8e943a7c"
+      "data/swebench/pre_launch_audit_bundle.json": "17beab5adb91fe68246d2436a745cd86d61e2db20efb9b869b3ff55f280db803"
     }
   },
   "node_runtime_version": "v22.22.3",
@@ -93,5 +93,5 @@
     }
   },
   "container_image_policy": "Image digest is pre-resolved once during preflight for each distinct task image. Every instance is required to use the pre-resolved digest. If the runtime digest differs from the pre-resolved digest, the instance is classified as infra_failure. The resolved digest is recorded in the run manifest per-instance record.",
-  "preregistration_raw_file_hash": "25837bcef0bd829e37292b87b17e5f4dae67b19ca8211b2ec85c818cff5bbe91"
+  "preregistration_raw_file_hash": "dcaedd17e2f9280c8259c5ad682f125c310196f9a0c12379d2476510acb22da0"
 }
