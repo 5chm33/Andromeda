@@ -55,8 +55,8 @@ jobs:
       - name: Publish project-local launcher release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: project-launcher-v5.0.1
-          name: Andromeda Project Launcher v5.0.1
+          tag_name: project-launcher-v5.0.2
+          name: Andromeda Project Launcher v5.0.2
           body: |
             One-click Windows launcher for a downloaded Andromeda project folder.
 

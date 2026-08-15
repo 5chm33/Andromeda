@@ -135,9 +135,18 @@ internal sealed class LauncherForm : Form
             return;
         }
 
+        var pnpmPath = FindPnpmCommand();
+        if (pnpmPath is null)
+        {
+            Fail("pnpm 11+ was not found for this Windows user.",
+                "Install it once with: npm install -g pnpm@11.9.0. Expected locations were checked under %APPDATA%\\npm, %LOCALAPPDATA%\\pnpm, PNPM_HOME, and PATH.");
+            return;
+        }
+        Write($"Using pnpm command: {pnpmPath}");
+
         try
         {
-            var exitCode = await RunVisibleProcessAsync("pnpm", "launch");
+            var exitCode = await RunPnpmLaunchAsync(pnpmPath);
             if (exitCode == 0)
             {
                 _status.Text = "Andromeda started successfully.";
@@ -160,12 +169,37 @@ internal sealed class LauncherForm : Form
         }
     }
 
-    private async Task<int> RunVisibleProcessAsync(string command, string arguments)
+    private string? FindPnpmCommand()
     {
+        var candidates = new List<string>();
+        void AddCandidate(string? directory, string fileName = "pnpm.cmd")
+        {
+            if (!string.IsNullOrWhiteSpace(directory)) candidates.Add(Path.Combine(directory, fileName));
+        }
+
+        // npm -g on Windows installs command shims here. Explorer-launched apps
+        // do not always inherit this directory in PATH, so check it explicitly.
+        AddCandidate(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "npm"));
+        AddCandidate(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "pnpm"));
+        AddCandidate(Environment.GetEnvironmentVariable("PNPM_HOME"));
+
+        foreach (var pathEntry in (Environment.GetEnvironmentVariable("PATH") ?? "").Split(Path.PathSeparator))
+        {
+            AddCandidate(pathEntry);
+            AddCandidate(pathEntry, "pnpm.exe");
+        }
+
+        return candidates.FirstOrDefault(File.Exists);
+    }
+
+    private async Task<int> RunPnpmLaunchAsync(string pnpmPath)
+    {
+        var cmdPath = Environment.GetEnvironmentVariable("ComSpec") ?? Path.Combine(Environment.SystemDirectory, "cmd.exe");
+        if (!File.Exists(cmdPath)) throw new InvalidOperationException("Windows cmd.exe could not be located.");
+
         var startInfo = new ProcessStartInfo
         {
-            FileName = command,
-            Arguments = arguments,
+            FileName = cmdPath,
             WorkingDirectory = _root,
             UseShellExecute = false,
             RedirectStandardOutput = true,
@@ -174,6 +208,10 @@ internal sealed class LauncherForm : Form
             StandardOutputEncoding = Encoding.UTF8,
             StandardErrorEncoding = Encoding.UTF8
         };
+        startInfo.ArgumentList.Add("/d");
+        startInfo.ArgumentList.Add("/s");
+        startInfo.ArgumentList.Add("/c");
+        startInfo.ArgumentList.Add($"\"\"{pnpmPath}\" launch\"");
         startInfo.Environment["CI"] = "";
 
         using var process = new Process { StartInfo = startInfo, EnableRaisingEvents = true };
