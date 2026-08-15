@@ -280,6 +280,42 @@ const DEFAULT_PROVIDERS: Record<string, Omit<LLMProviderConfig, "apiKey">> = {
   },
 };
 
+// ─── Local Ollama configuration ──────────────────────────────────────────────
+// Ollama exposes an OpenAI-compatible endpoint locally. It requires no API key,
+// but its model must have been pulled by the local Ollama service.
+function getOllamaChatEndpoint(): string {
+  const configured = (process.env.OLLAMA_BASE_URL ?? "http://127.0.0.1:11434").replace(/\/$/, "");
+  if (configured.endsWith("/chat/completions")) return configured;
+  if (configured.endsWith("/v1")) return `${configured}/chat/completions`;
+  return `${configured}/v1/chat/completions`;
+}
+
+function getOllamaProvider(): LLMProviderConfig {
+  return {
+    ...DEFAULT_PROVIDERS.ollama,
+    apiUrl: getOllamaChatEndpoint(),
+    apiKey: "ollama",
+    model: process.env.OLLAMA_MODEL ?? "qwen2.5-coder:7b",
+    // Local models frequently do not implement the OpenAI tools surface fully.
+    supportsTools: false,
+  };
+}
+
+function localOnlyMode(): boolean {
+  return /^(1|true|yes|on)$/i.test(process.env.LLM_LOCAL_ONLY ?? "");
+}
+
+function ollamaFallbackEnabled(): boolean {
+  return !/^(0|false|no|off)$/i.test(process.env.OLLAMA_FALLBACK_ENABLED ?? "true");
+}
+
+function getProviderConfig(id: string): LLMProviderConfig | null {
+  if (id === "ollama") return getOllamaProvider();
+  const base = DEFAULT_PROVIDERS[id];
+  if (!base) return null;
+  return { ...base, apiKey: getProviderApiKey(id) };
+}
+
 // ─── Provider State ─────────────────────────────────────────────────────────────────
 
 let activeProvider: LLMProviderConfig | null = null;
@@ -402,6 +438,14 @@ function ensureProviderInitialized(): LLMProviderConfig {
  * Extracted for testability and separation of concerns.
  */
 export function resolveProviderFromEnv(): LLMProviderConfig {
+  // LLM_LOCAL_ONLY=1 is the explicit no-paid-provider mode. It is useful when
+  // credits are exhausted or a user wants to guarantee zero network model spend.
+  if (localOnlyMode()) {
+    const local = getOllamaProvider();
+    console.log(`[LLM] Local-only mode enabled: ${local.model} at ${local.apiUrl}`);
+    return local;
+  }
+
   let modelId = process.env.LLM_MODEL ?? "";
   if (modelId === "deepseek-chat" || modelId === "deepseek-v3") modelId = "deepseek";
   if (modelId === "openrouter" && process.env.DEEPSEEK_API_KEY) {
@@ -424,8 +468,15 @@ export function resolveProviderFromEnv(): LLMProviderConfig {
     } else if (process.env.OPENROUTER_API_KEY) {
       modelId = "openrouter-fast";
     } else {
-      modelId = "deepseek";
+      // With no configured cloud key, default to the local free provider rather
+      // than constructing a doomed DeepSeek request.
+      modelId = "ollama";
     }
+  }
+  if (modelId === "ollama") {
+    const local = getOllamaProvider();
+    console.log(`[LLM] Startup provider: ollama (${local.model} at ${local.apiUrl})`);
+    return local;
   }
   const base = DEFAULT_PROVIDERS[modelId] ?? DEFAULT_PROVIDERS.deepseek;
   const apiKey = getProviderApiKey(modelId);
@@ -467,6 +518,7 @@ export function getProviderApiKey(id: string): string {
     // v20.5.0: claude-sonnet-5 and claude-fable use direct Anthropic API key
     case "claude-sonnet-5":
     case "claude-fable": return process.env.ANTHROPIC_API_KEY ?? "";
+    case "ollama": return "ollama";
     default: return process.env.DEEPSEEK_API_KEY ?? "";
   }
 }
@@ -476,8 +528,7 @@ export function getProviderApiKey(id: string): string {
  * @param id Provider identifier (e.g. 'deepseek', 'openrouter', 'anthropic')
  */
 export function switchProvider(id: string): void {
-  const base = DEFAULT_PROVIDERS[id] ?? DEFAULT_PROVIDERS.custom;
-  activeProvider = { ...base, apiKey: getProviderApiKey(id) };
+  activeProvider = getProviderConfig(id) ?? { ...DEFAULT_PROVIDERS.custom, apiKey: "" };
   _providerInitialized = true;
 }
 
@@ -493,7 +544,7 @@ export function getActiveProvider(): LLMProviderConfig {
  */
 export function setActiveProvider(config: Partial<LLMProviderConfig> & { id: string }): void {
   if (!config) return;
-  const base = DEFAULT_PROVIDERS[config.id] ?? DEFAULT_PROVIDERS.custom;
+  const base = getProviderConfig(config.id) ?? DEFAULT_PROVIDERS.custom;
   // v6.15.3 FIX: Always resolve the API key from the NEW provider's id.
   // Bug: previously fell back to old active provider's key when switching tiers,
   // causing e.g. OpenRouter key to be sent to Kimi/DeepSeek API → 401.
@@ -540,6 +591,7 @@ export type LLMTier = "eco" | "standard" | "pro" | "ultra";
  * @returns Provider ID string (e.g. 'deepseek', 'openrouter')
  */
 export function getProviderForTier(tier: LLMTier): string {
+  if (localOnlyMode()) return "ollama";
   const override = process.env.LLM_TIER as LLMTier | undefined;
   const effectiveTier = override ?? tier;
   const hasDeepSeek = !!process.env.DEEPSEEK_API_KEY;
@@ -562,21 +614,21 @@ export function getProviderForTier(tier: LLMTier): string {
       if (hasGithubModels) return "github-models";                   // Free GPT-4o via GitHub Models API
       if (hasKimi) return "kimi";
       if (hasDeepSeek) return "deepseek-reasoner";
-      return "deepseek";
+      return "ollama";
     case "pro":
       // Premium — Sonnet 5
       if (process.env.ANTHROPIC_API_KEY) return "claude-sonnet-5";
       if (hasOpenRouter) return "anthropic";                         
       if (hasKimi) return "kimi";                                    
       if (hasDeepSeek) return "deepseek-reasoner";                   
-      return "deepseek";
+      return "ollama";
     case "ultra":
       // Ultimate fallback — Fable
       if (process.env.ANTHROPIC_API_KEY) return "claude-fable";
       if (process.env.OPENROUTER_API_KEY) return "anthropic";
-      return "deepseek";
+      return "ollama";
     default:
-      return "deepseek";
+      return "ollama";
   }
 }
 
@@ -599,21 +651,46 @@ export function tierForArea(area?: string): LLMTier {
   return "eco";
 }
 
-// ─── v12.3.1: Provider Fallback Chain ──────────────────────────────────────
-// When the primary provider returns 429 (quota exceeded / suspended) or 402
-// (insufficient balance), automatically retry with the next available provider.
-// Order: Kimi → OpenRouter-fast (Gemini Flash) → Groq → throw
+// ─── Quota / balance fallback chain ─────────────────────────────────────────
+// A 402 or 429 must never leave the user stranded when an installed Ollama
+// model can answer locally. Cloud fallbacks are attempted sequentially so an
+// exhausted account cannot trigger parallel paid requests.
 
-function buildFallbackChain(excludeId: string): LLMProviderConfig[] {
+function buildFallbackChain(excludedIds: Iterable<string>): LLMProviderConfig[] {
+  const excluded = new Set(excludedIds);
   const candidates: Array<{ id: string; envKey: string }> = [
-    { id: "kimi",           envKey: "KIMI_API_KEY" },
+    { id: "kimi",            envKey: "KIMI_API_KEY" },
     { id: "openrouter-fast", envKey: "OPENROUTER_API_KEY" },
-    { id: "groq",           envKey: "GROQ_API_KEY" },
-    { id: "deepseek",       envKey: "DEEPSEEK_API_KEY" },
+    { id: "groq",            envKey: "GROQ_API_KEY" },
+    { id: "deepseek",        envKey: "DEEPSEEK_API_KEY" },
   ];
-  return candidates
-    .filter(c => c.id !== excludeId && process.env[c.envKey])
-    .map(c => ({ ...DEFAULT_PROVIDERS[c.id], apiKey: process.env[c.envKey]! }));
+
+  const cloudFallbacks = candidates
+    .filter(candidate => !excluded.has(candidate.id) && Boolean(process.env[candidate.envKey]))
+    .map(candidate => getProviderConfig(candidate.id))
+    .filter((provider): provider is LLMProviderConfig => provider !== null);
+
+  if (ollamaFallbackEnabled() && !excluded.has("ollama")) {
+    cloudFallbacks.push(getOllamaProvider());
+  }
+  return cloudFallbacks;
+}
+
+function fallbackBodyForProvider(
+  body: Record<string, unknown>,
+  provider: LLMProviderConfig,
+): Record<string, unknown> {
+  const nextBody: Record<string, unknown> = { ...body, model: provider.model };
+  // Ollama's OpenAI-compatible endpoint does not require an API key and may not
+  // support tool or JSON-mode extensions for every local model.
+  if (!provider.supportsTools) {
+    delete nextBody.tools;
+    delete nextBody.tool_choice;
+  }
+  if (!provider.supportsJsonMode) {
+    delete nextBody.response_format;
+  }
+  return nextBody;
 }
 
 // ─── Non-Streaming Completion ───────────────────────────────────────────────
@@ -636,10 +713,9 @@ export async function chatCompletion(
   // v6.33: Use a temporary provider override if requested, otherwise use the active provider
   let provider: LLMProviderConfig;
   if (options?.providerId) {
-    const base = DEFAULT_PROVIDERS[options.providerId];
-    const key = base ? getProviderApiKey(options.providerId) : "";
-    if (base && key) {
-      provider = { ...base, apiKey: key };
+    const requested = getProviderConfig(options.providerId);
+    if (requested && (requested.id === "ollama" || requested.apiKey)) {
+      provider = requested;
     } else {
       // Requested provider not available — fall back to active
       provider = ensureProviderInitialized();
@@ -647,6 +723,16 @@ export async function chatCompletion(
   } else {
     provider = ensureProviderInitialized();
   }
+
+  // Paid providers can remain circuit-open after repeated 402/429 responses.
+  // That must not suppress the zero-cost local fallback on later user requests.
+  const paidCircuitOpen = !llmBreaker.canExecute();
+  if (paidCircuitOpen && provider.id !== "ollama" && ollamaFallbackEnabled()) {
+    const localFallback = getOllamaProvider();
+    log.warn(`[FallbackChain] ${provider.id} circuit is open — using local Ollama instead`);
+    provider = localFallback;
+  }
+
   // v8.2.0 FIX: deepseek-reasoner and kimi-k2.6 only accept temperature=1.
   // Clamp automatically so callers don't need to know about this restriction.
   const TEMP_MUST_BE_ONE_MODELS = ["deepseek-reasoner", "kimi-k2.6"];
@@ -687,8 +773,9 @@ export async function chatCompletion(
     return controller.signal;
   };
 
-  // v12.13.0: Circuit breaker guard — prevent cascade failures when LLM API is down
-  if (!llmBreaker.canExecute()) {
+  // Circuit-break only when no local fallback was selected. Local Ollama is
+  // intentionally allowed to continue after a cloud-provider outage or balance error.
+  if (paidCircuitOpen && provider.id !== "ollama") {
     const stats = llmBreaker.getStats();
     const retryAfterMs = Math.max(0, stats.lastStateChange + 30_000 - Date.now());
     reportFailure("llm", `Circuit breaker OPEN (${stats.consecutiveFailures} consecutive failures)`);
@@ -712,34 +799,34 @@ export async function chatCompletion(
     llmBreaker.recordFailure(new Error(`HTTP ${resp.status}`));
     // v12.3.1: On 429 (quota/rate-limit) or 402 (insufficient balance), try fallback providers
     if (resp.status === 429 || resp.status === 402) {
-      const fallbacks = buildFallbackChain(provider.id);
-      const results = await Promise.allSettled(
-        fallbacks.map(async (fb) => {
-          log.warn(`[FallbackChain] ${provider.id} returned ${resp.status} — retrying with ${fb.id}`);
-          const fbResp = await fetch(fb.apiUrl, {
+      const fallbacks = buildFallbackChain([provider.id]);
+      for (const fallback of fallbacks) {
+        try {
+          log.warn(`[FallbackChain] ${provider.id} returned ${resp.status} — retrying with ${fallback.id}`);
+          const fallbackResponse = await fetch(fallback.apiUrl, {
             method: "POST",
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${fb.apiKey}`, ...(fb.headers ?? {}) },
-            body: JSON.stringify({ ...body, model: fb.model }),
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${fallback.apiKey}`, ...(fallback.headers ?? {}) },
+            body: JSON.stringify(fallbackBodyForProvider(body, fallback)),
             signal: options?.signal,
           });
-          if (!fbResp.ok) throw new Error(`Fallback ${fb.id} returned ${fbResp.status}`);
-          const fbJson = (await fbResp.json()) as any;
-          const fbChoice = fbJson.choices?.[0];
-          const fbMsg = fbChoice?.message;
-          if (fbMsg && (fbMsg as any).reasoning_content !== undefined) delete (fbMsg as any).reasoning_content;
-          const fbUsage = fbJson.usage ?? {};
-          recordLLMCost(fb.id, fbUsage.prompt_tokens ?? 0, fbUsage.completion_tokens ?? 0);
+          if (!fallbackResponse.ok) {
+            log.warn(`[FallbackChain] ${fallback.id} returned ${fallbackResponse.status}; trying next fallback`);
+            continue;
+          }
+          const fallbackJson = (await fallbackResponse.json()) as any;
+          const fallbackChoice = fallbackJson.choices?.[0];
+          const fallbackMessage = fallbackChoice?.message;
+          if (fallbackMessage && (fallbackMessage as any).reasoning_content !== undefined) delete (fallbackMessage as any).reasoning_content;
+          const fallbackUsage = fallbackJson.usage ?? {};
+          recordLLMCost(fallback.id, fallbackUsage.prompt_tokens ?? 0, fallbackUsage.completion_tokens ?? 0);
           return {
-            content: fbMsg?.content ?? null,
-            toolCalls: fbMsg?.tool_calls ?? [],
-            finishReason: fbChoice?.finish_reason ?? "stop",
-            usage: { promptTokens: fbUsage.prompt_tokens ?? 0, completionTokens: fbUsage.completion_tokens ?? 0, totalTokens: fbUsage.total_tokens ?? 0 },
+            content: fallbackMessage?.content ?? null,
+            toolCalls: fallbackMessage?.tool_calls ?? [],
+            finishReason: fallbackChoice?.finish_reason ?? "stop",
+            usage: { promptTokens: fallbackUsage.prompt_tokens ?? 0, completionTokens: fallbackUsage.completion_tokens ?? 0, totalTokens: fallbackUsage.total_tokens ?? 0 },
           };
-        })
-      );
-      for (const result of results) {
-        if (result.status === "fulfilled") {
-          return result.value;
+        } catch (fallbackError) {
+          log.caught(`[FallbackChain] ${fallback.id} unavailable; trying next fallback`, fallbackError);
         }
       }
       // If all fallbacks failed, fall through to original error handling
@@ -955,9 +1042,16 @@ export async function* streamChatCompletion(
     temperature?: number;
     maxTokens?: number;
     signal?: AbortSignal;
+    /** Internal: route this stream through a specific fallback provider. */
+    providerId?: string;
+    /** Internal: prevents quota fallback loops across providers. */
+    _attemptedProviderIds?: string[];
   },
 ): AsyncGenerator<LLMStreamChunk> {
-  const provider = ensureProviderInitialized();
+  const requestedProvider = options?.providerId ? getProviderConfig(options.providerId) : null;
+  const provider = requestedProvider && (requestedProvider.id === "ollama" || requestedProvider.apiKey)
+    ? requestedProvider
+    : ensureProviderInitialized();
   const body: Record<string, unknown> = {
     model: provider.model,
     messages,
@@ -989,6 +1083,18 @@ export async function* streamChatCompletion(
 
   if (!resp.ok) {
     const errText = await resp.text().catch(() => "Unknown error");
+    if (resp.status === 402 || resp.status === 429) {
+      const attempted = new Set([...(options?._attemptedProviderIds ?? []), provider.id]);
+      for (const fallback of buildFallbackChain(attempted)) {
+        log.warn(`[FallbackChain] Streaming ${provider.id} returned ${resp.status} — retrying with ${fallback.id}`);
+        yield* streamChatCompletion(messages, {
+          ...options,
+          providerId: fallback.id,
+          _attemptedProviderIds: [...attempted],
+        });
+        return;
+      }
+    }
     yield { type: "error", text: `LLM API error ${resp.status}: ${errText}` };
     return;
   }
@@ -1151,24 +1257,10 @@ export async function* streamChatCompletion(
  * Defaults to DeepSeek for cost efficiency. Falls back to the active provider if unavailable.
  */
 export function getBackgroundProvider(): LLMProviderConfig {
-  // v10.5.2: Ollama (local, free, zero-cost) — preferred for RSI background cycles
-  // when OLLAMA_BASE_URL is set. On RTX 3060 8GB, use qwen2.5-coder:7b (~4.7GB VRAM).
-  // Set OLLAMA_BASE_URL=http://localhost:11434 and OLLAMA_MODEL=qwen2.5-coder:7b in .env.local
-  const ollamaUrl = process.env.OLLAMA_BASE_URL;
-  if (ollamaUrl) {
-    const ollamaModel = process.env.OLLAMA_MODEL ?? "qwen2.5-coder:7b";
-    return {
-      id: "ollama",
-      name: "Ollama (Local — Free)",
-      apiUrl: ollamaUrl.replace(/\/$/, "") + "/v1/chat/completions",
-      model: ollamaModel,
-      apiKey: "ollama",  // Ollama doesn't require a real API key
-      maxTokens: 4096,
-      temperature: 0.4,
-      supportsTools: false,
-      supportsVision: false,
-      supportsStreaming: false,
-    };
+  // Local-only mode guarantees RSI uses no paid provider. A configured Ollama
+  // endpoint also remains the preferred background provider to control spend.
+  if (localOnlyMode() || process.env.OLLAMA_PREFER_BACKGROUND || process.env.OLLAMA_BASE_URL) {
+    return { ...getOllamaProvider(), name: "Ollama (Local — Free)", temperature: 0.4, supportsStreaming: false };
   }
   const deepseekKey = process.env.DEEPSEEK_API_KEY;
   if (deepseekKey) {
@@ -1231,26 +1323,29 @@ export async function backgroundChatCompletion(
     const errText = await resp.text().catch(() => resp.statusText);
     // v12.3.1: On 429/402, retry with fallback providers
     if (resp.status === 429 || resp.status === 402) {
-      const fallbacks = buildFallbackChain(provider.id);
-      for (const fb of fallbacks) {
-        log.warn(`[FallbackChain] Background ${provider.id} returned ${resp.status} — retrying with ${fb.id}`);
-        const fbResp = await fetch(fb.apiUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${fb.apiKey}`, ...(fb.headers ?? {}) },
-          body: JSON.stringify({ ...body, model: fb.model }),
-          signal: options?.signal,
-        });
-        if (fbResp.ok) {
-          const fbData = await fbResp.json() as any;
-          const fbChoice = fbData.choices?.[0];
-          const fbUsage = fbData.usage ?? {};
-          recordLLMCost(fb.id, fbUsage.prompt_tokens ?? 0, fbUsage.completion_tokens ?? 0);
+      const fallbacks = buildFallbackChain([provider.id]);
+      for (const fallback of fallbacks) {
+        try {
+          log.warn(`[FallbackChain] Background ${provider.id} returned ${resp.status} — retrying with ${fallback.id}`);
+          const fallbackResponse = await fetch(fallback.apiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${fallback.apiKey}`, ...(fallback.headers ?? {}) },
+            body: JSON.stringify(fallbackBodyForProvider(body, fallback)),
+            signal: options?.signal,
+          });
+          if (!fallbackResponse.ok) continue;
+          const fallbackData = await fallbackResponse.json() as any;
+          const fallbackChoice = fallbackData.choices?.[0];
+          const fallbackUsage = fallbackData.usage ?? {};
+          recordLLMCost(fallback.id, fallbackUsage.prompt_tokens ?? 0, fallbackUsage.completion_tokens ?? 0);
           return {
-            content: fbChoice?.message?.content ?? null,
-            toolCalls: fbChoice?.message?.tool_calls ?? [],
-            finishReason: fbChoice?.finish_reason ?? "stop",
-            usage: { promptTokens: fbUsage.prompt_tokens ?? 0, completionTokens: fbUsage.completion_tokens ?? 0, totalTokens: fbUsage.total_tokens ?? 0 },
+            content: fallbackChoice?.message?.content ?? null,
+            toolCalls: fallbackChoice?.message?.tool_calls ?? [],
+            finishReason: fallbackChoice?.finish_reason ?? "stop",
+            usage: { promptTokens: fallbackUsage.prompt_tokens ?? 0, completionTokens: fallbackUsage.completion_tokens ?? 0, totalTokens: fallbackUsage.total_tokens ?? 0 },
           };
+        } catch (fallbackError) {
+          log.caught(`[FallbackChain] Background ${fallback.id} unavailable; trying next fallback`, fallbackError);
         }
       }
     }

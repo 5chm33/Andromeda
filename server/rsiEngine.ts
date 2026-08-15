@@ -94,6 +94,8 @@ export type RSIConfig = {
 };
 
 export type RSIStatus = {
+  /** True when automatic RSI cycles are permitted to start. */
+  enabled: boolean;
   phase: RSIPhase;
   cycleCount: number;
   totalApplied: number;
@@ -2440,6 +2442,7 @@ export function updateRSIConfig(updates: Partial<RSIConfig>): RSIStatus {
  */
 export function getRSIStatus(): RSIStatus {
   return {
+    enabled: rsiConfig.enabled,
     phase: rsiPhase,
     cycleCount,
     totalApplied,

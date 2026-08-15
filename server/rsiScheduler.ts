@@ -145,6 +145,21 @@ async function runRsiTrigger(): Promise<void> {
     const { triggerRSICycleNow, getRSIStatus } = await import("./rsiEngine.js");
     const status = getRSIStatus();
 
+    // The dashboard Pause RSI control disables the engine. The scheduler must
+    // honor that persistent state rather than starting a new manual cycle while
+    // the engine is idle.
+    if (!status.enabled) {
+      log.info("[rsiScheduler] Skipping — RSI engine is paused/disabled");
+      appendScheduleLog({
+        triggeredAt: Date.now(),
+        source: "scheduler",
+        intervalHours: DEFAULT_HOURS,
+        cycleStarted: false,
+        note: "Skipped — RSI engine is paused/disabled",
+      });
+      return;
+    }
+
     if (status.phase !== "idle") {
       log.info(`[rsiScheduler] Skipping — RSI cycle already in phase: ${status.phase}`);
       appendScheduleLog({

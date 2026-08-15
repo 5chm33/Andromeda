@@ -349,18 +349,23 @@ function RsiControls({ adminKey }: { adminKey: string }) {
     return () => clearInterval(i);
   }, []);
 
-  const isRunning = status?.phase === "running" || status?.phase === "improving";
+  // `enabled` is the actual engine timer switch. Phase only describes the
+  // current cycle and cannot tell whether the next automatic cycle is paused.
+  const isEnabled = status?.enabled === true;
 
   const togglePause = async () => {
     setLoading(true);
     try {
-      const endpoint = isRunning ? "/api/rsi/pause" : "/api/rsi/resume";
-      await fetch(endpoint, { method: "POST", headers: { "X-Admin-Key": adminKey } });
-      setTimeout(() => {
-        fetch("/api/rsi/status").then(r => r.ok ? r.json() : null).then(d => { if (d) setStatus(d); }).catch(() => {});
-      }, 1000);
-    } catch { /* non-fatal */ }
-    finally { setLoading(false); }
+      const endpoint = isEnabled ? "/api/rsi/disable" : "/api/rsi/enable";
+      const response = await fetch(endpoint, { method: "POST", headers: { "X-Admin-Key": adminKey } });
+      if (!response.ok) throw new Error(`RSI control request failed (${response.status})`);
+      const updated = await response.json();
+      setStatus(updated);
+    } catch (error) {
+      console.error("Unable to change RSI state", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const triggerCycle = async () => {
@@ -378,13 +383,13 @@ function RsiControls({ adminKey }: { adminKey: string }) {
         disabled={loading}
         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all disabled:opacity-50"
         style={{
-          background: isRunning ? "rgba(251,113,133,0.12)" : "rgba(52,211,153,0.12)",
-          border: `1px solid ${isRunning ? "rgba(251,113,133,0.25)" : "rgba(52,211,153,0.25)"}`,
-          color: isRunning ? "#fb7185" : "#34d399",
+          background: isEnabled ? "rgba(251,113,133,0.12)" : "rgba(52,211,153,0.12)",
+          border: `1px solid ${isEnabled ? "rgba(251,113,133,0.25)" : "rgba(52,211,153,0.25)"}`,
+          color: isEnabled ? "#fb7185" : "#34d399",
         }}
       >
-        {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : isRunning ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
-        {isRunning ? "Pause RSI" : "Resume RSI"}
+        {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : isEnabled ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+        {isEnabled ? "Pause RSI" : "Resume RSI"}
       </button>
       <button
         onClick={triggerCycle}

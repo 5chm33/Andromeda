@@ -218,6 +218,20 @@ export async function registerCoreRoutes(app: Express): Promise<void> {
       res.json(disableRSI());
     } catch (e) { res.status(500).json({ error: (e as Error).message }); }
   });
+  // Backward-compatible aliases for older dashboard builds. These must control
+  // the engine timer itself, not merely the separate scheduler task.
+  app.post("/api/rsi/pause", requireAdminAuth, async (_req, res) => {
+    try {
+      const { disableRSI } = await import("../rsiEngine.js");
+      res.json(disableRSI());
+    } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+  });
+  app.post("/api/rsi/resume", requireAdminAuth, async (_req, res) => {
+    try {
+      const { enableRSI } = await import("../rsiEngine.js");
+      res.json(enableRSI());
+    } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+  });
   app.post("/api/rsi/trigger", requireAdminAuth, async (_req, res) => {
     try {
       const { triggerRSICycleNow } = await import("../rsiEngine.js");
