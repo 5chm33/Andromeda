@@ -165,7 +165,7 @@
     "autoprefixer": "^10.4.21",
     "cross-env": "^10.1.0",
     "drizzle-kit": "^0.31.10",
-    "electron": "^42.5.0",
+    "electron": "37.10.3",
     "electron-builder": "^26.15.3",
     "esbuild": "^0.25.10",
     "pnpm": "^11.9.0",
