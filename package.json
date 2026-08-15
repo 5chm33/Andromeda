@@ -1,7 +1,7 @@
 {
   "name": "andromeda",
   "version": "5.0.0",
-  "description": "One-click desktop launcher for Andromeda AI.",
+  "description": "AI-assisted software engineering system with a project-local Windows launcher.",
   "author": "Thomas Nance",
   "type": "module",
   "main": "launcher/main.cjs",
@@ -16,7 +16,6 @@
     "build": "vite build && node build.mjs",
     "start": "cross-env NODE_ENV=production node dist/_core/index.js",
     "launch": "node scripts/launch.cjs",
-    "package:windows": "pnpm run build && electron-builder --win portable --x64",
     "check": "tsc --noEmit",
     "format": "prettier --write .",
     "test": "vitest run",
@@ -166,7 +165,6 @@
     "cross-env": "^10.1.0",
     "drizzle-kit": "^0.31.10",
     "electron": "37.10.3",
-    "electron-builder": "^26.15.3",
     "esbuild": "^0.25.10",
     "pnpm": "^11.9.0",
     "postcss": "^8.5.15",
@@ -179,28 +177,6 @@
     "vite": "^7.3.6",
     "vite-plugin-manus-runtime": "^0.0.57",
     "vitest": "^3.2.6"
-  },
-  "build": {
-    "appId": "com.thomasnance.andromeda",
-    "productName": "Andromeda Launcher",
-    "artifactName": "Andromeda-Launcher-${version}-Windows-x64.${ext}",
-    "directories": {
-      "output": "release"
-    },
-    "files": [
-      "launcher/**/*",
-      "dist/**/*",
-      ".env.local.example",
-      "package.json"
-    ],
-    "asarUnpack": [
-      "**/*.node"
-    ],
-    "win": {
-      "target": [
-        "portable"
-      ]
-    }
   },
   "pnpm": {},
   "overrides": {

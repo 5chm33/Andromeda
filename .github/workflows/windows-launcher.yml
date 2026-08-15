@@ -34,26 +34,35 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build portable Windows launcher
-        run: pnpm run package:windows
+      - name: Build project-local launcher executable
+        run: >
+          dotnet publish launcher/windows/AndromedaProjectLauncher.csproj
+          --configuration Release
+          --runtime win-x64
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          --output release/project-launcher
 
-      - name: Upload portable launcher artifact
+      - name: Upload project-local launcher artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Andromeda-Launcher-Windows-x64
-          path: release/Andromeda-Launcher-*-Windows-x64.exe
+          name: Andromeda-Project-Launcher-Windows-x64
+          path: release/project-launcher/Andromeda Launcher.exe
           if-no-files-found: error
           retention-days: 90
 
-      - name: Publish portable launcher release
+      - name: Publish project-local launcher release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: launcher-v5.0.0
-          name: Andromeda Launcher v5.0.0
+          tag_name: project-launcher-v5.0.1
+          name: Andromeda Project Launcher v5.0.1
           body: |
-            One-click portable Windows launcher for Andromeda.
+            One-click Windows launcher for a downloaded Andromeda project folder.
 
-            Download the `.exe`, double-click it, and configure an LLM provider key when the launcher opens its setup file. No Node.js, pnpm, Electron, batch file, or VBScript setup is required.
-          files: release/Andromeda-Launcher-*-Windows-x64.exe
+            Place `Andromeda Launcher.exe` in the root of the same project folder that contains `package.json`, `.env.local`, and `launcher/`. Double-click it to launch that exact local project. The launcher never substitutes a separate bundled project or configuration.
+
+            This launcher requires the local project prerequisites: Node.js 22 LTS and pnpm 11+.
+          files: release/project-launcher/Andromeda Launcher.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
