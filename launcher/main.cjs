@@ -47,8 +47,18 @@ function findProjectRoot() {
   // Fallback: return the __dirname parent and hope for the best
   return path.resolve(path.join(__dirname, ".."));
 }
-const ROOT = findProjectRoot();
-const DIAGNOSTIC_DIR = path.join(ROOT, ".andromeda", "launcher-logs");
+const SOURCE_ROOT = findProjectRoot();
+const IS_PACKAGED = app.isPackaged;
+// In the portable app, application code is read-only inside app.asar while
+// credentials and diagnostics belong in the user's Electron data directory.
+const ROOT = IS_PACKAGED ? path.join(process.resourcesPath, "app.asar") : SOURCE_ROOT;
+const USER_STATE_DIR = IS_PACKAGED
+  ? path.join(app.getPath("userData"), "Andromeda")
+  : path.join(SOURCE_ROOT, ".andromeda");
+const ENV_PATH = IS_PACKAGED
+  ? path.join(USER_STATE_DIR, ".env.local")
+  : path.join(SOURCE_ROOT, ".env.local");
+const DIAGNOSTIC_DIR = path.join(USER_STATE_DIR, "launcher-logs");
 const DIAGNOSTIC_LOG = path.join(
   DIAGNOSTIC_DIR,
   `launch-${new Date().toISOString().replace(/[:.]/g, "-")}.log`,
@@ -104,8 +114,12 @@ function runChecked(cmd, label, timeout) {
   }
 }
 
-function exists(relPath) {
-  return fs.existsSync(path.join(ROOT, relPath));
+function resolveRootPath(candidate) {
+  return path.isAbsolute(candidate) ? candidate : path.join(ROOT, candidate);
+}
+
+function exists(candidate) {
+  return fs.existsSync(resolveRootPath(candidate));
 }
 
 function parseEnvKey(content, key) {
@@ -168,7 +182,7 @@ function createWindow() {
 ipcMain.on("window-minimize", () => win && win.minimize());
 ipcMain.on("window-close",    () => win && win.close());
 ipcMain.on("open-browser",    () => shell.openExternal(`http://localhost:${SERVER_PORT}`));
-ipcMain.on("open-env",        () => shell.openPath(path.join(ROOT, ".env.local")));
+ipcMain.on("open-env",        () => shell.openPath(ENV_PATH));
 ipcMain.on("open-diagnostics", () => shell.openPath(DIAGNOSTIC_LOG));
 
 // ── Main startup sequence ─────────────────────────────────────────────────────
@@ -179,65 +193,62 @@ async function runStartup() {
   // Persist startup facts before any external command runs.
   log(`Project root: ${ROOT}`);
   log(`Diagnostic log: ${DIAGNOSTIC_LOG}`);
-  const envExists = fs.existsSync(path.join(ROOT, ".env.local"));
+  const envExists = fs.existsSync(ENV_PATH);
   log(`  .env.local found: ${envExists}`);
 
-  // ── Step 1: Node.js version ──────────────────────────────────────────────
-  step("node", "running", "Checking Node.js…");
-  const nodeVer = runCapture("node --version");
-  if (!nodeVer) {
-    step("node", "error", "Node.js not found");
-    err("Cannot detect Node.js. Install Node.js 22 LTS, reopen the launcher, and try again.");
-    send("show-log-button", {});
-    return;
-  }
-  const major = parseInt(nodeVer.replace("v", "").split(".")[0], 10);
-  if (major < 22) {
-    step("node", "error", `Node.js ${nodeVer} unsupported`);
-    err(`Node.js 22+ is required. You have ${nodeVer}. Install Node.js 22 LTS and relaunch.`);
-    send("show-log-button", {});
-    return;
-  }
-  step("node", "done", `Node.js ${nodeVer}`);
-  log(`Node.js ${nodeVer} ✓`);
-  if (major >= 24) {
-    warn(`Node.js ${nodeVer} is newer than the recommended Node.js 22 LTS runtime; continuing because compatibility checks passed.`);
+  // ── Step 1: Runtime ──────────────────────────────────────────────────────
+  step("node", "running", "Checking runtime…");
+  if (IS_PACKAGED) {
+    step("node", "done", `Bundled Electron ${process.versions.electron}`);
+    log("Using the bundled desktop runtime; no local Node.js installation is required.");
+  } else {
+    const nodeVer = runCapture("node --version");
+    if (!nodeVer) {
+      step("node", "error", "Node.js not found");
+      err("Cannot detect Node.js. Install Node.js 22 LTS, reopen the launcher, and try again.");
+      send("show-log-button", {});
+      return;
+    }
+    const major = parseInt(nodeVer.replace("v", "").split(".")[0], 10);
+    if (major < 22) {
+      step("node", "error", `Node.js ${nodeVer} unsupported`);
+      err(`Node.js 22+ is required. You have ${nodeVer}. Install Node.js 22 LTS and relaunch.`);
+      send("show-log-button", {});
+      return;
+    }
+    step("node", "done", `Node.js ${nodeVer}`);
+    log(`Node.js ${nodeVer} ✓`);
+    if (major >= 24) {
+      warn(`Node.js ${nodeVer} is newer than the recommended Node.js 22 LTS runtime; continuing because compatibility checks passed.`);
+    }
   }
 
   // ── Step 2: .env.local check ─────────────────────────────────────────────
   step("env", "running", "Checking API keys…");
   await sleep(200);
 
-  // Check multiple possible env file names in priority order
-  const envCandidates = [".env.local", ".env", ".env.production", ".env.development"];
-  const foundEnvFile = envCandidates.find(f => exists(f));
-  log(`  Env file search: ${envCandidates.map(f => `${f}=${exists(f)}`).join(', ')}`);
+  const foundEnvFile = fs.existsSync(ENV_PATH) ? ENV_PATH : null;
+  log(`  Environment file: ${foundEnvFile || "not found"}`);
 
   if (!foundEnvFile) {
-    if (exists(".env.local.example")) {
-      // Don't overwrite — just open the example so user can fill it in
-      log("No .env.local found. Opening .env.local.example for editing…");
-      // Copy only if truly no env file exists at all
-      fs.copyFileSync(
-        path.join(ROOT, ".env.local.example"),
-        path.join(ROOT, ".env.local")
-      );
-      shell.openPath(path.join(ROOT, ".env.local"));
-      step("env", "error", "API keys required — fill in .env.local");
-      err("Fill in at least one LLM key (DEEPSEEK_API_KEY recommended), then relaunch.");
-      send("show-env-button", {});
-      return;
-    } else {
-      step("env", "error", ".env.local not found");
-      err(`No .env.local found in: ${ROOT}`);
-      err("Please create .env.local with your API keys and relaunch.");
-      send("show-env-button", {});
+    const examplePath = path.join(ROOT, ".env.local.example");
+    if (!fs.existsSync(examplePath)) {
+      step("env", "error", "Configuration template missing");
+      err(`Cannot find .env.local.example in: ${ROOT}`);
+      send("show-log-button", {});
       return;
     }
+    fs.mkdirSync(USER_STATE_DIR, { recursive: true });
+    fs.copyFileSync(examplePath, ENV_PATH);
+    shell.openPath(ENV_PATH);
+    step("env", "error", "API keys required — fill in .env.local");
+    err("Fill in at least one LLM key, save the file, then reopen Andromeda.");
+    send("show-env-button", {});
+    return;
   }
 
   log(`  Using env file: ${foundEnvFile}`);
-  const envContent = fs.readFileSync(path.join(ROOT, foundEnvFile), "utf8");
+  const envContent = fs.readFileSync(foundEnvFile, "utf8");
   const primaryKeys = [
     "DEEPSEEK_API_KEY", "OPENAI_API_KEY", "ANTHROPIC_API_KEY",
     "OPENROUTER_API_KEY", "KIMI_API_KEY",
@@ -245,7 +256,7 @@ async function runStartup() {
   const filledKey = primaryKeys.find(k => !isPlaceholder(parseEnvKey(envContent, k)));
 
   if (!filledKey) {
-    shell.openPath(path.join(ROOT, ".env.local"));
+    shell.openPath(ENV_PATH);
     step("env", "error", "No LLM key found — fill in .env.local");
     err("Add at least one key: DEEPSEEK_API_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY, or OPENROUTER_API_KEY");
     send("show-env-button", {});
@@ -254,25 +265,25 @@ async function runStartup() {
   step("env", "done", `API key: ${filledKey}`);
   log(`LLM key configured (${filledKey}) ✓`);
 
-  // ── Step 3: pnpm ─────────────────────────────────────────────────────────
-  step("deps", "running", "Checking pnpm…");
+  // ── Step 3: Dependencies ─────────────────────────────────────────────────
+  step("deps", "running", "Checking dependencies…");
   await sleep(200);
-  const pnpmVer = runCapture("pnpm --version");
-  const pnpmMajor = pnpmVer ? parseInt(pnpmVer.split(".")[0], 10) : 0;
-  if (!pnpmVer || pnpmMajor < 11) {
-    step("deps", "error", "pnpm 11+ required");
-    err(`Install pnpm 11.9.0 with: npm install -g pnpm@11.9.0. Detected: ${pnpmVer || "not found"}.`);
-    send("show-log-button", {});
-    return;
-  }
-  log(`pnpm ${pnpmVer} ✓`);
-
-  // ── Step 4: Install dependencies ─────────────────────────────────────────
-  if (!exists("node_modules")) {
-    step("deps", "running", "Installing dependencies (~2 min)…");
-    log("First run — installing dependencies…");
+  if (IS_PACKAGED) {
+    step("deps", "done", "Bundled dependencies ready");
+    log("Using application dependencies bundled with the portable launcher.");
+  } else {
+    const pnpmVer = runCapture("pnpm --version");
+    const pnpmMajor = pnpmVer ? parseInt(pnpmVer.split(".")[0], 10) : 0;
+    if (!pnpmVer || pnpmMajor < 11) {
+      step("deps", "error", "pnpm 11+ required");
+      err(`Install pnpm 11.9.0 with: npm install -g pnpm@11.9.0. Detected: ${pnpmVer || "not found"}.`);
+      send("show-log-button", {});
+      return;
+    }
+    log(`pnpm ${pnpmVer} ✓`);
     try {
       runChecked("pnpm install --frozen-lockfile --reporter=append-only", "Dependency installation", 600_000);
+      step("deps", "done", "Dependencies ready");
       log("Dependencies installed ✓");
     } catch (e) {
       step("deps", "error", "Dependency install failed — see diagnostics");
@@ -282,14 +293,15 @@ async function runStartup() {
       return;
     }
   }
-  step("deps", "done", "Dependencies ready");
 
   // ── Step 5: Build ─────────────────────────────────────────────────────────
   const distEntry    = path.join(ROOT, "dist", "_core", "index.js");
   const distFrontend = path.join(ROOT, "dist", "public", "index.html");
 
-  // Rebuild if dist is missing, FORCE_REBUILD env is set, or source files are newer than dist
+  // Packaged launches use build assets bundled at release time. Source checkouts
+  // rebuild when necessary so development remains convenient.
   function needsBuild() {
+    if (IS_PACKAGED) return false;
     if (process.env.FORCE_REBUILD === "1") { log("FORCE_REBUILD=1 set — rebuilding…"); return true; }
     if (!fs.existsSync(distEntry) || !fs.existsSync(distFrontend)) return true;
     try {
@@ -332,7 +344,7 @@ async function runStartup() {
       return;
     }
   }
-  step("build", "done", "Build ready");
+  step("build", "done", IS_PACKAGED ? "Bundled build ready" : "Build ready");
 
   // ── Step 6: Kill port 3000 ────────────────────────────────────────────────
   step("server", "running", "Starting server…");
@@ -352,12 +364,10 @@ function startServer() {
 
   const serverPath = path.join(ROOT, "dist", "_core", "index.js");
 
-  // Load .env.local variables so the server has all API keys
+  // Load the user-owned .env.local variables so the server has all API keys.
   const envVars = { ...process.env };
-  const envCandidates2 = [".env.local", ".env", ".env.production", ".env.development"];
-  const envFile2 = envCandidates2.find(f => fs.existsSync(path.join(ROOT, f)));
-  if (envFile2) {
-    const envLines = fs.readFileSync(path.join(ROOT, envFile2), "utf8").split("\n");
+  if (fs.existsSync(ENV_PATH)) {
+    const envLines = fs.readFileSync(ENV_PATH, "utf8").split("\n");
     for (const line of envLines) {
       const trimmed = line.trim();
       if (!trimmed || trimmed.startsWith("#")) continue;
@@ -369,10 +379,14 @@ function startServer() {
     }
   }
 
-  serverProcess = spawn("node", [serverPath], {
-    cwd: ROOT,
+  const runtime = IS_PACKAGED ? process.execPath : "node";
+  const runtimeEnv = IS_PACKAGED
+    ? { ...envVars, ELECTRON_RUN_AS_NODE: "1" }
+    : envVars;
+  serverProcess = spawn(runtime, [serverPath], {
+    cwd: IS_PACKAGED ? USER_STATE_DIR : SOURCE_ROOT,
     stdio: ["ignore", "pipe", "pipe"],
-    env: envVars,
+    env: runtimeEnv,
   });
 
   serverProcess.stdout.on("data", (data) => {

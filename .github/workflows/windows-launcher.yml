@@ -1,0 +1,46 @@
+name: Build Windows Launcher
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "launcher/**"
+      - "scripts/launch.cjs"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/windows-launcher.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  package-windows-launcher:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm 11.9.0
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.9.0
+
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build portable Windows launcher
+        run: pnpm run package:windows
+
+      - name: Upload portable launcher artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Andromeda-Launcher-Windows-x64
+          path: release/Andromeda-Launcher-*-Windows-x64.exe
+          if-no-files-found: error
+          retention-days: 90

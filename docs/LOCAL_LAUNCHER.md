@@ -1,42 +1,25 @@
 # Local Launcher
 
-Andromeda has one supported local startup command:
+## Recommended: one-click Windows launcher
+
+The recommended home setup is the portable **Andromeda Launcher** Windows executable published with the project release. Download the `Andromeda-Launcher-<version>-Windows-x64.exe` asset, place it in a folder you control, and double-click it.
+
+The executable bundles the application runtime, the required dependencies, and the prebuilt application assets. It does **not** require a separate Node.js, pnpm, Electron, `.bat`, or `.vbs` launcher installation.
+
+On its first launch, the app creates and opens its own `.env.local` configuration file. Add a supported LLM provider key, save the file, and reopen the executable. The configuration and diagnostic logs stay in the current Windows user's application-data directory, not beside the executable.
+
+## Diagnostics
+
+If startup fails, click **Open diagnostics** in the launcher. It opens a timestamped log that records the startup steps and the full final process output. Never share `.env.local` or an API key when requesting help.
+
+## Source checkout (developers only)
+
+For contributors running a GitHub checkout rather than the portable executable:
 
 ```bash
 pnpm launch
 ```
 
-The launcher is responsible for verifying the local environment, installing dependencies when they are absent, building the application, and opening the Electron launcher.
+This development entry point requires Node.js **22 LTS or newer** and pnpm **11+**. It checks the environment, reconciles the lockfile, builds the app when needed, and then starts the same Electron launcher.
 
-## Requirements
-
-| Requirement | Supported configuration |
-|---|---|
-| Node.js | **22 LTS or newer**; Node 22 LTS is recommended for repeatable native-dependency installs |
-| pnpm | **11+**; install with `npm install -g pnpm@11.9.0` if needed |
-| Configuration | Copy `.env.local.example` to `.env.local`, then set at least one supported LLM provider key |
-
-## Windows first run
-
-Open **Command Prompt** in the repository folder and run:
-
-```bat
-npm install -g pnpm@11.9.0
-pnpm launch
-```
-
-The first run can take several minutes because it installs the JavaScript packages and native dependencies. Do not close the terminal while installation or building is in progress.
-
-## Diagnostics
-
-The launcher writes a timestamped log for every local startup attempt:
-
-```text
-.andromeda\launcher-logs\launch-<timestamp>.log
-```
-
-If setup fails, the Electron launcher exposes **Open diagnostics**. When requesting help, share the final 30–60 log lines but never share `.env.local`, API keys, or other secrets.
-
-## Supported entry points
-
-The supported entry point is `pnpm launch`. The repository no longer contains legacy `.bat` or `.vbs` launchers because they hid dependency-install errors and could silently fall back to incompatible global Electron installations.
+The project intentionally has no legacy `.bat` or `.vbs` startup files. They obscured dependency errors and could fall back to incompatible globally installed Electron versions.
