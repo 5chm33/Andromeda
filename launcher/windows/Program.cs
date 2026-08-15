@@ -197,9 +197,15 @@ internal sealed class LauncherForm : Form
         var cmdPath = Environment.GetEnvironmentVariable("ComSpec") ?? Path.Combine(Environment.SystemDirectory, "cmd.exe");
         if (!File.Exists(cmdPath)) throw new InvalidOperationException("Windows cmd.exe could not be located.");
 
+        // Pass one literal command line to cmd.exe. Do not use ArgumentList here:
+        // ArgumentList escapes its final argument and turns the required nested cmd
+        // quotes into literal backslashes (the exact defect fixed in v5.0.3).
+        var commandLine = $"/d /s /c \"\"{pnpmPath}\" launch\"";
+        Write($"Invoking cmd.exe with: {commandLine}");
         var startInfo = new ProcessStartInfo
         {
             FileName = cmdPath,
+            Arguments = commandLine,
             WorkingDirectory = _root,
             UseShellExecute = false,
             RedirectStandardOutput = true,
@@ -208,10 +214,6 @@ internal sealed class LauncherForm : Form
             StandardOutputEncoding = Encoding.UTF8,
             StandardErrorEncoding = Encoding.UTF8
         };
-        startInfo.ArgumentList.Add("/d");
-        startInfo.ArgumentList.Add("/s");
-        startInfo.ArgumentList.Add("/c");
-        startInfo.ArgumentList.Add($"\"\"{pnpmPath}\" launch\"");
         startInfo.Environment["CI"] = "";
 
         using var process = new Process { StartInfo = startInfo, EnableRaisingEvents = true };
