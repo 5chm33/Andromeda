@@ -44,3 +44,16 @@ jobs:
           path: release/Andromeda-Launcher-*-Windows-x64.exe
           if-no-files-found: error
           retention-days: 90
+
+      - name: Publish portable launcher release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: launcher-v5.0.0
+          name: Andromeda Launcher v5.0.0
+          body: |
+            One-click portable Windows launcher for Andromeda.
+
+            Download the `.exe`, double-click it, and configure an LLM provider key when the launcher opens its setup file. No Node.js, pnpm, Electron, batch file, or VBScript setup is required.
+          files: release/Andromeda-Launcher-*-Windows-x64.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
