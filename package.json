@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "build": "vite build && node build.mjs",
     "start": "cross-env NODE_ENV=production node dist/_core/index.js",
+    "launch": "node scripts/launch.cjs",
     "check": "tsc --noEmit",
     "format": "prettier --write .",
     "test": "vitest run",

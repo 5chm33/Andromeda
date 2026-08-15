@@ -314,7 +314,7 @@
   <div class="hero">
     <div class="hero-badge">
       <div class="hero-badge-dot"></div>
-      v12.1.0 · Gödel Machine Edition
+      v13.0.0 · Local Reliability Edition
     </div>
     <div class="hero-title">Andromeda AI</div>
     <div class="hero-sub">Recursive self-improving intelligence — initializing…</div>
@@ -351,11 +351,15 @@
 
   <!-- Footer -->
   <div class="footer">
-    <span class="footer-version">Andromeda v12.1.0</span>
+    <span class="footer-version">Andromeda v13.0.0</span>
     <div class="footer-actions">
       <button class="btn btn-secondary" id="btn-env" style="display:none"
               onclick="window.launcher.openEnv()">
-        ✏️ Edit .env.local
+        Edit .env.local
+      </button>
+      <button class="btn btn-secondary" id="btn-log" style="display:none"
+              onclick="window.launcher.openDiagnostics()">
+        Open diagnostics
       </button>
       <button class="btn btn-primary" id="btn-open" disabled
               onclick="window.launcher.openBrowser()">
@@ -419,6 +423,10 @@
 
     window.launcher.onShowEnvBtn(() => {
       document.getElementById("btn-env").style.display = "inline-flex";
+    });
+
+    window.launcher.onShowLogBtn(() => {
+      document.getElementById("btn-log").style.display = "inline-flex";
     });
   </script>
 </body>

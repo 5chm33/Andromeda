@@ -17,6 +17,7 @@
 const { app, BrowserWindow, ipcMain, shell } = require("electron");
 const { execSync, spawn } = require("child_process");
 const fs   = require("fs");
+const os   = require("os");
 const path = require("path");
 const net  = require("net");
 
@@ -47,12 +48,60 @@ function findProjectRoot() {
   return path.resolve(path.join(__dirname, ".."));
 }
 const ROOT = findProjectRoot();
+const DIAGNOSTIC_DIR = path.join(ROOT, ".andromeda", "launcher-logs");
+const DIAGNOSTIC_LOG = path.join(
+  DIAGNOSTIC_DIR,
+  `launch-${new Date().toISOString().replace(/[:.]/g, "-")}.log`,
+);
+fs.mkdirSync(DIAGNOSTIC_DIR, { recursive: true });
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
+function asText(value) {
+  if (!value) return "";
+  return Buffer.isBuffer(value) ? value.toString("utf8") : String(value);
+}
+
+function writeDiagnostic(level, message) {
+  fs.appendFileSync(
+    DIAGNOSTIC_LOG,
+    `[${new Date().toISOString()}] [${level.toUpperCase()}] ${message}${os.EOL}`,
+  );
+}
+
+function outputTail(value, lineCount = 30) {
+  return asText(value)
+    .trim()
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .slice(-lineCount)
+    .join(os.EOL);
+}
+
 function runCapture(cmd, opts = {}) {
   try {
     return execSync(cmd, { cwd: ROOT, encoding: "utf8", ...opts }).trim();
   } catch { return null; }
+}
+
+function runChecked(cmd, label, timeout) {
+  writeDiagnostic("info", `${label}: ${cmd}`);
+  try {
+    const output = execSync(cmd, {
+      cwd: ROOT,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+      timeout,
+    });
+    if (output) writeDiagnostic("info", output);
+    return output;
+  } catch (error) {
+    const captured = [asText(error.stdout), asText(error.stderr), asText(error.message)]
+      .filter(Boolean)
+      .join(os.EOL);
+    writeDiagnostic("error", captured || `${label} failed without captured output.`);
+    const tail = outputTail(captured) || "No process output was captured.";
+    throw new Error(`${label} failed.${os.EOL}${tail}`);
+  }
 }
 
 function exists(relPath) {
@@ -81,9 +130,9 @@ function send(event, payload) {
   }
 }
 
-function log(msg)  { send("log",  { level: "info",  msg }); }
-function warn(msg) { send("log",  { level: "warn",  msg }); }
-function err(msg)  { send("log",  { level: "error", msg }); }
+function log(msg)  { writeDiagnostic("info", msg); send("log",  { level: "info",  msg }); }
+function warn(msg) { writeDiagnostic("warn", msg); send("log",  { level: "warn",  msg }); }
+function err(msg)  { writeDiagnostic("error", msg); send("log",  { level: "error", msg }); }
 function step(id, status, label) { send("step", { id, status, label }); }
 
 // ── Create the launcher window ────────────────────────────────────────────────
@@ -120,14 +169,16 @@ ipcMain.on("window-minimize", () => win && win.minimize());
 ipcMain.on("window-close",    () => win && win.close());
 ipcMain.on("open-browser",    () => shell.openExternal(`http://localhost:${SERVER_PORT}`));
 ipcMain.on("open-env",        () => shell.openPath(path.join(ROOT, ".env.local")));
+ipcMain.on("open-diagnostics", () => shell.openPath(DIAGNOSTIC_LOG));
 
 // ── Main startup sequence ─────────────────────────────────────────────────────
 async function runStartup() {
   // Small delay so the splash renders first
   await sleep(400);
 
-  // Debug: show resolved project root so path issues are immediately visible
+  // Persist startup facts before any external command runs.
   log(`Project root: ${ROOT}`);
+  log(`Diagnostic log: ${DIAGNOSTIC_LOG}`);
   const envExists = fs.existsSync(path.join(ROOT, ".env.local"));
   log(`  .env.local found: ${envExists}`);
 
@@ -136,17 +187,22 @@ async function runStartup() {
   const nodeVer = runCapture("node --version");
   if (!nodeVer) {
     step("node", "error", "Node.js not found");
-    err("Cannot detect Node.js. Please install Node.js 18+ and try again.");
+    err("Cannot detect Node.js. Install Node.js 22 LTS, reopen the launcher, and try again.");
+    send("show-log-button", {});
     return;
   }
   const major = parseInt(nodeVer.replace("v", "").split(".")[0], 10);
-  if (major < 18) {
-    step("node", "error", `Node.js ${nodeVer} too old`);
-    err(`Node.js 18+ required. You have ${nodeVer}. Please upgrade.`);
+  if (major < 22) {
+    step("node", "error", `Node.js ${nodeVer} unsupported`);
+    err(`Node.js 22+ is required. You have ${nodeVer}. Install Node.js 22 LTS and relaunch.`);
+    send("show-log-button", {});
     return;
   }
   step("node", "done", `Node.js ${nodeVer}`);
   log(`Node.js ${nodeVer} ✓`);
+  if (major >= 24) {
+    warn(`Node.js ${nodeVer} is newer than the recommended Node.js 22 LTS runtime; continuing because compatibility checks passed.`);
+  }
 
   // ── Step 2: .env.local check ─────────────────────────────────────────────
   step("env", "running", "Checking API keys…");
@@ -201,17 +257,13 @@ async function runStartup() {
   // ── Step 3: pnpm ─────────────────────────────────────────────────────────
   step("deps", "running", "Checking pnpm…");
   await sleep(200);
-  let pnpmVer = runCapture("pnpm --version");
-  if (!pnpmVer) {
-    log("pnpm not found — installing via npm…");
-    try {
-      execSync("npm install -g pnpm", { cwd: ROOT, stdio: "pipe" });
-      pnpmVer = runCapture("pnpm --version");
-    } catch {
-      step("deps", "error", "pnpm install failed");
-      err("Failed to install pnpm. Try running as Administrator.");
-      return;
-    }
+  const pnpmVer = runCapture("pnpm --version");
+  const pnpmMajor = pnpmVer ? parseInt(pnpmVer.split(".")[0], 10) : 0;
+  if (!pnpmVer || pnpmMajor < 11) {
+    step("deps", "error", "pnpm 11+ required");
+    err(`Install pnpm 11.9.0 with: npm install -g pnpm@11.9.0. Detected: ${pnpmVer || "not found"}.`);
+    send("show-log-button", {});
+    return;
   }
   log(`pnpm ${pnpmVer} ✓`);
 
@@ -220,13 +272,13 @@ async function runStartup() {
     step("deps", "running", "Installing dependencies (~2 min)…");
     log("First run — installing dependencies…");
     try {
-      execSync("pnpm install --no-frozen-lockfile", {
-        cwd: ROOT, stdio: "pipe", timeout: 300_000,
-      });
+      runChecked("pnpm install --frozen-lockfile --reporter=append-only", "Dependency installation", 600_000);
       log("Dependencies installed ✓");
     } catch (e) {
-      step("deps", "error", "Dependency install failed");
-      err("pnpm install failed. Delete node_modules and try again.");
+      step("deps", "error", "Dependency install failed — see diagnostics");
+      err(e.message);
+      err("Click Open diagnostics to view and share the full installer log. Do not share .env.local.");
+      send("show-log-button", {});
       return;
     }
   }
@@ -270,13 +322,13 @@ async function runStartup() {
     step("build", "running", "Building Andromeda (~30 sec)…");
     log("Building latest changes…");
     try {
-      execSync("pnpm run build", {
-        cwd: ROOT, stdio: "pipe", timeout: 180_000,
-      });
+      runChecked("pnpm run build", "Andromeda build", 240_000);
       log("Build complete ✓");
     } catch (e) {
-      step("build", "error", "Build failed");
-      err("Build failed. Check Node.js 18+ is installed and try again.");
+      step("build", "error", "Build failed — see diagnostics");
+      err(e.message);
+      err("Click Open diagnostics to view and share the full build log.");
+      send("show-log-button", {});
       return;
     }
   }

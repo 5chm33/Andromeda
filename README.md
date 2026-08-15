@@ -127,9 +127,12 @@ For files larger than 12,000 characters, the pipeline builds a **smart context**
 ```bash
 git clone https://github.com/5chm33/Andromeda.git
 cd Andromeda
-pnpm install
-cp .env.example .env.local
+npm install -g pnpm@11.9.0
+cp .env.local.example .env.local
+pnpm launch
 ```
+
+> **Local requirements:** Node.js 22 LTS or newer and pnpm 11+. `pnpm launch` is the single supported local startup command: it checks the environment, installs dependencies when needed, builds the app, opens the desktop launcher, and writes diagnostic logs to `.andromeda/launcher-logs/`. See [`docs/LOCAL_LAUNCHER.md`](docs/LOCAL_LAUNCHER.md) for Windows-specific help and troubleshooting.
 
 Edit `.env.local` and add your API keys:
 
