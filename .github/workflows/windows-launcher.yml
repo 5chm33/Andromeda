@@ -41,8 +41,8 @@ jobs:
           New-Item -ItemType Directory -Force -Path $testRoot | Out-Null
           $shim = Join-Path $testRoot 'pnpm.cmd'
           Set-Content -Path $shim -Value "@echo off`r`necho PNPM_SHIM_OK %*"
-          $commandLine = "/d /s /c `"`"$shim`" launch`""
-          $output = & $env:ComSpec /d /s /c "`"`"$shim`" launch`"" 2>&1
+          $commandLine = "/d /c call `"$shim`" launch"
+          $output = & $env:ComSpec /d /c "call `"$shim`" launch" 2>&1
           $output | Out-Host
           if ($LASTEXITCODE -ne 0 -or ($output -join "`n") -notmatch 'PNPM_SHIM_OK launch') {
             throw "cmd.exe could not invoke a pnpm.cmd shim at a path containing spaces."
@@ -69,8 +69,8 @@ jobs:
       - name: Publish project-local launcher release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: project-launcher-v5.0.3
-          name: Andromeda Project Launcher v5.0.3
+          tag_name: project-launcher-v5.0.4
+          name: Andromeda Project Launcher v5.0.4
           body: |
             One-click Windows launcher for a downloaded Andromeda project folder.
 

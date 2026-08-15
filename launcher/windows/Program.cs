@@ -197,10 +197,10 @@ internal sealed class LauncherForm : Form
         var cmdPath = Environment.GetEnvironmentVariable("ComSpec") ?? Path.Combine(Environment.SystemDirectory, "cmd.exe");
         if (!File.Exists(cmdPath)) throw new InvalidOperationException("Windows cmd.exe could not be located.");
 
-        // Pass one literal command line to cmd.exe. Do not use ArgumentList here:
-        // ArgumentList escapes its final argument and turns the required nested cmd
-        // quotes into literal backslashes (the exact defect fixed in v5.0.3).
-        var commandLine = $"/d /s /c \"\"{pnpmPath}\" launch\"";
+        // CALL is a cmd.exe built-in that reliably runs a quoted batch shim from
+        // a directory containing spaces. It avoids the fragile nested /S /C quote
+        // pattern that caused the prior pnpm.cmd startup failure.
+        var commandLine = $"/d /c call \"{pnpmPath}\" launch";
         Write($"Invoking cmd.exe with: {commandLine}");
         var startInfo = new ProcessStartInfo
         {
