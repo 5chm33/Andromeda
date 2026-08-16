@@ -13,7 +13,34 @@
 
 import { initGoalPersistence } from "../goalManager";
 
+function envEnabled(value: string | undefined): boolean {
+  return /^(1|true|yes|on)$/i.test(value ?? "");
+}
+
+function envDisabled(value: string | undefined): boolean {
+  return /^(0|false|no|off)$/i.test(value ?? "");
+}
+
+/**
+ * Local-only chat must remain an interactive, no-cost mode. The full module
+ * bootstrap starts evaluators, self-healing loops, graph rebuilds, schedulers,
+ * and automatic RSI baseline work that can override a paused RSI state and
+ * exhaust a low-memory machine before the first chat request.
+ */
+export function isMinimalInteractiveBootstrap(): boolean {
+  return (
+    envEnabled(process.env.LLM_LOCAL_ONLY) ||
+    envEnabled(process.env.ANDROMEDA_DISABLE_BACKGROUND_DAEMONS) ||
+    envDisabled(process.env.AUTONOMY) ||
+    envDisabled(process.env.CONTINUOUS_IMPROVE)
+  );
+}
+
 export async function initModules(): Promise<void> {
+  if (isMinimalInteractiveBootstrap()) {
+    console.info("[Init] Minimal interactive bootstrap enabled; skipping background/RSI module initialization");
+    return;
+  }
   // ── v9.14: SQLite persistence layer init (replaces JSON flat files) ──────────
   try {
     const { getDb, migrateFromJson } = await import("../andromedaDb.js");
