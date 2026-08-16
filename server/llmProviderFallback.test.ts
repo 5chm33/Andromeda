@@ -6,7 +6,9 @@ vi.unmock("./llmProvider.js");
 
 import {
   chatCompletion,
+  getActiveProvider,
   resolveProviderFromEnv,
+  setActiveProvider,
   streamChatCompletion,
   switchProvider,
 } from "./llmProvider.js";
@@ -45,6 +47,20 @@ describe("local Ollama fallback", () => {
     expect(provider.apiUrl).toBe("http://ollama.test:11434/v1/chat/completions");
     expect(provider.model).toBe("qwen2.5-coder:7b");
     expect(provider.apiKey).toBe("ollama");
+  });
+
+  it("keeps Ollama active when UI state attempts to restore a paid provider", () => {
+    process.env.LLM_LOCAL_ONLY = "true";
+    process.env.OLLAMA_BASE_URL = "http://ollama.test:11434";
+    process.env.OLLAMA_MODEL = "qwen2.5-coder:7b";
+
+    switchProvider("deepseek");
+    setActiveProvider({ id: "openrouter", model: "some-paid-model" });
+
+    const active = getActiveProvider();
+    expect(active.id).toBe("ollama");
+    expect(active.apiUrl).toBe("http://ollama.test:11434/v1/chat/completions");
+    expect(active.model).toBe("qwen2.5-coder:7b");
   });
 
   it("falls back from a DeepSeek 402 to local Ollama without another paid request", async () => {

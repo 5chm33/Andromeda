@@ -528,12 +528,22 @@ export function getProviderApiKey(id: string): string {
  * @param id Provider identifier (e.g. 'deepseek', 'openrouter', 'anthropic')
  */
 export function switchProvider(id: string): void {
+  if (localOnlyMode()) {
+    activeProvider = getOllamaProvider();
+    _providerInitialized = true;
+    log.info(`[LLM] Ignoring provider switch to ${id}; LLM_LOCAL_ONLY keeps Ollama active`);
+    return;
+  }
   activeProvider = getProviderConfig(id) ?? { ...DEFAULT_PROVIDERS.custom, apiKey: "" };
   _providerInitialized = true;
 }
 
 /** Returns a copy of the currently active LLM provider configuration. */
 export function getActiveProvider(): LLMProviderConfig {
+  // This is an invariant, not merely an initial default. UI model preferences,
+  // retries, continuations, and background routes cannot restore a paid provider
+  // while the user has explicitly selected zero-cost local-only operation.
+  if (localOnlyMode()) return { ...getOllamaProvider() };
   return { ...ensureProviderInitialized() };
 }
 
@@ -544,6 +554,12 @@ export function getActiveProvider(): LLMProviderConfig {
  */
 export function setActiveProvider(config: Partial<LLMProviderConfig> & { id: string }): void {
   if (!config) return;
+  if (localOnlyMode()) {
+    activeProvider = getOllamaProvider();
+    _providerInitialized = true;
+    log.info(`[LLM] Ignoring provider override to ${config.id}; LLM_LOCAL_ONLY keeps Ollama active`);
+    return;
+  }
   const base = getProviderConfig(config.id) ?? DEFAULT_PROVIDERS.custom;
   // v6.15.3 FIX: Always resolve the API key from the NEW provider's id.
   // Bug: previously fell back to old active provider's key when switching tiers,
