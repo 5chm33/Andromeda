@@ -7,7 +7,7 @@
 import { recordUsage } from "./tokenBudgetManager.js";
 import type { SearchSource } from "../drizzle/schema.js";
 import type { Response } from "express";
-import { getActiveProvider } from "./llmProvider.js";
+import { getActiveProvider, streamChatCompletion, type ChatMessage } from "./llmProvider.js";
 import { recordRequestOutcome } from "./selfMonitor.js";
 import { llmBreaker, CircuitOpenError } from "./circuitBreaker.js";
 import { groundAnswer } from "./grounding.js";
@@ -164,12 +164,66 @@ export async function streamToResponse(
   return result.content;
 }
 
+function normalizeProviderMessages(messages: Array<{ role: string; content: any }>): ChatMessage[] {
+  const validRoles = new Set<ChatMessage["role"]>(["system", "user", "assistant", "tool"]);
+  return messages.map((message) => ({
+    role: validRoles.has(message.role as ChatMessage["role"])
+      ? message.role as ChatMessage["role"]
+      : "user",
+    content: typeof message.content === "string" ? message.content : JSON.stringify(message.content ?? ""),
+  }));
+}
+
+/** Shared provider bridge for the visible SSE chat route. */
+async function streamWithUnifiedProvider(
+  messages: Array<{ role: string; content: any }>,
+  res: Response,
+  options: { maxTokens?: number; temperature?: number } = {},
+): Promise<{ content: string; truncated: boolean }> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 180_000);
+  const onClose = () => controller.abort();
+  res.on("close", onClose);
+
+  let content = "";
+  let truncated = false;
+  try {
+    for await (const chunk of streamChatCompletion(normalizeProviderMessages(messages), {
+      temperature: options.temperature,
+      maxTokens: options.maxTokens,
+      signal: controller.signal,
+    })) {
+      if (chunk.type === "text" && chunk.text) {
+        content += chunk.text;
+        if (!res.writableEnded) {
+          res.write(`data: ${JSON.stringify({ type: "delta", content: chunk.text })}\n\n`);
+          if (typeof (res as any).flush === "function") (res as any).flush();
+        }
+      } else if (chunk.type === "error") {
+        throw new Error(chunk.text || "Unified LLM provider returned an error");
+      } else if (chunk.type === "done") {
+        truncated = chunk.finishReason === "length";
+      }
+    }
+    return { content, truncated };
+  } finally {
+    clearTimeout(timeout);
+    res.off("close", onClose);
+  }
+}
+
 async function _streamToResponseCore(
   messages: Array<{ role: string; content: any }>,
   res: Response,
   options: { maxTokens?: number; temperature?: number; autoContinue?: boolean; maxContinuations?: number } = {}
 ): Promise<{ content: string; truncated: boolean }> {
-  resolveProviderOnce(); // v6.13: Ensure provider is resolved before first API call
+  // The shared provider is the default chat route. It honors LLM_LOCAL_ONLY and
+  // paid-provider 402/429 fallbacks, unlike the retained legacy direct-fetch path.
+  if (process.env.USE_LEGACY_STREAMING !== "true") {
+    return streamWithUnifiedProvider(messages, res, options);
+  }
+
+  resolveProviderOnce(); // Legacy direct-fetch path, retained only for troubleshooting
   const apiKey = getApiKey();
   if (!apiKey) throw new Error("DEEPSEEK_API_KEY or LLM_API_KEY not configured");
 

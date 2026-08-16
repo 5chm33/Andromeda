@@ -414,9 +414,31 @@ const __dirname = dirname(__filename);
  * Production startup remains enabled by default; set ANDROMEDA_START_DAEMONS=true
  * to force it, or ANDROMEDA_DISABLE_BACKGROUND_DAEMONS=true to suppress it.
  */
+function envEnabled(value: string | undefined): boolean {
+  return /^(1|true|yes|on)$/i.test(value ?? "");
+}
+
+function envDisabled(value: string | undefined): boolean {
+  return /^(0|false|no|off)$/i.test(value ?? "");
+}
+
 export function isBackgroundDaemonStartupEnabled(): boolean {
-  if (process.env.ANDROMEDA_START_DAEMONS === "true") return true;
-  return process.env.ANDROMEDA_DISABLE_BACKGROUND_DAEMONS !== "true";
+  // Local-only mode is a no-cost interactive mode, not permission to launch a
+  // fleet of background analyzers and RSI workers. Pause/disable flags must win
+  // over any stale start flag before a timer, worker pool, benchmark, or
+  // self-improvement task is created.
+  if (
+    envEnabled(process.env.LLM_LOCAL_ONLY) ||
+    envDisabled(process.env.CONTINUOUS_IMPROVE) ||
+    envDisabled(process.env.AUTONOMY) ||
+    envEnabled(process.env.ANDROMEDA_DISABLE_BACKGROUND_DAEMONS)
+  ) {
+    return false;
+  }
+
+  // An explicit enable is available only when no safety/pause flag is active.
+  if (envEnabled(process.env.ANDROMEDA_START_DAEMONS)) return true;
+  return true;
 }
 
 /**
