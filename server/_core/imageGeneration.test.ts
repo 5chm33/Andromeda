@@ -38,6 +38,10 @@ describe("generateImage", () => {
     const result = await generateImage({ prompt: "a cat" });
     
     expect(result.url).toMatch(/^data:image\/jpeg;base64,/);
+    expect(global.fetch).toHaveBeenCalledWith(
+      "https://router.huggingface.co/hf-inference/models/stabilityai/stable-diffusion-3-medium-diffusers",
+      expect.objectContaining({ method: "POST" }),
+    );
     expect(result.usedReference).toBe(false);
     expect(result.enhancedPrompt).toBeUndefined();
   });

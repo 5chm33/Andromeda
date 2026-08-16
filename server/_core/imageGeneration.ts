@@ -11,8 +11,13 @@
  * text-driven — precise, detailed text constraints produce precise output.
  */
 
+// The legacy FLUX.1-schnell hf-inference route was retired by Hugging Face.
+// Stable Diffusion 3 Medium remains served by the current hf-inference provider.
+// HF_IMAGE_MODEL can be changed to another currently supported text-to-image model
+// without touching application code.
+const HF_IMAGE_MODEL = process.env.HF_IMAGE_MODEL || "stabilityai/stable-diffusion-3-medium-diffusers";
 const HF_TXT2IMG_ENDPOINT =
-  "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell";
+  `https://router.huggingface.co/hf-inference/models/${HF_IMAGE_MODEL}`;
 
 import { createLogger } from "../logger.js";
 const log = createLogger("imageGeneration");
@@ -184,7 +189,7 @@ export async function generateImage(options: GenerateImageOptions): Promise<Gene
 
   if (!response.ok) {
     const errorText = await response.text().catch(() => "unknown error");
-    throw new Error(`Image generation failed (HF ${response.status}): ${errorText.slice(0, 300)}`);
+    throw new Error(`Image generation failed for ${HF_IMAGE_MODEL} (HF ${response.status}): ${errorText.slice(0, 300)}`);
   }
 
   const arrayBuffer = await response.arrayBuffer();
