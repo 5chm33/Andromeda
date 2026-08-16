@@ -36,7 +36,25 @@ const chatStreamSchema = z.object({
 // ── Self-modification detection pattern ───────────────────────────────────────
 // When a user asks the AI to look at or modify its own code, redirect to the
 // ReactEngine (agent loop) which has full tool access and safety guards.
-const SELF_MOD_PATTERN = /take a look at your code|look at your code|your source code|your codebase|your engine|your architect|self.?enhanc|self.?improv|self.?modif|self.?aware|self.?diagnos|fully autonomous|SOTA|truncat|upgrade your|fix yourself|improve yourself|examine your|read your code|analyze your/i;
+const SELF_MOD_PATTERN = /take a look at your code|look at your code|your source code|your codebase|your engine|your architect|self.?enhanc|self.?improv|self.?modif|self.?aware|self.?diagnos|fully autonomous|truncat|upgrade your|fix yourself|improve yourself|examine your|read your code|analyze your/i;
+
+function envEnabled(value: string | undefined): boolean {
+  return /^(1|true|yes|on)$/i.test(value ?? "");
+}
+
+/**
+ * Tool-enabled agent sessions are deliberately disabled for local-only and
+ * paused-autonomy operation. Those modes promise a bounded local chat request;
+ * redirecting a normal prompt into the long-running agent loop can otherwise
+ * leave the UI indefinitely in a Thinking state.
+ */
+export function shouldRedirectToAgent(lastUserMsg: string): boolean {
+  const interactiveOnly =
+    envEnabled(process.env.LLM_LOCAL_ONLY) ||
+    /^(0|false|no|off)$/i.test(process.env.AUTONOMY ?? "") ||
+    /^(0|false|no|off)$/i.test(process.env.CONTINUOUS_IMPROVE ?? "");
+  return !interactiveOnly && SELF_MOD_PATTERN.test(lastUserMsg);
+}
 
 // ── Route registration ─────────────────────────────────────────────────────────
 
@@ -71,7 +89,7 @@ export function registerChatRoutes(
 
     // v5.94: Detect self-modification requests and redirect to agent loop
     const lastUserMsg = [...messages].reverse().find(m => m.role === "user")?.content ?? "";
-    if (SELF_MOD_PATTERN.test(lastUserMsg)) {
+    if (shouldRedirectToAgent(lastUserMsg)) {
       setSseHeaders(res);
       const workDir = getWorkspaceDir();
       const sid = `react-chat-redirect-${Date.now()}`;

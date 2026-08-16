@@ -47,6 +47,9 @@ describe("chatRoutes", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
+    delete process.env.LLM_LOCAL_ONLY;
+    delete process.env.AUTONOMY;
+    delete process.env.CONTINUOUS_IMPROVE;
     
     app = express();
     app.use(express.json());
@@ -92,6 +95,31 @@ describe("chatRoutes", () => {
       expect(res.status).toBe(200);
       expect(mockStreamChat).toHaveBeenCalled();
       expect(sseWrite).toHaveBeenCalledWith(expect.anything(), { type: "done", fullAnswer: "Hello there" });
+    });
+
+    it("keeps generic SOTA wording on the normal chat route", async () => {
+      mockStreamChat.mockResolvedValueOnce("Local response");
+
+      const res = await request(app)
+        .post("/api/chat/stream")
+        .send({ messages: [{ role: "user", content: "Can you help me make a SOTA project plan?" }] });
+
+      expect(res.status).toBe(200);
+      expect(mockStreamChat).toHaveBeenCalled();
+      expect(mockStreamAgentToSSE).not.toHaveBeenCalled();
+    });
+
+    it("keeps self-code wording on normal chat when local-only mode is enabled", async () => {
+      process.env.LLM_LOCAL_ONLY = "true";
+      mockStreamChat.mockResolvedValueOnce("Local-only response");
+
+      const res = await request(app)
+        .post("/api/chat/stream")
+        .send({ messages: [{ role: "user", content: "take a look at your code" }] });
+
+      expect(res.status).toBe(200);
+      expect(mockStreamChat).toHaveBeenCalled();
+      expect(mockStreamAgentToSSE).not.toHaveBeenCalled();
     });
 
     it("should redirect self-modification to agent loop", async () => {
