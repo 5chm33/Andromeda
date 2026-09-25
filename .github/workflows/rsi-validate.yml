@@ -24,6 +24,9 @@ jobs:
     name: RSI 8-Gate Pipeline
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      AUTONOMY: "false"
+      CONTINUOUS_IMPROVEMENT: "false"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -61,8 +64,8 @@ jobs:
         run: pnpm test --run
         env:
           NODE_ENV: test
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY || 'test-stub' }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY || 'test-stub' }}
+          DEEPSEEK_API_KEY: test-stub
+          OPENROUTER_API_KEY: test-stub
 
       # Gate 3: No direct git push outside promotionService.ts
       - name: Gate 3 — No direct git push outside promotionService.ts
@@ -120,15 +123,15 @@ jobs:
           NODE_ENV: production
           PORT: 3000
           AUTONOMY: "false"
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY || 'test-stub' }}
+          DEEPSEEK_API_KEY: test-stub
 
       # Gate 8: Adversarial acceptance tests
       - name: Gate 8 — Adversarial acceptance tests
         run: pnpm exec vitest run server/tests/adversarial/
         env:
           NODE_ENV: test
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY || 'test-stub' }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY || 'test-stub' }}
+          DEEPSEEK_API_KEY: test-stub
+          OPENROUTER_API_KEY: test-stub
 
       # Summary
       - name: Pipeline summary

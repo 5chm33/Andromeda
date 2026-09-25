@@ -1,176 +1,50 @@
-<div align="center">
-
 # Andromeda
 
-**A self-hosted, evidence-producing software-engineering agent for Python repositories, with inspectable execution and reproducible evaluation.**
+**TypeScript code-repair and evaluation research platform.** Andromeda explores repository issue repair, candidate patch generation, model routing, Docker-oriented test execution, and controls for self-modification. It is an experimental system, **not a demonstrated production-safe autonomous repair service** or a verified SWE-bench leaderboard result.
 
-*Development started March 3, 2026. Built as a solo project to explore deterministic validation and cost-aware model routing.*
+This repository contains three distinct paths; evidence for one path does not validate the others:
 
-[![Release](https://img.shields.io/github/v/release/5chm33/Andromeda?color=blueviolet)](https://github.com/5chm33/Andromeda/releases/tag/v5.0.0)
-[![Tests](https://img.shields.io/badge/tests-5787%20passing-brightgreen)](#)
-[![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](#)
-[![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
+| Path | Main entry points | Purpose and boundary |
+| --- | --- | --- |
+| SWE-bench pipeline | `scripts/run_swebench.ts`, `server/sweBench*.ts` | Assemble context and generate candidate patches for benchmark instances. In `scored_strict` mode, evaluator artifacts are withheld from the model; a `prediction_ready` patch is **not** an evaluator-resolved instance. |
+| User-facing agent | `server/reactEngine.ts`, `server/externalRepoFixer.ts` | ReAct-style chat and external-repository repair experiments. Functionality and test evidence vary by task and environment. |
+| RSI / self-modification | `server/rsiEngine.ts`, `server/selfImprove.ts`, `server/promotionService.ts` | Candidate proposals, shadow checks, local application, CI records, and a separately designed evidence/approval promotion service. Controls have not been shown to govern every local mutation end to end; keep autonomous operation disabled on important workspaces. |
 
-</div>
+## Evaluation evidence: what is and is not established
 
----
+| Historical item | Checked-in evidence | Defensible interpretation |
+| --- | --- | --- |
+| Reported v3 baseline, **96/500 (19.2%)** on SWE-bench Verified | [`andromeda_sota_v3_final_results.json`](data/swebench/andromeda_sota_v3_final_results.json) reports 96 resolved, 239 unresolved, and 165 errors; a 500-row prediction artifact is also present. | A **repository-reported historical summary**, not independently reproduced here. An official raw evaluator report tying the submitted predictions to the 96 resolved IDs was not established by the repository audit. Another earlier run records 0/500 and must not be conflated with this one. |
+| Previously advertised v4 **33/50 (66%)** | A 50-case summary documents 49 patches and one error; a matching official evaluator-resolved report for 33/50 was not found in the reviewed artifacts. | **Unverified development-set claim.** Patch generation/application is not the same as official evaluator resolution; do not use 66% as a general performance result. |
+| **113 multilingual reserved instances** | [`multilingual_preregistration.json`](data/swebench/multilingual_preregistration.json) and the associated frozen ID manifests. | A preregistered holdout design, **not 113 scored outcomes**. Resolution must be measured with the official evaluator on the fixed IDs. |
+| Test counts and cost claims | CI workflows and many tracked tests exist, but a fixed passing-test badge and claims about cheap-tier resolution or 10% of frontier cost lack a linked, reproducible run-level ledger here. | Run the current suite and report its exact command, revision, environment, and result; do not infer coverage, fix rate, or cost from static counts and design goals. |
 
-## What It Does
+For any future scored claim, publish a run bundle with dataset revision and selected-ID manifest, prediction JSONL/hash and unique-ID count, runner commit/config, container digest, evaluator command/version, raw evaluator output, and per-ID outcome taxonomy (`resolved`, `unresolved`, `prediction_ready`, apply failure, timeout, infrastructure failure, unsupported). Preserve failed and partial runs rather than silently changing the denominator.
 
-Andromeda is a production Node.js/TypeScript application that autonomously resolves GitHub issues from open-source repositories. Given a problem statement and a failing test suite, it:
+## Engineering design
 
-1. **Localizes** the relevant source files inside the SWE-bench Docker image using LLM-guided keyword search
-2. **Builds structured context** using keyword-aware skeleton assembly with ±10-line padding around relevant functions, with full line numbers
-3. **Resolves cross-file symbols** by scanning imports and call chains to pull in dependent files (up to 200k char budget)
-4. **Generates candidate patches** using a 4-agent parallel consensus engine (conservative, creative, defensive, refactor styles)
-5. **Validates each candidate** by running the actual test suite inside the Docker container
-6. **Iterates with traceback feedback** for up to 5 revision attempts, with 3-tier model escalation
-7. **Applies patches robustly** using `fixHunkCounts` pre-processing + `git apply --fuzz=15` + `--unidiff-zero` fallback to handle LLM formatting drift
+The benchmark path uses file discovery and context assembly (`server/sweBenchContextBuilder.ts`), model-routing presets (`server/sweBenchModelConfig.ts`), and a patch/traceback loop (`server/sweBenchTracebackLoop.ts`). Candidate generation and validation are **path- and mode-dependent**: Docker tests used in development are not automatically equivalent to hidden evaluator tests in scored mode. The core can route among multiple language families, but successful repair beyond Python benchmark instances has not been established by a comparable scored evaluation.
 
-### Language-Agnostic Core
-**Andromeda's core architecture — the ReAct engine, context assembly, and traceback loop — is entirely language-agnostic and written in TypeScript.** The SWE-bench harness targets Python solely because the benchmark itself is built on Python repositories. The agent is fully capable of resolving issues in JavaScript, TypeScript, Go, Rust, or any other language with a test runner.
+The promotion service contains exact-apply, passing-test, sandbox-evidence, bundle-persistence and human-approval checks when that service is used. The RSI path has had separate local apply behavior, which is why this project should be described as **evidence-oriented with continuing boundary hardening**, not as uniformly safety-proven. The [current safety-gate PR](https://github.com/5chm33/Andromeda/pulls) makes skipped required CI stages explicit, rejects unverifiable shadow runs, and removes bypassing Git commits; it does not turn local application into an immutable pre-apply promotion transaction or verify any benchmark outcome.
 
-### Cost-Efficiency as a First Principle
-Andromeda is designed for B2B/enterprise cost efficiency, not just raw benchmark scores. While running a frontier model (like Claude Fable 5) on every instance yields high scores, it costs ~$2.00+ per instance. Andromeda's **3-tier model escalation** resolves ~60% of issues using fast, cheap models (like Sonnet 5 at ~$0.05/instance), escalating to expensive frontier models only when the traceback loop detects a hard failure. This achieves near-frontier quality at ~10% of the cost.
+## Local setup and bounded verification
 
----
-
-## Evaluation Card
-
-Andromeda's performance is measured against SWE-bench Verified. 
-
-> **Note on Methodology:** A 50-case development set is used for iteration and pipeline tuning. It is not positioned as a general SWE-bench result. The 19.2% full-set result represents the baseline performance before recent context and pipeline improvements.
-
-### Full Set Evaluation (Baseline)
-- **Agent Version:** v3 (Commit `dc2d070`)
-- **Dataset:** SWE-bench Verified (500 instances)
-- **Model:** Claude Sonnet 4.5 + DeepSeek Coder fallback
-- **Score:** 19.2% (96 / 500 instances)
-- **Note:** This run was affected by fallback contamination (101/500 instances used patches from the fallback model that failed to apply).
-
-### Development Set Evaluation (Tuned)
-- **Agent Version:** v4 (Commit `b0eb334`)
-- **Dataset:** SWE-bench Verified Subset (50 instances: 22 astropy + 28 django)
-- **Model:** Claude Sonnet 5 (Tiers 1-2) + Claude Fable 5 (Tier 3)
-- **Score:** 66.0% (33 / 50 instances)
-- **Per-Repository Breakdown:** Astropy 77.3% (17/22), Django 57.1% (16/28)
-- **Note:** This score reflects performance on a heavily tuned development set.
-
-### Historical Artifacts
-The repository contains several historical result files, including a `0/500` result from early infrastructure testing and partial runs from API credit exhaustion. All raw predictions and evaluator logs are retained for transparency.
-
----
-
-## Architecture
-
-### Two Code Paths — Unified Intelligence
-
-Andromeda has two distinct code paths that share core components:
-
-**1. SWE-bench Evaluation Pipeline** (`scripts/run_swebench.ts` + `server/sweBench*.ts`)
-A specialized, purpose-built loop designed for the SWE-bench benchmark format. Takes a problem statement + Docker image + failing tests, and produces a git diff patch. 
-
-**2. Main Agent** (`server/reactEngine.ts` + `server/externalRepoFixer.ts`)
-A general-purpose ReAct (Reason + Act) loop that handles user requests via chat. Uses the same LLM infrastructure and `buildSmartContext` for code editing tasks. 
-
-**Shared components**:
-- `server/sweBenchContextBuilder.ts` — `buildSmartContext`, `runDebugProbe`, `buildDebugProbePrompt`
-- `server/sweBenchModelConfig.ts` — all LLM presets and escalation logic
-- `server/llmRouter.ts` — model routing (code tasks → Claude Sonnet 4.5 → Sonnet 5 → Fable 5)
-- `server/tools/webSearch.ts` — Tavily search 
-
----
-
-## Pipeline Overview
-
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                       Andromeda Pipeline                         │
-│                                                                  │
-│  ┌─────────────────┐   ┌──────────────────┐   ┌──────────────┐  │
-│  │  File           │──▶│  Smart Context   │──▶│  4-Agent     │  │
-│  │  Localization   │   │  Builder         │   │  Consensus   │  │
-│  │  (LLM-guided)   │   │  (skeleton +     │   │  (parallel)  │  │
-│  └─────────────────┘   │   symbol resolve)│   └──────┬───────┘  │
-│                        └──────────────────┘          │          │
-│  ┌───────────────────────────────────────────────────▼────────┐  │
-│  │                   Docker Test Execution                    │  │
-│  │   fixHunkCounts → git apply --fuzz=15 → --unidiff-zero    │  │
-│  │   → conda activate testbed → pytest / django test         │  │
-│  │   → capture traceback + Python version detection          │  │
-│  └───────────────────────────────────────────────────┬────────┘  │
-│                                                      │           │
-│  ┌──────────────┐   ┌──────────────────┐   ┌────────▼────────┐  │
-│  │  Traceback   │◀──│  3-Tier Model    │◀──│  Test Output   │  │
-│  │  Loop (5x)   │   │  Escalation      │   │  Analysis      │  │
-│  │  + 120k cap  │   │  Sonnet 5 →      │   └─────────────────┘  │
-│  └──────────────┘   │  Fable 5         │                        │
-│                     └──────────────────┘                        │
-└──────────────────────────────────────────────────────────────────┘
-```
-
-### Context Assembly
-
-For files larger than 12,000 characters, the pipeline builds a **smart context** instead of blindly truncating:
-
-1. Extracts all class and function signatures (the skeleton) — the LLM sees the full structural map of the file with line numbers
-2. Fully expands any function whose name appears in the issue description or failing test names
-3. Uses ±10-line padding around the first keyword match for precision anchoring
-4. Caps the total context at 40,000 characters for initial patches; 80,000 characters for revision prompts
-5. Resolves cross-file symbols by scanning imports and call chains, adding dependent files up to a 200,000 character total budget
-6. **Hard caps revision prompts at 120,000 characters** — truncates file context (not traceback) when exceeded
-
----
-
-## Getting Started
+Requires Node.js 22 and pnpm 11; the agent's model/Docker integrations are optional for the following checks. Inspect scripts and configuration before running the application or granting credentials.
 
 ```bash
 git clone https://github.com/5chm33/Andromeda.git
 cd Andromeda
-npm install -g pnpm@11.9.0
-cp .env.local.example .env.local
-pnpm launch
+pnpm install --frozen-lockfile --ignore-scripts
+AUTONOMY=false CONTINUOUS_IMPROVEMENT=false pnpm exec tsc --noEmit --skipLibCheck
+pnpm exec tsc --project tsconfig.scripts.json --noEmit
+AUTONOMY=false CONTINUOUS_IMPROVEMENT=false pnpm exec vitest run server/ciPipeline.test.ts server/shadowInstance.test.ts --pool=forks
+PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/check_no_direct_git_push.py
 ```
 
-> **Local requirements:** Node.js 22 LTS or newer and pnpm 11+. `pnpm launch` is the single supported local startup command: it checks the environment, installs dependencies when needed, builds the app, opens the desktop launcher, and writes diagnostic logs to `.andromeda/launcher-logs/`. See [`docs/LOCAL_LAUNCHER.md`](docs/LOCAL_LAUNCHER.md) for Windows-specific help and troubleshooting.
+These commands check source types, selected offline regressions and the static Git policy. They do **not** reproduce SWE-bench scores, validate a live LLM provider, prove Docker sandbox behavior, or authorize a self-modifying deployment. GitHub workflows additionally run a broader suite, build, smoke test, and adversarial checks; inspect each run's conclusion and logs rather than treating a badge or test count as a reliability measure.
 
-Edit `.env.local` and add your API keys:
+To explore the local app or scored runner, see [`docs/LOCAL_LAUNCHER.md`](docs/LOCAL_LAUNCHER.md) and the `scripts/` implementation. Model-provider calls and benchmark evaluations may incur external costs and require appropriately isolated workspaces; they were **not** run to prepare this documentation.
 
-```env
-# Required: Anthropic direct — for Sonnet 5 and Fable 5
-ANTHROPIC_API_KEY=sk-ant-...   # https://console.anthropic.com
+## Contributing and license
 
-# Optional: Tavily — for web search augmentation
-TAVILY_API_KEY=tvly-...        # https://tavily.com
-```
-
-Run the SWE-bench pipeline:
-
-```bash
-# Run with 3-tier escalation (recommended)
-SWEBENCH_ESCALATION=1 \
-SWEBENCH_MID_PROVIDER=claude-sonnet-5 \
-SWEBENCH_STRONG_PROVIDER=claude-fable-5 \
-npx tsx scripts/run_swebench.ts --instances 50 predictions.jsonl
-
-# Run on specific instances
-npx tsx scripts/run_swebench.ts --instance-ids "django__django-11066,astropy__astropy-12907"
-```
-
-Run the test suite:
-
-```bash
-pnpm test
-```
-
----
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md). Run `pnpm test` before opening a PR. Do not modify test files to make them pass.
-
----
-
-## License
-
-MIT — see [LICENSE](LICENSE).
+See [CONTRIBUTING.md](CONTRIBUTING.md). New performance claims should include reproducible evaluator artifacts and the exact denominator; new autonomy controls need adversarial failure-path tests. Do not weaken tests to make a run pass. Licensed under [MIT](LICENSE).

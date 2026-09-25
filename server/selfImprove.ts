@@ -12,7 +12,7 @@
  *     - Any future log path
  *
  * v7.1.5 Fix:
- *   getServerDir() now uses process.cwd()+"server" so RSI git commits target
+ *   getServerDir() now uses process.cwd()+"server" so RSI snapshots target
  *   the source tree, not the compiled dist/ directory.
  *
  * v7.1.4 Fix:
@@ -51,8 +51,8 @@ const _require = createRequire(import.meta.url);
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { execSync, spawnSync } from "child_process";
-import { gitSandbox, GitCommandNotAllowedError } from "./gitSandbox.js";
+import { execSync } from "child_process";
+import { gitSandbox } from "./gitSandbox.js";
 import { backgroundSimpleCompletion } from "./llmProvider.js";
 import { createLogger } from "./logger.js";
 import { applyPatch } from "diff";
@@ -2286,8 +2286,8 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         });
       } catch (err) { log.caught("non-fatal", err); }
 
-      // v12.9.0: Visual regression check for UI proposals
-      // Runs AFTER apply but BEFORE git commit. Non-blocking — just adds metadata.
+      // v12.9.0: Visual regression check for UI proposals.
+      // Runs after apply and only adds metadata; promotion is a separate transaction.
       try {
         const { runVisualRegressionCheck, isUiFile } = await import("./visualRegressionGuard.js");
         if (isUiFile(proposal.targetFile)) {
@@ -2306,7 +2306,7 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         log.warn(`[VisualRegression] Check threw (non-fatal): ${(vrErr as Error).message?.slice(0, 100)}`);
       }
 
-      // v12.6.0: TypeScript check BEFORE git commit — scope-limited for server files
+      // v12.6.0: TypeScript check after apply — scope-limited for server files.
       // Uses tsHealEngine.runScopedTsc which checks only server/ for server proposals,
       // avoiding client-side type errors blocking server-only changes.
       let tsCheckPassed = true;
@@ -2563,22 +2563,7 @@ export async function applyProposal(proposalId: string): Promise<{ success: bool
         }
       }
 
-      // v9.8.5: Git commit the applied change so it shows up in git log
       if (tsCheckPassed) {
-        try {
-          const autoConfig = getAutoApplyConfig();
-          if (autoConfig.commitToGit) {
-            const gitResult = gitCommitSelfImprovement(filePath, proposal.title || proposalId, autoConfig.branchStrategy);
-            if (gitResult.success) {
-              console.log(`[SelfImprove] Git committed: ${proposal.title || proposalId}`);
-            } else {
-              console.warn(`[SelfImprove] Git commit failed (non-fatal): ${sanitizeForLog(gitResult.message)}`);
-            }
-          }
-        } catch (gitErr) {
-          console.warn("[SelfImprove] Git commit unavailable (non-fatal):", sanitizeForLog((gitErr as Error).message));
-        }
-
         // v12.10.0: Register runtime telemetry watch for auto-rollback on 500 errors
         try {
           const { registerRuntimeWatch } = await import("./runtimeGuard.js");
@@ -2800,29 +2785,31 @@ export function getAnalyzableFiles(): string[] {
   return ANALYZABLE_FILES.filter(f => resolveServerFile(f) !== null && !blocked.has(f));
 }
 
-// ─── v5.16: Auto-Apply Mode + GitOps Integration ─────────────────────────────
+// ─── v5.16: Auto-Apply Mode ──────────────────────────────────────────────────
 
 /**
  * Auto-apply configuration — controls autonomous self-improvement behavior.
- * When enabled, proposals with confidence >= threshold are applied automatically
- * without human approval, then committed via git.
+ * When enabled, proposals with confidence >= threshold are applied automatically.
+ * Git promotion remains separate and requires promotionService evidence.
  */
 export interface AutoApplyConfig {
   enabled: boolean;
   confidenceThreshold: number; // 0-100, default 75
   maxAutoAppliesPerHour: number; // safety limit
-  requireTypeCheck: boolean; // must pass tsc before committing
-  commitToGit: boolean; // auto-commit applied changes
-  branchStrategy: "main" | "feature-branch"; // commit to main or create feature branches
+  requireTypeCheck: boolean; // must pass tsc before reporting an auto-apply
+  /** Deprecated: direct auto-commit is disabled; use promotionService instead. */
+  commitToGit: boolean;
+  /** Deprecated with commitToGit; promotionService owns branch selection. */
+  branchStrategy: "main" | "feature-branch";
 }
 
-// v5.50: Auto-apply is now ENABLED by default.
+// Direct auto-commit is disabled: only promotionService may create commits.
 const DEFAULT_AUTO_APPLY_CONFIG: AutoApplyConfig = {
   enabled: true,
   confidenceThreshold: 75,
   maxAutoAppliesPerHour: 8,
   requireTypeCheck: true,
-  commitToGit: true,
+  commitToGit: false,
   branchStrategy: "main",
 };
 
@@ -2868,79 +2855,6 @@ function canAutoApply(config: AutoApplyConfig): boolean {
 function recordAutoApply(): void {
   autoApplyHistory.push(Date.now());
   saveCacheStore();
-}
-
-// ─── GitOps Integration ──────────────────────────────────────────────────────
-
-function gitCommitSelfImprovement(
-  targetFile: string,
-  summary: string,
-  branchStrategy: "main" | "feature-branch"
-): { success: boolean; message: string } {
-  const cwd = path.resolve(getServerDir(), "..");
-  const gitEnv = {
-    ...process.env,
-    GIT_AUTHOR_NAME: "Andromeda AI",
-    GIT_AUTHOR_EMAIL: "andromeda@local",
-    GIT_COMMITTER_NAME: "Andromeda AI",
-    GIT_COMMITTER_EMAIL: "andromeda@local",
-    // v20.2.0: Prevent git from hanging on credential prompts — fail fast instead of ETIMEDOUT
-    GIT_TERMINAL_PROMPT: "0",
-    GIT_ASKPASS: "/bin/true",
-  };
-
-    try {
-    if (!fs.existsSync(path.join(cwd, ".git"))) {
-      // v11.4.0: All git calls now go through gitSandbox() whitelist
-      gitSandbox("git init -b main", { cwd, env: gitEnv, encoding: "utf-8" });
-      gitSandbox("git add -A", { cwd, env: gitEnv, encoding: "utf-8" });
-      gitSandbox('git commit --allow-empty -m "Initial commit by Andromeda"', { cwd, env: gitEnv, encoding: "utf-8" });
-      if (process.env.GITHUB_REPO) {
-        // Validate repo name format before using in command
-        const repoName = process.env.GITHUB_REPO.replace(/[^a-zA-Z0-9/_.-]/g, "");
-        try {
-          gitSandbox(`git remote add origin https://github.com/${repoName}.git`, { cwd, env: gitEnv, encoding: "utf-8" });
-        } catch { /* remote may already exist */ }
-      }
-    }
-    if (branchStrategy === "feature-branch") {
-      // Sanitize branch name — only allow alphanumeric, /, -, .
-      const rawBranch = `self-improve/${Date.now()}-${path.basename(targetFile).replace(/\./g, "-")}`;
-      const branchName = rawBranch.replace(/[^a-zA-Z0-9/_.-]/g, "-");
-      try {
-        gitSandbox(`git checkout -b ${branchName}`, { cwd, env: gitEnv, encoding: "utf-8" });
-      } catch {
-        // Branch might already exist
-      }
-    }
-    const relativeFile = path.relative(cwd, targetFile);
-    gitSandbox(`git add "${relativeFile}"`, { cwd, env: gitEnv, encoding: "utf-8" });
-    const testFile = targetFile.replace(/\.(ts|py)$/, `.test.$1`);
-    if (fs.existsSync(testFile)) {
-      const relativeTest = path.relative(cwd, testFile);
-      gitSandbox(`git add "${relativeTest}"`, { cwd, env: gitEnv, encoding: "utf-8" });
-    }
-    // v7.0.1: Use JSON.stringify to safely quote the commit message — avoids shell word-splitting
-    const rawMsg = `Andromeda self-improvement: ${path.basename(targetFile)} — ${summary}`;
-    // Sanitize commit message: strip backticks, dollar signs, and backslashes
-    const commitMsg = rawMsg.replace(/[`$\\]/g, "");
-    const result = gitSandbox(`git commit -m ${JSON.stringify(commitMsg)}`, { cwd, env: gitEnv, encoding: "utf-8" });
-    const commitSha = result.trim();
-
-    // v5.2: Push is REMOVED from gitCommitSelfImprovement.
-    // All external pushes must go through promotionService.promoteChange().
-    // This function now only creates a local commit (snapshot).
-    console.log(`[selfImprove] Local commit created: ${commitSha.slice(0, 8)} — push requires promotionService`);
-    return { success: true, message: commitSha };
-  } catch (err: any) {
-    const errMsg = err instanceof GitCommandNotAllowedError
-      ? err.message
-      : sanitizeForLog(err.stderr?.toString?.() || err.message || String(err));
-    if (errMsg.includes("nothing to commit")) {
-      return { success: true, message: "No changes to commit (already committed)" };
-    }
-    return { success: false, message: `Git commit failed: ${errMsg}` };
-  }
 }
 
 // ─── TypeScript Check (for auto-apply safety) ────────────────────────────────
@@ -3157,95 +3071,11 @@ export async function autoApplyHighConfidence(): Promise<AutoApplyResult[]> {
       }
     }
 
-    // ── v5.1 Elicit enforcement: evidence bundle gate ──────────────────────────
-    // The promotion contract requires a signed evidence bundle before any commit
-    // or push. buildEvidenceBundle + canPromote are the ONLY path to git commit.
-    let committed = false;
-    if (config.commitToGit) {
-      const filePath = resolveServerFile(proposal.targetFile);
-      if (filePath) {
-        try {
-          const { buildEvidenceBundle, canPromote } = await import(
-            "./packages/policy-promotion/index.js"
-          );
-          // Build the evidence bundle from real sandbox records
-          const { createHash } = await import("crypto");
-          const patchHash = createHash("sha256").update(proposal.diff || "").digest("hex");
-          let agentCommit = "unknown";
-          try { agentCommit = gitSandbox("git rev-parse HEAD", { cwd: path.resolve(getServerDir(), ".."), encoding: "utf-8" }).trim(); }
-          catch { /* non-fatal */ }
-          const bundle = buildEvidenceBundle({
-            agentCommit,
-            targetFile: proposal.targetFile,
-            patchApplication: {
-              exactApply: true,
-              fuzzyRecoveryAttempted: false,
-              modifiedFiles: [proposal.targetFile],
-              patchHash,
-            },
-            testExecutions: [{
-              testId: `typecheck:${proposal.targetFile}`,
-              passed: typeCheckPassed === true,
-              durationMs: 0,
-              failureReason: typeCheckPassed === false ? "tsc --noEmit reported errors" : undefined,
-            }],
-            staticCheck: {
-              passed: typeCheckPassed === true,
-              errorCount: typeCheckPassed === false ? 1 : 0,
-            },
-            mode: "promote",
-          });
-          const decision = canPromote(bundle);
-          if (!decision.approved) {
-            results.push({
-              proposalId: proposal.id,
-              targetFile: proposal.targetFile,
-              title: proposal.title,
-              applied: true,
-              committed: false,
-              typeCheckPassed,
-              message: `Promotion gate rejected: ${decision.reason}`,
-            });
-            // Roll back the applied change
-            if (proposal.originalContent) {
-              fs.writeFileSync(filePath, proposal.originalContent, "utf-8");
-              proposal.status = "pending";
-              saveProposals(store);
-            }
-            continue;
-          }
-          // Gate passed — persist the bundle alongside the commit
-          const bundlePath = path.join(
-            path.resolve(getServerDir(), ".."),
-            "workspace",
-            `.promotion_bundle_${proposal.id}.json`
-          );
-          const workspaceDir = path.dirname(bundlePath);
-          if (!fs.existsSync(workspaceDir)) fs.mkdirSync(workspaceDir, { recursive: true });
-          fs.writeFileSync(bundlePath, JSON.stringify(bundle, null, 2), "utf-8");
-          // Commit with bundle ID in message
-          const gitResult = gitCommitSelfImprovement(filePath, proposal.title, config.branchStrategy);
-          committed = gitResult.success;
-        } catch (bundleErr: any) {
-          // Evidence bundle construction failed — fail closed, do not commit
-          results.push({
-            proposalId: proposal.id,
-            targetFile: proposal.targetFile,
-            title: proposal.title,
-            applied: true,
-            committed: false,
-            typeCheckPassed,
-            message: `Evidence bundle error (fail closed): ${bundleErr.message?.slice(0, 120) || String(bundleErr)}`,
-          });
-          if (proposal.originalContent) {
-            fs.writeFileSync(filePath, proposal.originalContent, "utf-8");
-            proposal.status = "pending";
-            saveProposals(store);
-          }
-          continue;
-        }
-      }
-    }
+    // Local commits are intentionally disabled here. This path has no complete
+    // promotion transaction (probe, sandbox evidence, and approval binding), so
+    // it must not create a commit. Callers that need a commit must use
+    // promotionService.promoteChange() with independently collected evidence.
+    const committed = false;
 
     results.push({
       proposalId: proposal.id,
@@ -3254,7 +3084,7 @@ export async function autoApplyHighConfidence(): Promise<AutoApplyResult[]> {
       applied: true,
       committed,
       typeCheckPassed,
-      message: `Auto-applied successfully${committed ? " and committed to git" : ""}`,
+      message: "Auto-applied successfully; local Git commit is disabled pending promotion evidence",
     });
 
     try {

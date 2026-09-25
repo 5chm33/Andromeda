@@ -47,6 +47,39 @@ def test_catches_execsync_git_commit():
     assert rc == 1, f"Expected FAIL but got {rc}. Output: {output}"
     print("PASS: catches execSync('git commit ...')")
 
+def test_catches_self_improve_direct_commit():
+    """selfImprove.ts is not exempt from the single commit choke point."""
+    code = textwrap.dedent("""
+        import { gitSandbox } from "./gitSandbox.js";
+        gitSandbox("git commit -m 'bypass promotion service'");
+    """)
+    rc, output = run_gate(code, "server/selfImprove.ts")
+    assert rc == 1, f"Expected FAIL but got {rc}. Output: {output}"
+    assert "server/selfImprove.ts" in output, f"Expected selfImprove violation. Got: {output}"
+    print("PASS: catches direct commit in selfImprove.ts")
+
+def test_catches_unquoted_shell_push():
+    """Shell scripts are executable and must not bypass the policy guard."""
+    code = textwrap.dedent("""
+        #!/usr/bin/env bash
+        git push origin main
+    """)
+    rc, output = run_gate(code, "scripts/test_violation.sh")
+    assert rc == 1, f"Expected FAIL but got {rc}. Output: {output}"
+    assert "scripts/test_violation.sh" in output, f"Expected shell violation. Got: {output}"
+    print("PASS: catches unquoted git push in shell script")
+
+def test_catches_argument_vector_commit():
+    """Argument-vector child-process calls must not bypass string-command checks."""
+    code = textwrap.dedent("""
+        import { spawnSync } from "child_process";
+        spawnSync("git", ["commit", "-m", "bypass promotion service"]);
+    """)
+    rc, output = run_gate(code)
+    assert rc == 1, f"Expected FAIL but got {rc}. Output: {output}"
+    assert "test_violation.ts" in output, f"Expected subprocess violation. Got: {output}"
+    print("PASS: catches argument-vector git commit")
+
 def test_allows_comment():
     """Comments should not trigger the gate."""
     code = textwrap.dedent("""
@@ -72,6 +105,9 @@ def test_allows_clean_file():
 if __name__ == "__main__":
     test_catches_const_result_pattern()
     test_catches_execsync_git_commit()
+    test_catches_self_improve_direct_commit()
+    test_catches_unquoted_shell_push()
+    test_catches_argument_vector_commit()
     test_allows_comment()
     test_allows_clean_file()
-    print("\nAll 4 regression tests passed.")
+    print("\nAll 7 regression tests passed.")

@@ -35,10 +35,17 @@ const log = createLogger("ciPipeline");
 
 export type CiStage = "typecheck" | "test" | "build" | "reload" | "rollback";
 
+/** Stages that must execute successfully before a repair can be counted as validated. */
+export type CiValidationStage = "typecheck" | "test" | "build";
+
 export type CiStageResult = {
   stage: CiStage;
+  /** False means this stage was skipped or never reached; it is not evidence of a pass. */
+  executed: boolean;
   passed: boolean;
   durationMs: number;
+  command: string;
+  exitCode?: number;
   output: string;
 };
 
@@ -77,16 +84,22 @@ function runStage(
     });
     return {
       stage,
+      executed: true,
       passed: true,
       durationMs: Date.now() - start,
+      command,
+      exitCode: 0,
       output: output.slice(-1000), // last 1000 chars
     };
   } catch (err: any) {
     const raw = ((err.stdout ?? "") + (err.stderr ?? "")).toString();
     return {
       stage,
+      executed: true,
       passed: false,
       durationMs: Date.now() - start,
+      command,
+      exitCode: typeof err.status === "number" ? err.status : 1,
       output: raw.slice(-2000),
     };
   }
@@ -115,6 +128,11 @@ export interface CiPipelineOptions {
   buildTimeoutMs?: number;
   /** v11.290.0: Run only the test file for this target instead of the full suite */
   targetFile?: string;
+  /**
+   * Gates that must have an executed, passing record. This is used for repair
+   * accounting so a convenience skip cannot be reported as a validated repair.
+   */
+  requiredStages?: CiValidationStage[];
 }
 
 export async function runCiPipeline(
@@ -155,14 +173,16 @@ async function _runPipelineInternal(
   const stages: CiStageResult[] = [];
   let failedStage: CiStage | undefined;
   let rolledBack = false;
+  const requiredStages = new Set(options.requiredStages ?? []);
 
   log.info(`[ciPipeline] Starting pipeline ${runId}${proposalId ? ` for proposal ${proposalId}` : ""}`);
 
   // ── Stage 1: TypeScript type check ───────────────────────────────────────────
+  const typecheckCommand = "pnpm exec tsc --noEmit --skipLibCheck 2>&1";
   if (!options.skipTypecheck) {
     const result = runStage(
       "typecheck",
-      "pnpm exec tsc --noEmit --skipLibCheck 2>&1",
+      typecheckCommand,
       options.typecheckTimeoutMs ?? 60_000
     );
     stages.push(result);
@@ -170,6 +190,15 @@ async function _runPipelineInternal(
       log.warn(`[ciPipeline] TypeScript check FAILED:\n${result.output.slice(-500)}`);
       failedStage = "typecheck";
     }
+  } else {
+    stages.push({
+      stage: "typecheck",
+      executed: false,
+      passed: false,
+      durationMs: 0,
+      command: typecheckCommand,
+      output: "Skipped by option; no typecheck evidence was produced",
+    });
   }
 
   // ── Stage 2: Test suite ───────────────────────────────────────────────────────
@@ -195,14 +224,21 @@ async function _runPipelineInternal(
         testCmd = `pnpm exec vitest run --reporter=verbose "server/${specBaseName}" 2>&1`;
         log.info(`[ciPipeline] Running targeted test for ${baseName}: server/${specBaseName}`);
       } else {
-        // No test file — skip test stage entirely (TypeScript check is sufficient)
-        log.info(`[ciPipeline] No test file found for ${baseName} — skipping test stage`);
-        stages.push({ stage: "test", passed: true, durationMs: 0, output: `No test file for ${baseName} — skipped` });
-        options.skipTests = true; // prevent re-entry
+        // A missing targeted test is an explicit skipped record, never a pass.
+        log.info(`[ciPipeline] No test file found for ${baseName} — recording skipped test stage`);
+        stages.push({
+          stage: "test",
+          executed: false,
+          passed: false,
+          durationMs: 0,
+          command: testCmd,
+          output: `No test file for ${baseName}; no test evidence was produced`,
+        });
+        testCmd = "";
       }
     }
     
-    if (!options.skipTests) {
+    if (testCmd) {
       const result = runStage(
         "test",
         testCmd,
@@ -214,19 +250,68 @@ async function _runPipelineInternal(
         failedStage = "test";
       }
     }
+  } else if (options.skipTests) {
+    stages.push({
+      stage: "test",
+      executed: false,
+      passed: false,
+      durationMs: 0,
+      command: "pnpm test --run 2>&1",
+      output: "Skipped by option; no test evidence was produced",
+    });
+  } else {
+    stages.push({
+      stage: "test",
+      executed: false,
+      passed: false,
+      durationMs: 0,
+      command: "pnpm test --run 2>&1",
+      output: `Not run because prerequisite stage "${failedStage}" failed; no test evidence was produced`,
+    });
   }
 
   // ── Stage 3: Production build ─────────────────────────────────────────────────
+  const buildCommand = "pnpm run build 2>&1";
   if (!failedStage && !options.skipBuild) {
     const result = runStage(
       "build",
-      "pnpm run build 2>&1",
+      buildCommand,
       options.buildTimeoutMs ?? 120_000
     );
     stages.push(result);
     if (!result.passed) {
       log.warn(`[ciPipeline] Build FAILED:\n${result.output.slice(-500)}`);
       failedStage = "build";
+    }
+  } else if (options.skipBuild) {
+    stages.push({
+      stage: "build",
+      executed: false,
+      passed: false,
+      durationMs: 0,
+      command: buildCommand,
+      output: "Skipped by option; no build evidence was produced",
+    });
+  } else {
+    stages.push({
+      stage: "build",
+      executed: false,
+      passed: false,
+      durationMs: 0,
+      command: buildCommand,
+      output: `Not run because prerequisite stage "${failedStage}" failed; no build evidence was produced`,
+    });
+  }
+
+  // A required gate must execute and pass. This is deliberately evaluated before
+  // success accounting and rollback so skipped gates are fail-closed for repairs.
+  if (!failedStage) {
+    const missingRequiredStage = [...requiredStages].find(requiredStage =>
+      !stages.some(stage => stage.stage === requiredStage && stage.executed && stage.passed)
+    );
+    if (missingRequiredStage) {
+      failedStage = missingRequiredStage;
+      log.warn(`[ciPipeline] Required stage "${missingRequiredStage}" was skipped or missing — failing closed`);
     }
   }
 
@@ -247,8 +332,10 @@ async function _runPipelineInternal(
     }
     stages.push({
       stage: "rollback",
+      executed: true,
       passed: rolledBack,
       durationMs: Date.now() - rollbackStart,
+      command: `restoreSnapshot(${snapshotId})`,
       output: rollbackOutput,
     });
   }
@@ -270,8 +357,10 @@ async function _runPipelineInternal(
     }
     stages.push({
       stage: "reload",
+      executed: true,
       passed: reloadPassed,
       durationMs: Date.now() - reloadStart,
+      command: "process.kill(process.pid, SIGUSR2)",
       output: reloadOutput,
     });
   }
