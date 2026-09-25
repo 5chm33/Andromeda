@@ -3,18 +3,17 @@
  *
  * Shadow Instance Testing for Andromeda RSI.
  *
- * Before applying a proposal to the live codebase:
- *   1. If Docker is available: spin up an isolated container, apply the change, run tests
- *   2. If Docker is unavailable: use in-place swap — write proposed content to the real
- *      file, run the targeted test, then restore the original. This is safe because:
- *      - The guard already has a backup of the original
- *      - The test runs in < 1 second on targeted files
- *      - The original is always restored in the finally block
+ * Before applying a proposal to the live codebase, run tests inside an isolated
+ * Docker container. Without Docker or usable test evidence, reject the proposal.
+ * The old in-place swap helper below is retained temporarily for migration
+ * context but is not called by runShadowTest; it must not be re-enabled as an
+ * autonomous validation path because it mutates the real source tree.
  *
- * v11.291.1: Replaced tmpDir+symlink approach with in-place swap for local fallback.
- * The tmpDir approach failed because pnpm's virtual store symlinks don't resolve
- * correctly from a different directory (node:internal/modules error).
+ * The former temp-directory approach failed on pnpm's virtual-store symlinks;
+ * the interim in-place fallback is now disabled rather than treated as isolation.
  */
+import { randomUUID } from "node:crypto";
+import { tmpdir } from "node:os";
 import { execSync, spawn } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
@@ -52,6 +51,48 @@ export interface ShadowTestOptions {
   dockerImage?: string;
 }
 
+function rejectedShadowTest(proposalId: string, reason: string, startTime: number): ShadowTestResult {
+  return {
+    proposalId,
+    passed: false,
+    testsPassed: 0,
+    testsFailed: 1,
+    stdout: `rejected: ${reason}`,
+    stderr: "",
+    durationMs: Date.now() - startTime,
+  };
+}
+
+/** Resolve an existing target inside the workspace without following a path or symlink escape. */
+function resolveShadowTarget(workspaceDir: string, targetFile: string | undefined): string | null {
+  if (!targetFile || !targetFile.trim()) return null;
+  if (!path.isAbsolute(targetFile) && path.normalize(targetFile).startsWith(`..${path.sep}`)) return null;
+
+  let workspaceRoot: string;
+  try {
+    workspaceRoot = fs.realpathSync(workspaceDir);
+  } catch {
+    return null;
+  }
+
+  const candidates = path.isAbsolute(targetFile)
+    ? [path.resolve(targetFile)]
+    : [path.resolve(workspaceRoot, "server", targetFile), path.resolve(workspaceRoot, targetFile)];
+
+  for (const candidate of candidates) {
+    try {
+      const resolved = fs.realpathSync(candidate);
+      const relative = path.relative(workspaceRoot, resolved);
+      if (relative && relative !== ".." && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative)) {
+        return resolved;
+      }
+    } catch {
+      // Try the next candidate; missing targets are not validation evidence.
+    }
+  }
+  return null;
+}
+
 /**
  * Checks if Docker is available on the host.
  */
@@ -66,7 +107,8 @@ export function isDockerAvailable(): boolean {
 
 /**
  * Runs a proposal in an isolated Docker container.
- * Falls back to in-place swap test if Docker is unavailable.
+ * Rejects the proposal if Docker is unavailable; there is no autonomous
+ * non-isolated fallback.
  */
 export async function runShadowTest(options: ShadowTestOptions): Promise<ShadowTestResult> {
   const {
@@ -78,40 +120,66 @@ export async function runShadowTest(options: ShadowTestOptions): Promise<ShadowT
   } = options;
 
   const startTime = Date.now();
-
-  if (!isDockerAvailable()) {
-    log.warn("Docker not available — using in-place swap shadow test", { proposalId });
-    return runInPlaceShadowTest(options, startTime);
+  // IDs become temp filenames/container names; targets later enter a shell
+  // command inside Docker. Reject anything outside a conservative path grammar.
+  if (!/^[A-Za-z0-9_-]{1,100}$/.test(proposalId)) {
+    return rejectedShadowTest(proposalId, "invalid proposal ID", startTime);
+  }
+  if (targetFile && !/^[A-Za-z0-9_./-]+$/.test(targetFile)) {
+    return rejectedShadowTest(proposalId, "invalid target path syntax", startTime);
+  }
+  const workspaceDir = path.resolve(process.env.ANDROMEDA_WORKSPACE ?? process.cwd());
+  if (!patchContent) {
+    log.warn("Shadow test: no patch content — rejecting without validation", { proposalId });
+    return rejectedShadowTest(proposalId, "no patch content", startTime);
+  }
+  const actualTargetPath = resolveShadowTarget(workspaceDir, targetFile);
+  if (!actualTargetPath) {
+    log.warn("Shadow test: target missing or outside workspace — rejecting without validation", { proposalId });
+    return rejectedShadowTest(proposalId, "target missing or outside workspace", startTime);
   }
 
-  const workspaceDir = process.env.ANDROMEDA_WORKSPACE ?? process.cwd();
+  if (!isDockerAvailable()) {
+    // Never modify the real source tree to simulate an isolated shadow run.
+    // A missing sandbox is missing evidence, not permission to apply a patch.
+    log.warn("Docker not available — isolated shadow validation required", { proposalId });
+    return rejectedShadowTest(proposalId, "Docker unavailable; isolated validation required", startTime);
+  }
+
   const containerName = `andromeda-shadow-${proposalId.slice(0, 8)}-${Date.now()}`;
+  const contentFile = path.join(tmpdir(), `andromeda-shadow-${randomUUID()}.content`);
+  let createdContentFile = false;
 
   log.info("Starting shadow container", { proposalId, containerName, dockerImage });
 
   try {
-    // Write the proposed file content to a temp file
-    const contentFile = path.join("/tmp", `${proposalId}.content`);
-    fs.writeFileSync(contentFile, patchContent);
+    // Never overwrite a predictable /tmp path or leave the proposed source
+    // readable by other local users after this shadow run finishes.
+    const contentFd = fs.openSync(contentFile, "wx", 0o600);
+    createdContentFile = true;
+    try {
+      fs.writeFileSync(contentFd, patchContent);
+    } finally {
+      fs.closeSync(contentFd);
+    }
 
     // Resolve the target file path relative to workspace
-    const relTarget = targetFile
-      ? (path.isAbsolute(targetFile) ? path.relative(workspaceDir, targetFile) : targetFile)
-      : "server/unknown.ts";
+    const relTarget = path.relative(workspaceDir, actualTargetPath);
 
     // Build targeted test command
     let testCmd = "pnpm exec vitest run --reporter=json 2>/dev/null || echo '{\"numPassedTests\":0,\"numFailedTests\":1}'";
-    if (targetFile) {
-      const baseName = path.basename(targetFile).replace(/\.ts$/, "").replace(/\.js$/, "");
-      const testBaseName = `${baseName}.test.ts`;
-      const specBaseName = `${baseName}.spec.ts`;
-      const testExists = fs.existsSync(path.join(workspaceDir, "server", testBaseName));
-      const specExists = fs.existsSync(path.join(workspaceDir, "server", specBaseName));
-      if (testExists) {
-        testCmd = `pnpm exec vitest run --reporter=json "server/${testBaseName}" 2>/dev/null`;
-      } else if (specExists) {
-        testCmd = `pnpm exec vitest run --reporter=json "server/${specBaseName}" 2>/dev/null`;
-      }
+    const baseName = path.basename(actualTargetPath).replace(/\.ts$/, "").replace(/\.js$/, "");
+    const testBaseName = `${baseName}.test.ts`;
+    const specBaseName = `${baseName}.spec.ts`;
+    const testExists = fs.existsSync(path.join(workspaceDir, "server", testBaseName));
+    const specExists = fs.existsSync(path.join(workspaceDir, "server", specBaseName));
+    if (testExists) {
+      testCmd = `pnpm exec vitest run --reporter=json "server/${testBaseName}" 2>/dev/null`;
+    } else if (specExists) {
+      testCmd = `pnpm exec vitest run --reporter=json "server/${specBaseName}" 2>/dev/null`;
+    } else {
+      log.warn(`Shadow test: no test file for ${baseName} — rejecting without validation`, { proposalId });
+      return rejectedShadowTest(proposalId, "no test file", startTime);
     }
 
     const dockerCmd = [
@@ -152,9 +220,16 @@ export async function runShadowTest(options: ShadowTestOptions): Promise<ShadowT
       proc.stdout?.on("data", (d: Buffer) => { stdout += d.toString(); });
       proc.stderr?.on("data", (d: Buffer) => { stderr += d.toString(); });
 
-      proc.on("close", (_code) => {
+      proc.on("close", (code) => {
         const durationMs = Date.now() - startTime;
         const result = parseVitestOutput(stdout, proposalId, durationMs);
+        if (code !== 0) {
+          // A passing-looking JSON payload is not evidence if Docker or Vitest
+          // exited unsuccessfully after producing it.
+          result.passed = false;
+          result.testsFailed = Math.max(result.testsFailed, 1);
+          stderr += `\nShadow container exited with code ${String(code)}`;
+        }
         result.stdout = stdout.slice(-4000);
         result.stderr = stderr.slice(-2000);
         result.containerId = containerName;
@@ -189,11 +264,19 @@ export async function runShadowTest(options: ShadowTestOptions): Promise<ShadowT
       stderr: String(err),
       durationMs,
     };
+  } finally {
+    if (createdContentFile) {
+      try {
+        fs.rmSync(contentFile, { force: true });
+      } catch (cleanupErr) {
+        log.warn("Shadow patch temp-file cleanup failed", { proposalId, error: String(cleanupErr) });
+      }
+    }
   }
 }
 
 /**
- * v11.291.1: In-place swap shadow test.
+ * Legacy in-place swap shadow test — UNUSED by the autonomous validation path.
  *
  * Instead of copying the entire workspace to a tmpDir (which breaks pnpm's
  * virtual store symlinks), we:
@@ -202,51 +285,25 @@ export async function runShadowTest(options: ShadowTestOptions): Promise<ShadowT
  *   3. Run the targeted test from the real project directory
  *   4. Restore the original content in the finally block
  *
- * This is safe because the guard already has a backup, and the test completes
- * in < 1 second for targeted files.
+ * Do not call it to authorize an autonomous change: restore may fail and tests
+ * can have persistent side effects outside the target file.
  */
 async function runInPlaceShadowTest(
   options: ShadowTestOptions,
   startTime: number
 ): Promise<ShadowTestResult> {
   const { proposalId, patchContent, targetFile, timeoutMs = 120_000 } = options;
-  const workspaceDir = process.env.ANDROMEDA_WORKSPACE ?? process.cwd();
+  const workspaceDir = path.resolve(process.env.ANDROMEDA_WORKSPACE ?? process.cwd());
 
   if (!targetFile || !patchContent) {
-    log.warn("Shadow test: no targetFile or patchContent — skipping (pass through)", { proposalId });
-    return {
-      proposalId,
-      passed: true,
-      testsPassed: 0,
-      testsFailed: 0,
-      stdout: "skipped: no target file",
-      stderr: "",
-      durationMs: Date.now() - startTime,
-    };
+    log.warn("Shadow test: no targetFile or patchContent — rejecting without validation", { proposalId });
+    return rejectedShadowTest(proposalId, "no target file or patch content", startTime);
   }
 
-  // Resolve the actual file path
-  let actualPath: string;
-  if (path.isAbsolute(targetFile)) {
-    actualPath = targetFile;
-  } else {
-    // Try server/ subdirectory first, then exact relative
-    const serverPath = path.join(workspaceDir, "server", path.basename(targetFile));
-    const exactPath = path.join(workspaceDir, targetFile);
-    actualPath = fs.existsSync(serverPath) ? serverPath : exactPath;
-  }
-
-  if (!fs.existsSync(actualPath)) {
-    log.warn(`Shadow test: target file not found at ${actualPath} — pass through`, { proposalId });
-    return {
-      proposalId,
-      passed: true,
-      testsPassed: 0,
-      testsFailed: 0,
-      stdout: "skipped: target not found",
-      stderr: "",
-      durationMs: Date.now() - startTime,
-    };
+  const actualPath = resolveShadowTarget(workspaceDir, targetFile);
+  if (!actualPath) {
+    log.warn("Shadow test: target missing or outside workspace — rejecting without validation", { proposalId });
+    return rejectedShadowTest(proposalId, "target missing or outside workspace", startTime);
   }
 
   // Save original content
@@ -267,14 +324,14 @@ async function runInPlaceShadowTest(
     testPattern = `server/${specBaseName}`;
     log.info(`Shadow test (in-place): targeted test ${testPattern}`, { proposalId });
   } else {
-    // No test file — pass through (guard's syntax check is sufficient)
-    log.warn(`Shadow test: no test file for ${baseName} — pass through`, { proposalId });
+    // A syntax check is not independent test evidence for autonomous mutation.
+    log.warn(`Shadow test: no test file for ${baseName} — rejecting without validation`, { proposalId });
     return {
       proposalId,
-      passed: true,
+      passed: false,
       testsPassed: 0,
-      testsFailed: 0,
-      stdout: "skipped: no test file",
+      testsFailed: 1,
+      stdout: "rejected: no test file",
       stderr: "",
       durationMs: Date.now() - startTime,
     };
@@ -325,13 +382,13 @@ async function runInPlaceShadowTest(
  */
 function parseVitestOutput(stdout: string, proposalId: string, durationMs: number): ShadowTestResult {
   if (!stdout) {
-    return { proposalId, passed: true, testsPassed: 0, testsFailed: 0, stdout: "", stderr: "", durationMs };
+    return { proposalId, passed: false, testsPassed: 0, testsFailed: 1, stdout: "", stderr: "No parseable test output", durationMs };
   }
   try {
     const jsonMatch = stdout.match(/\{[\s\S]*"numPassedTests"[\s\S]*\}/);
     if (jsonMatch) {
       const data = JSON.parse(jsonMatch[0]);
-      const passed = (data.numFailedTests ?? 0) === 0;
+      const passed = (data.numPassedTests ?? 0) > 0 && (data.numFailedTests ?? 0) === 0;
       return {
         proposalId,
         passed,
@@ -350,8 +407,8 @@ function parseVitestOutput(stdout: string, proposalId: string, durationMs: numbe
   const testsPassed = passedMatch ? parseInt(passedMatch[1], 10) : 0;
   const testsFailed = failedMatch ? parseInt(failedMatch[1], 10) : 0;
 
-  // v11.291.1: If no tests found at all, treat as pass (no test file = no regression)
-  const passed = testsFailed === 0;
+  // A missing count means validation did not produce usable test evidence.
+  const passed = testsPassed > 0 && testsFailed === 0;
   return {
     proposalId,
     passed,

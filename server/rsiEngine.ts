@@ -675,61 +675,66 @@ export async function runRSICycle(): Promise<RSICycleResult> {
       );
       try {
         // v11.6.0: Shadow test BEFORE applying — validates the proposal in an isolated copy
-        // of the codebase without touching production files. Falls back gracefully if Docker
-        // or the local temp runner is unavailable.
+        // of the codebase without touching production files. Autonomous mutation requires
+        // a verified passing result; unavailable or incomplete shadow evidence is a reject.
         try {
           const { runShadowTest } = await import("./shadowInstance.js");
           const { listProposals: lp } = await import("./selfImprove.js");
           const fullProposal = lp().find((p: any) => p.id === proposal.id);
           const patchContent = (fullProposal as any)?.proposedContent || "";
           const targetFilePath = (fullProposal as any)?.targetFile || proposal.filePath || "";
-          if (patchContent) {
-            const shadowResult = await runShadowTest({
-              proposalId: proposal.id,
-              patchContent,
-              targetFile: targetFilePath,
-              timeoutMs: 120_000,
-            });
-            if (!shadowResult.passed) {
-              proposalsRejected++;
-              const reason = shadowResult.testsFailed > 0 ? `${shadowResult.testsFailed} tests failed` : "shadow test failed";
-              errors.push(`Proposal ${proposal.id} failed shadow test: ${reason}`);
-              console.warn(`[RSIEngine] Shadow test FAILED for ${proposal.id} — skipping apply. ${reason}`);
-              // v12.7.0: Record _failReason so the dashboard shows the rejection cause
-              try {
-                const { loadProposals: _lp, saveProposals: _sp } = await import("./selfImprove.js");
-                const _st = _lp(); const _p = _st.proposals.find((p: any) => p.id === proposal.id);
-                if (_p && !(_p as any)._failReason) { (_p as any)._failReason = `Shadow test: ${reason}`; _sp(_st); }
-              } catch { /* non-fatal */ }
-              continue;
-            }
-            console.log(`[RSIEngine] Shadow test PASSED for ${proposal.id} (${shadowResult.testsPassed} passed, ${shadowResult.testsFailed} failed)`);
+          if (!patchContent) {
+            proposalsRejected++;
+            const reason = "proposal content unavailable for shadow validation";
+            errors.push(`Proposal ${proposal.id} rejected: ${reason}`);
+            console.warn(`[RSIEngine] Shadow validation unavailable for ${proposal.id} — skipping apply. ${reason}`);
+            continue;
           }
+          const shadowResult = await runShadowTest({
+            proposalId: proposal.id,
+            patchContent,
+            targetFile: targetFilePath,
+            timeoutMs: 120_000,
+          });
+          if (!shadowResult.passed) {
+            proposalsRejected++;
+            const reason = shadowResult.testsFailed > 0 ? `${shadowResult.testsFailed} tests failed` : "shadow test failed";
+            errors.push(`Proposal ${proposal.id} failed shadow test: ${reason}`);
+            console.warn(`[RSIEngine] Shadow test FAILED for ${proposal.id} — skipping apply. ${reason}`);
+            // v12.7.0: Record _failReason so the dashboard shows the rejection cause
+            try {
+              const { loadProposals: _lp, saveProposals: _sp } = await import("./selfImprove.js");
+              const _st = _lp(); const _p = _st.proposals.find((p: any) => p.id === proposal.id);
+              if (_p && !(_p as any)._failReason) { (_p as any)._failReason = `Shadow test: ${reason}`; _sp(_st); }
+            } catch { /* non-fatal */ }
+            continue;
+          }
+          console.log(`[RSIEngine] Shadow test PASSED for ${proposal.id} (${shadowResult.testsPassed} passed, ${shadowResult.testsFailed} failed)`);
         } catch (shadowErr: any) {
-          // Non-fatal: shadow infrastructure unavailable — proceed to direct apply
-          if (rsiConfig.verboseLogging) {
-            console.warn(`[RSIEngine] Shadow test unavailable (non-fatal): ${shadowErr.message?.slice(0, 100)}`);
-          }
+          const reason = `shadow validation unavailable: ${shadowErr.message?.slice(0, 100) || "unknown error"}`;
+          proposalsRejected++;
+          errors.push(`Proposal ${proposal.id} rejected: ${reason}`);
+          console.warn(`[RSIEngine] ${reason} — skipping apply`);
+          continue;
         }
 
         const { applyProposal } = await import("./selfImprove.js");
         const result = await applyProposal(proposal.id);
         if (result.success) {
-          // v6.30: Use ciPipeline for typecheck + test + build + hot-reload
+          // Fast apply guards are advisory. A repair is only counted after
+          // independent typecheck, test, and build gates execute successfully.
           console.log(`[RSIEngine] Running CI pipeline to validate proposal ${proposal.id}...`);
           const { runCiPipeline } = await import("./ciPipeline.js");
           const ciResult = await runCiPipeline(proposal.id, snapshotId, {
-            skipBuild: true,      // v11.290.0: Skip build — too slow for RSI cycles
-            skipTypecheck: true,  // v11.291.1: Skip tsc — guard already ran TypeScript check
-            skipTests: true,      // v11.291.1: Skip tests — guard already ran targeted test
             skipReload: true,     // v11.291.1: Skip SIGUSR2 reload — crashes the process
             targetFile: proposal.filePath, // v11.290.0: Run targeted test only
+            requiredStages: ["typecheck", "test", "build"],
           });
           if (ciResult.success) {
             proposalsApplied++;
             consecutiveAutoApplies++;
             appliedFiles.push(sanitizedPath);
-              console.log(`[RSIEngine] CI PASSED — proposal ${proposal.id} committed to ${proposal.filePath}`);
+              console.log(`[RSIEngine] CI PASSED — proposal ${proposal.id} validated for ${proposal.filePath}`);
               // v20.5.0: RLAIF feedback — record debate winner success so weights update correctly
               try {
                 const debateWinner = (proposal as any)._debateWinner;

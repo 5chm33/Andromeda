@@ -11,7 +11,6 @@ AGENT=~/swebench_sota_agent_v3.py
 VENV=~/swebench-env
 ANDROMEDA=~/andromeda
 RESULTS=$ANDROMEDA/data/swebench
-GITHUB_TOKEN="${GITHUB_TOKEN}"
 
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG"; }
 die() { log "FATAL: $*"; exit 1; }
@@ -40,7 +39,7 @@ mkdir -p "$RESULTS"
 VERIFIED_RUN="andromeda_verified_$(date +%Y%m%d_%H%M)"
 log "Starting SWE-bench Verified (500 tasks) — run_id: $VERIFIED_RUN"
 log "Predictions will be saved to: $RESULTS/${VERIFIED_RUN}_predictions.jsonl"
-log "Progress committed to GitHub every 50 tasks"
+log "Results remain local until reviewed promotion evidence is available"
 log ""
 
 python3 "$AGENT" --dataset verified --run_id "$VERIFIED_RUN" 2>&1 | tee -a "$LOG"
@@ -100,15 +99,10 @@ print(f'Resolved instances: {resolved[:10]}...' if len(resolved) > 10 else f'Res
 " 2>/dev/null | tee -a "$LOG" || log "Could not parse results JSON"
 fi
 
-# ── Commit final Verified results ─────────────────────────────
-log "Committing Verified results to GitHub..."
-cd "$ANDROMEDA"
-git config user.email "andromeda@swebench.ai"
-git config user.name "Andromeda SWE-bench"
-git add data/swebench/ 2>/dev/null || true
-git commit -m "swebench: Verified run complete — $PRED_COUNT predictions ($VERIFIED_RUN)" 2>/dev/null || true
-git push "https://${GITHUB_TOKEN}@github.com/5chm33/Andromeda.git" main 2>/dev/null || true
-log "Results committed to GitHub"
+# ── Preserve final Verified results locally ───────────────────
+# Autonomous Git mutation is disabled. Promotion requires an evidence-bearing
+# promotionService transaction and human approval for an external push or PR.
+log "Verified results preserved locally; promotion requires review and promotionService evidence"
 
 # ── Run Full SWE-bench (2294 tasks) ───────────────────────────
 log ""
@@ -148,15 +142,14 @@ if [ -f "$FULL_PRED_FILE" ]; then
         2>&1 | tee -a "$LOG" || log "WARNING: Full evaluation harness exited non-zero"
 fi
 
-# ── Final commit ───────────────────────────────────────────────
-cd "$ANDROMEDA"
-git add data/swebench/ 2>/dev/null || true
-git commit -m "swebench: Full run complete — $FULL_RUN" 2>/dev/null || true
-git push "https://${GITHUB_TOKEN}@github.com/5chm33/Andromeda.git" main 2>/dev/null || true
+# ── Preserve final results locally ─────────────────────────────
+# Do not commit or push from this evaluator script; the caller must submit a
+# reviewed promotion transaction with immutable evaluator evidence.
+log "Full results preserved locally; promotion requires review and promotionService evidence"
 
 log ""
 log "============================================================"
-log "ALL DONE — check GitHub for results"
+log "ALL DONE — inspect local results and promote them through the reviewed flow"
 log "Verified: $RESULTS/${VERIFIED_RUN}_predictions.jsonl"
 log "Full:     $RESULTS/${FULL_RUN}_predictions.jsonl"
 log "============================================================"
